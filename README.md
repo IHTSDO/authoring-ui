@@ -5,7 +5,7 @@ version 0.11.1.
 
 ## Build & development
 
-Run `grunt` for building and `grunt serve` for preview.
+Run `mvn clean install` for deb build,  `grunt` for build and `grunt serve` for preview.
 
 ## Testing
 
