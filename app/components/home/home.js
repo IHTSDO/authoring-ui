@@ -9,7 +9,7 @@ angular.module( 'angularAppTemplateApp.home', [
   $routeProvider
     .when('/home', {
         controller: 'HomeCtrl',
-        templateUrl: 'features/home/home.html'
+        templateUrl: 'components/home/home.html'
       });
 })
 
