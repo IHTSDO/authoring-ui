@@ -119,16 +119,7 @@ module.exports = function (grunt) {
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
-        curly: true,
-        immed: true,
-        newcap: true,
-        noarg: true,
-        undef: false,
-        sub: true,
-        boss: true,
-        eqnull: true,
-        jasmine: true,
-        jshintrc: '.jshintrc',
+        jshintrc: 'test/.jshintrc',
         reporter: require('jshint-stylish')
       },
       all: {
@@ -271,7 +262,7 @@ module.exports = function (grunt) {
         flow: {
           html: {
             steps: {
-              js: ['concat', 'uglifyjs'],
+              js: ['concat'],
               css: ['cssmin']
             },
             post: {}
@@ -474,7 +465,6 @@ module.exports = function (grunt) {
     'ngAnnotate',
     'copy:dist',
     'cssmin',
-    'uglify',
     'filerev',
     'usemin',
     'htmlmin'
