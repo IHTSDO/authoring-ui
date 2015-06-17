@@ -53,10 +53,10 @@ module.exports = function(config) {
       'bower_components/c3-angular/c3js-directive.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
-      "app/features/*.js",
-      "app/features/**/*.js",
-      "app/features/*.spec.js",
-      "app/features/**/*.spec.js",
+      "app/components/*.js",
+      "app/components/**/*.js",
+      "app/components/*.spec.js",
+      "app/components/**/*.spec.js",
     ],
 
     // list of files / patterns to exclude

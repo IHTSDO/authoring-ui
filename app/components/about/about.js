@@ -9,7 +9,7 @@ angular.module( 'angularAppTemplateApp.about', [
   $routeProvider
     .when('/about', {
         controller: 'AboutCtrl',
-        templateUrl: 'features/about/about.html'
+        templateUrl: 'components/about/about.html'
       });
 })
 
