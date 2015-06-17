@@ -14,7 +14,7 @@
   "quotmark": "single",
   "regexp": true,
   "undef": false,
-  "unused": true,
+  "unused": false,
   "strict": true,
   "trailing": true,
   "smarttabs": true,
@@ -23,7 +23,6 @@
     "angular": false,
     "browser": false,
     "inject": false
-  },
-  predef: [     "jasmine",     "describe",     "xdescribe",     "before",     "beforeEach",     "after",     "afterEach",     "it",     "xit",     "it",     "inject",     "expect",     "spyOn", ]
+  }
 }
 
