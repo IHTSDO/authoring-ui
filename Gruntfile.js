@@ -34,7 +34,7 @@ module.exports = function (grunt) {
         tasks: ['wiredep']
       },
       js: {
-        files: ['<%= yeoman.app %>/features/{,*/}*.js', '<%= yeoman.app %>/features/**/{,*/}*.js'],
+        files: ['<%= yeoman.app %>/features/{,*/}*.js', '<%= yeoman.app %>/shared/{,*/}*.js', '<%= yeoman.app %>/features/**/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
         options: {
           livereload: '<%= connect.options.livereload %>'
@@ -58,6 +58,7 @@ module.exports = function (grunt) {
         files: [
           '<%= yeoman.app %>/**/{,*/}*.html',
           '<%= yeoman.app %>/{,*/}*.html',
+          '<%= yeoman.app %>/shared/partials/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
@@ -134,6 +135,7 @@ module.exports = function (grunt) {
         src: [
           'Gruntfile.js',
           '<%= yeoman.app %>/features/{,*/}*.js',
+          '<%= yeoman.app %>/shared/{,*/}*.js',
           '!<%= yeoman.app %>/**/**/*.spec.js',
           '<%= yeoman.app %>/features/**/{,*/}*.js'
         ]
@@ -251,6 +253,7 @@ module.exports = function (grunt) {
         src: [
           '<%= yeoman.dist %>/features/{,*/}*.js',
           '<%= yeoman.dist %>/features/**/{,*/}*.js',
+            '<%= yeoman.dist %>/shared/{,*/}*.js',
           '<%= yeoman.dist %>/styles/{,*/}*.css',
           '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
           '<%= yeoman.dist %>/styles/fonts/*'
@@ -279,7 +282,7 @@ module.exports = function (grunt) {
 
     // Performs rewrites based on filerev and the useminPrepare configuration
     usemin: {
-      html: ['<%= yeoman.dist %>/features/{,*/}*.html', '<%= yeoman.dist %>/features/**/{,*/}*.html'],
+      html: ['<%= yeoman.dist %>/features/{,*/}*.html', '<%= yeoman.app %>/shared/partials/{,*/}*.html', '<%= yeoman.dist %>/features/**/{,*/}*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       options: {
         assetsDirs: [
@@ -350,7 +353,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.dist %>',
-          src: ['*.html', 'features/**/{,*/}*.html', 'features/{,*/}*.html'],
+          src: ['*.html', 'features/**/{,*/}*.html', 'shared/partials/{,*/}*.html', 'features/{,*/}*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -383,6 +386,7 @@ module.exports = function (grunt) {
             '*.html',
             'features/{,*/}*.html',
             'features/**/{,*/}*.html',
+            'shared/partials/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'styles/fonts/{,*/}*.*'
           ]

@@ -23,10 +23,24 @@ angular
     'angularAppTemplateApp.about'
     ])
     .config(function ($routeProvider) {
+    var imsUrl = 'https://dev-ims.ihtsdotools.org/#/';
+    var imsUrlParams = '?serviceReferer=' + window.location.href;
     $routeProvider
-      .otherwise({
-        redirectTo: '/home'
-      });
+        .when('/login', {
+            redirectTo: function(){ window.location = decodeURIComponent(imsUrl + 'login' + imsUrlParams);}
+          })
+        .when('/logout', {
+            redirectTo: function(){ window.location = imsUrl + 'logout' + imsUrlParams;}
+          })
+        .when('/settings', {
+            redirectTo: function(){ window.location = imsUrl + 'settings' + imsUrlParams;}
+          })
+        .when('/register', {
+            redirectTo: function(){ window.location = imsUrl + 'register' + imsUrlParams;}
+          })
+          .otherwise({
+            redirectTo: '/home'
+          });
     })
     .run( function run () {
     })
