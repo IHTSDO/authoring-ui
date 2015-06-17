@@ -67,6 +67,38 @@ body {
   }
 }
 
+.navbar-default {
+    background-color: #303030;
+    border: none;
+    border-radius: 0px;
+    text-shadow: none;
+    font-family: 'museo300', sans-serif;
+    .navbar-brand {
+        color: #fff;
+    }
+    .navbar-toggle {
+        background-color: #303030;
+        .icon-bar {
+            background-color: #888;
+        }
+    }
+}
+.navbar-brand {
+    float: left;
+    height: 50px;
+    padding: 5px;
+    font-size: 14px;
+    line-height: 32px;
+    span {
+        float:left;
+    }
+    .navbar-version {
+        padding: 5px 10px;
+        font-size:14px;
+        line-height:32px;
+    }
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
