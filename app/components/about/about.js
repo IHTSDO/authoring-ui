@@ -13,6 +13,5 @@ angular.module( 'angularAppTemplateApp.about', [
       });
 })
 
-.controller( 'AboutCtrl', function AboutCtrl( $scope ) {
-  
+.controller( 'AboutCtrl', function AboutCtrl( $scope, $rootScope) {
 });
