@@ -57,6 +57,8 @@ module.exports = function(config) {
       "app/components/**/*.js",
       "app/components/*.spec.js",
       "app/components/**/*.spec.js",
+      "app/shared/*.js",
+      "app/shared/*.spec.js"
     ],
 
     // list of files / patterns to exclude

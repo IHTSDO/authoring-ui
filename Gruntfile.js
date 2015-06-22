@@ -135,8 +135,8 @@ module.exports = function (grunt) {
         options: {
           jshintrc: 'test/.jshintrc'
         },
-//        src: ['<%= yeoman.app %>/features/{,*/}*spec.js',
-//          '<%= yeoman.app %>/features/**/{,*/}*.spec.js']
+//        src: ['<%= yeoman.app %>/components/{,*/}*spec.js',
+//          '<%= yeoman.app %>/components/**/{,*/}*.spec.js']
       }
     },
 
@@ -246,7 +246,6 @@ module.exports = function (grunt) {
           '<%= yeoman.dist %>/components/**/{,*/}*.js',
             '<%= yeoman.dist %>/shared/{,*/}*.js',
           '<%= yeoman.dist %>/styles/{,*/}*.css',
-          '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
           '<%= yeoman.dist %>/styles/fonts/*'
         ]
       }
