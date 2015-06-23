@@ -35,7 +35,7 @@
     <div ng-view=""></div>
     </div>
     <!--Footer To be included here:-->
-    <div ng-include="shared/partials/footer.html">
+    <div ng-include="'shared/partials/footer.html'">
     </div>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <script>
@@ -79,6 +79,7 @@
     <script src="bower_components/d3/d3.js"></script>
     <script src="bower_components/c3/c3.js"></script>
     <script src="bower_components/c3-angular/c3js-directive.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -86,6 +87,7 @@
     <script src="components/app.js"></script>
     <script src="shared/endpointService.js"></script>
     <script src="shared/snowowlService.js"></script>
+    <script src="shared/taxonomyPlugin.js"></script>
     <script src="components/about/about.js"></script>
     <script src="components/home/home.js"></script>
     <script src="shared/directives.js"></script>
