@@ -20,7 +20,8 @@ angular
     'ngTouch',
     //Insert any created modules here. Ideally one per major feature.
     'angularAppTemplateApp.home',
-    'angularAppTemplateApp.about'
+    'angularAppTemplateApp.about',
+    'angularAppTemplateApp.taxonomy'
     ])
     .config(function ($provide, $routeProvider) {
         $provide.factory('$routeProvider', function () {
@@ -54,7 +55,7 @@ angular
                   });
         });
 })
-.controller( 'AppCtrl', ['$scope', '$location', 'endpointService', function AppCtrl ( $scope, $location, endpointService) {
+.controller( 'AppCtrl', ['$scope', '$location', function AppCtrl ( $scope, $location) {
         $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
             if ( angular.isDefined( toState.data.pageTitle ) ) {
               $scope.pageTitle = toState.data.pageTitle + ' | thisIsSetInAppCtrl.js' ;
