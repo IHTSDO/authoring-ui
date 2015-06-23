@@ -6,7 +6,7 @@
 
 	<groupId>org.ihtsdo.otf</groupId>
 	<artifactId>AngularAppTemplate</artifactId>
-	<version>0.2.SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>IHTSDO Web Front End Angular Template</name>
 	<description>IHTSDO Web Front End Template written using Angular use this as a starting point for your angular project</description>
 	<url>https://test.ihtsdotools.org/</url>
