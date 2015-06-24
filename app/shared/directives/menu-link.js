@@ -1,3 +1,5 @@
+'use strict';
+// jshint ignore: start
 angular.module('angularAppTemplateApp')
 .directive('menuLink', function() {
   return {

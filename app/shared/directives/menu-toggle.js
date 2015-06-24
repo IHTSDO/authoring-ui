@@ -1,3 +1,5 @@
+'use strict';
+// jshint ignore: start
 angular.module('angularAppTemplateApp')
 .directive('menuToggle', ['$location', function($location) {
   return {
