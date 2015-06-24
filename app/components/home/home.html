@@ -1,5 +1,53 @@
-<div class="row col-md-12">
-    <div class="jumbotron">
-        <h1>Home View!</h1>
+ <div ng-include src="'shared/partials/sidebar.html'"></div>
+   
+<section class="tables-data" ng-controller="HomeCtrl">
+   <div class="card">
+
+    <div class="row">
+      <div class="col-md-4">
+        <h3 class="table-title p-20">My Tasks</h3> 
+      </div>
+      <div class="col-md-7">
+        <div class="table-search">
+          <input type="text" ng-model="tableParams.filter()['search']" class="form-control" placeholder="Search My Tasks" autofocus />
+        </div>
+      </div>
+         <div class="col-md-1">
+      <span class="pull-right p-t-20 p-r-20 ">
+                  <button type="button" class="btn btn-round btn-info ng-scope " bs-tooltip="" title="Total Task Count">{{data.length}}<div class="ripple-wrapper"></div></button>
+               <button type="button" class="btn btn-round btn-default " title="Create New Task" data-template="shared/partials/task.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div></button> </span>
     </div>
-</div>
+    </div>
+
+    <div class="table-responsive white">
+
+      <table ng-table="tableParams" template-pagination="shared/partials/data-table-pager.html"  class="table table-full table-full-small">
+        <tr ng-repeat="user in $data">
+       
+          <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'">{{user.name}}</td>
+        <td data-title="'Project'" sortable="'project'" filter="{ 'project': 'text' }" sortable="'project'">{{user.project}}</td>
+          <td data-title="'Last Modified'" sortable="'modified'">
+                    {{user.modified | date: "yyyy-MM-dd"}}
+                </td>
+                   <td data-title="'Classification Results'" sortable="'classification'">
+                    {{user.classification}}
+                </td>
+            
+                   <td data-title="'Feedback'" sortable="'feedback'" >
+                {{user.feedback}}
+                </td>
+                   <td data-title="'Status'" sortable="'status'">
+                    {{user.status}}
+                </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+ 
+  </div>
+
+
+
+</section>

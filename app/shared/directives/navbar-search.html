@@ -1,0 +1,16 @@
+<div>
+  <div ng-if="showNavbarSearch" class="mat-slide-right pull-right">
+    <form class="search-form form-inline ng-valid pull-left" ng-show="showNavbarSearch" ng-submit="submitNavbarSearch()">
+      <div class="form-group">
+        <label class="sr-only" for="search-input">Search</label>
+        <input type="text" class="form-control" id="search-input" placeholder="Search" autofocus>
+      </div>
+    </form>
+  </div>
+
+  <div class="pull-right">
+    <button ng-click="toggleSearch()" class="btn btn-sm btn-link pull-left withoutripple">
+      <i class="md md-search f20"></i>
+    </button>
+  </div>
+</div>

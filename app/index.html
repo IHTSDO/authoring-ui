@@ -15,25 +15,34 @@
     <link rel="stylesheet" href="bower_components/ng-table/dist/ng-table.min.css" />
     <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
     <link rel="stylesheet" href="bower_components/c3/c3.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap-additions/dist/bootstrap-additions.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/vendor.css">
     <!-- endbuild -->
+    <script src="scripts/vendor.js"></script>
+    <script src="scripts/scripts.js"></script>
+    
+    
   </head>
-  <body ng-app="angularAppTemplateApp">
+  <body ng-app="angularAppTemplateApp" scroll-spy id="top" class="theme-template-dark theme-blue">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <header class="header">
-        <div ng-include="'shared/partials/header.html'"></div>  
-    </header>
 
-    <div class="container">
-    <div ng-view=""></div>
+  <main>
+   
+    <div class="main-container">
+      <div ng-include src="'shared/partials/header.html'"></div>
+      <div class="main-content" autoscroll="true" ng-cloak ng-view bs-affix-target></div>
     </div>
+  </main>
+
+   
     <!--Footer To be included here:-->
     <div ng-include="'shared/partials/footer.html'">
     </div>
@@ -80,6 +89,8 @@
     <script src="bower_components/c3/c3.js"></script>
     <script src="bower_components/c3-angular/c3js-directive.js"></script>
     <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/angular-strap/dist/angular-strap.js"></script>
+    <script src="bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -90,8 +101,19 @@
     <script src="shared/taxonomyPlugin.js"></script>
     <script src="components/about/about.js"></script>
     <script src="components/home/home.js"></script>
+        <script src="components/edit/edit.js"></script>
+  <script src="shared/directives/formcontrol.js"></script>
     <script src="shared/directives.js"></script>
-    
+    <script charset="utf-8" src="shared/partials/tasks/task.js"></script>
+  <script charset="utf-8" src="shared/directives/navbar-hover.js"></script>
+  <script charset="utf-8" src="shared/directives/navbar-search.js"></script>
+  <script charset="utf-8" src="shared/directives/noui-slider.js"></script>
+  <script charset="utf-8" src="shared/directives/menu-link.js"></script>
+  <script charset="utf-8" src="shared/directives/menu-toggle.js"></script>
+    <script charset="utf-8" src="shared/vendors/side-nav.js"></script>
+ <script charset="utf-8" src="shared/colors.js"></script>
+  <script charset="utf-8" src="shared/vendors/fsm-sticky-header.js"></script>
+  <script charset="utf-8" src="shared/vendors/angular-smooth-scroll.js"></script>
     <!-- endbuild -->
 </body>
 </html>

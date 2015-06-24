@@ -2,7 +2,10 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 // bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
-
+@import "home.scss";
+@import "about.scss";
+@import "ihtsdo.scss";
+@import "fonts.scss";
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;

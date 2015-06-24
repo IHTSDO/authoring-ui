@@ -18,9 +18,12 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
+    'mgcrea.ngStrap',
+    'jcs-autoValidate', 
     //Insert any created modules here. Ideally one per major feature.
     'angularAppTemplateApp.home',
     'angularAppTemplateApp.about',
+	'angularAppTemplateApp.edit',
     'angularAppTemplateApp.taxonomy'
     ])
     .config(function ($provide, $routeProvider) {
