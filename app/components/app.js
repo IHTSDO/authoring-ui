@@ -24,7 +24,8 @@ angular
     'angularAppTemplateApp.home',
     'angularAppTemplateApp.about',
 	'angularAppTemplateApp.edit',
-    'angularAppTemplateApp.taxonomy'
+    'angularAppTemplateApp.taxonomy',
+    'angularAppTemplateApp.search'
     ])
     .config(function ($provide, $routeProvider) {
         $provide.factory('$routeProvider', function () {
