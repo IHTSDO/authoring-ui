@@ -1,0 +1,44 @@
+ <div ng-include src="'shared/partials/sidebar-edit.html'"></div>
+<section ng-controller="EditCtrl">
+  
+      <div class="card no-margin">
+
+          <div class="table-responsive white">
+          <div class="col-md-8"> <h3 class="table-title p-20">My Tasks </h3> </div> <div class="col-md-4"> <span class="pull-right p-t-20"><button type="button" class="btn btn-round btn-default" data-template="shared/partials/task.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div></button> </span></h3> 
+      </div>   
+      
+         <div class="col-md-12">
+     <table ng-table="tableParams" class="table table-hover table-full table-full-small">
+
+
+            <tr ng-repeat="user in $data">
+                <td data-title="'Name'" sortable="'name'">
+                    {{user.name}}
+                </td>
+                <td data-title="'Project'" sortable="'project'">
+                    {{user.project}}
+                </td>
+                  <td data-title="'Last Modified'" sortable="'modified'">
+                    {{user.modified | date: "yyyy-MM-dd"}}
+                </td>
+                   <td data-title="'Classification Results'" sortable="'classification'">
+                    {{user.classification}}
+                </td>
+            
+                   <td data-title="'Feedback'" sortable="'feedback'" >
+                {{user.feedback}}
+                </td>
+                   <td data-title="'Status'" sortable="'status'">
+                    {{user.status}}
+                </td>
+                
+            </tr>
+        </table>
+</div>
+      </div>
+    </div>
+  </div>
+
+
+
+</section>

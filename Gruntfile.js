@@ -245,7 +245,7 @@ module.exports = function (grunt) {
           '<%= yeoman.dist %>/components/{,*/}*.js',
           '<%= yeoman.dist %>/components/**/{,*/}*.js',
             '<%= yeoman.dist %>/shared/{,*/}*.js',
-          '<%= yeoman.dist %>/styles/{,*/}*.css',
+          
           '<%= yeoman.dist %>/styles/fonts/*'
         ]
       }
