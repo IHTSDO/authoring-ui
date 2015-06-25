@@ -1,6 +1,6 @@
-'use strict';
-// jshint ignore: start
-angular.module('angularAppTemplateApp')
+'use strict'
+
+angular.module('singleConceptAuthoringApp')
 .directive('scrollSpy', ['$window',function($window) {
   return {
     link: function(scope, element, attrs) {

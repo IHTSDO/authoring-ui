@@ -128,6 +128,7 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/components/{,*/}*.js',
           '<%= yeoman.app %>/shared/{,*/}*.js',
           '!<%= yeoman.app %>/**/**/*.spec.js',
+          '!<%= yeoman.app %>/vendors/**/*.js',
           '<%= yeoman.app %>/components/**/{,*/}*.js'
         ]
       },

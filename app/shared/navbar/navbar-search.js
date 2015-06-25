@@ -1,10 +1,10 @@
 'use strict';
-// jshint ignore: start
-angular.module('angularAppTemplateApp')
+
+angular.module('singleConceptAuthoringApp')
 .directive('navbarSearch', ['$timeout', function($timeout) {
   return {
     restrict: 'A',
-    templateUrl: 'shared/directives/navbar-search.html',
+    templateUrl: 'shared/navbar/navbar-search.html',
     link: function(scope, element, attrs) {
       scope.showNavbarSearch = false;
 

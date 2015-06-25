@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('angularAppTemplateApp.search', [])
+angular.module('singleConceptAuthoringApp.search', [])
 
 .controller( 'searchCtrl', ['$scope', '$location', 'endpointService', function AppCtrl ( $scope, $location, endpointService) {
 

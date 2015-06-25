@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angularAppTemplateApp')
+angular.module('singleConceptAuthoringApp')
     .factory('endpointService', ['$http', function ($http) {
         return {
             getEndpoints: function () {
