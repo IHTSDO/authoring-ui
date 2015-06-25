@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module( 'angularAppTemplateApp.edit', [
+angular.module( 'singleConceptAuthoringApp.edit', [
   //insert dependencies here
     'ngRoute'
 ])

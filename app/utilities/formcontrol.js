@@ -1,6 +1,6 @@
-'use strict';
-// jshint ignore: start
-angular.module('angularAppTemplateApp')
+'use strict'
+
+angular.module('singleConceptAuthoringApp')
 .directive('formControl', function() {
   return {
     restrict: 'C',

@@ -1,6 +1,6 @@
 'use strict';
-// jshint ignore: start
-angular.module('angularAppTemplateApp')
+
+angular.module('singleConceptAuthoringApp')
 .directive('menuLink', function() {
   return {
     restrict: 'A',
@@ -11,7 +11,7 @@ angular.module('angularAppTemplateApp')
       icon: '@',
       name: '@'
     },
-    templateUrl: 'shared/directives/menu-link.html',
+    templateUrl: 'shared/menu-link/menu-link.html',
     controller: ['$element', '$location', '$rootScope', function($element, $location, $rootScope) {
       this.getName = function(name) {
         if ( name !== undefined ) {
@@ -26,7 +26,7 @@ angular.module('angularAppTemplateApp')
       };
 
       this.isSelected = function(href) {
-        return $location.path() == href.slice(1, href.length);
+        return $location.path() === href.slice(1, href.length);
       };
     }],
     link: function(scope, element, attrs, linkCtrl) {

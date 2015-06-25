@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module( 'angularAppTemplateApp.home', [
+angular.module( 'singleConceptAuthoringApp.home', [
   //insert dependencies here
     'ngRoute',
 	'ngTable'

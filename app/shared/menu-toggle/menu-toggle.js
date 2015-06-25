@@ -1,6 +1,6 @@
 'use strict';
-// jshint ignore: start
-angular.module('angularAppTemplateApp')
+
+angular.module('singleConceptAuthoringApp')
 .directive('menuToggle', ['$location', function($location) {
   return {
     restrict: 'A',
@@ -10,7 +10,7 @@ angular.module('angularAppTemplateApp')
       name: '@',
       icon: '@'
     },
-    templateUrl: 'shared/directives/menu-toggle.html',
+    templateUrl: 'shared/menu-toggle/menu-toggle.html',
     link: function(scope, element, attrs) {
       icon = attrs.icon;
       if ( icon ) {
@@ -30,7 +30,7 @@ angular.module('angularAppTemplateApp')
 
       scope.isOpen = function() {
         folder = '/' + $location.path().split('/')[1];
-        return folder == attrs.path;
+        return folder === attrs.path;
       };
     }
   };

@@ -7,7 +7,7 @@
  * automatically.
  */
 describe( 'home section', function() {
-  beforeEach( module( 'angularAppTemplateApp.home' ) );
+  beforeEach( module( 'singleConceptAuthoringApp.home' ) );
 
   it( 'should have a dummy test', inject( function() {
     expect( true ).toBeTruthy();

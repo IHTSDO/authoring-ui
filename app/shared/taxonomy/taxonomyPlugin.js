@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('angularAppTemplateApp.taxonomy', [])
+angular.module('singleConceptAuthoringApp.taxonomy', [])
 
 .controller( 'taxonomyCtrl', ['$scope', '$location', 'endpointService', function AppCtrl ( $scope, $location, endpointService) {
     

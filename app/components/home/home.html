@@ -1,4 +1,4 @@
- <div ng-include src="'shared/partials/sidebar.html'"></div>
+ <div ng-include src="'layout/sidebar.html'"></div>
    
 <section class="tables-data" ng-controller="HomeCtrl">
    <div class="card">
@@ -15,13 +15,13 @@
          <div class="col-md-1">
       <span class="pull-right p-t-20 p-r-20 ">
                   <button type="button" class="btn btn-round btn-info ng-scope " bs-tooltip="" title="Total Task Count">{{data.length}}<div class="ripple-wrapper"></div></button>
-               <button type="button" class="btn btn-round btn-default " title="Create New Task" data-template="shared/partials/task.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div></button> </span>
+               <button type="button" class="btn btn-round btn-default " title="Create New Task" data-template="shared/task/task.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div></button> </span>
     </div>
     </div>
 
     <div class="table-responsive white">
 
-      <table ng-table="tableParams" template-pagination="shared/partials/data-table-pager.html"  class="table table-full table-full-small">
+      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"  class="table table-full table-full-small">
         <tr ng-repeat="user in $data">
        
           <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'">{{user.name}}</td>

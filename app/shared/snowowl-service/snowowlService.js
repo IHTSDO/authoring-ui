@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angularAppTemplateApp')
+angular.module('singleConceptAuthoringApp')
     .factory('snowowlService', ['$http', function ($http) {
         var apiEndpoint = '/snowowl/snomed-ct/MAIN/';
 
