@@ -5,10 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.ihtsdo.otf</groupId>
-	<artifactId>AngularAppTemplate</artifactId>
+	<artifactId>sca</artifactId>
 	<version>0.2-SNAPSHOT</version>
-	<name>IHTSDO Web Front End Angular Template</name>
-	<description>IHTSDO Web Front End Template written using Angular use this as a starting point for your angular project</description>
+	<name>IHTSDO Single Concept Authoring Web Front End Angular </name>
+	<description>IHTSDO Single Concept Authoring Web Front End</description>
 	<url>https://test.ihtsdotools.org/</url>
 
 	<properties>
