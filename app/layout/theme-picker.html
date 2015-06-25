@@ -1,0 +1,40 @@
+<div class="dropdown-menu dropdown-menu-right theme-picker mat-grow-top-right">
+  <div class="container-fluid m-v-15" ng-click="$event.stopPropagation()">
+    <div class="pull-right m-r-10">
+      <button type="button" class="close" ng-click="$hide()">&times;</button>
+    </div>
+
+    <h4 class="no-margin p-t-5"><i class="md md-filter"></i> Accesibility options</h4>
+    <div class="row m-t-20">
+      <div class="col-md-6">
+        <div class="w300">High - Low Contrast Views</div>
+
+        <div class="theme-item theme-template-default" ng-click="changeTemplateTheme('theme-template-default');">
+          <div class="icon" ng-show="theme.template=='theme-template-default'"><i class="md md-check"></i></div>
+          <div class="theme-sidenav"></div>
+          <div class="theme-header"></div>
+          <div class="theme-body"></div>
+        </div>
+
+        <div class="theme-item theme-template-dark" ng-click="changeTemplateTheme('theme-template-dark');">
+          <div class="icon" ng-show="theme.template=='theme-template-dark'"><i class="md md-check"></i></div>
+          <div class="theme-sidenav"></div>
+          <div class="theme-header"></div>
+          <div class="theme-body"></div>
+        </div>
+
+        <div class="theme-item theme-template-light" ng-click="changeTemplateTheme('theme-template-light');">
+          <div class="icon" ng-show="theme.template=='theme-template-light'"><i class="md md-check"></i></div>
+          <div class="theme-sidenav"></div>
+          <div class="theme-header"></div>
+          <div class="theme-body"></div>
+        </div>
+
+
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
