@@ -24,7 +24,7 @@
       <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"  class="table table-full table-full-small">
         <tr ng-repeat="user in $data">
        
-          <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'">{{user.name}}</td>
+          <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'"><a href="#/edit">{{user.name}}</a></td>
         <td data-title="'Project'" sortable="'project'" filter="{ 'project': 'text' }" sortable="'project'">{{user.project}}</td>
           <td data-title="'Last Modified'" sortable="'modified'">
                     {{user.modified | date: "yyyy-MM-dd"}}
