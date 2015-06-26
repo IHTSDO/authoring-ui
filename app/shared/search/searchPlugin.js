@@ -2,7 +2,7 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.search', [])
 
-.controller( 'searchCtrl', ['$scope', '$location', 'endpointService', function AppCtrl ( $scope, $location, endpointService) {
+.controller( 'searchCtrl', ['$scope', '$location', function AppCtrl ( $scope, $location) {
 
     var options = {
 					serverUrl: "/snowowl",
