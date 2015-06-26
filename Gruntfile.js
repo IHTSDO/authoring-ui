@@ -273,7 +273,7 @@ module.exports = function (grunt) {
 
     // Performs rewrites based on filerev and the useminPrepare configuration
     usemin: {
-      html: ['<%= yeoman.dist %>/components/{,*/}*.html', '<%= yeoman.app %>/shared/partials/{,*/}*.html', '<%= yeoman.dist %>/components/**/{,*/}*.html'],
+      html: ['<%= yeoman.dist %>/components/{,*/}*.html', '<%= yeoman.app %>/shared/partials/{,*/}*.html', '<%= yeoman.dist %>/components/**/{,*/}*.html', '<%= yeoman.dist %>/shared/**/{,*/}*.html', 'layout/{,*/}*.html'],
       css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
       options: {
         assetsDirs: [
@@ -344,7 +344,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.dist %>',
-          src: ['*.html', 'components/**/{,*/}*.html', 'shared/partials/{,*/}*.html', 'components/{,*/}*.html'],
+          src: ['*.html', 'components/**/{,*/}*.html', 'shared/**/{,*/}*.html', 'shared/partials/{,*/}*.html', 'shared/partials/**/{,*/}*.html', 'components/{,*/}*.html','utilities/{,*/}*.html', 'layout/{,*/}*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -377,7 +377,9 @@ module.exports = function (grunt) {
             '*.html',
             'components/{,*/}*.html',
             'components/**/{,*/}*.html',
-            'shared/partials/{,*/}*.html',
+            'shared/**/{,*/}*.html',
+            'utilities/{,*/}*.html',
+            'layout/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'styles/fonts/{,*/}*.*'
           ]
