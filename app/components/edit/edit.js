@@ -14,4 +14,5 @@ angular.module( 'singleConceptAuthoringApp.edit', [
 })
 
 .controller( 'EditCtrl', function AboutCtrl( $scope, $rootScope) {
+	  $scope.tabs = ['Log','Timeline','Messages'];
 });

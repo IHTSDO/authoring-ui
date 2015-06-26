@@ -1,44 +1,46 @@
- <div ng-include src="'shared/layout/sidebar-edit.html'"></div>
-<section ng-controller="EditCtrl">
+ <div ng-include src="'layout/sidebar-edit.html'"></div>
+<div class="dashboard grey darken-3" ng-controller="EditCtrl">
+  <div class="row no-gutter">
   
-      <div class="card no-margin">
 
-          <div class="table-responsive white">
-          <div class="col-md-8"> <h3 class="table-title p-20">My Tasks </h3> </div> <div class="col-md-4"> <span class="pull-right p-t-20"><button type="button" class="btn btn-round btn-default" data-template="shared/task/task.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div></button> </span></h3> 
-      </div>   
+    <div class="col-sm-12 col-md-12 col-lg-8" style="background:#F9F9F9;">
+
+      <div class="p-20 clearfix">
       
-         <div class="col-md-12">
-     <table ng-table="tableParams" class="table table-hover table-full table-full-small">
+        <h3 class="grey-text">
+     
+          <span class="hidden-xs">Model</span>
+        </h3>
+      </div>
 
+      <div class="p-20 no-p-t">
 
-            <tr ng-repeat="user in $data">
-                <td data-title="'Name'" sortable="'name'">
-                    {{user.name}}
-                </td>
-                <td data-title="'Project'" sortable="'project'">
-                    {{user.project}}
-                </td>
-                  <td data-title="'Last Modified'" sortable="'modified'">
-                    {{user.modified | date: "yyyy-MM-dd"}}
-                </td>
-                   <td data-title="'Classification Results'" sortable="'classification'">
-                    {{user.classification}}
-                </td>
-            
-                   <td data-title="'Feedback'" sortable="'feedback'" >
-                {{user.feedback}}
-                </td>
-                   <td data-title="'Status'" sortable="'status'">
-                    {{user.status}}
-                </td>
-                
-            </tr>
-        </table>
-</div>
+   
+        <div class="row gutter-14">
+     
+
+ 
+
+          </div>
+
+     
       </div>
     </div>
+  <div class="col-lg-4 col-md-12">
+
+
+
+      <div class="p-20">
+        <div class="row">
+ <i class="md md-pause-circle-fill cyan lighten-2 icon-color"></i>
+        </div>
+      </div>
+
+ 
+    </div>
+
   </div>
 
 
+</div>
 
-</section>
