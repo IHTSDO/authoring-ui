@@ -12144,10 +12144,10 @@ fieldset[disabled] .btn-secondary {
     }
   }
   .btn-round {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     font-size: 18px;
-    line-height: 40px;
+    line-height: 30px;
   }
   tr:hover .icon-color {
     -webkit-transform: scale(1.05);
@@ -14173,14 +14173,18 @@ fieldset[disabled] .btn-info {
 }
 
 .ng-table th {
+	  text-align: left;
   &.sortable {
     &.sort-asc, &.sort-desc {
       background-color: inherit;
+	  text-align: left;
     }
   }
-  text-align: left;
+  
 }
-
+.ng-table th {
+  text-align: left!important;
+}
 .jvectormap-container {
   .jvectormap-zoomin {
     height: 50px;
