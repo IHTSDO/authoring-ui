@@ -19,7 +19,8 @@ angular
     'ngSanitize',
     'ngTouch',
     'mgcrea.ngStrap',
-    'jcs-autoValidate', 
+    'jcs-autoValidate',
+    'ngTable',
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
     'singleConceptAuthoringApp.about',
