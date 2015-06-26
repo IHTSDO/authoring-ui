@@ -378,7 +378,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                     } else {
                         $('#' + panel.divElement.id + '-resultsTable').find('.more-row').html("<td colspan='2' class='text-center'><i class='glyphicon glyphicon-refresh icon-spin'></i>&nbsp;&nbsp;</td>");
                     }
-                    resultsHtml = "";
+                    var resultsHtml = "";
                     if (xhr != null) {
                         xhr.abort();
                         console.log("aborting call...");
@@ -392,12 +392,12 @@ angular.module('singleConceptAuthoringApp.search', [])
                             xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + t,function (result) {
 
                             }).done(function (result) {
-                                    $.each(result.descriptions, function (i, field) {
+                                    $.each(result.descriptions, function (field) {
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
                                         if (field.active === false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-7'><div class='jqui-draggable result-item' data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-5 result-item'  data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'>" + result.defaultTerm + "</td></tr>";
+                                        resultsHtml = resultsHtml + "'><td class='col-md-7'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-5 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + "</td></tr>";
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -418,12 +418,12 @@ angular.module('singleConceptAuthoringApp.search', [])
                             xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/descriptions/" + t,function (result) {
 
                             }).done(function (result) {
-                                    $.each(result.matches, function (i, field) {
+                                    $.each(result.matches, function (field) {
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
                                         if (field.active == false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-7'><div class='jqui-draggable result-item' data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-5 result-item'  data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'>" + field.fsn + "</td></tr>";
+                                        resultsHtml = resultsHtml + "'><td class='col-md-7'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-5 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.concept.fsn + "'>" + "</td></tr>";
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -463,12 +463,12 @@ angular.module('singleConceptAuthoringApp.search', [])
                                 $('#' + panel.divElement.id + '-resultsTable').find('.more-row').remove();
                                 var endTime = Date.now();
                                 var elapsed = (endTime - startTime)/1000;
-                                if (result.details) {
-                                    var searchComment = "<span class='text-muted'>" + result.details.total + " matches found in " + elapsed + " seconds.</span>";
-                                }
-                                $('#' + panel.divElement.id + '-searchBar').html(searchComment);
+//                                if (result.details) {
+//                                    var searchComment = "<span class='text-muted'>" + result.details.total + " matches found in " + elapsed + " seconds.</span>";
+//                                }
+                                //$('#' + panel.divElement.id + '-searchBar').html(searchComment);
                                 xhr = null;
-                                var matchedDescriptions = result.matches;
+                                var matchedDescriptions = result;
                                 //console.log(JSON.stringify(result));
 
                                 if (!matchedDescriptions || matchedDescriptions.length <= 0) {
@@ -484,14 +484,10 @@ angular.module('singleConceptAuthoringApp.search', [])
                                     }
                                     searchFiltersHtml = searchFiltersHtml + "</span><div id='" + panel.divElement.id + "-searchFiltersPanel' class='panel-collapse collapse'>";
                                     searchFiltersHtml = searchFiltersHtml + "<div class='tree'><ul><li><a>Filter results by Language</a><ul>";
-                                    for(var key in result.filters.lang) {
-                                        searchFiltersHtml = searchFiltersHtml + "<li><a class='lang-link' href='javascript:void(0);' data-lang='" + key + "'>" + key + " (" + result.filters.lang[key] + ")</a></li>";
-                                    }
+                                    
                                     searchFiltersHtml = searchFiltersHtml + "</ul></li></ul>";
                                     searchFiltersHtml = searchFiltersHtml + "<ul><li><a>Filter results by Semantic Tag</a><ul>";
-                                    for(var key in result.filters.semTag) {
-                                        searchFiltersHtml = searchFiltersHtml + "<li><a class='semtag-link' href='javascript:void(0);' data-semtag='" + key + "'>" + key + " (" + result.filters.semTag[key] + ")</a></li>";
-                                    }
+                                    
                                     searchFiltersHtml = searchFiltersHtml + "</ul></li></ul></div>";
                                     $('#' + panel.divElement.id + '-searchBar').html($('#' + panel.divElement.id + '-searchBar').html() + searchFiltersHtml);
                                     $("#" + panel.divElement.id + '-searchBar').find('.semtag-link').click(function (event) {
@@ -526,20 +522,20 @@ angular.module('singleConceptAuthoringApp.search', [])
                                         if (field.active == false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-6'><div class='jqui-draggable result-item' data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.conceptId + "' data-term='" + field.term + "'>" + field.fsn + "</td></tr>";
+                                        resultsHtml = resultsHtml + "'><td class='col-md-6'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td></tr>";
                                     });
-                                    var remaining = result.details.total - (skipTo + returnLimit);
-                                    if (remaining > 0) {
-                                        resultsHtml = resultsHtml + "<tr class='more-row'><td colspan='2' class='text-center'><button class='btn btn-link' id='" + panel.divElement.id + "-more'>Load " + returnLimit +  " more (" + remaining + " remaining on server)</button></td></tr>"
-                                    } else {
-                                        resultsHtml = resultsHtml + "<tr class='more-row'><td colspan='2' class='text-center text-muted'>All " + result.details.total + " results are displayed</td></tr>"
-                                    }
-                                    if (skipTo == 0) {
-                                        $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
-                                    } else {
-                                        $('#' + panel.divElement.id + '-resultsTable').append(resultsHtml);
-                                    }
-
+//                                    var remaining = result.length() - (skipTo + returnLimit);
+//                                    if (remaining > 0) {
+//                                        resultsHtml = resultsHtml + "<tr class='more-row'><td colspan='2' class='text-center'><button class='btn btn-link' id='" + panel.divElement.id + "-more'>Load " + returnLimit +  " more (" + remaining + " remaining on server)</button></td></tr>"
+//                                    } else {
+//                                        resultsHtml = resultsHtml + "<tr class='more-row'><td colspan='2' class='text-center text-muted'>All " + result.details.total + " results are displayed</td></tr>"
+//                                    }
+//                                    if (skipTo == 0) {
+//                                        $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
+//                                    } else {
+//                                        $('#' + panel.divElement.id + '-resultsTable').append(resultsHtml);
+//                                    }
+                                    $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $("#" + panel.divElement.id + "-more").click(function (event) {
                                         panel.search(t, (parseInt(skipTo) + parseInt(returnLimit)), returnLimit, true);
                                     });
