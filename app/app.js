@@ -59,6 +59,9 @@ angular
                     redirectTo: '/home'
                   });
         });
+        endpointService.getProjects().then(function (data){
+            $scope.testData = data;
+        });
 })
 .controller( 'AppCtrl', ['$scope', '$location', function AppCtrl ( $scope, $location) {
         $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
