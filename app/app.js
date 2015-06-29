@@ -7,7 +7,7 @@
  * # singleConceptAuthoringApp
  *
  * Main module of the application.
- */ 
+ */
 angular
     .module('singleConceptAuthoringApp', [
     'ngAnimate',
@@ -24,7 +24,7 @@ angular
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
     'singleConceptAuthoringApp.about',
-	'singleConceptAuthoringApp.edit',
+	  'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
     'singleConceptAuthoringApp.search'
     ])

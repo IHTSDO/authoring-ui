@@ -1,22 +1,37 @@
-'use strict'
+'use strict';
 
 angular.module('singleConceptAuthoringApp')
-.controller('taskCtrl', ['$scope', 'bootstrap3ElementModifier', function($scope, bootstrap3ElementModifier){
+  .controller('taskCtrl', ['$scope', 'bootstrap3ElementModifier', 'scaService', function ($scope, bootstrap3ElementModifier, scaService) {
 
-  bootstrap3ElementModifier.enableValidationStateIcons(false);
+    bootstrap3ElementModifier.enableValidationStateIcons(false);
 
-  $scope.person = {};
-  $scope.people = [
-    { name: 'Ashley',      email: 'adam@ihtsdo.org',      age: 12, country: 'United States' },
-    { name: 'Rory',    email: 'rdu@ihtsdo.org',    age: 12, country: 'Argentina' },
-    { name: 'Steve', email: 'sar@ihtsdo.org', age: 21, country: 'Argentina' },
-    { name: 'Emily',    email: 'ewa@ihtsdo.org',    age: 21, country: 'Ecuador' }
-   
-  ];
+    // scope variables
+    $scope.projects = null;
 
-  $scope.availableColors = ['Option 1','Option 2','Option 3','Option 4'];
+    ///////////////////////////////////////////
 
-  $scope.selectedState = '';
-  $scope.states = ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Dakota','North Carolina','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'];
+    // TODO Temporary function to retrieve projects for picklist, should be
+    // cached values
+    function initialize() {
+      $scope.projects = scaService.getProjects();
+      console.debug($scope.projects);
+    }
 
-}]);
+    // TODO Consider relaxing jshint to allow functions to be called pre
+    // declaration
+    initialize();
+
+    // Creates a task from modal form
+    function createTask(title, project, details) {
+      if (!title) {
+        window.alert('You must specify a title');
+      }
+      if (!project) {
+        window.alert('You must specify a project');
+      }
+      if (!details) {
+        window.alert('You must specify task details');
+      }
+
+    }
+  }]);

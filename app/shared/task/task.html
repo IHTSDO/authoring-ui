@@ -5,46 +5,36 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="modal-title">Create New Task</h4>
       </div>
-      <div class="modal-body" ng>
+      <form class="form-floating" ng-controller="taskCtrl">
+        <fieldset>
+          <div class="modal-body" ng>
 
-        <div class="col-md-12">
-          <form class="form-floating" ng-controller="taskCtrl">
-          <fieldset>
-           
-            <div class="form-group">
-              <label for="taskTitle" class="control-label">Task title</label>
-              <input type="text" class="form-control">
-            </div>
- <div class="form-group">
-  <label for="taskTitle" class="control-label">Select Project:</label>
-    <select name="select-choice" id="select-choice" class="form-control">
-      <option value="Choice 1">Choice 1</option>
-      <option value="Choice 2">Choice 2</option>
-      <option value="Choice 3">Choice 3</option>
-    </select>
-  </div>
-            <div class="form-group">
-              <label for="textArea" class="control-label">Task Details</label>
-              <textarea class="form-control vertical" rows="3" id="textArea"></textarea>
-             	
+            <div class="col-md-12">
+                <div class="form-group">
+                  <label for="taskTitle" class="control-label">Task title</label>
+                  <input id="taskTitle" type="text" class="form-control" placeholder="Enter task title">
+
+                  <label for="taskProject" class="control-label">Select Project:</label>
+                  <select id="taskProject" name="select-choice" class="form-control"
+                          ng-options="project as project.name for project in projects | orderBy: project.name"
+                          ng-model="taskProject">
+                  </select>
+
+                  <label for="textArea" class="control-label">Task Details</label>
+                  <textarea class="form-control vertical" rows="3" id="textArea" ng-model="taskDetails" placeholder="Enter task details"></textarea>
+
+                </div>
             </div>
 
-    
-     
-    </div>
-     
-              
-  <div class="modal-footer">
-        
-         
-        <button type="button" class="btn btn-success" ng-click="$hide()">Create Task</button>
-           <button type="button" class="btn btn-danger" ng-click="$hide()">Cancel</button>
-      </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" ng-click="createTask(taskTitle, taskProject, taskDetails)">Create Task</button>
+                <button type="button" class="btn btn-danger" ng-click="$hide()">Cancel</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
 
-     </fieldset>
-        </form>
 
-      </div>
 
     </div>
   </div>
