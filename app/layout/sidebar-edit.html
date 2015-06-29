@@ -13,17 +13,11 @@
           <!-- Tab panes -->
           <div class="tab-content m-t-10">
             <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-
-      <p>
-      Taxonomy widget here
-      </p>
-
+                <div ng-include="'/shared/taxonomy/taxonomy.html'"></div>
             </div>
        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
 
-      <p>
-      search widget here
-      </p>
+          <div ng-include="'/shared/search/search.html'"></div>
 
             </div>
             <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
