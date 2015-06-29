@@ -1,0 +1,66 @@
+'use strict';
+
+angular.module('singleConceptAuthoringApp')
+  .factory('scaService', ['$http', function ($http) {
+
+    // TODO Wire this to endpoint service, endpoint config
+    var apiEndpoint = 'snowowl/ihtsdo-sca/';
+
+    return {
+
+      // get all projects
+      getProjects: function () {
+        return $http.get(apiEndpoint + 'projects').then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          }
+        );
+      },
+
+      // get tasks for current user across all projects
+      getTasks: function () {
+        return $http.get(apiEndpoint + 'projects/my-tasks').then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          }
+        );
+      },
+
+      // get current user's tasks for a project
+      getTasksForProject: function (projectKey) {
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks').then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          }
+        );
+      },
+
+      // create a task for a project, assigned to current user
+      createTaskForProject: function (projectKey, task) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks').then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          }
+        );
+      },
+
+      // get a specific task for a project
+      getTaskForProject: function (projectKey, taskKey) {
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
+            function (response) {
+              return response;
+            }, function (error) {
+              // TODO Handle errors
+            }
+          );
+      }
+    };
+  }]);
