@@ -6298,7 +6298,7 @@ input {
   touch-action: manipulation;
   cursor: pointer;
   white-space: nowrap;
-  padding: 6px 16px;
+  padding: 6px 12px;
   font-size: 13px;
   line-height: 1.846;
   border-radius: 0px;
@@ -10535,7 +10535,7 @@ input {
 .btn-success {
   background-size: 200%;
   &:hover {
-    background-color: #0094cc;
+    background-color: #4a944e;
   }
   &:active {
     background-size: 1000%;
@@ -11549,8 +11549,10 @@ label input[type=checkbox] {
 
 .badge {
   padding: 0 10px;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 22px;
+  text-transform:none!important;
+  box-shadow:none!important;
 }
 
 .breadcrumb {
@@ -12174,7 +12176,9 @@ fieldset[disabled] .btn-secondary {
     padding: 20px;
   }
 }
-
+.footer {
+  margin-left: 460px !important;
+}
 .footer-buttons {
   position: fixed;
   bottom: 20px;
