@@ -24,6 +24,10 @@ angular.module('singleConceptAuthoringApp.search', [])
                     taskId: null
 				};
     
+    var addToList = function (item) {
+            console.log(item);
+    }
+    
     var componentsRegistry = [];
     var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
     
@@ -397,7 +401,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                                         if (field.active === false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-7'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-5 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + "</td></tr>";
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button onclick='addToList(" + field.concept.conceptId + ")'>Add</button></td></tr>"
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -423,7 +427,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                                         if (field.active == false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-7'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-5 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.concept.fsn + "'>" + "</td></tr>";
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button onclick='addToList(" + field.concept.conceptId + ")'>Add</button></td></tr>"
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -522,7 +526,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                                         if (field.active == false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'></td></tr>";
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button onclick='addToList(" + field.concept.conceptId + ")'>Add</button></td></tr>"
                                     });
 //                                    var remaining = result.length() - (skipTo + returnLimit);
 //                                    if (remaining > 0) {
@@ -672,5 +676,6 @@ angular.module('singleConceptAuthoringApp.search', [])
                 var tx = new conceptDetails(this, options);
             });
         };
+        
     }(jQuery));
 }]);

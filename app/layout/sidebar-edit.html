@@ -7,8 +7,9 @@
           <ul class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
             <li role="presentation" class="active"><a ng-click="actionTab=1" aria-controls="home" role="tab" data-toggle="tab"> Taxonomy</a></li>
             <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab">Search</a></li>
-            <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab">Task Detail</a></li>
-             <li role="presentation"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab">Feedback</a></li>
+            <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab">Saved List</a></li>
+            <li role="presentation"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab">Task Detail</a></li>
+            <li role="presentation"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab">Feedback</a></li>
           </ul>
           <!-- Tab panes -->
           <div class="tab-content m-t-10">
@@ -21,6 +22,9 @@
 
             </div>
             <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+                <div ng-include="'shared/savedList/savedList.html'"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
 
              <ul class="timeline">
                 <li>
