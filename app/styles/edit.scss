@@ -22,3 +22,28 @@ aside.editpanel ul a {
     width: 100%;
   }
 }
+.editpanel .btn:hover {
+  font-size: 115%;
+}
+
+.editbuttons {
+  font-size: 20px;
+  padding: 0px 7px;
+  box-shadow:none!important;
+}
+
+.popover {
+  select.form-control {
+    background-color: #fff;
+    padding: 5px 20px 5px 15px;
+    font-size: 12px;
+    margin: 5px;
+  }
+  max-width: 400px;
+  min-width: 350px;
+}
+
+.editform .row {
+  margin: 0px;
+}
+.formcontrol{font-size:12px;}
