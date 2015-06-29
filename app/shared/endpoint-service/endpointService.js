@@ -9,7 +9,7 @@ angular.module('singleConceptAuthoringApp')
                     });
             },
             getProjects: function () {
-                return $http.get('/snowowl/ihtsdo-sca/authoring-projects/listProjects').then(function(response) {
+                return $http.get('/snowowl/ihtsdo-sca/projects').then(function(response) {
                         return response.data;
                     });
             }
