@@ -1,0 +1,11 @@
+<div class='' ng-controller="taxonomyCtrl">
+    <table>
+        <tr ng-if="listPopulated" ng-repeat="item in savedList">
+            <td class="col-md-5">{{item.term}}</td>
+            <td class="col-md-5">{{item.concept.fsn}}</td>
+        </tr>
+        <div ng-if="!listPopulated">
+            There are no items in your saved list. 
+        </div>
+    </table>
+</div>
