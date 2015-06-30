@@ -12,7 +12,8 @@ angular.module('singleConceptAuthoringApp')
       getProjects: function () {
         return $http.get(apiEndpoint + 'projects').then(
           function (response) {
-            return response;
+            console.debug('scaService getProjects', response, response.data);
+            return response.data;
           }, function (error) {
             // TODO Handle errors
           }
@@ -23,7 +24,7 @@ angular.module('singleConceptAuthoringApp')
       getTasks: function () {
         return $http.get(apiEndpoint + 'projects/my-tasks').then(
           function (response) {
-            return response;
+            return response.data;
           }, function (error) {
             // TODO Handle errors
           }
@@ -34,7 +35,7 @@ angular.module('singleConceptAuthoringApp')
       getTasksForProject: function (projectKey) {
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks').then(
           function (response) {
-            return response;
+            return response.data;
           }, function (error) {
             // TODO Handle errors
           }
@@ -43,7 +44,7 @@ angular.module('singleConceptAuthoringApp')
 
       // create a task for a project, assigned to current user
       createTaskForProject: function (projectKey, task) {
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks').then(
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks', task).then(
           function (response) {
             return response;
           }, function (error) {

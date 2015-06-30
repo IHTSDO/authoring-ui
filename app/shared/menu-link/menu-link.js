@@ -30,7 +30,7 @@ angular.module('singleConceptAuthoringApp')
       };
     }],
     link: function(scope, element, attrs, linkCtrl) {
-      icon = attrs.icon;
+      var icon = attrs.icon;
       if ( icon ) {
         element.children().first().prepend('<i class="' + icon + '"></i>&nbsp;');
       }

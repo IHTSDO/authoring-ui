@@ -60,6 +60,9 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/{,*/}*.html',
           '<%= yeoman.app %>/shared/partials/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
+          '.tmp/styles/{,*/}*.css',
+          '<%= yeoman.app %>/shared/taxonomy/taxonomy.css',
+          '<%= yeoman.app %>/shared/search/search.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
@@ -246,7 +249,7 @@ module.exports = function (grunt) {
           '<%= yeoman.dist %>/components/{,*/}*.js',
           '<%= yeoman.dist %>/components/**/{,*/}*.js',
             '<%= yeoman.dist %>/shared/{,*/}*.js',
-          
+
           '<%= yeoman.dist %>fonts/*'
         ]
       }
