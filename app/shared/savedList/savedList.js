@@ -19,12 +19,6 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     // scope function to get UI state for project, task, and panel
     // TODO Here just for the sake of wiring, unused
-    $scope.getUIState = function (projectKey, taskKey, uiState) {
-      scaService.getUIStateForProjectAndTaskAndPanel(
-        projectKey, taskKey, panelId)
-        .then(function (uiState) {
-          return uiState;
-        });
-    };
+    
 
   }]);

@@ -74,9 +74,9 @@ angular.module('singleConceptAuthoringApp')
 
       // get the UI state for a project, task, and panel triplet
       getUIState: function (projectKey, taskKey, panelId) {
-        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/panel' + panelId).then(
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
           function (response) {
-            return response;
+            return response.data.items;
           }, function (error) {
             // TODO Handle errors
           }
@@ -85,7 +85,7 @@ angular.module('singleConceptAuthoringApp')
 
       // save the UI state for a project, task, and panel triplet
       saveUIState: function (projectKey, taskKey, panelId, uiState) {
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/panel' + panelId, uiState).then(
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId, uiState).then(
           function (response) {
             return response;
           }, function (error) {

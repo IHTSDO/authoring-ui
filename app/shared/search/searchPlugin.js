@@ -2,7 +2,7 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.search', [])
 
-.controller( 'searchCtrl', ['$scope', '$rootScope', '$location', function AppCtrl ( $scope, $rootScope, $location) {
+.controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, scaService) {
 
     var options = {
 					serverUrl: "/snowowl",
@@ -23,12 +23,22 @@ angular.module('singleConceptAuthoringApp.search', [])
                     taskSet: false,
                     taskId: null
 				};
-    $rootScope.savedList = [];
-    
+    $scope.saveUIState = function (projectKey, taskKey, panelId, uiState) {
+      scaService.saveUIState(
+        projectKey, taskKey, panelId, uiState)
+        .then(function (uiState) {
+          console.debug('State Saved');
+        });
+    };
     $scope.addToList = function (item) {
             var concept = $scope.findItem(item);
             $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "']").attr("disabled", true);
             $rootScope.savedList.push(concept);
+            var uiState = {};
+            uiState.items =  [];
+            uiState.items = $rootScope.savedList;
+            console.debug(uiState);
+            $scope.saveUIState($routeParams.projectId, $routeParams.taskId, "savedList", uiState);
     }
     $scope.findItem = function(id) {
         for (var i = 0, len = $scope.results.length; i < len; i++) {
