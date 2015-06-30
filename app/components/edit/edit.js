@@ -7,7 +7,7 @@ angular.module( 'singleConceptAuthoringApp.edit', [
 
 .config(function config( $routeProvider ) {
   $routeProvider
-    .when('/edit', {
+    .when('/edit/:projectId/:taskId', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html'
       });

@@ -33,7 +33,7 @@
              class="table table-full table-full-small">
         <tr ng-repeat="task in $data track by task.key">
 
-          <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a href="#/edit">{{task.summary}}</a>
+          <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a ng-href="#/edit/{{task.projectKey}}/{{task.key}}">{{task.summary}}</a>
           </td>
           <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
             {{task.projectKey}}
