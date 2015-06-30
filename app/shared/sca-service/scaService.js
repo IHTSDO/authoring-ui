@@ -93,6 +93,6 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       }
-    }
+    };
 
   }]);
