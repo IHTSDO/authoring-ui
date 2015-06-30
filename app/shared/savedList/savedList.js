@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.savedList', [])
 
-  .controller('savedListCtrl', ['$scope', '$location', 'scaService', function savedListCtrl($scope, $location) {
+  .controller('savedListCtrl', ['$scope', '$location', 'scaService', function savedListCtrl($scope, $location, scaService) {
 
     // name of the panel for the Saved List
     var panelId = 'saved-list';
@@ -13,8 +13,8 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         projectKey, taskKey, panelId, uiState)
         .then(function (uiState) {
           return uiState;
-        })
-    }
+        });
+    };
 
     // scope function to get UI state for project, task, and panel
     // TODO Here just for the sake of wiring, unused
@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         projectKey, taskKey, panelId)
         .then(function (uiState) {
           return uiState;
-        })
-    }
+        });
+    };
 
   }]);

@@ -69,5 +69,5 @@ angular.module('singleConceptAuthoringApp')
     $scope.clearMessages = function() {
       $scope.msgError = '';
       $scope.msgSuccess = '';
-    }
+    };
   }]);

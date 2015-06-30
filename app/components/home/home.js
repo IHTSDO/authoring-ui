@@ -1,5 +1,5 @@
 'use strict';
-
+// jshint ignore: start
 angular.module('singleConceptAuthoringApp.home', [
   //insert dependencies here
   'ngRoute',
