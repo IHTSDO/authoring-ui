@@ -1,0 +1,34 @@
+<div id="task-detail" ng-controller="taskDetailCtrl">
+
+  <p>&nbsp</p>
+  <ul class="timeline">
+    <li>
+      <div class="timeline-badge">
+        <i class="icon-circle theme-border"></i>
+      </div>
+      <div class="timeline-panel">
+        <div class="timeline-heading">
+          <h4 class="timeline-title">{{task.summary}}</h4>
+        </div>
+
+        <div class="timeline-body">
+          <p>{{task.projectKey}}</p>
+
+          <p>{{task.description}}</p>
+
+          <p class="text-muted"><i class="md md-timer"></i> {{task.updated | date:'medium'}}</p>
+
+          <p>
+            <button style="width:auto" class="btn btn-success">Classify
+              <div class="ripple-wrapper"></div>
+            </button>
+            <button style="width:auto" class="btn btn-success ">Submit for Review
+              <div class="ripple-wrapper"></div>
+            </button>
+          </p>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+</div>

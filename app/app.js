@@ -27,12 +27,14 @@ angular
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
     'singleConceptAuthoringApp.search',
-    'singleConceptAuthoringApp.savedList'
+    'singleConceptAuthoringApp.savedList',
+    'singleConceptAuthoringApp.taskDetail'
   ])
   .config(function ($provide, $routeProvider) {
     $provide.factory('$routeProvider', function () {
       return $routeProvider;
     });
+
   })
 
   .run(function ($routeProvider, $rootScope, endpointService) {

@@ -5,7 +5,6 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     // name of the panel for the Saved List
     var panelId = 'saved-list';
-    $scope.savedList = $rootScope.savedList;
 
     // scope function to save UI state for project, task, and panel
     // TODO Here just for the sake of wiring, unused
@@ -19,6 +18,6 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     // scope function to get UI state for project, task, and panel
     // TODO Here just for the sake of wiring, unused
-    
+
 
   }]);

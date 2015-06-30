@@ -1,8 +1,19 @@
 <div class='' ng-controller="savedListCtrl">
-    <table>
-        <tr ng-repeat="item in savedList">
-            <td class="col-md-5">{{item.term}}</td>
-            <td class="col-md-5">{{item.concept.fsn}}</td>
-        </tr>
-    </table>
+
+  <p>&nbsp</p>
+  <h4>Saved Items ({{savedList.items.length}})</h4>
+  <table class="table">
+    <thead>
+    <th class="col-md-1"></th>
+    <th class="col-md-5">Term</th>
+    <th class="col-md-6">FSN</th>
+    </thead>
+    <tr ng-repeat="item in savedList.items">
+      <td><i class="icon-circle theme-border"></i></td>
+      <td>{{item.term}}</td>
+      <td>{{item.concept.fsn}}</td>
+    </tr>
+  </table>
 </div>
+
+

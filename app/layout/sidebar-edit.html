@@ -1,114 +1,37 @@
 <aside class="sidebar editpanel fixed">
 
-      <div class="p-h-40">
+  <div class="p-h-40">
 
-        <div role="tabpanel">
-          <!-- Nav tabs -->
-          <ul class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
-            <li role="presentation" class="active"><a ng-click="actionTab=1" aria-controls="home" role="tab" data-toggle="tab"> Taxonomy</a></li>
-            <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab">Search</a></li>
-            <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab">Saved List</a></li>
-            <li role="presentation"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab">Task Detail</a></li>
-            <li role="presentation"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab">Feedback</a></li>
-          </ul>
-          <!-- Tab panes -->
-          <div class="tab-content m-t-10">
-            <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-                <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-            </div>
-       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
-
-          <div ng-include="'shared/search/search.html'"></div>
-
-            </div>
-            <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
-                <div ng-include="'shared/savedList/savedList.html'"></div>
-            </div>
-            <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
-
-             <ul class="timeline">
-                <li>
-                  <div class="timeline-badge">
-                    <i class="icon-circle theme-border"></i>
-                  </div>
-                  <div class="timeline-panel">
-                    <div class="timeline-heading">
-                      <h4 class="timeline-title">A Task title</h4>
-                    </div>
-                    <div class="timeline-body">
-                      <p>Details about the task go here</p>
-                  
-                    </div>
-                  </div>
-                </li>
-              
-
-           
-           
-              </ul>
-              <div class="row">
-              <button class="btn btn-success btn-flat">Save & Validate Work<div class="ripple-wrapper"></div></button>
-              </div>
-                 <div class="row m-t-10">
-              <button class="btn btn-success btn-flat">Classify<div class="ripple-wrapper"></div></button>
-              </div>
-                 <div class="row m-t-10">
-              <button class="btn btn-success btn-flat">Submit for Review<div class="ripple-wrapper"></div></button>
-              </div>
-
-            </div>
-                      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
-
-             <ul class="timeline">
-                <li>
-                  <div class="timeline-badge">
-                    <i class="icon-circle theme-border"></i>
-                  </div>
-                  <div class="timeline-panel">
-                    <div class="timeline-heading">
-                      <h4 class="timeline-title">A Concept Id</h4>
-                    </div>
-                    <div class="timeline-body">
-                      <p>A Project Name</p>
-                      <small class="text-muted"><i class="md md-timer"></i> 1 hour ago</small>
-                    </div>
-                  </div>
-                </li>
-                <li class="timeline-inverted">
-                  <div class="timeline-badge">
-                    <i class="icon-circle theme-secondary-border"></i>
-                  </div>
-               <div class="timeline-panel">
-                    <div class="timeline-heading">
-                      <h4 class="timeline-title">A Concept Id</h4>
-                    </div>
-                    <div class="timeline-body">
-                      <p>A Project Name</p>
-                      <small class="text-muted"><i class="md md-timer"></i> 1 hour ago</small>
-                    </div>
-                  </div>
-                </li>
-
-                <li class="timeline-inverted">
-                  <div class="timeline-badge">
-                    <i class="icon-circle red-border accent-1"></i>
-                  </div>
-            <div class="timeline-panel">
-                    <div class="timeline-heading">
-                      <h4 class="timeline-title">A Concept Id</h4>
-                    </div>
-                    <div class="timeline-body">
-                      <p>A Project Name</p>
-                      <small class="text-muted"><i class="md md-timer"></i> 1 hour ago</small>
-                    </div>
-                  </div>
-                </li>
-            
-           
-              </ul>
-
-            </div>
-          </div>
+    <div role="tabpanel">
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+        <li role="presentation" class="active"><a ng-click="actionTab=1" aria-controls="home" role="tab"
+                                                  data-toggle="tab"> Taxonomy</a></li>
+        <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab">Search</a>
+        </li>
+        <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab">Saved
+          List</a></li>
+        <li role="presentation"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab">Task
+          Detail</a></li>
+        <li role="presentation"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab">Feedback</a>
+        </li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content m-t-10">
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
+          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
         </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+          <div ng-include="'shared/search/search.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+          <div ng-include="'shared/savedList/savedList.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
+          <div ng-include="'shared/task-detail/taskDetail.html'"></div>
+        </div>
+
       </div>
+    </div>
+  </div>
 </aside>
