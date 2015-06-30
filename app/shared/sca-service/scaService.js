@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
   .factory('scaService', ['$http', function ($http) {
 
     // TODO Wire this to endpoint service, endpoint config
-    var apiEndpoint = 'snowowl/ihtsdo-sca/';
+    var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
     return {
 
