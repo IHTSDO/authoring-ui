@@ -78,7 +78,7 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response.data;
           }, function (error) {
-            // TODO Handle errors
+            return null;
           }
         );
       },

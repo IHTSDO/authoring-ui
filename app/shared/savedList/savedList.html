@@ -1,8 +1,11 @@
 <div class='' ng-controller="savedListCtrl">
 
   <p>&nbsp</p>
-  <h4>Saved Items ({{savedList.items.length}})</h4>
-  <table class="table">
+  <h4>
+    <span ng-show="savedList.items.length == 0">No Saved Items</span>
+    <span ng-show="savedList.items.length > 0">Saved Items ({{savedList.items.length}})</span>
+  </h4>
+  <table ng-show="savedList.items.length > 0" class="table">
     <thead>
     <th class="col-md-1"></th>
     <th class="col-md-5">Term</th>

@@ -19,8 +19,15 @@ angular.module('singleConceptAuthoringApp.edit', [
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'saved-list')
       .then(function (uiState) {
-        $scope.savedList = uiState;
-      });
+        if (!uiState || !uiState.items) {
+          $scope.savedList = {'items':[]};
+        }
+        else {
+          $scope.savedList = uiState;
+        }
+        console.debug('saved-list', $scope.savedList)
+      }
+    );
 
     $scope.tabs = ['Log', 'Timeline', 'Messages'];
     $scope.popover = {
