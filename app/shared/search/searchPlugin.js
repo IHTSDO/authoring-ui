@@ -2,7 +2,7 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.search', [])
 
-.controller( 'searchCtrl', ['$scope', '$location', function AppCtrl ( $scope, $location) {
+.controller( 'searchCtrl', ['$scope', '$rootScope', '$location', function AppCtrl ( $scope, $rootScope, $location) {
 
     var options = {
 					serverUrl: "/snowowl",
@@ -23,10 +23,21 @@ angular.module('singleConceptAuthoringApp.search', [])
                     taskSet: false,
                     taskId: null
 				};
+    $rootScope.savedList = [];
     
-    var addToList = function (item) {
-            console.log(item);
+    $scope.addToList = function (item) {
+            var concept = $scope.findItem(item);
+            $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "']").attr("disabled", true);
+            $rootScope.savedList.push(concept);
     }
+    $scope.findItem = function(id) {
+        for (var i = 0, len = $scope.results.length; i < len; i++) {
+            if ($scope.results[i].concept.conceptId === id)
+                return $scope.results[i];
+        }
+        return null;
+    }
+    $scope.results = [];
     
     var componentsRegistry = [];
     var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
@@ -396,12 +407,13 @@ angular.module('singleConceptAuthoringApp.search', [])
                             xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + t,function (result) {
 
                             }).done(function (result) {
+                                    $scope.results = result.descriptions;
                                     $.each(result.descriptions, function (field) {
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
                                         if (field.active === false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button onclick='addToList(" + field.concept.conceptId + ")'>Add</button></td></tr>"
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -422,12 +434,13 @@ angular.module('singleConceptAuthoringApp.search', [])
                             xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/descriptions/" + t,function (result) {
 
                             }).done(function (result) {
+                                $scope.results = result.matches;
                                     $.each(result.matches, function (field) {
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
                                         if (field.active == false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button onclick='addToList(" + field.concept.conceptId + ")'>Add</button></td></tr>"
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -521,12 +534,13 @@ angular.module('singleConceptAuthoringApp.search', [])
                                         });
                                     }
                                     $.each(matchedDescriptions, function (i, field) {
+                                        $scope.results = matchedDescriptions;
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
                                         //console.log(field.active + " " + field.conceptActive);
                                         if (field.active == false || field.conceptActive == false) {
                                             resultsHtml = resultsHtml + " danger";
                                         }
-                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button onclick='addToList(" + field.concept.conceptId + ")'>Add</button></td></tr>"
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
                                     });
 //                                    var remaining = result.length() - (skipTo + returnLimit);
 //                                    if (remaining > 0) {
@@ -543,6 +557,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                                     $("#" + panel.divElement.id + "-more").click(function (event) {
                                         panel.search(t, (parseInt(skipTo) + parseInt(returnLimit)), returnLimit, true);
                                     });
+                                    
 
                                     $('#' + panel.divElement.id + '-resultsTable').find(".jqui-draggable").draggable({
                                         appendTo: 'body',
@@ -566,6 +581,9 @@ angular.module('singleConceptAuthoringApp.search', [])
                     }
                 }
             }
+            $('#bp-search_canvas-resultsTable').on("click", ".addButton", function() {
+                $scope.addToList($(this).attr('data-concept-id'));
+            });
         }
 
         this.subscribe = function (subscriber) {
