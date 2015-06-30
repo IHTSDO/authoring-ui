@@ -61,9 +61,9 @@ angular.module('singleConceptAuthoringApp')
       getTaskForProject: function (projectKey, taskKey) {
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
           function (response) {
-            return response;
+            return response.data;
           }, function (error) {
-            // TODO Handle errors
+            return null;
           }
         );
       },
@@ -76,7 +76,7 @@ angular.module('singleConceptAuthoringApp')
       getUIState: function (projectKey, taskKey, panelId) {
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
           function (response) {
-            return response.data.items;
+            return response.data;
           }, function (error) {
             // TODO Handle errors
           }
