@@ -26,7 +26,8 @@ angular
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
-    'singleConceptAuthoringApp.search'
+    'singleConceptAuthoringApp.search',
+    'singleConceptAuthoringApp.savedList'
   ])
   .config(function ($provide, $routeProvider) {
     $provide.factory('$routeProvider', function () {

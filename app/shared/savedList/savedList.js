@@ -1,10 +1,11 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.savedList', [])
 
-  .controller('savedListCtrl', ['$scope', '$location', 'scaService', function savedListCtrl($scope, $location, scaService) {
+  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', 'scaService', function savedListCtrl($scope, $rootScope, $location, scaService) {
 
     // name of the panel for the Saved List
     var panelId = 'saved-list';
+    $scope.savedList = $rootScope.savedList;
 
     // scope function to save UI state for project, task, and panel
     // TODO Here just for the sake of wiring, unused

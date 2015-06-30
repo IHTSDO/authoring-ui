@@ -20,4 +20,7 @@ angular.module( 'singleConceptAuthoringApp.edit', [
   'title': 'Title',
   'content': 'Hello Popover<br />This is a multiline message!'
 };
+    var addToList = function (item) {
+            console.log(item);
+    };
 });
