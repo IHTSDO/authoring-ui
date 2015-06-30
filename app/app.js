@@ -9,7 +9,7 @@
  * Main module of the application.
  */
 angular
-    .module('singleConceptAuthoringApp', [
+  .module('singleConceptAuthoringApp', [
     'ngAnimate',
     'ngAria',
     'ngCookies',
@@ -24,49 +24,54 @@ angular
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
     'singleConceptAuthoringApp.about',
-	  'singleConceptAuthoringApp.edit',
+    'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
     'singleConceptAuthoringApp.search'
-    ])
-    .config(function ($provide, $routeProvider) {
-        $provide.factory('$routeProvider', function () {
-            return $routeProvider;
-        });
-    })
+  ])
+  .config(function ($provide, $routeProvider) {
+    $provide.factory('$routeProvider', function () {
+      return $routeProvider;
+    });
+  })
 
-    .run(function($routeProvider, $rootScope, endpointService) {
-        $routeProvider.otherwise({
-                    redirectTo: '/home'
-                  });
-        endpointService.getEndpoints().then(function (data){
-            $rootScope.endpoints = data.endpoints;
-            var imsUrl = data.endpoints.imsEndpoint;
-            var imsUrlParams = '?serviceReferer=' + window.location.href;
-            $routeProvider
-                .when('/login', {
-                    redirectTo: function(){ window.location = decodeURIComponent(imsUrl + 'login' + imsUrlParams);}
-                  })
-                .when('/logout', {
-                    redirectTo: function(){ window.location = imsUrl + 'logout' + imsUrlParams;}
-                  })
-                .when('/settings', {
-                    redirectTo: function(){ window.location = imsUrl + 'settings' + imsUrlParams;}
-                  })
-                .when('/register', {
-                    redirectTo: function(){ window.location = imsUrl + 'register' + imsUrlParams;}
-                  })
-                  .otherwise({
-                    redirectTo: '/home'
-                  });
+  .run(function ($routeProvider, $rootScope, endpointService) {
+    $routeProvider.otherwise({
+      redirectTo: '/home'
+    });
+    endpointService.getEndpoints().then(function (data) {
+      $rootScope.endpoints = data.endpoints;
+      var imsUrl = data.endpoints.imsEndpoint;
+      var imsUrlParams = '?serviceReferer=' + window.location.href;
+
+      // add required endpoints to route provider
+      $routeProvider
+        .when('/login', {
+          redirectTo: function () {
+            window.location = decodeURIComponent(imsUrl + 'login' + imsUrlParams);
+          }
+        })
+        .when('/logout', {
+          redirectTo: function () {
+            window.location = imsUrl + 'logout' + imsUrlParams;
+          }
+        })
+        .when('/settings', {
+          redirectTo: function () {
+            window.location = imsUrl + 'settings' + imsUrlParams;
+          }
+        })
+        .when('/register', {
+          redirectTo: function () {
+            window.location = imsUrl + 'register' + imsUrlParams;
+          }
         });
-        endpointService.getProjects().then(function (data){
-            $scope.testData = data;
-        });
-})
-.controller( 'AppCtrl', ['$scope', '$location', function AppCtrl ( $scope, $location) {
-        $scope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams){
-            if ( angular.isDefined( toState.data.pageTitle ) ) {
-              $scope.pageTitle = toState.data.pageTitle + ' | thisIsSetInAppCtrl.js' ;
-            }
-        });
-    }]);
+
+    });
+  })
+  .controller('AppCtrl', ['$scope', '$location', function AppCtrl($scope, $location) {
+    $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+      if (angular.isDefined(toState.data.pageTitle)) {
+        $scope.pageTitle = toState.data.pageTitle + ' | thisIsSetInAppCtrl.js';
+      }
+    });
+  }]);

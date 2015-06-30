@@ -1,0 +1,11 @@
+.editpanel .btn {
+  width:26px;
+}
+
+aside.sidebar ul ul a {
+  padding: 8px 15px 8px 0px;
+}
+
+aside.sidebar ul a {
+  display: inline;
+}

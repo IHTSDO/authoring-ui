@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="dialog">
+<div id="taskModal" class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -10,26 +10,36 @@
           <div class="modal-body" ng>
 
             <div class="col-md-12">
+
+
+              <!-- TODO Fix formatting on control-label, causing absolute positioning and overlap -->
                 <div class="form-group">
-                  <label for="taskTitle" class="control-label">Task title</label>
-                  <input id="taskTitle" type="text" class="form-control" placeholder="Enter task title">
+                  <label for="taskTitle">Task title</label>
+                  <input id="taskTitle" ng-model="taskTitle" ng-change="clearMessages()" type="text" class="form-control" placeholder="Enter task title">
 
-                  <label for="taskProject" class="control-label">Select Project:</label>
+                  <br>
+                  <label for="taskProject">Select Project:</label>
                   <select id="taskProject" name="select-choice" class="form-control"
-                          ng-options="project as project.name for project in projects | orderBy: project.name"
-                          ng-model="taskProject">
+                          ng-options="project as project.title for project in projects | orderBy: project.title"
+                          ng-model="taskProject"
+                          ng-change="clearMessages()">
                   </select>
-
-                  <label for="textArea" class="control-label">Task Details</label>
-                  <textarea class="form-control vertical" rows="3" id="textArea" ng-model="taskDetails" placeholder="Enter task details"></textarea>
+                  <br>
+                  <label for="textArea">Task Details</label>
+                  <textarea ng-change="clearMessages()" class="form-control vertical" rows="3" id="textArea" ng-model="taskDetails" placeholder="Enter task details"></textarea>
 
                 </div>
+
+
+                <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
+                <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" ng-click="createTask(taskTitle, taskProject, taskDetails)">Create Task</button>
+                <button type="button" class="btn btn-success" ng-click="createTask(taskTitle, taskProject, taskDetails) == true ? $hide() : ''">Create Task</button>
                 <button type="button" class="btn btn-danger" ng-click="$hide()">Cancel</button>
             </div>
+
           </div>
         </fieldset>
       </form>

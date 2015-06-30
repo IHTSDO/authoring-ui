@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       element.bind('blur', function (e) {
-        input = angular.element(e.currentTarget);
+        var input = angular.element(e.currentTarget);
         if(input.val()){
           input.parent().addClass('filled');
         } else {
@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
         }
         input.parent().removeClass('active');
       }).bind('focus', function (e) {
-        input = angular.element(e.currentTarget);
+        var input = angular.element(e.currentTarget);
         input.parent().addClass('active');
       });
 
