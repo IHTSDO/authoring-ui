@@ -507,10 +507,11 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                                     $scope.results = result.descriptions;
                                     $.each(result.descriptions, function (field) {
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
-                                        if (field.active === false || field.conceptActive == false) {
-                                            resultsHtml = resultsHtml + " danger";
+                                        if (field.active === false || field.concept.active == false) {
                                         }
+                                        else{
                                         resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
+                                        }
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -535,10 +536,11 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                                 $scope.results = result.matches;
                                     $.each(result.matches, function (field) {
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
-                                        if (field.active == false || field.conceptActive == false) {
-                                            resultsHtml = resultsHtml + " danger";
+                                        if (field.active == false || field.concept.active == false) {
                                         }
+                                        else{
                                         resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
+                                        }
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                                     $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
@@ -639,10 +641,11 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                                         resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
                                         //console.log(field.active + " " +
                                         // field.conceptActive);
-                                        if (field.active == false || field.conceptActive == false) {
-                                            resultsHtml = resultsHtml + " danger";
+                                        if (field.active == false || field.concept.active == false) {
                                         }
+                                        else{
                                         resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
+                                        }
                                     });
 //                                    var remaining = result.length() - (skipTo
 // + returnLimit); if (remaining > 0) { resultsHtml = resultsHtml + "<tr
