@@ -19,112 +19,113 @@ angular.module('singleConceptAuthoringApp.home', [
     $scope.tasks = null;
 
     // TODO: Remove this after demo -- currently appended to "live" data
-    var sampleData = [{
-      summary: 'Open and Close Fractures of t1-t6',
-      projectKey: 'A Sample Project Title',
-      updated: '2015-06-12',
-      classification: 'true',
-      feedback: 'true',
-      status: 'Not Started'
-    },
-      {
-        summary: 'Open and Close Fractures of t1-t6',
-        projectKey: 'A Nother Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Really Really Long Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'Open and Close Fractures of t1-t6',
-        projectKey: 'A Nother Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Really Really Long Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'Open and Close Fractures of t1-t6',
-        projectKey: 'A Nother Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Really Really Long Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'Open and Close Fractures of t1-t6',
-        projectKey: 'A Nother Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Really Really Long Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      },
-      {
-        summary: 'A Task Title',
-        projectKey: 'A Sample Project Title',
-        updated: '2015-06-12',
-        classification: 'true',
-        feedback: 'true',
-        status: 'Not Started'
-      }
-
-    ];
+    var sampleData = [];
+//    [{
+//      summary: 'Open and Close Fractures of t1-t6',
+//      projectKey: 'A Sample Project Title',
+//      updated: '2015-06-12',
+//      classification: 'true',
+//      feedback: 'true',
+//      status: 'Not Started'
+//    },
+//      {
+//        summary: 'Open and Close Fractures of t1-t6',
+//        projectKey: 'A Nother Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Really Really Long Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'Open and Close Fractures of t1-t6',
+//        projectKey: 'A Nother Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Really Really Long Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'Open and Close Fractures of t1-t6',
+//        projectKey: 'A Nother Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Really Really Long Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'Open and Close Fractures of t1-t6',
+//        projectKey: 'A Nother Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Really Really Long Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      },
+//      {
+//        summary: 'A Task Title',
+//        projectKey: 'A Sample Project Title',
+//        updated: '2015-06-12',
+//        classification: 'true',
+//        feedback: 'true',
+//        status: 'Not Started'
+//      }
+//
+//    ];
 
     // assign keys for track by to sample data
     for (var i = 0; i < sampleData.length; i++) {
