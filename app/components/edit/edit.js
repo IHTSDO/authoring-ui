@@ -15,6 +15,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, $routeParams) {
 
+    $rootScope.pageTitle = "Edit Concept";
+
     // get the required ui state elements
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'saved-list')

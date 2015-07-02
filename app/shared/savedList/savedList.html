@@ -1,22 +1,19 @@
-<div class='' ng-controller="savedListCtrl">
+<div style="padding: 0px 15px 0px 15px" ng-controller="savedListCtrl">
 
-  <p>&nbsp</p>
-  <h4>
-    <span ng-show="savedList.items.length == 0">No Saved Items</span>
-    <span ng-show="savedList.items.length > 0">Saved Items ({{savedList.items.length}})</span>
-  </h4>
   <table ng-show="savedList.items.length > 0" class="table">
     <thead>
-    <th class="col-md-1"></th>
-    <th class="col-md-5">Term</th>
-    <th class="col-md-6">FSN</th>
+    <th>Term</th>
+    <th>FSN</th>
+    <th></th>
     </thead>
     <tr ng-repeat="item in savedList.items">
-      <td><i class="icon-circle theme-border"></i></td>
       <td>{{item.term}}</td>
       <td>{{item.concept.fsn}}</td>
+      <td><button type="button" class="btn btn-default editbuttons green" title="Active" >+</button></td>
     </tr>
   </table>
+  </button></td>
+  </tr>
 </div>
 
 

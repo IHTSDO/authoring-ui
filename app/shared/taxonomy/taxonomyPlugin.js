@@ -60,7 +60,7 @@ function taxonomyPanel(divElement, conceptId, options) {
 
     this.setupCanvas = function() {
         var taxonomyHtml = "<div style='height:100%;margin: 5px; overflow:auto;' class='panel panel-default' id='" + panel.divElement.id + "-mainPanel'>";
-        taxonomyHtml = taxonomyHtml + "<div class='panel-heading' id='" + panel.divElement.id + "-panelHeading'>";
+        /*        taxonomyHtml = taxonomyHtml + "<div class='panel-heading' id='" + panel.divElement.id + "-panelHeading'>";
         taxonomyHtml = taxonomyHtml + "<button id='" + panel.divElement.id + "-subscribersMarker' class='btn btn-link btn-lg' style='padding: 2px; position: absolute;top: 1px;left: 0px;'><i class='glyphicon glyphicon-bookmark'></i></button>"
         taxonomyHtml = taxonomyHtml + "<div class='row'>";
         taxonomyHtml = taxonomyHtml + "<div class='col-md-6' id='" + panel.divElement.id + "-panelTitle'>&nbsp&nbsp&nbsp<strong><span class='i18n' data-i18n-id='i18n_taxonomy'>Taxonomy</span></strong></div>";
@@ -84,7 +84,7 @@ function taxonomyPanel(divElement, conceptId, options) {
         taxonomyHtml = taxonomyHtml + "         </ul>";
         taxonomyHtml = taxonomyHtml + "     </li>";
         taxonomyHtml = taxonomyHtml + " </ul>";
-        taxonomyHtml = taxonomyHtml + "</nav></div>";
+        taxonomyHtml = taxonomyHtml + "</nav></div>";*/
         taxonomyHtml = taxonomyHtml + "<div class='panel-body' style='height:100%' id='" + panel.divElement.id + "-panelBody'>";
         taxonomyHtml = taxonomyHtml + "</div>";
         taxonomyHtml = taxonomyHtml + "</div>";
@@ -225,14 +225,14 @@ function taxonomyPanel(divElement, conceptId, options) {
         if (parents.length > 0) {
             treeHtml = treeHtml.slice(0, -5);
         }
-        treeHtml = treeHtml + "<ul style='list-style-type: none; padding-left: 15px;'>";
+        treeHtml = treeHtml + "<ul style='list-style-type: none;'>";
         treeHtml = treeHtml + "<li data-concept-id='" + focusConcept.conceptId + "' data-term='" + focusConcept.defaultTerm + "' class='treeLabel'>";
         treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-right treeButton'  id='" + panel.divElement.id + "-treeicon-" + focusConcept.conceptId + "'></i></button>";
-        if (focusConcept.definitionStatus == "Primitive") {
+       /* if (focusConcept.definitionStatus == "Primitive") {
             treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
         } else {
             treeHtml = treeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
-        }
+        }*/
         treeHtml = treeHtml + '<a href="javascript:void(0);" style="color: inherit;text-decoration: inherit;"><span data-concept-id="' + focusConcept.conceptId + '" data-term="' + focusConcept.defaultTerm + '" class="jqui-draggable treeLabel selectable-row" id="' + panel.divElement.id + '-treenode-' + focusConcept.conceptId + '">' + focusConcept.defaultTerm + "</span></a>";
         treeHtml = treeHtml + "</li>";
         treeHtml = treeHtml + "</ul>";
@@ -339,11 +339,11 @@ function taxonomyPanel(divElement, conceptId, options) {
                 if (field.active == true) {
                     nodeHtml = nodeHtml + "<li data-concept-id='" + field.conceptId + "' data-term='" + field.fsn + "' class='treeLabel'>";
                     nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-right treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
-                    if (field.definitionStatus == "Primitive") {
+                   /* if (field.definitionStatus == "Primitive") {
                         nodeHtml = nodeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
                     } else {
                         nodeHtml = nodeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
-                    }
+                    }*/
                     nodeHtml = nodeHtml + '<a href="javascript:void(0);" style="color: inherit;text-decoration: inherit;"><span class="jqui-draggable treeLabel selectable-row" data-concept-id="' + field.conceptId + '" data-term="' + field.fsn + '" id="' + panel.divElement.id + '-treenode-' + field.conceptId + '">' + field.fsn + '</span></a>';
                     listIconIds.push(field.conceptId);
                 }
