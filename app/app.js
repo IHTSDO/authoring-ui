@@ -37,15 +37,19 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService) {
+  .run(function ($routeProvider, $rootScope, endpointService, accountService) {
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
     endpointService.getEndpoints().then(function (data) {
       $rootScope.endpoints = data.endpoints;
-      var imsUrl = data.endpoints.imsEndpoint;
+      var accountUrl = data.endpoints.imsEndpoint + 'api/account';
+      var imsUrl = data.endpoints.imsEndpoint + '/#/';
       var imsUrlParams = '?serviceReferer=' + window.location.href;
-
+      accountService.getAccount(accountUrl).then(function (data) {
+            $rootScope.userDetails = data;
+            console.log(data);
+        });
       // add required endpoints to route provider
       $routeProvider
         .when('/login', {
@@ -70,6 +74,7 @@ angular
         });
 
     });
+    
   })
   .controller('AppCtrl', ['$scope', '$location', function AppCtrl($scope, $location) {
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
