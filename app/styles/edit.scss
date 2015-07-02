@@ -52,14 +52,35 @@ aside.editpanel ul a {
   width:26px;
 }
 
-aside.sidebar {
-
+//Taxonomy Styling
+.alert-warning {
+    background-color: #FCF8E3;
+    border-color: #FAEBCC;
+    color: #8A6D3B;
 }
 
-aside.sidebar ul ul a {
-  padding: 8px 15px 8px 0px;
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #FFF;
+    line-height: 1;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-align: center;
+    background-color: #999;
+    border-radius: 10px;
 }
 
-aside.sidebar ul a {
-  display: inline;
+.alert-warning {
+    color: black;
+    background-image: linear-gradient(to bottom, #FCF8E3 0px, #F8EFC0 100%);
+    background-repeat: repeat-x;
+    border-color: #F5E79E;
+}
+
+.treeButton:hover {
+    
 }
