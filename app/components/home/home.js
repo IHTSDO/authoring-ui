@@ -14,8 +14,9 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, ngTableParams, $filter, scaService, $timeout) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, scaService, $timeout) {
 
+    // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Tasks"
     $scope.tasks = null;
 
