@@ -1,34 +1,72 @@
 <div id="task-detail" ng-controller="taskDetailCtrl">
 
-  <p>&nbsp</p>
-  <ul class="timeline">
-    <li>
-      <div class="timeline-badge">
-        <i class="icon-circle theme-border"></i>
+  <!-- Timeline formatter and concept ids.extension input -->
+  <div class="row">
+
+    <div class="col col-md-6">
+      <ul class="timeline" style="padding:10px;">
+        <li>
+          <div class="timeline-badge">
+            <i class="icon-circle theme-border"></i>
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h4 class="timeline-title">{{task.summary}}</h4>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div class="timeline-badge">
+            <i class="icon-circle theme-border"></i>
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h4 class="timeline-title">{{task.description}}</h4>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+
+    <div class="col col-md-6">
+      <div style="background-color: white; padding: 10px;">
+        <p style="muted;">Concept ids.extension</p>
+        <button type="button" class="btn btn-default green" style="width: 100%; text-transform: none">Load File
+     <span
+       class="md md-cloud-upload pull-right"></span></button>
       </div>
-      <div class="timeline-panel">
-        <div class="timeline-heading">
-          <h4 class="timeline-title">{{task.summary}}</h4>
-        </div>
 
-        <div class="timeline-body">
-          <p>{{task.projectKey}}</p>
+    </div>
+  </div>
 
-          <p>{{task.description}}</p>
+  <hr style="width:93%; border-color:#BEBEBE">
 
-          <p class="text-muted"><i class="md md-timer"></i> {{task.updated | date:'medium'}}</p>
+  <div style="padding: 15px; width: 100%">
+    Upload New File
+    <button type="button" class="btn btn-default blue" style="text-transform: none; width: 100%; ">Browse File
+     <span
+       class="md md-cloud-upload pull-right"></span></button>
 
-          <p>
-            <button style="width:auto" class="btn btn-success">Classify
-              <div class="ripple-wrapper"></div>
-            </button>
-            <button style="width:auto" class="btn btn-success ">Submit for Review
-              <div class="ripple-wrapper"></div>
-            </button>
-          </p>
-        </div>
-      </div>
-    </li>
-  </ul>
 
+  </div>
+
+
+  <div
+    style="border-style: dotted; border-color: #BEBEBE; width: 93%; margin-left: 15px; margin-right: 15px; min-height: 100px; background-color:lightgrey">
+
+    <p style="muted">Drop File Here</p>
+
+  </div>
+
+
+  <hr style="width:93%; border-color:#BEBEBE">
+  <div style="padding: 15px; width: 100%">
+    <button type="button" class="btn btn-default green" style="width: 100%; margin-bottom: 10px; text-transform: none">
+      Classify
+    </button>
+    <button type="button" class="btn btn-default green" style="width: 100%; text-transform: none">Submit For Review
+    </button>
+  </div>
 </div>

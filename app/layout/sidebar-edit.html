@@ -1,10 +1,15 @@
-<aside class="sidebar editpanel fixed">
-
-  <div class="p-h-40">
+<aside class="sidebar fixed editpanel">
+  <div class="p-h-5">
 
     <div role="tabpanel">
+
+      <!-- Style arrow -->
+
+
       <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+      <ul style="display: inline; padding: 5px; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+        <li role="presentation"><span style="background-color:#00A4E6; color:white" class="md md-chevron-right "></span></li>
+
         <li role="presentation" class="active"><a ng-click="actionTab=1" aria-controls="home" role="tab"
                                                   data-toggle="tab"> Taxonomy</a></li>
         <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab">Search</a>
@@ -29,6 +34,9 @@
         </div>
         <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
           <div ng-include="'shared/task-detail/taskDetail.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==5}">
+          <div ng-include="'shared/feedback/feedback.html'"></div>
         </div>
 
       </div>
