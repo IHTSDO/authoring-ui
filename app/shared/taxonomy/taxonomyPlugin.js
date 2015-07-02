@@ -213,7 +213,7 @@ function taxonomyPanel(divElement, conceptId, options) {
         $.each(parents, function(i, parent) {
             lastParent = parent;
             treeHtml = treeHtml + "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.defaultTerm + "' class='treeLabel'>";
-            treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
+            treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
             if (parent.definitionStatus == "PRIMITIVE") {
                 treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
             } else {
@@ -227,7 +227,7 @@ function taxonomyPanel(divElement, conceptId, options) {
         }
         treeHtml = treeHtml + "<ul style='list-style-type: none;'>";
         treeHtml = treeHtml + "<li data-concept-id='" + focusConcept.conceptId + "' data-term='" + focusConcept.defaultTerm + "' class='treeLabel'>";
-        treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-right treeButton'  id='" + panel.divElement.id + "-treeicon-" + focusConcept.conceptId + "'></i></button>";
+        treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton'  id='" + panel.divElement.id + "-treeicon-" + focusConcept.conceptId + "'></i></button>";
         if (focusConcept.definitionStatus == "PRIMITIVE") {
             treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
         } else {
@@ -338,7 +338,7 @@ function taxonomyPanel(divElement, conceptId, options) {
             $.each(result, function(i, field) {
                 if (field.active == true) {
                     nodeHtml = nodeHtml + "<li data-concept-id='" + field.conceptId + "' data-term='" + field.fsn + "' class='treeLabel'>";
-                    nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-right treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
+                    nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
                     if (field.definitionStatus == "PRIMITIVE") {
                         nodeHtml = nodeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
                     } else {
@@ -381,7 +381,7 @@ function taxonomyPanel(divElement, conceptId, options) {
                     var parentsStrs = [];
                     $.each(parents, function(i, parent) {
                         var parentLiHtml = "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.fsn + "' class='treeLabel'>";
-                        parentLiHtml = parentLiHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
+                        parentLiHtml = parentLiHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
                         if (parent.definitionStatus == "PRIMITIVE") {
                             parentLiHtml = parentLiHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
                         } else {

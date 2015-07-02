@@ -58,6 +58,11 @@ aside.sidebar ul ul a {
   padding: 8px 15px 8px 0px;
 }
 
+aside.sidebar ul ul a:hover{
+  background-color: white;
+  padding: 8px 15px 8px 0px;
+}
+
 aside.sidebar ul a {
   display: inline;
 }
@@ -96,5 +101,8 @@ aside.sidebar i {
 }
 
 .treeButton:hover {
-    
+    padding-top:0px;
+    padding-bottom:0px;
+    background-color:white;
+    color:#428BCA;
 }
