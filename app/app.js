@@ -37,7 +37,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, accountService) {
+  .run(function ($routeProvider, $rootScope, endpointService, accountService, $cookies) {
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
@@ -46,10 +46,15 @@ angular
       var accountUrl = data.endpoints.imsEndpoint + 'api/account';
       var imsUrl = data.endpoints.imsEndpoint + '/#/';
       var imsUrlParams = '?serviceReferer=' + window.location.href;
-      accountService.getAccount(accountUrl).then(function (data) {
-            $rootScope.userDetails = data;
-            console.log(data);
-        });
+      $rootScope.loggedIn = false;
+      accountService.getAccount(accountUrl).success(function (data) {
+            $rootScope.accountDetails = data.data;
+            console.log("LoggedIn");
+                $rootScope.loggedIn = true;
+        }).error(function () {
+            console.log("LoggedOut");
+                $rootScope.loggedIn = false;
+      });
       // add required endpoints to route provider
       $routeProvider
         .when('/login', {
@@ -59,7 +64,7 @@ angular
         })
         .when('/logout', {
           redirectTo: function () {
-            window.location = imsUrl + 'logout' + imsUrlParams;
+            window.location = decodeURIComponent(imsUrl + 'logout' + imsUrlParams);
           }
         })
         .when('/settings', {
@@ -69,10 +74,9 @@ angular
         })
         .when('/register', {
           redirectTo: function () {
-            window.location = imsUrl + 'register' + imsUrlParams;
+            window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
           }
         });
-
     });
     
   })

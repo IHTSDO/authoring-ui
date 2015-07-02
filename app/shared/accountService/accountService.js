@@ -1,14 +1,15 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-    .factory('accountService', function ($http) {
+    .factory('accountService', function ($http, $rootScope) {
         return {
-        getAccount: function (endpoint) {
-                return $http.get(endpoint, {withCredentials: true}).
+        getAccount: function (imsUrl) {
+                return $http.get(imsUrl + 'api/account', {withCredentials: true}).
                 success(function(data, status) {
                 	return data;
                   }).
                   error(function(data, status) {
+                    return status;
                   });
             },
      };

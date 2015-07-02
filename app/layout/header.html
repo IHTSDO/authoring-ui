@@ -56,12 +56,11 @@
 <!--      <li navbar-search class="pull-right identity-services"></li>-->
     </ul>
     <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services">
-
-      <li class="pull-right">
-        <a ng-href="#/register">Register</a>
-      </li>
-      <li class="pull-right">
+      <li class="pull-right" ng-show="!loggedIn">
         <a ng-href="#/login">Login</a>
+      </li>
+      <li class="pull-right" ng-hide="!loggedIn">
+        <a ng-href="#/logout">Logout</a>
       </li>
 
     </ul>
