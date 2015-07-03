@@ -3,10 +3,10 @@
 angular.module('singleConceptAuthoringApp.taxonomy', [])
 
 .controller( 'taxonomyCtrl', ['$scope', '$location', 'endpointService', function AppCtrl ( $scope, $location, endpointService) {
-    
+
         var options = {
 					serverUrl: "/snowowl",
-					edition: "snomed-ct/v2",
+					edition: "snomed-ct/v2/browser",
                     release: "MAIN",
 					selectedView: "inferred",
 					displayChildren: false,
@@ -27,7 +27,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         var componentsRegistry = [];
         var tpt = new taxonomyPanel(document.getElementById("bp-taxonomy_canvas"), 138875005, options);
 
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -679,7 +679,7 @@ function clearTaxonomyPanelSubscriptions(divElementId1) {
             });
         }
     }
-    
+
     var disableTextSelect = function() {
         return this.each(function() {
             $(this).css({
