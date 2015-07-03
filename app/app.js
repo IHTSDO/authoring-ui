@@ -44,7 +44,7 @@ angular
     endpointService.getEndpoints().then(function (data) {
       $rootScope.endpoints = data.endpoints;
       var accountUrl = data.endpoints.imsEndpoint + 'api/account';
-      var imsUrl = data.endpoints.imsEndpoint + '/#/';
+      var imsUrl = data.endpoints.imsEndpoint;
       var imsUrlParams = '?serviceReferer=' + window.location.href;
 
       // don't want either true or false here please!
