@@ -52,7 +52,8 @@ angular.module('singleConceptAuthoringApp.search', [])
           if (!item) {
               return;
           }
-          $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "']").attr("disabled", true);
+          $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "'].addButton").attr("disabled", true);
+          $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "'].addButton").css("background-color", "gray");
 
           // if not already in saved list
           if ($scope.findItemInSavedList(item) === false) {
@@ -114,11 +115,10 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
         this.history = [];
         this.setupCanvas = function () {
             var searchHtml = "<div style='margin: 5px; height:95%;' class='panel panel-default'>";
-            searchHtml = searchHtml + "<div class='panel-heading'>";
-            searchHtml = searchHtml + "<button id='" + panel.divElement.id + "-subscribersMarker' class='btn btn-link btn-lg' style='padding: 2px; position: absolute;top: 1px;left: 0px;'><i class='glyphicon glyphicon-bookmark'></i></button>"
+          /*  searchHtml = searchHtml + "<div class='panel-heading'>";
             searchHtml = searchHtml + "<div class='row'>";
-            searchHtml = searchHtml + "<div class='col-md-8' id='" + panel.divElement.id + "-panelTitle'>&nbsp&nbsp&nbsp<strong><span class='i18n' data-i18n-id='i18n_search'>Search</span></span></strong></div>";
-//            searchHtml = searchHtml + "<div class='col-md-4 text-right'>";
+            searchHtml = searchHtml + "<div class='col-md-8' id='" + panel.divElement.id + "-panelTitle'><strong><span class='i18n' data-i18n-id='i18n_search'>Search</span></span></strong></div>";
+*///            searchHtml = searchHtml + "<div class='col-md-4 text-right'>";
 //            searchHtml = searchHtml + "<button id='" + panel.divElement.id +
 // "-linkerButton' class='btn btn-link jqui-draggable linker-button'
 // data-panel='" + panel.divElement.id + "' style='padding:2px'><i
@@ -138,14 +138,12 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
 // id='" + panel.divElement.id + "-closeButton' class='btn btn-link'
 // style='padding:2px'><i class='glyphicon glyphicon-remove'></i></button>"
 // searchHtml = searchHtml + "</div>";
-            searchHtml = searchHtml + "</div>";
-            searchHtml = searchHtml + "</div>";
-            searchHtml = searchHtml + "<div class='panel-body' style='height:86%' id='" + panel.divElement.id + "-panelBody'>";
+/*            searchHtml = searchHtml + "</div>";
+            searchHtml = searchHtml + "</div>";*/
+            searchHtml = searchHtml + "<div style='height:100%; padding:0px 15px 0px 15px;' id='" + panel.divElement.id + "-panelBody'>"; /* class='panel-body' */
             searchHtml = searchHtml + '<form>';
             searchHtml = searchHtml + '<div class="form-group" style="margin-bottom: 2px;">';
-            searchHtml = searchHtml + '<label for="' + panel.divElement.id + '-searchBox">';
-            searchHtml = searchHtml + '<span class="i18n" data-i18n-id="i18n_type_3_chars">Type at least 3 characters</span><span id="' + panel.divElement.id + '-searchExample"></span></label>';
-            searchHtml = searchHtml + '<br><div class="btn-group" style="width: 100%;"><input type="search" class="form-control" id="' + panel.divElement.id + '-searchBox" placeholder="' + '' + '" autocomplete="off">';
+            searchHtml = searchHtml + '<br><div class="btn-group" style="width: 100%;"><input type="search" class="form-control" id="' + panel.divElement.id + '-searchBox" placeholder="Enter search terms here" autocomplete="off">';
             searchHtml = searchHtml + '<span id="'+ panel.divElement.id + '-clearButton" class="searchclear glyphicon glyphicon-remove-circle"></span></div>';
             searchHtml = searchHtml + '</div>';
             searchHtml = searchHtml + '</form>';
@@ -226,12 +224,15 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
             searchHtml = searchHtml + "</div>";
             searchHtml = searchHtml + "</div>";
             $(divElement).html(searchHtml);
-            $('#' + panel.divElement.id + '-searchBox').keyup(function () {
-                clearTimeout(thread);
-                var $this = $(this);
-                thread = setTimeout(function () {
+            $('#' + panel.divElement.id + '-searchBox').keyup(function (e) {
+                if(e.which == 13) {
+                    clearTimeout(thread);
+                    var $this = $(this);
+                    thread = setTimeout(function () {
                     panel.search($this.val(),0,100,false);
                 }, 500);
+                }
+                
             });
             $("#" + panel.divElement.id + "-expandButton").hide();
             $("#" + panel.divElement.id + "-subscribersMarker").hide();
@@ -309,9 +310,9 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                 panel.readOptionsPanel();
                 var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
                 console.log("searchTerm: " + searchTerm);
-                if (searchTerm.length > 0) {
-                    panel.search(searchTerm + " ",0,100,false);
-                }
+//                if (searchTerm.length > 0) {
+//                    panel.search(searchTerm + " ",0,100,false);
+//                }
             });
             $("#" + panel.divElement.id + "-clearButton").click(function () {
                 panel.options.semTagFilter = "none";
@@ -394,17 +395,17 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                 $("#" + panel.divElement.id + "-linkerButton").popover('toggle');
             });
 
-            $("#" + panel.divElement.id + "-fullTextButton").click(function (event) {
-                panel.options.searchMode = 'fullText';
-                var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
-                $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').show();
-                if (searchTerm.charAt(0) == "^") {
-                    $("#" + panel.divElement.id + '-searchBox').val(searchTerm.slice(1));
-                }
-                if (searchTerm.length > 0) {
-                    panel.search(searchTerm,0,100,true);
-                }
-            });
+//            $("#" + panel.divElement.id + "-fullTextButton").click(function (event) {
+//                panel.options.searchMode = 'fullText';
+//                var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
+//                $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').show();
+//                if (searchTerm.charAt(0) == "^") {
+//                    $("#" + panel.divElement.id + '-searchBox').val(searchTerm.slice(1));
+//                }
+//                if (searchTerm.length > 0) {
+//                    panel.search(searchTerm,0,100,true);
+//                }
+//            });
             $("#" + panel.divElement.id + "-partialMatchingButton").click(function (event) {
                 panel.options.searchMode = 'partialMatching';
                 var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
@@ -412,21 +413,21 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                 if (searchTerm.charAt(0) == "^") {
                     $("#" + panel.divElement.id + '-searchBox').val(searchTerm.slice(1));
                 }
-                if (searchTerm.length > 0) {
-                    panel.search(searchTerm,0,100,true);
-                }
+//                if (searchTerm.length > 0) {
+//                    panel.search(searchTerm,0,100,true);
+//                }
             });
-            $("#" + panel.divElement.id + "-regexButton").click(function (event) {
-                panel.options.searchMode = 'regex';
-                var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
-                $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').hide();
-                if (searchTerm.charAt(0) != "^") {
-                    $("#" + panel.divElement.id + '-searchBox').val("^" + searchTerm);
-                }
-                if (searchTerm.length > 0) {
-                    panel.search(searchTerm,0,100,true);
-                }
-            });
+//            $("#" + panel.divElement.id + "-regexButton").click(function (event) {
+//                panel.options.searchMode = 'regex';
+//                var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
+//                $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').hide();
+//                if (searchTerm.charAt(0) != "^") {
+//                    $("#" + panel.divElement.id + '-searchBox').val("^" + searchTerm);
+//                }
+//                if (searchTerm.length > 0) {
+//                    panel.search(searchTerm,0,100,true);
+//                }
+//            });
 
         }
 
@@ -539,7 +540,7 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                                         if (field.concept.active == false) {
                                         }
                                         else{
-                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'><i class='glyphicon glyphicon-pencil'</button></td></tr>"
                                         }
                                     });
                                     $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
@@ -644,7 +645,7 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                                         if (field.concept.active == false) {
                                         }
                                         else{
-                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton md md-edit editbuttons green'></i></button></td></tr>"
                                         }
                                     });
 //                                    var remaining = result.length() - (skipTo

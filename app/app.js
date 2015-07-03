@@ -37,14 +37,27 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, accountService, $cookies) {
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
     endpointService.getEndpoints().then(function (data) {
       $rootScope.endpoints = data.endpoints;
-      var imsUrl = data.endpoints.imsEndpoint;
+      var accountUrl = data.endpoints.imsEndpoint + 'api/account';
+      var imsUrl = data.endpoints.imsEndpoint + '/#/';
       var imsUrlParams = '?serviceReferer=' + window.location.href;
+
+      // don't want either true or false here please!
+      $rootScope.loggedIn = null;
+
+     /* accountService.getAccount(accountUrl).success(function (data) {
+            $rootScope.accountDetails = data.data;
+            console.log("LoggedIn");
+                $rootScope.loggedIn = true;
+        }).error(function () {
+            console.log("LoggedOut");
+                $rootScope.loggedIn = false;
+      });*/
 
       // add required endpoints to route provider
       $routeProvider
@@ -55,7 +68,7 @@ angular
         })
         .when('/logout', {
           redirectTo: function () {
-            window.location = imsUrl + 'logout' + imsUrlParams;
+            window.location = decodeURIComponent(imsUrl + 'logout' + imsUrlParams);
           }
         })
         .when('/settings', {
@@ -65,15 +78,16 @@ angular
         })
         .when('/register', {
           redirectTo: function () {
-            window.location = imsUrl + 'register' + imsUrlParams;
+            window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
           }
         });
-
     });
+    
   })
   .controller('AppCtrl', ['$scope', '$location', function AppCtrl($scope, $location) {
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
       if (angular.isDefined(toState.data.pageTitle)) {
+        console.debug('changing pageTitle to:', toState.data.pageTitle);
         $scope.pageTitle = toState.data.pageTitle + ' | thisIsSetInAppCtrl.js';
       }
     });

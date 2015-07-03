@@ -1,68 +1,94 @@
- <div ng-include src="'layout/sidebar-edit.html'"></div>
-<div class="dashboard grey darken-3 editform">
-  <div class="row no-gutter">
-  
+<div class="sca-container">
+  <div ng-include src="'layout/sidebar-edit.html'"></div>
+  <div class="sca-content" style="height:100%">
+    <div class="row no-gutter" style="height:100%; margin-right:0px;">
 
-    <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9;">
 
-      <div class="p-20 clearfix">
-      
-        <h3 class="grey-text">
-     
-          <span class="hidden-xs">Model</span>
-        </h3>
-      </div>
+      <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9;">
 
-      <div class="p-20 no-p-t">
+        <div class="p-20 clearfix">
 
-   
-        <div class="row gutter-14">
-     
+          <h3 class="grey-text">
 
- 
+            <span class="hidden-xs">Model</span>
+          </h3>
+        </div>
+
+        <div class="p-20 no-p-t">
+
+
+          <div class="row gutter-14" style="margin-right:0px;">
+
 
           </div>
 
-     
+
+        </div>
       </div>
-    </div>
-  <div class="col-lg-6 col-md-12 ">
+      <div class="col-lg-6 col-md-12 " style="height:100%">
 
+        <!-- blue Create New Concept banner -->
+        <div class="row p-5 blue"  style="margin-right:0px;">
+          <div class="pull-left p-10">
+            Create New Concept
+          </div>
+          <span class="pull-right" style="margin-right:20px;">
+               <button type="button" class="btn btn-default editbuttons blue" title="Active"><span
+                 class="md md-collections"></span></button>
+            </span>
+        </div>
 
-<!--row-->
-        <div class="row p-5 grey darken-4">
-<span class="pull-left"><button type="button" class="btn btn-default editbuttons grey darken-4" title="{{popover.title}}" data-content="{{popover.content}}" data-template="shared/popover/popover.html" data-animation="am-flip-x" data-auto-close="1" data-placement="left" bs-popover><span class="md md-more"></span>  </button>  </span><span class="pull-left p-10">FSN New... </span>
-<span class="pull-right m-l-15 m-r-15 ">
-    <select name="select-choice" id="select-choice" class="form-control ">
-      <option value="Choice 1">Primitive</option>
-<option value="Choice 1">Full Defined</option>
-    </select>
-    </span>
-<span class="pull-right">
-               <button type="button" class="btn btn-default editbuttons green" title="Active" ><span class="md md-settings-power "></span>  </button>    
-               <button type="button" class="btn btn-default editbuttons amber" title="Undo Changes" ><span class="md md-undo "></span> </button>
-               <button type="button" class="btn btn-default editbuttons deep-purple lighten-1" title="Undo Changes" ><span class="md md-history"></span> </button>
-                 <button type="button" class="btn btn-default editbuttons blue" title="Show Model"><span class="md md-keyboard-return "></span> </button>
-                  <button type="button" class="btn btn-default editbuttons teal" title="Save"><span class="md-save"></span> </button>
+        <!--row-->
+        <div class="row p-5 grey darken-4" style="margin-right:0px;">
+        <span class="pull-left"><button type="button" class="btn btn-default editbuttons grey darken-4"
+                                        title="{{popover.title}}" data-content="{{popover.content}}"
+                                        data-template="shared/popover/popover.html" data-animation="am-flip-x"
+                                        data-auto-close="1" data-placement="left" bs-popover><span
+          class="md md-more"></span></button>  </span><span class="pull-left p-10">FSN New... </span>
+        <span class="pull-right m-l-15 m-r-15 ">
+            <select name="select-primitive-choice" id="select-primitive-choice" class="form-control ">
+              <option value="Choice 1">Primitive</option>
+              <option value="Choice 2">Fully Defined</option>
+            </select>
+            </span>
+        <span class="pull-right">
+               <button type="button" class="btn btn-default editbuttons green" title="Active"><span
+                 class="md md-settings-power "></span></button>
+               <button type="button" class="btn btn-default editbuttons amber" title="Undo Changes"><span
+                 class="md md-undo "></span></button>
+               <button type="button" class="btn btn-default editbuttons deep-purple lighten-1" title="Undo Changes">
+                 <span class="md md-history"></span></button>
+                 <button type="button" class="btn btn-default editbuttons blue" title="Show Model"><span
+                   class="md md-keyboard-return "></span></button>
+                  <button type="button" class="btn btn-default editbuttons teal" title="Save"><span
+                    class="md-save"></span></button>
                   </span>
         </div>
-    <!--row end-->
- 
-<!--row-->
-<div class="row p-5 grey darken-3">
-<span class="pull-left"><button type="button" class="btn btn-default editbuttons grey darken-3" title="{{popover.title}}" data-content="{{popover.content}}" data-template="shared/popover/popover.html" data-animation="am-flip-x" data-auto-close="1" data-placement="left" bs-popover><span class="md md-more"></span>  </button>  </span>
+        <!--row end-->
+
+        <!--row-->
+        <div class="row p-5 grey darken-3" style="height:100%; margin-right:0px;">
+        <span class="pull-left"><button type="button" class="btn btn-default editbuttons grey darken-3"
+                                        title="{{popover.title}}" data-content="{{popover.content}}"
+                                        data-template="shared/popover/popover.html" data-animation="am-flip-x"
+                                        data-auto-close="1" data-placement="left" bs-popover><span
+          class="md md-more"></span></button>  </span>
 
 
-<span class="pull-right"><button type="button" class="btn btn-round editbuttons grey darken-3" title="Create New Task" ><span class="md md-add-circle"></span>  </button></span>
+        <span class="pull-right"><button type="button" class="btn btn-round editbuttons grey darken-3"
+                                         title="Create New Task"><span class="md md-add-circle"></span></button></span>
 
 
 
  
 
 <span class="pull-left">
-   <button type="button" class="btn btn-default editbuttons deep-purple lighten-1" title="Undo Changes" ><span class="md md-history"></span> </button>
-      <button type="button" class="btn btn-default editbuttons amber" title="Undo Changes" ><span class="md md-undo "></span> </button>
-               <button type="button" class="btn btn-default editbuttons green" title="Active" ><span class="md md-settings-power "></span>  </button>    
+   <button type="button" class="btn btn-default editbuttons deep-purple lighten-1" title="Undo Changes"><span
+     class="md md-history"></span></button>
+      <button type="button" class="btn btn-default editbuttons amber" title="Undo Changes"><span
+        class="md md-undo "></span></button>
+               <button type="button" class="btn btn-default editbuttons green" title="Active"><span
+                 class="md md-settings-power "></span></button>
 
                   </span>
                   
@@ -70,29 +96,29 @@
  <input class="form-control" type="email" placeholder="Description">
  </span>
        <span class="pull-left m-l-15 m-r-15 ">
-    <select name="select-choice" id="select-choice" class="form-control cyan lighten-5 ">
+    <select name="select-choice" id="select-fsn-choice" class="form-control cyan lighten-5 ">
       <option value="Choice 1">FSN</option>
-<option value="Choice 1">SYN</option>
+      <option value="Choice 1">SYN</option>
     </select>
     </span>  
              <span class="pull-left m-l-15 m-r-15 ">
-    <select name="select-choice" id="select-choice" class="form-control ">
+    <select name="select-choice" id="select-language-choice" class="form-control ">
       <option value="Choice 1">enUS</option>
-<option value="Choice 1">enGB</option>
+      <option value="Choice 1">enGB</option>
     </select>
     </span>
                   <span class="pull-left m-l-15 m-r-15 ">
-    <select name="select-choice" id="select-choice" class="form-control ">
+    <select name="select-choice" id="select-preferred-choice" class="form-control ">
       <option value="Choice 1">Preferred</option>
-<option value="Choice 1">Accepted</option>
+      <option value="Choice 1">Accepted</option>
     </select>
     </span>
         </div>
-    <!--row end-->
+        <!--row end-->
+      </div>
+
     </div>
 
+
   </div>
-
-
 </div>
-

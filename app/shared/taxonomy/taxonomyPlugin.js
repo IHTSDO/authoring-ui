@@ -60,7 +60,7 @@ function taxonomyPanel(divElement, conceptId, options) {
 
     this.setupCanvas = function() {
         var taxonomyHtml = "<div style='height:100%;margin: 5px; overflow:auto;' class='panel panel-default' id='" + panel.divElement.id + "-mainPanel'>";
-        taxonomyHtml = taxonomyHtml + "<div class='panel-heading' id='" + panel.divElement.id + "-panelHeading'>";
+        /*        taxonomyHtml = taxonomyHtml + "<div class='panel-heading' id='" + panel.divElement.id + "-panelHeading'>";
         taxonomyHtml = taxonomyHtml + "<button id='" + panel.divElement.id + "-subscribersMarker' class='btn btn-link btn-lg' style='padding: 2px; position: absolute;top: 1px;left: 0px;'><i class='glyphicon glyphicon-bookmark'></i></button>"
         taxonomyHtml = taxonomyHtml + "<div class='row'>";
         taxonomyHtml = taxonomyHtml + "<div class='col-md-6' id='" + panel.divElement.id + "-panelTitle'>&nbsp&nbsp&nbsp<strong><span class='i18n' data-i18n-id='i18n_taxonomy'>Taxonomy</span></strong></div>";
@@ -84,7 +84,7 @@ function taxonomyPanel(divElement, conceptId, options) {
         taxonomyHtml = taxonomyHtml + "         </ul>";
         taxonomyHtml = taxonomyHtml + "     </li>";
         taxonomyHtml = taxonomyHtml + " </ul>";
-        taxonomyHtml = taxonomyHtml + "</nav></div>";
+        taxonomyHtml = taxonomyHtml + "</nav></div>";*/
         taxonomyHtml = taxonomyHtml + "<div class='panel-body' style='height:100%' id='" + panel.divElement.id + "-panelBody'>";
         taxonomyHtml = taxonomyHtml + "</div>";
         taxonomyHtml = taxonomyHtml + "</div>";
@@ -164,13 +164,13 @@ function taxonomyPanel(divElement, conceptId, options) {
         });
 
         $("#" + panel.divElement.id + "-resetButton").click(function() {
-            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "Primitive"});
+            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "PRIMITIVE"});
         });
 
         $("#" + panel.divElement.id + "-apply-button").click(function() {
             //console.log("apply!");
             panel.readOptionsPanel();
-            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "Primitive"});
+            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "PRIMITIVE"});
         });
 
 
@@ -196,13 +196,13 @@ function taxonomyPanel(divElement, conceptId, options) {
         $("#" + panel.divElement.id + "-inferredViewButton").click(function (event) {
             panel.options.selectedView = 'inferred';
             $("#" + panel.divElement.id + '-txViewLabel').html("<span class='i18n' data-i18n-id='i18n_inferred_view'>Inferred view</span>");
-            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "Primitive"});
+            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "PRIMITIVE"});
         });
 
         $("#" + panel.divElement.id + "-statedViewButton").click(function (event) {
             panel.options.selectedView = 'stated';
             $("#" + panel.divElement.id + '-txViewLabel').html("<span class='i18n' data-i18n-id='i18n_stated_view'>Stated view</span>");
-            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "Primitive"});
+            panel.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "PRIMITIVE"});
         });
     }
 
@@ -213,8 +213,8 @@ function taxonomyPanel(divElement, conceptId, options) {
         $.each(parents, function(i, parent) {
             lastParent = parent;
             treeHtml = treeHtml + "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.defaultTerm + "' class='treeLabel'>";
-            treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
-            if (parent.definitionStatus == "Primitive") {
+            treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
+            if (parent.definitionStatus == "PRIMITIVE") {
                 treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
             } else {
                 treeHtml = treeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
@@ -225,10 +225,10 @@ function taxonomyPanel(divElement, conceptId, options) {
         if (parents.length > 0) {
             treeHtml = treeHtml.slice(0, -5);
         }
-        treeHtml = treeHtml + "<ul style='list-style-type: none; padding-left: 15px;'>";
+        treeHtml = treeHtml + "<ul style='list-style-type: none;'>";
         treeHtml = treeHtml + "<li data-concept-id='" + focusConcept.conceptId + "' data-term='" + focusConcept.defaultTerm + "' class='treeLabel'>";
-        treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-right treeButton'  id='" + panel.divElement.id + "-treeicon-" + focusConcept.conceptId + "'></i></button>";
-        if (focusConcept.definitionStatus == "Primitive") {
+        treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton'  id='" + panel.divElement.id + "-treeicon-" + focusConcept.conceptId + "'></i></button>";
+        if (focusConcept.definitionStatus == "PRIMITIVE") {
             treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
         } else {
             treeHtml = treeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
@@ -257,7 +257,7 @@ function taxonomyPanel(divElement, conceptId, options) {
                     $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + selectedId + "/parents?form=" + panel.options.selectedView, function(result) {
                         // done
                     }).done(function(result) {
-                        panel.setupParents(result, {conceptId: selectedId, defaultTerm: selectedLabel, definitionStatus: "Primitive"});
+                        panel.setupParents(result, {conceptId: selectedId, defaultTerm: selectedLabel, definitionStatus: "PRIMITIVE"});
                     }).fail(function() {
                     });
                 }
@@ -286,8 +286,6 @@ function taxonomyPanel(divElement, conceptId, options) {
                     $("#" + iconId).addClass("icon-spin");
                     panel.wrapInParents($(event.target).closest("li").attr('data-concept-id'), $(event.target).closest("li"));
                 } else if ($("#" + iconId).hasClass("glyphicon-minus")){
-                    $("#" + iconId).removeClass("glyphicon-minus");
-                    $("#" + iconId).addClass("glyphicon-chevron-right");
                 }
 
             } else if ($(event.target).hasClass("treeLabel")) {
@@ -338,8 +336,15 @@ function taxonomyPanel(divElement, conceptId, options) {
             $.each(result, function(i, field) {
                 if (field.active == true) {
                     nodeHtml = nodeHtml + "<li data-concept-id='" + field.conceptId + "' data-term='" + field.fsn + "' class='treeLabel'>";
-                    nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-right treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
-                    if (field.definitionStatus == "Primitive") {
+                    if(field.hasChild === true)
+                    {
+                    nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
+                    }
+                    else
+                    {
+                    nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-minus treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
+                    }
+                    if (field.definitionStatus == "PRIMITIVE") {
                         nodeHtml = nodeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
                     } else {
                         nodeHtml = nodeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
@@ -381,8 +386,8 @@ function taxonomyPanel(divElement, conceptId, options) {
                     var parentsStrs = [];
                     $.each(parents, function(i, parent) {
                         var parentLiHtml = "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.fsn + "' class='treeLabel'>";
-                        parentLiHtml = parentLiHtml + "<button class='btn btn-link btn-xs treeButton' style='padding:2px'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
-                        if (parent.definitionStatus == "Primitive") {
+                        parentLiHtml = parentLiHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
+                        if (parent.definitionStatus == "PRIMITIVE") {
                             parentLiHtml = parentLiHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
                         } else {
                             parentLiHtml = parentLiHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
@@ -440,8 +445,8 @@ function taxonomyPanel(divElement, conceptId, options) {
         $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + conceptId + "/parents?form=inferred", function(result) {
             // done
         }).done(function(result) {
-            if (definitionStatus != "Primitive" && definitionStatus != "Fully defined") {
-                definitionStatus = "Primitive";
+            if (definitionStatus != "PRIMITIVE" && definitionStatus != "Fully defined") {
+                definitionStatus = "PRIMITIVE";
             }
             panel.setupParents(result, {conceptId: conceptId, defaultTerm: term, definitionStatus: definitionStatus});
         }).fail(function() {
@@ -550,7 +555,7 @@ function taxonomyPanel(divElement, conceptId, options) {
 
     this.setupCanvas();
     if (!conceptId || conceptId == 138875005) {
-        this.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "Primitive"});
+        this.setupParents([], {conceptId: 138875005, defaultTerm: "SNOMED CT Concept", definitionStatus: "PRIMITIVE"});
     } else {
         if (xhr != null) {
             xhr.abort();

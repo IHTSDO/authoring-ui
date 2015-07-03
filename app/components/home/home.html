@@ -1,19 +1,22 @@
-<div ng-include src="'layout/sidebar.html'"></div>
+<div class="sca-container">
+  <div ng-include src="'layout/sidebar.html'"></div>
 
-<section class="tables-data">
-  <div class="card">
+  <!---->
+  <div class="sca-content">
+    <section class="tables-data">
+      <div class="card">
 
-    <div class="row">
-      <div class="col-md-4">
-        <h3 class="table-title p-20">My Tasks</h3>
-      </div>
-      <div class="col-md-7">
-        <div class="table-search">
-          <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
-                 placeholder="Search My Tasks" autofocus/>
-        </div>
-      </div>
-      <div class="col-md-1">
+        <div class="row">
+          <div class="col-md-4">
+            <h3 class="table-title p-20">My Tasks</h3>
+          </div>
+          <div class="col-md-7">
+            <div class="table-search">
+              <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
+                     placeholder="Search My Tasks" autofocus/>
+            </div>
+          </div>
+          <div class="col-md-1">
       <span class="pull-left p-t-20">
                   <button type="button" class="btn btn-round btn-info ng-scope " bs-tooltip="" title="Total Task Count">
                     {{tasks.length}}
@@ -24,53 +27,55 @@
 
                  <div class="ripple-wrapper"></div>
                </button> </span>
+          </div>
+        </div>
+
+        <div class="table-responsive white">
+
+            <div ng-table-pagination="tableParams" template-url="'utilities/data-table-pager.html'"></div>
+          <table ng-table="tableParams"
+                 class="table table-full table-full-small">
+            <tr ng-repeat="task in $data">
+
+              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
+                ng-href="#/edit/{{task.projectKey}}/{{task.key}}">{{task.summary}}</a>
+              </td>
+              <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
+                {{task.projectKey}}
+              </td>
+              <td data-title="'Last Modified'" sortable="'updated'">
+                {{task.updated | date: "yyyy-MM-dd"}}
+              </td>
+              <td data-title="'Classification Results'" sortable="'classification'">
+                <button type="button" class="btn btn-round btn-default cyan lighten-2" bs-tooltip=""
+                        title="Classification Results"><span class="md md-notifications "></span>
+
+                  <div class="ripple-wrapper"></div>
+                </button>
+
+              </td>
+
+              <td data-title="'Feedback'" sortable="'feedback'">
+                <button type="button" class="btn btn-round btn-default blue darken-2" bs-tooltip=""
+                        title="Feedback Available"><span class="md md-mail "></span>
+
+                  <div class="ripple-wrapper"></div>
+                </button>
+              </td>
+              <td data-title="'Status'" sortable="'status'">
+                {{task.status}}
+              </td>
+            </tr>
+          </table>
+
+        </div>
+
       </div>
-    </div>
-
-    <div class="table-responsive white">
-
-      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
-             class="table table-full table-full-small">
-        <tr ng-repeat="task in $data track by task.key">
-
-          <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a ng-href="#/edit/{{task.projectKey}}/{{task.key}}">{{task.summary}}</a>
-          </td>
-          <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
-            {{task.projectKey}}
-          </td>
-          <td data-title="'Last Modified'" sortable="'updated'">
-            {{task.updated | date: "yyyy-MM-dd"}}
-          </td>
-          <td data-title="'Classification Results'" sortable="'classification'">
-            <button type="button" class="btn btn-round btn-default cyan lighten-2" bs-tooltip=""
-                    title="Classification Results"><span class="md md-notifications "></span>
-
-              <div class="ripple-wrapper"></div>
-            </button>
-
-          </td>
-
-          <td data-title="'Feedback'" sortable="'feedback'">
-            <button type="button" class="btn btn-round btn-default blue darken-2" bs-tooltip=""
-                    title="Feedback Available"><span class="md md-mail "></span>
-
-              <div class="ripple-wrapper"></div>
-            </button>
-          </td>
-          <td data-title="'Status'" sortable="'status'">
-            {{task.status}}
-          </td>
-        </tr>
-      </table>
-
-    </div>
-
+    </section>
   </div>
 
-  </div>
+</div>
 
-
-</section>
 
 <!-- Removed by PG until Review Tasks are functional
 <section class="tables-data" ng-controller="HomeCtrl">
@@ -136,3 +141,4 @@
 
 </section>
 -->
+</div>

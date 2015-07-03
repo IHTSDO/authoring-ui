@@ -5,3 +5,8 @@ aside.sidebar ul ul a {
 aside.sidebar ul a {
   display: inline;
 }
+
+aside.sidebar i {
+  color: lightblue;
+  font-size: 14px;
+}

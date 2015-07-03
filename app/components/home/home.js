@@ -14,123 +14,12 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, ngTableParams, $filter, scaService, $timeout) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, scaService, $timeout) {
 
+    // TODO Placeholder, as we only have the one tab at the moment
+    $rootScope.pageTitle = "My Tasks"
     $scope.tasks = null;
 
-    // TODO: Remove this after demo -- currently appended to "live" data
-    var sampleData = [];
-//    [{
-//      summary: 'Open and Close Fractures of t1-t6',
-//      projectKey: 'A Sample Project Title',
-//      updated: '2015-06-12',
-//      classification: 'true',
-//      feedback: 'true',
-//      status: 'Not Started'
-//    },
-//      {
-//        summary: 'Open and Close Fractures of t1-t6',
-//        projectKey: 'A Nother Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Really Really Long Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'Open and Close Fractures of t1-t6',
-//        projectKey: 'A Nother Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Really Really Long Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'Open and Close Fractures of t1-t6',
-//        projectKey: 'A Nother Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Really Really Long Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'Open and Close Fractures of t1-t6',
-//        projectKey: 'A Nother Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Really Really Long Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      },
-//      {
-//        summary: 'A Task Title',
-//        projectKey: 'A Sample Project Title',
-//        updated: '2015-06-12',
-//        classification: 'true',
-//        feedback: 'true',
-//        status: 'Not Started'
-//      }
-//
-//    ];
-
-    // assign keys for track by to sample data
-    for (var i = 0; i < sampleData.length; i++) {
-      sampleData[i].key = 'SDKEY' + i;
-    }
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
@@ -159,10 +48,12 @@ angular.module('singleConceptAuthoringApp.home', [
             } else {
               mydata = $scope.tasks;
             }
-
+            params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
+            
             $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
+            
         }
       }
     );
@@ -195,19 +86,18 @@ angular.module('singleConceptAuthoringApp.home', [
 
       console.debug('HomeCtrl initialization');
 
+      $scope.tasks = [];
+
       // get tasks from all projects and append sample data
       scaService.getTasks().then(function (response) {
         console.debug('home.js, getTasks results:', response);
         if (!response || response.length == 0) {
           console.debug('  no tasks, returning');
+          $scope.tasks
           return;
         }
 
-        $scope.tasks = response.concat(sampleData);
-
-        console.debug('tasks: ', $scope.tasks);
-
-
+        $scope.tasks = response;
 
       }, function (error) {
         // TODO Handle errors

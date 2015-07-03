@@ -10443,7 +10443,7 @@ body, button, input {
 
 @media (min-width: 993px) {
   .navbar-fixed-top {
-    margin-left: 460px !important;
+
   }
   .navbar-toggle {
     display: none;
@@ -11379,7 +11379,7 @@ label input[type=checkbox] {
 }
 
 .nav-tabs {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 10px 0px 10px 0px;
   > li > a {
     margin-right: 0;
     background-color: transparent;
@@ -11668,7 +11668,7 @@ h5 {
 }
 
 main {
-  padding-left: 460px;
+
   .main-container {
     flex: 1;
     .main-content {
@@ -11786,12 +11786,19 @@ main {
   will-change: opacity;
 }
 
-.drag-target, aside.sidebar {
-  position: fixed;
-  top: 0;
-  height: 100%;
+html, body {
+  height: 100%
 }
 
+.drag-target, aside.sidebar {
+  height: 100%;
+  display: inline;
+}
+
+.dashboard.panel {
+  display: inline;
+  padding-left: 460px;
+}
 .drag-target {
   width: 10px;
   z-index: 998;
@@ -12177,7 +12184,7 @@ fieldset[disabled] .btn-secondary {
   }
 }
 .footer {
-  margin-left: 460px !important;
+
 }
 .footer-buttons {
   position: fixed;

@@ -14,6 +14,8 @@ angular.module('singleConceptAuthoringApp.edit', [
   })
 
   .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, $routeParams) {
+    
+    $rootScope.pageTitle = 'Edit Concept';
 
     // get the required ui state elements
     scaService.getUIState(
@@ -25,10 +27,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         else {
           $scope.savedList = uiState;
         }
-        console.debug('saved-list', $scope.savedList)
+        console.debug('saved-list', $scope.savedList);
       }
     );
-
     $scope.tabs = ['Log', 'Timeline', 'Messages'];
     $scope.popover = {
       placement: 'left',
