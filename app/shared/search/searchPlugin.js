@@ -52,7 +52,8 @@ angular.module('singleConceptAuthoringApp.search', [])
           if (!item) {
               return;
           }
-          $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "']").attr("disabled", true);
+          $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "'].addButton").attr("disabled", true);
+          $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + item + "'].addButton").css("background-color", "gray");
 
           // if not already in saved list
           if ($scope.findItemInSavedList(item) === false) {
