@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp')
 
             // temporary check to verify authentication
             // will later be replaced by accountService call in app.js
-            if ($rootScope.loggedIn == null) {
+            if ($rootScope.loggedIn === null) {
 
               console.debug('Setting authentication', response);
               $rootScope.loggedIn = true;
