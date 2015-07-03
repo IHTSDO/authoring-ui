@@ -52,10 +52,58 @@ aside.editpanel ul a {
   width:26px;
 }
 
+//Taxonomy Styling
+
 aside.sidebar ul ul a {
+  padding: 8px 15px 8px 0px;
+}
+
+aside.sidebar ul ul a:hover{
+  background-color: white;
   padding: 8px 15px 8px 0px;
 }
 
 aside.sidebar ul a {
   display: inline;
+}
+
+aside.sidebar i {
+  color: lightblue;
+  font-size: 14px;
+}
+
+.alert-warning {
+    background-color: #FCF8E3;
+    border-color: #FAEBCC;
+    color: #8A6D3B;
+}
+
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #FFF;
+    line-height: 1;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-align: center;
+    background-color: #999;
+    border-radius: 10px;
+}
+
+.alert-warning {
+    color: black;
+    background-image: linear-gradient(to bottom, #FCF8E3 0px, #F8EFC0 100%);
+    background-repeat: repeat-x;
+    border-color: #F5E79E;
+}
+
+.treeButton:hover {
+    padding-top:0px;
+    padding-bottom:0px;
+    margin-bottom:0px;
+    background-color:white;
+    color:#428BCA;
 }
