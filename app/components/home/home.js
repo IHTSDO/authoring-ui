@@ -48,10 +48,12 @@ angular.module('singleConceptAuthoringApp.home', [
             } else {
               mydata = $scope.tasks;
             }
-
+            params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
+            
             $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
+            
         }
       }
     );
