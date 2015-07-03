@@ -286,8 +286,6 @@ function taxonomyPanel(divElement, conceptId, options) {
                     $("#" + iconId).addClass("icon-spin");
                     panel.wrapInParents($(event.target).closest("li").attr('data-concept-id'), $(event.target).closest("li"));
                 } else if ($("#" + iconId).hasClass("glyphicon-minus")){
-                    $("#" + iconId).removeClass("glyphicon-minus");
-                    $("#" + iconId).addClass("glyphicon-chevron-right");
                 }
 
             } else if ($(event.target).hasClass("treeLabel")) {
@@ -338,7 +336,14 @@ function taxonomyPanel(divElement, conceptId, options) {
             $.each(result, function(i, field) {
                 if (field.active == true) {
                     nodeHtml = nodeHtml + "<li data-concept-id='" + field.conceptId + "' data-term='" + field.fsn + "' class='treeLabel'>";
+                    if(field.hasChild === true)
+                    {
                     nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
+                    }
+                    else
+                    {
+                    nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-minus treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
+                    }
                     if (field.definitionStatus == "PRIMITIVE") {
                         nodeHtml = nodeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
                     } else {
