@@ -1,5 +1,5 @@
-<aside class="sidebar fixed editpanel">
-  <div class="p-h-5">
+<aside class="sca-sidebar editpanel">
+  <div>
 
     <div role="tabpanel">
 
@@ -7,10 +7,10 @@
 
 
       <!-- Nav tabs -->
-      <ul style="display: inline; padding: 5px; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
-        <li role="presentation"><span style="background-color:#00A4E6; color:white" class="md md-chevron-right "></span></li>
-
-        <li role="presentation" class="active"><a ng-click="actionTab=1" aria-controls="home" role="tab"
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+        <li><button type="button" class="btn btn-default editbuttons blue p-10" title="Show Model"><span
+          class="md md-chevron-right "></span></button></li>
+        <li  role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home" role="tab"
                                                   data-toggle="tab"> Taxonomy</a></li>
         <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab">Search</a>
         </li>

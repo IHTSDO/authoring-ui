@@ -37,7 +37,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, accountService, $cookies) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, accountService, $cookies) {
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
@@ -46,15 +46,19 @@ angular
       var accountUrl = data.endpoints.imsEndpoint + 'api/account';
       var imsUrl = data.endpoints.imsEndpoint + '/#/';
       var imsUrlParams = '?serviceReferer=' + window.location.href;
-      $rootScope.loggedIn = false;
-      accountService.getAccount(accountUrl).success(function (data) {
+
+      // don't want either true or false here please!
+      $rootScope.loggedIn = null;
+
+     /* accountService.getAccount(accountUrl).success(function (data) {
             $rootScope.accountDetails = data.data;
             console.log("LoggedIn");
                 $rootScope.loggedIn = true;
         }).error(function () {
             console.log("LoggedOut");
                 $rootScope.loggedIn = false;
-      });
+      });*/
+
       // add required endpoints to route provider
       $routeProvider
         .when('/login', {
