@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp.search', [])
 
       var options = {
           serverUrl: "/snowowl",
-          edition: "snomed-ct/v2/browser",
+          edition: "snomed-ct/v2",
           release: "MAIN",
           selectedView: "inferred",
           displayChildren: false,
@@ -232,7 +232,7 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                     panel.search($this.val(),0,100,false);
                 }, 500);
                 }
-
+                
             });
             $("#" + panel.divElement.id + "-expandButton").hide();
             $("#" + panel.divElement.id + "-subscribersMarker").hide();
