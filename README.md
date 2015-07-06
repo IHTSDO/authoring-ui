@@ -44,21 +44,38 @@ events {
  
 http {
 	include    mime.types;
+    server {
+		listen		8080;
+		server_name	localhost;
+ 
+		location / {
+			root /FileLocation/angular-app-template/dist;
+		}
+        location /config {
+			alias /FileLocation/angular-app-template;
+		}
+ 
+		location /snowowl {
+			proxy_pass https://dev-term.ihtsdotools.org/snowowl;
+		}
+	}
 	server {
-		listen		80;
+		listen		8081;
 		server_name	localhost;
  
 		location / {
 			proxy_pass http://127.0.0.1:9000;
 		}
         location /config {
-			alias /Users/chrisswires/angular-app-template;
+			alias /FileLocation/angular-app-template;
 		}
  
 		location /snowowl {
 			proxy_pass https://dev-term.ihtsdotools.org/snowowl;
-			proxy_set_header Authorization "Basic c25vd293bDpzbm93b3ds";
 		}
 	}
 }
 ```
+In order to access these location after running nginx you should use the url 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on runninf 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server). 
+
+These urls are used so that the browser picks up the authentication cookies used by IMS correctly. Using localhost instead will leave the developer unable to log in. 
