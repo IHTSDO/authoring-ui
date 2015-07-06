@@ -54,22 +54,38 @@ aside.editpanel ul a {
 
 //Taxonomy Styling
 
-aside.sidebar ul ul a {
-  padding: 8px 15px 8px 0px;
+#bp-taxonomy_canvas-panelBody {
+  height: 100%;
 }
 
-aside.sidebar ul ul a:hover{
+#bp-taxonomy_canvas-panelBody ul {
+  padding: 0;
+}
+
+
+#bp-taxonomy_canvas-mainPanel {
+  height:100%;
+  margin: 5px 5px 5px 0;
+  padding: 5px;
+  overflow:auto;
+}
+
+#bp-taxonomy_canvas-mainPanel ul ul a {
+  padding: 0;
+}
+
+#bp-taxonomy_canvas-mainPanel ul ul a:hover{
   background-color: white;
-  padding: 8px 15px 8px 0px;
 }
 
-aside.sidebar ul a {
+#bp-taxonomy_canvas-mainPanel ul a {
   display: inline;
+  padding: 0;
 }
 
-aside.sidebar i {
-  color: lightblue;
-  font-size: 14px;
+#bp-taxonomy_canvas-mainPanel i {
+  color: #00a4e4;
+  font-size: 10px;
 }
 
 .alert-warning {
@@ -82,7 +98,7 @@ aside.sidebar i {
     display: inline-block;
     min-width: 10px;
     padding: 3px 7px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
     color: #FFF;
     line-height: 1;
@@ -100,14 +116,21 @@ aside.sidebar i {
     border-color: #F5E79E;
 }
 
-.treeButton:hover {
-    padding-top:0px;
-    padding-bottom:0px;
-    margin-bottom:0px;
-    background-color:white;
-    color:#428BCA;
+#bp-taxonomy_canvas-mainPanel .treeButton {
+    height: 20px;
+    font-size: 12px;
+    vertical-align: middle;
 }
 
-.treeLabel {
-  min-height: 26px;
+#bp-taxonomy_canvas-mainPanel .treeButton:hover {
+    background-color: #fff;
+    color:#00a4e4;
+    text-transform: none;
+}
+
+#bp-taxonomy_canvas-mainPanel .treeLabel {
+  font-size: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
