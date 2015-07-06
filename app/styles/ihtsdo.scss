@@ -9036,7 +9036,8 @@ a.list-group-item-danger {
 }
 
 .panel, .panel-footer {
-  background-color: #fff;
+  background-color:transparent;
+  box-shadow:none!important;
 }
 
 .panel-heading > .dropdown .dropdown-toggle {
@@ -10470,6 +10471,7 @@ body, button, input {
   box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
   background-color: #FFF;
   border-color: transparent;
+
 }
 
 .checkbox input[type=checkbox]:disabled:after, .checkbox-inline input[type=checkbox]:disabled:after {
@@ -10826,7 +10828,7 @@ textarea {
   -webkit-appearance: none;
   -webkit-box-shadow: inset 0 -1px 0 #ddd;
   box-shadow: inset 0 -1px 0 #ddd;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 input {
@@ -10837,7 +10839,7 @@ input {
     -webkit-appearance: none;
     -webkit-box-shadow: inset 0 -1px 0 #ddd;
     box-shadow: inset 0 -1px 0 #ddd;
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 
@@ -10856,7 +10858,7 @@ textarea {
     -webkit-appearance: none;
     -webkit-box-shadow: inset 0 -1px 0 #ddd;
     box-shadow: inset 0 -1px 0 #ddd;
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 
@@ -11100,7 +11102,7 @@ select {
   background-position: right center;
   -webkit-box-shadow: inset 0 -1px 0 #ddd;
   box-shadow: inset 0 -1px 0 #ddd;
-  font-size: 16px;
+  font-size: 13px;
   line-height: 1.5;
   &.form-control {
     border: 0;
@@ -11115,7 +11117,7 @@ select {
     background-position: right center;
     -webkit-box-shadow: inset 0 -1px 0 #ddd;
     box-shadow: inset 0 -1px 0 #ddd;
-    font-size: 16px;
+    font-size: 13px;
     line-height: 1.5;
     &::-ms-expand {
       display: none;
