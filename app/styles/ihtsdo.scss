@@ -10454,8 +10454,8 @@ body, button, input {
 .btn {
   border: 0;
   text-transform: uppercase;
-  -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: none;
+  box-shadow: none;
   transition: all .2s;
   -webkit-transition: all .2s;
   -o-transition: all .2s;
@@ -10467,8 +10467,8 @@ body, button, input {
 }
 
 .btn:hover {
-  -webkit-box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
-  box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: none;
+  box-shadow: none;
   background-color: #FFF;
   border-color: transparent;
 
@@ -10528,8 +10528,8 @@ input {
   }
   &:active {
     background-size: 1000%;
-    -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: none;
+    box-shadow: none;
     background-color: #ededed;
   }
 }
@@ -10541,13 +10541,13 @@ input {
   }
   &:active {
     background-size: 1000%;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
     background-color: #008cc1;
   }
 }
 
 .btn-info:active, .btn-success:active {
-  -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: none;
 }
 
 .btn-info {
@@ -10557,7 +10557,7 @@ input {
   }
   &:active {
     background-size: 1000%;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
     background-color: #0c84e4;
   }
 }
@@ -10570,13 +10570,13 @@ input {
   }
   &:active {
     background-size: 1000%;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
     background-color: #ff9b1c;
   }
 }
 
 .btn-danger:active, .btn-warning:active {
-  -webkit-box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: none;
 }
 
 .btn-danger {
@@ -10587,7 +10587,7 @@ input {
   }
   &:active {
     background-size: 1000%;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: none;
     background-color: #f22314;
   }
 }
