@@ -1,0 +1,61 @@
+<div class="row p-5 grey darken-3">
+
+  <span class="pull-left">
+    <button class="btn btn-default editbuttons grey darken-3"
+            title="Some title here"><span
+      class="md md-more"></span></button>
+     <button type="button" class="btn btn-default editbuttons deep-purple lighten-1" title="History"><span
+       class="md md-history"></span>
+     </button>
+    <button type="button" class="btn btn-default editbuttons amber" title="Undo Changes"><span
+      class="md md-undo "></span>
+    </button>
+     <button type="button"
+             ng-class="[btn, btn-default, editbuttons, {green : relationship.active}, {red: !relationship.active}]"
+             title="Active/Inactive"><span
+       class="md md-settings-power "></span>
+     </button>
+
+  </span>
+
+
+  <span class="pull-left m-l-15">
+   <input style="width:1.5em" ng-model="relationship.group" class="form-control cyan lighten-5" type="text" placeholder="#">
+   </span>
+  <span class="pull-left m-l-15">
+    <select ng-model="relationship.characteristicType"
+            ng-options="characteristicType.id as characteristicType.abbr for characteristicType in characteristicTypes"
+            class="form-control cyan lighten-5"></select>
+  </span>
+
+  <span ng-if="relationship.sourceId != cid">
+
+    <span class="pull-left m-l-15">
+       <button type="button" class="btn btn-default editbuttons teal lighten-1" title="Outboundg Relationship"><span
+         class="md md-keyboard-arrow-left"></span></button>
+    </span>
+    <span class="pull-left m-l-15">
+      <input ng-model="relationship.sourceId" class="form-control cyan lighten-5" type="text" placeholder="Source Id">
+      </span>
+    <span ng-if="relationship.sourceId != cid" class="pull-left m-l-15">
+      <input disabled ng-model="relationship.sourceName" class="form-contro cyan lighten-5" type="text"
+               placeholder="#">
+
+    </span>
+  </span>
+  <span ng-if="relationship.destinationId != cid">
+        <span class="pull-left m-l-15">
+       <button type="button" class="btn btn-default editbuttons teal lighten-1" title="Inbound Relationship"><span
+         class="md md-keyboard-arrow-right"></span></button>
+    </span>
+    <span class="pull-left m-l-15">
+    <input ng-model="relationship.destinationId" class="form-control cyan lighten-5" type="text" placeholder="Source Id">
+    </span>
+    <span ng-if="relationship.destinationId != cid" class="pull-left m-l-15">
+      <input disabled ng-model="relationship.destinationName" class="form-contro cyan lighten-5" type="text"
+               placeholder="#">
+    </span>
+  </span>
+
+
+</div>

@@ -27,8 +27,8 @@
       </div>
       <div class="col-lg-6 col-md-12 " style="height:100%">
 
-        <!-- blue Create New Concept banner -->
-        <div class="row p-5 blue"  style="margin-right:0px;">
+        <!-- row: Blue Create New Concept banner -->
+        <div class="row p-5 blue" style="margin-right:0px;">
           <div class="pull-left p-10">
             Create New Concept
           </div>
@@ -38,13 +38,13 @@
             </span>
         </div>
 
-        <!--row-->
+        <!-- row:  Concept Header-->
         <div class="row p-5 grey darken-4" style="margin-right:0px;">
         <span class="pull-left"><button type="button" class="btn btn-default editbuttons grey darken-4"
                                         title="{{popover.title}}" data-content="{{popover.content}}"
                                         data-template="shared/popover/popover.html" data-animation="am-flip-x"
                                         data-auto-close="1" data-placement="left" bs-popover><span
-          class="md md-more"></span></button>  </span><span class="pull-left p-10">FSN New... </span>
+          class="md md-more"></span></button>  </span><span class="pull-left p-10">{{pt.term}}</span>
         <span class="pull-right m-l-15 m-r-15 ">
             <select name="select-primitive-choice" id="select-primitive-choice" class="form-control ">
               <option value="Choice 1">Primitive</option>
@@ -64,61 +64,20 @@
                     class="md-save"></span></button>
                   </span>
         </div>
-        <!--row end-->
+        <!--row end--
 
-        <!--row-->
-        <div class="row p-5 grey darken-3" style="height:100%; margin-right:0px;">
-        <span class="pull-left"><button type="button" class="btn btn-default editbuttons grey darken-3"
-                                        title="{{popover.title}}" data-content="{{popover.content}}"
-                                        data-template="shared/popover/popover.html" data-animation="am-flip-x"
-                                        data-auto-close="1" data-placement="left" bs-popover><span
-          class="md md-more"></span></button>  </span>
+        <!-- rows: Concept Descriptions -->
+        <div ng-repeat="description in descriptions" concept-description description="description"></div>
 
+        <!-- rows: Concept Incoming Relationships -->
+        <div ng-repeat="relationship in relationshipsInbound" concept-relationship relationship="relationship" cid="relationship.destinationId"></div>
 
-        <span class="pull-right"><button type="button" class="btn btn-round editbuttons grey darken-3"
-                                         title="Create New Task"><span class="md md-add-circle"></span></button></span>
+        <!-- rows: Concept Outgoing Relationships -->
+        <div ng-repeat="relationship in relationshipsOutbound" concept-relationship relationship="relationship" cid="relationship.sourceId"></div>
 
-
-
- 
-
-<span class="pull-left">
-   <button type="button" class="btn btn-default editbuttons deep-purple lighten-1" title="Undo Changes"><span
-     class="md md-history"></span></button>
-      <button type="button" class="btn btn-default editbuttons amber" title="Undo Changes"><span
-        class="md md-undo "></span></button>
-               <button type="button" class="btn btn-default editbuttons green" title="Active"><span
-                 class="md md-settings-power "></span></button>
-
-                  </span>
-                  
-                   <span class="pull-left m-l-15 m-r-15 ">
- <input class="form-control" type="email" placeholder="Description">
- </span>
-       <span class="pull-left m-l-15 m-r-15 ">
-    <select name="select-choice" id="select-fsn-choice" class="form-control cyan lighten-5 ">
-      <option value="Choice 1">FSN</option>
-      <option value="Choice 1">SYN</option>
-    </select>
-    </span>  
-             <span class="pull-left m-l-15 m-r-15 ">
-    <select name="select-choice" id="select-language-choice" class="form-control ">
-      <option value="Choice 1">enUS</option>
-      <option value="Choice 1">enGB</option>
-    </select>
-    </span>
-                  <span class="pull-left m-l-15 m-r-15 ">
-    <select name="select-choice" id="select-preferred-choice" class="form-control ">
-      <option value="Choice 1">Preferred</option>
-      <option value="Choice 1">Accepted</option>
-    </select>
-    </span>
-        </div>
-        <!--row end-->
       </div>
 
+
     </div>
-
-
   </div>
 </div>
