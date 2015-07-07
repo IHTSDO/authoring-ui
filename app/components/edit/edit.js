@@ -13,19 +13,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, $routeParams) {
+  .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams) {
 
     $rootScope.pageTitle = 'Edit Concept';
 
-    // TODO: Update this when branching is enabled
-    var branch = 'MAIN';
+    // TODO: Update this when $scope.branching is enabled
+     $scope.branch = 'MAIN';
 
-    // concept scope variables
-    $scope.properties = null;
-    $scope.pt = null;
-    $scope.descriptions = null;
-    $scope.relationshipsInbound = null;
-    $scope.relationshipsOutbound = null;
+    // displayed concept array
+    $scope.concepts = [];
 
     // get the required ui state elements
     scaService.getUIState(
@@ -42,50 +38,62 @@ angular.module('singleConceptAuthoringApp.edit', [
     );
 
     // watch for concept selection from the edit sidebar
-    $scope.$on('savedList.selectConceptId', function (event, data) {
-      console.debug('EditCtrl: notification savedList.selectConceptId', data.conceptId);
+    $scope.$on('savedList.editConcept', function (event, data) {
+      console.debug('EditCtrl: notification savedList.selectConcept', data.conceptId);
 
       if (!data || !data.conceptId) {
         return;
       }
-      var conceptId = data.conceptId;
 
-      snowowlService.getConceptProperties(conceptId, branch).then(function (response) {
-        console.debug('concept properties', response);
-        $scope.properties = response;
-
-      });
-      snowowlService.getConceptPreferredTerm(conceptId, branch).then(function (response) {
-        $scope.pt = response;
-      });
-      snowowlService.getConceptDescriptions(conceptId, branch).then(function (response) {
-        console.debug('concept descriptions', response);
-        $scope.descriptions = response;
-        console.debug('descriptions', $scope.descriptions);
-      });
-      snowowlService.getConceptRelationshipsInbound(conceptId, branch).then(function (response) {
-        console.debug('concept relationships inbound', response);
-        $scope.relationshipsInbound = response;
-
-        // get the concept names for display
-        angular.forEach($scope.relationshipsInbound, function (rel) {
-          snowowlService.getConceptPreferredTerm(rel.sourceId, branch).then(function (response) {
-            rel.sourceName = response.term;
-          });
-        });
-      });
-      snowowlService.getConceptRelationshipsOutbound(conceptId, branch).then(function (response) {
-        console.debug('concept relationships outbound', response);
-        $scope.relationshipsOutbound = response;
-
-        // get the concept names for display
-        angular.forEach($scope.relationshipsOutbound, function (rel) {
-          snowowlService.getConceptPreferredTerm(rel.destinationId, branch).then(function (response) {
-            rel.destinationName = response.term;
-          });
-        });
-
-        console.debug($scope.relationshipsOutbound);
+      // get the concept and add it to the stack
+      snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function(response) {
+        console.debug('full concept received', response);
+        $scope.concepts.push(response);
       });
     });
+
+    // watch for concept selection from the edit sidebar
+    $scope.$on('savedList.cloneConcept', function (event, data) {
+      console.debug('EditCtrl: notification savedList.cloneConcept', data.conceptId);
+
+      if (!data || !data.conceptId) {
+        return;
+      }
+
+      var concept = { 'id' : null, 'branch' : $scope.branch };
+
+      // get the concept and add it to the stack
+      snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function(response) {
+        console.debug('full concept to clone received', response);
+
+        // deep copy the object -- note: does not work in IE8, but screw that!
+        var concept = JSON.parse(JSON.stringify(response))
+
+        // add a cloned tag to differentiate the concept
+        concept.pt.term += ' [Cloned]';
+        
+        // clear the descriptions
+        // TODO: Need to clear the others?
+        concept.descriptions = [];
+
+        // push the cloned concept
+        $scope.concepts.push(concept);
+      });
+    });
+
+    // removes concept from editing list (unused currently)
+    $scope.closeConcept = function(concept) {
+      var index = $scope.concepts.indexOf(concept);
+      if (index > -1) {
+        $scope.concepts.splice(index, 1);
+      }
+    };
+
+    // tab and popover controls for initial buttons
+    $scope.tabs = ['Log', 'Timeline', 'Messages'];
+    $scope.popover = {
+      placement: 'left',
+      'title': 'Title',
+      'content': 'Hello Popover<br />This is a multiline message!'
+    };
   });

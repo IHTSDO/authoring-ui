@@ -6,7 +6,8 @@ angular.module('singleConceptAuthoringApp')
       transclude: false,
       replace: true,
       scope: {
-        description: '=description'
+        description: '=description',
+        branch: '=branch' // currently unused, but required
       },
       templateUrl: 'shared/concept-description/conceptDescription.html',
 
@@ -15,7 +16,11 @@ angular.module('singleConceptAuthoringApp')
         console.debug('concept-description link, description');
 
         if (!scope.description) {
-          return;
+          console.error('conceptDescription requires description to be specified');
+        }
+
+        if (!scope.branch) {
+          console.error('conceptDescription requires branch to be specified');
         }
 
         // If no acceptability map, add one (probably unnecessary, but html requires array)

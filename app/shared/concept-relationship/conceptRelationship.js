@@ -7,11 +7,11 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: {
         relationship: '=relationship',
-        cid: '=cid'
+        branch: '=branch'
       },
       templateUrl: 'shared/concept-relationship/conceptRelationship.html',
 
-      link: function (scope, element, attrs, linkCtrl) {
+      link: function (scope, element, attrs, linkCtrl, snowowlService) {
 
         console.debug('concept-relationship link', scope.relationship, scope.cid);
 
@@ -20,15 +20,6 @@ angular.module('singleConceptAuthoringApp')
           return;
         }
 
-        if (!scope.cid) {
-          console.error('conceptRelationship requires specifying the owning concept id (required to determine direction');
-        }
-
-        // definecharacteristic types
-        scope.characteristicTypes = [
-          {id: 'STATED_RELATIONSHIP', abbr: 'Stated'},
-          {id: 'INFERRED_RELATIONSHIP', abbr: 'Inferred'}
-        ];
 
       }
     };

@@ -9,7 +9,20 @@
     <tr ng-repeat="item in savedList.items">
       <td>{{item.term}}</td>
       <td>{{item.concept.fsn}}</td>
-      <td><button type="button" class="btn btn-default editbuttons green" title="Active" ng-click="selectItem(item)" >+</button></td>
+      <td>
+
+
+        <div class="row">
+          <span class="pull-left"><button type="button" class="btn btn-default editbuttons green" title="Edit"
+                                          ng-click="selectItem(item)">+
+          </button></span>
+
+          <span class="pull-left"><button type="button" class="btn btn-default editbuttons amber" title="Clone"
+                                          ng-click="clone(item)"><span class="md md-content-copy"></span>
+          </button></span>
+
+
+      </td>
     </tr>
   </table>
   </button></td>
