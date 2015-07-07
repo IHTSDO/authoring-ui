@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
   .factory('snowowlService', ['$http', function ($http) {
-    var apiEndpoint = 'snowowl/snomed-ct/v2/';
+    var apiEndpoint = '../snowowl/snomed-ct/v2/';
 
     return {
 

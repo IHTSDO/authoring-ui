@@ -1,35 +1,37 @@
-<div class="row p-5 grey darken-3">
-
+<div class="row grey darken-3 p-5">
+<div class="col-md-3 no-padding">
   <span class="pull-left">
-    <button class="btn btn-default editbuttons grey darken-3"
+    <button class="btn-default editbuttons grey darken-3"
             title="Some title here"><span
       class="md md-more"></span></button>
-     <button type="button" class="btn btn-default editbuttons deep-purple lighten-1" title="Undo Changes"><span
-       class="md md-history"></span>
-     </button>
-    <button type="button" class="btn btn-default editbuttons amber" title="Undo Changes"><span
+   
+    <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
       class="md md-undo "></span>
     </button>
-     <button type="button" ng-class="[btn, btn-default, editbuttons, {green : description.active}, {red: !description.active}]" title="Active/Inactive"><span
+      <button type="button" class="btn-default editbuttons blue accent-2" title="Undo Changes"><span
+       class="md md-history"></span>
+     </button>
+     <button type="button" ng-class="[btn-default, editbuttons, {green : description.active}, {red: !description.active}]" title="Active/Inactive"><span
        class="md md-settings-power "></span>
      </button>
 
   </span>
-
-
-  <span class="pull-left m-l-15">
-   <input style="width: 100%" ng-model="description.term" class="form-contro cyan lighten-5" type="text" placeholder="Description">
+</div>
+<div class="col-md-9 no-padding">
+  <span class="pull-left description no-padding">
+   <input ng-model="description.term" class="form-control" type="text" placeholder="Description">
    </span>
-  <span class="pull-left m-l-15">
-      <select ng-options = "typeId.id as typeId.abbr for typeId in typeIds" ng-model="description.typeId" name="select-typeId" id="select-typeId-choice" class="form-control cyan lighten-5 ">
+  <span class="pull-left typeid">
+      <select ng-options = "typeId.id as typeId.abbr for typeId in typeIds" ng-model="description.typeId" name="select-typeId" id="select-typeId-choice" class="form-control ">
       </select>
       </span>
-  <span class="pull-left m-l-15">
-      <select ng-options = "language.id as language.abbr for language in languages" ng-model="description.languageCode" name="select-language" id="select-language-choice" class="form-control cyan lighten-5 "></select>
+  <span class="pull-left language">
+      <select ng-options = "language.id as language.abbr for language in languages" ng-model="description.languageCode" name="select-language" id="select-language-choice" class="form-control "></select>
 
       </span>
-  <span class="pull-left m-l-15">
-      <select ng-options = "acceptability.id as acceptability.abbr for acceptability in acceptabilities" ng-model="description.acceptabilityMap['900000000000508004']" name="select-acceptability" id="select-acceptability-choice" class="form-control cyan lighten-5 ">
+  <span class="pull-left acceptability">
+      <select ng-options = "acceptability.id as acceptability.abbr for acceptability in acceptabilities" ng-model="description.acceptabilityMap['900000000000508004']" name="select-acceptability" id="select-acceptability-choice" class="form-control ">
       </select>
       </span>
+      </div>
 </div>
