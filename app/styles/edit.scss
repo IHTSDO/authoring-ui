@@ -19,11 +19,11 @@ aside.editpanel ul a {
     line-height: 35px !important;
   }
   .btn {
-    width: 100%;
+    
   }
 }
 .editpanel .btn:hover {
-  font-size: 115%;
+  box-shadow:none;
 }
 
 .editbuttons {
@@ -49,9 +49,21 @@ aside.editpanel ul a {
 .formcontrol{font-size:12px;}
 
 .editpanel .btn {
-  width:26px;
-}
 
+}
+//Taxonomy tab button styling
+.widget-toolbar {
+  padding-right: 10px;
+  padding-left: 10px;
+  font-size: 20px;
+  box-shadow: none;
+  width: 38px;
+  line-height: 35px;
+  &:hover {
+    background-color: transparent;
+    color: #424242;
+  }
+}
 //Taxonomy Styling
 
 #bp-taxonomy_canvas-panelBody {
@@ -68,14 +80,16 @@ aside.editpanel ul a {
   margin: 5px 5px 5px 0;
   padding: 5px;
   overflow:auto;
+  box-shadow:none;
 }
 
 #bp-taxonomy_canvas-mainPanel ul ul a {
   padding: 0;
+  font-weight: 400;
 }
 
 #bp-taxonomy_canvas-mainPanel ul ul a:hover{
-  background-color: white;
+  font-weight:500
 }
 
 #bp-taxonomy_canvas-mainPanel ul a {
@@ -89,8 +103,8 @@ aside.editpanel ul a {
 }
 
 .alert-warning {
-    background-color: #FCF8E3;
-    border-color: #FAEBCC;
+    background-color: #ffd54f;
+    border-color: none;
     color: #8A6D3B;
 }
 
@@ -105,13 +119,22 @@ aside.editpanel ul a {
     vertical-align: baseline;
     white-space: nowrap;
     text-align: center;
-    background-color: #999;
+    background-color: transparent;
     border-radius: 10px;
 }
-
+.search-button {
+  font-size: 18px;
+  box-shadow: none;
+  &:hover {
+    font-size: 18px;
+    box-shadow: none;
+    background-color: transparent;
+    color: #ffc107;
+  }
+}
 .alert-warning {
     color: black;
-    background-image: linear-gradient(to bottom, #FCF8E3 0px, #F8EFC0 100%);
+    background-image: linear-gradient(to bottom, #ffecb3 0px, #ffe082 100%);
     background-repeat: repeat-x;
     border-color: #F5E79E;
 }
@@ -123,8 +146,8 @@ aside.editpanel ul a {
 }
 
 #bp-taxonomy_canvas-mainPanel .treeButton:hover {
-    background-color: #fff;
-    color:#00a4e4;
+    background-color: #e6e6e6;
+    color:#424242;
     text-transform: none;
 }
 
@@ -133,4 +156,14 @@ aside.editpanel ul a {
   padding: 0;
   margin: 0;
   list-style: none;
+}
+.widget-button {
+  font-size: 18px;
+  box-shadow: none;
+  &:hover {
+    font-size: 18px;
+    box-shadow: none;
+    background-color: #424242;
+    color: #fff;
+  }
 }
