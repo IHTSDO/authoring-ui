@@ -1,0 +1,151 @@
+<div>
+  <div class=" row p-5 grey darken-4" style=" margin-right:0px;">
+              <span class="pull-left">
+              <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+                      class="btn btn-default editbuttons grey darken-4">
+                <span ng-show="isCollapsed">+</span><span ng-show="!isCollapsed">-</span></button>  </span>
+            <span class="pull-left">
+              <button type="button" class="btn btn-default editbuttons grey darken-4"
+                      title="{{popover.title}}" data-content="{{popover.content}}"
+                      data-template="shared/popover/popover.html" data-animation="am-flip-x"
+                      data-auto-close="1" data-placement="left" bs-popover>
+                <span class="md md-more"></span></button></span>
+
+    <span class="pull-left p-10">{{concept.pt.term}}</span>
+            <span class="pull-right m-l-15 m-r-15 ">
+                <select name="select-primitive-choice" id="select-primitive-choice"
+                        class="form-control  grey darken-4 primitive">
+                  <option value="Choice 1">Primitive</option>
+                  <option value="Choice 2">Fully Defined</option>
+                </select>
+                </span>
+            <span class="pull-right no-margin">
+               <button type="button" ng-class="[btn-default, editbuttons, {green : concept.active}, {red: !concept.active}]" title="Active/Inactive" ng-click="concept.active = !concept.active"><span
+                 class="md md-settings-power "></span></button>
+               <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
+                 class="md md-undo "></span></button>
+               <button type="button" class="btn-default editbuttons deep-purple lighten-1" title="Undo Changes">
+                 <span class="md md-history"></span></button>
+                 <button type="button" class="btn-default editbuttons blue" title="Show Model"><span
+                   class="md md-keyboard-return "></span></button>
+                  <button type="button" class="btn-default editbuttons teal" title="Save"><span
+                    class="md-save"></span></button>
+            </span>
+  </div>
+
+  <!-- Toggle-able collapsed concept elements -->
+  <div ng-show="!isCollapsed">
+
+    <!-- rows: Concept Descriptions -->
+    <div ng-repeat="description in concept.descriptions">
+
+      <div class="row grey darken-3 p-5">
+        <div class="col-md-3 no-padding">
+  <span class="pull-left">
+    <button class="btn-default editbuttons grey darken-3"
+            title="Some title here"><span
+      class="md md-more"></span></button>
+
+    <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
+      class="md md-undo "></span>
+    </button>
+      <button type="button" class="btn-default editbuttons blue accent-2" title="Undo Changes"><span
+        class="md md-history"></span>
+      </button>
+     <button type="button"
+             ng-click="description.active = !description.active"
+             ng-class="[btn-default, editbuttons, {green : description.active}, {red: !description.active}]"
+             title="Active/Inactive"><span
+       class="md md-settings-power "></span>
+     </button>
+
+  </span>
+        </div>
+        <div class="col-md-9 no-padding">
+  <span class="pull-left description no-padding">
+   <input ng-model="description.term" class="form-control" type="text" placeholder="Description">
+   </span>
+  <span class="pull-left typeid">
+      <select ng-options="typeId.id as typeId.abbr for typeId in typeIds" ng-model="description.typeId"
+              name="select-typeId" id="select-typeId-choice" class="form-control ">
+      </select>
+      </span>
+  <span class="pull-left language">
+      <select ng-options="language.id as language.abbr for language in languages" ng-model="description.languageCode"
+              name="select-language" id="select-language-choice" class="form-control "></select>
+
+      </span>
+  <span class="pull-left acceptability">
+      <select ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
+              ng-model="description.acceptabilityMap['900000000000508004']" name="select-acceptability"
+              id="select-acceptability-choice" class="form-control ">
+      </select>
+      </span>
+  <span style="width:4%" class="pull-left">
+    <button type="button" ng-click="addDescription()" class="btn-default editbuttons grey darken-3" title="Add New Description">+</button>
+  </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- rows: Concept Outgoing Relationships -->
+    <div ng-repeat="relationship in concept.outboundRelationships">
+      <div class=" row grey darken-3 p-5">
+
+        <!-- Button controls -->
+        <div class="col-md-3 no-padding">
+    <span class="pull-left">
+      <button class="btn-default editbuttons grey darken-3"
+              title="Some title here"><span
+        class="md md-more"></span></button>
+
+      <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
+        class="md md-undo "></span>
+      </button>
+         <button type="button" class="btn-default editbuttons blue accent-2" title="History"><span
+           class="md md-history"></span>
+         </button>
+       <button type="button"
+               ng-click="relationship.active = !relationship.active"
+               ng-class="[btn, btn-default, editbuttons, {green : relationship.active}, {red: !relationship.active}]"
+               title="Active/Inactive"><span
+         class="md md-settings-power "></span>
+       </button>
+
+    </span>
+        </div>
+
+        <!-- relationship group -->
+  <span class="pull-left rolegroup">
+   <input ng-model="relationship.group" class="form-control color_{{relationship.group}}" type="text" placeholder="#">
+   </span>
+
+        <!-- characteristic type -->
+  <span class="pull-left characteristictype ">
+    <select ng-model="relationship.characteristicType"
+            ng-options="characteristicType.id as characteristicType.abbr for characteristicType in characteristicTypes"
+            class="form-control color_{{relationship.group}}"></select>
+  </span>
+
+
+        <!-- linked concept and name -->
+  <span class="pull-left sourceid">
+    <input ng-model="relationship.destinationId" class="form-control color_{{relationship.group}}" type="text"
+           placeholder="Target Id">
+    </span>
+  <span class="pull-left sourcename">
+    <input disabled ng-model="relationship.destinationName" class="form-control color_{{relationship.group}}" type="text"
+           placeholder="#">
+
+    </span>
+
+          <span style="width:4%" class="pull-left">
+    <button type="button" ng-click="addRelationship()" class="btn-default editbuttons grey darken-3" title="Add New Description">+</button>
+  </span>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
