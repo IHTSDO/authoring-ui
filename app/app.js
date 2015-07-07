@@ -21,6 +21,7 @@ angular
     'mgcrea.ngStrap',
     'jcs-autoValidate',
     'ngTable',
+
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
     'singleConceptAuthoringApp.about',
@@ -28,7 +29,7 @@ angular
     'singleConceptAuthoringApp.taxonomy',
     'singleConceptAuthoringApp.search',
     'singleConceptAuthoringApp.savedList',
-    'singleConceptAuthoringApp.taskDetail'
+    'singleConceptAuthoringApp.taskDetail',
   ])
   .config(function ($provide, $routeProvider) {
     $provide.factory('$routeProvider', function () {

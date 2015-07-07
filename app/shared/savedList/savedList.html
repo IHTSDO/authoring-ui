@@ -9,7 +9,7 @@
     <tr ng-repeat="item in savedList.items">
       <td>{{item.term}}</td>
       <td>{{item.concept.fsn}}</td>
-      <td><button type="button" class="btn btn-default editbuttons green" title="Active" >+</button></td>
+      <td><button type="button" class="btn btn-default editbuttons green" title="Active" ng-click="selectItem(item)" >+</button></td>
     </tr>
   </table>
   </button></td>
