@@ -33,8 +33,8 @@ angular.module('singleConceptAuthoringApp')
 
         // Define definition types
         scope.typeIds = [
-          {id: '900000000000013009', abbr: 'FSN'},
-          {id: '900000000000003001', abbr: 'SYN'},
+          {id: '900000000000003001', abbr: 'FSN'},
+          {id: '900000000000013009', abbr: 'SYN'},
           {id: '900000000000550004', abbr: 'DEF'}
         ];
 

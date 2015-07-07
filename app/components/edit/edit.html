@@ -69,9 +69,6 @@
         <!-- rows: Concept Descriptions -->
         <div ng-repeat="description in descriptions" concept-description description="description"></div>
 
-        <!-- rows: Concept Incoming Relationships -->
-        <div ng-repeat="relationship in relationshipsInbound" concept-relationship relationship="relationship" cid="relationship.destinationId"></div>
-
         <!-- rows: Concept Outgoing Relationships -->
         <div ng-repeat="relationship in relationshipsOutbound" concept-relationship relationship="relationship" cid="relationship.sourceId"></div>
 
