@@ -17,14 +17,10 @@
       <div class="col-lg-6 edit-scroll editing-form" style="height:100%">
 
         <!-- row: Blue Create New Concept banner -->
-        <div class="row p-5 blue" style="margin-right:0px;">
-          <div class="pull-left p-10">
-            Create New Concept
-          </div>
-          <span class="pull-right" style="margin-right:20px;">
-               <button type="button" class="btn-default editbuttons blue" title="Active"><span
-                 class="md md-collections"></span></button>
-            </span>
+        <div class="row clearfix" style="margin-right:0px;">
+       
+               <button type="button" class="btn-default btn-block create-new-concept" title="Active"><i class="md md-add-circle pull-right"></i> Create New Concept</button>
+       
         </div>
 
         <div ng-repeat="concept in concepts" concept-edit concept="concept" branch="branch">
