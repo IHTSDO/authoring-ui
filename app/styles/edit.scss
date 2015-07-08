@@ -1,7 +1,10 @@
 button, .btn {
   border: none !important;
 }
-.toggle-buttons{background-color:#212121 !important; padding-left:0px; padding-right:0px;}
+.toggle-buttons{background-color:#212121 !important; padding:1px 3px !important; color:#BEBEBE !important}
+.toggle-buttons:hover{color:#2196F3 !important}
+.add-buttons{background-color:#424242 !important; padding:1px 3px !important; color:#dcdcdc !important}
+.add-buttons:hover{color:#4caf50 !important}
 // responsive begins
 @media screen and (max-width: 1850px) {
   .editing-form {
@@ -249,7 +252,7 @@ aside.editpanel ul a {
     border-radius: 0px;
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
-    box-shadow: none;
+    box-shadow: none !important;
     -webkit-font-smoothing: antialiased !important;
   }
   input:focus, textarea:focus, select:focus, input:active, textarea:active, select:active {
@@ -480,21 +483,41 @@ aside.editpanel ul a {
   }
 }
 .color_0{
-  background-color: #f8bbd0 !important;
+  background-color: #fce4ec !important;
 }
 
 .color_1{
-  background-color: #fff9c4 !important;
+  background-color: #fffde7 !important;
 }
 
 .color_2{
-  background-color: #e0f2f1 !important;
+  background-color: #ede7f6 !important;
 }
 
 .color_3{
   background-color: #ffccbc !important;
 }
-
+.color_3{
+  background-color: #ffccbc !important;
+}
+.color_4{
+  background-color: #fff3e0 !important;
+}
+.color_5{
+  background-color: #f9fbe7 !important;
+}
+.color_6{
+  background-color: #f1f8e9 !important;
+}
+.color_7{
+  background-color: #e0f2f1 !important;
+}
+.color_8{
+  background-color: #FFEBEE !important;
+}
+.color_9{
+  background-color: #e8eaf6 !important;
+}
 .editing-form {
   .acceptability {
     width: 19%;
