@@ -32,10 +32,15 @@ angular
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail'
   ])
-  .config(function ($provide, $routeProvider) {
+  .config(function ($provide, $routeProvider, $modalProvider) {
     $provide.factory('$routeProvider', function () {
       return $routeProvider;
     });
+
+    // modal providers MUST not use animation
+    // due to current angular-ui bug where the
+    // animation prevents removal of grey backdrop on close
+    $modalProvider.options.animation = false;
 
   })
 

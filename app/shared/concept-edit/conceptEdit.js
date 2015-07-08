@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .directive('conceptEdit', function (snowowlService, objectService) {
+  .directive('conceptEdit', function ($modal, $q, snowowlService, objectService) {
     return {
       restrict: 'A',
       transclude: true,
@@ -16,8 +16,6 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl) {
 
-        console.debug('concept-edit link', scope.concept, scope.branch);
-
         if (!scope.concept) {
           console.error('conceptEdit directive requires concept to be specified');
           return;
@@ -28,9 +26,51 @@ angular.module('singleConceptAuthoringApp')
         }
 
         ////////////////////////////////
+        // Concept Elements
+        ////////////////////////////////
+
+        var inactivateConceptReasons = [
+          {id: '', text: 'Ambiguous concept (inactive concept)'},
+          {id: '', text: 'Duplicate concept (inactive concept)'},
+          {id: '', text: 'Erroneous concept (inactive concept)'},
+          {id: '', text: 'Limited status concept (inactive concept)'},
+          {id: '', text: 'Moved elsewhere (inactive concept'},
+          {id: '', text: 'Outdated concept (inactive concept)'},
+          {id: '', text: 'Reason not stated concept (inactive concept)'},
+          {id: '', text: 'No reason'}
+        ]
+
+        scope.toggleConceptActive = function (Conceptconcept) {
+          // if inactive, simply set active
+          if (!Conceptconcept.active) {
+            Conceptconcept.active = true;
+          }
+
+          // otherwise, open a selct reason modal
+          else {
+            // TODO Decide what the heck to do with result
+            selectInactivationReason(Conceptconcept, 'Concept', inactivateConceptReasons).then(function (reason) {
+
+               scope.concept.active = false;
+
+              // if reason is selected, deactivate all descriptions and
+              // relationships
+              if (reason) {
+                angular.forEach(scope.concept.descriptions, function (description) {
+                  description.active = false;
+                })
+                angular.forEach(scope.concept.outboundRelationships, function (relationship) {
+                  relationship.active = false;
+                })
+              }
+            })
+          }
+        }
+
+        ////////////////////////////////
         // Description Elements
         ////////////////////////////////
-        
+
         // ensure at least one empty description is present
         if (!scope.concept.descriptions || scope.concept.descriptions.length === 0) {
           scope.concept.descriptions = [];
@@ -56,26 +96,73 @@ angular.module('singleConceptAuthoringApp')
           {id: 'NOT ACCEPTABLE', abbr: 'Not acceptable'}
         ];
 
-        scope.addDescription = function () {
+        // List of acceptable reasons for inactivating a description
+        // TODO:  More metadata to be retrieved on init and stored
+        var inactivateDescriptionReasons = [
+          {
+            id: '',
+            text: 'ALTERNATIVE association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'MOVED FROM association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'MOVED TO association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
+          },
+          {
+            id: '',
+            text: 'REFERS TO concept association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'REPLACED BY association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'SAME AS association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'SIMILAR TO association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'WAS A association reference set (foundation metadata concept)'
+          },
+          {id: '', text: 'No reason'}
+        ]
 
-          console.debug('adding new description');
+        scope.addDescription = function () {
 
           var description = objectService.getNewDescription(scope.concept.id);
           scope.concept.descriptions.push(description);
         };
 
-        scope.addRelationship = function () {
+        scope.toggleDescriptionActive = function (description) {
+          // if inactive, simply set active
+          if (!description.active) {
+            description.active = true;
+          }
 
-          console.debug('adding new relationship');
-
-          var relationship = objectService.getNewRelationship(scope.concept.id);
-          scope.concept.outboundRelationships.push(relationship);
-        };
+          // otherwise, open a selct reason modal
+          else {
+            // TODO Decide what the heck to do with result
+            selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function(reason) {
+              description.active = false;
+            })
+          }
+        }
 
         ////////////////////////////////
         // Relationship Elements
         ////////////////////////////////
-        
+
         // ensure at least one empty outbound relationship is present
         if (!scope.concept.outboundRelationships || scope.concept.outboundRelationships.length === 0) {
           scope.concept.outboundRelationships = [];
@@ -88,22 +175,71 @@ angular.module('singleConceptAuthoringApp')
           {id: 'INFERRED_RELATIONSHIP', abbr: 'Inferred'}
         ];
 
-        scope.nameMap = {};
+        scope.addRelationship = function (isAttribute) {
+
+          var relationship = objectService.getNewRelationship(scope.concept.id);
+
+          // if an attribute, clear the default type id
+          // TODO May want to separate these out, we'll see
+          if (isAttribute) {
+            relationship.typeId = ''; // causes filter to read as attribute
+          }
+          scope.concept.outboundRelationships.push(relationship);
+        };
 
         // retrieve names of all relationship targets
         angular.forEach(scope.concept.outboundRelationships, function (rel) {
-          console.debug('getting name for rel', rel);
 
           snowowlService.getConceptPreferredTerm(rel.destinationId, scope.branch).then(function (response) {
             rel.destinationName = response.term;
           });
-          /*
-           snowowlService.getConceptPreferredTerm(scope.concept.outboundRelationships[i].sourceId, scope.branch).then(function (response) {
-           scope.nameMap[response.id] = response.term;
-           console.debug(scope.nameMap);
-           })
-           */
+
+          // if not an isa relationship, retrieve attribute type
+          // TODO Factor this into the mountain of metadata
+          if (rel.typeId != '116680003') {
+            snowowlService.getConceptPreferredTerm(rel.typeId, scope.branch).then(function(response) {
+              rel.typeName = response.term;
+            })
+          }
+
+
         });
+
+        scope.toggleRelationshipActive = function(relationship) {
+          // no special handling required, simply toggle
+          relationship.active = !relationship.active;
+        }
+
+        ////////////////////////////////
+        // Shared Elements
+        ////////////////////////////////
+
+        // deactivation modal for reason s elect
+        var selectInactivationReason = function (component, componentType, reasons) {
+
+          var deferred = $q.defer();
+
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/inactivate-component-modal/inactivateComponentModal.html',
+            controller: 'inactivateComponentModalCtrl',
+            resolve: {
+              componentType: function () {
+                return componentType
+              },
+              reasons: function () {
+                return reasons
+              }
+            }
+          });
+
+          modalInstance.result.then(function (reason) {
+            deferred.resolve(reason);
+          }, function () {
+            deferred.reject();
+          });
+          
+          return deferred.promise;
+        };
       }
     };
   })

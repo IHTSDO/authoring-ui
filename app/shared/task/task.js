@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('taskCtrl', ['$scope', '$rootScope', 'bootstrap3ElementModifier', 'scaService', function ($scope, $rootScope, bootstrap3ElementModifier, scaService) {
+  .controller('taskCtrl', ['$scope', '$rootScope', '$modalInstance', 'scaService', function ($scope, $rootScope, $modalInstance, scaService) {
 
-    bootstrap3ElementModifier.enableValidationStateIcons(false);
+    console.debug('taskCtrl entered');
 
     // scope variables
     $scope.projects = null;
@@ -29,18 +29,26 @@ angular.module('singleConceptAuthoringApp')
     // declaration
     initialize();
 
+    // closes the modal instance (if applicable)
+    $scope.close = function() {
+      $modalInstance.close();
+    };
+
     // Creates a task from modal form
     $scope.createTask = function (taskTitle, taskProject, taskDetails) {
 
       // check that all required fields are present
       if (!taskTitle) {
         window.alert('You must specify a title');
+        return;
       }
       if (!taskProject) {
         window.alert('You must specify a project');
+        return;
       }
       if (!taskDetails) {
         window.alert('You must specify task details');
+        return;
       }
 
       // create JSON object for task creation and call API

@@ -620,4 +620,8 @@ border:none;
 .edit-scroll::-webkit-scrollbar-thumb:active{
 background-color:#212121;
 border:none;
-} 
+}
+
+.form-control:disabled {
+  color: white;
+}

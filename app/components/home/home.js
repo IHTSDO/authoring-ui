@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, scaService, $timeout) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout) {
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Tasks"
@@ -79,6 +79,18 @@ angular.module('singleConceptAuthoringApp.home', [
 
       }
     })
+
+    $scope.openCreateTaskModal = function() {
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/task/task.html',
+        controller: 'taskCtrl',
+        resolve: {}
+      });
+
+      modalInstance.result.then(function () {
+      }, function () {
+      });
+    }
 
 
 // Initialization:  get tasks
