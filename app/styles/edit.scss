@@ -1,3 +1,52 @@
+button, .btn {
+  border: none !important;
+}
+// responsive begins
+@media screen and (max-width: 1850px) {
+  .editing-form {
+    button, .btn {
+      border: 0px;
+      font-size: 15px;
+      padding: 1px 4px;
+      line-height: 1.346;
+      margin-top: 4px;
+    }
+    input, textarea, select {
+      font-size: 11px !important;
+      height: 30px !important;
+    }
+  }
+  .form-control {
+    height: 30px;
+  }
+  .title-text {
+    font-size: 11px;
+    padding: 5px;
+  }
+}
+
+@media screen and (min-width: 1851px) {
+  .editing-form {
+    button, .btn {
+      border: 0px;
+      font-size: 20px;
+      padding: 1px 8px;
+      line-height: 1.846;
+      margin-bottom: 0px;
+    }
+    input, textarea, select {
+      font-size: 12px !important;
+    }
+  }
+  .form-control {
+    height: 37px !important;
+  }
+  .title-text {
+    font-size: 12px;
+    padding: 10px;
+  }
+}
+// responsive ends
 .editpanel {
   background-color: #eee !important;
   color: #737373 !important;
@@ -186,7 +235,7 @@ aside.editpanel ul a {
     box-sizing: border-box;
     color: #474747 !important;
     margin-bottom: 1rem;
-    font-size: 12px !important;
+  
     padding: 4px !important;
     background-color: #e0f7fa;
 	
@@ -443,15 +492,6 @@ aside.editpanel ul a {
 
 .color_3{
   background-color: #ffccbc !important;
-}
-.editing-form {
-  button, .btn {
-    border: 0px !important;
-    font-size: 20px;
-    padding: 1px 8px;
-    line-height: 1.846;
-    margin-bottom: 0px;
-  }
 }
 
 .editing-form {
