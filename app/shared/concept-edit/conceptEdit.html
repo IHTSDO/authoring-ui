@@ -1,9 +1,9 @@
 <div>
   <div class=" row p-5 grey darken-4" style=" margin-right:0px;">
-              <span class="pull-left">
+              <span class="pull-left togglebutton">
               <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-                      class="btn btn-default editbuttons grey darken-4">
-                <span ng-show="isCollapsed">+</span><span ng-show="!isCollapsed">-</span></button>  </span>
+                      class="toggle-buttons">
+                <span ng-show="isCollapsed"><i class="md md-keyboard-arrow-up"></i></span><span ng-show="!isCollapsed"><i class="md md-keyboard-arrow-down"></i></span></button>  </span>
             <span class="pull-left">
               <button type="button" class="btn btn-default editbuttons grey darken-4"
                       title="{{popover.title}}" data-content="{{popover.content}}"
