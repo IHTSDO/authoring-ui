@@ -33,7 +33,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         else {
           $scope.savedList = uiState;
         }
-        console.debug('saved-list', $scope.savedList);
       }
     );
 
@@ -52,7 +51,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-    // watch for concept selection from the edit sidebar
+    // watch for concept cloning from the edit sidebar
     $scope.$on('savedList.cloneConcept', function (event, data) {
       console.debug('EditCtrl: notification savedList.cloneConcept', data.conceptId);
 
@@ -64,20 +63,42 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function(response) {
-        console.debug('full concept to clone received', response);
+
+        var conceptId = response.properties.id;
+        var conceptEt = response.properties.effectiveTime;
+        
+        // check if original concept already exists, if not add it
+        console.debug("Checking for ", conceptId, conceptEt);
+        var conceptExists = false;
+        angular.forEach($scope.concepts, function(concept) {
+
+          if (concept.properties.id === conceptId && concept.properties.effectiveTime === conceptEt) {
+            conceptExists = true;
+          }
+        })
+        if (!conceptExists) {
+          $scope.concepts.push(response);
+        }
 
         // deep copy the object -- note: does not work in IE8, but screw that!
-        var concept = JSON.parse(JSON.stringify(response))
+        var clonedConcept = JSON.parse(JSON.stringify(response));
 
-        // add a cloned tag to differentiate the concept
-        concept.pt.term += ' [Cloned]';
+        // add a cloned tag to differentiate the clonedConcept
+        clonedConcept.pt.term += ' [Cloned]';
         
-        // clear the descriptions
-        // TODO: Need to clear the others?
-        concept.descriptions = [];
+        // clear the id and effectiveTime of the descriptions and relationships
+        angular.forEach(clonedConcept.descriptions, function(description) {
+          description.id = null;
+          description.effectiveTime = null;
+        })
 
-        // push the cloned concept
-        $scope.concepts.push(concept);
+        angular.forEach(clonedConcept.relationship, function(relationship) {
+          relationship.id = null;
+          relationship.effectiveTime = null;
+        })
+
+        // push the cloned clonedConcept
+        $scope.concepts.push(clonedConcept);
       });
     });
 
