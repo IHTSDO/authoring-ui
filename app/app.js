@@ -21,6 +21,8 @@ angular
     'mgcrea.ngStrap',
     'jcs-autoValidate',
     'ngTable',
+    'ui.bootstrap',
+
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
     'singleConceptAuthoringApp.about',
@@ -30,10 +32,15 @@ angular
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail'
   ])
-  .config(function ($provide, $routeProvider) {
+  .config(function ($provide, $routeProvider, $modalProvider) {
     $provide.factory('$routeProvider', function () {
       return $routeProvider;
     });
+
+    // modal providers MUST not use animation
+    // due to current angular-ui bug where the
+    // animation prevents removal of grey backdrop on close
+    $modalProvider.options.animation = false;
 
   })
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .factory('scaService', ['$http', '$rootScope', function ($http, $rootScope) {
+  .service('scaService', ['$http', '$rootScope', function ($http, $rootScope) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -109,6 +109,8 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       }
+
+
     };
 
   }]);

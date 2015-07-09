@@ -1,0 +1,26 @@
+<div id="inactivateComponentModal">
+
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Select Reason For Inactivating {{componentType}}</h4>
+  </div>
+
+
+  <div class="modal-body">
+
+    <select id="taskProject" name="select-reason" class="form-control"
+            ng-options="reason as reason.text for reason in reasons"
+            ng-model="reasonSelected">
+            <option value='' disabled>- Select a reason -</option>
+    </select>
+
+  </div>
+
+  <div class="modal-footer">
+
+    <button type="button" class="btn btn-success"
+            ng-click="selectReason(reasonSelected)">Select
+    </button>
+  </div>
+
+</div>
