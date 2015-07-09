@@ -190,7 +190,6 @@ angular.module('singleConceptAuthoringApp')
         scope.nameMap = {};
         var i = 1;
         // retrieve names of all relationship targets
-        console.log(scope.concept.outboundRelationships.length);
         angular.forEach(scope.concept.outboundRelationships, function (rel) {
 
           snowowlService.getConceptPreferredTerm(rel.destinationId, scope.branch).then(function (response) {
