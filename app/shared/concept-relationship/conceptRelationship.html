@@ -1,0 +1,49 @@
+<div class=" row grey darken-3 p-5">
+
+  <!-- Button controls -->
+  <div class="col-md-3 no-padding">
+    <span class="pull-left">
+      <button class="btn-default editbuttons grey darken-3"
+              title="Some title here"><span
+        class="md md-more"></span></button>
+
+      <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
+        class="md md-undo "></span>
+      </button>
+         <button type="button" class="btn-default editbuttons blue accent-2" title="History"><span
+           class="md md-history"></span>
+         </button>
+       <button type="button"
+               ng-class="[btn, btn-default, editbuttons, {green : relationship.active}, {red: !relationship.active}]"
+               title="Active/Inactive"><span
+         class="md md-settings-power "></span>
+       </button>
+    </span>
+  </div>
+
+  <!-- relationship group -->
+  <span class="pull-left rolegroup">
+   <input ng-model="relationship.group" class="form-control color_{{relationship.group}}" type="text" placeholder="#">
+   </span>
+
+  <!-- characteristic type -->
+  <span class="pull-left characteristictype ">
+    <select ng-model="relationship.characteristicType"
+            ng-options="characteristicType.id as characteristicType.abbr for characteristicType in characteristicTypes"
+            class="form-control color_{{relationship.group}}"></select>
+  </span>
+
+
+  <!-- linked concept and name -->
+  <span class="pull-left sourceid">
+    <input ng-model="relationship.sourceId" class="form-control color_{{relationship.group}}" type="text"
+           placeholder="Source Id">
+    </span>
+  <span ng-if="relationship.sourceId != cid" class="pull-left sourcename">
+    <input disabled ng-model="relationship.sourceName" class="form-control color_{{relationship.group}}" type="text"
+           placeholder="#">
+
+    </span>
+
+
+</div>

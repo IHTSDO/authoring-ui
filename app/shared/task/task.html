@@ -1,51 +1,55 @@
-<div id="taskModal" class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4 class="modal-title">Create New Task</h4>
-      </div>
-      <form class="form-floating" ng-controller="taskCtrl">
-        <fieldset>
-          <div class="modal-body" ng>
+<div id="taskModal">
 
-            <div class="col-md-12">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h4 class="modal-title">Create New Task</h4>
+  </div>
 
 
-              <!-- TODO Fix formatting on control-label, causing absolute positioning and overlap -->
-                <div class="form-group">
-                  <label for="taskTitle">Task title</label>
-                  <input id="taskTitle" ng-model="taskTitle" ng-change="clearMessages()" type="text" class="form-control" placeholder="Enter task title">
+  <div class="modal-body">
 
-                  <br>
-                  <label for="taskProject">Select Project:</label>
-                  <select id="taskProject" name="select-choice" class="form-control"
-                          ng-options="project as project.title for project in projects | orderBy: project.title"
-                          ng-model="taskProject"
-                          ng-change="clearMessages()">
-                  </select>
-                  <br>
-                  <label for="textArea">Task Details</label>
-                  <textarea ng-change="clearMessages()" class="form-control vertical" rows="3" id="textArea" ng-model="taskDetails" placeholder="Enter task details"></textarea>
+    <div class="col-md-12">
 
-                </div>
+      <form class="form-floating">
+
+        <!-- TODO Fix formatting on control-label, causing absolute positioning and overlap -->
+        <div class="form-group">
+          <label for="taskTitle">Task title</label>
+          <input id="taskTitle" ng-model="taskTitle" ng-change="clearMessages()" type="text" class="form-control"
+                 placeholder="Enter task title">
+
+          <br>
+          <label for="taskProject">Select Project:</label>
+          <select id="taskProject" name="select-choice" class="form-control"
+                  ng-options="project as project.title for project in projects | orderBy: project.title"
+                  ng-model="taskProject"
+                  ng-change="clearMessages()">
+          </select>
+          <br>
+          <label for="textArea">Task Details</label>
+          <textarea ng-change="clearMessages()" class="form-control vertical" rows="3" id="textArea"
+                    ng-model="taskDetails" placeholder="Enter task details"></textarea>
+
+        </div>
 
 
-                <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
-                <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" ng-click="createTask(taskTitle, taskProject, taskDetails) == true ? $hide() : ''">Create Task</button>
-                <button type="button" class="btn btn-danger" ng-click="$hide()">Cancel</button>
-            </div>
-
-          </div>
-        </fieldset>
       </form>
 
 
-
+      <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
+      <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
     </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success"
+              ng-click="createTask(taskTitle, taskProject, taskDetails) == true ? $hide() : ''">Create Task
+      </button>
+      <button type="button" class="btn btn-danger" ng-click="close()">Cancel</button>
+    </div>
+
   </div>
+
+
+</div>
+</div>
 </div>

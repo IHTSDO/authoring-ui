@@ -143,8 +143,8 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
             searchHtml = searchHtml + "<div style='height:100%; padding:0px 15px 0px 15px;' id='" + panel.divElement.id + "-panelBody'>"; /* class='panel-body' */
             searchHtml = searchHtml + '<form>';
             searchHtml = searchHtml + '<div class="form-group" style="margin-bottom: 2px;">';
-            searchHtml = searchHtml + '<br><div class="btn-group" style="width: 100%;"><input type="search" class="form-control" id="' + panel.divElement.id + '-searchBox" placeholder="Enter search terms here" autocomplete="off">';
-            searchHtml = searchHtml + '<span id="'+ panel.divElement.id + '-clearButton" class="searchclear glyphicon glyphicon-remove-circle"></span></div>';
+            searchHtml = searchHtml + '<div class="btn-group col-md-12 grey lighten-5 no-padding"><span class="pull-left col-md-11 no-padding"><input type="search" class="form-control m-5" id="' + panel.divElement.id + '-searchBox" placeholder="Enter search terms here" autocomplete="off"></span>';
+            searchHtml = searchHtml + '<span class="pull-right"><span id="'+ panel.divElement.id + '-clearButton" class="btn btn-round search-button btn-default grey lighten-5 m-t-10"><span class="md md-clear"></span></span></span></div>';
             searchHtml = searchHtml + '</div>';
             searchHtml = searchHtml + '</form>';
 //            searchHtml = searchHtml + "<div id='" + panel.divElement.id +
@@ -218,7 +218,7 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
 // 15px;min-height: 300px;' id='" + panel.divElement.id +
 // "-resultsScrollPane'>"; searchHtml = searchHtml + '<div id="' +
 // panel.divElement.id + '-searchBar"></div>'; searchHtml = searchHtml + '<div id="' + panel.divElement.id + '-searchFilters"></div>';
-            searchHtml = searchHtml + "<table id='" + panel.divElement.id + "-resultsTable' class='table table-bordered'>";
+            searchHtml = searchHtml + "<table id='" + panel.divElement.id + "-resultsTable' class='table table-bordered grey lighten-5 col-md-12 no-padding'>";
             searchHtml = searchHtml + "</table>";
             searchHtml = searchHtml + "</div>";
             searchHtml = searchHtml + "</div>";
@@ -645,7 +645,7 @@ var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
                                         if (field.concept.active == false) {
                                         }
                                         else{
-                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton md md-edit editbuttons green'></i></button></td></tr>"
+                                        resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr>"
                                         }
                                     });
 //                                    var remaining = result.length() - (skipTo

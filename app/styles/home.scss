@@ -1,0 +1,45 @@
+.dashboard-links {
+  font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  box-shadow: none;
+  text-align: left;
+  border: none;
+  box-shadow: none;
+  i {
+    font-size: 20px;
+    line-height: 23px;
+    margin-right: 5px;
+    color: #BEBEBE;
+  }
+  &:hover {
+    box-shadow: none;
+    background-color: #3b3b3b !important;
+  }
+  &:after {
+    content: "\f29c";
+    color: #4fc3f7;
+    display: inline-block;
+    font: normal normal normal 14px/1 'Material Design Iconic Font';
+    speak: none;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    right: 5px;
+    top: 18px;
+    font-size: 22px;
+  }
+}
+
+.btn-reg {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 6px 12px;
+  line-height: 1.846;
+  border-radius: 0px;
+  -webkit-user-select: none;
+}

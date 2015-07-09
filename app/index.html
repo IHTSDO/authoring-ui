@@ -49,8 +49,9 @@
   <div class="main-container">
     <div ng-include src="'layout/header.html'"></div>
     <div ng-cloak ng-view bs-affix-target></div>
-    <div ng-include="'layout/footer.html'"></div>
+      <div ng-include="'layout/footer.html'"></div>
   </div>
+
   </main>
 
   <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -75,6 +76,7 @@
   <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
   <script src="bower_components/angular-animate/angular-animate.js"></script>
   <script src="bower_components/angular-aria/angular-aria.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="bower_components/angular-cookies/angular-cookies.js"></script>
   <script src="bower_components/angular-messages/angular-messages.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -111,10 +113,17 @@
   <script src="shared/endpoint-service/endpointService.js"></script>
   <script src="shared/snowowl-service/snowowlService.js"></script>
   <script src="shared/sca-service/scaService.js"></script>
+  <script src="shared/object-service/objectService.js"></script>
   <script src="shared/taxonomy/taxonomyPlugin.js"></script>
   <script src="shared/search/searchPlugin.js"></script>
   <script src="shared/savedList/savedList.js"></script>
   <script src="shared/task-detail/taskDetail.js"></script>
+  <script src="shared/concept-name/conceptName.js"></script>
+  <script src="shared/concept-description/conceptDescription.js"></script>
+  <script src="shared/concept-relationship/conceptRelationship.js"></script>
+  <script src="shared/concept-edit/conceptEdit.js"></script>
+  <script src="shared/inactivate-component-modal/inactivateComponentModal.js"></script>
+  <script src="shared/model-diagramming/drawModel.js"></script>
   <script src="components/about/about.js"></script>
   <script src="components/home/home.js"></script>
   <script src="components/edit/edit.js"></script>

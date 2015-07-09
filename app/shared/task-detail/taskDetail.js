@@ -17,13 +17,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     };
 
     function initialize() {
-      scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function(response) {
+      scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
         $scope.task = response;
-        console.debug('task set to: ', $scope.task);
       });
     }
 
     initialize();
-
 
   }]);
