@@ -14,8 +14,20 @@ angular.module('singleConceptAuthoringApp.edit', [
   })
 
   .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams) {
-
+    $scope.conceptLoaded = false;
     $rootScope.pageTitle = 'Edit Concept';
+    $scope.count = 1;
+    $scope.showModel = function(length) {
+        if(length === $scope.count)
+        {
+            console.log($scope.count + ' ' + length);
+            $scope.conceptLoaded = true;
+            $scope.count = 1;
+        }
+        else{
+            $scope.count++;
+        }
+    };
 
     // TODO: Update this when $scope.branching is enabled
      $scope.branch = 'MAIN';
@@ -39,11 +51,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     // watch for concept selection from the edit sidebar
     $scope.$on('savedList.editConcept', function (event, data) {
       console.debug('EditCtrl: notification savedList.selectConcept', data.conceptId);
-
+        $scope.conceptLoaded = false;
       if (!data || !data.conceptId) {
+        $scope.conceptLoaded = false;
         return;
       }
-
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function(response) {
         console.debug('full concept received', response);
@@ -68,14 +80,14 @@ angular.module('singleConceptAuthoringApp.edit', [
         var conceptEt = response.properties.effectiveTime;
         
         // check if original concept already exists, if not add it
-        console.debug("Checking for ", conceptId, conceptEt);
+        console.debug('Checking for ', conceptId, conceptEt);
         var conceptExists = false;
         angular.forEach($scope.concepts, function(concept) {
 
           if (concept.properties.id === conceptId && concept.properties.effectiveTime === conceptEt) {
             conceptExists = true;
           }
-        })
+        });
         if (!conceptExists) {
           $scope.concepts.push(response);
         }
@@ -90,12 +102,12 @@ angular.module('singleConceptAuthoringApp.edit', [
         angular.forEach(clonedConcept.descriptions, function(description) {
           description.id = null;
           description.effectiveTime = null;
-        })
+        });
 
         angular.forEach(clonedConcept.relationship, function(relationship) {
           relationship.id = null;
           relationship.effectiveTime = null;
-        })
+        });
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);

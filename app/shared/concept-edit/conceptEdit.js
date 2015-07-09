@@ -10,11 +10,12 @@ angular.module('singleConceptAuthoringApp')
         concept: '=concept',
 
         // the branch of the concept
-        branch: '=branch'
+        branch: '=branch',
+        ctrlFn: '&'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
-      link: function (scope, element, attrs, linkCtrl) {
+      link: function (scope, element, attrs, linkCtrl, $timeout) {
 
         if (!scope.concept) {
           console.error('conceptEdit directive requires concept to be specified');
@@ -38,7 +39,7 @@ angular.module('singleConceptAuthoringApp')
           {id: '', text: 'Outdated concept (inactive concept)'},
           {id: '', text: 'Reason not stated concept (inactive concept)'},
           {id: '', text: 'No reason'}
-        ]
+        ];
 
         scope.toggleConceptActive = function (Conceptconcept) {
           // if inactive, simply set active
@@ -58,14 +59,14 @@ angular.module('singleConceptAuthoringApp')
               if (reason) {
                 angular.forEach(scope.concept.descriptions, function (description) {
                   description.active = false;
-                })
+                });
                 angular.forEach(scope.concept.outboundRelationships, function (relationship) {
                   relationship.active = false;
-                })
+                });
               }
-            })
+            });
           }
-        }
+        };
 
         ////////////////////////////////
         // Description Elements
@@ -136,7 +137,7 @@ angular.module('singleConceptAuthoringApp')
             text: 'WAS A association reference set (foundation metadata concept)'
           },
           {id: '', text: 'No reason'}
-        ]
+        ];
 
         scope.addDescription = function () {
 
@@ -155,9 +156,9 @@ angular.module('singleConceptAuthoringApp')
             // TODO Decide what the heck to do with result
             selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function(reason) {
               description.active = false;
-            })
+            });
           }
-        }
+        };
 
         ////////////////////////////////
         // Relationship Elements
@@ -186,20 +187,24 @@ angular.module('singleConceptAuthoringApp')
           }
           scope.concept.outboundRelationships.push(relationship);
         };
-
+        scope.nameMap = {};
+        var i = 1;
         // retrieve names of all relationship targets
+        console.log(scope.concept.outboundRelationships.length);
         angular.forEach(scope.concept.outboundRelationships, function (rel) {
 
           snowowlService.getConceptPreferredTerm(rel.destinationId, scope.branch).then(function (response) {
             rel.destinationName = response.term;
+            scope.ctrlFn({arg: scope.concept.outboundRelationships.length});
+            i++;
           });
 
           // if not an isa relationship, retrieve attribute type
           // TODO Factor this into the mountain of metadata
-          if (rel.typeId != '116680003') {
+          if (rel.typeId !== '116680003') {
             snowowlService.getConceptPreferredTerm(rel.typeId, scope.branch).then(function(response) {
               rel.typeName = response.term;
-            })
+            });
           }
 
 
@@ -208,7 +213,7 @@ angular.module('singleConceptAuthoringApp')
         scope.toggleRelationshipActive = function(relationship) {
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
-        }
+        };
 
         ////////////////////////////////
         // Shared Elements
@@ -224,10 +229,10 @@ angular.module('singleConceptAuthoringApp')
             controller: 'inactivateComponentModalCtrl',
             resolve: {
               componentType: function () {
-                return componentType
+                return componentType;
               },
               reasons: function () {
-                return reasons
+                return reasons;
               }
             }
           });
@@ -240,6 +245,7 @@ angular.module('singleConceptAuthoringApp')
           
           return deferred.promise;
         };
+        
       }
     };
   })
