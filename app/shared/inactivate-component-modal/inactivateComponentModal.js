@@ -11,7 +11,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.selectReason = function(reason) {
 
       if (!reason) {
-        alert("You must specify a reason");
+        //alert('You must specify a reason');
       } else {
         $modalInstance.close(reason);
       }
