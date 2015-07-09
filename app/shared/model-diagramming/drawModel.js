@@ -45,9 +45,8 @@ angular.module('singleConceptAuthoringApp')
             parentDiv.svg('destroy');
 
             parentDiv.svg({
-                settings: {
-                    width: '1000px',
-                    height: '2000px'}});
+                settings: {height: '400px',
+                    width: '1000px'}});
             var svg = parentDiv.svg('get');
             loadDefs(svg);
             var x = 10;
