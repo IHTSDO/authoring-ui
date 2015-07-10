@@ -23,7 +23,7 @@ angular
     'ngTable',
     'ui.bootstrap',
     'ui.sortable',
-    'ang-drag-drop',
+    'ngDragDrop',
 
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
