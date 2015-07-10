@@ -52,7 +52,7 @@ angular.module('singleConceptAuthoringApp')
             // TODO Decide what the heck to do with result
             selectInactivationReason(Conceptconcept, 'Concept', inactivateConceptReasons).then(function (reason) {
 
-               scope.concept.active = false;
+              scope.concept.active = false;
 
               // if reason is selected, deactivate all descriptions and
               // relationships
@@ -154,7 +154,7 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, open a selct reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function(reason) {
+            selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function (reason) {
               description.active = false;
             });
           }
@@ -164,10 +164,36 @@ angular.module('singleConceptAuthoringApp')
         // Relationship Elements
         ////////////////////////////////
 
-        // ensure at least one empty outbound relationship is present
-        if (!scope.concept.outboundRelationships || scope.concept.outboundRelationships.length === 0) {
-          scope.concept.outboundRelationships = [];
-          scope.concept.outboundRelationships.push(objectService.getNewRelationship(scope.concept.id));
+        // ensure at least one empty IsA relationship and one empty attribute
+        if (!scope.concept.outboundRelationships) {
+
+          // IsA relationship
+          var relPresent = false;
+          angular.forEach(scope.concept.outboundRelationships, function (rel) {
+            if (rel.typeId === '116680003') {
+              relPresent = true;
+            }
+          });
+          if (!relPresent) {
+            console.debug('adding new relationship');
+            rel = objectService.getNewIsaRelationship(scope.concept.id);
+            scope.concept.outboundRelationships.push(rel);
+          }
+
+          // attribute relationship
+          relPresent = false;
+          angular.forEach(scope.concept.outboundRelationships, function (rel) {
+            if (rel.typeId != '116680003') {
+              relPresent = true;
+            }
+          });
+          if (!relPresent) {
+            console.debug('adding new attribute');
+            var rel = objectService.getNewRelationship(scope.concept.id);
+            rel.id = null; // clear the default typeId
+            scope.concept.outboundRelationships.push(rel);
+          }
+
         }
 
         // define characteristic types
@@ -176,9 +202,9 @@ angular.module('singleConceptAuthoringApp')
           {id: 'INFERRED_RELATIONSHIP', abbr: 'Inferred'}
         ];
 
-        scope.addRelationship = function (isAttribute) {
+        scope.addIsaRelationship = function (isAttribute) {
 
-          var relationship = objectService.getNewRelationship(scope.concept.id);
+          var relationship = objectService.getNewIsaRelationship(scope.concept.id);
 
           // if an attribute, clear the default type id
           // TODO May want to separate these out, we'll see
@@ -187,29 +213,43 @@ angular.module('singleConceptAuthoringApp')
           }
           scope.concept.outboundRelationships.push(relationship);
         };
-        scope.nameMap = {};
-        var i = 1;
+
+        scope.addAttributeRelationship = function (isAttribute) {
+
+          var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
+
+          // if an attribute, clear the default type id
+          // TODO May want to separate these out, we'll see
+          if (isAttribute) {
+            relationship.typeId = ''; // causes filter to read as attribute
+          }
+          scope.concept.outboundRelationships.push(relationship);
+        };
+
         // retrieve names of all relationship targets
         angular.forEach(scope.concept.outboundRelationships, function (rel) {
+
+          // if destination not specified, do not retrieve
+          if (!rel.destinationId) {
+            return;
+          }
 
           snowowlService.getConceptPreferredTerm(rel.destinationId, scope.branch).then(function (response) {
             rel.destinationName = response.term;
             scope.ctrlFn({arg: scope.concept.outboundRelationships.length});
-            i++;
           });
 
           // if not an isa relationship, retrieve attribute type
           // TODO Factor this into the mountain of metadata
           if (rel.typeId !== '116680003') {
-            snowowlService.getConceptPreferredTerm(rel.typeId, scope.branch).then(function(response) {
+            snowowlService.getConceptPreferredTerm(rel.typeId, scope.branch).then(function (response) {
               rel.typeName = response.term;
             });
           }
 
-
         });
 
-        scope.toggleRelationshipActive = function(relationship) {
+        scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
         };
@@ -241,10 +281,51 @@ angular.module('singleConceptAuthoringApp')
           }, function () {
             deferred.reject();
           });
-          
+
           return deferred.promise;
         };
-        
+
+        ////////////////////////////////////
+        // Drag and drop functions
+        ////////////////////////////////////
+
+        scope.getConceptIdNamePair = function(concept) {
+          return {
+            id: concept.id,
+            name: concept.pt.term
+          }
+        };
+
+        scope.dropRelationshipTarget = function (relationship, data) {
+
+          console.debug('dropRelationshipTarget', relationship, data);
+          if (!relationship) {
+            console.error("Attempted to set target on null relationship");
+          }
+          if (!data || !data.id || !data.name) {
+            console.error("Attempted to set target on relationship from null data");
+          }
+          relationship.destinationId = data.id;
+          relationship.destinationName = data.name;
+
+        };
+
+        scope.dropAttributeType = function(relationship, data) {
+          console.debug('dropAttributeType', relationship, data);
+
+          if (!relationship) {
+            console.error("Attempted to set type on null attribute");
+          }
+          if (!data || !data.id) {
+            console.error("Attempted to set type on attribute from null data");
+          }
+
+          relationship.typeId = data.id;
+          snowowlService.getConceptPreferredTerm(relationship.typeId, scope.branch).then(function (response) {
+            relationship.typeName = response.term;
+          });
+        };
+
       }
     };
   })

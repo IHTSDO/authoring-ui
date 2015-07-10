@@ -33,4 +33,8 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     };
 
+    $scope.getConceptPropertiesObj = function(item) {
+      return {id: item.concept.conceptId, name: item.term};
+    }
+
   }]);
