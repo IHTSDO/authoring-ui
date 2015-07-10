@@ -174,6 +174,7 @@ angular.module('singleConceptAuthoringApp')
               relPresent = true;
             }
           });
+          var rel = {};
           if (!relPresent) {
             console.debug('adding new relationship');
             rel = objectService.getNewIsaRelationship(scope.concept.id);
@@ -183,13 +184,13 @@ angular.module('singleConceptAuthoringApp')
           // attribute relationship
           relPresent = false;
           angular.forEach(scope.concept.outboundRelationships, function (rel) {
-            if (rel.typeId != '116680003') {
+            if (rel.typeId !== '116680003') {
               relPresent = true;
             }
           });
           if (!relPresent) {
             console.debug('adding new attribute');
-            var rel = objectService.getNewRelationship(scope.concept.id);
+            rel = objectService.getNewRelationship(scope.concept.id);
             rel.id = null; // clear the default typeId
             scope.concept.outboundRelationships.push(rel);
           }
@@ -293,17 +294,17 @@ angular.module('singleConceptAuthoringApp')
           return {
             id: concept.id,
             name: concept.pt.term
-          }
+          };
         };
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
           console.debug('dropRelationshipTarget', relationship, data);
           if (!relationship) {
-            console.error("Attempted to set target on null relationship");
+            console.error('Attempted to set target on null relationship');
           }
           if (!data || !data.id || !data.name) {
-            console.error("Attempted to set target on relationship from null data");
+            console.error('Attempted to set target on relationship from null data');
           }
           relationship.destinationId = data.id;
           relationship.destinationName = data.name;
@@ -314,10 +315,10 @@ angular.module('singleConceptAuthoringApp')
           console.debug('dropAttributeType', relationship, data);
 
           if (!relationship) {
-            console.error("Attempted to set type on null attribute");
+            console.error('Attempted to set type on null attribute');
           }
           if (!data || !data.id) {
-            console.error("Attempted to set type on attribute from null data");
+            console.error('Attempted to set type on attribute from null data');
           }
 
           relationship.typeId = data.id;

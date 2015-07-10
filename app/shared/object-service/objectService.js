@@ -103,7 +103,7 @@ angular.module('singleConceptAuthoringApp')
           'term':null,
           'typeId':null
         }
-      }
+      };
 
       concept.descriptions.push(getNewDescription(null));
       concept.outboundRelationships.push(getNewIsaRelationship(null));
@@ -117,6 +117,6 @@ angular.module('singleConceptAuthoringApp')
       getNewDescription: getNewDescription,
       getNewIsaRelationship: getNewIsaRelationship,
       getNewAttributeRelationship: getNewAttributeRelationship
-    }
+    };
 
   }]);
