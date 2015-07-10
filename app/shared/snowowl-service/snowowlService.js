@@ -116,7 +116,6 @@ angular.module('singleConceptAuthoringApp')
 
         propsDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
           deferred.resolve(concept);
         }
       });
@@ -144,8 +143,6 @@ angular.module('singleConceptAuthoringApp')
       // get the outbound relationships
       getConceptRelationshipsOutbound(conceptId, branch).then(function (response) {
         concept.outboundRelationships = response;
-
-        console.debug('after rel', concept);
 
         relDone = true;
         if (ptDone && descDone && relDone && propsDone) {

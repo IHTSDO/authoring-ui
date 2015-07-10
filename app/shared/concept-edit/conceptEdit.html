@@ -124,7 +124,7 @@
         </div>
 
         <!-- linked concept and name:  droppable target for Concepts -->
-        <div class="pull-left sourcename" ui-draggable="true" drag="2" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+        <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
           <input disabled ng-model="relationship.destinationName" class="form-control color_{{relationship.group}}"
                  type="text" placeholder="#">
@@ -168,7 +168,7 @@
         </div>
 
         <!-- attribute type -->
-        <div class="pull-left sourcename" ui-draggable="true" drag="2" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+        <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropAttributeType(relationship, $data)">
           <input ng-disabled="relationship.effectiveTime" ng-model="relationship.typeName"
                  class="form-control color_{{relationship.group}}"
@@ -177,7 +177,7 @@
         </div>
 
         <!-- linked concept -->
-        <div class="pull-left sourcename" ui-draggable="true" drag="2" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+        <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
         ui-on-drop="dropRelationshipTarget(relationship, $data)">
           <input ng-disabled="relationship.effectiveTime" ng-model="relationship.destinationName"
                  class="form-control color_{{relationship.group}}"
