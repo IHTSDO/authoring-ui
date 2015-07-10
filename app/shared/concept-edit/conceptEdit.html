@@ -1,36 +1,35 @@
 <div>
   <div class=" row p-5 grey darken-4" style=" margin-right:0px;">
-              <span class="pull-left togglebutton">
-              <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-                      class="toggle-buttons">
-                <span ng-show="isCollapsed"><i class="md md-keyboard-arrow-right"></i></span><span
-                ng-show="!isCollapsed"><i class="md md-keyboard-arrow-down"></i></span></button>  </span>
-            <span class="pull-left">
-              <button type="button" class="btn btn-default editbuttons grey darken-4">
-                <span class="md md-more"></span></button></span>
+    <div class="pull-left">
+      <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+              ng-class="[btn, btn-default, editbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+      <button type="button" class="btn btn-default editbuttons grey darken-4 md md-more"></button>
 
-    <span class="pull-left title-text">{{concept.pt.term}}</span>
-            <span class="pull-right m-l-15 m-r-15 ">
-                <select name="select-primitive-choice" id="select-primitive-choice"
-                        class="form-control  grey darken-4 primitive">
-                  <option value="Choice 1">Primitive</option>
-                  <option value="Choice 2">Fully Defined</option>
-                </select>
-                </span>
-            <span class="pull-right no-margin">
-               <button type="button"
-                       ng-class="[btn-default, editbuttons, {green : concept.active}, {red: !concept.active}]"
-                       title="Active/Inactive" ng-click="toggleConceptActive(concept)"><span
-                 class="md md-settings-power "></span></button>
-               <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
-                 class="md md-undo "></span></button>
-               <button type="button" class="btn-default editbuttons deep-purple lighten-1" title="Undo Changes">
-                 <span class="md md-history"></span></button>
-                 <button type="button" class="btn-default editbuttons blue" title="Show Model"><span
-                   class="md md-keyboard-return "></span></button>
-                  <button type="button" class="btn-default editbuttons teal" title="Save"><span
-                    class="md-save"></span></button>
-            </span>
+    </div>
+
+    <!-- draggable element -- concept name -->
+    <div class="pull-left title-text"
+         ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
+      <button type="button" class="btn btn-default editbuttons grey darken-4 md md-pin-drop"></button>{{concept.pt.term}}</div>
+    <div class="pull-right m-l-15 m-r-15 ">
+      <select name="select-primitive-choice" id="select-primitive-choice"
+              class="form-control  grey darken-4 primitive">
+        <option value="Choice 1">Primitive</option>
+        <option value="Choice 2">Fully Defined</option>
+      </select>
+    </div>
+    <div class="pull-right no-margin">
+      <!-- TODO Fix this &#45;&#45; Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+      <button type="button"
+              style="vertical-align: bottom"
+              ng-class="[btn-default, editbuttons, md, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
+              title="Active/Inactive" ng-click="toggleConceptActive(concept)"></button>
+      <button type="button" class="btn-default editbuttons amber md md-undo " title="Undo Changes"></button>
+      <button type="button" class="btn-default editbuttons deep-purple lighten-1 md md-history"
+              title="History"></button>
+      <button type="button" class="btn-default editbuttons blue md md-keyboard-return" title="Show Model"></button>
+      <button type="button" class="btn-default editbuttons teal md md-save" title="Save"></button>
+    </div>
   </div>
 
   <!-- Toggle-able collapsed concept elements -->
@@ -41,54 +40,49 @@
 
       <div class="row grey darken-3 p-5">
         <div class="col-md-3 no-padding">
-  <span class="pull-left">
-    <button class="btn-default editbuttons grey darken-3"
-            title="Some title here"><span
-      class="md md-more"></span></button>
-
-    <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
-      class="md md-undo "></span>
-    </button>
-      <button type="button" class="btn-default editbuttons blue accent-2" title="Undo Changes"><span
-        class="md md-history"></span>
-      </button>
-     <button type="button"
-             ng-click="toggleDescriptionActive(description)"
-             ng-class="[btn-default, editbuttons, {green : description.active}, {red: !description.active}]"
-             title="Active/Inactive"><span
-       class="md md-settings-power "></span>
-     </button>
-
-  </span>
+          <div class="pull-left">
+            <button class="btn-default editbuttons grey darken-3 md md-more"
+                    title="Some title here"></button>
+            <button type="button" class="btn-default editbuttons amber md md-undo" title="Undo Changes"></button>
+            <button type="button" class="btn-default editbuttons blue accent-2 md md-history"
+                    title="Undo Changes"></button>
+            <!-- TODO Fix this &#45;&#45; Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+            <button type="button"
+                    style="vertical-align: bottom"
+                    ng-click="toggleDescriptionActive(description)"
+                    ng-class="[btn-default, editbuttons, md, 'md-settings-power', {green : description.active}, {red: !description.active}]"
+                    title="Active/Inactive">
+            </button>
+          </div>
         </div>
         <div class="col-md-9 no-padding">
-  <span class="pull-left description no-padding">
-   <input ng-disabled="description.effectiveTime" ng-model="description.term" class="form-control" type="text"
-          placeholder="Description">
-   </span>
-  <span class="pull-left typeid">
-      <select ng-disabled="description.effectiveTime" ng-options="typeId.id as typeId.abbr for typeId in typeIds"
-              ng-model="description.typeId"
-              name="select-typeId" id="select-typeId-choice" class="form-control ">
-      </select>
-      </span>
-  <span class="pull-left language">
-      <select ng-disabled="description.effectiveTime"
-              ng-options="language.id as language.abbr for language in languages" ng-model="description.languageCode"
-              name="select-language" id="select-language-choice" class="form-control "></select>
-
-      </span>
-  <span class="pull-left acceptability">
-      <select ng-disabled="description.effectiveTime"
-              ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
-              ng-model="description.acceptabilityMap['900000000000508004']" name="select-acceptability"
-              id="select-acceptability-choice" class="form-control ">
-      </select>
-      </span>
-  <span style="width:4%" class="pull-left">
-    <button type="button" ng-click="addDescription()" class="btn-default add-buttons" title="Add New Description"><i
-      class="md md-add-circle"></i></button>
-  </span>
+          <div class="pull-left description no-padding">
+            <input ng-disabled="description.effectiveTime" ng-model="description.term" class="form-control" type="text"
+                   placeholder="Description">
+          </div>
+          <div class="pull-left typeid">
+            <select ng-disabled="description.effectiveTime" ng-options="typeId.id as typeId.abbr for typeId in typeIds"
+                    ng-model="description.typeId"
+                    name="select-typeId" id="select-typeId-choice" class="form-control ">
+            </select>
+          </div>
+          <div class="pull-left language">
+            <select ng-disabled="description.effectiveTime"
+                    ng-options="language.id as language.abbr for language in languages"
+                    ng-model="description.languageCode"
+                    name="select-language" id="select-language-choice" class="form-control "></select>
+          </div>
+          <div class="pull-left acceptability">
+            <select ng-disabled="description.effectiveTime"
+                    ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
+                    ng-model="description.acceptabilityMap['900000000000508004']" name="select-acceptability"
+                    id="select-acceptability-choice" class="form-control ">
+            </select>
+          </div>
+          <div style="width:4%" class="pull-left">
+            <button type="button" ng-click="addDescription()" class="btn-default add-buttons md md-add-circle"
+                    title="Add New Description"></button>
+          </div>
         </div>
       </div>
     </div>
@@ -98,57 +92,48 @@
       <div class=" row grey darken-3 p-5">
 
         <!-- Button controls -->
-        <div class="col-md-3 no-padding">
-    <span class="pull-left">
-      <button class="btn-default editbuttons grey darken-3"
-              title="Some title here"><span
-        class="md md-more"></span></button>
-
-      <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
-        class="md md-undo "></span>
-      </button>
-         <button type="button" class="btn-default editbuttons blue accent-2" title="History"><span
-           class="md md-history"></span>
-         </button>
-       <button type="button"
-               ng-click="toggleRelationshipActive(relationship)"
-               ng-class="[btn, btn-default, editbuttons, {green : relationship.active}, {red: !relationship.active}]"
-               title="Active/Inactive"><span
-         class="md md-settings-power "></span>
-       </button>
-
-    </span>
+        <div class="col-md-3 no-padding pull-left">
+          <button class="btn-default editbuttons grey darken-3 md md-more"
+                  title="Some title here"></button>
+          <button type="button" class="btn-default editbuttons amber md md-undo" title="Undo Changes">
+          </button>
+          <button type="button" class="btn-default editbuttons blue accent-2 md md-history" title="History">
+          </button>
+          <!-- TODO Fix this &#45;&#45; Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+          <button type="button"
+                  style="vertical-align: bottom"
+                  ng-click="toggleRelationshipActive(relationship)"
+                  ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power', {green : relationship.active}, {red: !relationship.active}]"
+                  title="Active/Inactive">
+          </button>
         </div>
 
         <!-- relationship group -->
-  <span class="pull-left rolegroup">
-   <input ng-disabled="relationship.effectiveTime" ng-model="relationship.group" class="form-control color_{{relationship.group}}" type="text" placeholder="#">
-   </span>
+        <div class="pull-left rolegroup">
+          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.group"
+                 class="form-control color_{{relationship.group}}" type="text" placeholder="#">
+        </div>
 
         <!-- characteristic type -->
-  <span class="pull-left characteristictype ">
-    <select ng-disabled="relationship.effectiveTime" ng-model="relationship.characteristicType"
-            ng-options="characteristicType.id as characteristicType.abbr for characteristicType in characteristicTypes"
-            class="form-control color_{{relationship.group}}"></select>
-  </span>
+        <div class="pull-left characteristictype ">
+          <select ng-disabled="relationship.effectiveTime" ng-model="relationship.characteristicType"
+                  ng-options="characteristicType.id as characteristicType.abbr for characteristicType in characteristicTypes"
+                  class="form-control color_{{relationship.group}}"></select>
+        </div>
 
+        <!-- linked concept and name:  droppable target for Concepts -->
+        <div class="pull-left sourcename" ui-draggable="true" drag="2" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+             ui-on-drop="dropRelationshipTarget(relationship, $data)">
+          <input disabled ng-model="relationship.destinationName" class="form-control color_{{relationship.group}}"
+                 type="text" placeholder="#">
+        </div>
 
-        <!-- linked concept and name -->
-  <span class="pull-left sourceid">
-    <input ng-disabled="relationship.effectiveTime" ng-model="relationship.destinationId" class="form-control color_{{relationship.group}}" type="text"
-           placeholder="Target Id">
-    </span>
-  <span class="pull-left sourcename">
-    <input disabled ng-model="relationship.destinationName" class="form-control color_{{relationship.group}}"
-           type="text"
-           placeholder="#">
-
-    </span>
-
-          <span style="width:4%" class="pull-left">
-    <button type="button" ng-click="addRelationship(false)" class="btn-default add-buttons grey darken-3"
-            title="Add New Relationship"><i class="md md-add-circle"></i></button>
-  </span>
+        <!-- add relationship -->
+        <div style="width:4%" class="pull-left">
+          <button type="button" ng-click="addIsaRelationship()"
+                  class="btn-default add-buttons grey darken-3 md md-add-circle"
+                  title="Add New Relationship"></button>
+        </div>
       </div>
     </div>
 
@@ -158,57 +143,50 @@
 
         <!-- Button controls -->
         <div class="col-md-3 no-padding">
-    <span class="pull-left">
-      <button class="btn-default editbuttons grey darken-3"
-              title="Some title here"><span
-        class="md md-more"></span></button>
+          <div class="pull-left">
+            <button class="btn-default editbuttons grey darken-3 md md-more"
+                    title="Some title here"></button>
 
-      <button type="button" class="btn-default editbuttons amber" title="Undo Changes"><span
-        class="md md-undo "></span>
-      </button>
-         <button type="button" class="btn-default editbuttons blue accent-2" title="History"><span
-           class="md md-history"></span>
-         </button>
-       <button type="button"
-               ng-click="toggleRelationshipActive(relationship)"
-               ng-class="[btn, btn-default, editbuttons, {green : relationship.active}, {red: !relationship.active}]"
-               title="Active/Inactive"><span
-         class="md md-settings-power "></span>
-       </button>
-
-    </span>
+            <button type="button" class="btn-default editbuttons amber md md-undo" title="Undo Changes"></button>
+            <button type="button" class="btn-default editbuttons blue accent-2 md md-history" title="History"></button>
+            <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+            <button type="button"
+                    style="vertical-align: bottom"
+                    ng-click="toggleRelationshipActive(relationship)"
+                    ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power', {green : relationship.active}, {red: !relationship.active}]"
+                    title="Active/Inactive">
+            </button>
+          </div>
         </div>
 
         <!-- relationship group -->
-  <span class="pull-left rolegroup">
-   <input ng-disabled="relationship.effectiveTime" ng-model="relationship.group" class="form-control color_{{relationship.group}}" type="text" placeholder="#">
-   </span>
-
+        <div class="pull-left rolegroup">
+          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.group"
+                 class="form-control color_{{relationship.group}}" type="text" placeholder="#">
+        </div>
 
         <!-- attribute type -->
-  <span class="pull-left sourcename">
-    <input ng-disabled="relationship.effectiveTime"  ng-model="relationship.typeName" class="form-control color_{{relationship.group}}"
-           type="text"
-           placeholder="#">
-
-    </span>
-
+        <div class="pull-left sourcename" ui-draggable="true" drag="2" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+             ui-on-drop="dropAttributeType(relationship, $data)">
+          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.typeName"
+                 class="form-control color_{{relationship.group}}"
+                 type="text"
+                 placeholder="#">
+        </div>
 
         <!-- linked concept -->
+        <div class="pull-left sourcename" ui-draggable="true" drag="2" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+        ui-on-drop="dropRelationshipTarget(relationship, $data)">
+          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.destinationName"
+                 class="form-control color_{{relationship.group}}"
+                 type="text"
+                 placeholder="#">
+         </div>
 
-  <span class="pull-left sourcename">
-    <input ng-disabled="relationship.effectiveTime"  ng-model="relationship.destinationName" class="form-control color_{{relationship.group}}"
-           type="text"
-           placeholder="#">
-
-    </span>
-
-          <span style="width:4%" class="pull-left">
-    <button type="button" ng-click="addRelationship(true)" class="btn-default add-buttons grey darken-3"
-            title="Add New Attribute"><i class="md md-add-circle"></i></button>
-  </span>
-
-
+        <div style="width:4%" class="pull-left">
+          <button type="button" ng-click="addAttributeRelationship()" class="btn-default add-buttons grey  md md-add-circle"
+                  title="Add New Attribute"></button>
+        </div>
       </div>
     </div>
   </div>

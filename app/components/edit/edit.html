@@ -7,6 +7,7 @@
           <h3 class="grey-text">
             <span class="hidden-xs">Model</span>
           </h3>
+
           <div ng-repeat="concept in concepts" ng-if="conceptLoaded" draw-model concept="concept"></div>
         </div>
 
@@ -19,15 +20,13 @@
 
         <!-- row: Blue Create New Concept banner -->
         <div class="row clearfix" style="margin-right:0px;">
-       
-               <button type="button" class="btn-default btn-block create-new-concept" title="Active"><i class="md md-add-circle pull-right"></i> Create New Concept</button>
-       
-        </div>
-
-        <div ng-repeat="concept in concepts" concept-edit ctrl-fn="showModel(arg)" concept="concept" branch="branch">
+          <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept" title="Active"><i
+            class="md md-add-circle pull-right"></i> Create New Concept
+          </button>
         </div>
 
 
+      <div ng-repeat="concept in concepts" concept-edit ctrl-fn="showModel(arg)" concept="concept" branch="branch">
       </div>
 
 

@@ -56,7 +56,6 @@ angular.module('singleConceptAuthoringApp')
     // GET /{path}/concepts/{conceptId}/descriptions
     function getConceptDescriptions(conceptId, branch) {
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descriptions').then(function (response) {
-        console.debug(response.data);
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
@@ -115,8 +114,6 @@ angular.module('singleConceptAuthoringApp')
 
         concept.properties = response;
 
-        console.debug('after properties:', concept);
-
         propsDone = true;
         if (ptDone && descDone && relDone && propsDone) {
           console.debug('returning', concept);
@@ -128,12 +125,9 @@ angular.module('singleConceptAuthoringApp')
       getConceptPreferredTerm(conceptId, branch).then(function (response) {
         concept.pt = response;
 
-        console.debug('after pt', concept);
-
         ptDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
-          deferred.resolve(concept);
+           deferred.resolve(concept);
         }
       });
 
@@ -141,11 +135,8 @@ angular.module('singleConceptAuthoringApp')
       getConceptDescriptions(conceptId, branch).then(function (response) {
         concept.descriptions = response;
 
-        console.debug('after desc', concept);
-
         descDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
           deferred.resolve(concept);
         }
       });
@@ -158,7 +149,6 @@ angular.module('singleConceptAuthoringApp')
 
         relDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
           deferred.resolve(concept);
         }
       });
