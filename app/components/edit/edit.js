@@ -51,11 +51,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
         console.log(uiState);
-        $scope.items = uiState;
-        for (var i = 0; i < $scope.items.length; i++ ) {
-          $rootScope.$broadcast('savedList.editConcept', { conceptId : $scope.items[i] } );
+        if (!uiState) {
+          $scope.items = [];
         }
-        console.log($scope.items);
+        else {
+          $scope.items = uiState;
+          for (var i = 0; i < $scope.items.length; i++ ) {
+              $rootScope.$broadcast('savedList.editConcept', { conceptId : $scope.items[i] } );
+          }
+        }
         
       }
     );
