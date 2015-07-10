@@ -24,6 +24,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     // broadcasts selected conceptId
     $scope.selectItem = function (item) {
       if (item) {
+        console.log($scope.items);
         $scope.items.push(item.concept.conceptId);
         $scope.saveUIState($routeParams.projectId, $routeParams.taskId, $scope.items);
         $rootScope.$broadcast('savedList.editConcept', { conceptId : item.concept.conceptId } );
@@ -32,6 +33,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     $scope.clone = function(item) {
       if (item) {
+          console.log($scope.items);
         $scope.items.push(item.concept.conceptId);
         $scope.saveUIState($routeParams.projectId, $routeParams.taskId, $scope.items);
         $rootScope.$broadcast('savedList.cloneConcept', { conceptId : item.concept.conceptId });
