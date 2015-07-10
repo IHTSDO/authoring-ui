@@ -10,7 +10,7 @@
     <!-- draggable element -- concept name -->
     <div class="pull-left title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
-      <button type="button" class="btn btn-default editbuttons grey darken-4 md md-pin-drop"></button>{{concept.pt.term}}</div>
+      <button type="button" class="btn-default  grey darken-4 md-my-location"></button>{{concept.pt.term}}</div>
     <div class="pull-right m-l-15 m-r-15 ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               class="form-control  grey darken-4 primitive">
@@ -20,6 +20,8 @@
     </div>
     <div class="pull-right no-margin">
       <!-- TODO Fix this &#45;&#45; Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+        <button type="button" class="btn-default editbuttons orange darken-3 md md-backspace"
+              title="Remove Concept"></button>
       <button type="button"
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, md, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
@@ -57,26 +59,26 @@
         </div>
         <div class="col-md-9 no-padding">
           <div class="pull-left description no-padding">
-            <input ng-disabled="description.effectiveTime" ng-model="description.term" class="form-control" type="text"
+            <input ng-disabled="description.effectiveTime" ng-model="description.term" class="form-control color_{{relationship.group}}" type="text"
                    placeholder="Description">
           </div>
           <div class="pull-left typeid">
             <select ng-disabled="description.effectiveTime" ng-options="typeId.id as typeId.abbr for typeId in typeIds"
                     ng-model="description.typeId"
-                    name="select-typeId" id="select-typeId-choice" class="form-control ">
+                    name="select-typeId" id="select-typeId-choice" class="form-control color_{{relationship.group}}">
             </select>
           </div>
           <div class="pull-left language">
             <select ng-disabled="description.effectiveTime"
                     ng-options="language.id as language.abbr for language in languages"
                     ng-model="description.languageCode"
-                    name="select-language" id="select-language-choice" class="form-control "></select>
+                    name="select-language" id="select-language-choice" class="form-control color_{{relationship.group}}"></select>
           </div>
           <div class="pull-left acceptability">
             <select ng-disabled="description.effectiveTime"
                     ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
                     ng-model="description.acceptabilityMap['900000000000508004']" name="select-acceptability"
-                    id="select-acceptability-choice" class="form-control ">
+                    id="select-acceptability-choice" class="form-control color_{{relationship.group}}">
             </select>
           </div>
           <div style="width:4%" class="pull-left">
