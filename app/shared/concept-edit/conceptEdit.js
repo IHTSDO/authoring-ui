@@ -290,6 +290,7 @@ angular.module('singleConceptAuthoringApp')
         // Drag and drop functions
         ////////////////////////////////////
 
+        // construct an id-name pair json object
         scope.getConceptIdNamePair = function(concept) {
           return {
             id: concept.id,
@@ -325,6 +326,15 @@ angular.module('singleConceptAuthoringApp')
           snowowlService.getConceptPreferredTerm(relationship.typeId, scope.branch).then(function (response) {
             relationship.typeName = response.term;
           });
+        };
+
+        // dummy function added for now to prevent default behavior
+        // of dropping into untagged input boxes.  Issue has been raised
+        // with the repository developers, but not up to forking and fixing
+        // on my own right now -- too much to do! (PWG, 7/10/2015)
+        scope.dropNullOp = function() {
+          console.debug('drop detected -- null op on input field');
+          return null;
         };
 
       }

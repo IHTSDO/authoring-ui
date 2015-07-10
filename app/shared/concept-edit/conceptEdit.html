@@ -60,7 +60,7 @@
         <div class="col-md-9 no-padding">
           <div class="pull-left description no-padding">
             <input ng-disabled="description.effectiveTime" ng-model="description.term" class="form-control color_{{relationship.group}}" type="text"
-                   placeholder="Description">
+                   placeholder="Description" ui-on-drop="dropNullOp()">
           </div>
           <div class="pull-left typeid">
             <select ng-disabled="description.effectiveTime" ng-options="typeId.id as typeId.abbr for typeId in typeIds"
@@ -113,7 +113,7 @@
         <!-- relationship group -->
         <div class="pull-left rolegroup">
           <input ng-disabled="relationship.effectiveTime" ng-model="relationship.group"
-                 class="form-control color_{{relationship.group}}" type="text" placeholder="#">
+                 class="form-control color_{{relationship.group}}" type="text" placeholder="#" ui-on-drop="dropNullOp()">
         </div>
 
         <!-- characteristic type -->
@@ -164,7 +164,7 @@
         <!-- relationship group -->
         <div class="pull-left rolegroup">
           <input ng-disabled="relationship.effectiveTime" ng-model="relationship.group"
-                 class="form-control color_{{relationship.group}}" type="text" placeholder="#">
+                 class="form-control color_{{relationship.group}}" type="text" placeholder="#" ui-on-drop="dropNullOp()">
         </div>
 
         <!-- attribute type -->
