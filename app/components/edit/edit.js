@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.items = [];
     $scope.showModel = function (length) {
       if (length === $scope.count) {
-        console.log($scope.count + ' ' + length);
+
         $scope.conceptLoaded = true;
         $scope.count = 1;
       }
@@ -50,7 +50,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
-        console.log(uiState);
+
         if (!uiState || Object.getOwnPropertyNames(uiState).length == 0) {
           $scope.items = [];
         }
@@ -73,7 +73,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (response) {
-        console.debug('full concept received', response);
         $scope.concepts.push(response);
       });
     });

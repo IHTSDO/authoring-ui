@@ -291,29 +291,60 @@ angular.module('singleConceptAuthoringApp')
         ////////////////////////////////////
 
         // construct an id-name pair json object
-        scope.getConceptIdNamePair = function(concept) {
+        scope.getConceptIdNamePair = function (concept) {
           return {
             id: concept.id,
             name: concept.pt.term
           };
         };
 
+        // construct an id-name pair json object from relationship target
+        scope.getConceptIdNamePairFromRelationshipTarget = function (relationship) {
+          return {
+            id: relationship.destinationId,
+            name: relationship.destinationName
+          };
+        };
+
+        // construct an id-name pair json object from attribute type
+        scope.getConceptIdNamePairFromAttributeType = function (relationship) {
+          return {
+            id: relationship.typeId,
+            name: relationship.typeName
+          };
+        };
+
         scope.dropRelationshipTarget = function (relationship, data) {
 
-          console.debug('dropRelationshipTarget', relationship, data);
+          // check if modifications can be made (via effectiveTime)
+          if (relationship.effectiveTime) {
+            return;
+          }
+
           if (!relationship) {
             console.error('Attempted to set target on null relationship');
           }
-          if (!data || !data.id || !data.name) {
+          if (!data || !data.id) {
             console.error('Attempted to set target on relationship from null data');
           }
           relationship.destinationId = data.id;
-          relationship.destinationName = data.name;
 
+          // if name supplied, use it, otherwise retrieve it
+          if (data.name) {
+            relationship.destinationName = data.name;
+          } else {
+            snowowlService.getConceptPreferredTerm(data.id, scope.branc).then(function (response) {
+              relationship.destinationName = response.term;
+            });
+          }
         };
 
-        scope.dropAttributeType = function(relationship, data) {
-          console.debug('dropAttributeType', relationship, data);
+        scope.dropAttributeType = function (relationship, data) {
+
+          // check if modifications can be made (via effectiveTime)
+          if (relationship.effectiveTime) {
+            return;
+          }
 
           if (!relationship) {
             console.error('Attempted to set type on null attribute');
@@ -323,17 +354,22 @@ angular.module('singleConceptAuthoringApp')
           }
 
           relationship.typeId = data.id;
-          snowowlService.getConceptPreferredTerm(relationship.typeId, scope.branch).then(function (response) {
-            relationship.typeName = response.term;
-          });
+          
+          // if name supplied, use it, otherwise retrieve it
+          if (data.name) {
+            relationship.typeName = data.name;
+          } else {
+            snowowlService.getConceptPreferredTerm(data.id, scope.branc).then(function (response) {
+              relationship.typeName = response.term;
+            });
+          }
         };
 
         // dummy function added for now to prevent default behavior
         // of dropping into untagged input boxes.  Issue has been raised
         // with the repository developers, but not up to forking and fixing
         // on my own right now -- too much to do! (PWG, 7/10/2015)
-        scope.dropNullOp = function() {
-          console.debug('drop detected -- null op on input field');
+        scope.dropNullOp = function () {
           return null;
         };
 
