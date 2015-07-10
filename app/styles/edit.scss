@@ -10,6 +10,7 @@ button, .btn {
 .create-new-concept{background-color:#00a6e5 !important; text-align:left !important; color:#fff !important; font-size:14px!important; padding:13px !important; line-height:1 !important}
 .create-new-concept:hover{background-color:#039be5 !important; text-align:left !important; color:#fff !important; font-size:14px!important; }
 .create-new-concept i{font-size:17px!important; }
+.savedlist-buttons{width:50px;}
 // responsive begins
 @media screen and (max-width: 1850px) {
   .editing-form {
@@ -553,7 +554,7 @@ aside.editpanel ul a {
     padding-left: 1%;
   }
   .sourcename {
-    width: 45%;
+    width: 34%;
     padding-left: 1%;
   }
 }
