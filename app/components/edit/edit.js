@@ -17,6 +17,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conceptLoaded = false;
     $rootScope.pageTitle = 'Edit Concept';
     $scope.count = 1;
+    $scope.items = [];
     $scope.showModel = function (length) {
       if (length === $scope.count) {
         console.log($scope.count + ' ' + length);
@@ -46,9 +47,22 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
     );
+    scaService.getUIState(
+      $routeParams.projectId, $routeParams.taskId, 'edit-panel')
+      .then(function (uiState) {
+        console.log(uiState);
+        $scope.items = uiState;
+        for (var i = 0; i < $scope.items.length; i++ ) {
+          $rootScope.$broadcast('savedList.editConcept', { conceptId : $scope.items[i] } );
+        }
+        console.log($scope.items);
+        
+      }
+    );
 
     // watch for concept selection from the edit sidebar
     $scope.$on('savedList.editConcept', function (event, data) {
+      console.log("Watcher");
       $scope.conceptLoaded = false;
       if (!data || !data.conceptId) {
         $scope.conceptLoaded = false;
