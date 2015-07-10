@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.createConcept = function() {
       var concept = objectService.getNewConcept($scope.branch);
       $scope.concepts.push(concept);
-    }
+    };
 
     // removes concept from editing list (unused currently)
     $scope.closeConcept = function (concept) {
@@ -141,36 +141,33 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
       if (!conceptProperties.id) {
-        console.error("Concept properties object dropped has no id");
+        console.error('Concept properties object dropped has no id');
       }
       if (!conceptProperties.pt) {
-        console.error("Concept properties object dropped has no name");
+        console.error('Concept properties object dropped has no name');
       }
       if (!conceptProperties.effectiveTime) {
-        console.error("Concept properties object dropped has no effectiveTime");
+        console.error('Concept properties object dropped has no effectiveTime');
       }
       if (!conceptProperties.branch) {
-        console.error("Concept properties object dropped has no branch");
+        console.error('Concept properties object dropped has no branch');
       }
 
       // ensure this concept is not already present
-      angular.forEach(scope.concepts, function (concept) {
+      angular.forEach($scope.concepts, function (concept) {
 
         // TODO Revisit once branching enabled
         // check if this concept already exists
-        if (concept.id === conceptProperties.id
-          && concept.pt === conceptProperties.pt
-          && concept.effectiveTime === conceptProperties.effectiveTime
-          && scope.branch === branch) {
+        if (concept.id === conceptProperties.id && concept.pt === conceptProperties.pt && concept.effectiveTime === conceptProperties.effectiveTime && $scope.branch === conceptProperties.branch) {
 
-          console.warn("Concept already on list:", conceptProperties);
+          console.warn('Concept already on list:', conceptProperties);
           return;
         }
         // get the concept and add it to the stack
-        snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (response) {
+        snowowlService.getFullConcept(conceptProperties.conceptId, $scope.branch).then(function (response) {
           $scope.concepts.push(response);
         });
       });
 
-    }
-  })
+    };
+  });

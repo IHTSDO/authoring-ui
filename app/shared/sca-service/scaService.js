@@ -52,7 +52,7 @@ angular.module('singleConceptAuthoringApp')
       // get current user's tasks for a project
       getTasksForProject: function (projectKey) {
         if (!projectKey) {
-          console.error("Must specify projectKey to get tasks for project");
+          console.error('Must specify projectKey to get tasks for project');
           return {};
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks').then(
@@ -67,11 +67,11 @@ angular.module('singleConceptAuthoringApp')
       // create a task for a project, assigned to current user
       createTaskForProject: function (projectKey, task) {
         if (!projectKey) {
-          console.error("Must specify projectKey to create a task");
+          console.error('Must specify projectKey to create a task');
           return {};
         }
         if (!task) {
-          console.error("Must specify task parameters to create a task");
+          console.error('Must specify task parameters to create a task');
         }
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks', task).then(
           function (response) {
@@ -85,11 +85,11 @@ angular.module('singleConceptAuthoringApp')
       // get a specific task for a project
       getTaskForProject: function (projectKey, taskKey) {
         if (!projectKey) {
-          console.error("Must specify projectKey to get a task for project");
+          console.error('Must specify projectKey to get a task for project');
           return {};
         }
         if (!taskKey) {
-          console.error("Must specify taskKey to get a task for project");
+          console.error('Must specify taskKey to get a task for project');
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
           function (response) {
@@ -107,15 +107,15 @@ angular.module('singleConceptAuthoringApp')
       // get the UI state for a project, task, and panel triplet
       getUIState: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
-          console.error("Must specify projectKey to get UI state");
+          console.error('Must specify projectKey to get UI state');
           return {};
         }
         if (!taskKey) {
-          console.error("Must specify taskKey to get UI state");
+          console.error('Must specify taskKey to get UI state');
           return {};
         }
         if (!panelId) {
-          console.error("Must specify panelId to get UI state");
+          console.error('Must specify panelId to get UI state');
           return {};
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
@@ -130,19 +130,19 @@ angular.module('singleConceptAuthoringApp')
       // save the UI state for a project, task, and panel triplet
       saveUIState: function (projectKey, taskKey, panelId, uiState) {
         if (!projectKey) {
-          console.error("Must specify projectKey to save UI state");
+          console.error('Must specify projectKey to save UI state');
           return {};
         }
         if (!taskKey) {
-          console.error("Must specify taskKey to save UI state");
+          console.error('Must specify taskKey to save UI state');
           return {};
         }
         if (!panelId) {
-          console.error("Must specify panelId to save UI state");
+          console.error('Must specify panelId to save UI state');
           return {};
         }
         if (!uiState) {
-          console.error("Must supply ui state in order to save it");
+          console.error('Must supply ui state in order to save it');
           return {};
         }
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId, uiState).then(
