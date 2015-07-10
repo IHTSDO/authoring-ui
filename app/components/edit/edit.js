@@ -51,7 +51,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
         console.log(uiState);
-        if (!uiState) {
+        if (!uiState || Object.getOwnPropertyNames(uiState).length == 0) {
           $scope.items = [];
         }
         else {
@@ -66,7 +66,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // watch for concept selection from the edit sidebar
     $scope.$on('savedList.editConcept', function (event, data) {
-      console.log("Watcher");
       $scope.conceptLoaded = false;
       if (!data || !data.conceptId) {
         $scope.conceptLoaded = false;
