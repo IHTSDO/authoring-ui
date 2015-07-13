@@ -1,6 +1,7 @@
 button, .btn {
   border: none !important;
 }
+.darkbuttons:active {background-color:#212121 !important; color:#66bbfd !important;}
 .toggle-buttons{background-color:#212121 !important; padding:1px 3px !important; color:#BEBEBE !important}
 .toggle-buttons:hover{color:#2196F3 !important}
 .add-buttons{background-color:#424242 !important; padding:1px 3px !important; color:#dcdcdc !important}
@@ -28,6 +29,7 @@ button, .btn {
   top: 18px;
   font-size: 22px;
 }
+.fsn {padding-bottom:3px; font-size:12px; float:left;}
 // responsive begins
 @media screen and (max-width: 1850px) {
   .editing-form {
@@ -48,7 +50,7 @@ button, .btn {
   }
   .title-text {
     font-size: 11px;
-    padding: 5px;
+    padding: 4px 0px 0px 3px;
   }
 }
 
@@ -70,7 +72,8 @@ button, .btn {
   }
   .title-text {
     font-size: 12px;
-    padding: 10px;
+    line-height:1;
+	padding:8px 0px 0px 0px;
   }
 }
 // responsive ends
@@ -80,6 +83,13 @@ button, .btn {
   a {
     color: #666;
   }
+  .darkbuttons {
+  font-size: 20px;
+  padding: 10px 10px 5px 3px !important;
+  box-shadow:none!important;
+  line-height:1.8 !important;
+}
+
 }
 
 aside.editpanel ul a {
@@ -108,6 +118,12 @@ aside.editpanel ul a {
   box-shadow:none!important;
 }
 
+.morebuttons {
+  font-size: 20px;
+  padding: 0px 3px !important;
+  box-shadow:none!important;
+
+}
 .popover {
   select.form-control {
     background-color: #fff;

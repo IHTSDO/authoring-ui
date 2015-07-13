@@ -2,15 +2,15 @@
   <div class=" row p-5 grey darken-4" style=" margin-right:0px;">
     <div class="pull-left">
       <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-              ng-class="[btn, btn-default, editbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
-      <button type="button" class="btn btn-default editbuttons grey darken-4 md md-more"></button>
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+      <button type="button" class="btn btn-default morebuttons grey darken-4 md md-more "></button>
 
     </div>
 
     <!-- draggable element -- concept name -->
     <div class="pull-left title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
-      <button type="button" class="btn-default  grey darken-4 md-my-location"></button>{{concept.pt.term}}</div>
+      <button type="button" class="btn-default darkbuttons grey darken-4 "> <i class="md-my-location pull-left"></i><span class="fsn">{{concept.pt.term}}</span></button></div>
     <div class="pull-right m-l-15 m-r-15 ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               class="form-control  grey darken-4 primitive">
