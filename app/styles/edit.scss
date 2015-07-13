@@ -1,7 +1,7 @@
 button, .btn {
   border: none !important;
 }
-.darkbuttons:active {background-color:#212121 !important; color:#66bbfd !important;}
+.darkbuttons:active, .darkbuttons:focus {background-color:#212121 !important; color:#66bbfd !important;}
 .toggle-buttons{background-color:#212121 !important; padding:1px 3px !important; color:#BEBEBE !important}
 .toggle-buttons:hover{color:#2196F3 !important}
 .add-buttons{background-color:#424242 !important; padding:1px 3px !important; color:#dcdcdc !important}
