@@ -30,6 +30,12 @@ button, .btn {
   font-size: 22px;
 }
 .fsn {padding-bottom:3px; font-size:12px; float:left;}
+.editbuttons.orange.darken-3:hover{background-color:#e65100 !important; color:#fff !important}
+.editbuttons.amber:hover{background-color:#ff8f00 !important; color:#fff !important}
+.editbuttons.deep-purple.lighten-1:hover{background-color:#5e35b1 !important; color:#fff !important}
+.editbuttons.blue:hover {background-color:#1976D2 !important; color:#fff !important}
+.editbuttons.teal:hover{background-color:#00796b !important; color:#fff !important}
+.saved-list-title {font-size:12px !important; text-transform:none !important; background-color:transparent !important; }
 // responsive begins
 @media screen and (max-width: 1850px) {
   .editing-form {
