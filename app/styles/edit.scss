@@ -13,6 +13,21 @@ button, .btn {
 .savedlist-buttons{width:50px;}
 .color_[disabled]{background-color:#303030 !important; color: #BBDEFB !important; border-bottom:none !important}
 .color_0[disabled]{background-color:#303030 !important; color: #f8bbd0 !important; border-bottom:none !important}
+.no-padding-left{padding-left:0px !important;}
+.no-padding-right{padding-right:0px !important;}
+.create-links:after {
+  content: "\f1ed";
+  color: #4fc3f7;
+  display: inline-block;
+  font: normal normal normal 14px/1 'Material Design Iconic Font';
+  speak: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  position: absolute;
+  right: 5px;
+  top: 18px;
+  font-size: 22px;
+}
 // responsive begins
 @media screen and (max-width: 1850px) {
   .editing-form {
