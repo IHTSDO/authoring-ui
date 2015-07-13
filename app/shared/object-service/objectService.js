@@ -18,7 +18,7 @@ angular.module('singleConceptAuthoringApp')
         'active': false,
         'moduleId': '900000000000207008',
         'conceptId': conceptId,
-        'typeId': '900000000000013009',
+        'typeId': '900000000000003001',
         'term': null,
         'languageCode': 'en',
         'caseSignificance': 'ENTIRE_TERM_CASE_SENSITIVE',
@@ -107,7 +107,7 @@ angular.module('singleConceptAuthoringApp')
 
       concept.descriptions.push(getNewDescription(null));
       concept.outboundRelationships.push(getNewIsaRelationship(null));
-      concept.outboundRelationships.push(getNewAttributeRelationship(null));
+      //concept.outboundRelationships.push(getNewAttributeRelationship(null));
 
       return concept;
     }

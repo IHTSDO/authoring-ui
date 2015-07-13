@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .directive('conceptEdit', function ($modal, $q, snowowlService, objectService) {
+  .directive('conceptEdit', function ($modal, $q, snowowlService, objectService, $routeParams) {
     return {
       restrict: 'A',
       transclude: true,
@@ -40,6 +40,59 @@ angular.module('singleConceptAuthoringApp')
           {id: '', text: 'Reason not stated concept (inactive concept)'},
           {id: '', text: 'No reason'}
         ];
+          
+        //Save a new concept to TS
+        scope.saveNewConcept = function(concept){
+
+        };
+
+        //Parse the concept to the expected browser endpoint input format
+        scope.parseConcept = function (conceptIn){
+            var concept = {};
+            //concept.conceptId = conceptIn.id;
+            concept.isLeafInferred = false;
+            concept.descriptions = [];
+            concept.relationships = [];
+            angular.forEach(conceptIn.descriptions, function(value){
+                var description = {};
+                description.moduleId = value.moduleId;
+                description.term = value.term;
+                description.active = value.active;
+                description.caseSignificance = value.caseSignificance;
+                description.acceptabilityMap = value.acceptabilityMap;
+                description.lang = value.languageCode;
+                if(value.typeId === '900000000000003001')
+                {
+                    concept.fsn = value.term;
+                    description.type = 'FSN';
+                }
+                
+                concept.descriptions.push(description);
+            });
+            angular.forEach(conceptIn.outboundRelationships, function(item){
+                var relationship = {};
+                relationship.modifier = item.modifier;
+                relationship.groupId = item.group;
+                relationship.moduleId = item.moduleId;
+                relationship.target = {'conceptId' : item.destinationId};
+                relationship.active = item.active;
+                relationship.characteristicType = item.characteristicType;
+                relationship.type = {'conceptId' : item.typeId};
+                concept.relationships.push(relationship);
+            });
+            concept.definitionStatus = conceptIn.properties.definitionStatus;
+            concept.active = conceptIn.properties.active;
+            concept.moduleId = conceptIn.properties.moduleId;
+            console.log(concept);
+            console.log(conceptIn);
+            return concept;
+        };
+        //Write changes to a concept to the TS
+        scope.updateConcept = function(concept){
+            var newConcept = scope.parseConcept(concept);
+            //snowowlService.updateConcept(newConcept.conceptId, $routeParams.projectId, $routeParams.taskId, newConcept); 
+            snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, newConcept); 
+        };
 
         scope.toggleConceptActive = function (Conceptconcept) {
           // if inactive, simply set active
