@@ -10,12 +10,12 @@
     <tr ng-repeat="item in savedList.items">
 
       <td>
-        <div class="pull-left title-text"
+        <div class="pull-left"
              ui-draggable="true" drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
-          <button class="btn btn-default saved-list-buttons pull-left md-my-location"></button>
+          <button class="btn btn-default saved-list-title no-padding">  {{item.term}}</button>
 
         </div>
-        {{item.term}}
+       
       </td>
       <td>{{item.concept.fsn}}</td>
       <td>
