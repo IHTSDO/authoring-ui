@@ -51,7 +51,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
 
-        if (!uiState || Object.getOwnPropertyNames(uiState).length == 0) {
+        if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
           $scope.items = [];
         }
         else {

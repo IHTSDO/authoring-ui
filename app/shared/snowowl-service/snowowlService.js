@@ -8,6 +8,29 @@ angular.module('singleConceptAuthoringApp')
     // Snowowl Concept Retrieval Methods
     /////////////////////////////////////
 
+      
+    // Create New Concept
+    // POST /browser/{path}/concepts
+    function createConcept(project, task, concept) {
+      return $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+        return response.data;
+      }, function (error) {
+        // TODO Handle error
+      });
+
+    }
+      
+    // Update Existing Concept
+    // PUT /browser/{path}/concepts/{conceptId}
+    function updateConcept(conceptId, project, task, concept) {
+      return $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + conceptId, concept).then(function (response) {
+        return response.data;
+      }, function (error) {
+        // TODO Handle error
+      });
+
+    }
+      
     // Retrieve Concept properties
     // GET {path}/concepts/{conceptId}
     function getConceptProperties(conceptId, branch) {
@@ -158,6 +181,8 @@ angular.module('singleConceptAuthoringApp')
 
       getConceptProperties: getConceptProperties,
       getConceptPreferredTerm: getConceptPreferredTerm,
+      updateConcept: updateConcept,
+      createConcept: createConcept,
       getConceptAncestors: getConceptAncestors,
       getConceptDescendants: getConceptDescendants,
       getConceptDescriptions: getConceptDescriptions,
