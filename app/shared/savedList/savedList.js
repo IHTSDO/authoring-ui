@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
           $routeParams.projectId, $routeParams.taskId, 'saved-list', $scope.savedList
         );
       }
-    }
+    };
 
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.term};

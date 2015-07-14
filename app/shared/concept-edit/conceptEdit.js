@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp')
                 });
 
               }
-            })
+            });
           }
 
           // if not new, use update
@@ -476,7 +476,7 @@ angular.module('singleConceptAuthoringApp')
             console.error('Description must have term specified');
             return false;
           }
-          if (description.active == null) {
+          if (description.active === null) {
             console.error('Description active flag must be set');
             return false;
           }
@@ -486,7 +486,7 @@ angular.module('singleConceptAuthoringApp')
           }
           if (!description.caseSignificance) {
             console.error('Description case significance must be set');
-            return false
+            return false;
           }
           if (!description.acceptabilityMap) {
             console.error('Description acceptability map must be set');
@@ -505,7 +505,7 @@ angular.module('singleConceptAuthoringApp')
             console.error('Relationship modifier must be set');
             return false;
           }
-          if (relationship.groupId == null) {
+          if (relationship.groupId === null) {
             console.error('Relationship groupId must be set');
             return false;
           }
@@ -540,15 +540,15 @@ angular.module('singleConceptAuthoringApp')
           console.debug('validating concept', concept);
 
           // check the basic concept fields
-          if (concept.isLeafInferred == null) {
+          if (concept.isLeafInferred === null) {
             console.error('Concept isleafInferred flag must be set');
             return false;
           }
-          if (!concept.descriptions || concept.descriptions.length == 0) {
+          if (!concept.descriptions || concept.descriptions.length === 0) {
             console.error('Concept must have at least one description');
             return false;
           }
-          if (!concept.relationships || concept.relationships.length == 0) {
+          if (!concept.relationships || concept.relationships.length === 0) {
             console.error('Concept must have at lalst one relationship');
             return false;
           }
@@ -556,7 +556,7 @@ angular.module('singleConceptAuthoringApp')
             console.error('Concept definitionStatus must be set');
             return false;
           }
-          if (concept.active == null) {
+          if (concept.active === null) {
             console.error('Concept active flag must be set');
             return false;
           }
@@ -574,9 +574,9 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // check relationships
-          for (var i = 0; i < concept.relationships.length; i++) {
-            if (!scope.isRelationshipValid(concept.relationships[i])) {
-              console.error('Relationships not valid', concept.relationships[i]);
+          for (var j = 0; j < concept.relationships.length; j++) {
+            if (!scope.isRelationshipValid(concept.relationships[j])) {
+              console.error('Relationships not valid', concept.relationships[j]);
               return false;
             }
           }
