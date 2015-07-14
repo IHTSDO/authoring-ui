@@ -46,7 +46,8 @@ angular.module('singleConceptAuthoringApp')
 
             parentDiv.svg({
                 settings: {height: '600px',
-                    width: '1000px'}});
+                    width: '1000px',
+                    id: 'model' + concept.id}});
             var svg = parentDiv.svg('get');
             loadDefs(svg);
             var x = 10;

@@ -3,14 +3,13 @@
   <div class="sca-content" style="height:100%; overflow-y:scroll;">
     <div ng-repeat="concept in concepts" ng-if="concepts.length != 0" class="row no-gutter" style="margin-right:0px; border-top:2px black;">
       <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9;">
-        <div class="p-20 clearfix">
+        <div class="clearfix" style="margin-top:20px;">
 <!--
           <h3 ng-if="$index === 0" class="grey-text">
             <span class="hidden-xs">Model</span>
           </h3>
 -->
-
-          <div style="height:auto;" ng-if="conceptLoaded" draw-model concept="concept"></div>
+          <div style="height:auto;" ng-if="conceptLoaded" draw-model concept="concept" id="{{concept.id}}"></div>
         </div>
 
         <div class="p-20 no-p-t">
@@ -26,7 +25,7 @@
             class="md md-add-circle pull-right"></i> Create New Concept
           </button>
         </div>
-      <div concept-edit ctrl-fn="showModel(arg)" concept="concept" branch="branch">
+      <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept" branch="branch" id="editPanel-{{concept.id}}">
       </div>
     </div>
   </div>
