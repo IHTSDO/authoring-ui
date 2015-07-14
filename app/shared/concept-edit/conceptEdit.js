@@ -25,6 +25,20 @@ angular.module('singleConceptAuthoringApp')
         if (!scope.branch) {
           console.error('conceptEdit directive requires branch to be specified');
         }
+          
+          
+        scope.collapse = function(concept) {
+          if(scope.isCollapsed === true)
+          {
+              scope.isCollapsed = false;
+              $('.sca-content').find('#' + concept.id).css('display', 'inline-block');
+          }
+          else{
+              scope.isCollapsed = true;
+              $('.sca-content').find('#' + concept.id).css('display', 'none');
+          }
+          
+        };
 
         scope.conceptSessionHistory = [];
 
@@ -326,7 +340,7 @@ angular.module('singleConceptAuthoringApp')
 
           snowowlService.getConceptPreferredTerm(rel.destinationId, scope.branch).then(function (response) {
             rel.destinationName = response.term;
-            scope.ctrlFn({arg: scope.concept.outboundRelationships.length});
+            scope.ctrlFn({arg: scope.concept.outboundRelationships.length, arg2: scope.concept});
           });
 
           // if not an isa relationship, retrieve attribute type
@@ -338,6 +352,9 @@ angular.module('singleConceptAuthoringApp')
           }
 
         });
+        
+        
+        
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle

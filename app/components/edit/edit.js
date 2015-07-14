@@ -13,19 +13,29 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams) {
+  .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout) {
     $scope.conceptLoaded = false;
     $rootScope.pageTitle = 'Edit Concept';
     $scope.count = 1;
-    $scope.showModel = function (length) {
+    $scope.showModel = function (length, concept) {
       if (length === $scope.count) {
-
         $scope.conceptLoaded = true;
+        $timeout(function() {
+            $scope.resizeSvg(concept);
+        }, 200);
+        
         $scope.count = 1;
       }
       else {
         $scope.count++;
       }
+    };
+    
+    $scope.resizeSvg = function(concept){
+        var height = $('#editPanel-' + concept.id).find('.editHeightSelector').height() + 42;
+        var elem = document.getElementById('model' + concept.id);
+        console.log(elem);
+        elem.setAttribute('height', height + 'px');
     };
 
     // TODO: Update this when $scope.branching is enabled
