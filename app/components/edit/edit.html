@@ -1,14 +1,16 @@
 <div class="sca-container col-sm-12 no-padding">
   <div ng-include src="'layout/sidebar-edit.html'"></div>
-  <div class="sca-content" style="height:100%">
-    <div class="row no-gutter" style="height:100%; margin-right:0px;">
+  <div class="sca-content" style="height:100%; overflow-y:scroll;">
+    <div ng-repeat="concept in concepts" ng-if="concepts.length != 0" class="row no-gutter" style="margin-right:0px; border-top:2px black;">
       <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9;">
         <div class="p-20 clearfix">
-          <h3 class="grey-text">
+<!--
+          <h3 ng-if="$index === 0" class="grey-text">
             <span class="hidden-xs">Model</span>
           </h3>
+-->
 
-          <div ng-repeat="concept in concepts" style="height:auto;" ng-if="conceptLoaded" draw-model concept="concept"></div>
+          <div style="height:auto;" ng-if="conceptLoaded" draw-model concept="concept"></div>
         </div>
 
         <div class="p-20 no-p-t">
@@ -16,7 +18,32 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6 edit-scroll editing-form grey darken-3" style="height:100%">
+      <div class="col-lg-6 editing-form grey darken-3" style="height:100%">
+
+        <!-- row: Blue Create New Concept banner -->
+        <div ng-if="$index === 0" class="row clearfix" style="margin-right:0px;">
+          <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept" title="Active"><i
+            class="md md-add-circle pull-right"></i> Create New Concept
+          </button>
+        </div>
+      <div concept-edit ctrl-fn="showModel(arg)" concept="concept" branch="branch">
+      </div>
+    </div>
+  </div>
+  <div ng-if="!concepts.length > 0" class="row no-gutter" style="margin-right:0px; height:100%;">
+      <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9;">
+        <div class="p-20 clearfix">
+          <h3 class="grey-text">
+            <span class="hidden-xs">Model</span>
+          </h3>
+        </div>
+
+        <div class="p-20 no-p-t">
+          <div class="row gutter-14" style="margin-right:0px;">
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 editing-form grey darken-3" style="height:100%">
 
         <!-- row: Blue Create New Concept banner -->
         <div class="row clearfix" style="margin-right:0px;">
@@ -24,12 +51,10 @@
             class="md md-add-circle pull-right"></i> Create New Concept
           </button>
         </div>
-
-
-      <div ng-repeat="concept in concepts" concept-edit ctrl-fn="showModel(arg)" concept="concept" branch="branch">
+          
       </div>
-
-
     </div>
   </div>
+
+    </div>
 </div>
