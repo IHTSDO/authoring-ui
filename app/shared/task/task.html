@@ -41,11 +41,13 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-success"
+       <div class="col-md-6 no-padding-left">
+      <button type="button" class="col-md-12 btn btn-info no-margin no-padding-left"
               ng-click="createTask(taskTitle, taskProject, taskDetails) == true ? $hide() : ''">Create Task
       </button>
-      <button type="button" class="btn btn-danger" ng-click="close()">Cancel</button>
-    </div>
+      </div>  <div class="col-md-6 no-padding-right">
+      <button type="button" class=" col-md-12 btn btn-danger no-margin no-padding-right" ng-click="close()">Cancel</button>
+    </div></div>
 
   </div>
 

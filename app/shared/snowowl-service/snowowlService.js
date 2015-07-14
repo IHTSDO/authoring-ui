@@ -8,6 +8,29 @@ angular.module('singleConceptAuthoringApp')
     // Snowowl Concept Retrieval Methods
     /////////////////////////////////////
 
+      
+    // Create New Concept
+    // POST /browser/{path}/concepts
+    function createConcept(project, task, concept) {
+      return $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+        return response.data;
+      }, function (error) {
+        // TODO Handle error
+      });
+
+    }
+      
+    // Update Existing Concept
+    // PUT /browser/{path}/concepts/{conceptId}
+    function updateConcept(conceptId, project, task, concept) {
+      return $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + conceptId, concept).then(function (response) {
+        return response.data;
+      }, function (error) {
+        // TODO Handle error
+      });
+
+    }
+      
     // Retrieve Concept properties
     // GET {path}/concepts/{conceptId}
     function getConceptProperties(conceptId, branch) {
@@ -56,7 +79,6 @@ angular.module('singleConceptAuthoringApp')
     // GET /{path}/concepts/{conceptId}/descriptions
     function getConceptDescriptions(conceptId, branch) {
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descriptions').then(function (response) {
-        console.debug(response.data);
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
@@ -115,11 +137,8 @@ angular.module('singleConceptAuthoringApp')
 
         concept.properties = response;
 
-        console.debug('after properties:', concept);
-
         propsDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
           deferred.resolve(concept);
         }
       });
@@ -128,12 +147,9 @@ angular.module('singleConceptAuthoringApp')
       getConceptPreferredTerm(conceptId, branch).then(function (response) {
         concept.pt = response;
 
-        console.debug('after pt', concept);
-
         ptDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
-          deferred.resolve(concept);
+           deferred.resolve(concept);
         }
       });
 
@@ -141,11 +157,8 @@ angular.module('singleConceptAuthoringApp')
       getConceptDescriptions(conceptId, branch).then(function (response) {
         concept.descriptions = response;
 
-        console.debug('after desc', concept);
-
         descDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
           deferred.resolve(concept);
         }
       });
@@ -154,11 +167,8 @@ angular.module('singleConceptAuthoringApp')
       getConceptRelationshipsOutbound(conceptId, branch).then(function (response) {
         concept.outboundRelationships = response;
 
-        console.debug('after rel', concept);
-
         relDone = true;
         if (ptDone && descDone && relDone && propsDone) {
-          console.debug('returning', concept);
           deferred.resolve(concept);
         }
       });
@@ -171,6 +181,8 @@ angular.module('singleConceptAuthoringApp')
 
       getConceptProperties: getConceptProperties,
       getConceptPreferredTerm: getConceptPreferredTerm,
+      updateConcept: updateConcept,
+      createConcept: createConcept,
       getConceptAncestors: getConceptAncestors,
       getConceptDescendants: getConceptDescendants,
       getConceptDescriptions: getConceptDescriptions,

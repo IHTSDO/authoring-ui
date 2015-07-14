@@ -22,6 +22,9 @@ angular
     'jcs-autoValidate',
     'ngTable',
     'ui.bootstrap',
+    'ui.sortable',
+    'ang-drag-drop',
+
 
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
@@ -89,7 +92,6 @@ angular
           }
         });
     });
-    
   })
   .controller('AppCtrl', ['$scope', '$location', function AppCtrl($scope, $location) {
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {

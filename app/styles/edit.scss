@@ -1,15 +1,143 @@
 button, .btn {
   border: none !important;
 }
-.toggle-buttons{background-color:#212121 !important; padding:1px 3px !important; color:#BEBEBE !important}
-.toggle-buttons:hover{color:#2196F3 !important}
-.add-buttons{background-color:#424242 !important; padding:1px 3px !important; color:#dcdcdc !important}
-.add-buttons:hover{color:#00a6e5 !important}
-.saved-list-buttons{background-color:#eee !important; padding:0px 3px !important; color:#424242 !important; font-size:18px!important; line-height:1 !important}
-.saved-list-buttons:hover{color:#00a6e5 !important}
-.create-new-concept{background-color:#00a6e5 !important; text-align:left !important; color:#fff !important; font-size:14px!important; padding:13px !important; line-height:1 !important}
-.create-new-concept:hover{background-color:#039be5 !important; text-align:left !important; color:#fff !important; font-size:14px!important; }
-.create-new-concept i{font-size:17px!important; }
+
+.darkbuttons {
+  &:active, &:focus {
+    background-color: #212121 !important;
+    color: #66bbfd !important;
+  }
+}
+
+.toggle-buttons {
+  background-color: #212121 !important;
+  padding: 1px 3px !important;
+  color: #BEBEBE !important;
+  &:hover {
+    color: #2196F3 !important;
+  }
+}
+
+.add-buttons {
+  background-color: #424242 !important;
+  padding: 1px 3px !important;
+  color: #dcdcdc !important;
+  &:hover {
+    color: #00a6e5 !important;
+  }
+}
+
+.saved-list-buttons {
+  background-color: #eee !important;
+  padding: 0px 3px !important;
+  color: #424242 !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  &:hover {
+    color: #00a6e5 !important;
+  }
+}
+
+.create-new-concept {
+  background-color: #00a6e5 !important;
+  text-align: left !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  padding: 13px !important;
+  line-height: 1 !important;
+  &:hover {
+    background-color: #039be5 !important;
+    text-align: left !important;
+    color: #fff !important;
+    font-size: 14px !important;
+  }
+  i {
+    font-size: 17px !important;
+  }
+}
+
+.savedlist-buttons {
+  width: 50px;
+}
+
+.color_[disabled] {
+  background-color: #303030 !important;
+  color: #BBDEFB !important;
+  border-bottom: none !important;
+}
+
+.color_0[disabled] {
+  background-color: #303030 !important;
+  color: #f8bbd0 !important;
+  border-bottom: none !important;
+}
+
+.no-padding-left {
+  padding-left: 0px !important;
+}
+
+.no-padding-right {
+  padding-right: 0px !important;
+}
+
+.create-links:after {
+  content: "\f1ed";
+  color: #4fc3f7;
+  display: inline-block;
+  font: normal normal normal 14px/1 'Material Design Iconic Font';
+  speak: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  position: absolute;
+  right: 5px;
+  top: 18px;
+  font-size: 22px;
+}
+
+.fsn {
+  padding-bottom: 3px;
+  font-size: 12px;
+  float: left;
+}
+
+.editbuttons {
+  &.orange.darken-3:hover {
+    background-color: #e65100 !important;
+    color: #fff !important;
+  }
+  &.amber:hover {
+    background-color: #ff8f00 !important;
+    color: #fff !important;
+  }
+  &.deep-purple.lighten-1:hover {
+    background-color: #5e35b1 !important;
+    color: #fff !important;
+  }
+  &.blue:hover {
+    background-color: #1976D2 !important;
+    color: #fff !important;
+  }
+  &.teal:hover {
+    background-color: #00796b !important;
+    color: #fff !important;
+  }
+}
+
+.saved-list-title {
+  font-size: 12px !important;
+  text-transform: none !important;
+  background-color: transparent !important;
+}
+
+.saved {
+  min-width: 600px;
+  padding: 8px 30px 8px 8px;
+  margin: 14px 36px;
+}
+
+.green-save {
+  font-weight: 600;
+}
 // responsive begins
 @media screen and (max-width: 1850px) {
   .editing-form {
@@ -30,7 +158,7 @@ button, .btn {
   }
   .title-text {
     font-size: 11px;
-    padding: 5px;
+    padding: 4px 0px 0px 3px;
   }
 }
 
@@ -52,7 +180,8 @@ button, .btn {
   }
   .title-text {
     font-size: 12px;
-    padding: 10px;
+    line-height:1;
+	padding:8px 0px 0px 0px;
   }
 }
 // responsive ends
@@ -62,6 +191,13 @@ button, .btn {
   a {
     color: #666;
   }
+  .darkbuttons {
+  font-size: 20px;
+  padding: 10px 10px 5px 3px !important;
+  box-shadow:none!important;
+  line-height:1.8 !important;
+}
+
 }
 
 aside.editpanel ul a {
@@ -90,6 +226,12 @@ aside.editpanel ul a {
   box-shadow:none!important;
 }
 
+.morebuttons {
+  font-size: 20px;
+  padding: 0px 3px !important;
+  box-shadow:none!important;
+
+}
 .popover {
   select.form-control {
     background-color: #fff;
@@ -525,11 +667,11 @@ aside.editpanel ul a {
 }
 .editing-form {
   .acceptability {
-    width: 19%;
+    width: 17%;
     padding-left: 1%;
   }
   .language {
-    width: 8%;
+    width: 10%;
     padding-left: 1%;
   }
   .typeid {
@@ -553,7 +695,7 @@ aside.editpanel ul a {
     padding-left: 1%;
   }
   .sourcename {
-    width: 45%;
+    width: 34%;
     padding-left: 1%;
   }
 }
