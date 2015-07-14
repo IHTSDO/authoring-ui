@@ -58,6 +58,7 @@ angular.module('singleConceptAuthoringApp.search', [])
           // if not already in saved list
           if ($scope.findItemInSavedList(item) === false) {
               // push component on list and update ui state
+              console.log($scope.savedList);
               $scope.savedList.items.push(component);
               $scope.saveUIState($routeParams.projectId, $routeParams.taskId, "saved-list", $scope.savedList);
           }
