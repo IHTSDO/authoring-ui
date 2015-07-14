@@ -2,13 +2,13 @@
 
   <table ng-show="savedList.items.length > 0" class="table">
     <thead>
-
+    <th></th>
     <th>Term</th>
     <th>FSN</th>
     <th></th>
     </thead>
     <tr ng-repeat="item in savedList.items">
-
+      <td>{{$index+1}}</td>
       <td>
         <div class="pull-left"
              ui-draggable="true" drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
@@ -28,6 +28,10 @@
           <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left"
                   title="Clone"
                   ng-click="clone(item)"><i class="md md-content-copy"></i>
+          </button>
+          <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left"
+                  title="Remove"
+                  ng-click="removeItem(item)"><i class="md md-delete"></i>
           </button>
           </span>
         </div>
