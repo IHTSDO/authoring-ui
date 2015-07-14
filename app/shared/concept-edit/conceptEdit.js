@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .directive('conceptEdit', function ($modal, $q, snowowlService, objectService, $routeParams) {
+  .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, snowowlService, objectService, $routeParams) {
     return {
       restrict: 'A',
       transclude: true,
@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp')
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
-      link: function (scope, element, attrs, linkCtrl, $timeout) {
+      link: function (scope, element, attrs, linkCtrl) {
 
         if (!scope.concept) {
           console.error('conceptEdit directive requires concept to be specified');
@@ -25,6 +25,8 @@ angular.module('singleConceptAuthoringApp')
         if (!scope.branch) {
           console.error('conceptEdit directive requires branch to be specified');
         }
+
+        scope.conceptSessionHistory = [];
 
         ////////////////////////////////
         // Concept Elements
@@ -40,70 +42,104 @@ angular.module('singleConceptAuthoringApp')
           {id: '', text: 'Reason not stated concept (inactive concept)'},
           {id: '', text: 'No reason'}
         ];
-          
-        //Save a new concept to TS
-        scope.saveNewConcept = function(concept){
 
+        scope.removeConcept = function (concept) {
+          console.debug('Removing concept from list', concept);
+          $rootScope.$broadcast('conceptEdit.removeConcept', {concept: concept});
         };
 
         //Parse the concept to the expected browser endpoint input format
-        scope.parseConcept = function (conceptIn){
-            var concept = {};
-            //concept.conceptId = conceptIn.id;
-            concept.isLeafInferred = false;
-            concept.descriptions = [];
-            concept.relationships = [];
-            angular.forEach(conceptIn.descriptions, function(value){
-                var description = {};
-                description.moduleId = value.moduleId;
-                description.term = value.term;
-                description.active = value.active;
-                description.caseSignificance = value.caseSignificance;
-                description.acceptabilityMap = value.acceptabilityMap;
-                description.lang = value.languageCode;
-                if(value.typeId === '900000000000003001')
-                {
-                    concept.fsn = value.term;
-                    description.type = 'FSN';
-                }
-                
-                concept.descriptions.push(description);
+        scope.parseConcept = function (conceptIn) {
+
+          var concept = {};
+          concept.conceptId = conceptIn.id;
+          concept.isLeafInferred = false;
+          concept.descriptions = [];
+          concept.relationships = [];
+          angular.forEach(conceptIn.descriptions, function (value) {
+            var description = {};
+
+            description.moduleId = value.moduleId;
+            description.term = value.term;
+            description.active = value.active;
+            description.caseSignificance = value.caseSignificance;
+            description.acceptabilityMap = value.acceptabilityMap;
+            description.lang = value.languageCode;
+
+            angular.forEach(scope.descTypeIds, function (descTypeId) {
+              if (descTypeId.id === value.typeId) {
+                description.type = descTypeId.name;
+              }
             });
-            angular.forEach(conceptIn.outboundRelationships, function(item){
-                var relationship = {};
-                relationship.modifier = item.modifier;
-                relationship.groupId = item.group;
-                relationship.moduleId = item.moduleId;
-                relationship.target = {'conceptId' : item.destinationId};
-                relationship.active = item.active;
-                relationship.characteristicType = item.characteristicType;
-                relationship.type = {'conceptId' : item.typeId};
-                concept.relationships.push(relationship);
-            });
-            concept.definitionStatus = conceptIn.properties.definitionStatus;
-            concept.active = conceptIn.properties.active;
-            concept.moduleId = conceptIn.properties.moduleId;
-            console.log(concept);
-            console.log(conceptIn);
-            return concept;
-        };
-        //Write changes to a concept to the TS
-        scope.updateConcept = function(concept){
-            var newConcept = scope.parseConcept(concept);
-            //snowowlService.updateConcept(newConcept.conceptId, $routeParams.projectId, $routeParams.taskId, newConcept); 
-            snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, newConcept); 
+
+            if (!description.type) {
+              console.error('Could not determine description type');
+              return;
+            }
+
+            concept.descriptions.push(description);
+          });
+          angular.forEach(conceptIn.outboundRelationships, function (item) {
+            var relationship = {};
+            relationship.modifier = item.modifier;
+            relationship.groupId = item.group;
+            relationship.moduleId = item.moduleId;
+            relationship.target = {'conceptId': item.destinationId};
+            relationship.active = item.active;
+            relationship.characteristicType = item.characteristicType;
+            relationship.type = {'conceptId': item.typeId};
+            concept.relationships.push(relationship);
+          });
+          concept.definitionStatus = conceptIn.properties.definitionStatus;
+          concept.active = conceptIn.properties.active;
+          concept.moduleId = conceptIn.properties.moduleId;
+          console.log(concept);
+          console.log(conceptIn);
+          return concept;
         };
 
-        scope.toggleConceptActive = function (Conceptconcept) {
+        scope.saveConcept = function (concept) {
+
+          console.debug('saving concept', concept);
+
+          var parsedConcept = scope.parseConcept(concept);
+
+          if (!scope.isConceptValid(parsedConcept)) {
+            return;
+          }
+
+          // if new, use create
+          if (!concept.id) {
+            snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, parsedConcept).then(function (response) {
+              if (response && response.conceptId) {
+                $rootScope.$broadcast('conceptEdit.updateConcept', {
+                  oldConcept: concept,
+                  newConcept: response
+                });
+
+              }
+            })
+          }
+
+          // if not new, use update
+          else {
+            // TODO Still need to figure out updating
+            // snowowlService.updateConcept($routeParams.projectId,
+            // $routeParams.taskId, parsedConcept);
+
+          }
+        };
+
+        scope.toggleConceptActive = function (concept) {
           // if inactive, simply set active
-          if (!Conceptconcept.active) {
-            Conceptconcept.active = true;
+          if (!concept.active) {
+            concept.active = true;
           }
 
           // otherwise, open a selct reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason(Conceptconcept, 'Concept', inactivateConceptReasons).then(function (reason) {
+            selectInactivationReason(concept, 'Concept', inactivateConceptReasons).then(function (reason) {
 
               scope.concept.active = false;
 
@@ -137,10 +173,10 @@ angular.module('singleConceptAuthoringApp')
         ];
 
         // Define definition types
-        scope.typeIds = [
-          {id: '900000000000003001', abbr: 'FSN'},
-          {id: '900000000000013009', abbr: 'SYN'},
-          {id: '900000000000550004', abbr: 'DEF'}
+        scope.descTypeIds = [
+          {id: '900000000000003001', abbr: 'FSN', name: 'FSN'},
+          {id: '900000000000013009', abbr: 'SYN', name: 'SYNONYM'},
+          {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
         ];
 
         // define acceptability types
@@ -386,7 +422,7 @@ angular.module('singleConceptAuthoringApp')
           if (data.name) {
             relationship.destinationName = data.name;
           } else {
-            snowowlService.getConceptPreferredTerm(data.id, scope.branc).then(function (response) {
+            snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
               relationship.destinationName = response.term;
             });
           }
@@ -407,12 +443,12 @@ angular.module('singleConceptAuthoringApp')
           }
 
           relationship.typeId = data.id;
-          
+
           // if name supplied, use it, otherwise retrieve it
           if (data.name) {
             relationship.typeName = data.name;
           } else {
-            snowowlService.getConceptPreferredTerm(data.id, scope.branc).then(function (response) {
+            snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
               relationship.typeName = response.term;
             });
           }
@@ -426,7 +462,182 @@ angular.module('singleConceptAuthoringApp')
           return null;
         };
 
+        ///////////////////////////////////////////////
+        // Concept Auto-Saving Validation Checks
+        ///////////////////////////////////////////////
+
+        // method to check single description for validity
+        scope.isDescriptionValid = function (description) {
+          if (!description.moduleId) {
+            console.error('description must have moduleId specified');
+            return false;
+          }
+          if (!description.term) {
+            console.error('Description must have term specified');
+            return false;
+          }
+          if (description.active == null) {
+            console.error('Description active flag must be set');
+            return false;
+          }
+          if (!description.lang) {
+            console.error('Description lang must be set');
+            return false;
+          }
+          if (!description.caseSignificance) {
+            console.error('Description case significance must be set');
+            return false
+          }
+          if (!description.acceptabilityMap) {
+            console.error('Description acceptability map must be set');
+            return false;
+          }
+
+          // pass all checks -> return true
+          return true;
+        };
+
+        // method to check single relationship for validity
+        scope.isRelationshipValid = function (relationship) {
+
+          // check relationship fields
+          if (!relationship.modifier) {
+            console.error('Relationship modifier must be set');
+            return false;
+          }
+          if (relationship.groupId == null) {
+            console.error('Relationship groupId must be set');
+            return false;
+          }
+          if (!relationship.moduleId) {
+            console.error('Relationship moduleId must be set');
+            return false;
+          }
+          if (!relationship.target || !relationship.target.conceptId) {
+            console.error('Relationship target conceptId must be set');
+            return false;
+          }
+          if (relationship.active === null) {
+            console.error('Relationship active flag must be set');
+            return false;
+          }
+          if (!relationship.characteristicType) {
+            console.error('Relationship characteristic type must be set');
+            return false;
+          }
+          if (!relationship.type) {
+            console.error('Relationship type must be set');
+            return false;
+          }
+
+          // pass all checks -> return true
+          return true;
+        };
+
+        // function to check the full concept for validity before saving
+        scope.isConceptValid = function (concept) {
+
+          console.debug('validating concept', concept);
+
+          // check the basic concept fields
+          if (concept.isLeafInferred == null) {
+            console.error('Concept isleafInferred flag must be set');
+            return false;
+          }
+          if (!concept.descriptions || concept.descriptions.length == 0) {
+            console.error('Concept must have at least one description');
+            return false;
+          }
+          if (!concept.relationships || concept.relationships.length == 0) {
+            console.error('Concept must have at lalst one relationship');
+            return false;
+          }
+          if (!concept.definitionStatus) {
+            console.error('Concept definitionStatus must be set');
+            return false;
+          }
+          if (concept.active == null) {
+            console.error('Concept active flag must be set');
+            return false;
+          }
+          if (!concept.moduleId) {
+            console.error('Concept moduleId must be set');
+            return false;
+          }
+
+          // check descriptions
+          for (var i = 0; i < concept.descriptions.length; i++) {
+            if (!scope.isDescriptionValid(concept.descriptions[i])) {
+              console.error('Description not valid', concept.descriptions[i]);
+              return false;
+            }
+          }
+
+          // check relationships
+          for (var i = 0; i < concept.relationships.length; i++) {
+            if (!scope.isRelationshipValid(concept.relationships[i])) {
+              console.error('Relationships not valid', concept.relationships[i]);
+              return false;
+            }
+          }
+
+          console.debug('valid concept');
+
+          // pass all checks -> return true
+          return true;
+
+        };
+/*
+        // autosave on changes, if concept is valid
+        var timeoutPromise;
+        var delayInMs = 2000;
+        scope.$watch('concept', function () {
+
+          // cancel current timeout if not complete
+          $timeout.cancel(timeoutPromise);
+
+          // evaluate concept changes after timeout
+          timeoutPromise = $timeout(function () {
+
+            // if retrieval not complete, do not execute
+
+            console.debug('change detected', scope.concept);
+
+            // if concept not yet fully retrieved, do nothing
+            if (!scope.concept || !scope.concept.descriptions || !scope.concept.outboundRelationships) {
+              return;
+            }
+
+            // TODO Refactor UI model to match server format
+            var parsedConcept = scope.parseConcept(scope.concept);
+
+            // add to session history
+            scope.conceptSessionHistory.push(parsedConcept);
+            console.debug('new history', scope.conceptSessionHistory);
+
+            // if no previous session history, do nothing
+            // prevents autosave on load
+            if (scope.conceptSessionHistory.length === 1) {
+              return;
+            }
+
+            // TODO Check elements instead of entire concept if necessary
+            // var lastState =
+            // scope.conceptSessionHistory[conceptSessionHistory.length - 2];
+
+            // check concept's base fields
+            if (!scope.isConceptValid(parsedConcept)) {
+              console.debug('concept not valid, not saving');
+              return;
+            }
+
+            // save the concept
+            // TDOO:  Enable this once all refactoring is complete
+            // and concept is not modified by pt/fsn retrieval
+            // (i.e. once we have the new API endpoint for content)
+            scope.saveConcept(parsedConcept);
+          });
+        }, delayInMs);*/
       }
     };
-  })
-;
+  });

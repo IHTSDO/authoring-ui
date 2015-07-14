@@ -19,9 +19,10 @@
       </select>
     </div>
     <div class="pull-right no-margin">
-      <!-- TODO Fix this &#45;&#45; Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
         <button type="button" class="btn-default editbuttons orange darken-3 md md-backspace"
-              title="Remove Concept"></button>
+              title="Remove Concept" ng-click="removeConcept(concept)"></button>
+      <!-- TODO Fix this. Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+
       <button type="button"
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, md, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
@@ -30,7 +31,7 @@
       <button type="button" class="btn-default editbuttons deep-purple lighten-1 md md-history"
               title="History"></button>
       <button type="button" class="btn-default editbuttons blue md md-keyboard-return" title="Show Model"></button>
-      <button type="button" class="btn-default editbuttons teal md md-save" ng-click="updateConcept(concept)" title="Save"></button>
+      <button type="button" class="btn-default editbuttons teal md md-save" ng-click="saveConcept(concept)" title="Save"></button>
     </div>
   </div>
 
@@ -63,7 +64,7 @@
                    placeholder="Description" ui-on-drop="dropNullOp()">
           </div>
           <div class="pull-left typeid">
-            <select ng-disabled="description.effectiveTime" ng-options="typeId.id as typeId.abbr for typeId in typeIds"
+            <select ng-disabled="description.effectiveTime" ng-options="descTypeId.id as descTypeId.abbr for descTypeId in descTypeIds"
                     ng-model="description.typeId"
                     name="select-typeId" id="select-typeId-choice" class="form-control color_{{relationship.group}}">
             </select>

@@ -17,7 +17,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conceptLoaded = false;
     $rootScope.pageTitle = 'Edit Concept';
     $scope.count = 1;
-    $scope.items = [];
     $scope.showModel = function (length) {
       if (length === $scope.count) {
 
@@ -35,34 +34,47 @@ angular.module('singleConceptAuthoringApp.edit', [
     // displayed concept array
     $scope.concepts = [];
 
-    // get the required ui state elements
-    scaService.getUIState(
-      $routeParams.projectId, $routeParams.taskId, 'saved-list')
-      .then(function (uiState) {
-        if (!uiState || !uiState.items) {
-          $scope.savedList = {'items': []};
-        }
-        else {
-          $scope.savedList = uiState;
-        }
-      }
-    );
+    // easy-access concept id list for edit panel ui state updates
+    // initialized as null, an empty list is []
+    $scope.editPanelUiState = null;
+
+    var panelId = 'edit-panel';
+
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
 
         if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-          $scope.items = [];
+          $scope.editPanelUiState = [];
         }
         else {
-          $scope.items = uiState;
-          for (var i = 0; i < $scope.items.length; i++ ) {
-              $rootScope.$broadcast('savedList.editConcept', { conceptId : $scope.items[i] } );
+          $scope.editPanelUiState = uiState;
+          for (var i = 0; i < $scope.editPanelUiState.length; i++) {
+            $scope.addConceptToListFromId($scope.editPanelUiState[i]);
           }
         }
-        
+
       }
     );
+
+    $scope.addConceptToListFromId = function (conceptId) {
+
+      if (!conceptId) {
+        return;
+      }
+      // get the concept and add it to the stack
+      snowowlService.getFullConcept(conceptId, $scope.branch).then(function (response) {
+        $scope.concepts.push(response);
+      });
+    };
+
+    // helper function to save current edit list
+    $scope.updateUiState = function() {
+
+      console.debug('saving ui state');
+
+      scaService.saveUIState($routeParams.projectId, $routeParams.taskId, panelId, $scope.editPanelUiState);
+    };
 
     // watch for concept selection from the edit sidebar
     $scope.$on('savedList.editConcept', function (event, data) {
@@ -71,10 +83,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.conceptLoaded = false;
         return;
       }
-      // get the concept and add it to the stack
-      snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (response) {
-        $scope.concepts.push(response);
-      });
+
+      $scope.addConceptToListFromId(data.conceptId);
+      $scope.editPanelUiState.push(data.conceptId);
+      $scope.updateUiState();
+
     });
 
     // watch for concept cloning from the edit sidebar
@@ -102,6 +115,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptExists) {
           $scope.concepts.push(response);
+          $scope.editPanelUiState.push(conceptId);
+          $scope.updateUiState();
         }
 
         // deep copy the object -- note: does not work in IE8, but screw that!
@@ -123,23 +138,58 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
+
+        // update the ui state
+        $scope.saveUiState();
       });
     });
 
-    $scope.createConcept = function() {
+    // watch for removal request from concept-edit
+    $scope.$on('conceptEdit.removeConcept', function (event, data) {
+      if (!data || !data.concept) {
+        console.error('Cannot remove concept: concept must be supplied');
+        return;
+      }
+
+      // remove the concept
+      var index = $scope.concepts.indexOf(data.concept);
+      console.debug('index', index);
+      $scope.concepts.splice(index, 1);
+      $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.id), 1);
+      $scope.updateUiState();
+
+    });
+
+    // watch for removal request from concept-edit
+    $scope.$on('conceptEdit.updateConcept', function (event, data) {
+      if (!data || !data.newConcept || !data.oldConcept) {
+        console.error('Cannot remove concept: must specify both new content and concept to replace');
+        return;
+      }
+
+      var index = $scope.concepts.indexOf(data.oldConcept);
+
+      // TODO Once refactoring of concept object done (to match server
+      // structure), replace old concept with newly updated
+      // console.debug('FOUND CONCEPT TO REMOVE', index);
+      // $scope.concepts.splice(index, 1, data.newConcept);
+    });
+
+    $scope.createConcept = function () {
       var concept = objectService.getNewConcept($scope.branch);
       $scope.concepts.push(concept);
+
+      // TODO Add ui-state improvement once concept is saved
     };
 
-    // removes concept from editing list (unused currently)
-    $scope.closeConcept = function (concept) {
-      var index = $scope.concepts.indexOf(concept);
-      if (index > -1) {
+// removes concept from editing list (unused currently)
+    $scope.closeConcept = function (index) {
+      if ($scope.concepts) {
         $scope.concepts.splice(index, 1);
       }
     };
 
-    // tab and popover controls for initial buttons
+// tab and popover controls for initial buttons
     $scope.tabs = ['Log', 'Timeline', 'Messages'];
     $scope.popover = {
       placement: 'left',
@@ -186,4 +236,5 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
 
     };
-  });
+  })
+;
