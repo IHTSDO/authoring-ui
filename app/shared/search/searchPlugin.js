@@ -4,10 +4,11 @@ angular.module('singleConceptAuthoringApp.search', [])
 
   .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, scaService) {
 
+    $scope.branch = "MAIN/" + $routeParams.projectId + "/" + $routeParams.taskId;
     var options = {
       serverUrl: "/snowowl",
       edition: "snomed-ct/v2/browser",
-      release: "MAIN",
+      release: $scope.branch,
       selectedView: "inferred",
       displayChildren: false,
       langRefset: "900000000000509007",
@@ -23,6 +24,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       taskSet: false,
       taskId: null
     };
+    
     $scope.saveUIState = function (projectKey, taskKey, panelId, uiState) {
       scaService.saveUIState(
         projectKey, taskKey, panelId, uiState)

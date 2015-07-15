@@ -2,8 +2,9 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.taxonomy', [])
 
-.controller( 'taxonomyCtrl', ['$scope', '$location', 'endpointService', function AppCtrl ( $scope, $location, endpointService) {
+.controller( 'taxonomyCtrl', ['$scope', '$routeParams', '$location', 'endpointService', function AppCtrl ( $scope, $routeParams, $location, endpointService) {
 
+        $scope.branch = "MAIN/" + $routeParams.projectId + "/" + $routeParams.taskId;
         var options = {
 					serverUrl: "/snowowl",
 					edition: "snomed-ct/v2/browser",
