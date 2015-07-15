@@ -60,7 +60,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       .then(function (uiState) {
 
         if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-          $scope.savedList = [];
+          $scope.savedList = {items: []};
         }
         else {
           $scope.savedList = uiState;
