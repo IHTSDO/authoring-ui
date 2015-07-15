@@ -532,10 +532,10 @@ angular.module('singleConceptAuthoringApp')
           return true;
 
         };
-        /*
+        
          // autosave on changes, if concept is valid
          var timeoutPromise;
-         var delayInMs = 2000;
+         var delayInMs = 1000000;
          scope.$watch('concept', function () {
 
          // cancel current timeout if not complete
@@ -550,20 +550,20 @@ angular.module('singleConceptAuthoringApp')
 
          // if concept not yet fully retrieved, do nothing
          if (!scope.concept || !scope.concept.descriptions || !scope.concept.relationships) {
-         return;
+            return;
          }
 
          // TODO Refactor UI model to match server format
-         var parsedConcept = scope.parseConcept(scope.concept);
+         //var parsedConcept = scope.parseConcept(scope.concept);
 
          // add to session history
-         scope.conceptSessionHistory.push(parsedConcept);
+         scope.conceptSessionHistory.push(scope.concept);
          console.debug('new history', scope.conceptSessionHistory);
 
          // if no previous session history, do nothing
          // prevents autosave on load
          if (scope.conceptSessionHistory.length === 1) {
-         return;
+            return;
          }
 
          // TODO Check elements instead of entire concept if necessary
@@ -571,18 +571,18 @@ angular.module('singleConceptAuthoringApp')
          // scope.conceptSessionHistory[conceptSessionHistory.length - 2];
 
          // check concept's base fields
-         if (!scope.isConceptValid(parsedConcept)) {
+         if (!scope.isConceptValid(scope.concept)) {
          console.debug('concept not valid, not saving');
-         return;
+            return;
          }
 
          // save the concept
          // TDOO:  Enable this once all refactoring is complete
          // and concept is not modified by pt/fsn retrieval
          // (i.e. once we have the new API endpoint for content)
-         scope.saveConcept(parsedConcept);
+         scope.saveConcept(scope.concept);
          });
-         }, delayInMs);*/
+         }, delayInMs);
       }
     }
       ;
