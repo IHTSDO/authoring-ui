@@ -5,6 +5,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     // name of the panel for the Saved List
     var panelId = 'saved-list';
+/*
 
     // get the required ui state elements
     scaService.getUIState(
@@ -18,6 +19,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         }
       }
     );
+*/
 
     // function to select an item from the saved list
     // broadcasts selected conceptId

@@ -14,32 +14,18 @@ angular.module('singleConceptAuthoringApp.edit', [
   })
 
   .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout) {
-    $scope.conceptLoaded = false;
+
     $rootScope.pageTitle = 'Edit Concept';
-    $scope.count = 1;
-    $scope.showModel = function (length, concept) {
-      if (length === $scope.count) {
-        $scope.conceptLoaded = true;
-        $timeout(function() {
-            $scope.resizeSvg(concept);
-        }, 200);
-        
-        $scope.count = 1;
-      }
-      else {
-        $scope.count++;
-      }
-    };
-    
-    $scope.resizeSvg = function(concept){
-        var height = $('#editPanel-' + concept.id).find('.editHeightSelector').height() + 42;
-        var elem = document.getElementById('model' + concept.id);
-        console.log(elem);
-        elem.setAttribute('height', height + 'px');
+
+    $scope.resizeSvg = function (concept) {
+      var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 42;
+      var elem = document.getElementById('model' + concept.conceptId);
+      console.log(elem);
+      elem.setAttribute('height', height + 'px');
     };
 
     // TODO: Update this when $scope.branching is enabled
-    $scope.branch = 'MAIN';
+    $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
 
     // displayed concept array
     $scope.concepts = [];
@@ -50,6 +36,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     var panelId = 'edit-panel';
 
+    // get edit panel list
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
@@ -67,6 +54,21 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     );
 
+    // get saved list
+    scaService.getUIState(
+      $routeParams.projectId, $routeParams.taskId, 'saved-list')
+      .then(function (uiState) {
+
+        if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+          $scope.savedList = {items: []};
+        }
+        else {
+          $scope.savedList = uiState;
+        }
+
+      }
+    );
+
     $scope.addConceptToListFromId = function (conceptId) {
 
       if (!conceptId) {
@@ -74,12 +76,23 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
       // get the concept and add it to the stack
       snowowlService.getFullConcept(conceptId, $scope.branch).then(function (response) {
+
+        if (!response) {
+          return;
+        }
+
+        console.debug(response);
+
         $scope.concepts.push(response);
+        $timeout(function () {
+          $scope.resizeSvg(response);
+        }, 800);
+
       });
     };
 
     // helper function to save current edit list
-    $scope.updateUiState = function() {
+    $scope.updateUiState = function () {
 
       console.debug('saving ui state');
 
@@ -112,8 +125,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (response) {
 
-        var conceptId = response.properties.id;
-        var conceptEt = response.properties.effectiveTime;
+
+        var conceptId = response.conceptId;
+        var conceptEt = response.effectiveTime;
 
         // check if original concept already exists, if not add it
         var conceptExists = false;
@@ -125,6 +139,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptExists) {
           $scope.concepts.push(response);
+          $timeout(function () {
+            $scope.resizeSvg(response);
+          }, 800);
           $scope.editPanelUiState.push(conceptId);
           $scope.updateUiState();
         }
@@ -149,8 +166,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
 
-        // update the ui state
-        $scope.saveUiState();
+        $timeout(function () {
+          $scope.resizeSvg(clonedConcept);
+        }, 600);
+
+
       });
     });
 
@@ -172,21 +192,42 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // watch for removal request from concept-edit
     $scope.$on('conceptEdit.updateConcept', function (event, data) {
+
+      console.debug('edit.js, conceptEdit.updateConcept notification', data);
       if (!data || !data.newConcept || !data.oldConcept) {
         console.error('Cannot remove concept: must specify both new content and concept to replace');
         return;
       }
 
-      var index = $scope.concepts.indexOf(data.oldConcept);
+      console.debug('old list', $scope.concepts);
 
-      // TODO Once refactoring of concept object done (to match server
-      // structure), replace old concept with newly updated
-      // console.debug('FOUND CONCEPT TO REMOVE', index);
-      // $scope.concepts.splice(index, 1, data.newConcept);
+      // replace the item
+      var index = $scope.concepts.indexOf(data.oldConcept);
+      if (index === -1) {
+        $scope.concepts.push(data.newConcept);
+      }
+      else {
+        $scope.concepts.splice(index, 1, data.newConcept);
+      }
+
+      console.debug('new list', $scope.concepts);
+
+      // update the UI state if concept not saved
+      if ($scope.editPanelUiState.indexOf(data.newConcept.conceptId) === -1 && data.newConcept.conceptId) {
+        $scope.editPanelUiState.push(data.newConcept.conceptId);
+        $scope.updateUiState();
+        $timeout(function () {
+          $scope.resizeSvg(data.newConcept);
+        }, 600);
+
+      }
     });
 
     $scope.createConcept = function () {
       var concept = objectService.getNewConcept($scope.branch);
+
+      // add IsaRelationship
+      //concept.relationships
       $scope.concepts.push(concept);
 
       // TODO Add ui-state improvement once concept is saved
@@ -207,44 +248,5 @@ angular.module('singleConceptAuthoringApp.edit', [
       'content': 'Hello Popover<br />This is a multiline message!'
     };
 
-    /**
-     * Function called when
-     */
-    $scope.dropConcept = function (conceptProperties) {
-      // check conceptProperties requirements
-      if (!conceptProperties) {
-        console.error('Concept properties object dropped is empty');
-        return;
-      }
-      if (!conceptProperties.id) {
-        console.error('Concept properties object dropped has no id');
-      }
-      if (!conceptProperties.pt) {
-        console.error('Concept properties object dropped has no name');
-      }
-      if (!conceptProperties.effectiveTime) {
-        console.error('Concept properties object dropped has no effectiveTime');
-      }
-      if (!conceptProperties.branch) {
-        console.error('Concept properties object dropped has no branch');
-      }
-
-      // ensure this concept is not already present
-      angular.forEach($scope.concepts, function (concept) {
-
-        // TODO Revisit once branching enabled
-        // check if this concept already exists
-        if (concept.id === conceptProperties.id && concept.pt === conceptProperties.pt && concept.effectiveTime === conceptProperties.effectiveTime && $scope.branch === conceptProperties.branch) {
-
-          console.warn('Concept already on list:', conceptProperties);
-          return;
-        }
-        // get the concept and add it to the stack
-        snowowlService.getFullConcept(conceptProperties.conceptId, $scope.branch).then(function (response) {
-          $scope.concepts.push(response);
-        });
-      });
-
-    };
   })
 ;

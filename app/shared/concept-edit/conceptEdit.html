@@ -10,7 +10,7 @@
     <!-- draggable element -- concept name -->
     <div class="pull-left title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
-      <button type="button" class="btn-default darkbuttons grey darken-4 "> <span class="fsn">{{concept.pt.term}}</span></button></div>
+      <button type="button" class="btn-default darkbuttons grey darken-4 "> <span class="fsn">{{concept.fsn}}</span><span ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button></div>
     <div class="pull-right m-l-15 m-r-15 ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               class="form-control  grey darken-4 primitive">
@@ -64,15 +64,15 @@
                    placeholder="Description" ui-on-drop="dropNullOp()">
           </div>
           <div class="pull-left typeid">
-            <select ng-disabled="description.effectiveTime" ng-options="descTypeId.id as descTypeId.abbr for descTypeId in descTypeIds"
-                    ng-model="description.typeId"
-                    name="select-typeId" id="select-typeId-choice" class="form-control color_{{relationship.group}}">
+            <select ng-disabled="description.effectiveTime" ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
+                    ng-model="description.type"
+                    name="select-type" id="select-type-choice" class="form-control color_{{relationship.group}}">
             </select>
           </div>
           <div class="pull-left language">
             <select ng-disabled="description.effectiveTime"
-                    ng-options="language.id as language.abbr for language in languages"
-                    ng-model="description.languageCode"
+                    ng-options="language.abbr as language.abbr for language in languages"
+                    ng-model="description.lang"
                     name="select-language" id="select-language-choice" class="form-control color_{{relationship.group}}"></select>
           </div>
           <div class="pull-left acceptability">
@@ -90,8 +90,8 @@
       </div>
     </div>
 
-    <!-- rows: Concept Outgoing Relationships -->
-    <div ng-repeat="relationship in concept.outboundRelationships | filter:{typeId: '116680003'}">
+    <!-- rows: Concept IsA relationships -->
+    <div ng-repeat="relationship in getIsARelationships()">
       <div class=" row grey darken-3 p-5">
 
         <!-- Button controls -->
@@ -113,21 +113,21 @@
 
         <!-- relationship group -->
         <div class="pull-left rolegroup">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.group"
-                 class="form-control color_{{relationship.group}}" type="text" placeholder="#" ui-on-drop="dropNullOp()">
+          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
+                 class="form-control color_{{relationship.groupId}}" type="text" placeholder="#" ui-on-drop="dropNullOp()">
         </div>
 
         <!-- characteristic type -->
         <div class="pull-left characteristictype ">
           <select ng-disabled="relationship.effectiveTime" ng-model="relationship.characteristicType"
                   ng-options="characteristicType.id as characteristicType.abbr for characteristicType in characteristicTypes"
-                  class="form-control color_{{relationship.group}}"></select>
+                  class="form-control color_{{relationship.groupId}}"></select>
         </div>
 
         <!-- linked concept and name:  droppable target for Concepts -->
         <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <input disabled ng-model="relationship.destinationName" class="form-control color_{{relationship.group}}"
+          <input disabled ng-model="relationship.target.fsn" class="form-control color_{{relationship.groupId}}"
                  type="text" placeholder="#">
         </div>
 
@@ -140,8 +140,8 @@
       </div>
     </div>
 
-    <!-- rows: Concept Attributes (in outboundRelationships) -->
-    <div ng-repeat="relationship in concept.outboundRelationships | filter:{typeId: '!116680003'}">
+    <!-- rows: Concept Attributes (in relationships) -->
+    <div ng-repeat="relationship in getAttributeRelationships()">
       <div class=" row grey darken-3 p-5">
 
         <!-- Button controls -->
@@ -171,7 +171,7 @@
         <!-- attribute type -->
         <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropAttributeType(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.typeName"
+          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.group}}"
                  type="text"
                  placeholder="#">
@@ -180,7 +180,7 @@
         <!-- linked concept -->
         <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
         ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.destinationName"
+          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.group}}"
                  type="text"
                  placeholder="#">

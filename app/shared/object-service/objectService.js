@@ -9,18 +9,14 @@ angular.module('singleConceptAuthoringApp')
     // calls to return JSON objects
     /////////////////////////////////////
 
-
     // creates a blank description linked to specified concept
     function getNewDescription(conceptId) {
       return {
-        'id': null,
-        'released': false,
         'active': false,
         'moduleId': '900000000000207008',
-        'conceptId': conceptId,
-        'typeId': '900000000000003001',
+        'type': null,
         'term': null,
-        'languageCode': 'en',
+        'lang': 'en',
         'caseSignificance': 'ENTIRE_TERM_CASE_SENSITIVE',
         'acceptabilityMap': {
           '900000000000509007': 'PREFERRED',
@@ -34,18 +30,17 @@ angular.module('singleConceptAuthoringApp')
       return {
         'active': false,
         'characteristicType': 'STATED_RELATIONSHIP',
-        'destinationId': null,
-        'destinationNegated': false,
         'effectiveTime': null,
-        'group': 0,
-        'id': null,
+        'groupId': 0,
         'modifier': 'EXISTENTIAL',
         'moduleId': '900000000000207008',
-        'refinability': 'NOT_REFINABLE',
-        'released': false,
-        'sourceId': conceptId,
-        'typeId': '116680003',
-        'unionGroup': 0
+        'target': {
+          'conceptId': null
+        },
+        'type': {
+          'conceptId': '116680003',
+          'fsn': 'Is a (attribute)'
+        }
       };
     }
 
@@ -54,18 +49,17 @@ angular.module('singleConceptAuthoringApp')
       return {
         'active': false,
         'characteristicType': 'STATED_RELATIONSHIP',
-        'destinationId': null,
-        'destinationNegated': false,
+
         'effectiveTime': null,
-        'group': 0,
-        'id': null,
+        'groupId': 0,
         'modifier': 'EXISTENTIAL',
         'moduleId': '900000000000207008',
-        'refinability': 'NOT_REFINABLE',
-        'released': false,
-        'sourceId': conceptId,
-        'typeId': '',
-        'unionGroup': 0
+        'target': {
+          'conceptId': null
+        },
+        'type': {
+          'conceptId': null
+        }
       };
     }
 
@@ -73,41 +67,27 @@ angular.module('singleConceptAuthoringApp')
     // description, relationship, attribute
     function getNewConcept(branch) {
       var concept = {
-        'branch' : branch,
-        'id' : null,
-        'descriptions' : [],
-        'outboundRelationships' : [],
-        'properties' : {
-          'active' : false,
-          'definitionStatus' : 'PRIMITIVE',
-          'effectiveTime' : null,
-          'id' : null,
-          'moduleId':'900000000000207008',
-          'released': false,
-          subclassDefinitionStatus: 'NON_DISJOINT_SUBCLASSES'
-        },
-        'pt': {
-          'acceptabilityMap': {
-            '900000000000509007': 'PREFERRED',
-            '900000000000508004': 'PREFERRED'
-          },
-          'active' : false,
-          'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
-          'conceptId': null,
-          'definitionStatus' : 'PRIMITIVE',
-          'effectiveTime' : null,
-          'id': null,
-          'languageCode': 'en',
-          'moduleId' : '900000000000207008',
-          'released': false,
-          'term':null,
-          'typeId':null
-        }
+        'id': null,
+        'descriptions': [],
+        'relationships': [],
+        'fsn': null,
+        'definitionStatus': 'PRIMITIVE',
+        'active': false,
+        'moduleId': '900000000000207008'
       };
 
-      concept.descriptions.push(getNewDescription(null));
-      concept.outboundRelationships.push(getNewIsaRelationship(null));
-      //concept.outboundRelationships.push(getNewAttributeRelationship(null));
+      // add FSN description
+      var desc = getNewDescription(null);
+      desc.type = 'FSN';
+      concept.descriptions.push(desc);
+
+      // add SYNONYM description
+      desc = getNewDescription(null);
+      desc.type = 'SYNONYM';
+      concept.descriptions.push(desc);
+
+      // add IsA relationship
+      concept.relationships.push(getNewIsaRelationship(null));
 
       return concept;
     }
