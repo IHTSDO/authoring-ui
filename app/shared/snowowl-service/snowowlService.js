@@ -1,14 +1,13 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', function ($http, $q) {
+  .service('snowowlService', ['$http', '$q', function ($http, $q, $watch) {
     var apiEndpoint = '../snowowl/snomed-ct/v2/';
 
     /////////////////////////////////////
     // Snowowl Concept Retrieval Methods
     /////////////////////////////////////
 
-      
     // Create New Concept
     // POST /browser/{path}/concepts
     function createConcept(project, task, concept) {
@@ -19,18 +18,18 @@ angular.module('singleConceptAuthoringApp')
       });
 
     }
-      
+
     // Update Existing Concept
     // PUT /browser/{path}/concepts/{conceptId}
-    function updateConcept(conceptId, project, task, concept) {
-      return $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + conceptId, concept).then(function (response) {
+    function updateConcept(project, task, concept) {
+      return $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
         return response.data;
       }, function (error) {
         // TODO Handle error
       });
 
     }
-      
+
     // Retrieve Concept properties
     // GET {path}/concepts/{conceptId}
     function getConceptProperties(conceptId, branch) {
@@ -111,6 +110,7 @@ angular.module('singleConceptAuthoringApp')
 
     // Retrieve outbound relationships of a concept
     // GET /{path}/concepts/{conceptId}/outbound-relationships
+    // UNUSED
     function getConceptRelationshipsOutbound(conceptId, branch) {
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/outbound-relationships').then(function (response) {
         return response.data.outboundRelationships;
@@ -119,12 +119,46 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    // helper call to populate relationship display names
+    function getRelationshipDisplayNames(relationship, branch) {
+      var deferred = $q.defer();
+
+      var targetDone = false;
+      var typeDone = false;
+
+      // get the target
+
+      getConceptPreferredTerm(relationship.target.conceptId, branch).then(function (response) {
+        if (response && response.term) {
+          relationship.target.fsn = response.term;
+        }
+        targetDone = true;
+        if (typeDone) {
+          deferred.resolve(relationship);
+        }
+      });
+
+      getConceptPreferredTerm(relationship.type.conceptId, branch).then(function (response) {
+        if (response && response.term) {
+          relationship.type.fsn = response.term;
+        }
+        typeDone = true;
+        if (targetDone) {
+          deferred.resolve(relationship);
+        }
+      });
+
+      return deferred.promise;
+
+    }
+
     // Helper call to retrieve a concept with all elements
+    // Puts all elements in save-ready format
     function getFullConcept(conceptId, branch) {
 
       var deferred = $q.defer();
 
-      var concept = {id: conceptId, branch: branch};
+      var concept = {};
 
       // clunky done flags to handle async behavior
       // TODO Clean this up
@@ -135,47 +169,131 @@ angular.module('singleConceptAuthoringApp')
 
       getConceptProperties(conceptId, branch).then(function (response) {
 
-        concept.properties = response;
+        if (!response) {
+          deferred.reject('Could not retrieve properties');
+        } else {
 
-        propsDone = true;
-        if (ptDone && descDone && relDone && propsDone) {
-          deferred.resolve(concept);
+          // copy properties onto concept object
+          concept.active = response.active;
+          concept.definitionStatus = response.definitionStatus;
+          concept.effectiveTime = response.effectiveTime;
+          concept.conceptId = response.id;
+          concept.moduleId = response.moduleId;
+          concept.released = response.released;
+          concept.subclassDefinitionStatus = response.subclassDefinitionStatus;
+
+          propsDone = true;
+          if (ptDone && descDone && relDone && propsDone) {
+            deferred.resolve(concept);
+          }
         }
       });
 
       // get the pt
       getConceptPreferredTerm(conceptId, branch).then(function (response) {
-        concept.pt = response;
 
-        ptDone = true;
-        if (ptDone && descDone && relDone && propsDone) {
-           deferred.resolve(concept);
+        if (!response) {
+          deferred.reject('Could not retrieve preferred term');
+        } else {
+          concept.fsn = response.term;
+
+          ptDone = true;
+          if (ptDone && descDone && relDone && propsDone) {
+            deferred.resolve(concept);
+          }
         }
       });
 
       // get the descriptions
       getConceptDescriptions(conceptId, branch).then(function (response) {
-        concept.descriptions = response;
+        if (!response) {
+          deferred.reject('Could not retrieve descriptions');
+        } else {
 
-        descDone = true;
-        if (ptDone && descDone && relDone && propsDone) {
-          deferred.resolve(concept);
+          concept.descriptions = [];
+
+          for (var i = 0; i < response.length; i++) {
+            var desc = response[i];
+
+            var type = null;
+            switch (desc.typeId) {
+              case '900000000000003001':
+                type = 'FSN';
+                break;
+              case '900000000000013009':
+                type = 'SYNONYM';
+                break;
+              case '900000000000550004':
+                type = 'TEXT_DEFINITION';
+                break;
+            }
+
+            var newDesc = {
+              'effectiveTime': desc.effectiveTime,
+              'moduleId': desc.moduleId,
+              'term': desc.term,
+              'active': desc.active,
+              'type': type,
+              'lang': desc.languageCode,
+              'caseSignificance': desc.caseSignificance,
+              'acceptabilityMap': desc.acceptabilityMap
+            }
+
+            concept.descriptions.push(newDesc);
+          }
+
+          descDone = true;
+          if (ptDone && descDone && relDone && propsDone) {
+            deferred.resolve(concept);
+          }
         }
       });
 
-      // get the outbound relationships
+      // get the outbound relationships with their names -- SO HACKISH
       getConceptRelationshipsOutbound(conceptId, branch).then(function (response) {
-        concept.outboundRelationships = response;
 
-        relDone = true;
-        if (ptDone && descDone && relDone && propsDone) {
-          deferred.resolve(concept);
+        if (!response) {
+          deferred.reject('Could not retrieve relationships');
+        } else {
+
+          concept.relationships = [];
+
+          // parse the relationships
+          for (var i = 0; i < response.length; i++) {
+            var rel = response[i];
+
+            // convert relationship to required format
+            var newRel = {
+              'effectiveTime': rel.effectiveTime,
+              'modifier': rel.modifier,
+              'groupId': rel.group,
+              'moduleId': rel.moduleId,
+              'target': {
+                'conceptId': rel.destinationId
+              },
+              'active': rel.active,
+              'characteristicType': rel.characteristicType,
+              'type': {
+                'conceptId': rel.typeId
+              }
+            }
+
+            getRelationshipDisplayNames(newRel, branch).then(function (relationship) {
+              concept.relationships.push(relationship);
+
+              if (concept.relationships.length === response.length) {
+                relDone = true;
+                if (ptDone && descDone && relDone && propsDone) {
+                  deferred.resolve(concept);
+                }
+              }
+            });
+          }
         }
       });
-
 
       return deferred.promise;
-    }
+    };
 
     return {
 
@@ -188,8 +306,11 @@ angular.module('singleConceptAuthoringApp')
       getConceptDescriptions: getConceptDescriptions,
       getConceptRelationshipsInbound: getConceptRelationshipsInbound,
       getConceptRelationshipsOutbound: getConceptRelationshipsOutbound,
+      getRelationshipDisplayNames: getRelationshipDisplayNames,
       getFullConcept: getFullConcept
 
     };
-  }])
+  }
+
+  ])
 ;
