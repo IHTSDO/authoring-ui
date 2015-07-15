@@ -198,14 +198,28 @@ angular.module('singleConceptAuthoringApp.edit', [
         console.error('Cannot remove concept: must specify both new content and concept to replace');
         return;
       }
+    
+      var index;
 
       console.debug('old list', $scope.concepts);
-
-      // replace the item
-      var index = $scope.concepts.indexOf(data.oldConcept);
-      if (index === -1) {
-        $scope.concepts.push(data.newConcept);
+      if(data.newConcept.conceptId === data.oldConcept.conceptId){
+          index = $scope.concepts.indexOf(data.oldConcept);
       }
+//      else{
+//          
+//      }
+//      
+//        
+//      // replace the item
+//      
+//      angular.forEach($scope.concepts, function(item){
+//          
+//      });
+        
+      
+//      if (index === -1) {
+//        $scope.concepts.push(data.newConcept);
+//      }
       else {
         $scope.concepts.splice(index, 1, data.newConcept);
       }
