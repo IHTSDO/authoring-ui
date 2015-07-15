@@ -227,6 +227,7 @@ angular.module('singleConceptAuthoringApp')
                 type = 'TEXT_DEFINITION';
                 break;
             }
+            console.log(desc);
 
             var newDesc = {
               'effectiveTime': desc.effectiveTime,
@@ -236,7 +237,8 @@ angular.module('singleConceptAuthoringApp')
               'type': type,
               'lang': desc.languageCode,
               'caseSignificance': desc.caseSignificance,
-              'acceptabilityMap': desc.acceptabilityMap
+              'acceptabilityMap': desc.acceptabilityMap,
+              'descriptionId': desc.id
             };
 
             concept.descriptions.push(newDesc);
@@ -275,7 +277,8 @@ angular.module('singleConceptAuthoringApp')
               'characteristicType': rel.characteristicType,
               'type': {
                 'conceptId': rel.typeId
-              }
+              },
+              'relationshipId' : rel.id
             };
 
             getRelationshipDisplayNames(newRel, branch).then(function (relationship) {
