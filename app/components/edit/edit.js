@@ -25,7 +25,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     // TODO: Update this when $scope.branching is enabled
-    $scope.branch = 'MAIN';
+    $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
 
     // displayed concept array
     $scope.concepts = [];
@@ -86,7 +86,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.push(response);
         $timeout(function () {
           $scope.resizeSvg(response);
-        }, 500);
+        }, 800);
 
       });
     };
@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.concepts.push(response);
           $timeout(function () {
             $scope.resizeSvg(response);
-          }, 500);
+          }, 800);
           $scope.editPanelUiState.push(conceptId);
           $scope.updateUiState();
         }
@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         $timeout(function () {
           $scope.resizeSvg(clonedConcept);
-        }, 200);
+        }, 600);
 
 
       });
@@ -213,12 +213,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       console.debug('new list', $scope.concepts);
 
       // update the UI state if concept not saved
-      if ($scope.editPanelUiState.indexOf(data.newConcept.conceptId) == -1 && data.newConcept.conceptId) {
+      if ($scope.editPanelUiState.indexOf(data.newConcept.conceptId) === -1 && data.newConcept.conceptId) {
         $scope.editPanelUiState.push(data.newConcept.conceptId);
         $scope.updateUiState();
         $timeout(function () {
           $scope.resizeSvg(data.newConcept);
-        }, 200);
+        }, 600);
 
       }
     });
@@ -227,7 +227,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       var concept = objectService.getNewConcept($scope.branch);
 
       // add IsaRelationship
-      concept.relationships
+      //concept.relationships
       $scope.concepts.push(concept);
 
       // TODO Add ui-state improvement once concept is saved

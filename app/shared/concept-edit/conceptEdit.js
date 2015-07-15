@@ -29,11 +29,11 @@ angular.module('singleConceptAuthoringApp')
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;
-            $('.sca-content').find('#' + concept.id).css('display', 'inline-block');
+            $('#' + concept.conceptId).css('display', 'inline-block');
           }
           else {
             scope.isCollapsed = true;
-            $('.sca-content').find('#' + concept.id).css('display', 'none');
+            $('#' + concept.conceptId).css('display', 'none');
           }
 
         };
@@ -264,7 +264,7 @@ angular.module('singleConceptAuthoringApp')
             }
           }
           return rels;
-        }
+        };
 
         // define characteristic types
         scope.characteristicTypes = [
