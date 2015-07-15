@@ -4,12 +4,13 @@
     <div ng-repeat="concept in concepts" ng-if="concepts.length != 0" class="row no-gutter" style="margin-right:0px; border-top:2px black;">
       <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9;">
         <div class="clearfix" style="margin-top:20px;">
-<!--
-          <h3 ng-if="$index === 0" class="grey-text">
-            <span class="hidden-xs">Model</span>
-          </h3>
--->
-          <div style="height:auto;" ng-if="conceptLoaded" draw-model concept="concept" id="{{concept.id}}"></div>
+          <!--
+                    <h3 ng-if="$index === 0" class="grey-text">
+                      <span class="hidden-xs">Model</span>
+                    </h3>
+          -->
+          <!--ng-if="conceptLoaded" -->
+          <div style="height:auto;" draw-model concept="concept" id="{{concept.conceptId}}"></div>
         </div>
 
         <div class="p-20 no-p-t">
@@ -25,11 +26,11 @@
             class="md md-add-circle pull-right"></i> Create New Concept
           </button>
         </div>
-      <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept" branch="branch" id="editPanel-{{concept.id}}">
+        <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept" branch="branch" id="editPanel-{{concept.conceptId}}">
+        </div>
       </div>
     </div>
-  </div>
-  <div ng-if="!concepts.length > 0" class="row no-gutter" style="margin-right:0px; height:100%;">
+  <!--  <div ng-if="!concepts.length > 0" class="row no-gutter" style="margin-right:0px; height:100%;">
       <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9;">
         <div class="p-20 clearfix">
           <h3 class="grey-text">
@@ -44,16 +45,16 @@
       </div>
       <div class="col-lg-6 editing-form grey darken-3" style="height:100%">
 
-        <!-- row: Blue Create New Concept banner -->
+        &lt;!&ndash; row: Blue Create New Concept banner &ndash;&gt;
         <div class="row clearfix" style="margin-right:0px;">
           <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept" title="Active"><i
             class="md md-add-circle pull-right"></i> Create New Concept
           </button>
         </div>
-          
+
       </div>
     </div>
-  </div>
+  </div>-->
 
-    </div>
+</div>
 </div>
