@@ -237,7 +237,7 @@ angular.module('singleConceptAuthoringApp')
               'lang': desc.languageCode,
               'caseSignificance': desc.caseSignificance,
               'acceptabilityMap': desc.acceptabilityMap
-            }
+            };
 
             concept.descriptions.push(newDesc);
           }
@@ -276,7 +276,7 @@ angular.module('singleConceptAuthoringApp')
               'type': {
                 'conceptId': rel.typeId
               }
-            }
+            };
 
             getRelationshipDisplayNames(newRel, branch).then(function (relationship) {
               concept.relationships.push(relationship);
@@ -293,7 +293,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       return deferred.promise;
-    };
+    }
 
     return {
 
