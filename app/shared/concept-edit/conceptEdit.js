@@ -327,8 +327,8 @@ angular.module('singleConceptAuthoringApp')
         // construct an id-name pair json object
         scope.getConceptIdNamePair = function (concept) {
           return {
-            id: concept.id,
-            name: concept.pt.term
+            id: concept.conceptId,
+            name: concept.fsn
           };
         };
 
