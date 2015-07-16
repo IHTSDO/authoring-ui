@@ -47,7 +47,6 @@ angular.module('singleConceptAuthoringApp.search', [])
       // if not already in saved list
       if ($scope.findItemInSavedList(item) === false) {
         // push component on list and update ui state
-        console.log($scope.savedList);
         $scope.savedList.items.push(component);
         $scope.saveUIState($routeParams.projectId, $routeParams.taskId, "saved-list", $scope.savedList);
       }
@@ -215,6 +214,7 @@ angular.module('singleConceptAuthoringApp.search', [])
         searchHtml = searchHtml + "</div>";
         $(divElement).html(searchHtml);
         $('#' + panel.divElement.id + '-searchBox').keyup(function (e) {
+          //search only on pressing the enter key (key 13)
           if(e.which == 13) {
             clearTimeout(thread);
             var $this = $(this);
