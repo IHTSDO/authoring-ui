@@ -490,6 +490,7 @@ angular.module('singleConceptAuthoringApp')
             return false;
           }
 
+          delete relationship.error;
           // pass all checks -> return true
           return true;
         };
@@ -551,6 +552,7 @@ angular.module('singleConceptAuthoringApp')
           if (!description) {
             return;
           }
+          delete description.descriptionId;
           console.debug('updating description', description);
           if (scope.isDescriptionValid(description)) {
             autosave();
@@ -564,6 +566,7 @@ angular.module('singleConceptAuthoringApp')
           if (!relationship) {
             return;
           }
+            relationship.sourceId = scope.concept.conceptId;
           console.debug('updating relationship', relationship);
           if (scope.isRelationshipValid(relationship)) {
             autosave();
