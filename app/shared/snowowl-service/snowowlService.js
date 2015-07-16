@@ -74,10 +74,29 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
+    ////////////////////////////////////////////////////
+    // Description functions
+    ////////////////////////////////////////////////////
+
     // Retrieve descriptions of a concept
     // GET /{path}/concepts/{conceptId}/descriptions
     function getConceptDescriptions(conceptId, branch) {
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descriptions').then(function (response) {
+
+        // if zero-count, return empty array (no blank array returned)
+        if (response.data.total === 0) {
+          return [];
+        }
+
+        // otherwise, return the passed array
+        return response.data.conceptDescriptions;
+      }, function (error) {
+        // TODO Handle error
+      });
+    }
+
+    function updateDescription(description, branch) {
+      return $http.get(apiEndpoint + branch + '/descriptions/' + description.descriptionId + '/updates').then(function (response) {
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
@@ -238,7 +257,8 @@ angular.module('singleConceptAuthoringApp')
               'lang': desc.languageCode,
               'caseSignificance': desc.caseSignificance,
               'acceptabilityMap': desc.acceptabilityMap,
-              'descriptionId': desc.id
+              'descriptionId': desc.id,
+              'conceptId':desc.conceptId
             };
 
             concept.descriptions.push(newDesc);
@@ -310,7 +330,8 @@ angular.module('singleConceptAuthoringApp')
       getConceptRelationshipsInbound: getConceptRelationshipsInbound,
       getConceptRelationshipsOutbound: getConceptRelationshipsOutbound,
       getRelationshipDisplayNames: getRelationshipDisplayNames,
-      getFullConcept: getFullConcept
+      getFullConcept: getFullConcept,
+      updateDescription: updateDescription
 
     };
   }

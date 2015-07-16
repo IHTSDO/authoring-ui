@@ -125,7 +125,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (response) {
 
-
         var conceptId = response.conceptId;
         var conceptEt = response.effectiveTime;
 
@@ -170,7 +169,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.resizeSvg(clonedConcept);
         }, 600);
 
-
       });
     });
 
@@ -191,51 +189,15 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
     // watch for removal request from concept-edit
-    $scope.$on('conceptEdit.updateConcept', function (event, data) {
-
-      console.debug('edit.js, conceptEdit.updateConcept notification', data);
-      if (!data || !data.newConcept || !data.oldConcept) {
-        console.error('Cannot remove concept: must specify both new content and concept to replace');
-        return;
-      }
-    
-      var index;
-
-      console.debug('old list', $scope.concepts);
-      if(data.newConcept.conceptId === data.oldConcept.conceptId){
-          index = $scope.concepts.indexOf(data.oldConcept);
-      }
-//      else{
-//          
-//      }
-//      
-//        
-//      // replace the item
-//      
-//      angular.forEach($scope.concepts, function(item){
-//          
-//      });
-        
-      
-//      if (index === -1) {
-//        $scope.concepts.push(data.newConcept);
-//      }
-      else {
-        $scope.concepts.splice(index, 1, data.newConcept);
+    $scope.$on('conceptEdit.newConceptCreated', function (event, data) {
+      if (!data || !data.conceptId) {
+        console.error('Cannot add newly created concept to edit-panel list, conceptId not supplied');
       }
 
-      console.debug('new list', $scope.concepts);
-
-      // update the UI state if concept not saved
-      if ($scope.editPanelUiState.indexOf(data.newConcept.conceptId) === -1 && data.newConcept.conceptId) {
-        $scope.editPanelUiState.push(data.newConcept.conceptId);
-        $scope.updateUiState();
-        $timeout(function () {
-          $scope.resizeSvg(data.newConcept);
-        }, 600);
-
-      }
+      $scope.editPanelUiState.push(data.conceptId);
+      $scope.updateUiState();
     });
+
 
     $scope.createConcept = function () {
       var concept = objectService.getNewConcept($scope.branch);
