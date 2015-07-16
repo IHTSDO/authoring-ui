@@ -38,6 +38,7 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
+        // concept history for undoing changes
         scope.conceptSessionHistory = [];
 
         ////////////////////////////////
@@ -60,14 +61,14 @@ angular.module('singleConceptAuthoringApp')
           $rootScope.$broadcast('conceptEdit.removeConcept', {concept: concept});
         };
 
-        scope.saveConcept = function (conceptIn) {
+        scope.saveConcept = function () {
 
-          console.debug('saving concept', conceptIn);
+          console.debug('saving concept', scope.concept);
 
           // deep copy the concept for subsequent modification
           // (1) relationship display names
           // (1) disallowed keys
-          var concept = JSON.parse(JSON.stringify(conceptIn));
+          var concept = JSON.parse(JSON.stringify(scope.concept));
 
           // check if concept valid
           if (!scope.isConceptValid(concept)) {
@@ -75,11 +76,11 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // remove the display names from relationship type/target
+          // TODO Check if this is still necessary
           angular.forEach(concept.relationships, function (rel) {
             delete rel.target.fsn;
             delete rel.type.fsn;
           });
-
 
           // strip unknown tags
           var allowableProperties = [
@@ -93,20 +94,26 @@ angular.module('singleConceptAuthoringApp')
               delete concept[key];
             }
           }
+          $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
           // if new, use create
           if (!concept.conceptId) {
+            
             snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
+              
               if (response && response.conceptId) {
 
-                var savedConcept = response;
+                scope.concept = response;
 
-
-                // broadcast new concept to replace old concept in list
-                $rootScope.$broadcast('conceptEdit.updateConcept', {
-                  oldConcept: conceptIn,  // used unmodified for hash check
-                  newConcept: savedConcept // use returned value
+                // broadcast new concept to add to ui state edit-panel
+                $rootScope.$broadcast('conceptEdit.newConceptCreated', {
+                  conceptId: scope.concept.conceptId
                 });
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+              } else {
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                console.error('Response to createConcept does not have a concept id');
+                
               }
             });
           }
@@ -115,27 +122,25 @@ angular.module('singleConceptAuthoringApp')
           else {
             snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
               if (response && response.conceptId) {
-
-                var savedConcept = response;
-
-                // broadcast new concept to replace old concept in list
-                $rootScope.$broadcast('conceptEdit.updateConcept', {
-                  oldConcept: concept,
-                  newConcept: savedConcept
-                });
+                scope.concept = response;
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
+                else{
+                    $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                }
             });
 
           }
         };
 
         scope.toggleConceptActive = function (concept) {
-          // if inactive, simply set active
+          // if inactive, simply set active and autosave
           if (!concept.active) {
             concept.active = true;
+            autosave();
           }
 
-          // otherwise, open a selct reason modal
+          // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
             selectInactivationReason(concept, 'Concept', inactivateConceptReasons).then(function (reason) {
@@ -151,6 +156,9 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(scope.concept.relationships, function (relationship) {
                   relationship.active = false;
                 });
+
+                // autosave
+                autosave();
               }
             });
           }
@@ -231,6 +239,7 @@ angular.module('singleConceptAuthoringApp')
           // if inactive, simply set active
           if (!description.active) {
             description.active = true;
+            autosave();
           }
 
           // otherwise, open a selct reason modal
@@ -238,6 +247,7 @@ angular.module('singleConceptAuthoringApp')
             // TODO Decide what the heck to do with result
             selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function (reason) {
               description.active = false;
+              autosave();
             });
           }
         };
@@ -327,8 +337,8 @@ angular.module('singleConceptAuthoringApp')
         // construct an id-name pair json object
         scope.getConceptIdNamePair = function (concept) {
           return {
-            id: concept.id,
-            name: concept.pt.term
+            id: concept.conceptId,
+            name: concept.fsn
           };
         };
 
@@ -363,7 +373,7 @@ angular.module('singleConceptAuthoringApp')
           }
           relationship.target.conceptId = data.id;
 
-          // if name supplied, use it, otherwise retrieve it
+          // if name supplied, set the display name, otherwise retrieve it
           if (data.name) {
             relationship.target.fsn = data.name;
           } else {
@@ -371,6 +381,9 @@ angular.module('singleConceptAuthoringApp')
               relationship.target.fsn = response.term;
             });
           }
+
+          // update the relationship -- TODO Check if name required
+          scope.updateRelationship(relationship);
         };
 
         scope.dropAttributeType = function (relationship, data) {
@@ -397,6 +410,9 @@ angular.module('singleConceptAuthoringApp')
               relationship.type.fsn = response.term;
             });
           }
+
+          // update the concept -- TODO Check if name required
+          scope.updateRelationship(relationship);
         };
 
         // dummy function added for now to prevent default behavior
@@ -414,29 +430,38 @@ angular.module('singleConceptAuthoringApp')
         // method to check single description for validity
         scope.isDescriptionValid = function (description) {
           if (!description.moduleId) {
-            console.error('description must have moduleId specified');
+            description.error = 'description must have moduleId specified';
             return false;
           }
           if (!description.term) {
-            console.error('Description must have term specified');
+            description.error = 'Description must have term specified';
             return false;
           }
           if (description.active === null) {
-            console.error('Description active flag must be set');
+            description.error = 'Description active flag must be set';
             return false;
           }
           if (!description.lang) {
-            console.error('Description lang must be set');
+            description.error = 'Description lang must be set';
             return false;
           }
           if (!description.caseSignificance) {
-            console.error('Description case significance must be set');
+            description.error = 'Description case significance must be set';
+            return false;
+          }
+          if (!description.type) {
+            description.error = 'Description type must be set';
             return false;
           }
           /*if (!description.acceptabilityMap) {
-            console.error('Description acceptability map must be set');
-            return false;
-          }*/
+           console.error('Description acceptability map must be set');
+           return false;
+           }*/
+
+          // remove error (if previously applied)
+          if (description.error) {
+            delete description.error;
+          }
 
           // pass all checks -> return true
           return true;
@@ -447,34 +472,35 @@ angular.module('singleConceptAuthoringApp')
 
           // check relationship fields
           if (!relationship.modifier) {
-            console.error('Relationship modifier must be set');
+            relationship.error = 'Relationship modifier must be set';
             return false;
           }
           if (relationship.groupId === null) {
-            console.error('Relationship groupId must be set');
+            relationship.error = 'Relationship groupId must be set';
             return false;
           }
           if (!relationship.moduleId) {
-            console.error('Relationship moduleId must be set');
+            relationship.error = 'Relationship moduleId must be set';
             return false;
           }
           if (!relationship.target || !relationship.target.conceptId) {
-            console.error('Relationship target conceptId must be set');
+            relationship.error = 'Relationship target conceptId must be set';
             return false;
           }
           if (relationship.active === null) {
-            console.error('Relationship active flag must be set');
+            relationship.error = 'Relationship active flag must be set';
             return false;
           }
           if (!relationship.characteristicType) {
-            console.error('Relationship characteristic type must be set');
+            relationship.error = 'Relationship characteristic type must be set';
             return false;
           }
           if (!relationship.type) {
-            console.error('Relationship type must be set');
+            relationship.error = 'Relationship type must be set';
             return false;
           }
 
+          delete relationship.error;
           // pass all checks -> return true
           return true;
         };
@@ -513,15 +539,13 @@ angular.module('singleConceptAuthoringApp')
           // check descriptions
           for (var i = 0; i < concept.descriptions.length; i++) {
             if (!scope.isDescriptionValid(concept.descriptions[i])) {
-              console.error('Description not valid', concept.descriptions[i]);
-              return false;
+             return false;
             }
           }
 
           // check relationships
           for (var j = 0; j < concept.relationships.length; j++) {
             if (!scope.isRelationshipValid(concept.relationships[j])) {
-              console.error('Relationships not valid', concept.relationships[j]);
               return false;
             }
           }
@@ -532,59 +556,47 @@ angular.module('singleConceptAuthoringApp')
           return true;
 
         };
-        /*
-         // autosave on changes, if concept is valid
-         var timeoutPromise;
-         var delayInMs = 2000;
-         scope.$watch('concept', function () {
 
-         // cancel current timeout if not complete
-         $timeout.cancel(timeoutPromise);
+        // function to update description and autosave if indicated
+        scope.updateDescription = function (description) {
+          if (!description) {
+            return;
+          }
+          delete description.descriptionId;
+          console.debug('updating description', description);
+          if (scope.isDescriptionValid(description)) {
+            autosave();
+          } else {
+            console.debug('  Error: ', description.error);
+          }
+        };
 
-         // evaluate concept changes after timeout
-         timeoutPromise = $timeout(function () {
+        // function to update relationship and autosave if indicated
+        scope.updateRelationship = function (relationship) {
+          if (!relationship) {
+            return;
+          }
+            relationship.sourceId = scope.concept.conceptId;
+          console.debug('updating relationship', relationship);
+          if (scope.isRelationshipValid(relationship)) {
+            autosave();
+          } else {
+            console.debug('  Error: ', relationship.error);
+          }
+        };
 
-         // if retrieval not complete, do not execute
+        function autosave() {
 
-         console.debug('change detected', scope.concept);
+          console.debug('autosaving');
 
-         // if concept not yet fully retrieved, do nothing
-         if (!scope.concept || !scope.concept.descriptions || !scope.concept.relationships) {
-         return;
-         }
+          // add revision to session history
+          scope.conceptSessionHistory.push(scope.concept);
 
-         // TODO Refactor UI model to match server format
-         var parsedConcept = scope.parseConcept(scope.concept);
+          // save the concept
+          scope.saveConcept();
+        }
 
-         // add to session history
-         scope.conceptSessionHistory.push(parsedConcept);
-         console.debug('new history', scope.conceptSessionHistory);
-
-         // if no previous session history, do nothing
-         // prevents autosave on load
-         if (scope.conceptSessionHistory.length === 1) {
-         return;
-         }
-
-         // TODO Check elements instead of entire concept if necessary
-         // var lastState =
-         // scope.conceptSessionHistory[conceptSessionHistory.length - 2];
-
-         // check concept's base fields
-         if (!scope.isConceptValid(parsedConcept)) {
-         console.debug('concept not valid, not saving');
-         return;
-         }
-
-         // save the concept
-         // TDOO:  Enable this once all refactoring is complete
-         // and concept is not modified by pt/fsn retrieval
-         // (i.e. once we have the new API endpoint for content)
-         scope.saveConcept(parsedConcept);
-         });
-         }, delayInMs);*/
       }
-    }
-      ;
+    };
   })
 ;

@@ -4,10 +4,11 @@ angular.module('singleConceptAuthoringApp.search', [])
 
   .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, scaService) {
 
+    $scope.branch = "MAIN/" + $routeParams.projectId + "/" + $routeParams.taskId;
     var options = {
       serverUrl: "/snowowl",
       edition: "snomed-ct/v2/browser",
-      release: "MAIN",
+      release: $scope.branch,
       selectedView: "inferred",
       displayChildren: false,
       langRefset: "900000000000509007",
@@ -23,6 +24,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       taskSet: false,
       taskId: null
     };
+    
     $scope.saveUIState = function (projectKey, taskKey, panelId, uiState) {
       scaService.saveUIState(
         projectKey, taskKey, panelId, uiState)
@@ -45,7 +47,6 @@ angular.module('singleConceptAuthoringApp.search', [])
       // if not already in saved list
       if ($scope.findItemInSavedList(item) === false) {
         // push component on list and update ui state
-        console.log($scope.savedList);
         $scope.savedList.items.push(component);
         $scope.saveUIState($routeParams.projectId, $routeParams.taskId, "saved-list", $scope.savedList);
       }
@@ -213,6 +214,7 @@ angular.module('singleConceptAuthoringApp.search', [])
         searchHtml = searchHtml + "</div>";
         $(divElement).html(searchHtml);
         $('#' + panel.divElement.id + '-searchBox').keyup(function (e) {
+          //search only on pressing the enter key (key 13)
           if(e.which == 13) {
             clearTimeout(thread);
             var $this = $(this);
