@@ -16,6 +16,7 @@ angular.module('singleConceptAuthoringApp.edit', [
   .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout) {
 
     $rootScope.pageTitle = 'Edit Concept';
+    $rootScope.saveIndicator = false;
 
     $scope.resizeSvg = function (concept) {
       var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 42;
@@ -98,6 +99,33 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       scaService.saveUIState($routeParams.projectId, $routeParams.taskId, panelId, $scope.editPanelUiState);
     };
+    
+    // watch for concept saving from the edit panel
+    $scope.$on('conceptEdit.saving', function (event, data) {
+        $rootScope.saveIndicator = true; 
+        $rootScope.saveMessage = 'Saving concept with id: ' + data.concept.conceptId; 
+    });
+    $scope.formatDate = function(date) {
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = hours + ':' + minutes + ' ' + ampm;
+      return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
+    }
+
+    $scope.$on('conceptEdit.saveSuccess', function (event, data) {
+        if (data.response && data.response.conceptId)
+        {
+            $rootScope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
+        }
+        else{
+            $rootScope.saveMessage = 'Error saving concept, please make an additional change.'; 
+        }
+        $timeout(function(){$rootScope.saveIndicator = false}, 4000);
+    });
 
     // watch for concept selection from the edit sidebar
     $scope.$on('savedList.editConcept', function (event, data) {

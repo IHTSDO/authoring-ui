@@ -94,10 +94,13 @@ angular.module('singleConceptAuthoringApp')
               delete concept[key];
             }
           }
+          $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
           // if new, use create
           if (!concept.conceptId) {
+            
             snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
+              
               if (response && response.conceptId) {
 
                 scope.concept = response;
@@ -106,8 +109,11 @@ angular.module('singleConceptAuthoringApp')
                 $rootScope.$broadcast('conceptEdit.newConceptCreated', {
                   conceptId: scope.concept.conceptId
                 });
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               } else {
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 console.error('Response to createConcept does not have a concept id');
+                
               }
             });
           }
@@ -117,7 +123,11 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
               if (response && response.conceptId) {
                 scope.concept = response;
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
+                else{
+                    $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                }
             });
 
           }
