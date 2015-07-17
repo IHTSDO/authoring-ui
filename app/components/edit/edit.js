@@ -89,6 +89,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         // TODO Remove once real concept retrieval is available
         // force update to get FSN, not PT
         snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, response).then(function (response) {
+          console.debug('Concept retrieved and updated', response);
           $scope.concepts.push(response);
           $timeout(function () {
             $scope.resizeSvg(response);
