@@ -1,0 +1,39 @@
+<div style="color: black; padding-top:50px;">
+  <table class="table">
+    <tr>
+      <td>SCTID</td>
+      <td>{{description.conceptId}}</td>
+    </tr>
+    <tr>
+      <td>Effective Time</td>
+      <td>{{description.effectiveTime}}</td>
+    </tr>
+    <tr>
+      <td>Module Id</td>
+      <td>{{description.moduleId}}</td>
+    </tr>
+    <tr>
+      <td>Language</td>
+      <td><select tooltip="Language" name="select-choice2" id="select-choice2" class="form-control"
+                  ng-model="description.lang" ng-change="updateDescription(description)">
+        <option>en</option>
+        <option>es</option>
+      </select></td>
+    </tr>
+
+    <tr>
+      <td>Case Sensitivity</td>
+      <td>
+        <select tooltip="Case Significance" name="select-choic3e" id="select-choice3" class="form-control m-r-10"
+                ng-model="description.caseSignificance" ng-change="updateDescription(description)">
+          <option>CASE_INSENSITIVE</option>
+          <option>ENTIRE_TERM_CASE_SENSITIVE</option>
+          <option>INITIAL_CHARACTER_CASE_INSENSITIVE</option>
+
+        </select>
+
+      </td>
+    </tr>
+
+  </table>
+</div>
