@@ -1,5 +1,5 @@
 <div class="">
-  <div class="row p-5 grey darken-4 editHeightSelector" style=" margin-right:0px;">
+  <div class="row p-5 grey darken-4 " style=" margin-right:0px;">
     <div class="pull-left">
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
@@ -48,7 +48,7 @@
   </div>
 
   <!-- Toggle-able collapsed concept elements -->
-  <div ng-show="!isCollapsed" >
+  <div ng-show="!isCollapsed" class="editHeightSelector">
 
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in concept.descriptions">

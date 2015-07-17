@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.saveIndicator = false;
 
     $scope.resizeSvg = function (concept) {
-      var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height();
+      var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
       var elem = document.getElementById('model' + concept.conceptId);
       console.log(elem);
       elem.setAttribute('height', height + 'px');
