@@ -94,7 +94,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $timeout(function () {
             $scope.resizeSvg(response);
           }, 500);
-        })
+        });
 
       });
     };
@@ -120,8 +120,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       hours = hours ? hours : 12; // the hour '0' should be '12'
       minutes = minutes < 10 ? '0' + minutes : minutes;
       var strTime = hours + ':' + minutes + ' ' + ampm;
-      return date.getMonth() + 1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
-    }
+      return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+    };
 
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
@@ -131,7 +131,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $rootScope.saveMessage = 'Error saving concept, please make an additional change.';
       }
       $timeout(function () {
-        $rootScope.saveIndicator = false
+        $rootScope.saveIndicator = false;
       }, 4000);
     });
 
