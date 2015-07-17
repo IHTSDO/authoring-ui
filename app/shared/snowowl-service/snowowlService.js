@@ -30,6 +30,28 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
+    // function to remove disallowed elements from a concept
+    function cleanConcept(concept) {
+      // strip unknown tags
+      var allowableProperties = [
+        'fsn', 'conceptId', 'definitionStatus', 'active', 'moduleId',
+        'isLeafInferred', 'effectiveTime', 'descriptions',
+        'preferredSynonym', 'relationships'];
+
+      for (var key in concept) {
+        console.debug(key, allowableProperties.indexOf(key));
+        if (allowableProperties.indexOf(key) === -1) {
+          delete concept[key];
+        }
+      }
+    }
+
+
+
+    //////////////////////////////////////////////
+    // Retrieval functions
+    //////////////////////////////////////////////
+
     // Retrieve Concept properties
     // GET {path}/concepts/{conceptId}
     function getConceptProperties(conceptId, branch) {
@@ -246,7 +268,6 @@ angular.module('singleConceptAuthoringApp')
                 type = 'TEXT_DEFINITION';
                 break;
             }
-            console.log(desc);
 
             var newDesc = {
               'effectiveTime': desc.effectiveTime,
@@ -331,7 +352,8 @@ angular.module('singleConceptAuthoringApp')
       getConceptRelationshipsOutbound: getConceptRelationshipsOutbound,
       getRelationshipDisplayNames: getRelationshipDisplayNames,
       getFullConcept: getFullConcept,
-      updateDescription: updateDescription
+      updateDescription: updateDescription,
+      cleanConcept: cleanConcept
 
     };
   }

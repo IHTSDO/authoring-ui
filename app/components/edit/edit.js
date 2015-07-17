@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.saveIndicator = false;
 
     $scope.resizeSvg = function (concept) {
-      var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 42;
+      var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
       var elem = document.getElementById('model' + concept.conceptId);
       console.log(elem);
       elem.setAttribute('height', height + 'px');
@@ -84,10 +84,17 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         console.debug(response);
 
-        $scope.concepts.push(response);
-        $timeout(function () {
-          $scope.resizeSvg(response);
-        }, 800);
+        snowowlService.cleanConcept(response);
+
+        // TODO Remove once real concept retrieval is available
+        // force update to get FSN, not PT
+        snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, response).then(function (response) {
+          console.debug('Concept retrieved and updated', response);
+          $scope.concepts.push(response);
+          $timeout(function () {
+            $scope.resizeSvg(response);
+          }, 500);
+        });
 
       });
     };
@@ -99,32 +106,33 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       scaService.saveUIState($routeParams.projectId, $routeParams.taskId, panelId, $scope.editPanelUiState);
     };
-    
+
     // watch for concept saving from the edit panel
     $scope.$on('conceptEdit.saving', function (event, data) {
-        $rootScope.saveIndicator = true; 
-        $rootScope.saveMessage = 'Saving concept with id: ' + data.concept.conceptId; 
+      $rootScope.saveIndicator = true;
+      $rootScope.saveMessage = 'Saving concept with id: ' + data.concept.conceptId;
     });
-    $scope.formatDate = function(date) {
+    $scope.formatDate = function (date) {
       var hours = date.getHours();
       var minutes = date.getMinutes();
       var ampm = hours >= 12 ? 'pm' : 'am';
       hours = hours % 12;
       hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0'+minutes : minutes;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
       var strTime = hours + ':' + minutes + ' ' + ampm;
-      return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + "  " + strTime;
-    }
+      return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+    };
 
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
-        if (data.response && data.response.conceptId)
-        {
-            $rootScope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
-        }
-        else{
-            $rootScope.saveMessage = 'Error saving concept, please make an additional change.'; 
-        }
-        $timeout(function(){$rootScope.saveIndicator = false}, 4000);
+      if (data.response && data.response.conceptId) {
+        $rootScope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
+      }
+      else {
+        $rootScope.saveMessage = 'Error saving concept, please make an additional change.';
+      }
+      $timeout(function () {
+        $rootScope.saveIndicator = false;
+      }, 4000);
     });
 
     // watch for concept selection from the edit sidebar
@@ -226,7 +234,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.updateUiState();
     });
 
-
     $scope.createConcept = function () {
       var concept = objectService.getNewConcept($scope.branch);
 
@@ -245,12 +252,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 // tab and popover controls for initial buttons
-    $scope.tabs = ['Log', 'Timeline', 'Messages'];
+  /*  $scope.tabs = ['Log', 'Timeline', 'Messages'];
     $scope.popover = {
       placement: 'left',
       'title': 'Title',
       'content': 'Hello Popover<br />This is a multiline message!'
     };
-
+*/
   })
 ;

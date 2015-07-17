@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
           $rootScope.$broadcast('conceptEdit.removeConcept', {concept: concept});
         };
 
-        scope.saveConcept = function () {
+        scope.saveConcept = function (suppressMessage) {
 
           console.debug('saving concept', scope.concept);
 
@@ -82,38 +82,32 @@ angular.module('singleConceptAuthoringApp')
             delete rel.type.fsn;
           });
 
-          // strip unknown tags
-          var allowableProperties = [
-            'fsn', 'conceptId', 'definitionStatus', 'active', 'moduleId',
-            'isLeafInferred', 'effectiveTime', 'descriptions',
-            'preferredSynonym', 'relationships'];
 
-          for (var key in concept) {
-            console.debug(key, allowableProperties.indexOf(key));
-            if (allowableProperties.indexOf(key) === -1) {
-              delete concept[key];
-            }
-          }
           $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
           // if new, use create
           if (!concept.conceptId) {
-            
+
             snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
-              
+
               if (response && response.conceptId) {
 
                 scope.concept = response;
 
                 // broadcast new concept to add to ui state edit-panel
                 $rootScope.$broadcast('conceptEdit.newConceptCreated', {
-                  conceptId: scope.concept.conceptId
+                  conceptId: scope.concept.conceptId,
                 });
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                if (!suppressMessage) {
+                  $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                }
               } else {
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+
+                if (!suppressMessage) {
+                  $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                }
                 console.error('Response to createConcept does not have a concept id');
-                
+
               }
             });
           }
@@ -125,9 +119,9 @@ angular.module('singleConceptAuthoringApp')
                 scope.concept = response;
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
-                else{
-                    $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
-                }
+              else {
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+              }
             });
 
           }
@@ -539,7 +533,7 @@ angular.module('singleConceptAuthoringApp')
           // check descriptions
           for (var i = 0; i < concept.descriptions.length; i++) {
             if (!scope.isDescriptionValid(concept.descriptions[i])) {
-             return false;
+              return false;
             }
           }
 
@@ -576,7 +570,7 @@ angular.module('singleConceptAuthoringApp')
           if (!relationship) {
             return;
           }
-            relationship.sourceId = scope.concept.conceptId;
+          relationship.sourceId = scope.concept.conceptId;
           console.debug('updating relationship', relationship);
           if (scope.isRelationshipValid(relationship)) {
             autosave();
