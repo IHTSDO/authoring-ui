@@ -19,10 +19,12 @@
   "trailing": true,
   "smarttabs": true,
   "jasmine": true,
+  "jquery": true,
   "globals": {
     "angular": false,
     "browser": false,
-    "inject": false
+    "inject": false,
+    "$": false,
+    "jQuery": false
   }
 }
-
