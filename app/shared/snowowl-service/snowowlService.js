@@ -268,7 +268,6 @@ angular.module('singleConceptAuthoringApp')
                 type = 'TEXT_DEFINITION';
                 break;
             }
-            console.log(desc);
 
             var newDesc = {
               'effectiveTime': desc.effectiveTime,

@@ -4,7 +4,8 @@
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
       <button type="button" class="btn btn-default morebuttons grey darken-4 md md-more"
-              popover-template="'shared/component-more/conceptMore.html'" popover-placement="left" popover-title="More Options"></button>
+              popover-template="'shared/component-more/conceptMore.html'" popover-placement="left"
+        ></button>
 
 
       <script type="text/ng-template" id="myPopoverTemplate.html">
@@ -56,7 +57,7 @@
         <div class="col-md-3 no-padding">
           <div class="pull-left">
             <button class="btn-default editbuttons grey darken-3 md md-more"
-                    popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left" popover-title="More Options"></button>
+                    popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
             <button type="button" class="btn-default editbuttons amber md md-undo" title="Undo Changes"></button>
             <button type="button" class="btn-default editbuttons blue accent-2 md md-history"
                     title="Undo Changes"></button>
@@ -115,6 +116,7 @@
           <div class="pull-left">
             <button class="btn-default editbuttons grey darken-3 md md-more"
                     ng-click="showAttributeDetails = !showAttributeDetails"
+                    popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
                     title="Some title here"></button>
 
             <button type="button" class="btn-default editbuttons amber md md-undo" title="Undo Changes"></button>
@@ -130,11 +132,11 @@
         </div>
 
         <!-- relationship group, unused for isA relationships -->
-       <!--<div class="pull-left rolegroup">
-          <input disabled
-                 class="form-control color_{{relationship.groupId}}" type="text" placeholder="-"
-                 ui-on-drop="dropNullOp()">
-        </div>-->
+        <!--<div class="pull-left rolegroup">
+           <input disabled
+                  class="form-control color_{{relationship.groupId}}" type="text" placeholder="-"
+                  ui-on-drop="dropNullOp()">
+         </div>-->
 
         <!-- attribute type -->
         <div class="pull-left" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
@@ -174,6 +176,8 @@
           <div class="pull-left">
             <button class="btn-default editbuttons grey darken-3 md md-more"
                     ng-click="showAttributeDetails = !showAttributeDetails"
+                    popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
+
                     title="Some title here"></button>
 
             <button type="button" class="btn-default editbuttons amber md md-undo" title="Undo Changes"></button>
