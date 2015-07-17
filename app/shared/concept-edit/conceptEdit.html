@@ -52,7 +52,7 @@
   <div ng-show="!isCollapsed" class="editHeightSelector">
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in concept.descriptions">
+    <div ng-repeat="description in concept.descriptions | orderBy:'type'">
       <div class="row darken-3 p-5 grey">
         <div class="col-md-3 no-padding">
           <div class="pull-left">
