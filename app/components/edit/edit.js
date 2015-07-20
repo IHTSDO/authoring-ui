@@ -139,7 +139,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.pollForResult = function() {
         $timeout(function() {
             snowowlService.checkClassificationResult($scope.classifactionJobId, $routeParams.taskId, $scope.branch).then(function(data){
-                if(data.data.status == "COMPLETED")
+                if(data.data.status === 'COMPLETED')
                 {
                     $scope.validationResultsComplete = true;
                     return;
