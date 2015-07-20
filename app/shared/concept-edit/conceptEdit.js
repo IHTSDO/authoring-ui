@@ -590,6 +590,10 @@ angular.module('singleConceptAuthoringApp')
           scope.saveConcept();
         }
 
+        scope.showModel = function() {
+          $rootScope.$broadcast('conceptEdit.showModel');
+        }
+
       }
     };
   })

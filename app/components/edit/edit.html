@@ -10,7 +10,8 @@
 
       <!-- model header -->
       <!-- TODO:  Figure out what the heck to do with Create New Concept button on collapse -->
-      <div ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
+      <div ng-show="!hideModel"
+           ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
            class="editing-form" style="margin-right:0px;">
         <button type="button" class="btn btn-default blue md md-chevron-left"
                 ng-click="toggleSidebar()" style="margin-right:10px;" ng-show="hideSidebar"></button>
@@ -22,9 +23,14 @@
       </div>
 
 
-      <!-- edit panel header, displayed during load -->
+      <!-- edit panel header -->
       <!-- TODO:  Figure out what the heck to do with Create New Concept button on model collapse -->
-      <div ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-4' : hideSidebar}]">
+      <div ng-class="['col-sm-12', 'col-md-12',
+           {'col-lg-6' : !hideSidebar && !hideModel},
+           {'col-lg-4': hideSidebar && !hideModel},
+           {'col-lg-12' : hideModel}]">
+
+        <!-- displayed during load -->
         <div ng-if="editPanelUiState != null && concepts.length < editPanelUiState.length"
              style="margin-right:0px;">
           <button type="button" class="btn-default btn-block create-new-concept"
@@ -32,7 +38,7 @@
           </button>
         </div>
 
-        <!-- edit panel header, displayed after load -->
+        <!-- displayed after load -->
         <div ng-if="editPanelUiState != null && concepts.length >= editPanelUiState.length"
              class="editing-form grey darken-3" style="margin-right:0px;">
           <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
