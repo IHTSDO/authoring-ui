@@ -68,6 +68,7 @@ angular.module('singleConceptAuthoringApp')
 
           // broadcast new task to any listening pages
           $rootScope.$broadcast('taskCreated', response.data);
+          $modalInstance.close();
       }, function (error) {
           $scope.msgError = 'Error occurred when trying to create task';
       });
