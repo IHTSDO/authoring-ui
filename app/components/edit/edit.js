@@ -28,9 +28,19 @@ angular.module('singleConceptAuthoringApp.edit', [
         $timeout(function () {
           $scope.resizeSvg(concept);
         }, 500);
-/*        $scope.resizeSvg(concept);*/
-      })
-    }
+      });
+    };
+
+    // toggle for hiding model
+    $scope.toggleModel = function () {
+      $scope.hideModel = !$scope.hideModel;
+
+      angular.forEach($scope.concepts, function (concept) {
+        $timeout(function () {
+          $scope.resizeSvg(concept);
+        }, 500);
+      });
+    };
 
     $scope.resizeSvg = function (concept) {
       var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
@@ -45,7 +55,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       console.debug(width, parentElem.offsetWidth, parentElem);
 
-      elem.setAttribute('width', width );
+      elem.setAttribute('width', width);
       elem.setAttribute('height', height);
     };
 
@@ -60,6 +70,23 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.editPanelUiState = null;
 
     var panelId = 'edit-panel';
+
+    // watch saved list and edit panel list to set edit flags
+    $scope.$watchGroup(['editPanelUiState', 'savedList'], function () {
+
+      console.debug('checking edited items', $scope.editPanelUiState, $scope.savedList);
+      if ($scope.editPanelUiState && $scope.savedList) {
+        // for each item in the edit list
+        angular.forEach($scope.editPanelUiState, function (conceptId) {
+          // check if this item is in saved list, flag it as editing if so
+          angular.forEach($scope.savedList.items, function (item) {
+            if (item.concept.conceptId === conceptId) {
+              item.editing = true;
+            }
+          });
+        });
+      }
+    });
 
     // get edit panel list
     scaService.getUIState(
@@ -106,11 +133,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           return;
         }
 
-        console.debug(response);
-
         snowowlService.cleanConcept(response);
 
-        // TODO Remove once real concept retrieval is available
         // force update to get FSN, not PT
         snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, response).then(function (response) {
           console.debug('Concept retrieved and updated', response);
@@ -282,7 +306,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       //concept.relationships
       $scope.concepts.push(concept);
 
-      // TODO Add ui-state improvement once concept is saved
+      $timeout(function () {
+        $scope.resizeSvg(concept);
+      }, 500);
     };
 
 // removes concept from editing list (unused currently)
@@ -292,13 +318,5 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-// tab and popover controls for initial buttons
-    /*  $scope.tabs = ['Log', 'Timeline', 'Messages'];
-     $scope.popover = {
-     placement: 'left',
-     'title': 'Title',
-     'content': 'Hello Popover<br />This is a multiline message!'
-     };
-     */
   })
 ;

@@ -39,7 +39,6 @@ angular.module('singleConceptAuthoringApp')
         'preferredSynonym', 'relationships'];
 
       for (var key in concept) {
-        console.debug(key, allowableProperties.indexOf(key));
         if (allowableProperties.indexOf(key) === -1) {
           delete concept[key];
         }

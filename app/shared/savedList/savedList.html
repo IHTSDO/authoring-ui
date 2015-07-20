@@ -20,7 +20,8 @@
       <div class="col-lg-2 col-md-3 col-sm-12 col-xs-4">
         <div class="savedlist-buttons">
           <button type="button" class="btn btn-default saved-list-buttons pull-left" title="Edit"
-                  ng-click="selectItem(item)"><i class="md md-add-circle"></i>
+                  ng-click="selectItem(item)"
+                  ng-disabled="item.editing"><i class="md md-add-circle"></i>
           </button>
           <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left"
                   title="Clone"

@@ -6,13 +6,15 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     // name of the panel for the Saved List
     var panelId = 'saved-list';
 
-
     // function to select an item from the saved list
     // broadcasts selected conceptId
     $scope.selectItem = function (item) {
-      if (item) {
-        $rootScope.$broadcast('savedList.editConcept', {conceptId: item.concept.conceptId});
+      if (!item) {
+        return;
       }
+
+      $rootScope.$broadcast('savedList.editConcept', {conceptId: item.concept.conceptId});
+
     };
 
     $scope.clone = function (item) {
@@ -24,11 +26,13 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     $scope.removeItem = function (item) {
       if (item) {
         var index = $scope.savedList.items.indexOf(item);
-        $scope.savedList.items.splice(index, 1);
+        if (index !== -1) {
+          $scope.savedList.items.splice(index, 1);
 
-        scaService.saveUIState(
-          $routeParams.projectId, $routeParams.taskId, 'saved-list', $scope.savedList
-        );
+          scaService.saveUIState(
+            $routeParams.projectId, $routeParams.taskId, 'saved-list', $scope.savedList
+          );
+        }
       }
     };
 
