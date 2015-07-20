@@ -384,6 +384,10 @@ angular.module('singleConceptAuthoringApp')
       getRelationshipDisplayNames: getRelationshipDisplayNames,
       getFullConcept: getFullConcept,
       updateDescription: updateDescription,
+      startClassification: startClassification,
+      checkClassificationResult: checkClassificationResult,
+      getEquivalentConcepts: getEquivalentConcepts,
+      getRelationshipChanges: getRelationshipChanges,
       cleanConcept: cleanConcept
 
     };
