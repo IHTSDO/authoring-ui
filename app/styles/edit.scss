@@ -1,11 +1,23 @@
 .tooltip{top:0px!important; }
-.popover{min-width:450px!important;}
-.pop-edit p{font-size:12px;color:#424242!important; margin:0px!important;}
+.popover{min-width:620px!important;}
+.pop-edit p{font-size:12px;color:#fff!important; margin:0px!important;}
 .popover select.form-control{margin:0px!important;}
 button, .btn {
   border: none !important;
 }
-
+.popover{background-color: rgba(0, 0, 0, 0.8);
+background: rgba(0, 0, 0, 0.8);
+color: rgba(0, 0, 0, 0.8);border-color:rgba(0, 0, 0, 0.8);}
+.popover.left > .arrow:after {
+  border-left-color: rgba(0, 0, 0, 0.8);
+}
+.popover .dropdowns{background-color: #fff!important;}
+.popover .fields{padding:4px 0px; color:#eee!important; }
+//description more
+.description-popover .SCTID {width:100px;}
+.description-popover .moduleId {width:170px;}
+.description-popover .lang {width:45px; margin-right:10px;}
+.description-popover .case {width:251px; margin-right:10px;}
 .darkbuttons {
   &:active, &:focus {
     background-color: #212121 !important;

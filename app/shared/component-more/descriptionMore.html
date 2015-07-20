@@ -1,31 +1,26 @@
- <div class="pop-edit">
 
- <div class="col-md-3 no-padding">
- <p>SCTID</p>
- {{description.descriptionId}}
- </div>
- <div class="col-md-3 no-padding">
- <p>Module Id</p>
-{{description.moduleId}}
- </div>
- <div class="col-md-3 no-padding">
- <p>Language</p>
-<select name="select-choice2" id="select-choice2" class="form-control"
+<div class="pop-edit description-popover row">
+  <div class="col-md-3 no-padding SCTID">
+    <p class="row">SCTID</p>
+    <span class="fields row"> {{description.descriptionId}}</span> </div>
+  <div class="col-md-3 no-padding moduleId">
+    <p class="row">Module Id</p>
+    <span class="fields row"> {{description.moduleId}}</span> </div>
+  <div class="col-md-3 no-padding lang">
+    <p>Lang.</p>
+    <select name="select-choice2" id="select-choice2" class="dropdowns"
                   ng-model="description.lang" ng-change="updateDescription(description)">
-        <option>en</option>
-        <option>es</option>
-      </select>
- </div>
- 
-  <div class="col-md-3 no-padding">
- <p>Case Significance</p>
- <select name="select-choice" id="select-choice3" class="form-control m-r-10"
+      <option>en</option>
+      <option>es</option>
+    </select>
+  </div>
+  <div class="col-md-3 no-padding case">
+    <p>Case Significance</p>
+    <select name="select-choice" id="select-choice3" class="dropdowns"
                 ng-model="description.caseSignificance" ng-change="updateDescription(description)">
-          <option>CASE_INSENSITIVE</option>
-          <option>ENTIRE_TERM_CASE_SENSITIVE</option>
-          <option>INITIAL_CHARACTER_CASE_INSENSITIVE</option>
-
-        </select>
- </div>
- 
+      <option>CASE_INSENSITIVE</option>
+      <option>ENTIRE_TERM_CASE_SENSITIVE</option>
+      <option>INITIAL_CHARACTER_CASE_INSENSITIVE</option>
+    </select>
+  </div>
 </div>
