@@ -803,3 +803,35 @@ border:none;
 .form-control:disabled {
   color: white;
 }
+//buttons on project info
+.projecttasks .btn-success.btn-border {
+  border-color: #11c78e!important;
+  color: #11c78e!important;
+}
+.projecttasks .btn-border {
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important;
+  border: 1.5px solid!important;
+  border-color: rgba(0,0,0,.1)!important;
+  border-radius: 3px!important;
+  background-color: transparent!important;
+}
+.projecttasks .btn-success.btn-border:hover{
+  color: #fff!important;
+  background-color: #11c78e!important;
+}
+.projecttasks .btn-disabled.btn-border {
+  border-color: #8e8e8e!important;
+  color: #8e8e8e!important;
+}
+
+.projecttasks .btn-disabled.btn-border:hover{
+  color: #fff!important;
+  background-color: #8e8e8e!important;
+}
+//pagination
+ .paging .btn{ box-shadow: 1px 1px 2px rgba(0,0,0,.3)!important;}
+//badges on project info
+.badge{font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight:normal;}
+.In.Progress.badge{ background-color: #11c78e; font-size: 13px;  padding: 6px 10px; margin:0px; line-height:13px;}
+.New.badge{  background-color: #03a9f4; font-size: 13px;  padding: 6px 10px; margin:0px; line-height:13px;}
