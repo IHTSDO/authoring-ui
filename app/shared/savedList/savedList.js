@@ -5,21 +5,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     // name of the panel for the Saved List
     var panelId = 'saved-list';
-/*
 
-    // get the required ui state elements
-    scaService.getUIState(
-      $routeParams.projectId, $routeParams.taskId, 'saved-list')
-      .then(function (uiState) {
-        if (!uiState || !uiState.items) {
-          $scope.savedList = {'items': []};
-        }
-        else {
-          $scope.savedList = uiState;
-        }
-      }
-    );
-*/
 
     // function to select an item from the saved list
     // broadcasts selected conceptId

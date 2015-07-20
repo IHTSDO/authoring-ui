@@ -18,11 +18,35 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.pageTitle = 'Edit Concept';
     $rootScope.saveIndicator = false;
 
+    // toggle for hiding sidebar
+    $scope.hideSidebar = false;
+
+    $scope.toggleSidebar = function () {
+      $scope.hideSidebar = !$scope.hideSidebar;
+
+      angular.forEach($scope.concepts, function (concept) {
+        $timeout(function () {
+          $scope.resizeSvg(concept);
+        }, 500);
+/*        $scope.resizeSvg(concept);*/
+      })
+    }
+
     $scope.resizeSvg = function (concept) {
       var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
+
+      // get the svg drawModel object
       var elem = document.getElementById('model' + concept.conceptId);
-      console.log(elem);
-      elem.setAttribute('height', height + 'px');
+
+      // get the parent div containing this draw model object
+      var parentElem = document.getElementById('drawModel' + concept.conceptId);
+
+      var width = parentElem.offsetWidth - 30;
+
+      console.debug(width, parentElem.offsetWidth, parentElem);
+
+      elem.setAttribute('width', width );
+      elem.setAttribute('height', height);
     };
 
     // TODO: Update this when $scope.branching is enabled
@@ -134,24 +158,22 @@ angular.module('singleConceptAuthoringApp.edit', [
         $rootScope.saveIndicator = false;
       }, 4000);
     });
-    
+
     //initial function to poll for the result of a classification run
-    $scope.pollForResult = function() {
-        $timeout(function() {
-            snowowlService.checkClassificationResult($scope.classifactionJobId, $routeParams.taskId, $scope.branch).then(function(data){
-                if(data.data.status === 'COMPLETED')
-                {
-                    $scope.validationResultsComplete = true;
-                    return;
-                }
-            });
-            if($scope.validationResultsComplete === true)
-            {
-                $scope.generateClassifierResults();
-                return;
-            }
-            $scope.pollForResult();
-        }, 20000);
+    $scope.pollForResult = function () {
+      $timeout(function () {
+        snowowlService.checkClassificationResult($scope.classifactionJobId, $routeParams.taskId, $scope.branch).then(function (data) {
+          if (data.data.status === 'COMPLETED') {
+            $scope.validationResultsComplete = true;
+            return;
+          }
+        });
+        if ($scope.validationResultsComplete === true) {
+          $scope.generateClassifierResults();
+          return;
+        }
+        $scope.pollForResult();
+      }, 20000);
     };
 
     // watch for concept selection from the edit sidebar
@@ -271,12 +293,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 // tab and popover controls for initial buttons
-  /*  $scope.tabs = ['Log', 'Timeline', 'Messages'];
-    $scope.popover = {
-      placement: 'left',
-      'title': 'Title',
-      'content': 'Hello Popover<br />This is a multiline message!'
-    };
-*/
+    /*  $scope.tabs = ['Log', 'Timeline', 'Messages'];
+     $scope.popover = {
+     placement: 'left',
+     'title': 'Title',
+     'content': 'Hello Popover<br />This is a multiline message!'
+     };
+     */
   })
 ;

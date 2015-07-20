@@ -1,48 +1,63 @@
 <div class="sca-container col-sm-12 no-padding">
-  <div ng-include src="'layout/sidebar-edit.html'"></div>
-  <div class="sca-content" style="height:100%; overflow-y:scroll;">
+  <div class="row no-gutter">
+    <div ng-show="!hideSidebar" class="col-lg-3 col-md-3 col-sm-3" style="padding-left: 0px;" ng-include
+         src="'layout/sidebar-edit.html'"></div>
+
+    <div ng-class="[{'col-9' : !hideSidebar}, {'col-11' : hideSidebar}]"
+         style="height:100%; overflow-y:scroll; padding: 0px; margin: 0px;">
 
 
-    <!-- headers -->
-    <div class="row no-gutter">
-      <!-- model header -->
-      <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9; margin:0px; padding:0px;">
-        <!-- intentionally left blank -->
+      <!-- headers -->
+      <div class="row no-gutter">
+
+        <!-- model header -->
+        <div ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]">
+
+
+
+              <button type="button" class="btn btn-default widget-toolbar blue" title="Show/Hide Sidebar"
+                      ng-click="toggleSidebar()" style="margin-right:10px;" ng-show="hideSidebar"><span
+                class="md md-chevron-left"></span></button>
+        </div>
+
+
+        <!-- edit panel header, displayed during load -->
+        <div ng-if="editPanelUiState != null && concepts.length < editPanelUiState.length"
+             ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-4' : hideSidebar}]"
+             style="margin-right:0px;">
+          <button type="button" class="btn-default btn-block create-new-concept"
+                  title="Active">Loading Concepts ({{concepts.length}}/{{editPanelUiState.length}}) ...
+          </button>
+        </div>
+
+        <!-- edit panel header, displayed after load -->
+        <div ng-if="editPanelUiState != null && concepts.length >= editPanelUiState.length"
+             ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-4' : hideSidebar}]"
+             class="editing-form grey darken-3" style="margin-right:0px;">
+          <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
+                  title="Active"><i
+            class="md md-add-circle pull-right"></i> Create New Concept
+          </button>
+        </div>
       </div>
 
-      <!-- edit panel header, displayed during load -->
-      <div ng-if="editPanelUiState != null && concepts.length < editPanelUiState.length"
-           class="col-sm-12 col-md-12 col-lg-6 clearfix" style="margin-right:0px;">
-        <button type="button" class="btn-default btn-block create-new-concept"
-                title="Active">Loading Concepts ({{concepts.length}}/{{editPanelUiState.length}}) ...
-        </button>
-      </div>
 
-      <!-- edit panel header, displayed after load -->
-      <div ng-if="editPanelUiState != null && concepts.length >= editPanelUiState.length"
-           class="col-lg-6 editing-form grey darken-3" style="margin-right:0px;">
-        <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
-                title="Active"><i
-          class="md md-add-circle pull-right"></i> Create New Concept
-        </button>
+      <div ng-repeat="concept in concepts" ng-if="concepts.length != 0" class="row no-gutter">
+        <div ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
+             style="background:#F9F9F9; margin:0px; padding:0px;">
+          <div class="clearfix" style="">
+            <!--ng-if="conceptLoaded" -->
+            <div draw-model concept="concept" id="drawModel{{concept.conceptId}}"></div>
+          </div>
+        </div>
+        <div ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-4' : hideSidebar}]"
+             class="editing-form grey darken-3" style="height:100%">
+          <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept" editList="editPanelUiState" branch="branch"
+               id="editPanel-{{concept.conceptId}}">
+          </div>
+        </div>
       </div>
     </div>
 
-
-    <div ng-repeat="concept in concepts" ng-if="concepts.length != 0" class="row no-gutter">
-      <div class="col-sm-12 col-md-12 col-lg-6" style="background:#F9F9F9; margin:0px; padding:0px;">
-        <div class="clearfix" style="">
-          <!--ng-if="conceptLoaded" -->
-          <div draw-model concept="concept" id="{{concept.conceptId}}"></div>
-        </div>
-      </div>
-      <div class="col-lg-6 editing-form grey darken-3" style="height:100%">
-        <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept" editList="editPanelUiState" branch="branch"
-             id="editPanel-{{concept.conceptId}}">
-        </div>
-      </div>
-    </div>
   </div>
-
-</div>
 </div>
