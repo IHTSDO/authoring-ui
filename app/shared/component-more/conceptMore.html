@@ -1,22 +1,17 @@
- <div class="pop-edit">
 
- <div class="col-md-3 no-padding">
-<p>Concept ID</p>
- {{concept.conceptId}}
- </div>
+<div class="pop-edit description-popover row">
+  <div class="col-md-3 no-padding">
+    <p class="row">Concept ID</p>
+    <span class="fields row"> {{concept.conceptId}}</span> </div>
   <div class="col-md-4 no-padding">
- <p>Effective Time</p>
-{{concept.effectiveTime}}
- </div>
-   <div class="col-md-5 no-padding">
- <p>Module ID</p>
-<select class="col-md-12 form-control primitive" name="select-choice" id="select-choice1" ng-model="concept.moduleId"
+    <p class="row">Effective Time</p>
+    <span class="fields row">{{concept.effectiveTime}}</span> </div>
+  <div class="col-md-5 no-padding">
+    <p class="row">Module ID</p>
+    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="concept.moduleId"
                   ng-change="updateConcept(concept)">
-        <option>900000000000207008</option>
-        <option>900000000000012004</option>
-      </select>
- </div>
-
-    
+      <option>900000000000207008</option>
+      <option>900000000000012004</option>
+    </select>
+  </div>
 </div>
-
