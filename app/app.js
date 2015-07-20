@@ -29,6 +29,7 @@ angular
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
 	'singleConceptAuthoringApp.projects',
+	'singleConceptAuthoringApp.projecttasks',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
