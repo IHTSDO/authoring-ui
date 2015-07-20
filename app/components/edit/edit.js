@@ -24,22 +24,28 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.toggleSidebar = function () {
       $scope.hideSidebar = !$scope.hideSidebar;
 
-      angular.forEach($scope.concepts, function (concept) {
-        $timeout(function () {
-          $scope.resizeSvg(concept);
-        }, 500);
-      });
+      // resize models if they are shown
+      if (!$scope.hideModel) {
+        angular.forEach($scope.concepts, function (concept) {
+          $timeout(function () {
+            $scope.resizeSvg(concept);
+          }, 500);
+        });
+      }
     };
 
     // toggle for hiding model
     $scope.toggleModel = function () {
       $scope.hideModel = !$scope.hideModel;
 
-      angular.forEach($scope.concepts, function (concept) {
-        $timeout(function () {
-          $scope.resizeSvg(concept);
-        }, 500);
-      });
+      // resize models if they are shown
+      if (!$scope.hideModel) {
+        angular.forEach($scope.concepts, function (concept) {
+          $timeout(function () {
+            $scope.resizeSvg(concept);
+          }, 500);
+        });
+      }
     };
 
     $scope.resizeSvg = function (concept) {
@@ -51,7 +57,16 @@ angular.module('singleConceptAuthoringApp.edit', [
       // get the parent div containing this draw model object
       var parentElem = document.getElementById('drawModel' + concept.conceptId);
 
+      if (!elem || !parentElem) {
+        return;
+      }
+
       var width = parentElem.offsetWidth - 30;
+
+      // check that element is actually visible (i.e. we don't have negative width)
+      if (width < 0) {
+        return;
+      }
 
       console.debug(width, parentElem.offsetWidth, parentElem);
 
@@ -170,6 +185,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       var strTime = hours + ':' + minutes + ' ' + ampm;
       return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
     };
+
+    // on show model requests, toggle the model if not active
+    $scope.$on('conceptEdit.showModel', function (event, data) {
+      if ($scope.hideModel) {
+        $scope.toggleModel();
+      }
+    });
 
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
