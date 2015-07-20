@@ -45,6 +45,37 @@ angular.module('singleConceptAuthoringApp')
         }
       }
     }
+      
+    //////////////////////////////////////////////
+    // Classification functions
+    //////////////////////////////////////////////
+    
+    function startClassification (taskId, branch) {
+        var JSON = '{"reasonerId": "au.csiro.snorocket.owlapi3.snorocket.factory"}';
+        return $http.post(snowowlEndpoint + branch + '/tasks/' + taskId + '/classifications', JSON, {
+                headers: { 'Content-Type': 'application/json; charset=UTF-8'}
+            }).then(function(response) {
+                return response;
+            });
+    }
+      
+    function checkClassificationResult (classifierId, taskId , branch) {
+            return $http.get(snowowlEndpoint + branch + '/tasks/' + taskId + '/classifications/' + classifierId ).then(function(response) {
+                    return response;
+                });
+    }
+      
+    function getEquivalentConcepts (classifierId, taskId , branch) {
+            return $http.get(snowowlEndpoint + branch + '/tasks/' + taskId + '/classifications/' + classifierId + '/equivalent-concepts').then(function(response) {
+                    return response;
+                });
+    }
+      
+    function getRelationshipChanges (classifierId, taskId, branch) {
+            return $http.get(snowowlEndpoint + branch + '/tasks/' + taskId + '/classifications/' + classifierId + '/relationship-changes').then(function(response) {
+                    return response;
+                });
+    }
 
 
 
