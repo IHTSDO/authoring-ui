@@ -134,6 +134,25 @@ angular.module('singleConceptAuthoringApp.edit', [
         $rootScope.saveIndicator = false;
       }, 4000);
     });
+    
+    //initial function to poll for the result of a classification run
+    $scope.pollForResult = function() {
+        $timeout(function() {
+            snowowlService.checkClassificationResult($scope.classifactionJobId, $routeParams.taskId, $scope.branch).then(function(data){
+                if(data.data.status == "COMPLETED")
+                {
+                    $scope.validationResultsComplete = true;
+                    return;
+                }
+            });
+            if($scope.validationResultsComplete === true)
+            {
+                $scope.generateClassifierResults();
+                return;
+            }
+            $scope.pollForResult();
+        }, 20000);
+    };
 
     // watch for concept selection from the edit sidebar
     $scope.$on('savedList.editConcept', function (event, data) {
