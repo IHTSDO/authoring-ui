@@ -139,7 +139,7 @@
          </div>-->
 
         <!-- attribute type -->
-        <div class="pull-left" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
+        <div class="pull-left is_a" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
              drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropAttributeType(relationship, $data)">
           <input ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"

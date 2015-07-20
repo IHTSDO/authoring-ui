@@ -1,24 +1,22 @@
-<div style="color: black; padding-top:50px;">
+ <div class="pop-edit">
 
-  <h3>More Options</h3>
-  <table class="table">
-    <tr>
-      <td>SCTID</td>
-      <td>{{concept.conceptId}}</td>
-    </tr>
-    <tr>
-      <td>Effective Time</td>
-      <td>{{concept.effectiveTime}}</td>
-    </tr>
-    <tr>
-      <td>Module Id</td>
-      <td><select tooltip="Module Id" name="select-choice" id="select-choice1" ng-model="concept.moduleId"
+ <div class="col-md-3 no-padding">
+<p>Concept ID</p>
+ {{concept.conceptId}}
+ </div>
+  <div class="col-md-4 no-padding">
+ <p>Effective Time</p>
+{{concept.effectiveTime}}
+ </div>
+   <div class="col-md-5 no-padding">
+ <p>Module ID</p>
+<select class="col-md-12 form-control primitive" name="select-choice" id="select-choice1" ng-model="concept.moduleId"
                   ng-change="updateConcept(concept)">
         <option>900000000000207008</option>
         <option>900000000000012004</option>
-      </select></td>
-    </tr>
+      </select>
+ </div>
 
-  </table>
+    
 </div>
 

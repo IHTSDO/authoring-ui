@@ -1,3 +1,7 @@
+.tooltip{top:0px!important; }
+.popover{min-width:450px!important;}
+.pop-edit p{font-size:12px;color:#424242!important; margin:0px!important;}
+.popover select.form-control{margin:0px!important;}
 button, .btn {
   border: none !important;
 }
@@ -695,6 +699,10 @@ aside.editpanel ul a {
   }
   .description {
     width: 59%;
+    padding-left: 0px;
+  }
+   .is_a {
+    width: 35%;
     padding-left: 0px;
   }
   .rolegroup {
