@@ -69,16 +69,14 @@ angular.module('singleConceptAuthoringApp.home', [
 
     // on successful set, reload table parameters
     $scope.$watch('tasks', function () {
-      console.debug('tasks changed', $scope.tasks);
       if (!$scope.tasks || $scope.tasks.length == 0) {
-        console.debug('  doing nothing');
-      } else {
-        $timeout(function() {
+      } 
+      else 
+      {
           $scope.tableParams.reload();
-        });
-
       }
-    })
+
+      }, true);
 
     $scope.openCreateTaskModal = function() {
       var modalInstance = $modal.open({
