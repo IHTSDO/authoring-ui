@@ -1,23 +1,28 @@
-<aside class="sca-sidebar editpanel">
+<aside class="editpanel">
   <div>
 
+    <!-- show if sidebar not hidden -->
     <div role="tabpanel">
 
-      <!-- Style arrow -->
-
-
       <!-- Nav tabs -->
-      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
-        <li><button type="button" class="btn btn-default widget-toolbar blue" title="Show Model"><span
-          class="md md-chevron-right "></span></button></li>
-        <li  role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home" role="tab"
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1"
+          style="">
+        <li>
+          <button type="button" class="btn btn-default widget-toolbar blue" title="Show/Hide Sidebar"
+                  ng-click="toggleSidebar()"><span
+            class="md md-chevron-right"></span></button>
+        </li>
+        <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home"
+                                                  role="tab"
                                                   data-toggle="tab"> Taxonomy</a></li>
         <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab">Search</a>
         </li>
         <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab">Saved
-          List</a></li>
+                                                                                                            List</a>
+        </li>
         <li role="presentation"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab">Task
-          Detail</a></li>
+                                                                                                            Detail</a>
+        </li>
         <li role="presentation"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab">Feedback</a>
         </li>
       </ul>
@@ -41,5 +46,7 @@
 
       </div>
     </div>
+
+
   </div>
 </aside>
