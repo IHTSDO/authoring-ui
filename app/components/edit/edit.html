@@ -1,3 +1,4 @@
+<div ng-include src="'layout/header.html'"></div>
 <div class="sca-container row no-gutter">
   <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
        ng-include src="'layout/sidebar-edit.html'"></div>
@@ -31,15 +32,17 @@
            {'col-lg-12' : hideModel}]">
 
         <!-- displayed during load -->
+<!--
         <div ng-if="editPanelUiState != null && concepts.length < editPanelUiState.length"
              style="margin-right:0px;">
           <button type="button" class="btn-default btn-block create-new-concept"
                   title="Active">Loading Concepts ({{concepts.length}}/{{editPanelUiState.length}}) ...
           </button>
         </div>
+-->
 
         <!-- displayed after load -->
-        <div ng-if="editPanelUiState != null && concepts.length >= editPanelUiState.length"
+        <div
              class="editing-form grey darken-3" style="margin-right:0px;">
           <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
                   title="Active"><i
