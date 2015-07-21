@@ -14,12 +14,12 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout) {
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Tasks"
     $scope.tasks = null;
-
+    $scope.classifications = null;
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
@@ -48,10 +48,10 @@ angular.module('singleConceptAuthoringApp.home', [
             }
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
-            
+
             $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
-            
+
         }
       }
     );
@@ -63,19 +63,17 @@ angular.module('singleConceptAuthoringApp.home', [
       }
     });
 
-
     // on successful set, reload table parameters
     $scope.$watch('tasks', function () {
       if (!$scope.tasks || $scope.tasks.length == 0) {
-      } 
-      else 
-      {
-          $scope.tableParams.reload();
+      }
+      else {
+        $scope.tableParams.reload();
       }
 
-      }, true);
+    }, true);
 
-    $scope.openCreateTaskModal = function() {
+    $scope.openCreateTaskModal = function () {
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
         controller: 'taskCtrl',
@@ -87,11 +85,40 @@ angular.module('singleConceptAuthoringApp.home', [
       });
     }
 
+    function appendClassificationResults(task) {
 
-// Initialization:  get tasks
+      task.classifications = [];
+      task.latestClassification = [];
+
+      // TODO Update branch when branching is implemented
+      snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
+
+        console.debug("appending classification results", task, response);
+        if (!response || !response.data || !response.data.items) {
+          console.debug('No classifications for task');
+        } else {
+
+          console.debug('Classifications found', response.data.items);
+
+          // sort by completion date to ensure latest result first
+          response.data.items.sort(function (a, b) {
+            var aDate = new Date(a.completionDate);
+            var bDate = new Date(b.completionDate);
+            return aDate < bDate;
+          });
+
+          // append the first result
+          task.classifications = response.data.items;
+          task.latestClassification = response.data.items[0];
+        }
+      })
+
+    }
+
+// Initialization:  get tasks and classifications
     function initialize() {
 
-    $scope.tasks = [];
+      $scope.tasks = [];
 
       // get tasks from all projects and append sample data
       scaService.getTasks().then(function (response) {
@@ -101,6 +128,12 @@ angular.module('singleConceptAuthoringApp.home', [
         }
 
         $scope.tasks = response;
+
+        // once tasks are loaded get classifications
+        // TODO Remove this once tasks are returned with this data
+        angular.forEach($scope.tasks, function (task) {
+          appendClassificationResults(task);
+        })
 
       }, function (error) {
         // TODO Handle errors
