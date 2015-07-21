@@ -1,0 +1,40 @@
+ <section class="tables-data" ng-controller="ClassificationCtrl"> 
+  <div class="table-responsive white">
+
+      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"   class="table table-full table-full-small">
+      <tr ng-repeat="user in $data">
+            <td data-title="'Differences'" sortable="'differences'">
+                {{user.differences}}
+            </td>
+            <td data-title="'Source'" sortable="'source'">
+                {{user.source}}
+            </td>
+              <td data-title="'Type'" sortable="'type'">
+                {{user.type}}
+            </td>
+              <td data-title="'Destination'" sortable="'destination'">
+                {{user.destination}}
+            </td>
+              <td data-title="'Group'" sortable="'group'">
+                {{user.group}}
+            </td>
+               <td data-title="'Characteristic Type'" sortable="'charType'">
+                {{user.charType}}
+            </td>
+              <td >
+               <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left" tooltip=""
+                        title="Classification Results"><span class="md md-notifications "></span>
+
+                  <div class="ripple-wrapper"></div>
+                </button>
+                 <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left" tooltip=""
+                        title="Classification Results"><span class="md md-notifications "></span>
+
+                  <div class="ripple-wrapper"></div>
+                </button>
+            </td>
+        </tr>
+      </table>
+
+    </div>
+    </section>
