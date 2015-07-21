@@ -836,3 +836,12 @@ border:none;
 .In.Progress.badge{ background-color: #00b0ff; font-size: 13px;  padding: 6px 10px; margin:0px; line-height:13px;}
 .New.badge{  background-color: #4CAF50; font-size: 13px;  padding: 6px 10px; margin:0px; line-height:13px;}
 .Completed.badge{ background-color: #8bc34a; font-size: 13px;  padding: 6px 10px; margin:0px; line-height:13px;}
+
+//sidebar fix
+.dashboard-sidebar::-webkit-scrollbar {
+  width: 0px;
+  background-color: transparent;
+  border-top: 0px solid transparent;
+  border-bottom: 0px solid transparent;
+}
+.hasSVG{background-color:#fff;}

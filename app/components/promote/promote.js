@@ -14,6 +14,10 @@ angular.module( 'singleConceptAuthoringApp.promote', [
 })
 
 .controller( 'PromoteCtrl', ['$scope', '$filter', 'ngTableParams', function PromoteCtrl($scope, $filter, NgTableParams) {
+
+
+  
+	
     var data = [{differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'},
         {differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Associated procedure', group:0, charType:'Inferred'},
         {differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Subject relationship context', group:0, charType:'Inferred'},
