@@ -81,15 +81,17 @@ angular.module('singleConceptAuthoringApp')
         return response;
       });
     }
-      
-    function getEquivalentConcepts (classifierId, taskId , branch) {
-            return $http.get(apiEndpoint + branch + '/tasks/' + taskId + '/classifications/' + classifierId + '/equivalent-concepts').then(function(response) {
+
+    // get equivalent concepts reported for a classifier id
+    function getEquivalentConcepts (classifierId, projectId, taskId , branch) {
+            return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId +  '/classifications/' + classifierId + '/equivalent-concepts').then(function(response) {
                     return response;
                 });
     }
-      
-    function getRelationshipChanges (classifierId, taskId, branch) {
-            return $http.get(apiEndpoint + branch + '/tasks/' + taskId + '/classifications/' + classifierId + '/relationship-changes').then(function(response) {
+    // GET /{path}/classifications/{classificationId}/relationship-changes
+    // get relationship changes reported for a classifier id
+    function getRelationshipChanges (classifierId, projectId, taskId, branch) {
+            return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId + '/relationship-changes').then(function(response) {
                     return response;
                 });
     }
