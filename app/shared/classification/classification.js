@@ -8,8 +8,6 @@ angular.module('singleConceptAuthoringApp')
       transclude: false,
       replace: true,
       scope: {
-        results: '=results',
-
         // the branch
         branch: '=branch'
       },
@@ -17,8 +15,67 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl) {
 
-        console.debug('classification directive init');
+        if (!scope.branch) {
+          console.error('Classification display requires branch');
+          return;
+        }
 
+        console.debug('classification directive init', scope.branch, scope.projectKey, scope.taskKey);
+
+        scope.getLatestClassification = function () {
+
+          console.debug('getting latest classification result');
+
+          scope.classificationResult = null;
+
+          // TODO Update branch when branching is implemented
+          snowowlService.getClassificationResultsForTask($routeParams.projectId, $routeParams.taskId, scope.branch).then(function (response) {
+            if (!response || !response.data || !response.data.items) {
+              console.debug('no classification results');
+              // do nothing
+            } else {
+
+              console.debug('classification results list', response.data.items);
+
+              // sort by completion date to ensure latest result first
+              response.data.items.sort(function (a, b) {
+                var aDate = new Date(a.completionDate);
+                var bDate = new Date(b.completionDate);
+                return aDate < bDate;
+              });
+
+              scope.classificationResult = response.data.items[0];
+
+              if (scope.classificationResult.id) {
+                snowowlService.getEquivalentConcepts(scope.classificationResult.id, $routeParams.projectId,
+                  $routeParams.taskId, scope.branch).then(function (response) {
+                  scope.equivalentConcepts = response;
+                });
+                snowowlService.getRelationshipChanges(scope.classificationResult.id, $routeParams.projectId,
+                  $routeParams.taskId, scope.branch
+                ).
+                  then(function (response) {
+                    scope.relationshipChanges = response;
+                  });
+              }
+            }
+
+          });
+        };
+
+        // if classify mode, retrieve the latest classification
+        console.debug('classification hid?', scope.hideClassification);
+        if (!scope.hideClassification) {
+          scope.getLatestClassification();
+        }
+
+        scope.equivalentConcepts = [];
+        scope.relationshipChanges = [];
+
+        // watch for id set and retrieve elements
+        scope.$watch('classificationId', function () {
+
+        });
 
         var data = [{
           differences: 'added',

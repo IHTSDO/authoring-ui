@@ -35,6 +35,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN';
+    $scope.projectKey = $routeParams.projectKey;
+    $scope.taskKey = $routeParams.taskKey;
 
     // displayed concept array
     $scope.concepts = [];
@@ -47,63 +49,19 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.saveIndicator = false;
     $scope.classifyMode = classifyMode;
     $rootScope.pageTitle = $scope.classifyMode ? 'Classification' : 'Edit Concept';
-    
+
     // flags for hiding elements
     $scope.hideSidebar = $scope.classifyMode;
     $scope.hideModel = $scope.classifyMode;
     $scope.hideClassification = !$scope.classifyMode;
 
-
-    $scope.getLatestClassification = function () {
-
-      $scope.classification = null;
-
-      // TODO Update branch when branching is implemented
-      snowowlService.getClassificationResultsForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
-      if (!response || !response.data || !response.data.items) {
-          // do nothing
-        } else {
-
-
-          // sort by completion date to ensure latest result first
-          response.data.items.sort(function (a, b) {
-            var aDate = new Date(a.completionDate);
-            var bDate = new Date(b.completionDate);
-            return aDate < bDate;
-          });
-
-          var classifierId = response.data.items[0].id;
-
-          // get the latest classification result
-          snowowlService.getClassificationResult(
-            $routeParams.projectId,
-            $routeParams.taskId,
-            classifierId,
-            $scope.branch
-          ).then(function (response) {
-              $scope.classification = response;
-            });
-        }
-      })
-    };
-
-    // if classify mode, retrieve the latest classification
-    if (!$scope.hideClassification) {
-      $scope.getLatestClassification();
-    }
-
-
     // toggles classification view
-    $scope.toggleClassification = function() {
+    $scope.toggleClassification = function () {
       $scope.hideClassification = !$scope.classification;
 
-      // toggle the sidebar and model
+      // toggle the sidebar and model -- always opposite of classification
       $scope.toggleModel();
       $scope.toggleSidebar();
-
-      if (!$scope.hideClassification) {
-        $scope.getLatestClassification();
-      }
     }
 
     $scope.toggleSidebar = function () {
@@ -357,7 +315,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         // add a cloned tag to differentiate the clonedConcept
         clonedConcept.pt.term += ' [Cloned]';
 
-        // clear the id and effectiveTime of the descriptions and relationships
+        // clear the id and effectiveTime of the descriptions and
+        // relationships
         angular.forEach(clonedConcept.descriptions, function (description) {
           description.id = null;
           description.effectiveTime = null;
@@ -429,5 +388,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-  })
+  }
+)
 ;
