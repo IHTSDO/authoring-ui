@@ -1,6 +1,6 @@
 <div ng-include src="'layout/header.html'"></div>
 <div class="row no-gutter sca-container">
-  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3"
+  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
        ng-include src="'layout/sidebar.html'"></div>
 
   <!---->
@@ -12,14 +12,14 @@
           <div class="col-md-4">
             <h3 class="table-title p-20">My Tasks</h3>
           </div>
-          <div class="col-md-7">
+          <div class="col-md-6">
             <div class="table-search">
               <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
                      placeholder="Search My Tasks" autofocus/>
             </div>
           </div>
-          <div class="col-md-1">
-      <span class="pull-left p-t-20">
+          <div class="col-md-2">
+      <span class="pull-right p-t-20">
                   <button type="button" class="btn btn-round btn-info ng-scope " tooltip="Number of assigned tasks" title="Total Task Count">
                     {{tasks.length}}
                     <div class="ripple-wrapper"></div>

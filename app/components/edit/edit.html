@@ -12,14 +12,14 @@
       <!-- model header -->
       <!-- TODO:  Figure out what the heck to do with Create New Concept button on collapse -->
       <div ng-show="!hideModel"
-           ng-class="['col-sm-12', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
+           ng-class="['col-sm-12', 'model-header', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
            class="editing-form" style="margin-right:0px;">
         <button type="button" class="btn btn-default blue md md-chevron-left"
                 ng-click="toggleSidebar()" style="margin-right:10px;" ng-show="hideSidebar"></button>
-        <button type="button" ng-click="toggleModel()" class="btn btn-default" style="text-transform: none"
+        <button type="button" ng-click="toggleModel()" class="btn btn-default col-md-12" style="text-transform: none"
                 title="Active"><i
-          ng-class="[md, 'md-add-circle', {'md-keyboard-arrow-right' : hideModel, 'md-keyboard-arrow-down' : !hideModel}]"></i>
-          Model
+          ng-class="[md, 'md-add-circle', 'pull-left', {'md-keyboard-arrow-right' : hideModel, 'md-close' : !hideModel}]"></i>
+          Model 
         </button>
       </div>
 

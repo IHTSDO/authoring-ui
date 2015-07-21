@@ -17,7 +17,7 @@ angular.module('singleConceptAuthoringApp.projects', [
   .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout) {
 
     // TODO Placeholder, as we only have the one tab at the moment
-    $rootScope.pageTitle = "All Projects"
+    $rootScope.pageTitle = "My Projects"
     $scope.tasks = null;
 
     // declare table parameters
