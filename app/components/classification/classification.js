@@ -13,18 +13,18 @@ angular.module( 'singleConceptAuthoringApp.classification', [
       });
 })
 
-.controller( 'ClassificationCtrl', function ClassificationCtrl($scope, $filter, ngTableParams) {
-    var data = [{differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Procedure not indicated", group:0, charType:"Inferred"},
-        {differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Associated procedure", group:0, charType:"Inferred"},
-        {differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Subject relationship context", group:0, charType:"Inferred"},
-		{differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Procedure not indicated", group:0, charType:"Inferred"},
-        {differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Procedure not indicated", group:0, charType:"Inferred"},
-        {differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Procedure not indicated", group:0, charType:"Inferred"},
-		{differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Procedure not indicated", group:0, charType:"Inferred"},
-        {differences: "added", source: "Medication monitoring not indicated", type: "Is a", destination: "Procedure not indicated", group:0, charType:"Inferred"},
-        {differences: "inactivated", source: "Medication monitoring not indicated", type: "Is a", destination: "Procedure not indicated", group:0, charType:"Inferred"}];
+.controller( 'ClassificationCtrl', ['$scope', '$filter', 'ngTableParams', function ClassificationCtrl($scope, $filter, NgTableParams) {
+    var data = [{differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'},
+        {differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Associated procedure', group:0, charType:'Inferred'},
+        {differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Subject relationship context', group:0, charType:'Inferred'},
+		{differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'},
+        {differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'},
+        {differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'},
+		{differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'},
+        {differences: 'added', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'},
+        {differences: 'inactivated', source: 'Medication monitoring not indicated', type: 'Is a', destination: 'Procedure not indicated', group:0, charType:'Inferred'}];
 
-    $scope.tableParams = new ngTableParams({
+    $scope.tableParams = new NgTableParams({
         page: 1,            // show first page
         count: 10,          // count per page
         sorting: {
@@ -42,4 +42,4 @@ angular.module( 'singleConceptAuthoringApp.classification', [
         }
     });
 
-});
+}]);
