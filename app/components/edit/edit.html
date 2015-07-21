@@ -1,82 +1,93 @@
 <div ng-include src="'layout/header.html'"></div>
 <div class="sca-container row no-gutter">
-  <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
-       ng-include src="'layout/sidebar-edit.html'"></div>
 
-  <div ng-class="[{'col-9' : !hideSidebar}, {'col-11' : hideSidebar}]"
-       style="height:100%; overflow-y:scroll; padding: 0px; margin: 0px;">
+  <!-- standard edit view -->
+  <div ng-if="!classifyMode">
 
-    <!-- headers -->
-    <div class="row no-gutter">
+    <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
+         ng-include src="'layout/sidebar-edit.html'"></div>
 
-      <!-- model header -->
-      <!-- TODO:  Figure out what the heck to do with Create New Concept button on collapse -->
-      <div ng-show="!hideModel"
-           ng-class="['col-sm-12', 'model-header', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
-           class="editing-form" style="margin-right:0px;">
-        <button type="button" class="btn btn-default blue md md-chevron-left"
-                ng-click="toggleSidebar()" style="margin-right:10px;" ng-show="hideSidebar"></button>
-        <button type="button" ng-click="toggleModel()" class="btn btn-default col-md-12" style="text-transform: none"
-                title="Active"><i
-          ng-class="[md, 'md-add-circle', 'pull-left', {'md-keyboard-arrow-right' : hideModel, 'md-close' : !hideModel}]"></i>
-          Model 
-        </button>
-      </div>
+    <div ng-class="[{'col-9' : !hideSidebar}, {'col-11' : hideSidebar}]"
+         style="height:100%; overflow-y:scroll; padding: 0px; margin: 0px;">
+
+      <!-- headers -->
+      <div class="row no-gutter">
+
+        <!-- model header -->
+        <!-- TODO:  Figure out what the heck to do with Create New Concept button on collapse -->
+        <div ng-show="!hideModel"
+             ng-class="['col-sm-12', 'model-header', 'col-md-12', {'col-lg-6' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
+             class="editing-form" style="margin-right:0px;">
+          <button type="button" class="btn btn-default blue md md-chevron-left"
+                  ng-click="toggleSidebar()" style="margin-right:10px;" ng-show="hideSidebar"></button>
+          <button type="button" ng-click="toggleModel()" class="btn btn-default col-md-12" style="text-transform: none"
+                  title="Active"><i
+            ng-class="[md, 'md-add-circle', 'pull-left', {'md-keyboard-arrow-right' : hideModel, 'md-close' : !hideModel}]"></i>
+            Model
+          </button>
+        </div>
 
 
-      <!-- edit panel header -->
-      <!-- TODO:  Figure out what the heck to do with Create New Concept button on model collapse -->
-      <div ng-class="['col-sm-12', 'col-md-12',
+        <!-- edit panel header -->
+        <!-- TODO:  Figure out what the heck to do with Create New Concept button on model collapse -->
+        <div ng-class="['col-sm-12', 'col-md-12',
            {'col-lg-6' : !hideSidebar && !hideModel},
            {'col-lg-4': hideSidebar && !hideModel},
            {'col-lg-12' : hideModel}]">
 
-        <!-- displayed during load -->
-<!--
-        <div ng-if="editPanelUiState != null && concepts.length < editPanelUiState.length"
-             style="margin-right:0px;">
-          <button type="button" class="btn-default btn-block create-new-concept"
-                  title="Active">Loading Concepts ({{concepts.length}}/{{editPanelUiState.length}}) ...
-          </button>
-        </div>
--->
-
-        <!-- displayed after load -->
-        <div
-             class="editing-form grey darken-3" style="margin-right:0px;">
-          <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
-                  title="Active"><i
-            class="md md-add-circle pull-right"></i> Create New Concept
-          </button>
+          <!-- displayed after load -->
+          <div
+            class="editing-form grey darken-3" style="margin-right:0px;">
+            <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
 
-    <!-- Concept model/edit pairs -->
-    <div ng-repeat="concept in concepts" ng-if="concepts.length != 0" class="row no-gutter">
-      <div ng-show="!hideModel"
-           ng-class="['col-sm-12', 'col-md-12',
+      <!-- Concept model/edit pairs -->
+      <div ng-repeat="concept in concepts" ng-if="concepts.length != 0" class="row no-gutter">
+        <div ng-show="!hideModel"
+             ng-class="['col-sm-12', 'col-md-12',
            {'col-lg-6' : !hideSidebar && !hideEditPanel},
            {'col-lg-8': hideSidebar && !hideEditPanel},
            {'col-lg-12' : hideEditPanel}]"
-           style="background:#F9F9F9; margin:0px; padding:0px;">
-        <div class="clearfix" style="">
-          <!--ng-if="conceptLoaded" -->
-          <div draw-model concept="concept" id="drawModel{{concept.conceptId}}"></div>
+             style="background:#F9F9F9; margin:0px; padding:0px;">
+          <div class="clearfix" style="">
+            <!--ng-if="conceptLoaded" -->
+            <div draw-model concept="concept" id="drawModel{{concept.conceptId}}"></div>
+          </div>
         </div>
-      </div>
-      <div ng-class="['col-sm-12', 'col-md-12',
+        <div ng-class="['col-sm-12', 'col-md-12',
            {'col-lg-6' : !hideSidebar && !hideModel},
            {'col-lg-4': hideSidebar && !hideModel},
            {'col-lg-12' : hideModel}]"
-           class="editing-form grey darken-3" style="height:100%">
-        <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept" editList="editPanelUiState" branch="branch"
-             id="editPanel-{{concept.conceptId}}">
+             class="editing-form grey darken-3" style="height:100%">
+          <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept" editList="editPanelUiState" branch="branch"
+               id="editPanel-{{concept.conceptId}}">
+          </div>
         </div>
       </div>
     </div>
+    <!-- end edit view -->
   </div>
 
-</div>
+  <!-- Classify view -->
+  <div class="row no-gutter" ng-if="classifyMode">
+    <!-- Classification results -->
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+      Classification Report here
+      <div classification results="classification"></div>
+    </div>
 
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+      <div ng-repeat="concept in concepts" concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept"
+           editList="editPanelUiState" branch="branch"
+           id="classifyEditPanel-{{concept.conceptId}}">
+
+      </div>
+    </div>
+
+  </div>
