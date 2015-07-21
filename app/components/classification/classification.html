@@ -1,0 +1,59 @@
+<div class="sca-container col-sm-12 no-padding">
+
+  <div>
+
+
+
+
+   <div class="col-lg-8">
+ <div>
+
+    <div role="tabpanel">
+
+      <!-- Style arrow -->
+
+
+      <!-- Nav tabs -->
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+     
+        <li  role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home" role="tab"
+                                                  data-toggle="tab"> Classification Results</a></li>
+        <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab">Redundant Stated Relationships</a>
+        </li>
+        <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab">Inferred Not Previously Stated</a></li>
+        <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab">Equivalency Errors</a></li>
+        <li role="presentation"class="cycle"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab">Cycle Errors</a>
+        </li>
+      </ul>
+      <!-- Tab panes -->
+      <div class="tab-content m-t-10 col-sm-12 no-padding">
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
+          <div ng-include="'shared/classification-report/classification.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+          <div ng-include="'shared/classification-report/classification.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+           <div ng-include="'shared/classification-report/classification.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
+      <div ng-include="'shared/classification-report/classification.html'"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==5}">
+          <div ng-include="'shared/classification-report/classification.html'"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+      </div>
+ 
+   
+      <div class="col-lg-4 editing-form grey darken-3" style="height:100%">
+       Edit panel here
+      </div>
+ 
+  </div>
+
+</div>
+</div>

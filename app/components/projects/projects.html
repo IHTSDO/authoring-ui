@@ -8,27 +8,16 @@
       <div class="card">
 
         <div class="row" style="margin-right:0px;">
-          <div class="col-md-4">
-            <h3 class="table-title p-t-20">All Projects</h3>
+          <div class="col-md-6">
+            <h3 class="table-title p-t-20">My Projects</h3>
           </div>
-          <div class="col-md-7">
+          <div class="col-md-6">
             <div class="table-search">
               <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
                      placeholder="Search All Projects" autofocus/>
             </div>
           </div>
-          <div class="col-md-1">
-      <span class="pull-left p-t-20">
-                  <button type="button" class="btn btn-round btn-info ng-scope " tooltip="Number of assigned tasks" title="Total Task Count">
-                    {{tasks.length}}
-                    <div class="ripple-wrapper"></div>
-                  </button>
-               <button type="button" class="btn btn-round btn-default " tooltip="Create New Task"
-                       ng-click="openCreateTaskModal()"><span class="md md-add"></span>
-
-                 <div class="ripple-wrapper"></div>
-               </button> </span>
-          </div>
+      
         </div>
 
         <div class="table-responsive white" style="margin-right:0px;">
@@ -63,11 +52,7 @@
 
               </td>
               <td data-title="'Feedback'" sortable="'feedback'">
-                <button type="button" class="btn btn-round btn-default blue darken-2" tooltip=""
-                        title="Feedback Available"><span class="md md-mail "></span>
-
-                  <div class="ripple-wrapper"></div>
-                </button>
+                <span class="In Progress badge">In Progress</span>
               </td>
             
             </tr>
