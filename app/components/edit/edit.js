@@ -86,22 +86,25 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     var panelId = 'edit-panel';
 
-    // watch saved list and edit panel list to set edit flags
-    $scope.$watchGroup(['editPanelUiState', 'savedList'], function () {
+    function flagEditedItems() {
 
       console.debug('checking edited items', $scope.editPanelUiState, $scope.savedList);
       if ($scope.editPanelUiState && $scope.savedList) {
-        // for each item in the edit list
-        angular.forEach($scope.editPanelUiState, function (conceptId) {
-          // check if this item is in saved list, flag it as editing if so
-          angular.forEach($scope.savedList.items, function (item) {
+        // check if this item is in saved list, flag it as editing if so
+        angular.forEach($scope.savedList.items, function (item) {
+          // set false initially
+          item.editing = false;
+
+          // for each item in the edit list
+          angular.forEach($scope.editPanelUiState, function (conceptId) {
+            // check if being edited
             if (item.concept.conceptId === conceptId) {
-              item.editing = true;
+              item.editing = true;  
             }
           });
         });
       }
-    });
+    };
 
     // get edit panel list
     scaService.getUIState(
@@ -118,6 +121,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         }
 
+        // set editing flags
+        flagEditedItems();
+
       }
     );
 
@@ -133,6 +139,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.savedList = uiState;
         }
 
+        // set editing flags
+        flagEditedItems();
       }
     );
 
@@ -234,6 +242,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.editPanelUiState.push(data.conceptId);
       $scope.updateUiState();
 
+      // set editing flags
+      flagEditedItems();
+
     });
 
     // watch for concept cloning from the edit sidebar
@@ -264,8 +275,12 @@ angular.module('singleConceptAuthoringApp.edit', [
           $timeout(function () {
             $scope.resizeSvg(response);
           }, 800);
+
           $scope.editPanelUiState.push(conceptId);
           $scope.updateUiState();
+
+          // set editing flags
+          flagEditedItems();
         }
 
         // deep copy the object -- note: does not work in IE8, but screw that!
@@ -309,9 +324,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.id), 1);
       $scope.updateUiState();
 
+
+      // set editing flags
+      flagEditedItems();
+
     });
 
-    // watch for removal request from concept-edit
+    // watch for new concept creation
     $scope.$on('conceptEdit.newConceptCreated', function (event, data) {
       if (!data || !data.conceptId) {
         console.error('Cannot add newly created concept to edit-panel list, conceptId not supplied');
@@ -319,8 +338,13 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       $scope.editPanelUiState.push(data.conceptId);
       $scope.updateUiState();
+
+
+      // set editing flags
+      flagEditedItems();
     });
 
+    // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
       var concept = objectService.getNewConcept($scope.branch);
 
