@@ -31,10 +31,8 @@ angular.module('singleConceptAuthoringApp.home', [
         filterDelay: 50,
         total: $scope.tasks ? $scope.tasks.length : 0, // length of data
         getData: function ($defer, params) {
-          console.debug('getData', params);
 
           if (!$scope.tasks || $scope.tasks.length == 0) {
-            console.debug('  returning empty array');
             $defer.resolve(new Array());
           } else {
 
@@ -60,7 +58,6 @@ angular.module('singleConceptAuthoringApp.home', [
 
     // watch for task creation events
     $scope.$on('taskCreated', function (event, task) {
-      console.debug('HomeCtrl: Received task created event', event, task);
       if ($scope.tasks) {
         $scope.tasks.unshift(task);
       }
@@ -94,16 +91,12 @@ angular.module('singleConceptAuthoringApp.home', [
 // Initialization:  get tasks
     function initialize() {
 
-      console.debug('HomeCtrl initialization');
-
-      $scope.tasks = [];
+    $scope.tasks = [];
 
       // get tasks from all projects and append sample data
       scaService.getTasks().then(function (response) {
-        console.debug('home.js, getTasks results:', response);
         if (!response || response.length == 0) {
-          console.debug('  no tasks, returning');
-          $scope.tasks
+          $scope.tasks = [];
           return;
         }
 

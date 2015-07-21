@@ -57,14 +57,10 @@ angular.module('singleConceptAuthoringApp')
         ];
 
         scope.removeConcept = function (concept) {
-          console.debug('Removing concept from list', concept);
           $rootScope.$broadcast('conceptEdit.removeConcept', {concept: concept});
         };
 
         scope.saveConcept = function (suppressMessage) {
-
-          console.debug('saving concept', scope.concept);
-
           // deep copy the concept for subsequent modification
           // (1) relationship display names
           // (1) disallowed keys
@@ -81,7 +77,6 @@ angular.module('singleConceptAuthoringApp')
             delete rel.target.fsn;
             delete rel.type.fsn;
           });
-
 
           $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
@@ -502,8 +497,6 @@ angular.module('singleConceptAuthoringApp')
         // function to check the full concept for validity before saving
         scope.isConceptValid = function (concept) {
 
-          console.debug('validating concept', concept);
-
           /*// check the basic concept fields
            if (concept.isLeafInferred === null) {
            console.error('Concept isleafInferred flag must be set');
@@ -544,7 +537,6 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          console.debug('valid concept');
 
           // pass all checks -> return true
           return true;
@@ -557,11 +549,10 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
           delete description.descriptionId;
-          console.debug('updating description', description);
           if (scope.isDescriptionValid(description)) {
             autosave();
           } else {
-            console.debug('  Error: ', description.error);
+            console.error('  Error: ', description.error);
           }
         };
 
@@ -571,17 +562,14 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
           relationship.sourceId = scope.concept.conceptId;
-          console.debug('updating relationship', relationship);
           if (scope.isRelationshipValid(relationship)) {
             autosave();
           } else {
-            console.debug('  Error: ', relationship.error);
+            console.error('  Error: ', relationship.error);
           }
         };
 
         function autosave() {
-
-          console.debug('autosaving');
 
           // add revision to session history
           scope.conceptSessionHistory.push(scope.concept);
@@ -590,7 +578,7 @@ angular.module('singleConceptAuthoringApp')
           scope.saveConcept();
         }
 
-        scope.showModel = function() {
+        scope.showModel = function () {
           $rootScope.$broadcast('conceptEdit.showModel');
         }
 
