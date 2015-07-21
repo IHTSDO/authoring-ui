@@ -30,6 +30,7 @@ angular
     'singleConceptAuthoringApp.home',
 	'singleConceptAuthoringApp.projects',
 	'singleConceptAuthoringApp.projecttasks',
+	'singleConceptAuthoringApp.promote',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
