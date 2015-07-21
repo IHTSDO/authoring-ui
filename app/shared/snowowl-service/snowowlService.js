@@ -387,6 +387,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    // make methods visible
     return {
 
       getConceptProperties: getConceptProperties,
@@ -402,6 +403,7 @@ angular.module('singleConceptAuthoringApp')
       getFullConcept: getFullConcept,
       updateDescription: updateDescription,
       startClassification: startClassification,
+      getClassificationResult: getClassificationResult,
       getClassificationResultsForTask: getClassificationResultsForTask,
       getClassificationResultsForProject: getClassificationResultsForProject,
       getEquivalentConcepts: getEquivalentConcepts,

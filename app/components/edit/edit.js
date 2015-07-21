@@ -31,15 +31,80 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode) {
 
-    $rootScope.pageTitle = 'Edit Concept';
+    console.debug('EditCtrl: Classify mode is ' + classifyMode);
+
+    // TODO: Update this when $scope.branching is enabled
+    $scope.branch = 'MAIN';
+
+    // displayed concept array
+    $scope.concepts = [];
+
+    // ui states
+    $scope.editPanelUiState = null;
+    $scope.savedList = null;
+
+    // miscellaneous
     $scope.saveIndicator = false;
     $scope.classifyMode = classifyMode;
-
+    $rootScope.pageTitle = $scope.classifyMode ? 'Classification' : 'Edit Concept';
+    
     // flags for hiding elements
-    // initial setting depends on whether classify mode is specified
     $scope.hideSidebar = $scope.classifyMode;
     $scope.hideModel = $scope.classifyMode;
     $scope.hideClassification = !$scope.classifyMode;
+
+
+    $scope.getLatestClassification = function () {
+
+      $scope.classification = null;
+
+      // TODO Update branch when branching is implemented
+      snowowlService.getClassificationResultsForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
+      if (!response || !response.data || !response.data.items) {
+          // do nothing
+        } else {
+
+
+          // sort by completion date to ensure latest result first
+          response.data.items.sort(function (a, b) {
+            var aDate = new Date(a.completionDate);
+            var bDate = new Date(b.completionDate);
+            return aDate < bDate;
+          });
+
+          var classifierId = response.data.items[0].id;
+
+          // get the latest classification result
+          snowowlService.getClassificationResult(
+            $routeParams.projectId,
+            $routeParams.taskId,
+            classifierId,
+            $scope.branch
+          ).then(function (response) {
+              $scope.classification = response;
+            });
+        }
+      })
+    };
+
+    // if classify mode, retrieve the latest classification
+    if (!$scope.hideClassification) {
+      $scope.getLatestClassification();
+    }
+
+
+    // toggles classification view
+    $scope.toggleClassification = function() {
+      $scope.hideClassification = !$scope.classification;
+
+      // toggle the sidebar and model
+      $scope.toggleModel();
+      $scope.toggleSidebar();
+
+      if (!$scope.hideClassification) {
+        $scope.getLatestClassification();
+      }
+    }
 
     $scope.toggleSidebar = function () {
       $scope.hideSidebar = !$scope.hideSidebar;
@@ -92,18 +157,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       elem.setAttribute('width', width);
       elem.setAttribute('height', height);
     };
-
-    // TODO: Update this when $scope.branching is enabled
-    $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
-
-    // displayed concept array
-    $scope.concepts = [];
-
-    // easy-access concept id list for edit panel ui state updates
-    // initialized as null, an empty list is []
-    $scope.editPanelUiState = null;
-
-    var panelId = 'edit-panel';
 
     function flagEditedItems() {
 
@@ -189,7 +242,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // helper function to save current edit list
     $scope.updateUiState = function () {
-      scaService.saveUIState($routeParams.projectId, $routeParams.taskId, panelId, $scope.editPanelUiState);
+      scaService.saveUIState($routeParams.projectId, $routeParams.taskId, 'edit-panel', $scope.editPanelUiState);
     };
 
     // watch for concept saving from the edit panel

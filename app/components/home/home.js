@@ -14,10 +14,10 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService) {
 
     // TODO Placeholder, as we only have the one tab at the moment
-    $rootScope.pageTitle = "My Tasks"
+    $rootScope.pageTitle = "My Tasks";
     $scope.tasks = null;
     $scope.classifications = null;
 
@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp.home', [
         getData: function ($defer, params) {
 
           if (!$scope.tasks || $scope.tasks.length == 0) {
-            $defer.resolve(new Array());
+            $defer.resolve([]);
           } else {
 
             var searchStr = params.filter().search;
@@ -83,22 +83,21 @@ angular.module('singleConceptAuthoringApp.home', [
       modalInstance.result.then(function () {
       }, function () {
       });
-    }
+    };
 
     function appendClassificationResults(task) {
 
       task.classifications = [];
-      task.latestClassification = [];
+      task.latestClassification = null;
 
       // TODO Update branch when branching is implemented
       snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
 
         console.debug("appending classification results", task, response);
         if (!response || !response.data || !response.data.items) {
-          console.debug('No classifications for task');
+          // do nothing
         } else {
 
-          console.debug('Classifications found', response.data.items);
 
           // sort by completion date to ensure latest result first
           response.data.items.sort(function (a, b) {
