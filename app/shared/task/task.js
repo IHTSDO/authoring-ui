@@ -3,8 +3,6 @@
 angular.module('singleConceptAuthoringApp')
   .controller('taskCtrl', ['$scope', '$rootScope', '$modalInstance', 'scaService', function ($scope, $rootScope, $modalInstance, scaService) {
 
-    console.debug('taskCtrl entered');
-
     // scope variables
     $scope.projects = null;
 
@@ -58,8 +56,6 @@ angular.module('singleConceptAuthoringApp')
       };
       scaService.createTaskForProject(taskProject.key, authoringTaskCreateRequest).then(
         function (response) {
-
-          console.debug('TaskCtrl, created task: ', response);
 
           $scope.msgSuccess = 'Task successfully created: ' + response.data.summary;
           $scope.taskTitle = '';

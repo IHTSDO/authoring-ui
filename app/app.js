@@ -98,7 +98,6 @@ angular
   .controller('AppCtrl', ['$scope', '$location', function AppCtrl($scope, $location) {
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
       if (angular.isDefined(toState.data.pageTitle)) {
-        console.debug('changing pageTitle to:', toState.data.pageTitle);
         $scope.pageTitle = toState.data.pageTitle + ' | thisIsSetInAppCtrl.js';
       }
     });

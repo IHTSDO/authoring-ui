@@ -20,7 +20,6 @@ angular.module('singleConceptAuthoringApp.projects', [
     $rootScope.pageTitle = "All Projects"
     $scope.tasks = null;
 
-
     // declare table parameters
     $scope.tableParams = new ngTableParams({
         page: 1,
@@ -31,10 +30,8 @@ angular.module('singleConceptAuthoringApp.projects', [
         filterDelay: 50,
         total: $scope.tasks ? $scope.tasks.length : 0, // length of data
         getData: function ($defer, params) {
-          console.debug('getData', params);
 
           if (!$scope.tasks || $scope.tasks.length == 0) {
-            console.debug('  returning empty array');
             $defer.resolve(new Array());
           } else {
 
@@ -50,35 +47,32 @@ angular.module('singleConceptAuthoringApp.projects', [
             }
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
-            
+
             $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
-            
+
         }
       }
     );
 
     // watch for task creation events
     $scope.$on('taskCreated', function (event, task) {
-      console.debug('ProjectsCtrl: Received task created event', event, task);
       if ($scope.tasks) {
         $scope.tasks.unshift(task);
       }
     });
 
-
     // on successful set, reload table parameters
     $scope.$watch('tasks', function () {
       if (!$scope.tasks || $scope.tasks.length == 0) {
-      } 
-      else 
-      {
-          $scope.tableParams.reload();
+      }
+      else {
+        $scope.tableParams.reload();
       }
 
-      }, true);
+    }, true);
 
-    $scope.openCreateTaskModal = function() {
+    $scope.openCreateTaskModal = function () {
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
         controller: 'taskCtrl',
@@ -90,20 +84,15 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
     }
 
-
 // Initialization:  get tasks
     function initialize() {
-
-      console.debug('ProjectsCtrl initialization');
 
       $scope.tasks = [];
 
       // get tasks from all projects and append sample data
       scaService.getTasks().then(function (response) {
-        console.debug('home.js, getTasks results:', response);
         if (!response || response.length == 0) {
-          console.debug('  no tasks, returning');
-          $scope.tasks
+          $scope.tasks = [];
           return;
         }
 

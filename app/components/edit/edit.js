@@ -68,8 +68,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      console.debug(width, parentElem.offsetWidth, parentElem);
-
       elem.setAttribute('width', width);
       elem.setAttribute('height', height);
     };
@@ -88,7 +86,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     function flagEditedItems() {
 
-      console.debug('checking edited items', $scope.editPanelUiState, $scope.savedList);
       if ($scope.editPanelUiState && $scope.savedList) {
         // check if this item is in saved list, flag it as editing if so
         angular.forEach($scope.savedList.items, function (item) {
@@ -99,7 +96,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           angular.forEach($scope.editPanelUiState, function (conceptId) {
             // check if being edited
             if (item.concept.conceptId === conceptId) {
-              item.editing = true;  
+              item.editing = true;
             }
           });
         });
@@ -160,7 +157,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // force update to get FSN, not PT
         snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, response).then(function (response) {
-          console.debug('Concept retrieved and updated', response);
           $scope.concepts.push(response);
           $timeout(function () {
             $scope.resizeSvg(response);
@@ -172,9 +168,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // helper function to save current edit list
     $scope.updateUiState = function () {
-
-      console.debug('saving ui state');
-
       scaService.saveUIState($routeParams.projectId, $routeParams.taskId, panelId, $scope.editPanelUiState);
     };
 
@@ -319,8 +312,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // remove the concept
       var index = $scope.concepts.indexOf(data.concept);
-      console.debug('index', index);
-      $scope.concepts.splice(index, 1);
+     $scope.concepts.splice(index, 1);
       $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.id), 1);
       $scope.updateUiState();
 
