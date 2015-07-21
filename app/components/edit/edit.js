@@ -16,7 +16,7 @@ angular.module('singleConceptAuthoringApp.edit', [
   .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout) {
 
     $rootScope.pageTitle = 'Edit Concept';
-    $rootScope.saveIndicator = false;
+    $scope.saveIndicator = false;
 
     // toggle for hiding sidebar
     $scope.hideSidebar = false;
@@ -101,7 +101,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           });
         });
       }
-    };
+    }
 
     // get edit panel list
     scaService.getUIState(
@@ -173,8 +173,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // watch for concept saving from the edit panel
     $scope.$on('conceptEdit.saving', function (event, data) {
-      $rootScope.saveIndicator = true;
-      $rootScope.saveMessage = 'Saving concept with id: ' + data.concept.conceptId;
+      $scope.saveIndicator = true;
+      $scope.saveMessage = 'Saving concept with id: ' + data.concept.conceptId;
     });
     $scope.formatDate = function (date) {
       var hours = date.getHours();
@@ -184,7 +184,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       hours = hours ? hours : 12; // the hour '0' should be '12'
       minutes = minutes < 10 ? '0' + minutes : minutes;
       var strTime = hours + ':' + minutes + ' ' + ampm;
-      return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime;
+      var offset = new Date().getTimezoneOffset();
+      return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime + ' ' + offset;
     };
 
     // on show model requests, toggle the model if not active
@@ -196,13 +197,13 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
-        $rootScope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
+        $scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
       }
       else {
-        $rootScope.saveMessage = 'Error saving concept, please make an additional change.';
+        $scope.saveMessage = 'Error saving concept, please make an additional change.';
       }
       $timeout(function () {
-        $rootScope.saveIndicator = false;
+        $scope.saveIndicator = false;
       }, 4000);
     });
 
