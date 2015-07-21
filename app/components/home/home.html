@@ -49,7 +49,7 @@
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
               <td data-title="'Classification Results'" sortable="'classification'">
-                <button type="button" class="btn btn-round btn-default cyan lighten-2" tooltip=""
+                <button ng-show="task.latestClassification" tooltip="{{task.latestClassification.status}}, {{task.completionDate | '" type="button" class="btn btn-round btn-default cyan lighten-2" tooltip=""
                         title="Classification Results"><span class="md md-notifications "></span>
 
                   <div class="ripple-wrapper"></div>

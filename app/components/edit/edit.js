@@ -9,17 +9,37 @@ angular.module('singleConceptAuthoringApp.edit', [
     $routeProvider
       .when('/edit/:projectId/:taskId', {
         controller: 'EditCtrl',
-        templateUrl: 'components/edit/edit.html'
+        templateUrl: 'components/edit/edit.html',
+        resolve: {
+          classifyMode: function () {
+            return false;
+          }
+        }
+      });
+
+    $routeProvider
+      .when('/classify/:projectId/:taskId', {
+        controller: 'EditCtrl',
+        templateUrl: 'components/edit/edit.html',
+        resolve: {
+          classifyMode: function () {
+            return true;
+          }
+        }
       });
   })
 
-  .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout) {
+  .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode) {
 
     $rootScope.pageTitle = 'Edit Concept';
     $scope.saveIndicator = false;
+    $scope.classifyMode = classifyMode;
 
-    // toggle for hiding sidebar
-    $scope.hideSidebar = false;
+    // flags for hiding elements
+    // initial setting depends on whether classify mode is specified
+    $scope.hideSidebar = $scope.classifyMode;
+    $scope.hideModel = $scope.classifyMode;
+    $scope.hideClassification = !$scope.classifyMode;
 
     $scope.toggleSidebar = function () {
       $scope.hideSidebar = !$scope.hideSidebar;
@@ -63,7 +83,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var width = parentElem.offsetWidth - 30;
 
-      // check that element is actually visible (i.e. we don't have negative width)
+      // check that element is actually visible (i.e. we don't have negative
+      // width)
       if (width < 0) {
         return;
       }
@@ -313,10 +334,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // remove the concept
       var index = $scope.concepts.indexOf(data.concept);
-     $scope.concepts.splice(index, 1);
+      $scope.concepts.splice(index, 1);
       $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.id), 1);
       $scope.updateUiState();
-
 
       // set editing flags
       flagEditedItems();
@@ -331,7 +351,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       $scope.editPanelUiState.push(data.conceptId);
       $scope.updateUiState();
-
 
       // set editing flags
       flagEditedItems();

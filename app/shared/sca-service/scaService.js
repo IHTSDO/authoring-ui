@@ -148,8 +148,32 @@ angular.module('singleConceptAuthoringApp')
             // TODO Handle errors
           }
         );
-      }
+      },
 
+      ///////////////////////////////////////////////
+      // Classification
+      ///////////////////////////////////////////////
+      //POST /projects/{projectKey}/tasks/{taskKey}/classifications
+
+      startClassification: function (projectKey, taskKey) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to save UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to save UI state');
+          return {};
+        }
+
+        // POST call takes no data
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/classifications', {}).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          });
+      }
     };
 
-  }]);
+  }])
+;

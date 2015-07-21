@@ -57,11 +57,29 @@ angular.module('singleConceptAuthoringApp')
                 return response;
             });
     }
-      
-    function checkClassificationResult (classifierId, taskId , branch) {
-            return $http.get(apiEndpoint + branch + '/tasks/' + taskId + '/classifications/' + classifierId ).then(function(response) {
+
+
+
+
+    // get a specific classification result for projectId, taskId, and classifierId
+    function getClassificationResult (projectId, taskId , classifierId, branch) {
+            return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId ).then(function(response) {
                     return response;
                 });
+    }
+
+    // get all classification results for a project (as of 7/21, snowowl functionality not complete)
+    function getClassificationResultsForProject (projectId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/' ).then(function(response) {
+        return response;
+      });
+    }
+
+    // get all classification results for a project and task
+    function getClassificationResultsForTask (projectId, taskId , branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications').then(function(response) {
+        return response;
+      });
     }
       
     function getEquivalentConcepts (classifierId, taskId , branch) {
@@ -79,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
 
 
     //////////////////////////////////////////////
-    // Retrieval functions
+    // Concept element retrieval functions
     //////////////////////////////////////////////
 
     // Retrieve Concept properties
@@ -384,7 +402,8 @@ angular.module('singleConceptAuthoringApp')
       getFullConcept: getFullConcept,
       updateDescription: updateDescription,
       startClassification: startClassification,
-      checkClassificationResult: checkClassificationResult,
+      getClassificationResultsForTask: getClassificationResultsForTask,
+      getClassificationResultsForProject: getClassificationResultsForProject,
       getEquivalentConcepts: getEquivalentConcepts,
       getRelationshipChanges: getRelationshipChanges,
       cleanConcept: cleanConcept
