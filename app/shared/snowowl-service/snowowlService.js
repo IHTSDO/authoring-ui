@@ -71,28 +71,28 @@ angular.module('singleConceptAuthoringApp')
     // get all classification results for a project (as of 7/21, snowowl functionality not complete)
     function getClassificationResultsForProject (projectId, branch) {
       return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/' ).then(function(response) {
-        return response;
+        return response.data.items;
       });
     }
 
     // get all classification results for a project and task
     function getClassificationResultsForTask (projectId, taskId , branch) {
       return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications').then(function(response) {
-        return response;
+        return response.data.items;
       });
     }
 
     // get equivalent concepts reported for a classifier id
     function getEquivalentConcepts (classifierId, projectId, taskId , branch) {
             return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId +  '/classifications/' + classifierId + '/equivalent-concepts').then(function(response) {
-                    return response;
+                    return response.data.items;
                 });
     }
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
     function getRelationshipChanges (classifierId, projectId, taskId, branch) {
             return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId + '/relationship-changes').then(function(response) {
-                    return response;
+                    return response.data.items;
                 });
     }
 

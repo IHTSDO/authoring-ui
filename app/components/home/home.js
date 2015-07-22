@@ -94,21 +94,21 @@ angular.module('singleConceptAuthoringApp.home', [
       snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
 
         console.debug("appending classification results", task, response);
-        if (!response || !response.data || !response.data.items) {
+        if (!response) {
           // do nothing
         } else {
 
 
           // sort by completion date to ensure latest result first
-          response.data.items.sort(function (a, b) {
+          response.sort(function (a, b) {
             var aDate = new Date(a.completionDate);
             var bDate = new Date(b.completionDate);
             return aDate < bDate;
           });
 
           // append the first result
-          task.classifications = response.data.items;
-          task.latestClassification = response.data.items[0];
+          task.classifications = response;
+          task.latestClassification = response[0];
         }
       })
 
