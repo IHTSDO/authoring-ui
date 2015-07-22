@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classificationReport', function ($rootScope, $filter, ngTableParams, $routeParams, snowowlService) {
+  .directive('classificationReport', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
         // Paging Controls
         //////////////////////////
 
-        scope.tableParams = new ngTableParams({
+        scope.tableParams = new NgTableParams({
           page: 1,            // show first page
           count: 10,          // count per page
           sorting: {
@@ -32,8 +32,7 @@ angular.module('singleConceptAuthoringApp')
           getData: function ($defer, params) {
 
             console.debug('getdata');
-$
-            if (!scope.data || scope.data.length == 0) {
+            if (!scope.data || scope.data.length === 0) {
               $defer.resolve([]);
             } else {
               var orderedData = params.sorting() ?
@@ -50,5 +49,5 @@ $
           scope.tableParams.reload();
         });
       }
-    }
-  });
+    };
+  }]);

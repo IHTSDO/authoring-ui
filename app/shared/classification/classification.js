@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', function ($rootScope, $filter, ngTableParams, $routeParams, snowowlService) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -96,7 +96,7 @@ angular.module('singleConceptAuthoringApp')
             charType: 'Inferred'
           }];
 
-        scope.tableParams = new ngTableParams({
+        scope.tableParams = new NgTableParams({
           page: 1,            // show first page
           count: 10,          // count per page
           sorting: {
@@ -167,7 +167,7 @@ angular.module('singleConceptAuthoringApp')
                       snowowlService.getConceptPreferredTerm(item.typeId, scope.branch).then(function(response) {
                         item.typeName = response.term;
                       });
-                    })
+                    });
                   });
               }
             }
@@ -182,4 +182,4 @@ angular.module('singleConceptAuthoringApp')
         }
       }
     };
-  });
+  }]);

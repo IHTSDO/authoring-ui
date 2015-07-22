@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // toggle the sidebar and model -- always opposite of classification
       $scope.toggleModel();
       $scope.toggleSidebar();
-    }
+    };
 
     $scope.toggleSidebar = function () {
       $scope.hideSidebar = !$scope.hideSidebar;
