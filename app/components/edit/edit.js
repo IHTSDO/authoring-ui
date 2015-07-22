@@ -29,14 +29,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function AboutCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode) {
 
     console.debug('EditCtrl: Classify mode is ' + classifyMode);
 
     // TODO: Update this when $scope.branching is enabled
-    $scope.branch = 'MAIN';
-    $scope.projectKey = $routeParams.projectKey;
-    $scope.taskKey = $routeParams.taskKey;
+    $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
+    $scope.projectKey = $routeParams.projectId;
+    $scope.taskKey = $routeParams.taskId;
 
     // displayed concept array
     $scope.concepts = [];
@@ -242,7 +242,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     //initial function to poll for the result of a classification run
     $scope.pollForResult = function () {
       $timeout(function () {
-        snowowlService.checkClassificationResult($scope.classifactionJobId, $routeParams.taskId, $scope.branch).then(function (data) {
+        snowowlService.checkClassificationResult($scope.classifactionJobId, $routeParams.taskId, 'MAIN').then(function (data) {
           if (data.data.status === 'COMPLETED') {
             $scope.validationResultsComplete = true;
             return;

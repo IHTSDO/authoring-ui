@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get a specific classification result for projectId, taskId, and classifierId
     function getClassificationResult (projectId, taskId , classifierId, branch) {
-            return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId ).then(function(response) {
+            return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId ).then(function(response) {
                     return response;
                 });
     }
@@ -77,21 +77,21 @@ angular.module('singleConceptAuthoringApp')
 
     // get all classification results for a project and task
     function getClassificationResultsForTask (projectId, taskId , branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications').then(function(response) {
+      return $http.get(apiEndpoint + 'MAIN/' + projectId + '/' + taskId + '/classifications').then(function(response) {
         return response.data.items;
       });
     }
 
     // get equivalent concepts reported for a classifier id
     function getEquivalentConcepts (classifierId, projectId, taskId , branch) {
-            return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId +  '/classifications/' + classifierId + '/equivalent-concepts').then(function(response) {
+            return $http.get(apiEndpoint + branch + '/' +  '/classifications/' + classifierId + '/equivalent-concepts').then(function(response) {
                     return response.data.items;
                 });
     }
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
     function getRelationshipChanges (classifierId, projectId, taskId, branch) {
-            return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId + '/relationship-changes').then(function(response) {
+            return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes').then(function(response) {
                     return response.data.items;
                 });
     }
