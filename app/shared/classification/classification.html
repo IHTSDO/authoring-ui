@@ -24,9 +24,6 @@
     </li>
     <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
                                                    data-toggle="tab">Equivalency Errors</a></li>
-    <li role="presentation" class="cycle"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab">Cycle
-                                                                                                                      Errors</a>
-    </li>
   </ul>
 
   <!-- Tab panes -->
@@ -34,27 +31,22 @@
 
     <!-- changed relationships -->
     <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-      <div classification-report data="relationshipChanges"></div>
+      <div classification-report data="classification.classificationResults"></div>
     </div>
 
     <!-- redundant stated relationships -->
     <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
-      <div classification-report params=""></div>
+      <div classification-report data="classification.redundantStatedRelationships"></div>
     </div>
 
     <!-- inferred not previously stated -->
     <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
-      <div classification-report params=""></div>
+      <div classification-report params="classification.inferredNotPreviouslyStated"></div>
     </div>
 
     <!-- equivalent concept errors -->
     <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
-      <div classification-report data="equivalentConcepts"></div>
-    </div>
-
-    <!-- cycle errors -- to be removed? -->
-    <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==5}">
-      <div classification-report params=""></div>
+      <div classification-report data="classification.equivalentConcepts"></div>
     </div>
 
   </div>
