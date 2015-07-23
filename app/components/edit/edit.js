@@ -280,6 +280,13 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
         $scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
+
+
+        // ensure concept is in edit panel ui state
+        if ($scope.editPanelUiState.indexOf(data.response.conceptId) === -1) {
+          $scope.editPanelUiState.push(data.response.conceptId);
+          $scope.updateUiState();
+        }
       }
       else {
         $scope.saveMessage = 'Error saving concept, please make an additional change.';
@@ -366,7 +373,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         $timeout(function () {
           $scope.resizeSvg(clonedConcept);
         }, 600);
-
       });
     });
 
@@ -386,19 +392,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       // set editing flags
       flagEditedItems();
 
-    });
-
-// watch for new concept creation
-    $scope.$on('conceptEdit.newConceptCreated', function (event, data) {
-      if (!data || !data.conceptId) {
-        console.error('Cannot add newly created concept to edit-panel list, conceptId not supplied');
-      }
-
-      $scope.editPanelUiState.push(data.conceptId);
-      $scope.updateUiState();
-
-      // set editing flags
-      flagEditedItems();
     });
 
 // creates a blank (unsaved) concept in the editing list
@@ -424,6 +417,42 @@ angular.module('singleConceptAuthoringApp.edit', [
     ////////////////////////////////////////
     // Classification functions           //
     ////////////////////////////////////////
+
+
+    // function to poll for the result of a classification run
+    $scope.pollForResult = function (classificationId) {
+
+      console.debug('Polling for classification result', classificationId);
+
+      // check prerequisites
+      if (!classificationId) {
+        console.error('Cannot poll results for null classification')
+      }
+
+      // otherwise, update the result
+      else {
+        $timeout(function () {
+          console.debug('New poll');
+          snowowlService.getClassificationResult($routeParams.projectId, $routeParams.taskId, classificationId, 'MAIN').then(function (data) {
+
+            console.debug('Classification result status: ', data);
+            // if completed, set flag and return
+            if (data.data.status === 'COMPLETED') {
+              console.debug('Polled -- COMPLETED');
+              $scope.classification = data.data;
+              $scope.setClassificationComponents();
+
+              return;
+            } else {
+              console.debug('POLLED -- ', data.data.status);
+              // otherwise, continue polling
+              $scope.pollForResult(classificationId);
+            }
+          });
+        }, 5000);
+      }
+    };
+
 
     // get the various elements of a classification once it has been retrieved
     $scope.setClassificationComponents = function () {
@@ -456,42 +485,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
     };
 
-    // function to poll for the result of a classification run
-    $scope.pollForResult = function () {
-
-      // console.debug('Polling for classification result');
-
-      // check prerequisites
-      if (!$scope.classification) {
-        console.error('Cannot poll results for null classification')
-      }
-      else if (!$scope.classification.id) {
-        console.error('Cannot poll results for classification without id');
-      }
-      else if ($scope.classification.status != 'RUNNING') {
-        console.error('Cannot poll results for classification without status RUNNING');
-      }
-
-      // otherwise, update the result
-      else {
-        $timeout(function () {
-          snowowlService.checkClassificationResult($scope.classifaction.id, $routeParams.taskId, 'MAIN').then(function (data) {
-
-            // if completed, set flag and return
-            if (data.data.status === 'COMPLETED') {
-              $scope.classification = data.data;
-              $scope.setClassificationComponents();
-
-              return;
-            } else {
-              // otherwise, continue polling
-              $scope.pollForResult();
-            }
-          });
-        }, 20000);
-      }
-    };
-
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
@@ -504,23 +497,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           // do nothing
         } else {
 
-          // console.debug('Received classifications', response);
-
-          // sort by completion date to ensure latest result first
-          // note: may be unnecessary
-          response.sort(function (a, b) {
-            var aDate = new Date(a.completionDate);
-            var bDate = new Date(b.completionDate);
-            return aDate < bDate;
-          });
-
-          // console.debug('Latest classification is: ', response[0]);
-
           // if different result, replace
-          if ($scope.classification != response[0]) {
+          if ($scope.classification !== response[response.length-1]) {
 
             // console.debug('New classification detected');
-            $scope.classification = response[0];
+            $scope.classification = response[response.length-1];
 
             // if completed, retrieve all components
             if ($scope.classification.status === 'COMPLETED') {
@@ -537,27 +518,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       });
     };
-
-    /*$scope.$watch('relationshipChanges', function() {
-     console.debug('relationshipChanges change', $scope.relationshipChanges, $scope.equivalentConcepts);
-
-     if (!$scope.relationshipChanges || !$scope.equivalentConcepts) {
-     return;
-     }
-
-     console.debug('rc passed');
-     });
-
-     $scope.$watch('equivalentConcepts', function() {
-     console.debug('equivalentConcepts change', $scope.relationshipChanges, $scope.equivalentConcepts);
-
-     if (!$scope.relationshipChanges || !$scope.equivalentConcepts) {
-     return;
-     }
-
-     console.debug('ec passed');
-     });
-     */
 
     // watch classification for changes requiring broadcast
     $scope.$watchGroup(['classification', 'relationshipChanges', 'equivalentConcepts'], function () {
@@ -586,13 +546,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
     // watch for notification of classification starting
-    $scope.$on('startClassification', function (event, data) {
+    $scope.$on('startClassification', function (event, classificationId) {
 
-      // console.debug('edit.js, received notification startClassification',
-      // data);
+       console.debug('edit.js, received notification startClassification',
+      classificationId);
 
-      $scope.classification = data;
-      $scope.pollForResult();
+      $scope.pollForResult(classificationId);
 
     });
 
