@@ -20,105 +20,9 @@ angular.module('singleConceptAuthoringApp')
           return;
         }
 
-        console.debug('classification directive init', scope.branch, scope.projectKey, scope.taskKey);
-
-
-        var data = [{
-          differences: 'added',
-          source: 'Medication monitoring not indicated',
-          type: 'Is a',
-          destination: 'Procedure not indicated',
-          group: 0,
-          charType: 'Inferred'
-        },
-          {
-            differences: 'added',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Associated procedure',
-            group: 0,
-            charType: 'Inferred'
-          },
-          {
-            differences: 'added',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Subject relationship context',
-            group: 0,
-            charType: 'Inferred'
-          },
-          {
-            differences: 'added',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Procedure not indicated',
-            group: 0,
-            charType: 'Inferred'
-          },
-          {
-            differences: 'added',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Procedure not indicated',
-            group: 0,
-            charType: 'Inferred'
-          },
-          {
-            differences: 'added',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Procedure not indicated',
-            group: 0,
-            charType: 'Inferred'
-          },
-          {
-            differences: 'added',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Procedure not indicated',
-            group: 0,
-            charType: 'Inferred'
-          },
-          {
-            differences: 'added',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Procedure not indicated',
-            group: 0,
-            charType: 'Inferred'
-          },
-          {
-            differences: 'inactivated',
-            source: 'Medication monitoring not indicated',
-            type: 'Is a',
-            destination: 'Procedure not indicated',
-            group: 0,
-            charType: 'Inferred'
-          }];
-
-        scope.tableParams = new NgTableParams({
-          page: 1,            // show first page
-          count: 10,          // count per page
-          sorting: {
-            name: 'asc'     // initial sorting
-          }
-        }, {
-          total: data.length, // length of data
-          getData: function ($defer, params) {
-            console.debug('getData called');
-            // use build-in angular filter
-            var orderedData = params.sorting() ?
-              $filter('orderBy')(data, params.orderBy()) :
-              data;
-
-            $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-          }
-        });
-
         // function to get the latest classification
         scope.getLatestClassification = function () {
 
-          console.debug('getting latest classification result');
 
           scope.classificationResult = null;
           scope.equivalentConcepts = [];
@@ -127,11 +31,8 @@ angular.module('singleConceptAuthoringApp')
           // TODO Update branch when branching is implemented
           snowowlService.getClassificationResultsForTask($routeParams.projectId, $routeParams.taskId, scope.branch).then(function (response) {
             if (!response) {
-              console.debug('no classification results');
-              // do nothing
+               // do nothing
             } else {
-
-              console.debug('classification results list', response);
 
               // sort by completion date to ensure latest result first
               response.sort(function (a, b) {
@@ -176,7 +77,6 @@ angular.module('singleConceptAuthoringApp')
         };
 
         // if classify mode, retrieve the latest classification
-        console.debug('classification hid?', scope.hideClassification);
         if (!scope.hideClassification) {
           scope.getLatestClassification();
         }

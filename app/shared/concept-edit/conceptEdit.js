@@ -29,11 +29,11 @@ angular.module('singleConceptAuthoringApp')
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;
-            $('#' + concept.conceptId).css('display', 'inline-block');
+            $('#model' + concept.conceptId).css('display', 'inline-block');
           }
           else {
             scope.isCollapsed = true;
-            $('#' + concept.conceptId).css('display', 'none');
+            $('#model' + concept.conceptId).css('display', 'none');
           }
 
         };

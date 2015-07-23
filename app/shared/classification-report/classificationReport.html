@@ -1,11 +1,13 @@
- <section class="tables-data">
 
-  ng-table params: {{tableParams}}
+
+<section class="tables-data">
+  Edit Panel: {{editPanelUiState}}, {{savedList}}
   <div class="table-responsive white">
 
       <table ng-table="params" template-pagination="utilities/data-table-pager.html"   class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
             <td data-title="'Differences'" sortable="'differences'">
+              <!-- Difference not currently defined, or possibly overlaps with changeNature -->
                 {{result.differences}}
             </td>
             <td data-title="'Source'" sortable="'source'">
@@ -21,16 +23,17 @@
                 {{result.group}}
             </td>
                <td data-title="'Characteristic Type'" sortable="'charType'">
+                 <!-- TODO: Use characteristic type here -->
                 {{result.changeNature}}
             </td>
               <td >
                <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left" tooltip=""
-                        title="Classification Results"><span class="md md-notifications "></span>
+                        title="View Model"><span class="md md-view-quilt "></span>
 
                   <div class="ripple-wrapper"></div>
                 </button>
-                 <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left" tooltip=""
-                        title="Classification Results"><span class="md md-notifications "></span>
+                 <button type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
+                        title="Edit"><span class="md md-edit "></span>
 
                   <div class="ripple-wrapper"></div>
                 </button>
