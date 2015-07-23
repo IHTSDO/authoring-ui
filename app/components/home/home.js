@@ -85,6 +85,41 @@ angular.module('singleConceptAuthoringApp.home', [
       });
     };
 
+
+    // function to poll for the result of a task with running classification
+    $scope.pollForResult = function (task) {
+
+      // check prerequisites
+      if (!task.latestClassification) {
+        console.error('Cannot poll results for null classification')
+      }
+      else if (!task.latestClassification.id) {
+        console.error('Cannot poll results for cClassification without id');
+      }
+      else if (task.latestClassification.status != 'RUNNING') {
+        console.error('Cannot poll results for classification without status RUNNING');
+      }
+
+      // otherwise, update the result
+      else {
+        $timeout(function () {
+          snowowlService.checkClassificationResult(task.latestClassifaction.id, task.taskKey, 'MAIN').then(function (data) {
+
+            // if completed, set flag and return
+            if (data.data.status === 'COMPLETED') {
+              $scope.task.latestClassification = data.data;
+              $scope.setClassificationComponents();
+
+              return;
+            } else {
+              // otherwise, continue polling
+              $scope.pollForResult();
+            }
+          });
+        }, 20000);
+      }
+    };
+
     function appendClassificationResults(task) {
 
       task.classifications = [];
@@ -109,10 +144,16 @@ angular.module('singleConceptAuthoringApp.home', [
           // append the first result
           task.classifications = response;
           task.latestClassification = response[0];
+          
+          // if the result is still running, start polling
+          if (task.latestClassification.status === 'RUNNING') {
+            pollForResult(task.latestClassification);
+          }
         }
       })
 
     }
+
 
 // Initialization:  get tasks and classifications
     function initialize() {

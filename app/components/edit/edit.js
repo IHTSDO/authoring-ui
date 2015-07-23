@@ -47,52 +47,73 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.saveIndicator = false;
     $rootScope.pageTitle = $scope.classifyMode ? 'Classification' : 'Edit Concept';
 
-    // initialize flags for hiding elements
+    // initialize hide element variables
     $scope.hideSidebar = classifyMode;
     $scope.hideModel = classifyMode;
     $scope.hideClassification = !classifyMode;
 
-    // toggles classification view
-    $scope.toggleClassification = function () {
-      $scope.hideClassification = !$scope.hideClassification;
+    $scope.thisView = null;
+    $scope.lastView = null;
 
-      // toggle the model display, always opposite of classification
-      $scope.toggleModel();
-    };
+    $scope.setView = function (name) {
 
-    $scope.toggleSidebar = function () {
-      $scope.hideSidebar = !$scope.hideSidebar;
-
-      // resize models if they are shown
-      if (!$scope.hideModel) {
-        angular.forEach($scope.concepts, function (concept) {
-          $timeout(function () {
-            $scope.resizeSvg(concept);
-          }, 500);
-        });
+      // console.debug('setting view (requested, this, last)', name,
+      // $scope.thisView, $scope.lastView); do nothing if no name supplied
+      if (!name) {
+        return;
       }
-    };
+      // if same state requested, do nothing
+      if (name === $scope.thisView) {
+        return;
+      }
 
-    // toggle for hiding model
-    $scope.toggleModel = function () {
-
-      // if in classification view, model always hidden
-      if (!$scope.hideClassification) {
-        $scope.hideModel = false;
-      } else {
-        $scope.hideModel = !$scope.hideModel;
-
-        // resize models if they are shown
-        if (!$scope.hideModel) {
-          angular.forEach($scope.concepts, function (concept) {
-            $timeout(function () {
-              $scope.resizeSvg(concept);
-            }, 500);
-          });
+      // special case for returning to edit view from classify view
+      if (name === 'edit') {
+        if (!$scope.lastView || $scope.lastView === 'classification') {
+          name = 'edit-default';
+        } else {
+          name = $scope.lastView;
         }
       }
+
+      // set this and last view
+      $scope.lastView = $scope.thisView;
+      $scope.thisView = name;
+
+      switch ($scope.thisView) {
+        case 'classification':
+          $scope.hideClassification = false;
+          $scope.hideModel = true;
+          $scope.hideSidebar = true;
+          break;
+        case 'edit-default':
+          $scope.hideClassification = true;
+          $scope.hideModel = false;
+          $scope.hideSidebar = false;
+          break;
+        case 'edit-no-sidebar':
+          $scope.hideClassification = true;
+          $scope.hideModel = false;
+          $scope.hideSidebar = true;
+          break;
+        case 'edit-no-model':
+          $scope.hideClassification = true;
+          $scope.hideModel = true;
+          $scope.hideSidebar = false;
+          break;
+        default:
+          break;
+      }
     };
 
+    // set the initial view
+    if ($scope.hideClassification) {
+      $scope.setView('edit-default');
+    } else {
+      $scope.setView('classification');
+    }
+
+    // function to resize svg elements for concept models
     $scope.resizeSvg = function (concept) {
 
       // if in classify mode, modify side-by-side models
@@ -110,17 +131,14 @@ angular.module('singleConceptAuthoringApp.edit', [
         var parentElem = document.getElementById('drawModel' + concept.conceptId);
 
         if (!elem || !parentElem) {
-          console.debug('could not find svg element or parent div', elem, parentElem);
+          // console.debug('could not find svg element or parent div', elem,
+          // parentElem);
           return;
         }
-
-        console.debug('elements', elem, parentElem);
 
         // set the height and width`
         var width = parentElem.offsetWidth - 30;
         var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
-
-        console.debug(height, width);
 
         // check that element is actually visible (i.e. we don't have negative
         // width)
@@ -133,7 +151,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-    // function to flag items in saved list if they exist in edit panel
+// function to flag items in saved list if they exist in edit panel
     function flagEditedItems() {
 
       if ($scope.editPanelUiState && $scope.savedList) {
@@ -153,7 +171,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-    // get edit panel list
+// get edit panel list
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
@@ -174,7 +192,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     );
 
-    // get saved list
+// get saved list
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'saved-list')
       .then(function (uiState) {
@@ -230,15 +248,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     };
 
-    // helper function to save current edit list
+// helper function to save current edit list
     $scope.updateUiState = function () {
       scaService.saveUIState($routeParams.projectId, $routeParams.taskId, 'edit-panel', $scope.editPanelUiState);
     };
 
-    // watch for concept saving from the edit panel
+// watch for concept saving from the edit panel
     $scope.$on('conceptEdit.saving', function (event, data) {
       $scope.saveIndicator = true;
-      $scope.saveMessage = 'Saving concept with id: ' + data.concept.conceptId;
+      $scope.saveMessage = data.concept.conceptId ? 'Saving concept with id: ' + data.concept.conceptId : 'Saving new concept';
     });
     $scope.formatDate = function (date) {
       var hours = date.getHours();
@@ -252,7 +270,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime + ' (' + offset + ')';
     };
 
-    // on show model requests, toggle the model if not active
+// on show model requests, toggle the model if not active
     $scope.$on('conceptEdit.showModel', function (event, data) {
       if ($scope.hideModel) {
         $scope.toggleModel();
@@ -271,24 +289,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }, 4000);
     });
 
-    //initial function to poll for the result of a classification run
-    $scope.pollForResult = function () {
-      $timeout(function () {
-        snowowlService.checkClassificationResult($scope.classifactionJobId, $routeParams.taskId, 'MAIN').then(function (data) {
-          if (data.data.status === 'COMPLETED') {
-            $scope.validationResultsComplete = true;
-            return;
-          }
-        });
-        if ($scope.validationResultsComplete === true) {
-          $scope.generateClassifierResults();
-          return;
-        }
-        $scope.pollForResult();
-      }, 20000);
-    };
-
-    // watch for concept selection from the edit sidebar
+// watch for concept selection from the edit sidebar
     $scope.$on('savedList.editConcept', function (event, data) {
       $scope.conceptLoaded = false;
       if (!data || !data.conceptId) {
@@ -305,7 +306,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     });
 
-    // watch for concept cloning from the edit sidebar
+// watch for concept cloning from the edit sidebar
     $scope.$on('savedList.cloneConcept', function (event, data) {
 
       if (!data || !data.conceptId) {
@@ -369,7 +370,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-    // watch for removal request from concept-edit
+// watch for removal request from concept-edit
     $scope.$on('conceptEdit.removeConcept', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot remove concept: concept must be supplied');
@@ -387,7 +388,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     });
 
-    // watch for new concept creation
+// watch for new concept creation
     $scope.$on('conceptEdit.newConceptCreated', function (event, data) {
       if (!data || !data.conceptId) {
         console.error('Cannot add newly created concept to edit-panel list, conceptId not supplied');
@@ -400,7 +401,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       flagEditedItems();
     });
 
-    // creates a blank (unsaved) concept in the editing list
+// creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
       var concept = objectService.getNewConcept($scope.branch);
 
@@ -419,6 +420,187 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.splice(index, 1);
       }
     };
+
+    ////////////////////////////////////////
+    // Classification functions           //
+    ////////////////////////////////////////
+
+    // get the various elements of a classification once it has been retrieved
+    $scope.setClassificationComponents = function () {
+
+      // console.debug('Retrieving classification components for',
+      // $scope.classification);
+
+      if (!$scope.classification || !$scope.classification.id) {
+        console.error('Cannot set classification components, classification or its id not set');
+        return;
+      }
+
+      // get equivalent concepts
+      if ($scope.classification.equivalentConceptsFound) {
+        snowowlService.getEquivalentConcepts($scope.classification.id, $routeParams.projectId,
+          $routeParams.taskId, $scope.branch).then(function (equivalentConcepts) {
+            $scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+            console.debug('set equivalent concepts', $scope.equivalentConcepts);
+          });
+      } else {
+        $scope.equivalentConcepts = [];
+        console.debug('set equivalent concepts', $scope.equivalentConcepts);
+      }
+
+      // get relationship changes
+      snowowlService.getRelationshipChanges($scope.classification.id, $routeParams.projectId,
+        $routeParams.taskId, $scope.branch).then(function (relationshipChanges) {
+          $scope.relationshipChanges = relationshipChanges ? relationshipChanges : {};
+          console.debug('set relationship changes', $scope.relationshipChanges);
+        });
+    };
+
+    // function to poll for the result of a classification run
+    $scope.pollForResult = function () {
+
+      // console.debug('Polling for classification result');
+
+      // check prerequisites
+      if (!$scope.classification) {
+        console.error('Cannot poll results for null classification')
+      }
+      else if (!$scope.classification.id) {
+        console.error('Cannot poll results for classification without id');
+      }
+      else if ($scope.classification.status != 'RUNNING') {
+        console.error('Cannot poll results for classification without status RUNNING');
+      }
+
+      // otherwise, update the result
+      else {
+        $timeout(function () {
+          snowowlService.checkClassificationResult($scope.classifaction.id, $routeParams.taskId, 'MAIN').then(function (data) {
+
+            // if completed, set flag and return
+            if (data.data.status === 'COMPLETED') {
+              $scope.classification = data.data;
+              $scope.setClassificationComponents();
+
+              return;
+            } else {
+              // otherwise, continue polling
+              $scope.pollForResult();
+            }
+          });
+        }, 20000);
+      }
+    };
+
+    // function to get the latest classification result
+    $scope.getLatestClassification = function () {
+
+      // console.debug('Getting latest classification');
+
+      // TODO Update branch when branching is implemented
+      snowowlService.getClassificationResultsForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
+        if (!response) {
+          // console.debug('No classifications found');
+          // do nothing
+        } else {
+
+          // console.debug('Received classifications', response);
+
+          // sort by completion date to ensure latest result first
+          // note: may be unnecessary
+          response.sort(function (a, b) {
+            var aDate = new Date(a.completionDate);
+            var bDate = new Date(b.completionDate);
+            return aDate < bDate;
+          });
+
+          // console.debug('Latest classification is: ', response[0]);
+
+          // if different result, replace
+          if ($scope.classification != response[0]) {
+
+            // console.debug('New classification detected');
+            $scope.classification = response[0];
+
+            // if completed, retrieve all components
+            if ($scope.classification.status === 'COMPLETED') {
+              // console.debug('New classification is COMPLETED');
+              $scope.setClassificationComponents();
+            }
+
+            // if still running, start polling for result
+            else if ($scope.classification.status === 'RUNNING') {
+              // console.debug('New classification is RUNNING');
+              $scope.pollForResult();
+            }
+          }
+        }
+      });
+    };
+
+    /*$scope.$watch('relationshipChanges', function() {
+     console.debug('relationshipChanges change', $scope.relationshipChanges, $scope.equivalentConcepts);
+
+     if (!$scope.relationshipChanges || !$scope.equivalentConcepts) {
+     return;
+     }
+
+     console.debug('rc passed');
+     });
+
+     $scope.$watch('equivalentConcepts', function() {
+     console.debug('equivalentConcepts change', $scope.relationshipChanges, $scope.equivalentConcepts);
+
+     if (!$scope.relationshipChanges || !$scope.equivalentConcepts) {
+     return;
+     }
+
+     console.debug('ec passed');
+     });
+     */
+
+    // watch classification for changes requiring broadcast
+    $scope.$watchGroup(['classification', 'relationshipChanges', 'equivalentConcepts'], function () {
+
+      console.debug('change detected', $scope.classification, $scope.relationshipChanges, $scope.equivalentConcepts);
+      // do nothing if not set
+      if (!$scope.classification ) {
+        return;
+      }
+
+      // if running, broadcast result without elements
+      if ($scope.classification.status === 'RUNNING') {
+        $rootScope.$broadcast('setClassification', {classification: $scope.classification});
+      }
+
+      // if completed, check for all required fields and broadcast if populated
+      else if ($scope.classification.status === 'COMPLETED' && $scope.relationshipChanges && $scope.equivalentConcepts) {
+
+        // assemble the arrays
+        // TODO:  Artifact of bizarre watch behavior
+        $scope.classification.relationshipChanges = $scope.relationshipChanges;
+        $scope.classification.equivalentConcepts = $scope.equivalentConcepts;
+
+        $rootScope.$broadcast('setClassification', $scope.classification)
+      }
+    });
+
+    // watch for notification of classification starting
+    $scope.$on('startClassification', function (event, data) {
+
+      // console.debug('edit.js, received notification startClassification',
+      // data);
+
+      $scope.classification = data;
+      $scope.pollForResult();
+
+    });
+
+    // on load, get the latest classification
+    $scope.classification = null;
+    $scope.relationshipChanges = null;
+    $scope.equivalentConcepts = null;
+    $scope.getLatestClassification();
 
   }
 )
