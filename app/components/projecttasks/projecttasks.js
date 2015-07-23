@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('singleConceptAuthoringApp.home', [
+angular.module('singleConceptAuthoringApp.projecttasks', [
   //insert dependencies here
   'ngRoute',
   'ngTable'
@@ -8,18 +8,18 @@ angular.module('singleConceptAuthoringApp.home', [
 
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/home', {
-        controller: 'HomeCtrl',
-        templateUrl: 'components/home/home.html'
+      .when('/projecttasks', {
+        controller: 'ProjecttasksCtrl',
+        templateUrl: 'components/projecttasks/projecttasks.html'
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService) {
+  .controller('ProjecttasksCtrl', function ProjecttasksCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout) {
 
     // TODO Placeholder, as we only have the one tab at the moment
-    $rootScope.pageTitle = "My Tasks";
+    $rootScope.pageTitle = "My Tasks"
     $scope.tasks = null;
-    $scope.classifications = null;
+
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp.home', [
         getData: function ($defer, params) {
 
           if (!$scope.tasks || $scope.tasks.length == 0) {
-            $defer.resolve([]);
+            $defer.resolve(new Array());
           } else {
 
             var searchStr = params.filter().search;
@@ -48,32 +48,34 @@ angular.module('singleConceptAuthoringApp.home', [
             }
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
-
+            
             $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
-
+            
         }
       }
     );
 
     // watch for task creation events
     $scope.$on('taskCreated', function (event, task) {
-      if ($scope.tasks) {
+       if ($scope.tasks) {
         $scope.tasks.unshift(task);
       }
     });
 
+
     // on successful set, reload table parameters
     $scope.$watch('tasks', function () {
       if (!$scope.tasks || $scope.tasks.length == 0) {
-      }
-      else {
-        $scope.tableParams.reload();
+      } 
+      else 
+      {
+          $scope.tableParams.reload();
       }
 
-    }, true);
+      }, true);
 
-    $scope.openCreateTaskModal = function () {
+    $scope.openCreateTaskModal = function() {
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
         controller: 'taskCtrl',
@@ -83,38 +85,10 @@ angular.module('singleConceptAuthoringApp.home', [
       modalInstance.result.then(function () {
       }, function () {
       });
-    };
-
-    function appendClassificationResults(task) {
-
-      task.classifications = [];
-      task.latestClassification = null;
-
-      // TODO Update branch when branching is implemented
-      snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
-
-        console.debug("appending classification results", task, response);
-        if (!response) {
-          // do nothing
-        } else {
-
-
-          // sort by completion date to ensure latest result first
-          response.sort(function (a, b) {
-            var aDate = new Date(a.completionDate);
-            var bDate = new Date(b.completionDate);
-            return aDate < bDate;
-          });
-
-          // append the first result
-          task.classifications = response;
-          task.latestClassification = response[0];
-        }
-      })
-
     }
 
-// Initialization:  get tasks and classifications
+
+// Initialization:  get tasks
     function initialize() {
 
       $scope.tasks = [];
@@ -127,12 +101,6 @@ angular.module('singleConceptAuthoringApp.home', [
         }
 
         $scope.tasks = response;
-
-        // once tasks are loaded get classifications
-        // TODO Remove this once tasks are returned with this data
-        angular.forEach($scope.tasks, function (task) {
-          appendClassificationResults(task);
-        })
 
       }, function (error) {
         // TODO Handle errors

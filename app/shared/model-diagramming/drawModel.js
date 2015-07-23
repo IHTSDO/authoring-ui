@@ -14,6 +14,9 @@ angular.module('singleConceptAuthoringApp')
           link: function (scope, element, attrs, linkCtrl, snowowlService) {
               var idSequence = 0;
               drawConceptDiagram(scope.concept, element, {});
+              scope.$watch('concept', function(newVal, oldVal){
+                  drawConceptDiagram(scope.concept, element, {});
+              }, true);
 
               function drawConceptDiagram (concept, div, options) {
                   var svgIsaModel = [];

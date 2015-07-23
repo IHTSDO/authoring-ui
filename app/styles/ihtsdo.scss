@@ -7403,7 +7403,7 @@ tbody.collapse.in {
     > a {
       position: relative;
       display: block;
-      padding: 10px 15px;
+      padding: 12px 10px;
       &:focus, &:hover {
         text-decoration: none;
         background-color: #eee;
@@ -12176,8 +12176,8 @@ fieldset[disabled] .btn-secondary {
 }
 
 .table-title {
-  padding: 20px 20px 20px 40px;
-  font-size: 24px;
+  padding: 0px;
+  font-size: 18px;
   font-weight: 300;
   margin: 0;
   color: #9B9B9B;

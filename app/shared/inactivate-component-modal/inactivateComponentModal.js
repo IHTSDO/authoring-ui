@@ -3,8 +3,6 @@
 angular.module('singleConceptAuthoringApp')
   .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, componentType, reasons) {
 
-    console.debug('inactivateComponentModalCtrl entered', componentType, reasons);
-
     $scope.componentType = componentType;
     $scope.reasons = reasons;
 

@@ -13,10 +13,9 @@ angular.module('singleConceptAuthoringApp')
       /////////////////////////////////////
 
       // get all projects
-      getProjects: function () {        
+      getProjects: function () {
         return $http.get(apiEndpoint + 'projects').then(
           function (response) {
-            console.debug('scaService getProjects', response, response.data);
             return response.data;
           }, function (error) {
             // TODO Handle errors
@@ -32,12 +31,9 @@ angular.module('singleConceptAuthoringApp')
             // temporary check to verify authentication
             // will later be replaced by accountService call in app.js
             if ($rootScope.loggedIn === null) {
-
-              console.debug('Setting authentication', response);
               $rootScope.loggedIn = true;
 
               if (response.data.length > 0) {
-                console.debug('LoggedIn as:', response.data[0].assignee);
                 $rootScope.accountDetails = response.data[0].assignee;
               }
             }
@@ -152,9 +148,32 @@ angular.module('singleConceptAuthoringApp')
             // TODO Handle errors
           }
         );
+      },
+
+      ///////////////////////////////////////////////
+      // Classification
+      ///////////////////////////////////////////////
+      //POST /projects/{projectKey}/tasks/{taskKey}/classifications
+
+      startClassification: function (projectKey, taskKey) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to save UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to save UI state');
+          return {};
+        }
+
+        // POST call takes no data
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/classifications', {}).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          });
       }
-
-
     };
 
-  }]);
+  }])
+;

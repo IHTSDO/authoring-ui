@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('singleConceptAuthoringApp.home', [
+angular.module('singleConceptAuthoringApp.projects', [
   //insert dependencies here
   'ngRoute',
   'ngTable'
@@ -8,18 +8,17 @@ angular.module('singleConceptAuthoringApp.home', [
 
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/home', {
-        controller: 'HomeCtrl',
-        templateUrl: 'components/home/home.html'
+      .when('/projects', {
+        controller: 'ProjectsCtrl',
+        templateUrl: 'components/projects/projects.html'
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService) {
+  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout) {
 
     // TODO Placeholder, as we only have the one tab at the moment
-    $rootScope.pageTitle = "My Tasks";
+    $rootScope.pageTitle = "My Projects"
     $scope.tasks = null;
-    $scope.classifications = null;
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
@@ -33,7 +32,7 @@ angular.module('singleConceptAuthoringApp.home', [
         getData: function ($defer, params) {
 
           if (!$scope.tasks || $scope.tasks.length == 0) {
-            $defer.resolve([]);
+            $defer.resolve(new Array());
           } else {
 
             var searchStr = params.filter().search;
@@ -83,38 +82,9 @@ angular.module('singleConceptAuthoringApp.home', [
       modalInstance.result.then(function () {
       }, function () {
       });
-    };
-
-    function appendClassificationResults(task) {
-
-      task.classifications = [];
-      task.latestClassification = null;
-
-      // TODO Update branch when branching is implemented
-      snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
-
-        console.debug("appending classification results", task, response);
-        if (!response) {
-          // do nothing
-        } else {
-
-
-          // sort by completion date to ensure latest result first
-          response.sort(function (a, b) {
-            var aDate = new Date(a.completionDate);
-            var bDate = new Date(b.completionDate);
-            return aDate < bDate;
-          });
-
-          // append the first result
-          task.classifications = response;
-          task.latestClassification = response[0];
-        }
-      })
-
     }
 
-// Initialization:  get tasks and classifications
+// Initialization:  get tasks
     function initialize() {
 
       $scope.tasks = [];
@@ -127,12 +97,6 @@ angular.module('singleConceptAuthoringApp.home', [
         }
 
         $scope.tasks = response;
-
-        // once tasks are loaded get classifications
-        // TODO Remove this once tasks are returned with this data
-        angular.forEach($scope.tasks, function (task) {
-          appendClassificationResults(task);
-        })
 
       }, function (error) {
         // TODO Handle errors

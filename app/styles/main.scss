@@ -137,28 +137,13 @@ body {
   top:63px;
   bottom:32px;
   width:100%;
-}
-.sca-sidebar-dashboard {
-  position: absolute;
-  top: 0px;
- bottom:0px;
-  left: 0px;
-  width:460px;
-}
-.sca-sidebar {
-  position: absolute;
-  top: 0px;
-  height:100%;
-  overflow-y:scroll;
-  left: 0px;
-  width:460px;
-  min-height:750px;
+  height: 100%;
 }
 
-.sca-content {
-  margin-left:460px;
+.sca-column {
+  position: relative;
   height:100%;
-  box-sizing:border-box;
+  overflow-y:scroll;
 }
 
 .navbar-fixed-bottom {
