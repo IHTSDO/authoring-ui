@@ -31,8 +31,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode) {
 
-    console.debug('EditCtrl: Classify mode is ' + classifyMode);
-
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
     $scope.projectKey = $routeParams.projectId;
@@ -47,21 +45,19 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // miscellaneous
     $scope.saveIndicator = false;
-    $scope.classifyMode = classifyMode;
     $rootScope.pageTitle = $scope.classifyMode ? 'Classification' : 'Edit Concept';
 
-    // flags for hiding elements
-    $scope.hideSidebar = $scope.classifyMode;
-    $scope.hideModel = $scope.classifyMode;
-    $scope.hideClassification = !$scope.classifyMode;
+    // initialize flags for hiding elements
+    $scope.hideSidebar = classifyMode;
+    $scope.hideModel = classifyMode;
+    $scope.hideClassification = !classifyMode;
 
     // toggles classification view
     $scope.toggleClassification = function () {
-      $scope.hideClassification = !$scope.classification;
+      $scope.hideClassification = !$scope.hideClassification;
 
-      // toggle the sidebar and model -- always opposite of classification
+      // toggle the model display, always opposite of classification
       $scope.toggleModel();
-      $scope.toggleSidebar();
     };
 
     $scope.toggleSidebar = function () {
@@ -79,43 +75,65 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // toggle for hiding model
     $scope.toggleModel = function () {
-      $scope.hideModel = !$scope.hideModel;
 
-      // resize models if they are shown
-      if (!$scope.hideModel) {
-        angular.forEach($scope.concepts, function (concept) {
-          $timeout(function () {
-            $scope.resizeSvg(concept);
-          }, 500);
-        });
+      // if in classification view, model always hidden
+      if (!$scope.hideClassification) {
+        $scope.hideModel = false;
+      } else {
+        $scope.hideModel = !$scope.hideModel;
+
+        // resize models if they are shown
+        if (!$scope.hideModel) {
+          angular.forEach($scope.concepts, function (concept) {
+            $timeout(function () {
+              $scope.resizeSvg(concept);
+            }, 500);
+          });
+        }
       }
     };
 
     $scope.resizeSvg = function (concept) {
-      var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
 
-      // get the svg drawModel object
-      var elem = document.getElementById('model' + concept.conceptId);
-
-      // get the parent div containing this draw model object
-      var parentElem = document.getElementById('drawModel' + concept.conceptId);
-
-      if (!elem || !parentElem) {
-        return;
+      // if in classify mode, modify side-by-side models
+      if (classifyMode) {
+        // do nothing currently
       }
 
-      var width = parentElem.offsetWidth - 30;
+      // if in edit mode, modify the central model diagrams
+      else {
 
-      // check that element is actually visible (i.e. we don't have negative
-      // width)
-      if (width < 0) {
-        return;
+        // get the svg drawModel object
+        var elem = document.getElementById('model' + concept.conceptId);
+
+        // get the parent div containing this draw model object
+        var parentElem = document.getElementById('drawModel' + concept.conceptId);
+
+        if (!elem || !parentElem) {
+          console.debug('could not find svg element or parent div', elem, parentElem);
+          return;
+        }
+
+        console.debug('elements', elem, parentElem);
+
+        // set the height and width`
+        var width = parentElem.offsetWidth - 30;
+        var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
+
+        console.debug(height, width);
+
+        // check that element is actually visible (i.e. we don't have negative
+        // width)
+        if (width < 0) {
+          return;
+        }
+
+        elem.setAttribute('width', width);
+        elem.setAttribute('height', height);
       }
-
-      elem.setAttribute('width', width);
-      elem.setAttribute('height', height);
     };
 
+    // function to flag items in saved list if they exist in edit panel
     function flagEditedItems() {
 
       if ($scope.editPanelUiState && $scope.savedList) {
@@ -187,13 +205,27 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         snowowlService.cleanConcept(response);
 
-        // force update to get FSN, not PT
-        snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, response).then(function (response) {
-          $scope.concepts.push(response);
-          $timeout(function () {
-            $scope.resizeSvg(response);
-          }, 500);
+        // search for an FSN description to display as name
+        // TODO Fix this when we finally get our concept retrieval!
+        angular.forEach(response.descriptions, function (desc) {
+          if (desc.type === 'FSN') {
+            response.fsn = desc.term;
+          }
         });
+
+        $scope.concepts.push(response);
+        $timeout(function () {
+          $scope.resizeSvg(response);
+        }, 500);
+
+        /*
+         // force update to get FSN, not PT
+         snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, response).then(function (response) {
+         $scope.concepts.push(response);
+         $timeout(function () {
+         $scope.resizeSvg(response);
+         }, 500);
+         });*/
 
       });
     };

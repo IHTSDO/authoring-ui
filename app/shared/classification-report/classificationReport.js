@@ -31,7 +31,6 @@ angular.module('singleConceptAuthoringApp')
           total: scope.data ? scope.data.length : 0, // length of data
           getData: function ($defer, params) {
 
-            console.debug('getdata');
             if (!scope.data || scope.data.length === 0) {
               $defer.resolve([]);
             } else {
@@ -45,7 +44,6 @@ angular.module('singleConceptAuthoringApp')
         });
 
         scope.$watch('data', function() {
-          console.debug('data changed', scope.data);
           scope.tableParams.reload();
         });
       }
