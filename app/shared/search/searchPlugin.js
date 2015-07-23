@@ -29,12 +29,9 @@ angular.module('singleConceptAuthoringApp.search', [])
       scaService.saveUIState(
         projectKey, taskKey, panelId, uiState)
         .then(function (uiState) {
-          console.debug('State Saved');
         });
     };
     $scope.addToList = function (item) {
-
-      console.debug('searchPlugin.js: Adding item to array', item, $scope.savedList);
 
       // get item from results and disable the item element
       var component = $scope.findItem(item);

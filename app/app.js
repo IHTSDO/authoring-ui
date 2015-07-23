@@ -25,9 +25,11 @@ angular
     'ui.sortable',
     'ang-drag-drop',
 
-
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
+    'singleConceptAuthoringApp.projects',
+    'singleConceptAuthoringApp.projecttasks',
+    'singleConceptAuthoringApp.promote',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
@@ -60,14 +62,14 @@ angular
       // don't want either true or false here please!
       $rootScope.loggedIn = null;
 
-     /* accountService.getAccount(accountUrl).success(function (data) {
-            $rootScope.accountDetails = data.data;
-            console.log("LoggedIn");
-                $rootScope.loggedIn = true;
-        }).error(function () {
-            console.log("LoggedOut");
-                $rootScope.loggedIn = false;
-      });*/
+      /* accountService.getAccount(accountUrl).success(function (data) {
+       $rootScope.accountDetails = data.data;
+       console.log("LoggedIn");
+       $rootScope.loggedIn = true;
+       }).error(function () {
+       console.log("LoggedOut");
+       $rootScope.loggedIn = false;
+       });*/
 
       // add required endpoints to route provider
       $routeProvider
@@ -96,7 +98,6 @@ angular
   .controller('AppCtrl', ['$scope', '$location', function AppCtrl($scope, $location) {
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
       if (angular.isDefined(toState.data.pageTitle)) {
-        console.debug('changing pageTitle to:', toState.data.pageTitle);
         $scope.pageTitle = toState.data.pageTitle + ' | thisIsSetInAppCtrl.js';
       }
     });

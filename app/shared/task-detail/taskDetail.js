@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$scope', '$routeParams', '$location', 'scaService', function taskDetailCtrl($scope, $routeParams, $location, scaService) {
+  .controller('taskDetailCtrl', ['$scope', '$routeParams', '$location', 'scaService', 'snowowlService', function taskDetailCtrl($scope, $routeParams, $location, scaService) {
 
     var panelId = 'task-detail';
     $scope.task = null;
@@ -14,6 +14,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         .then(function (uiState) {
           return uiState;
         });
+    };
+
+    $scope.classify = function() {
+      scaService.startClassification($routeParams.projectId, $routeParams.taskId);
     };
 
     function initialize() {

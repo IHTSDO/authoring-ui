@@ -1,145 +1,151 @@
 <!doctype html>
 <html class="no-js">
 <head>
-<meta charset="utf-8">
-<title>IHTSDO SCA (Single Concept Authoring)</title>
-<meta name="description" content="IHTSDO Tools Single Concept Authoring Services for SNOMED CT">
-<meta name="viewport" content="width=device-width">
-<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png" />
-  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114.png" />
-  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72.png" />
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144.png" />
-  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="apple-touch-icon-120x120.png" />
-  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png" />
-  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
-  <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
+  <meta charset="utf-8">
+  <title>IHTSDO SCA (Single Concept Authoring)</title>
+  <meta name="description" content="IHTSDO Tools Single Concept Authoring Services for SNOMED CT">
+  <meta name="viewport" content="width=device-width">
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png"/>
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x114.png"/>
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x72.png"/>
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x144.png"/>
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="apple-touch-icon-120x120.png"/>
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png"/>
+  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32"/>
+  <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16"/>
   <meta name="application-name" content="Single Concept Authoring"/>
-  <meta name="msapplication-TileColor" content="#00A4E4" />
-  <meta name="msapplication-TileImage" content="mstile-144x144.png" />
-<!-- build:css(.) styles/vendor.css -->
-<!-- bower:css -->
-<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
-<link rel="stylesheet" href="bower_components/textAngular/dist/textAngular.css" />
-<link rel="stylesheet" href="bower_components/roboto-fontface/css/roboto-fontface.css" />
-<link rel="stylesheet" href="bower_components/angular-motion/dist/angular-motion.css" />
-<link rel="stylesheet" href="bower_components/ng-table/dist/ng-table.min.css" />
-<link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
-<link rel="stylesheet" href="bower_components/c3/c3.css" />
-<link rel="stylesheet" href="bower_components/bootstrap-additions/dist/bootstrap-additions.css" />
-<!-- endbower -->
-<!-- endbuild -->
-<!-- build:css(.tmp) styles/main.css -->
-<link rel="stylesheet" href="styles/main.css">
-<!-- endbuild -->
-
+  <meta name="msapplication-TileColor" content="#00A4E4"/>
+  <meta name="msapplication-TileImage" content="mstile-144x144.png"/>
+  <!-- build:css(.) styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+  <link rel="stylesheet" href="bower_components/textAngular/dist/textAngular.css" />
+  <link rel="stylesheet" href="bower_components/roboto-fontface/css/roboto-fontface.css" />
+  <link rel="stylesheet" href="bower_components/angular-motion/dist/angular-motion.css" />
+  <link rel="stylesheet" href="bower_components/ng-table/dist/ng-table.min.css" />
+  <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
+  <link rel="stylesheet" href="bower_components/c3/c3.css" />
+  <link rel="stylesheet" href="bower_components/bootstrap-additions/dist/bootstrap-additions.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css(.tmp) styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
 
 
 </head>
 <body ng-app="singleConceptAuthoringApp" scroll-spy id="top"
-  class="theme-template-dark theme-blue">
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+      class="theme-template-dark theme-blue">
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+                                                                                                                    your
+                                                                                                                    browser</a>
+                       to improve your experience.</p>
+<![endif]-->
 
-  <!-- Add your site or application content here -->
+<!-- Add your site or application content here -->
 
-  <main>
+<main>
 
   <div class="main-container">
-    <div ng-include src="'layout/header.html'"></div>
     <div ng-cloak ng-view bs-affix-target></div>
-      <div ng-include="'layout/footer.html'"></div>
+    <div ng-include="'layout/footer.html'"></div>
   </div>
 
-  </main>
+</main>
 
-  <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-  <script>
-      !function(A, n, g, u, l, a, r) {
-        A.GoogleAnalyticsObject = l, A[l] = A[l] || function() {
-          (A[l].q = A[l].q || []).push(arguments)
-        }, A[l].l = +new Date, a = n.createElement(g), r = n
-          .getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a,
-          r)
-      }(window, document, 'script', '//www.google-analytics.com/analytics.js',
-        'ga');
+<!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+<script>
+  !function (A, n, g, u, l, a, r) {
+    A.GoogleAnalyticsObject = l, A[l] = A[l] || function () {
+        (A[l].q = A[l].q || []).push(arguments)
+      }, A[l].l = +new Date, a = n.createElement(g), r = n
+      .getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a,
+      r)
+  }(window, document, 'script', '//www.google-analytics.com/analytics.js',
+    'ga');
 
-      ga('create', 'UA-XXXXX-X');
-      ga('send', 'pageview');
-    </script>
+  ga('create', 'UA-XXXXX-X');
+  ga('send', 'pageview');
+</script>
 
-  <!-- build:js(.) scripts/vendor.js -->
-  <!-- bower:js -->
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
-  <script src="bower_components/angular-animate/angular-animate.js"></script>
-  <script src="bower_components/angular-aria/angular-aria.js"></script>
-  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-  <script src="bower_components/angular-messages/angular-messages.js"></script>
-  <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-  <script src="bower_components/angular-touch/angular-touch.js"></script>
-  <script src="bower_components/rangy/rangy-core.js"></script>
-  <script src="bower_components/rangy/rangy-classapplier.js"></script>
-  <script src="bower_components/rangy/rangy-highlighter.js"></script>
-  <script src="bower_components/rangy/rangy-selectionsaverestore.js"></script>
-  <script src="bower_components/rangy/rangy-serializer.js"></script>
-  <script src="bower_components/rangy/rangy-textrange.js"></script>
-  <script src="bower_components/textAngular/dist/textAngular.js"></script>
-  <script src="bower_components/textAngular/dist/textAngular-sanitize.js"></script>
-  <script src="bower_components/textAngular/dist/textAngularSetup.js"></script>
-  <script src="bower_components/velocity/velocity.js"></script>
-  <script src="bower_components/velocity/velocity.ui.js"></script>
-  <script src="bower_components/ngSmoothScroll/angular-smooth-scroll.js"></script>
-  <script src="bower_components/ng-table/dist/ng-table.min.js"></script>
-  <script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
-  <script src="bower_components/angular-auto-validate/dist/jcs-auto-validate.js"></script>
-  <script src="bower_components/d3/d3.js"></script>
-  <script src="bower_components/c3/c3.js"></script>
-  <script src="bower_components/c3-angular/c3js-directive.js"></script>
-  <script src="bower_components/jquery-ui/jquery-ui.js"></script>
-  <script src="bower_components/angular-strap/dist/angular-strap.js"></script>
-  <script src="bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
-  <script src="bower_components/angular-ui-sortable/sortable.js"></script>
-  <script src="bower_components/angular-native-dragdrop/draganddrop.js"></script>
-  <!-- endbower -->
-  <!-- endbuild -->
+<!-- build:js(.) scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-messages/angular-messages.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+<script src="bower_components/rangy/rangy-core.js"></script>
+<script src="bower_components/rangy/rangy-classapplier.js"></script>
+<script src="bower_components/rangy/rangy-highlighter.js"></script>
+<script src="bower_components/rangy/rangy-selectionsaverestore.js"></script>
+<script src="bower_components/rangy/rangy-serializer.js"></script>
+<script src="bower_components/rangy/rangy-textrange.js"></script>
+<script src="bower_components/textAngular/dist/textAngular.js"></script>
+<script src="bower_components/textAngular/dist/textAngular-sanitize.js"></script>
+<script src="bower_components/textAngular/dist/textAngularSetup.js"></script>
+<script src="bower_components/velocity/velocity.js"></script>
+<script src="bower_components/velocity/velocity.ui.js"></script>
+<script src="bower_components/ngSmoothScroll/angular-smooth-scroll.js"></script>
+<script src="bower_components/ng-table/dist/ng-table.min.js"></script>
+<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+<script src="bower_components/angular-auto-validate/dist/jcs-auto-validate.js"></script>
+<script src="bower_components/d3/d3.js"></script>
+<script src="bower_components/c3/c3.js"></script>
+<script src="bower_components/c3-angular/c3js-directive.js"></script>
+<script src="bower_components/jquery-ui/jquery-ui.js"></script>
+<script src="bower_components/angular-strap/dist/angular-strap.js"></script>
+<script src="bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
+<script src="bower_components/angular-ui-sortable/sortable.js"></script>
+<script src="bower_components/angular-native-dragdrop/draganddrop.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
 
-  <!-- build:js({.tmp,app}) scripts/scripts.js -->
-  <script src="app.js"></script>
-  <script src="shared/accountService/accountService.js"></script>
-  <script src="shared/endpoint-service/endpointService.js"></script>
-  <script src="shared/snowowl-service/snowowlService.js"></script>
-  <script src="shared/sca-service/scaService.js"></script>
-  <script src="shared/object-service/objectService.js"></script>
-  <script src="shared/taxonomy/taxonomyPlugin.js"></script>
-  <script src="shared/search/searchPlugin.js"></script>
-  <script src="shared/savedList/savedList.js"></script>
-  <script src="shared/task-detail/taskDetail.js"></script>
-  <script src="shared/concept-edit/conceptEdit.js"></script>
-  <script src="shared/inactivate-component-modal/inactivateComponentModal.js"></script>
-  <script src="shared/model-diagramming/drawModel.js"></script>
-  <script src="components/about/about.js"></script>
-  <script src="components/home/home.js"></script>
-  <script src="components/edit/edit.js"></script>
-  <script src="utilities/formcontrol.js"></script>
-  <script src="utilities/noui-slider.js"></script>
-  <script src="utilities/scroll-spy.js"></script>
-  <script charset="utf-8" src="vendors/jquery.svg.js"></script>
-  <script charset="utf-8" src="shared/task/task.js"></script>
-  <script charset="utf-8" src="shared/navbar/navbar-hover.js"></script>
-  <script charset="utf-8" src="shared/navbar/navbar-search.js"></script>
-  <script charset="utf-8" src="utilities/noui-slider.js"></script>
-  <script charset="utf-8" src="shared/menu-link/menu-link.js"></script>
-  <script charset="utf-8" src="shared/menu-toggle/menu-toggle.js"></script>
-  <script charset="utf-8" src="vendors/side-nav.js"></script>
-  <script charset="utf-8" src="vendors/fsm-sticky-header.js"></script>
-  <script charset="utf-8" src="vendors/angular-smooth-scroll.js"></script>
-  <script charset="utf-8" src="vendors/angular-placeholders.js"></script>
-  <!-- endbuild -->
+<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="app.js"></script>
+<script src="shared/accountService/accountService.js"></script>
+<script src="shared/endpoint-service/endpointService.js"></script>
+<script src="shared/snowowl-service/snowowlService.js"></script>
+<script src="shared/sca-service/scaService.js"></script>
+<script src="shared/object-service/objectService.js"></script>
+<script src="shared/taxonomy/taxonomyPlugin.js"></script>
+<script src="shared/search/searchPlugin.js"></script>
+<script src="shared/savedList/savedList.js"></script>
+<script src="shared/task-detail/taskDetail.js"></script>
+<script src="shared/concept-edit/conceptEdit.js"></script>
+<script src="shared/classification/classification.js"></script>
+<script src="shared/classification-report/classificationReport.js"></script>
+<script src="shared/inactivate-component-modal/inactivateComponentModal.js"></script>
+<script src="shared/model-diagramming/drawModel.js"></script>
+<script src="components/about/about.js"></script>
+<script src="components/home/home.js"></script>
+<script src="components/projects/projects.js"></script>
+<script src="components/projecttasks/projecttasks.js"></script>
+<script src="components/promote/promote.js"></script>
+<script src="components/edit/edit.js"></script>
+<script src="utilities/formcontrol.js"></script>
+<script src="utilities/noui-slider.js"></script>
+<script src="utilities/scroll-spy.js"></script>
+<script charset="utf-8" src="vendors/jquery.svg.js"></script>
+<script charset="utf-8" src="shared/task/task.js"></script>
+<script charset="utf-8" src="shared/navbar/navbar-hover.js"></script>
+<script charset="utf-8" src="shared/navbar/navbar-search.js"></script>
+<script charset="utf-8" src="utilities/noui-slider.js"></script>
+<script charset="utf-8" src="shared/menu-link/menu-link.js"></script>
+<script charset="utf-8" src="shared/menu-toggle/menu-toggle.js"></script>
+<script charset="utf-8" src="vendors/side-nav.js"></script>
+<script charset="utf-8" src="vendors/fsm-sticky-header.js"></script>
+<script charset="utf-8" src="vendors/angular-smooth-scroll.js"></script>
+<script charset="utf-8" src="vendors/angular-placeholders.js"></script>
+<!-- endbuild -->
 </body>
 </html>

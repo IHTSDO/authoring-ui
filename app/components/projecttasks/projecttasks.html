@@ -1,42 +1,31 @@
 <div ng-include src="'layout/header.html'"></div>
-<div class="row no-gutter sca-container">
-  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
-       ng-include src="'layout/sidebar.html'"></div>
+<div class="row no-gutter sca-container dashboard-sidebar">
+  <div ng-include style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3" src="'layout/sidebar.html'"></div>
 
   <!---->
   <div class="sca-column col-lg-9 col-md-9 col-sm-9">
     <section class="tables-data">
       <div class="card">
 
-        <div class="row" style="margin-right:0px;">
-          <div class="col-md-4">
-            <h3 class="table-title p-20">My Tasks</h3>
+        <div class="row projecttasks" style="margin-right:0px;">
+          <div class="col-md-9">
+            <h3 class="table-title p-20 pull-left">All Tasks | Project Name Here</h3>
+       
+         
           </div>
-          <div class="col-md-6">
+          <div class="col-md-3">
             <div class="table-search">
               <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
                      placeholder="Search My Tasks" autofocus/>
             </div>
           </div>
-          <div class="col-md-2">
-      <span class="pull-right p-t-20">
-                  <button type="button" class="btn btn-round btn-info ng-scope " tooltip="Number of assigned tasks"
-                          title="Total Task Count">
-                    {{tasks.length}}
-                    <div class="ripple-wrapper"></div>
-                  </button>
-               <button type="button" class="btn btn-round btn-default " tooltip="Create New Task"
-                       ng-click="openCreateTaskModal()"><span class="md md-add"></span>
-
-                 <div class="ripple-wrapper"></div>
-               </button> </span>
-          </div>
+      
         </div>
 
         <div class="table-responsive white" style="margin-right:0px;">
 
-
-          <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
+          
+          <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html" 
                  class="table table-full table-full-small">
             <tr ng-repeat="task in $data">
 
@@ -50,19 +39,14 @@
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
               <td data-title="'Classification Results'" sortable="'classification'">
-                <a ng-href="#/classify/{{task.projectKey}}/{{task.key}}">
-                  <button ng-show="task.latestClassification != null"
-                          title="{{task.latestClassification.status}}" type="button"
-                          class="btn btn-round btn-default cyan lighten-2" tooltip="">
-                    <span class="md md-notifications "></span>
-                  </button>
-                </a>
+                <button type="button" class="btn btn-round btn-default cyan lighten-2" tooltip=""
+                        title="Classification Results"><span class="md md-notifications "></span>
 
-                <div class="ripple-wrapper"></div>
+                  <div class="ripple-wrapper"></div>
                 </button>
 
               </td>
-              <td data-title="'QA Results'" sortable="'classification'">
+ <td data-title="'QA Results'" sortable="'classification'">
                 <button type="button" class="btn btn-round btn-default deep-purple lighten-1" tooltip=""
                         title="QA Results"><span class="md md-school "></span>
 
@@ -78,7 +62,7 @@
                 </button>
               </td>
               <td data-title="'Status'" sortable="'status'">
-                {{task.status}}
+                <span class="Completed badge">Completed</span>
               </td>
             </tr>
           </table>
@@ -86,6 +70,7 @@
         </div>
 
       </div>
+       
     </section>
   </div>
 
