@@ -1,5 +1,5 @@
 <div role="tabpanel" class="m-15">
-
+  <div class="row">
   <strong>Classification Report Completed: </strong> {{classification.completionDate | date: 'medium'}}
 
   <div class="pull-right ">
@@ -7,8 +7,10 @@
     <button class="btn btn-default green" style="text-transform: none">Validate</button>
     <button class="btn btn-default grey" style="text-transform: none">Submit For Review</button>
   </div>
+  </div>
 
   <!-- Nav tabs -->
+  <div class="row">
   <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
     <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
@@ -25,9 +27,10 @@
     <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
                                                    data-toggle="tab">Equivalency Errors</a></li>
   </ul>
+    </div>
 
   <!-- Tab panes -->
-  <div class="tab-content m-t-10 col-sm-12 no-padding">
+  <div class="tab-content row m-t-10 col-sm-12 no-padding">
 
     <!-- changed relationships -->
     <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
@@ -49,6 +52,11 @@
       <div classification-report data="classification.equivalentConcepts"></div>
     </div>
 
+  </div>
+</div>
+  <div ng-if="modelConcept" class="tab-content row m-t-10 col-sm-12 no-padding">
+      <div class="col-sm-6" draw-model concept="modelConcept"></div>
+      <div class="col-sm-6" draw-model concept="modelConceptAfter"></div>
   </div>
 </div>
 
