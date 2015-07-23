@@ -13,9 +13,9 @@ angular.module('singleConceptAuthoringApp')
 
           link: function (scope, element, attrs, linkCtrl, snowowlService) {
               var idSequence = 0;
-              drawConceptDiagram(scope.concept, element, {});
+              drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               scope.$watch('concept', function(newVal, oldVal){
-                  drawConceptDiagram(scope.concept, element, {});
+                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
 
               function drawConceptDiagram (concept, div, options) {

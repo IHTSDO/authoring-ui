@@ -570,7 +570,7 @@ angular.module('singleConceptAuthoringApp')
 
         scope.showModel = function () {
           $rootScope.$broadcast('conceptEdit.showModel');
-        }
+        };
 
       }
     };
