@@ -191,11 +191,13 @@ border:1px solid #424242;
   }
   .title-text {
     font-size: 11px;
-    padding: 0px;
-	max-width: 280px;
+
+	max-width: 200px;
     text-align: left;
   }
   .fsn{ text-align: left;}
+  .model-header h4{font-size:12px;     font-weight: 500;
+    padding-left: 10px;}
 }
 
 @media screen and (min-width: 1851px) {
@@ -217,7 +219,7 @@ border:1px solid #424242;
   .title-text {
     font-size: 12px;
     line-height:1;
-	max-width: 280px;
+	max-width: 270px;
     text-align: left;
   }
    .fsn{ text-align: left;}
