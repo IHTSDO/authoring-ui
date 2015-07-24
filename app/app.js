@@ -24,6 +24,7 @@ angular
     'ui.bootstrap',
     'ui.sortable',
     'ang-drag-drop',
+    'monospaced.elastic',
 
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',

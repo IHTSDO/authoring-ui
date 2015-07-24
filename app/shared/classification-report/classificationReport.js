@@ -107,8 +107,7 @@ angular.module('singleConceptAuthoringApp')
 
               // flag the relationships in data
               angular.forEach(scope.data, function (item) {
-                item.isLoaded = scope.editPanelUiState.indexOf(item.destinationId) != -1;
-
+                item.isLoaded = scope.editPanelUiState.indexOf(item.destinationId) !== -1;
               });
 
               // reload the table

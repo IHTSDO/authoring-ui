@@ -79,9 +79,9 @@
         </div>
         <div class="col-md-9 no-padding">
           <div class="pull-left description no-padding">
-            <input ng-blur="updateDescription(description)" ng-disabled="description.effectiveTime"
+            <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-blur="updateDescription(description)" ng-disabled="description.effectiveTime"
                    ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
-                   placeholder="Description" ui-on-drop="dropNullOp()">
+                   placeholder="Description" ui-on-drop="dropNullOp()"></textarea>
           </div>
           <div class="pull-left typeid">
             <select ng-disabled="description.effectiveTime"
@@ -149,10 +149,10 @@
         <div class="pull-left is_a" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
              drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropAttributeType(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
-                 placeholder="#">
+                 placeholder="#"></textarea>
         </div>
 
         <!-- linked concept -->
@@ -160,10 +160,10 @@
              drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
              drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
-                 placeholder="#">
+                 placeholder="#"></textarea>
         </div>
 
         <div style="width:4%" class="pull-left">
@@ -201,17 +201,17 @@
 
         <!-- relationship group -->
         <div class="pull-left rolegroup">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
                  ng-change="updateRelationship(relationship)"
                  class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
-                 ui-on-drop="dropNullOp()">
+                 ui-on-drop="dropNullOp()"></textarea>
         </div>
 
         <!-- attribute type -->
         <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
              drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropAttributeType(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
                  placeholder="#">
@@ -222,10 +222,10 @@
              drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
              drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
-                 placeholder="#">
+                 placeholder="#"></textarea>
         </div>
 
         <div style="width:4%" class="pull-left">
