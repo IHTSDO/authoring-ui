@@ -1,6 +1,6 @@
-<div class="">
-  <div class="row p-5 grey darken-4 " style=" margin-right:0px;">
-    <div class="pull-left">
+<div class="edits">
+  <div class="row p-5 grey darken-4  " style=" margin-right:0px;">
+    <div class="pull-left p-t-5">
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
       <button type="button" class="btn btn-default morebuttons grey darken-4 md md-more"
@@ -18,7 +18,7 @@
     </div>
 
     <!-- draggable element -- concept name -->
-    <div class="pull-left title-text"
+    <div class="pull-left title-text p-t-5"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
       <button type="button" class="btn-default darkbuttons grey darken-4 "><span class="fsn">{{concept.fsn}}</span><span
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
@@ -30,14 +30,14 @@
         <option value="Choice 2">Fully Defined</option>
       </select>
     </div>
-    <div class="pull-right no-margin">
+    <div class="pull-right p-t-5 no-margin edits">
       <button type="button" class="btn-default editbuttons orange darken-3 md md-backspace"
               title="Remove Concept" ng-click="removeConcept(concept)"></button>
       <!-- TODO Fix this. Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
 
       <button type="button"
               style="vertical-align: bottom"
-              ng-class="[btn-default, editbuttons, md, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
+              ng-class="[btn-default, editbuttons, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
               title="Active/Inactive" ng-click="toggleConceptActive(concept)"></button>
       <button type="button" class="btn-default editbuttons amber md md-undo " title="Undo Changes"></button>
       <button type="button" class="btn-default editbuttons deep-purple lighten-1 md md-history"
@@ -54,7 +54,7 @@
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in concept.descriptions | orderBy:'type'">
       <div class="row darken-3 p-5 grey">
-        <div class="col-md-3 no-padding">
+        <div class="col-md-3 no-padding edits">
           <div class="pull-left">
             <button class="btn-default editbuttons grey darken-3 md md-more"
                     popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
