@@ -42,6 +42,9 @@ angular.module('singleConceptAuthoringApp')
             }
           }
         });
+        scope.viewComparativeModel = function(model){
+            $rootScope.$broadcast('comparativeModelAdded', {id: model});
+        };
 
         scope.$watch('data', function() {
           scope.tableParams.reload();

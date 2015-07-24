@@ -35,6 +35,40 @@ angular.module('singleConceptAuthoringApp')
             relationship.typeName = response.term;
           });
         }
+        $rootScope.$on('comparativeModelAdded', function (event, model) {
+            snowowlService.getFullConcept(model.id, scope.branch).then(function(response){
+                console.log(response);
+                var temp = response;
+                temp.conceptId = 'Before: ' + temp.conceptId;
+                scope.modelConcept = response;
+                snowowlService.getModelPreview(scope.classification.id, scope.branch, model.id).then(function(secondResponse){
+                    scope.modelConceptAfter = secondResponse;
+                    console.log(secondResponse);
+                    scope.displayModels = true;
+                    scope.resizeClassificationSvg(scope.modelConcept);
+                    scope.resizeClassificationSvg(scope.modelConceptAfter);
+                });
+            });
+        });
+        scope.resizeClassificationSvg = function (concept) {
+            var elem = document.getElementById('model' + concept.conceptId);
+            var parentElem = document.getElementById('drawModel' + concept.conceptId);
+
+            if (!elem || !parentElem) {
+              return;
+            }
+
+            // set the height and width`
+            var width = parentElem.offsetWidth - 30;
+            var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
+            if (width < 0) {
+              return;
+            }
+
+            elem.setAttribute('width', width);
+            elem.setAttribute('height', height);
+        };
+        
 
         // notification of classification retrieved and set
         $rootScope.$on('setClassification', function (event, classification) {

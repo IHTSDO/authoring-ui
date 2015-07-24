@@ -102,6 +102,15 @@ angular.module('singleConceptAuthoringApp')
                     return response.data.items;
                 });
     }
+    // GET /{path}/classifications/{classificationId}/concept-preview/{conceptId}
+    // get preview of model
+    function getModelPreview (classifierId, branch, id) {
+            return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/concept-preview/' + id).then(function(response) {
+                    var temp = response.data;
+                    temp.conceptId = 'After: ' +temp.conceptId;
+                    return temp;
+                });
+    }
 
 
 
@@ -285,7 +294,8 @@ angular.module('singleConceptAuthoringApp')
       getClassificationResultsForProject: getClassificationResultsForProject,
       getEquivalentConcepts: getEquivalentConcepts,
       getRelationshipChanges: getRelationshipChanges,
-      cleanConcept: cleanConcept
+      cleanConcept: cleanConcept,
+      getModelPreview: getModelPreview
 
     };
   }
