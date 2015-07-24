@@ -32,6 +32,7 @@ angular.module('singleConceptAuthoringApp')
                           }
                       });
                   } else {
+                      console.log(concept.conceptId);
                       if (concept.relationships) {
                           $.each(concept.relationships, function (i, field) {
                               if (field.active == true) {

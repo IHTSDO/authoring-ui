@@ -413,9 +413,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.splice(index, 1);
       }
     };
-    $scope.viewComparativeModel = function(model){
-        console.log(model);
-    };
 
     ////////////////////////////////////////
     // Classification functions           //
