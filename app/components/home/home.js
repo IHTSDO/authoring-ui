@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, scaService, snowowlService) {
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Tasks";
@@ -85,6 +85,41 @@ angular.module('singleConceptAuthoringApp.home', [
       });
     };
 
+
+    // function to poll for the result of a task with running classification
+    function pollForResult (task) {
+
+      console.debug('Polling for classification updates to task', task);
+
+      // check prerequisites
+      if (!task.latestClassification) {
+        console.error('Cannot poll results for null classification')
+      }
+      else if (!task.latestClassification.id) {
+        console.error('Cannot poll results for classification without id');
+      }
+      else if (task.latestClassification.status != 'RUNNING') {
+        console.error('Cannot poll results for classification without status RUNNING');
+      }
+
+      // otherwise, update the result
+      else {
+        $timeout(function () {
+          console.debug('retrieving', task.projectKey, task.key, task.latestClassification.id, 'MAIN');
+          snowowlService.getClassificationResult(task.projectKey, task.key, task.latestClassification.id, 'MAIN').then(function (data) {
+
+            // if completed, set flag and return
+            if (data.data.status === 'COMPLETED') {
+              task.latestClassification = data.data;
+            } else {
+              // otherwise, continue polling
+              pollForResult(task);
+            }
+          });
+        }, 5000);
+      }
+    };
+
     function appendClassificationResults(task) {
 
       task.classifications = [];
@@ -93,26 +128,26 @@ angular.module('singleConceptAuthoringApp.home', [
       // TODO Update branch when branching is implemented
       snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
 
-        console.debug("appending classification results", task, response);
+
         if (!response) {
           // do nothing
         } else {
 
-
-          // sort by completion date to ensure latest result first
-          response.sort(function (a, b) {
-            var aDate = new Date(a.completionDate);
-            var bDate = new Date(b.completionDate);
-            return aDate < bDate;
-          });
-
           // append the first result
           task.classifications = response;
-          task.latestClassification = response[0];
+          task.latestClassification = response[response.length-1];
+
+          console.debug('Revised task', task);
+          
+          // if the result is still running, start polling
+          if (task.latestClassification.status === 'RUNNING') {
+            pollForResult(task);
+          }
         }
       })
 
     }
+
 
 // Initialization:  get tasks and classifications
     function initialize() {

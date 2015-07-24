@@ -12,18 +12,23 @@ angular.module('singleConceptAuthoringApp')
           templateUrl: 'shared/model-diagramming/model.html',
 
           link: function (scope, element, attrs, linkCtrl, snowowlService) {
+              scope.view = 'inferred';
               var idSequence = 0;
-              drawConceptDiagram(scope.concept, element, {});
+              drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               scope.$watch('concept', function(newVal, oldVal){
-                  drawConceptDiagram(scope.concept, element, {});
+                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+              }, true);
+              scope.$watch('view', function(newVal, oldVal){
+                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
 
               function drawConceptDiagram (concept, div, options) {
+                  console.log(concept);
                   var svgIsaModel = [];
                   var svgAttrModel = [];
-                  if (options.selectedView == "stated") {
+                  if (scope.view == "stated") {
                       $.each(concept.relationships, function(i, field) {
-                          if (field.active == true && field.chaacteristicType == "STATED_RELATIONSHIP") {
+                          if (field.active == true && field.characteristicType == "STATED_RELATIONSHIP") {
                               if (field.type.conceptId == 116680003) {
                                   svgIsaModel.push(field);
                               } else {
@@ -32,6 +37,7 @@ angular.module('singleConceptAuthoringApp')
                           }
                       });
                   } else {
+                      console.log(concept.conceptId);
                       if (concept.relationships) {
                           $.each(concept.relationships, function (i, field) {
                               if (field.active == true) {
@@ -44,7 +50,7 @@ angular.module('singleConceptAuthoringApp')
                           });
                       }
                   }
-                  var parentDiv = element;
+                  var parentDiv = div;
                   parentDiv.svg('destroy');
 
                   parentDiv.svg({
