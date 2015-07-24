@@ -62,7 +62,7 @@
     <!-- Model View:  always hidden during classification view -->
     <div ng-show="!hideModel"
          ng-class="['col-sm-12','col-md-12', {'col-lg-5' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
-         class="editing-form" style="margin-right:0px;">
+         class="" style="margin-right:0px;">
 
       <!-- model header -->
       <div class="editing-form " style="margin-right:0px; height:43px;">
@@ -73,7 +73,7 @@
       </div>
 
       <!-- models -->
-      <div ng-repeat="concept in concepts" class="clearfix" style="">
+      <div ng-repeat="concept in concepts">
         <div draw-model concept="concept" id="drawModel{{concept.conceptId}}"></div>
       </div>
     </div>
