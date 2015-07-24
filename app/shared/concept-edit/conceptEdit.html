@@ -1,4 +1,11 @@
 <div class="edits editing-form">
+  <!-- begin validation error -->
+  <div class="alert alert-dismissible alert-danger validation" ng-show="concept.error">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <h4>Validation Error!</h4>
+    {{concept.error}}
+  </div>
+  <!-- end validation error -->
   <div class="row p-5 grey darken-4  " style=" margin-right:0px;">
     <div class="pull-left p-t-5">
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"

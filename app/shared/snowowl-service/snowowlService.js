@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp')
       return $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
         return response.data;
       }, function (error) {
-        // TODO Handle error
+        return error.data;
       });
 
     }
@@ -25,7 +25,7 @@ angular.module('singleConceptAuthoringApp')
       return $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
         return response.data;
       }, function (error) {
-        // TODO Handle error
+        return error.data;
       });
     }
       

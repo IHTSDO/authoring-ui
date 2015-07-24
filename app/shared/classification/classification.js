@@ -88,24 +88,11 @@ angular.module('singleConceptAuthoringApp')
             getRelationshipNames(item);
           });
 
-          // sort the changed relationships
+          // separate the redundant stated relationships into own array
           scope.classification.redundantStatedRelationships = [];
-          scope.classification.classificationResults = [];
-
           angular.forEach(scope.classification.relationshipChanges, function (item) {
-            // check for inferred
-            if (item.changeNature === 'INFERRED') {
-              scope.classification.classificationResults.push(item);
-            }
-
-            // check for redundant
-            else if (item.changeNature === 'REDUNDANT') {
+            if (item.changeNature === 'REDUNDANT') {
               scope.classification.redundantStatedRelationships.push(item);
-            }
-
-            // log any errors
-            else {
-              console.warning('Unhandled relationship change with change nature ' + item.changeNature, item);
             }
           });
 
