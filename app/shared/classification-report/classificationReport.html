@@ -4,7 +4,8 @@
       <tr ng-repeat="result in $data">
             <td data-title="'Differences'" sortable="'differences'">
               <!-- Difference not currently defined, or possibly overlaps with changeNature -->
-                {{result.changeNature}}
+                <span ng-show="result.changeNature === 'INFERRED'" style="color:green">added</span>
+                <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">inactivated</span>
             </td>
             <td data-title="'Source'" sortable="'source'">
                 {{result.sourceName}}
@@ -27,8 +28,8 @@
 
                   <div class="ripple-wrapper"></div>
                 </button>
-                 <button type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
-                        title="Edit"><span class="md md-edit "></span>
+                 <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
+                        title="Edit"><span class="md md-edit " ng-click="editDestinationConcept(result)"></span>
 
                   <div class="ripple-wrapper"></div>
                 </button>
