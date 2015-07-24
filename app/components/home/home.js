@@ -155,6 +155,15 @@ angular.module('singleConceptAuthoringApp.home', [
     function initialize() {
 
       $scope.tasks = [];
+      scaService.getTasks().then(function (response) {
+            if (!response || response.length == 0) {
+              $scope.tasks = [];
+              return;
+            }
+
+            $scope.tasks = response;
+          }, function (error) {
+          });
       $timeout(function () {
           scaService.getTasks().then(function (response) {
             if (!response || response.length == 0) {
