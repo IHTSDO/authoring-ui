@@ -1,62 +1,63 @@
-<div role="tabpanel" class="m-15">
-  <div class="row">
-  <strong>Classification Report Completed: </strong> {{classification.completionDate | date: 'medium'}}
+<div>
+  <div role="tabpanel" class="m-15">
+    <div class="row">
+      <strong>Classification Report Completed: </strong> {{classification.completionDate | date: 'medium'}}
 
-  <div class="pull-right ">
-    <button class="btn btn-default green" style="text-transform: none">Accept Classification Results</button>
-    <button class="btn btn-default green" style="text-transform: none">Validate</button>
-    <button class="btn btn-default grey" style="text-transform: none">Submit For Review</button>
+      <div class="pull-right ">
+        <button class="btn btn-default green" style="text-transform: none">Accept Classification Results</button>
+        <button class="btn btn-default green" style="text-transform: none">Validate</button>
+        <button class="btn btn-default grey" style="text-transform: none">Submit For Review</button>
+      </div>
+    </div>
+
+    <!-- Nav tabs -->
+    <div class="row">
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+
+        <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
+                                                                 aria-controls="home" role="tab"
+                                                                 data-toggle="tab"> Classification Results</a></li>
+        <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
+                                                     data-toggle="tab">Redundant Stated Relationships</a>
+        </li>
+        <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
+                                                data-toggle="tab">Inferred
+                                                                  Not
+                                                                  Previously
+                                                                  Stated</a>
+        </li>
+        <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
+                                                       data-toggle="tab">Equivalency Errors</a></li>
+      </ul>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content row m-t-10 col-sm-12 no-padding">
+
+      <!-- changed relationships -->
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
+        <div classification-report data="classification.classificationResults"></div>
+      </div>
+
+      <!-- redundant stated relationships -->
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+        <div classification-report data="classification.redundantStatedRelationships"></div>
+      </div>
+
+      <!-- inferred not previously stated -->
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+        <div classification-report params="classification.inferredNotPreviouslyStated"></div>
+      </div>
+
+      <!-- equivalent concept errors -->
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
+        <div classification-report data="classification.equivalentConcepts"></div>
+      </div>
+
+    </div>
   </div>
-  </div>
-
-  <!-- Nav tabs -->
-  <div class="row">
-  <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
-
-    <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
-                                                             aria-controls="home" role="tab"
-                                                             data-toggle="tab"> Classification Results</a></li>
-    <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
-                                                 data-toggle="tab">Redundant Stated Relationships</a>
-    </li>
-    <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab">Inferred
-                                                                                                                     Not
-                                                                                                                     Previously
-                                                                                                                     Stated</a>
-    </li>
-    <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
-                                                   data-toggle="tab">Equivalency Errors</a></li>
-  </ul>
-    </div>
-
-  <!-- Tab panes -->
-  <div class="tab-content row m-t-10 col-sm-12 no-padding">
-
-    <!-- changed relationships -->
-    <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-      <div classification-report data="classification.classificationResults"></div>
-    </div>
-
-    <!-- redundant stated relationships -->
-    <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
-      <div classification-report data="classification.redundantStatedRelationships"></div>
-    </div>
-
-    <!-- inferred not previously stated -->
-    <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
-      <div classification-report params="classification.inferredNotPreviouslyStated"></div>
-    </div>
-
-    <!-- equivalent concept errors -->
-    <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
-      <div classification-report data="classification.equivalentConcepts"></div>
-    </div>
-
-  </div>
-</div>
   <div ng-if="modelConcept" class="tab-content row m-t-10 col-sm-12 no-padding">
-      <div class="col-sm-6" draw-model concept="modelConcept"></div>
-      <div class="col-sm-6" draw-model concept="modelConceptAfter"></div>
+    <div class="col-sm-6" draw-model concept="modelConcept"></div>
+    <div class="col-sm-6" draw-model concept="modelConceptAfter"></div>
   </div>
 </div>
-

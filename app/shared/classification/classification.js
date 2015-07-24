@@ -39,15 +39,12 @@ angular.module('singleConceptAuthoringApp')
         // notification of classification retrieved and set
         $rootScope.$on('setClassification', function (event, classification) {
 
-          console.debug('classification received setClassification event', classification);
-
           if (!classification) {
             console.error('Received setClassification notification, but no classification was sent');
             return;
           }
 
           scope.classification = classification;
-
 
           // get the relationship names
           angular.forEach(scope.classification.relationshipChanges, function (item) {
@@ -60,21 +57,24 @@ angular.module('singleConceptAuthoringApp')
           // sort the changed relationships
           scope.classification.redundantStatedRelationships = [];
           scope.classification.classificationResults = [];
-          console.debug('sorting: ', scope.classification.relationshipChanges);
-          angular.forEach(scope.classification.relationshipChanges, function(item) {
-            console.debug('checking', item.changeNature, item);
-            if (item.changeNature === 'INFERRED') {
 
+          angular.forEach(scope.classification.relationshipChanges, function (item) {
+            // check for inferred
+            if (item.changeNature === 'INFERRED') {
               scope.classification.classificationResults.push(item);
-            } else if (item.changeNature === 'REDUNDANT') {
+            }
+
+            // check for redundant
+            else if (item.changeNature === 'REDUNDANT') {
               scope.classification.redundantStatedRelationships.push(item);
-            } else {
+            }
+
+            // log any errors
+            else {
               console.warning('Unhandled relationship change with change nature ' + item.changeNature, item);
             }
           })
 
-
-          console.debug(scope.classification);
 
         })
       }
