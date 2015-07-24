@@ -155,26 +155,19 @@ angular.module('singleConceptAuthoringApp.home', [
     function initialize() {
 
       $scope.tasks = [];
+      $timeout(function () {
+          scaService.getTasks().then(function (response) {
+            if (!response || response.length == 0) {
+              $scope.tasks = [];
+              return;
+            }
 
+            $scope.tasks = response;
+          }, function (error) {
+          });
+        }, 30000);
       // get tasks from all projects and append sample data
-      scaService.getTasks().then(function (response) {
-        if (!response || response.length == 0) {
-          $scope.tasks = [];
-          return;
-        }
-
-        $scope.tasks = response;
-
-        // once tasks are loaded get classifications
-        // TODO Remove this once tasks are returned with this data
-//        angular.forEach($scope.tasks, function (task) {
-//          appendClassificationResults(task);
-//        })
-
-      }, function (error) {
-        // TODO Handle errors
-      });
-
+      
     }
 
     initialize();
