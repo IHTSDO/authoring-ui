@@ -73,10 +73,10 @@ angular.module('singleConceptAuthoringApp')
             else {
               console.warning('Unhandled relationship change with change nature ' + item.changeNature, item);
             }
-          })
+          });
 
 
-        })
+        });
       }
 
     };

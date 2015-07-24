@@ -429,7 +429,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // check prerequisites
       if (!classificationId) {
-        console.error('Cannot poll results for null classification')
+        console.error('Cannot poll results for null classification');
       }
 
       // otherwise, update the result
@@ -544,7 +544,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.classification.relationshipChanges = $scope.relationshipChanges;
         $scope.classification.equivalentConcepts = $scope.equivalentConcepts;
 
-        $rootScope.$broadcast('setClassification', $scope.classification)
+        $rootScope.$broadcast('setClassification', $scope.classification);
       }
     });
 

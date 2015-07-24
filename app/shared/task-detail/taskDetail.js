@@ -49,7 +49,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.classificationStatus = 'READY';
       $scope.classificationDisplayText = 'Classify';
       $scope.classificationDisplayColor = 'green';
-    })
+    });
 
     $scope.classify = function() {
       scaService.startClassification($routeParams.projectId, $routeParams.taskId).then(function(response) {
@@ -66,7 +66,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         if ($scope.classificationStatus === 'RUNNING') {
           $rootScope.$broadcast('startClassification', $scope.classificationId);
         }
-      })
+      });
     };
 
 
