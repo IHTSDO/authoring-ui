@@ -20,66 +20,98 @@ angular.module('singleConceptAuthoringApp')
           return;
         }
 
-        // function to get the latest classification
-        scope.getLatestClassification = function () {
+        // helper function to populate names for all relationship display names
+        function getRelationshipNames(relationship) {
+          // get source name
+          snowowlService.getConceptPreferredTerm(relationship.sourceId, scope.branch).then(function (response) {
+            relationship.sourceName = response.term;
+          });
+          // get destination name
+          snowowlService.getConceptPreferredTerm(relationship.destinationId, scope.branch).then(function (response) {
+            relationship.destinationName = response.term;
+          });
+          // get type name
+          snowowlService.getConceptPreferredTerm(relationship.typeId, scope.branch).then(function (response) {
+            relationship.typeName = response.term;
+          });
+        }
+        $rootScope.$on('comparativeModelAdded', function (event, model) {
+            snowowlService.getFullConcept(model.id, scope.branch).then(function(response){
+                console.log(response);
+                var temp = response;
+                temp.conceptId = 'Before: ' + temp.conceptId;
+                scope.modelConcept = response;
+                snowowlService.getModelPreview(scope.classification.id, scope.branch, model.id).then(function(secondResponse){
+                    scope.modelConceptAfter = secondResponse;
+                    console.log(secondResponse);
+                    scope.displayModels = true;
+                    scope.resizeClassificationSvg(scope.modelConcept);
+                    scope.resizeClassificationSvg(scope.modelConceptAfter);
+                });
+            });
+        });
+        scope.resizeClassificationSvg = function (concept) {
+            var elem = document.getElementById('model' + concept.conceptId);
+            var parentElem = document.getElementById('drawModel' + concept.conceptId);
 
-
-          scope.classificationResult = null;
-          scope.equivalentConcepts = [];
-          scope.relationshipChanges = [];
-
-          // TODO Update branch when branching is implemented
-          snowowlService.getClassificationResultsForTask($routeParams.projectId, $routeParams.taskId, scope.branch).then(function (response) {
-            if (!response) {
-               // do nothing
-            } else {
-
-              // sort by completion date to ensure latest result first
-              response.sort(function (a, b) {
-                var aDate = new Date(a.completionDate);
-                var bDate = new Date(b.completionDate);
-                return aDate < bDate;
-              });
-
-              scope.classificationResult = response[0];
-
-              if (scope.classificationResult.id) {
-                snowowlService.getEquivalentConcepts(scope.classificationResult.id, $routeParams.projectId,
-                  $routeParams.taskId, scope.branch).then(function (equivalentConcepts) {
-                    scope.equivalentConcepts = equivalentConcepts;
-                  });
-                snowowlService.getRelationshipChanges(scope.classificationResult.id, $routeParams.projectId,
-                  $routeParams.taskId, scope.branch
-                ).
-                  then(function (relationshipChanges) {
-                    
-                    scope.relationshipChanges = relationshipChanges;
-                    
-                    angular.forEach(scope.relationshipChanges, function(item) {
-                      // get source name
-                      snowowlService.getConceptPreferredTerm(item.sourceId, scope.branch).then(function(response) {
-                        item.sourceName = response.term;
-                      });
-                      // get destination name 
-                      snowowlService.getConceptPreferredTerm(item.destinationId, scope.branch).then(function(response) {
-                        item.destinationName = response.term;
-                      });
-                      // get type name
-                      snowowlService.getConceptPreferredTerm(item.typeId, scope.branch).then(function(response) {
-                        item.typeName = response.term;
-                      });
-                    });
-                  });
-              }
+            if (!elem || !parentElem) {
+              return;
             }
 
-          });
-        };
+            // set the height and width`
+            var width = parentElem.offsetWidth - 30;
+            var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
+            if (width < 0) {
+              return;
+            }
 
-        // if classify mode, retrieve the latest classification
-        if (!scope.hideClassification) {
-          scope.getLatestClassification();
-        }
+            elem.setAttribute('width', width);
+            elem.setAttribute('height', height);
+        };
+        
+
+        // notification of classification retrieved and set
+        $rootScope.$on('setClassification', function (event, classification) {
+
+          if (!classification) {
+            console.error('Received setClassification notification, but no classification was sent');
+            return;
+          }
+
+          scope.classification = classification;
+
+          // get the relationship names
+          angular.forEach(scope.classification.relationshipChanges, function (item) {
+            getRelationshipNames(item);
+          });
+          angular.forEach(scope.classification.equivalentConcepts, function (item) {
+            getRelationshipNames(item);
+          });
+
+          // sort the changed relationships
+          scope.classification.redundantStatedRelationships = [];
+          scope.classification.classificationResults = [];
+
+          angular.forEach(scope.classification.relationshipChanges, function (item) {
+            // check for inferred
+            if (item.changeNature === 'INFERRED') {
+              scope.classification.classificationResults.push(item);
+            }
+
+            // check for redundant
+            else if (item.changeNature === 'REDUNDANT') {
+              scope.classification.redundantStatedRelationships.push(item);
+            }
+
+            // log any errors
+            else {
+              console.warning('Unhandled relationship change with change nature ' + item.changeNature, item);
+            }
+          });
+
+
+        });
       }
+
     };
   }]);

@@ -53,7 +53,8 @@
                 <a ng-href="#/classify/{{task.projectKey}}/{{task.key}}">
                   <button ng-show="task.latestClassification != null"
                           title="{{task.latestClassification.status}}" type="button"
-                          class="btn btn-round btn-default cyan lighten-2" tooltip="">
+                          ng-class="[{cyan : task.latestClassification.status === 'COMPLETED'}, {amber : task.latestClassification.status === 'RUNNING'}]"
+                          class="btn btn-round btn-default lighten-2" tooltip="">
                     <span class="md md-notifications "></span>
                   </button>
                 </a>

@@ -90,17 +90,8 @@ angular.module('singleConceptAuthoringApp')
                 scope.concept = response;
 
                 // broadcast new concept to add to ui state edit-panel
-                $rootScope.$broadcast('conceptEdit.newConceptCreated', {
-                  conceptId: scope.concept.conceptId,
-                });
-                if (!suppressMessage) {
-                  $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
-                }
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               } else {
-
-                if (!suppressMessage) {
-                  $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
-                }
                 console.error('Response to createConcept does not have a concept id');
 
               }
@@ -537,7 +528,6 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-
           // pass all checks -> return true
           return true;
 
@@ -580,7 +570,7 @@ angular.module('singleConceptAuthoringApp')
 
         scope.showModel = function () {
           $rootScope.$broadcast('conceptEdit.showModel');
-        }
+        };
 
       }
     };
