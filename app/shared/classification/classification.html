@@ -57,7 +57,13 @@
     </div>
   </div>
   <div ng-if="displayModels" class="tab-content row m-t-10 col-sm-12 no-padding">
-    <div class="col-md-6" draw-model concept="modelConcept"></div>
-    <div class="col-md-6" draw-model concept="modelConceptAfter"></div>
+    <div class="col-md-6">
+        <h6>Prior Inferred Form</h6>
+        <div draw-model concept="modelConcept"></div>
+    </div>
+    <div class="col-md-6">
+        <h6>Proposed Inferred Form ({{classification.completionDate | date: 'medium'}})</h6>
+        <div draw-model concept="modelConceptAfter"></div>
+    </div>
   </div>
 </div>
