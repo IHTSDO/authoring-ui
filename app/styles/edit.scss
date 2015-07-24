@@ -192,7 +192,10 @@ border:1px solid #424242;
   .title-text {
     font-size: 11px;
     padding: 0px;
+	max-width: 280px;
+    text-align: left;
   }
+  .fsn{ text-align: left;}
 }
 
 @media screen and (min-width: 1851px) {
@@ -214,8 +217,10 @@ border:1px solid #424242;
   .title-text {
     font-size: 12px;
     line-height:1;
-	
+	max-width: 280px;
+    text-align: left;
   }
+   .fsn{ text-align: left;}
 }
 // responsive ends
 .editpanel {
