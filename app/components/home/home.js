@@ -105,12 +105,11 @@ angular.module('singleConceptAuthoringApp.home', [
       // otherwise, update the result
       else {
         $timeout(function () {
-          console.debug('retrieving', task.projectKey, task.key, task.latestClassification.id, 'MAIN');
           snowowlService.getClassificationResult(task.projectKey, task.key, task.latestClassification.id, 'MAIN').then(function (data) {
 
             // if completed, set flag and return
             if (data.data.status === 'COMPLETED') {
-              task.latestClassification = data.data;
+              task.latestClassificationJson = data.data;
             } else {
               // otherwise, continue polling
               pollForResult(task);
@@ -120,33 +119,36 @@ angular.module('singleConceptAuthoringApp.home', [
       }
     };
 
-    function appendClassificationResults(task) {
-
-      task.classifications = [];
-      task.latestClassification = null;
-
-      // TODO Update branch when branching is implemented
-      snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
-
-
-        if (!response) {
-          // do nothing
-        } else {
-
-          // append the first result
-          task.classifications = response;
-          task.latestClassification = response[response.length-1];
-
-          console.debug('Revised task', task);
-          
-          // if the result is still running, start polling
-          if (task.latestClassification.status === 'RUNNING') {
-            pollForResult(task);
-          }
-        }
-      })
-
-    }
+//    function appendClassificationResults(task) {
+//
+////      task.classifications = [];
+////      task.latestClassification = null;
+////
+////      // TODO Update branch when branching is implemented
+////      snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
+////
+////
+////        if (!response) {
+////          // do nothing
+////        } else {
+////
+////          // append the first result
+////          task.classifications = response;
+////          task.latestClassification = response[response.length-1];
+////
+////          console.debug('Revised task', task);
+////          
+//          // if the result is still running, start polling
+//          console.log(task);
+//          if (task.latestClassificationJson != undefined) {
+//              if(task.latestClassificationJson.status === 'RUNNING'){
+//                  pollForResult(task);
+//              }
+//            
+//          }
+////        }
+////      })
+//    }
 
 
 // Initialization:  get tasks and classifications
@@ -165,9 +167,9 @@ angular.module('singleConceptAuthoringApp.home', [
 
         // once tasks are loaded get classifications
         // TODO Remove this once tasks are returned with this data
-        angular.forEach($scope.tasks, function (task) {
-          appendClassificationResults(task);
-        })
+//        angular.forEach($scope.tasks, function (task) {
+//          appendClassificationResults(task);
+//        })
 
       }, function (error) {
         // TODO Handle errors

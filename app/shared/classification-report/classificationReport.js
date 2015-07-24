@@ -45,7 +45,15 @@ angular.module('singleConceptAuthoringApp')
         scope.viewComparativeModel = function(model){
             $rootScope.$broadcast('comparativeModelAdded', {id: model});
         };
-
+        scope.parseCharacteristic = function(id){
+            if(id === '900000000000010007')
+            {
+                return 'Stated';   
+            }
+            else{
+                return 'Inferred';
+            }
+        };
         scope.$watch('data', function() {
           scope.tableParams.reload();
         });
