@@ -13,13 +13,13 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         return;
       }
 
-      $rootScope.$broadcast('savedList.editConcept', {conceptId: item.concept.conceptId});
+      $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
 
     };
 
     $scope.clone = function (item) {
       if (item) {
-        $rootScope.$broadcast('savedList.cloneConcept', {conceptId: item.concept.conceptId});
+        $rootScope.$broadcast('cloneConcept', {conceptId: item.concept.conceptId});
       }
     };
 
@@ -36,6 +36,21 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     };
 
+    /*// listen for removal of concepts from editing panel
+    scope.$on('stopEditing', function(event, data) {
+      if (!data || !data.concept) {
+        console.error("Cannot handle stop editing event: concept must be supplied");
+      } else {
+
+        // check all current data items for edit re-enable
+        angular.forEach(scope.data, function(item) {
+          if (item.destinationId === data.concept.id) {
+            item.isLoaded = false;
+          }
+        })
+      }
+    });
+*/
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.term};
     };

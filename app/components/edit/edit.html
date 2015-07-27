@@ -10,25 +10,25 @@
     <div ng-show="hideClassification">
 
       <!-- Switch to Classify View -->
-      <button type="button" class="btn btn-default widget-toolbar blue" title="Switch to Classify View"
+      <button type="button" class="btn btn-default widget-toolbar green darken-1" title="Switch to Classify View"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('classification')"><span
         class="md md-notifications"></span></button>
 
       <!-- Edit View: Default -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}" class="btn btn-default widget-toolbar blue" title="Restore Default View"
+      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}" class="btn btn-default widget-toolbar light-blue" title="Restore Default View"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('edit-default')" ng-show="hideClassification"><span
         class="md md-dashboard"></span></button>
 
       <!-- Edit View:  No sidebar -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}" class="btn btn-default widget-toolbar blue" title="Hide Sidebar"
+      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}" class="btn btn-default widget-toolbar light-blue darken-2" title="Hide Sidebar"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('edit-no-sidebar')" ng-show="hideClassification"><span
-        class="md md-view-stream md-rotate-90"></span></button>
+        class="md md-assignment-return "></span></button>
 
       <!-- Edit View: No model -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}" class="btn btn-default widget-toolbar blue" title="Hide Model"
+      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}" class="btn btn-default widget-toolbar blue darken-1" title="Hide Model"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('edit-no-model')" ng-show="hideClassification"><span
         class="md md-now-widgets"></span></button>
@@ -62,18 +62,10 @@
     <!-- Model View:  always hidden during classification view -->
     <div ng-show="!hideModel"
          ng-class="['col-sm-12','col-md-12', {'col-lg-5' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
-         class="editing-form" style="margin-right:0px;">
-
-      <!-- model header -->
-      <div class="editing-form " style="margin-right:0px; height:43px;">
-        <button type="button" ng-click="toggleModel()" class="btn btn-default col-md-12" style="text-transform: none"
-                title="Active">
-          Model
-        </button>
-      </div>
+         class="" style="margin-right:0px;">
 
       <!-- models -->
-      <div ng-repeat="concept in concepts" class="clearfix" style="">
+      <div ng-repeat="concept in concepts">
         <div draw-model concept="concept" id="drawModel{{concept.conceptId}}"></div>
       </div>
     </div>

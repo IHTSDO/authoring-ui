@@ -4199,7 +4199,7 @@ a.text-warning:hover {
 }
 
 .text-danger {
-  color: #F44336;
+  color: #e92848;
 }
 
 a.text-danger:hover {
@@ -6168,17 +6168,17 @@ select[multiple].input-lg, textarea.input-lg {
 
 .has-error {
   .checkbox, .checkbox-inline, .control-label, .form-control-feedback, .help-block, .radio, .radio-inline, &.checkbox label, &.checkbox-inline label, &.radio label, &.radio-inline label {
-    color: #F44336;
+    color: #e92848;
   }
   .form-control {
-    border-color: #F44336;
+    border-color: #e92848;
     &:focus {
       border-color: #ea1c0d;
     }
   }
   .input-group-addon {
-    color: #F44336;
-    border-color: #F44336;
+    color: #e92848;
+    border-color: #e92848;
   }
 }
 
@@ -6621,34 +6621,34 @@ fieldset[disabled] .btn-warning {
 
 .btn-danger {
   &.disabled {
-    background-color: #F44336;
+    background-color: #e92848;
     border-color: transparent;
     &.active, &.focus, &:active, &:focus, &:hover {
-      background-color: #F44336;
+      background-color: #e92848;
       border-color: transparent;
     }
   }
   &[disabled] {
-    background-color: #F44336;
+    background-color: #e92848;
     border-color: transparent;
     &.active, &.focus, &:active, &:focus, &:hover {
-      background-color: #F44336;
+      background-color: #e92848;
       border-color: transparent;
     }
   }
 }
 
 fieldset[disabled] .btn-danger {
-  background-color: #F44336;
+  background-color: #e92848;
   border-color: transparent;
   &.active, &.focus, &:active, &:focus, &:hover {
-    background-color: #F44336;
+    background-color: #e92848;
     border-color: transparent;
   }
 }
 
 .btn-danger .badge {
-  color: #F44336;
+  color: #e92848;
   background-color: #fff;
 }
 
@@ -8510,7 +8510,7 @@ a.label {
 }
 
 .label-danger {
-  background-color: #F44336;
+  background-color: #e92848;
   &[href] {
     &:focus, &:hover {
       background-color: #ea1c0d;
@@ -8705,7 +8705,7 @@ a.thumbnail {
 }
 
 .alert-danger {
-  color: #F44336;
+  color: #e92848;
   .alert-link {
     color: #ea1c0d;
   }
@@ -8788,7 +8788,7 @@ a.thumbnail {
 }
 
 .progress-bar-danger {
-  background-color: #F44336;
+  background-color: #e92848;
 }
 
 .progress-striped .progress-bar-danger {
@@ -9010,27 +9010,27 @@ a.list-group-item-warning {
 }
 
 .list-group-item-danger {
-  color: #F44336;
+  color: #e92848;
   background-color: transparent;
 }
 
 a.list-group-item-danger {
-  color: #F44336;
+  color: #e92848;
   .list-group-item-heading {
     color: inherit;
   }
   &:focus, &:hover {
-    color: #F44336;
+    color: #e92848;
     background-color: transparent;
   }
   &.active {
     color: #fff;
-    background-color: #F44336;
-    border-color: #F44336;
+    background-color: #e92848;
+    border-color: #e92848;
     &:focus, &:hover {
       color: #fff;
-      background-color: #F44336;
-      border-color: #F44336;
+      background-color: #e92848;
+      border-color: #e92848;
     }
   }
 }
@@ -9449,9 +9449,9 @@ a.list-group-item-danger {
 
 .panel-danger > .panel-heading {
   color: #fff;
-  background-color: #F44336;
+  background-color: #e92848;
   .badge {
-    color: #F44336;
+    color: #e92848;
     background-color: #fff;
   }
 }
@@ -10581,7 +10581,7 @@ input {
 
 .btn-danger {
   background-size: 200%;
-  background-color: #F44336;
+  background-color: #e92848;
   &:hover {
     background-color: #f32c1e;
   }
@@ -11344,12 +11344,12 @@ label input[type=checkbox] {
 
 .has-error {
   .form-control, input:not([type=checkbox]) {
-    -webkit-box-shadow: inset 0 -1px 0 #F44336;
-    box-shadow: inset 0 -1px 0 #F44336;
+    -webkit-box-shadow: inset 0 -1px 0 #e92848;
+    box-shadow: inset 0 -1px 0 #e92848;
   }
   .form-control:focus, input:not([type=checkbox]):focus {
-    -webkit-box-shadow: inset 0 -2px 0 #F44336;
-    box-shadow: inset 0 -2px 0 #F44336;
+    -webkit-box-shadow: inset 0 -2px 0 #e92848;
+    box-shadow: inset 0 -2px 0 #e92848;
   }
   .checkbox {
     padding-bottom: 30px;
@@ -11495,7 +11495,7 @@ label input[type=checkbox] {
 }
 
 .alert-danger {
-  background-color: #F44336;
+  background-color: #e92848;
 }
 
 .alert {
@@ -12354,7 +12354,7 @@ fieldset[disabled] .btn-secondary {
       background-color: #ffab40;
     }
     &.alert-danger {
-      background-color: #F44336;
+      background-color: #e92848;
     }
   }
   .card-title {
@@ -12700,7 +12700,7 @@ legend {
         display: inline-block;
         width: 25px;
         height: 25px;
-        background-color: #FFF;
+        background-color: #00a6e5;
         border-radius: 21px;
         -webkit-box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.2);
         box-shadow: 0 1px 1px 1px rgba(0, 0, 0, 0.2);
@@ -12937,7 +12937,7 @@ ul.timeline {
 }
 
 .btn-primary.disabled, .switch label input[type=checkbox]:checked + .lever, .theme-bg-lighten-3, .theme-lighten-3 {
-  background-color: #f48fb1;
+  background-color: #e0e0e0;
 }
 
 .theme-border-lighten-4 {
@@ -12958,7 +12958,7 @@ ul.timeline {
 }
 
 .theme-text-lighten-3 {
-  color: #f48fb1;
+  color: #e0e0e0;
 }
 
 .theme-bg-lighten-2, .theme-lighten-2 {
@@ -12966,16 +12966,16 @@ ul.timeline {
 }
 
 .theme-border-lighten-3 {
-  border-color: #f48fb1;
+  border-color: #e0e0e0;
 }
 
 .theme-fill-lighten-3 {
-  fill: #f48fb1;
+  fill: #e0e0e0;
 }
 
 .theme-box-inset-lighten-3 {
-  -webkit-box-shadow: inset 0 -2px 0 #f48fb1;
-  box-shadow: inset 0 -2px 0 #f48fb1;
+  -webkit-box-shadow: inset 0 -2px 0 #e0e0e0;
+  box-shadow: inset 0 -2px 0 #e0e0e0;
 }
 
 .theme-lighten-2 {
@@ -15365,16 +15365,16 @@ fieldset[disabled] .btn-info {
 }
 
 .red {
-  background-color: #F44336;
+  background-color: #e92848;
   color: #fff;
 }
 
 .red-text {
-  color: #F44336;
+  color: #e92848;
 }
 
 .red-border {
-  border-color: #F44336;
+  border-color: #e92848;
 }
 
 .red.darken-1 {
@@ -15508,16 +15508,16 @@ fieldset[disabled] .btn-info {
 }
 
 .pink.lighten-3 {
-  background-color: #f48fb1;
+  background-color: #e0e0e0;
   color: #fff;
 }
 
 .pink-text.lighten-3 {
-  color: #f48fb1;
+  color: #e0e0e0;
 }
 
 .pink-border.lighten-3 {
-  border-color: #f48fb1;
+  border-color: #e0e0e0;
 }
 
 .page-header h1 i.pink, .pink.lighten-2 {
@@ -18850,43 +18850,43 @@ aside.sidebar .theme-red a.collapsible-header:after {
 }
 
 #loading-bar .theme-red .bar {
-  background-color: #F44336;
+  background-color: #e92848;
 }
 
 #logo .theme-red {
   .foot2, .foot4 {
-    background-color: #F44336;
+    background-color: #e92848;
   }
 }
 
 .noUi-range .theme-red .noUi-origin:first-child, .switch label .theme-red input[type=checkbox]:checked + .lever:after {
-  background-color: #F44336;
+  background-color: #e92848;
 }
 
 .theme-red {
   #loading-bar .bar {
-    background-color: #F44336;
+    background-color: #e92848;
   }
   #logo {
     .foot2, .foot4 {
-      background-color: #F44336;
+      background-color: #e92848;
     }
   }
   .btn-primary, .noUi-base {
-    background-color: #F44336;
+    background-color: #e92848;
   }
   .noUi-handle {
-    background-color: #F44336;
+    background-color: #e92848;
     &:before {
-      background-color: #F44336;
+      background-color: #e92848;
     }
   }
   .noUi-range .noUi-origin:first-child, .switch label input[type=checkbox]:checked + .lever:after, .theme, .theme-bg {
-    background-color: #F44336;
+    background-color: #e92848;
   }
   input {
     &[type=checkbox]:checked:after, &[type=radio]:before {
-      background-color: #F44336;
+      background-color: #e92848;
     }
   }
   .theme-border-lighten-1 {
@@ -18905,39 +18905,39 @@ aside.sidebar .theme-red a.collapsible-header:after {
 }
 
 .dashboard .table-dashboard-widget-1 .theme-red td:first-child, .page-header .theme-red h1 {
-  color: #F44336;
+  color: #e92848;
 }
 
 .theme-red {
   .btn-link, .dashboard .table-dashboard-widget-1 td:first-child {
-    color: #F44336;
+    color: #e92848;
   }
   .nav-tabs > li {
     &.active > a {
-      color: #F44336;
+      color: #e92848;
       &:focus:hover {
-        color: #F44336;
+        color: #e92848;
       }
     }
     > a:hover {
-      color: #F44336;
+      color: #e92848;
     }
   }
   .page-header h1, .theme-text {
-    color: #F44336;
+    color: #e92848;
   }
   .todo-app .filters .filter {
-    color: #F44336;
+    color: #e92848;
     &.active:hover, &:focus:hover {
-      color: #F44336;
+      color: #e92848;
     }
   }
 }
 
 .todo-app .filters .theme-red .filter {
-  color: #F44336;
+  color: #e92848;
   &.active:hover, &:focus:hover {
-    color: #F44336;
+    color: #e92848;
   }
 }
 

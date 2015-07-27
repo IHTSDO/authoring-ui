@@ -12,6 +12,7 @@ color: rgba(0, 0, 0, 0.8);border-color:rgba(0, 0, 0, 0.8);}
 .popover.left > .arrow:after {
   border-left-color: rgba(0, 0, 0, 0.8);
 }
+.alert-danger.validation{margin:0px;border-radius:0px;}
 .popover .dropdowns{background-color: #fff!important;}
 .popover .fields{padding:4px 0px; color:#eee!important; }
 //description more
@@ -178,7 +179,7 @@ border:1px solid #424242;
       font-size: 15px;
       padding: 1px 4px;
       line-height: 1.346;
-      margin-top: 4px;
+    
     }
     input, textarea, select {
       font-size: 11px !important;
@@ -190,18 +191,23 @@ border:1px solid #424242;
   }
   .title-text {
     font-size: 11px;
-    padding: 4px 0px 0px 3px;
+
+	max-width: 200px;
+    text-align: left;
   }
+  .fsn{ text-align: left;}
+  .model-header h4{font-size:12px;     font-weight: 500;
+    padding-left: 10px;}
 }
 
 @media screen and (min-width: 1851px) {
   .editing-form {
     button, .btn {
       border: 0px;
-      font-size: 20px;
-      padding: 0px 6px;
-      line-height: 1.846;
-      margin-bottom: 0px;
+      font-size: 15px;
+      padding: 1px 4px;
+      line-height: 1.346;
+
     }
     input, textarea, select {
       font-size: 12px !important;
@@ -213,8 +219,10 @@ border:1px solid #424242;
   .title-text {
     font-size: 12px;
     line-height:1;
-	padding:8px 0px 0px 0px;
+	max-width: 270px;
+    text-align: left;
   }
+   .fsn{ text-align: left;}
 }
 // responsive ends
 .editpanel {
@@ -253,14 +261,20 @@ aside.editpanel ul a {
 }
 
 .editbuttons {
-  font-size: 20px;
-  padding: 0px 7px;
+  font-size: 14px;
+  padding: 0px 4px;
+  box-shadow:none!important;
+}
+.edits button {
+  font-size: 14px;
+ padding: 5px 4px;
+ line-height:14px;
   box-shadow:none!important;
 }
 
 .morebuttons {
   font-size: 20px;
-  padding: 0px 3px !important;
+
   box-shadow:none!important;
 
 }
@@ -702,6 +716,8 @@ aside.editpanel ul a {
     width: 17%;
     padding-left: 1%;
   }
+  .col-md-3{width:20%}
+  .col-md-9{width:80%}
   .language {
     width: 10%;
     padding-left: 1%;
@@ -762,7 +778,7 @@ select {
     -o-box-sizing: border-box;
     box-sizing: border-box;
     color: #fff !important;
-    margin-bottom: 1rem;
+   
     font-size: 12px !important;
     padding: 4px !important;
     background-color: #474747;

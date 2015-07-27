@@ -1,6 +1,13 @@
-<div class="">
-  <div class="row p-5 grey darken-4 " style=" margin-right:0px;">
-    <div class="pull-left">
+<div class="edits editing-form">
+  <!-- begin validation error -->
+  <div class="alert alert-dismissible alert-danger validation" ng-show="concept.error">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <h4>Validation Error!</h4>
+    {{concept.error}}
+  </div>
+  <!-- end validation error -->
+  <div class="row p-5 grey darken-4  " style=" margin-right:0px;">
+    <div class="pull-left p-t-5">
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
       <button type="button" class="btn btn-default morebuttons grey darken-4 md md-more"
@@ -18,7 +25,7 @@
     </div>
 
     <!-- draggable element -- concept name -->
-    <div class="pull-left title-text"
+    <div class="pull-left title-text p-t-5"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
       <button type="button" class="btn-default darkbuttons grey darken-4 "><span class="fsn">{{concept.fsn}}</span><span
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
@@ -30,14 +37,14 @@
         <option value="Choice 2">Fully Defined</option>
       </select>
     </div>
-    <div class="pull-right no-margin">
+    <div class="pull-right p-t-5 no-margin edits">
       <button type="button" class="btn-default editbuttons orange darken-3 md md-backspace"
               title="Remove Concept" ng-click="removeConcept(concept)"></button>
       <!-- TODO Fix this. Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
 
       <button type="button"
               style="vertical-align: bottom"
-              ng-class="[btn-default, editbuttons, md, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
+              ng-class="[btn-default, editbuttons, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
               title="Active/Inactive" ng-click="toggleConceptActive(concept)"></button>
       <button type="button" class="btn-default editbuttons amber md md-undo " title="Undo Changes"></button>
       <button type="button" class="btn-default editbuttons deep-purple lighten-1 md md-history"
@@ -54,7 +61,7 @@
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in concept.descriptions | orderBy:'type'">
       <div class="row darken-3 p-5 grey">
-        <div class="col-md-3 no-padding">
+        <div class="col-md-3 no-padding edits">
           <div class="pull-left">
             <button class="btn-default editbuttons grey darken-3 md md-more"
                     popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
@@ -72,9 +79,9 @@
         </div>
         <div class="col-md-9 no-padding">
           <div class="pull-left description no-padding">
-            <input ng-blur="updateDescription(description)" ng-disabled="description.effectiveTime"
+            <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-blur="updateDescription(description)" ng-disabled="description.effectiveTime"
                    ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
-                   placeholder="Description" ui-on-drop="dropNullOp()">
+                   placeholder="Description" ui-on-drop="dropNullOp()"></textarea>
           </div>
           <div class="pull-left typeid">
             <select ng-disabled="description.effectiveTime"
@@ -142,10 +149,10 @@
         <div class="pull-left is_a" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
              drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropAttributeType(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
-                 placeholder="#">
+                 placeholder="#"></textarea>
         </div>
 
         <!-- linked concept -->
@@ -153,10 +160,10 @@
              drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
              drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
-                 placeholder="#">
+                 placeholder="#"></textarea>
         </div>
 
         <div style="width:4%" class="pull-left">
@@ -194,17 +201,17 @@
 
         <!-- relationship group -->
         <div class="pull-left rolegroup">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
                  ng-change="updateRelationship(relationship)"
                  class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
-                 ui-on-drop="dropNullOp()">
+                 ui-on-drop="dropNullOp()"></textarea>
         </div>
 
         <!-- attribute type -->
         <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
              drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
              ui-on-drop="dropAttributeType(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
                  placeholder="#">
@@ -215,10 +222,10 @@
              drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
              drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <input ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
-                 placeholder="#">
+                 placeholder="#"></textarea>
         </div>
 
         <div style="width:4%" class="pull-left">
