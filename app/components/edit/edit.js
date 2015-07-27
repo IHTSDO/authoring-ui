@@ -297,7 +297,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
 // watch for concept selection from the edit sidebar
-    $scope.$on('savedList.editConcept', function (event, data) {
+    $scope.$on('editConcept', function (event, data) {
       $scope.conceptLoaded = false;
       if (!data || !data.conceptId) {
         $scope.conceptLoaded = false;
@@ -314,7 +314,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
 // watch for concept cloning from the edit sidebar
-    $scope.$on('savedList.cloneConcept', function (event, data) {
+    $scope.$on('cloneConcept', function (event, data) {
 
       if (!data || !data.conceptId) {
         return;
@@ -377,7 +377,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
 // watch for removal request from concept-edit
-    $scope.$on('conceptEdit.removeConcept', function (event, data) {
+    $scope.$on('stopEditing', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot remove concept: concept must be supplied');
         return;
@@ -386,7 +386,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // remove the concept
       var index = $scope.concepts.indexOf(data.concept);
       $scope.concepts.splice(index, 1);
-      $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.id), 1);
+      $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.conceptId), 1);
       $scope.updateUiState();
 
       // set editing flags

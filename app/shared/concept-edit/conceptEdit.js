@@ -57,10 +57,15 @@ angular.module('singleConceptAuthoringApp')
         ];
 
         scope.removeConcept = function (concept) {
-          $rootScope.$broadcast('conceptEdit.removeConcept', {concept: concept});
+          $rootScope.$broadcast('stopEditing', {concept: concept});
         };
 
         scope.saveConcept = function (suppressMessage) {
+
+
+          // delete any existing error before passing to services
+          delete scope.concept.error;
+
           // deep copy the concept for subsequent modification
           // (1) relationship display names
           // (1) disallowed keys
@@ -80,11 +85,14 @@ angular.module('singleConceptAuthoringApp')
 
           $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
+
           // if new, use create
           if (!concept.conceptId) {
 
             snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
 
+              console.debug('create', response);
+              // successful response will have conceptId
               if (response && response.conceptId) {
 
                 scope.concept = response;
@@ -92,8 +100,8 @@ angular.module('singleConceptAuthoringApp')
                 // broadcast new concept to add to ui state edit-panel
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               } else {
-                console.error('Response to createConcept does not have a concept id');
-
+                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                scope.concept.error = response.message;
               }
             });
           }
@@ -101,12 +109,15 @@ angular.module('singleConceptAuthoringApp')
           // if not new, use update
           else {
             snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
+
+              console.debug('update', response);
               if (response && response.conceptId) {
                 scope.concept = response;
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
               else {
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                scope.concept.error = response.message;
               }
             });
 

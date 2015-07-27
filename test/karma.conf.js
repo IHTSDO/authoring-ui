@@ -57,6 +57,7 @@ module.exports = function(config) {
       'bower_components/angular-strap/dist/angular-strap.tpl.js',
       'bower_components/angular-ui-sortable/sortable.js',
       'bower_components/angular-native-dragdrop/draganddrop.js',
+      'bower_components/angular-elastic/elastic.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/components/*.js",

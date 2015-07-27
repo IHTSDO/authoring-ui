@@ -51,9 +51,9 @@
               </td>
               <td data-title="'Classification Results'" sortable="'classification'">
                 <a ng-href="#/classify/{{task.projectKey}}/{{task.key}}">
-                  <button ng-show="task.latestClassification != null"
-                          title="{{task.latestClassification.status}}" type="button"
-                          ng-class="[{cyan : task.latestClassification.status === 'COMPLETED'}, {amber : task.latestClassification.status === 'RUNNING'}]"
+                  <button ng-show="task.latestClassificationJson != null"
+                          title="{{task.latestClassificationJson.status}}" type="button"
+                          ng-class="[{gray : task.latestClassificationJson.status === 'RUNNING'}, {red : task.latestClassificationJson.equivalentConceptsFound === true}, {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true}, {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default lighten-2" tooltip="">
                     <span class="md md-notifications "></span>
                   </button>
@@ -72,8 +72,8 @@
 
               </td>
               <td data-title="'Feedback'" sortable="'feedback'">
-                <button type="button" class="btn btn-round btn-default blue darken-2" tooltip=""
-                        title="Feedback Available"><span class="md md-mail "></span>
+                <button type="button" class="btn btn-round btn-default pink darken-1" tooltip=""
+                        title="Feedback Available"><span class="md md-forum "></span>
 
                   <div class="ripple-wrapper"></div>
                 </button>
