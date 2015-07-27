@@ -4,7 +4,7 @@
       <strong>Classification Report Completed: </strong> {{classification.completionDate | date: 'medium'}}
 
       <div class="pull-right ">
-        <button class="btn btn-default green" style="text-transform: none">Accept Classification Results</button>
+        <button class="btn btn-default green" style="text-transform: none" ng-click="saveClassification()">Accept Classification Results</button>
         <button class="btn btn-default green" style="text-transform: none">Validate</button>
         <button class="btn btn-default grey" style="text-transform: none">Submit For Review</button>
       </div>
