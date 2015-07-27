@@ -14,6 +14,10 @@ angular.module('singleConceptAuthoringApp')
           link: function (scope, element, attrs, linkCtrl, snowowlService) {
               scope.view = true;
               var idSequence = 0;
+              scope.size = {
+                  width: element.width(),
+                  height: element.height()
+              };
               drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               scope.$watch('concept', function(newVal, oldVal){
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
@@ -21,7 +25,10 @@ angular.module('singleConceptAuthoringApp')
               scope.$watch('view', function(newVal, oldVal){
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
-
+              scope.$watch('size', function(newVal, oldVal){
+                  console.log('size changed');
+                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+              }, true);
               function drawConceptDiagram (concept, div, options) {
                   var svgIsaModel = [];
                   var svgAttrModel = [];
@@ -54,9 +61,11 @@ angular.module('singleConceptAuthoringApp')
 
                   parentDiv.svg({
                       settings: {
-                          height: '600px',
-                          width: '600px',
-                          id: 'model' + concept.conceptId}});
+                          height: '100%',
+                          width: '100%',
+                          id: 'model' + concept.conceptId,
+                          preserveAspectRatio:'none'
+                      }});
                   var svg = parentDiv.svg('get');
                   loadDefs(svg);
                   var x = 10;
