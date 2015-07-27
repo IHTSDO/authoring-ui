@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
           templateUrl: 'shared/model-diagramming/model.html',
 
           link: function (scope, element, attrs, linkCtrl, snowowlService) {
-              scope.view = 'inferred';
+              scope.view = true;
               var idSequence = 0;
               drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               scope.$watch('concept', function(newVal, oldVal){
@@ -23,10 +23,9 @@ angular.module('singleConceptAuthoringApp')
               }, true);
 
               function drawConceptDiagram (concept, div, options) {
-                  console.log(concept);
                   var svgIsaModel = [];
                   var svgAttrModel = [];
-                  if (scope.view == "stated") {
+                  if (scope.view == false) {
                       $.each(concept.relationships, function(i, field) {
                           if (field.active == true && field.characteristicType == "STATED_RELATIONSHIP") {
                               if (field.type.conceptId == 116680003) {
