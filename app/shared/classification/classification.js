@@ -68,6 +68,13 @@ angular.module('singleConceptAuthoringApp')
             elem.setAttribute('width', width);
             elem.setAttribute('height', height);
         };
+          
+        scope.saveClassification = function()
+        {
+            snowowlService.saveClassification(scope.branch, scope.classification.id).then(function(response){
+                
+            });
+        };
         
 
         // notification of classification retrieved and set

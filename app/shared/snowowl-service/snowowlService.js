@@ -111,7 +111,14 @@ angular.module('singleConceptAuthoringApp')
                     return temp;
                 });
     }
-
+    function saveClassification (branch, classificationId) {
+        var JSON = '{ "status" : "SAVED"}';
+        return $http.put(apiEndpoint + branch + '/classifications/' + classificationId, JSON, {
+                headers: { 'Content-Type': 'application/json; charset=UTF-8'}
+            }).then(function(response) {
+                return response;
+            });
+    }
 
 
     //////////////////////////////////////////////
@@ -295,7 +302,8 @@ angular.module('singleConceptAuthoringApp')
       getEquivalentConcepts: getEquivalentConcepts,
       getRelationshipChanges: getRelationshipChanges,
       cleanConcept: cleanConcept,
-      getModelPreview: getModelPreview
+      getModelPreview: getModelPreview,
+      saveClassification: saveClassification
 
     };
   }
