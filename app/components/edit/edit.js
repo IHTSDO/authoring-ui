@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // miscellaneous
     $scope.saveIndicator = false;
-    $rootScope.pageTitle = $scope.classifyMode ? 'Classification' : 'Edit Concept';
+    $rootScope.pageTitle = $scope.classifyMode ? 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId: 'Edit Concept / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
 
     // initialize hide element variables
     $scope.hideSidebar = classifyMode;
@@ -208,6 +208,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         flagEditedItems();
       }
     );
+    scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
+        $scope.task = response;
+    });
 
     $scope.addConceptToListFromId = function (conceptId) {
 
