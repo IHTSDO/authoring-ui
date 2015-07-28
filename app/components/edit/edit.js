@@ -56,7 +56,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.lastView = null;
 
     $scope.setView = function (name) {
-
       // console.debug('setting view (requested, this, last)', name,
       // $scope.thisView, $scope.lastView); do nothing if no name supplied
       if (!name) {
@@ -235,9 +234,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
         $scope.concepts.push(response);
-        $timeout(function () {
-          $scope.resizeSvg(response);
-        }, 500);
+//        $timeout(function () {
+//          $scope.resizeSvg(response);
+//        }, 500);
 
         /*
          // force update to get FSN, not PT
@@ -341,9 +340,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptExists) {
           $scope.concepts.push(response);
-          $timeout(function () {
-            $scope.resizeSvg(response);
-          }, 800);
+//          $timeout(function () {
+//            $scope.resizeSvg(response);
+//          }, 800);
 
           $scope.editPanelUiState.push(conceptId);
           $scope.updateUiState();
@@ -373,9 +372,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
 
-        $timeout(function () {
-          $scope.resizeSvg(clonedConcept);
-        }, 600);
+//        $timeout(function () {
+//          $scope.resizeSvg(clonedConcept);
+//        }, 600);
       });
     });
 
@@ -405,9 +404,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       //concept.relationships
       $scope.concepts.push(concept);
 
-      $timeout(function () {
-        $scope.resizeSvg(concept);
-      }, 500);
+//      $timeout(function () {
+//        $scope.resizeSvg(concept);
+//      }, 500);
     };
 
 // removes concept from editing list (unused currently)

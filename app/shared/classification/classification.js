@@ -37,21 +37,20 @@ angular.module('singleConceptAuthoringApp')
         }
         $rootScope.$on('comparativeModelAdded', function (event, model) {
             snowowlService.getFullConcept(model.id, scope.branch).then(function(response){
-                console.log(response);
                 var temp = response;
+                var id = temp.conceptId;
                 temp.conceptId = 'Before: ' + temp.conceptId;
                 scope.modelConcept = response;
                 snowowlService.getModelPreview(scope.classification.id, scope.branch, model.id).then(function(secondResponse){
                     scope.modelConceptAfter = secondResponse;
-                    console.log(secondResponse);
                     scope.displayModels = true;
-                    scope.resizeClassificationSvg(scope.modelConcept);
-                    scope.resizeClassificationSvg(scope.modelConceptAfter);
+                    resizeClassificationSvg(scope.modelConcept, id);
+                    resizeClassificationSvg(scope.modelConceptAfter, id);
                 });
             });
         });
-        scope.resizeClassificationSvg = function (concept) {
-            var elem = document.getElementById('model' + concept.conceptId);
+        var resizeClassificationSvg = function (concept, id) {
+            var elem = document.getElementById('#' + concept.conceptId);
             var parentElem = document.getElementById('drawModel' + concept.conceptId);
 
             if (!elem || !parentElem) {
@@ -60,10 +59,11 @@ angular.module('singleConceptAuthoringApp')
 
             // set the height and width`
             var width = parentElem.offsetWidth - 30;
-            var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
+            var height = $('#editPanel-' + id).find('.editHeightSelector').height() + 41;
             if (width < 0) {
               return;
             }
+            console.log(elem);
 
             elem.setAttribute('width', width);
             elem.setAttribute('height', height);

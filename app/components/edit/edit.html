@@ -10,7 +10,7 @@
     <div ng-show="hideClassification">
 
       <!-- Switch to Classify View -->
-      <button ng-show="task.latestClassificationJson != null" type="button" class="btn btn-default widget-toolbar green darken-1" title="Switch to Classify View"
+      <button type="button" class="btn btn-default widget-toolbar green darken-1" title="Switch to Classify View"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('classification')"><span
         class="md md-notifications"></span></button>
@@ -46,7 +46,7 @@
   </div>
 
   <!-- Main page content -->
-  <div class="row no-gutter" style="padding-left: 50px;">
+  <div class="row no-gutter" style="padding-left: 50px;" >
 
     <!-- Sidebar: always hidden during classification view -->
     <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
@@ -58,39 +58,40 @@
       <div classification classification-id="classification.id" task-key="taskKey" projectKey="projectKey"
            branch="branch"></div>
     </div>
+    <div ng-repeat="concept in concepts" style="margin-right:0px;" class="row no-gutter" ng-class="[{'col-md-12' : hideSidebar && hideClassification}, {'col-lg-12' : hideSidebar && hideClassification}, {'col-lg-4' : !hideClassification}, {'col-md-4' : !hideClassification}, {'col-lg-9' : hideClassification}, {'col-md-9' : hideClassification}]">
+        <!-- Model View:  always hidden during classification view -->
+        <div ng-show="!hideModel"
+             ng-class="['col-sm-7','col-md-7', {'col-lg-7' : !hideSidebar}, {'col-md-7' : !hideSidebar}, {'col-md-8' : hideSidebar}, {'col-lg-8' : hideSidebar}]"
+             class="" style="height:100%;">
 
-    <!-- Model View:  always hidden during classification view -->
-    <div ng-show="!hideModel"
-         ng-class="['col-sm-12','col-md-12', {'col-lg-5' : !hideSidebar}, {'col-lg-8' : hideSidebar}]"
-         class="" style="margin-right:0px;">
+          <!-- models -->
+            <div draw-model style="" concept="concept" id="drawModel{{concept.conceptId}}"></div>
+        </div>
 
-      <!-- models -->
-      <div ng-repeat="concept in concepts">
-        <div draw-model concept="concept" id="drawModel{{concept.conceptId}}"></div>
-      </div>
-    </div>
+        <!-- Edit Panel  col-md-4 col-lg-4-->
+        <div class="col-xs-12 col-sm-12" ng-class="[
+          {'col-md-12': thisView === 'edit-no-model' && hideClassification},
+          {'col-lg-12': thisView === 'edit-no-model' && hideClassification},
+          {'col-md-5': thisView != 'edit-no-model' && !hideSidebar},
+          {'col-lg-5': thisView != 'edit-no-model' && !hideSidebar},
+          {'col-lg-12' : !hideClassification}, {'col-md-12' : !hideClassification},
+          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}]">
 
-    <!-- Edit Panel  col-md-4 col-lg-4-->
-    <div class="col-xs-12 col-sm-12" ng-class="[
-      {'col-md-9': thisView === 'edit-no-model'},
-      {'col-lg-9': thisView === 'edit-no-model'},
-      {'col-md-4': thisView != 'edit-no-model'},
-      {'col-lg-4': thisView != 'edit-no-model'}]">
+          <!-- create new concept header -->
+          <div ng-if="$index == 0"
+            class="editing-form grey darken-3" style="margin-right:0px;">
+            <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
+          </div>
 
-      <!-- create new concept header -->
-      <div
-        class="editing-form grey darken-3" style="margin-right:0px;">
-        <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
-                title="Active"><i
-          class="md md-add-circle pull-right"></i> Create New Concept
-        </button>
-      </div>
-
-      <!-- concepts -->
-      <div ng-repeat="concept in concepts" concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept"
-           editList="editPanelUiState" branch="branch"
-           id="editPanel-{{concept.conceptId}}">
-      </div>
+          <!-- concepts -->
+          <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept"
+               editList="editPanelUiState" branch="branch"
+               id="editPanel-{{concept.conceptId}}">
+          </div>
+        </div>
     </div>
 
   </div>
