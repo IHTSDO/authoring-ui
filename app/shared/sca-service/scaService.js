@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', function ($http, $rootScope) {
+  .service('scaService', ['$http', '$rootScope', '$location', function ($http, $rootScope, $location) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -27,20 +27,23 @@ angular.module('singleConceptAuthoringApp')
       getTasks: function () {
         return $http.get(apiEndpoint + 'projects/my-tasks').then(
           function (response) {
-
-            // temporary check to verify authentication
-            // will later be replaced by accountService call in app.js
-            if ($rootScope.loggedIn === null) {
+              if ($rootScope.loggedIn === null) {
               $rootScope.loggedIn = true;
 
               if (response.data.length > 0) {
                 $rootScope.accountDetails = response.data[0].assignee;
               }
             }
+            // temporary check to verify authentication
+            // will later be replaced by accountService call in app.js
+            
 
             return response.data;
           }, function (error) {
-
+              if(error.status === 403)
+                {
+                    $location.path( '/login');
+                }
           }
         );
       },
