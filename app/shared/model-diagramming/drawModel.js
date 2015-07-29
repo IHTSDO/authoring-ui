@@ -14,49 +14,39 @@ angular.module('singleConceptAuthoringApp')
           link: function (scope, element, attrs, linkCtrl, snowowlService) {
               scope.view = true;
               var idSequence = 0;
+              
               scope.getSize = function(){
-
                   // NOTE:  -43 offset required to account for height of header/switch elements
                   // TODO:  For long names this will almost certainly cause a wrap/overlay problem
                   var size = {
                       width: element.width(),
-                      height: element.parent().parent().parent().parent().height() - 43
+                      height: element.parent().parent().height() - 43
                   };
-                console.debug(scope.concept.conceptId, size);
                   return size
               };
               scope.size = scope.getSize();
-
-              console.log(element.width());
               drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               scope.$watch('concept', function(newVal, oldVal){
+                  scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
               scope.$watch('view', function(newVal, oldVal){
+                  scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
               scope.$watch(scope.getSize(), function(newVal, oldVal){
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
-
               scope.$on('layoutChanged', function() {
-                  console.debug('layout changed');
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
-//              scope.$watch(function () {
-//                        return element.parent().parent().height();
-//                    }, function(newVal, oldVal){
-//                        scope.size.height = newVal;
-//                        drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-//                    }, true);
-//              scope.$watch(function () {
-//                        return element.width();
-//                    }, function(newVal, oldVal){
-//                        scope.size.width = newVal;
-//                        drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-//                    }, true);
+              scope.$on('comparativeModelDraw', function() {
+                  scope.size.height = '600px';
+                  scope.size.width = '100%';
+                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+              }, true);
               function drawConceptDiagram (concept, div, options) {
                   var svgIsaModel = [];
                   var svgAttrModel = [];
