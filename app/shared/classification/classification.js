@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', '$timeout', function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, $timeout) {
     return {
       restrict: 'A',
       transclude: false,
@@ -44,8 +44,9 @@ angular.module('singleConceptAuthoringApp')
                 snowowlService.getModelPreview(scope.classification.id, scope.branch, model.id).then(function(secondResponse){
                     scope.modelConceptAfter = secondResponse;
                     scope.displayModels = true;
-                    resizeClassificationSvg(scope.modelConcept, id);
-                    resizeClassificationSvg(scope.modelConceptAfter, id);
+                    $timeout(function () {
+                        $rootScope.$broadcast('comparativeModelDraw');
+                    }, 1000);
                 });
             });
         });
