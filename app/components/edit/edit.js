@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // miscellaneous
     $scope.saveIndicator = false;
-    $rootScope.pageTitle = $scope.classifyMode ? 'Classification' : 'Edit Concept';
+    $rootScope.pageTitle = $scope.classifyMode ? 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId: 'Edit Concept / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
 
     // initialize hide element variables
     $scope.hideSidebar = classifyMode;
@@ -56,7 +56,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.lastView = null;
 
     $scope.setView = function (name) {
-
       // console.debug('setting view (requested, this, last)', name,
       // $scope.thisView, $scope.lastView); do nothing if no name supplied
       if (!name) {
@@ -104,6 +103,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         default:
           break;
       }
+
+      $timeout(function () {
+          $rootScope.$broadcast('layoutChanged');
+        }, 500);
     };
 
     // set the initial view
@@ -208,6 +211,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         flagEditedItems();
       }
     );
+    scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
+        $scope.task = response;
+    });
 
     $scope.addConceptToListFromId = function (conceptId) {
 
@@ -232,9 +238,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
         $scope.concepts.push(response);
-        $timeout(function () {
-          $scope.resizeSvg(response);
-        }, 500);
+//        $timeout(function () {
+//          $scope.resizeSvg(response);
+//        }, 500);
 
         /*
          // force update to get FSN, not PT
@@ -338,9 +344,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptExists) {
           $scope.concepts.push(response);
-          $timeout(function () {
-            $scope.resizeSvg(response);
-          }, 800);
+//          $timeout(function () {
+//            $scope.resizeSvg(response);
+//          }, 800);
 
           $scope.editPanelUiState.push(conceptId);
           $scope.updateUiState();
@@ -370,9 +376,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
 
-        $timeout(function () {
-          $scope.resizeSvg(clonedConcept);
-        }, 600);
+//        $timeout(function () {
+//          $scope.resizeSvg(clonedConcept);
+//        }, 600);
       });
     });
 
@@ -400,11 +406,11 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // add IsaRelationship
       //concept.relationships
-      $scope.concepts.push(concept);
+      $scope.concepts.unshift(concept);
 
-      $timeout(function () {
-        $scope.resizeSvg(concept);
-      }, 500);
+//      $timeout(function () {
+//        $scope.resizeSvg(concept);
+//      }, 500);
     };
 
 // removes concept from editing list (unused currently)
