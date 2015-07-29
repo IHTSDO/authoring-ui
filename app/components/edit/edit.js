@@ -238,6 +238,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
         $scope.concepts.push(response);
+        $timeout(function () {
+            $rootScope.$broadcast('layoutChanged');
+          }, 800);
 //        $timeout(function () {
 //          $scope.resizeSvg(response);
 //        }, 500);
@@ -344,9 +347,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptExists) {
           $scope.concepts.push(response);
-//          $timeout(function () {
-//            $scope.resizeSvg(response);
-//          }, 800);
+          $timeout(function () {
+            $rootScope.$broadcast('layoutChanged');
+          }, 800);
 
           $scope.editPanelUiState.push(conceptId);
           $scope.updateUiState();
