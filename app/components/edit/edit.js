@@ -104,7 +104,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
       }
 
-      $rootScope.$broadcast('layoutChanged');
+      $timeout(function () {
+          $rootScope.$broadcast('layoutChanged');
+        }, 500);
     };
 
     // set the initial view
