@@ -103,6 +103,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         default:
           break;
       }
+
+      $rootScope.$broadcast('layoutChanged');
     };
 
     // set the initial view
@@ -402,7 +404,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // add IsaRelationship
       //concept.relationships
-      $scope.concepts.push(concept);
+      $scope.concepts.unshift(concept);
 
 //      $timeout(function () {
 //        $scope.resizeSvg(concept);

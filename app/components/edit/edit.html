@@ -16,19 +16,22 @@
         class="md md-notifications"></span></button>
 
       <!-- Edit View: Default -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}" class="btn btn-default widget-toolbar light-blue" title="Restore Default View"
+      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
+              class="btn btn-default widget-toolbar light-blue" title="Restore Default View"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('edit-default')" ng-show="hideClassification"><span
         class="md md-dashboard"></span></button>
 
       <!-- Edit View:  No sidebar -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}" class="btn btn-default widget-toolbar light-blue darken-2" title="Hide Sidebar"
+      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
+              class="btn btn-default widget-toolbar light-blue darken-2" title="Hide Sidebar"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('edit-no-sidebar')" ng-show="hideClassification"><span
         class="md md-assignment-return "></span></button>
 
       <!-- Edit View: No model -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}" class="btn btn-default widget-toolbar blue darken-1" title="Hide Model"
+      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
+              class="btn btn-default widget-toolbar blue darken-1" title="Hide Model"
               style="width: 50px; height: 50px; margin: 0; padding: 0;"
               ng-click="setView('edit-no-model')" ng-show="hideClassification"><span
         class="md md-now-widgets"></span></button>
@@ -46,7 +49,7 @@
   </div>
 
   <!-- Main page content -->
-  <div class="row no-gutter" style="padding-left: 50px;" >
+  <div class="row no-gutter" style="padding-left: 50px;">
 
     <!-- Sidebar: always hidden during classification view -->
     <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
@@ -58,14 +61,50 @@
       <div classification classification-id="classification.id" task-key="taskKey" projectKey="projectKey"
            branch="branch"></div>
     </div>
-    <div ng-repeat="concept in concepts" style="margin-right:0px;" class="row no-gutter" ng-class="[{'col-md-12' : hideSidebar && hideClassification}, {'col-lg-12' : hideSidebar && hideClassification}, {'col-lg-4' : !hideClassification}, {'col-md-4' : !hideClassification}, {'col-lg-9' : hideClassification}, {'col-md-9' : hideClassification}]">
+    <div style="margin-right:0px;"
+         class="row no-gutter"
+         ng-class="[
+         {'col-md-12' : hideSidebar && hideClassification}, 
+         {'col-lg-12' : hideSidebar && hideClassification}, 
+         {'col-lg-4' : !hideClassification}, 
+         {'col-md-4' : !hideClassification}, 
+         {'col-lg-9' : hideClassification}, 
+         {'col-md-9' : hideClassification}]">
+
+      <!-- create new concept header (displayed when no concepts in ng-repeat -->
+      <div ng-show="concepts.length === 0" class="row no-gutter">
+
+        <!-- Blank separator for model view if appropriate -->
+        <div ng-show="!hideModel"
+             ng-class="['no-gutter', 'col-sm-7','col-md-7', {'col-lg-7' : !hideSidebar}, {'col-md-7' : !hideSidebar}, {'col-md-8' : hideSidebar}, {'col-lg-8' : hideSidebar}]"
+             class="" style="height:100%;">
+        </div>
+
+        <!-- The create concept button -->
+        <div class="editing-form grey darken-3" ng-class="[
+          {'col-md-12': thisView === 'edit-no-model' && hideClassification},
+          {'col-lg-12': thisView === 'edit-no-model' && hideClassification},
+          {'col-md-5': thisView != 'edit-no-model' && !hideSidebar},
+          {'col-lg-5': thisView != 'edit-no-model' && !hideSidebar},
+          {'col-lg-12' : !hideClassification}, {'col-md-12' : !hideClassification},
+          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
+
+          <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
+                  title="Active"><i
+            class="md md-add-circle pull-right"></i> Create New Concept
+          </button>
+        </div>
+      </div>
+
+      <div class="row  no-gutter" ng-repeat="concept in concepts" id="concept-{{concept.conceptId}}">
+
         <!-- Model View:  always hidden during classification view -->
         <div ng-show="!hideModel"
-             ng-class="['col-sm-7','col-md-7', {'col-lg-7' : !hideSidebar}, {'col-md-7' : !hideSidebar}, {'col-md-8' : hideSidebar}, {'col-lg-8' : hideSidebar}]"
+             ng-class="['no-gutter', 'col-sm-7','col-md-7', {'col-lg-7' : !hideSidebar}, {'col-md-7' : !hideSidebar}, {'col-md-8' : hideSidebar}, {'col-lg-8' : hideSidebar}]"
              class="" style="height:100%;">
 
           <!-- models -->
-            <div draw-model style="" concept="concept" id="drawModel{{concept.conceptId}}"></div>
+          <div draw-model style="" concept="concept" id="drawModel{{concept.conceptId}}"></div>
         </div>
 
         <!-- Edit Panel  col-md-4 col-lg-4-->
@@ -75,16 +114,15 @@
           {'col-md-5': thisView != 'edit-no-model' && !hideSidebar},
           {'col-lg-5': thisView != 'edit-no-model' && !hideSidebar},
           {'col-lg-12' : !hideClassification}, {'col-md-12' : !hideClassification},
-          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}]">
+          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']">
 
-          <!-- create new concept header -->
-          <div ng-if="$index == 0"
-            class="editing-form grey darken-3" style="margin-right:0px;">
-            <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
-                    title="Active"><i
-              class="md md-add-circle pull-right"></i> Create New Concept
-            </button>
-          </div>
+
+          <!-- Create new concept banner (first element only) -->
+          <button ng-show="$index === 0" type="button" ng-click="createConcept()"
+                  class="btn-default btn-block create-new-concept"
+                  title="Active"><i
+            class="md md-add-circle pull-right"></i> Create New Concept
+          </button>
 
           <!-- concepts -->
           <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept"
@@ -92,7 +130,9 @@
                id="editPanel-{{concept.conceptId}}">
           </div>
         </div>
+      </div>
     </div>
-
   </div>
+
+</div>
 </div>
