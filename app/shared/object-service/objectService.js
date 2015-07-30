@@ -17,7 +17,7 @@ angular.module('singleConceptAuthoringApp')
         'type': null,
         'term': null,
         'lang': 'en',
-        'caseSignificance': 'ENTIRE_TERM_CASE_SENSITIVE',
+        'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
         'acceptabilityMap': {
           '900000000000509007': 'PREFERRED',
           '900000000000508004': 'PREFERRED'
