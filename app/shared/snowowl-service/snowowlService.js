@@ -28,7 +28,7 @@ angular.module('singleConceptAuthoringApp')
         return error.data;
       });
     }
-      
+
     // Get Concept
     // GET /browser/{path}/concepts/{conceptId}
     function getConcept(conceptId, branch) {
@@ -53,73 +53,77 @@ angular.module('singleConceptAuthoringApp')
         }
       }
     }
-      
+
     //////////////////////////////////////////////
     // Classification functions
     //////////////////////////////////////////////
-    
-    function startClassification (taskId, branch) {
-        var JSON = '{"reasonerId": "au.csiro.snorocket.owlapi3.snorocket.factory"}';
-        return $http.post(apiEndpoint + branch + '/tasks/' + taskId + '/classifications', JSON, {
-                headers: { 'Content-Type': 'application/json; charset=UTF-8'}
-            }).then(function(response) {
-                return response;
-            });
+
+    function startClassification(taskId, branch) {
+      var JSON = '{"reasonerId": "au.csiro.snorocket.owlapi3.snorocket.factory"}';
+      return $http.post(apiEndpoint + branch + '/tasks/' + taskId + '/classifications', JSON, {
+        headers: {'Content-Type': 'application/json; charset=UTF-8'}
+      }).then(function (response) {
+        return response;
+      });
     }
 
-
-    // get a specific classification result for projectId, taskId, and classifierId
-    function getClassificationResult (projectId, taskId , classifierId, branch) {
-            return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId ).then(function(response) {
-                    return response;
-                });
+    // get a specific classification result for projectId, taskId, and
+    // classifierId
+    function getClassificationResult(projectId, taskId, classifierId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId).then(function (response) {
+        return response;
+      });
     }
 
-    // get all classification results for a project (as of 7/21, snowowl functionality not complete)
-    function getClassificationResultsForProject (projectId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/' ).then(function(response) {
+    // get all classification results for a project (as of 7/21, snowowl
+    // functionality not complete)
+    function getClassificationResultsForProject(projectId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/').then(function (response) {
         return response.data.items;
       });
     }
 
     // get all classification results for a project and task
-    function getClassificationResultsForTask (projectId, taskId , branch) {
-      return $http.get(apiEndpoint + 'MAIN/' + projectId + '/' + taskId + '/classifications').then(function(response) {
+    function getClassificationResultsForTask(projectId, taskId, branch) {
+      return $http.get(apiEndpoint + 'MAIN/' + projectId + '/' + taskId + '/classifications').then(function (response) {
         return response.data.items;
       });
     }
 
     // get equivalent concepts reported for a classifier id
-    function getEquivalentConcepts (classifierId, projectId, taskId , branch) {
-            return $http.get(apiEndpoint + branch + '/' +  '/classifications/' + classifierId + '/equivalent-concepts').then(function(response) {
-                    return response.data.items;
-                });
-    }
-    // GET /{path}/classifications/{classificationId}/relationship-changes
-    // get relationship changes reported for a classifier id
-    function getRelationshipChanges (classifierId, projectId, taskId, branch) {
-            return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes').then(function(response) {
-                    return response.data.items;
-                });
-    }
-    // GET /{path}/classifications/{classificationId}/concept-preview/{conceptId}
-    // get preview of model
-    function getModelPreview (classifierId, branch, id) {
-            return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/concept-preview/' + id).then(function(response) {
-                    var temp = response.data;
-                    temp.conceptId = 'After: ' +temp.conceptId;
-                    return temp;
-                });
-    }
-    function saveClassification (branch, classificationId) {
-        var JSON = '{ "status" : "SAVED"}';
-        return $http.put(apiEndpoint + branch + '/classifications/' + classificationId, JSON, {
-                headers: { 'Content-Type': 'application/json; charset=UTF-8'}
-            }).then(function(response) {
-                return response;
-            });
+    function getEquivalentConcepts(classifierId, projectId, taskId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/equivalent-concepts').then(function (response) {
+        return response.data.items;
+      });
     }
 
+    // GET /{path}/classifications/{classificationId}/relationship-changes
+    // get relationship changes reported for a classifier id
+    function getRelationshipChanges(classifierId, projectId, taskId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes').then(function (response) {
+        return response.data.items;
+      });
+    }
+
+    // GET
+    // /{path}/classifications/{classificationId}/concept-preview/{conceptId}
+    // get preview of model
+    function getModelPreview(classifierId, branch, id) {
+      return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/concept-preview/' + id).then(function (response) {
+        var temp = response.data;
+        temp.conceptId = 'After: ' + temp.conceptId;
+        return temp;
+      });
+    }
+
+    function saveClassification(branch, classificationId) {
+      var JSON = '{ "status" : "SAVED"}';
+      return $http.put(apiEndpoint + branch + '/classifications/' + classificationId, JSON, {
+        headers: {'Content-Type': 'application/json; charset=UTF-8'}
+      }).then(function (response) {
+        return response;
+      });
+    }
 
     //////////////////////////////////////////////
     // Concept element retrieval functions
@@ -270,17 +274,83 @@ angular.module('singleConceptAuthoringApp')
     // Puts all elements in save-ready format
     function getFullConcept(conceptId, branch) {
 
-        var deferred = $q.defer();
-        var concept = {};
-        getConcept(conceptId, branch).then(function (response) {
-            concept = response;
-            deferred.resolve(concept);
-        });
-        return deferred.promise;
-        //return concept;
+      var deferred = $q.defer();
+      var concept = {};
+      getConcept(conceptId, branch).then(function (response) {
+        concept = response;
+        deferred.resolve(concept);
+      });
+      return deferred.promise;
+      //return concept;
     }
 
-    // make methods visible
+    /////////////////////////////////////
+    // Static metadata methods
+    ////////////////////////////////////
+
+    // TODO Discuss with Chris
+    // Perhaps we want to have a single getMetadata call
+    // that returns modules, languages, dialects, case sensitivities, etc.
+    // with add methods only?  This is beginning to get cumbersome
+    // what with requiring all get methods to be called in conceptEdit.js
+
+    var modules = [];
+    var languages = [];
+    var dialects = [];
+
+    // function to initialize/add to stored module names
+    // arg: moduleIds, array of module SCTIDs
+    // arg: branch, module branch
+    function addModules(moduleIds, branch) {
+      moduleIds.map(function(moduleId) {
+        var module = {};
+
+        // get the term, then add the module
+        getFullConcept(moduleId, branch).then(function (response) {
+          module.id = moduleId;
+          module.branch = branch;
+          module.name = response.fsn
+
+          console.log("Added module", module);
+
+          modules.push(module);
+        });
+
+      });
+    }
+
+    // function to retrieve all module id/name pairs
+    function getModules() {
+      return modules;
+    }
+
+    // add new language options
+    // TODO:  Currently unused, language options are extracted from dialects
+    function addLanguages(newLanguages) {
+      languages = languages.concat(newLanguages);
+      console.log('Language Options set to', languages);
+    }
+
+    // get language options
+    // TODO:  Currently unused, language options are extracted from dialects
+    function getLanguages() {
+      return languages;
+    }
+
+    // add new dialect options
+    function addDialects(newDialects) {
+      dialects = dialects.concat(newDialects);
+      console.debug('Dialect options set to: ', dialects);
+    }
+
+    // get dialect options
+    function getDialects() {
+      return dialects;
+    }
+    ////////////////////////////////////////////
+    // Method Visibility
+    // TODO All methods currently visible!
+    ////////////////////////////////////////////
     return {
 
       getConceptProperties: getConceptProperties,
@@ -303,7 +373,13 @@ angular.module('singleConceptAuthoringApp')
       getRelationshipChanges: getRelationshipChanges,
       cleanConcept: cleanConcept,
       getModelPreview: getModelPreview,
-      saveClassification: saveClassification
+      saveClassification: saveClassification,
+      addModules: addModules,
+      getModules: getModules,
+      addLanguages: addLanguages,
+      getLanguages: getLanguages,
+      addDialects: addDialects,
+      getDialects: getDialects
 
     };
   }
