@@ -1,19 +1,23 @@
 
 <div class="pop-edit description-popover row">
-  <div class="col-md-3 no-padding SCTID">
+  <div class="col-md-2 no-padding SCTID">
     <p class="row">SCTID</p>
     <span class="fields row"> {{description.descriptionId}}</span> </div>
-  <div class="col-md-3 no-padding moduleId">
+  <div class="col-md-2 no-padding moduleId">
     <p class="row">Module Id</p>
     <span class="fields row"> {{description.moduleId}}</span> </div>
-  <div class="col-md-3 no-padding lang">
-    <p>Lang.</p>
+  <div class="col-md-2 no-padding lang">
+    <p>Dialect</p>
     <select name="select-choice2" id="select-choice2" class="dropdowns"
                   ng-model="description.lang" ng-change="updateDescription(description)">
-      <option>en</option>
-      <option>es</option>
+      <option>EN-GB and EN-US</option>
+      <option>EN-GB</option>
+      <option>EN-US</option>
     </select>
   </div>
+  <div class="col-md-3 no-padding ">
+    <p class="row">Effective Time</p>
+    <span class="fields row"> {{description.effectiveTime}}</span> </div>
   <div class="col-md-3 no-padding case">
     <p>Case Significance</p>
     <select name="select-choice" id="select-choice3" class="dropdowns"
