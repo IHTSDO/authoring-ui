@@ -1,11 +1,15 @@
-
 <div class="pop-edit description-popover row">
-  <div class="col-md-2 no-padding SCTID">
+  <div class="col-md-4 no-padding">
+    <p class="row">Module ID</p>
+    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId"
+                  ng-change="updateDescription(description)">
+      <option>900000000000207008</option>
+      <option>900000000000012004</option>
+    </select>
+  </div>
+  <div class="col-md-1 no-padding SCTID">
     <p class="row">SCTID</p>
     <span class="fields row"> {{description.descriptionId}}</span> </div>
-  <div class="col-md-2 no-padding moduleId">
-    <p class="row">Module Id</p>
-    <span class="fields row"> {{description.moduleId}}</span> </div>
   <div class="col-md-2 no-padding lang">
     <p>Dialect</p>
     <select name="select-choice2" id="select-choice2" class="dropdowns"
@@ -15,7 +19,7 @@
       <option>EN-US</option>
     </select>
   </div>
-  <div class="col-md-3 no-padding ">
+  <div class="col-md-2 no-padding ">
     <p class="row">Effective Time</p>
     <span class="fields row"> {{description.effectiveTime}}</span> </div>
   <div class="col-md-3 no-padding case">
