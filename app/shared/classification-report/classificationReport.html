@@ -4,8 +4,8 @@
       <tr ng-repeat="result in $data">
             <td data-title="'Differences'" sortable="'differences'">
               <!-- Difference not currently defined, or possibly overlaps with changeNature -->
-                <span ng-show="result.changeNature === 'INFERRED'" style="color:green">added</span>
-                <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">inactivated</span>
+                <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
+                <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">Removed</span>
             </td>
             <td data-title="'Source'" sortable="'source'">
                 {{result.sourceName}}
