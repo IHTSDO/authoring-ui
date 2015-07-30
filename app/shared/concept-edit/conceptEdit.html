@@ -92,7 +92,7 @@
           </div>
           <div class="pull-left language">
             <select ng-disabled="description.effectiveTime"
-                    ng-options="language.abbr as language.abbr for language in languages"
+                    ng-options="language as language for language in getLanguageOptions()"
                     ng-model="description.lang"
                     ng-change="updateDescription(description)"
                     name="select-language" id="select-language-choice"

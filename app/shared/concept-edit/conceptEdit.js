@@ -41,6 +41,11 @@ angular.module('singleConceptAuthoringApp')
         // concept history for undoing changes
         scope.conceptSessionHistory = [];
 
+        // retrieve metadata (only modules for now)
+        scope.modules = snowowlService.getModules();
+        scope.languages = snowowlService.getLanguages();
+        scope.dialects = snowowlService.getDialects();
+
         ////////////////////////////////
         // Concept Elements
         ////////////////////////////////
@@ -61,7 +66,6 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.saveConcept = function (suppressMessage) {
-
 
           // delete any existing error before passing to services
           delete scope.concept.error;
@@ -163,10 +167,20 @@ angular.module('singleConceptAuthoringApp')
           return a.type < b.type;
         });
 
-        // Define available languages
-        scope.languages = [
-          {id: 'en', abbr: 'en'}
-        ];
+        // get language options from available dialects
+        scope.getLanguageOptions = function() {
+          var languages = [];
+          scope.dialects.map(function(dialect) {
+            // check if the ISO-639-1 2-letter code is already added
+            if (languages.indexOf(dialect.substring(0,2)) == -1) {
+              languages.push(dialect.substring(0,2));
+            }
+          });
+
+          return languages;
+        };
+
+        // extract the acceptable languages from the dialects
 
         // Define definition types
         scope.descTypeIds = [

@@ -1,10 +1,8 @@
 <div class="pop-edit description-popover row">
   <div class="col-md-4 no-padding">
-    <p class="row">Module ID</p>
+    <p class="row">Module</p>
     <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId"
-                  ng-change="updateDescription(description)">
-      <option>900000000000207008</option>
-      <option>900000000000012004</option>
+                  ng-change="updateDescription(description)" ng-options="module.id as (module.id + ': ' + module.name) for module in modules">
     </select>
   </div>
   <div class="col-md-1 no-padding SCTID">
@@ -13,11 +11,10 @@
   <div class="col-md-2 no-padding lang">
     <p>Dialect</p>
     <select name="select-choice2" id="select-choice2" class="dropdowns"
-                  ng-model="description.lang" ng-change="updateDescription(description)">
-      <option>EN-GB and EN-US</option>
-      <option>EN-GB</option>
-      <option>EN-US</option>
+                  ng-model="description.lang" ng-change="updateDescription(description)" ng-options="dialect as dialect for dialect in dialects">
+
     </select>
+    {{dialects}}
   </div>
   <div class="col-md-2 no-padding ">
     <p class="row">Effective Time</p>
