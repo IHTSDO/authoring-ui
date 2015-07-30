@@ -6,7 +6,12 @@
   <div class="col-md-4 no-padding ">
     <p class="row">Effective Time</p>
     <span class="fields row"> {{relationship.effectiveTime}}</span> </div>
-  <div class="col-md-4 no-padding ">
-    <p class="row">Module Id</p>
-    <span class="fields row"> {{relationship.moduleId}}</span> </div>
+  <div class="col-md-4 no-padding">
+    <p class="row">Module ID</p>
+    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="relationship.moduleId"
+                  ng-change="updateConcept(concept)">
+      <option>900000000000207008</option>
+      <option>900000000000012004</option>
+    </select>
+  </div>
 </div>
