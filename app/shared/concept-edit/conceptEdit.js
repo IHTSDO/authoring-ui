@@ -85,7 +85,6 @@ angular.module('singleConceptAuthoringApp')
 
           $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
-
           // if new, use create
           if (!concept.conceptId) {
 
@@ -159,6 +158,11 @@ angular.module('singleConceptAuthoringApp')
         // Description Elements
         ////////////////////////////////
 
+        // on load, sort descriptions by type, alphabetically
+        scope.concept.descriptions.sort(function (a, b) {
+          return a.type < b.type;
+        });
+
         // Define available languages
         scope.languages = [
           {id: 'en', abbr: 'en'}
@@ -220,10 +224,21 @@ angular.module('singleConceptAuthoringApp')
           {id: '', text: 'No reason'}
         ];
 
-        scope.addDescription = function () {
+        // Adds a description to the concept
+        // arg: afterIndex, integer, the index at which to add description after
+        scope.addDescription = function (afterIndex) {
 
           var description = objectService.getNewDescription(scope.concept.id);
-          scope.concept.descriptions.push(description);
+
+          // if not specified, simply push the new description
+          if (afterIndex == null || afterIndex == undefined) {
+            scope.concept.descriptions.push(description);
+          }
+          // if in range, add after the specified afterIndex
+          else {
+            scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+          }
+
         };
 
         scope.toggleDescriptionActive = function (description) {
@@ -273,16 +288,56 @@ angular.module('singleConceptAuthoringApp')
           {id: 'INFERRED_RELATIONSHIP', abbr: 'Inferred'}
         ];
 
-        scope.addIsaRelationship = function () {
+        // Adds an Is A relationship at the specified position
+        // arg: afterIndex, int, the position after which relationship to be added
+        // NOTE: This is relative to is a relationships ONLY
+        scope.addIsaRelationship = function (afterIndex) {
+
+          console.debug('adding attribute relationship', afterIndex)
+
 
           var relationship = objectService.getNewIsaRelationship(scope.concept.id);
-          scope.concept.relationships.push(relationship);
+
+          // if afterIndex not supplied or invalid, simply add
+          if (afterIndex === null || afterIndex === undefined) {
+            scope.concept.relationships.push(relationship);
+          }
+
+          // otherwise, add at the index specified
+          else {
+            // find the index of the requested insertion point
+            var rels = scope.getIsARelationships();
+            var relIndex = scope.concept.relationships.indexOf(rels[afterIndex]);
+
+            console.debug('found relationship index', relIndex);
+
+            // add the relationship
+            scope.concept.relationships.splice(relIndex+1, 0, relationship);
+          }
         };
 
-        scope.addAttributeRelationship = function () {
+        scope.addAttributeRelationship = function (afterIndex) {
+
+          console.debug('adding attribute relationship', afterIndex)
 
           var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
-          scope.concept.relationships.push(relationship);
+
+          // if afterIndex not supplied or invalid, simply add
+          if (afterIndex === null || afterIndex === undefined) {
+            scope.concept.relationships.push(relationship);
+          }
+
+          // otherwise, add at the index specified
+          else {
+            // find the index of the requested insertion point
+            var rels = scope.getAttributeRelationships();
+            var relIndex = scope.concept.relationships.indexOf(rels[afterIndex]);
+
+            console.debug('found relationship index', relIndex);
+
+            // add the relationship
+            scope.concept.relationships.splice(relIndex+1, 0, relationship);
+          }
         };
 
         scope.toggleRelationshipActive = function (relationship) {
