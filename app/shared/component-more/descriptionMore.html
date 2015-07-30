@@ -22,9 +22,9 @@
     <p>Case Significance</p>
     <select name="select-choice" id="select-choice3" class="dropdowns"
                 ng-model="description.caseSignificance" ng-change="updateDescription(description)">
-      <option>CASE_INSENSITIVE</option>
-      <option>ENTIRE_TERM_CASE_SENSITIVE</option>
-      <option>INITIAL_CHARACTER_CASE_INSENSITIVE</option>
+      <option value="CASE_INSENSITIVE">Case insensitive</option>
+      <option value="ENTIRE_TERM_CASE_SENSITIVE">Entire term case sensitive</option>
+      <option value="INITIAL_CHARACTER_CASE_INSENSITIVE" default>Only initial character case insensitive</option>
     </select>
   </div>
 </div>
