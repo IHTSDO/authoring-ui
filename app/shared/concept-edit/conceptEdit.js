@@ -46,6 +46,16 @@ angular.module('singleConceptAuthoringApp')
         scope.languages = snowowlService.getLanguages();
         scope.dialects = snowowlService.getDialects();
 
+        // flag for viewing active components only. Defaults:
+        // FALSE if new concept (no fsn)
+        // TRUE otherwise
+        scope.hideInactive = scope.concept.fsn;
+
+        scope.toggleHideInactive = function() {
+          scope.hideInactive = !scope.hideInactive;
+          $rootScope.$broadcast('editModelDraw');
+        }
+
         ////////////////////////////////
         // Concept Elements
         ////////////////////////////////
@@ -127,6 +137,8 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+        // function to toggle active status of concept
+        // cascades to children components
         scope.toggleConceptActive = function (concept) {
           // if inactive, simply set active and autosave
           if (!concept.active) {
@@ -158,6 +170,16 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+        // function to apply cascade changes when concept module id changes
+        scope.setConceptModule = function (concept) {
+          angular.forEach(scope.concept.descriptions, function(description) {
+            description.moduleId = concept.moduleId;
+          });
+          angular.forEach(scope.concept.relationships, function(relationship) {
+            relationship.moduleId = concept.moduleId;
+          });
+        }
+
         ////////////////////////////////
         // Description Elements
         ////////////////////////////////
@@ -168,12 +190,12 @@ angular.module('singleConceptAuthoringApp')
         });
 
         // get language options from available dialects
-        scope.getLanguageOptions = function() {
+        scope.getLanguageOptions = function () {
           var languages = [];
-          scope.dialects.map(function(dialect) {
+          scope.dialects.map(function (dialect) {
             // check if the ISO-639-1 2-letter code is already added
-            if (languages.indexOf(dialect.substring(0,2)) == -1) {
-              languages.push(dialect.substring(0,2));
+            if (languages.indexOf(dialect.substring(0, 2)) == -1) {
+              languages.push(dialect.substring(0, 2).toLowerCase());
             }
           });
 
@@ -192,8 +214,7 @@ angular.module('singleConceptAuthoringApp')
         // define acceptability types
         scope.acceptabilities = [
           {id: 'PREFERRED', abbr: 'Preferred'},
-          {id: 'ACCEPTABLE', abbr: 'Acceptable'},
-          {id: 'NOT ACCEPTABLE', abbr: 'Not acceptable'}
+          {id: 'ACCEPTABLE', abbr: 'Acceptable'}
         ];
 
         // List of acceptable reasons for inactivating a description
@@ -238,6 +259,20 @@ angular.module('singleConceptAuthoringApp')
           {id: '', text: 'No reason'}
         ];
 
+        // get viewed descriptions
+        scope.getDescriptions = function (checkForActive) {
+          var descs = [];
+          for (var i = 0; i < scope.concept.descriptions.length; i++) {
+
+            // check hideInactive
+            if (!checkForActive || !scope.hideInactive || (scope.hideInactive && scope.concept.descriptions[i].active === true)) {
+              descs.push(scope.concept.descriptions[i]);
+            }
+
+          }
+          return descs;
+        }
+
         // Adds a description to the concept
         // arg: afterIndex, integer, the index at which to add description after
         scope.addDescription = function (afterIndex) {
@@ -276,21 +311,32 @@ angular.module('singleConceptAuthoringApp')
         // Relationship Elements
         ////////////////////////////////
 
-        scope.getIsARelationships = function () {
+        scope.getIsARelationships = function (checkForActive) {
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
+
+            // check for type id and active-view flag
             if (scope.concept.relationships[i].type.conceptId === '116680003') {
-              rels.push(scope.concept.relationships[i]);
+
+              // check hideInactive
+              if (!checkForActive || !scope.hideInactive|| (scope.hideInactive && scope.concept.relationships[i].active === true)) {
+                rels.push(scope.concept.relationships[i]);
+              }
             }
           }
+
           return rels;
         };
 
-        scope.getAttributeRelationships = function () {
+        scope.getAttributeRelationships = function (checkForActive) {
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
             if (scope.concept.relationships[i].type.conceptId !== '116680003') {
-              rels.push(scope.concept.relationships[i]);
+
+              // check hideInactive
+              if (!checkForActive || !scope.hideInactive || (scope.hideInactive && scope.concept.relationships[i].active === true)) {
+                rels.push(scope.concept.relationships[i]);
+              }
             }
           }
           return rels;
@@ -303,12 +349,11 @@ angular.module('singleConceptAuthoringApp')
         ];
 
         // Adds an Is A relationship at the specified position
-        // arg: afterIndex, int, the position after which relationship to be added
-        // NOTE: This is relative to is a relationships ONLY
+        // arg: afterIndex, int, the position after which relationship to be
+        // added NOTE: This is relative to is a relationships ONLY
         scope.addIsaRelationship = function (afterIndex) {
 
           console.debug('adding attribute relationship', afterIndex)
-
 
           var relationship = objectService.getNewIsaRelationship(scope.concept.id);
 
@@ -326,7 +371,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('found relationship index', relIndex);
 
             // add the relationship
-            scope.concept.relationships.splice(relIndex+1, 0, relationship);
+            scope.concept.relationships.splice(relIndex + 1, 0, relationship);
           }
         };
 
@@ -350,7 +395,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('found relationship index', relIndex);
 
             // add the relationship
-            scope.concept.relationships.splice(relIndex+1, 0, relationship);
+            scope.concept.relationships.splice(relIndex + 1, 0, relationship);
           }
         };
 

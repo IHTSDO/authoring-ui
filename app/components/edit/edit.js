@@ -105,7 +105,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       $timeout(function () {
-          $rootScope.$broadcast('layoutChanged');
+          $rootScope.$broadcast('editModelDraw');
         }, 500);
     };
 
@@ -239,7 +239,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         $scope.concepts.push(response);
         $timeout(function () {
-            $rootScope.$broadcast('layoutChanged');
+            $rootScope.$broadcast('editModelDraw');
           }, 800);
 //        $timeout(function () {
 //          $scope.resizeSvg(response);
@@ -348,7 +348,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (!conceptExists) {
           $scope.concepts.push(response);
           $timeout(function () {
-            $rootScope.$broadcast('layoutChanged');
+            $rootScope.$broadcast('editModelDraw');
           }, 800);
 
           $scope.editPanelUiState.push(conceptId);
@@ -531,8 +531,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // watch classification for changes requiring broadcast
     $scope.$watchGroup(['classification', 'relationshipChanges', 'equivalentConcepts'], function () {
 
-      console.debug('change detected', $scope.classification, $scope.relationshipChanges, $scope.equivalentConcepts);
-      // do nothing if not set
+    // do nothing if not set
       if (!$scope.classification ) {
         return;
       }

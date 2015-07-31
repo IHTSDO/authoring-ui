@@ -1,4 +1,5 @@
 <div class="edits editing-form">
+
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="concept.error">
     <button type="button" class="close" data-dismiss="alert">×</button>
@@ -46,6 +47,12 @@
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
               title="Active/Inactive" ng-click="toggleConceptActive(concept)"></button>
+      <button type="button"
+              style="vertical-align: bottom"
+              class="btn-default editbuttons light-blue"
+              ng-class="[{'md-flash-on' : !hideInactive}, {'md-flash-off' : hideInactive}]"
+              title="Show/Hide Inactive Components" ng-click="toggleHideInactive()"></button>
+
       <button type="button" class="btn-default editbuttons amber md md-undo " title="Undo Changes"></button>
       <button type="button" class="btn-default editbuttons deep-purple lighten-1 md md-history"
               title="History"></button>
@@ -59,7 +66,7 @@
   <div ng-show="!isCollapsed" class="editHeightSelector">
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in concept.descriptions">
+    <div ng-repeat="description in getDescriptions(true)">
       <div class="row darken-3 p-5 grey">
         <div class="col-md-3 no-padding edits">
           <div class="pull-left">
@@ -116,7 +123,7 @@
     </div>
 
     <!-- rows: Concept IsA Relationships -->
-    <div ng-repeat="relationship in getIsARelationships()">
+    <div ng-repeat="relationship in getIsARelationships(true)">
       <div class="row darken-3 p-5 grey">
         <!-- Button controls -->
         <div class="col-md-3 no-padding">
@@ -176,7 +183,7 @@
     </div>
 
     <!-- rows: Concept Attributes (in relationships) -->
-    <div ng-repeat="relationship in getAttributeRelationships()">
+    <div ng-repeat="relationship in getAttributeRelationships(true)">
       <div class="row darken-3 p-5 grey">
         <!-- Button controls -->
         <div class="col-md-3 no-padding">
@@ -214,7 +221,7 @@
           <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
-                 placeholder="#">
+                 placeholder="#"></textarea>
         </div>
 
         <!-- linked concept -->

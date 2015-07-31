@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
-              scope.$on('layoutChanged', function() {
+              scope.$on('editModelDraw', function() {
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
