@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
     // creates a blank description linked to specified concept
     function getNewDescription(conceptId) {
       return {
-        'active': false,
+        'active': true,
         'moduleId': '900000000000207008',
         'type': null,
         'term': null,
@@ -28,7 +28,7 @@ angular.module('singleConceptAuthoringApp')
     // creates a blank relationship linked to specified source concept
     function getNewIsaRelationship(conceptId) {
       return {
-        'active': false,
+        'active': true,
         'characteristicType': 'STATED_RELATIONSHIP',
         'effectiveTime': null,
         'groupId': 0,
@@ -47,7 +47,7 @@ angular.module('singleConceptAuthoringApp')
     // creates a blank relationship linked to specified source concept
     function getNewAttributeRelationship(conceptId) {
       return {
-        'active': false,
+        'active': true,
         'characteristicType': 'STATED_RELATIONSHIP',
 
         'effectiveTime': null,
