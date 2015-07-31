@@ -254,6 +254,8 @@ angular.module('singleConceptAuthoringApp.edit', [
          }, 500);
          });*/
 
+      }, function(error) {
+
       });
     };
 

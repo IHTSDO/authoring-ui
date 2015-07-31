@@ -161,7 +161,7 @@ angular.module('singleConceptAuthoringApp')
 //                        } else {
                               sctClass = "sct-defined-concept";
 //                        }
-                              var rectRole = drawSctBox(svg, x + 85, y - 18, relationship.target.fsn, relationship.target.conceptId,"sct-attribute");
+                              var rectRole = drawSctBox(svg, x + 85, y - 18, relationship.type.fsn, relationship.type.conceptId,"sct-attribute");
                               connectElements(svg, conjunctionNode, rectRole, 'center', 'left');
                               var rectRole2 = drawSctBox(svg, x + 85 + rectRole.getBBox().width + 30, y - 18, relationship.target.fsn, relationship.target.conceptId, sctClass);
                               connectElements(svg, rectRole, rectRole2, 'right', 'left');
