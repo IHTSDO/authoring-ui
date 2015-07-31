@@ -18,7 +18,7 @@ angular.module('singleConceptAuthoringApp.projects', [
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Projects"
-    $scope.tasks = null;
+    $scope.projects = null;
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
@@ -28,10 +28,10 @@ angular.module('singleConceptAuthoringApp.projects', [
       },
       {
         filterDelay: 50,
-        total: $scope.tasks ? $scope.tasks.length : 0, // length of data
+        total: $scope.projects ? $scope.projects.length : 0, // length of data
         getData: function ($defer, params) {
 
-          if (!$scope.tasks || $scope.tasks.length == 0) {
+          if (!$scope.projects || $scope.projects.length == 0) {
             $defer.resolve(new Array());
           } else {
 
@@ -39,11 +39,11 @@ angular.module('singleConceptAuthoringApp.projects', [
             var mydata = [];
 
             if (searchStr) {
-              mydata = $scope.tasks.filter(function (item) {
+              mydata = $scope.projects.filter(function (item) {
                 return item.summary.toLowerCase().indexOf(searchStr) > -1 || item.projectKey.toLowerCase().indexOf(searchStr) > -1;
               });
             } else {
-              mydata = $scope.tasks;
+              mydata = $scope.projects;
             }
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
@@ -57,14 +57,14 @@ angular.module('singleConceptAuthoringApp.projects', [
 
     // watch for task creation events
     $scope.$on('taskCreated', function (event, task) {
-      if ($scope.tasks) {
-        $scope.tasks.unshift(task);
+      if ($scope.projects) {
+        $scope.projects.unshift(task);
       }
     });
 
     // on successful set, reload table parameters
-    $scope.$watch('tasks', function () {
-      if (!$scope.tasks || $scope.tasks.length == 0) {
+    $scope.$watch('projects', function () {
+      if (!$scope.projects || $scope.projects.length == 0) {
       }
       else {
         $scope.tableParams.reload();
@@ -84,19 +84,19 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
     }
 
-// Initialization:  get tasks
+// Initialization:  get projects
     function initialize() {
 
-      $scope.tasks = [];
+      $scope.projects = [];
 
-      // get tasks from all projects and append sample data
-      scaService.getTasks().then(function (response) {
+      // get projects from all projects and append sample data
+      scaService.getProjects().then(function (response) {
         if (!response || response.length == 0) {
-          $scope.tasks = [];
+          $scope.projects = [];
           return;
         }
 
-        $scope.tasks = response;
+        $scope.projects = response;
 
       }, function (error) {
         // TODO Handle errors

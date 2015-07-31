@@ -60,6 +60,12 @@ angular.module('singleConceptAuthoringApp')
         // Concept Elements
         ////////////////////////////////
 
+        // define characteristic types
+        scope.definitionStatuses = [
+          {id: 'PRIMITIVE', name: 'Primitive'},
+          {id: 'FULLY_DEFINED', name: 'Fully Defined'}
+        ];
+
         var inactivateConceptReasons = [
           {id: '', text: 'Ambiguous concept (inactive concept)'},
           {id: '', text: 'Duplicate concept (inactive concept)'},

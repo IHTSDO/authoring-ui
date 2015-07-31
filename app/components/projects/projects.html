@@ -25,13 +25,13 @@
         
           <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html" 
                  class="table table-full table-full-small">
-            <tr ng-repeat="task in $data">
+            <tr ng-repeat="project in $data">
 
               <td data-title="'Project Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
-                ng-href="#/promote"> Project Title Here</a>
+                ng-href="#/promote">{{project.title}} </a>
               </td>
               <td data-title="'Project Lead'" sortable="'projectKey'" filter="{ 'project': 'text' }">
-                {{task.projectKey}}
+
               </td>
            
               <td data-title="'Classification Results'" sortable="'classification'">
@@ -82,7 +82,7 @@
         <div class="col-md-1">
      <span class="pull-left p-t-20 ">
                  <button type="button" class="btn btn-round btn-info ng-scope " bs-tooltip="" title="Total Task Count">{{reviewTasks.length}}<div class="ripple-wrapper"></div></button>
-              <button type="button" class="btn btn-round btn-default " title="Create New Task" data-template="shared/task/task.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div>   </button> </span>
+              <button type="button" class="btn btn-round btn-default " title="Create New Task" data-template="shared/project/project.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div>   </button> </span>
    </div>
    </div>
 
@@ -90,15 +90,15 @@
 
      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
             class="table table-full table-full-small">
-       <tr ng-repeat="task in reviewTasks">
+       <tr ng-repeat="project in reviewTasks">
 
-         <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'"><a href="#/edit">{{task.name}}</a>
+         <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'"><a href="#/edit">{{project.name}}</a>
          </td>
          <td data-title="'Project'" sortable="'project'" filter="{ 'project': 'text' }" sortable="'project'">
-           {{task.project}}
+           {{project.project}}
          </td>
          <td data-title="'Last Modified'" sortable="'modified'">
-           {{task.modified | date: "yyyy-MM-dd"}}
+           {{project.modified | date: "yyyy-MM-dd"}}
          </td>
          <td data-title="'Classification Results'" sortable="'classification'">
            <button type="button" class="btn btn-round btn-default cyan lighten-2" bs-tooltip=""
@@ -115,7 +115,7 @@
            </button>
          </td>
          <td data-title="'Status'" sortable="'status'">
-           {{task.status}}
+           {{project.status}}
          </td>
        </tr>
      </table>
