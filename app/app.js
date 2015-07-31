@@ -50,10 +50,14 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, scaService, accountService, $cookies) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, accountService, $cookies) {
+
+    // set the default redirect/route
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
+
+    // get endpoint information and set route provider options
     endpointService.getEndpoints().then(function (data) {
       $rootScope.endpoints = data.endpoints;
       var accountUrl = data.endpoints.imsEndpoint + 'api/account';
@@ -95,6 +99,24 @@ angular
           }
         });
     });
+
+    ///////////////////////////////////////////
+    // Instantiate basic metadata in SnowOwl //
+    ///////////////////////////////////////////
+
+    var baseModules = [
+      '900000000000207008', '900000000000012004'
+    ];
+
+    var baseLanguages = [ 'en' ];
+
+    var baseDialects = [ 'EN-US', 'EN-GB', 'EN-GB and EN-US'];
+
+    // TODO Leave MAIN here?
+    snowowlService.addModules(baseModules, 'MAIN');
+    snowowlService.addLanguages(baseLanguages);
+    snowowlService.addDialects(baseDialects);
+
   })
   .controller('AppCtrl', ['$scope', '$location', function AppCtrl($scope, $location) {
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {

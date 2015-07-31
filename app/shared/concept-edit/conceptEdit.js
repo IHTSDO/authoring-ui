@@ -41,6 +41,21 @@ angular.module('singleConceptAuthoringApp')
         // concept history for undoing changes
         scope.conceptSessionHistory = [];
 
+        // retrieve metadata (only modules for now)
+        scope.modules = snowowlService.getModules();
+        scope.languages = snowowlService.getLanguages();
+        scope.dialects = snowowlService.getDialects();
+
+        // flag for viewing active components only. Defaults:
+        // FALSE if new concept (no fsn)
+        // TRUE otherwise
+        scope.hideInactive = scope.concept.fsn;
+
+        scope.toggleHideInactive = function() {
+          scope.hideInactive = !scope.hideInactive;
+          $rootScope.$broadcast('editModelDraw');
+        }
+
         ////////////////////////////////
         // Concept Elements
         ////////////////////////////////
@@ -61,7 +76,6 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.saveConcept = function (suppressMessage) {
-
 
           // delete any existing error before passing to services
           delete scope.concept.error;
@@ -84,7 +98,6 @@ angular.module('singleConceptAuthoringApp')
           });
 
           $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
-
 
           // if new, use create
           if (!concept.conceptId) {
@@ -124,6 +137,8 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+        // function to toggle active status of concept
+        // cascades to children components
         scope.toggleConceptActive = function (concept) {
           // if inactive, simply set active and autosave
           if (!concept.active) {
@@ -155,14 +170,39 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+        // function to apply cascade changes when concept module id changes
+        scope.setConceptModule = function (concept) {
+          angular.forEach(scope.concept.descriptions, function(description) {
+            description.moduleId = concept.moduleId;
+          });
+          angular.forEach(scope.concept.relationships, function(relationship) {
+            relationship.moduleId = concept.moduleId;
+          });
+        }
+
         ////////////////////////////////
         // Description Elements
         ////////////////////////////////
 
-        // Define available languages
-        scope.languages = [
-          {id: 'en', abbr: 'en'}
-        ];
+        // on load, sort descriptions by type, alphabetically
+        scope.concept.descriptions.sort(function (a, b) {
+          return a.type < b.type;
+        });
+
+        // get language options from available dialects
+        scope.getLanguageOptions = function () {
+          var languages = [];
+          scope.dialects.map(function (dialect) {
+            // check if the ISO-639-1 2-letter code is already added
+            if (languages.indexOf(dialect.substring(0, 2)) == -1) {
+              languages.push(dialect.substring(0, 2).toLowerCase());
+            }
+          });
+
+          return languages;
+        };
+
+        // extract the acceptable languages from the dialects
 
         // Define definition types
         scope.descTypeIds = [
@@ -174,8 +214,7 @@ angular.module('singleConceptAuthoringApp')
         // define acceptability types
         scope.acceptabilities = [
           {id: 'PREFERRED', abbr: 'Preferred'},
-          {id: 'ACCEPTABLE', abbr: 'Acceptable'},
-          {id: 'NOT ACCEPTABLE', abbr: 'Not acceptable'}
+          {id: 'ACCEPTABLE', abbr: 'Acceptable'}
         ];
 
         // List of acceptable reasons for inactivating a description
@@ -220,10 +259,35 @@ angular.module('singleConceptAuthoringApp')
           {id: '', text: 'No reason'}
         ];
 
-        scope.addDescription = function () {
+        // get viewed descriptions
+        scope.getDescriptions = function (checkForActive) {
+          var descs = [];
+          for (var i = 0; i < scope.concept.descriptions.length; i++) {
+
+            // check hideInactive
+            if (!checkForActive || !scope.hideInactive || (scope.hideInactive && scope.concept.descriptions[i].active === true)) {
+              descs.push(scope.concept.descriptions[i]);
+            }
+
+          }
+          return descs;
+        }
+
+        // Adds a description to the concept
+        // arg: afterIndex, integer, the index at which to add description after
+        scope.addDescription = function (afterIndex) {
 
           var description = objectService.getNewDescription(scope.concept.id);
-          scope.concept.descriptions.push(description);
+
+          // if not specified, simply push the new description
+          if (afterIndex == null || afterIndex == undefined) {
+            scope.concept.descriptions.push(description);
+          }
+          // if in range, add after the specified afterIndex
+          else {
+            scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+          }
+
         };
 
         scope.toggleDescriptionActive = function (description) {
@@ -247,21 +311,32 @@ angular.module('singleConceptAuthoringApp')
         // Relationship Elements
         ////////////////////////////////
 
-        scope.getIsARelationships = function () {
+        scope.getIsARelationships = function (checkForActive) {
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
+
+            // check for type id and active-view flag
             if (scope.concept.relationships[i].type.conceptId === '116680003') {
-              rels.push(scope.concept.relationships[i]);
+
+              // check hideInactive
+              if (!checkForActive || !scope.hideInactive|| (scope.hideInactive && scope.concept.relationships[i].active === true)) {
+                rels.push(scope.concept.relationships[i]);
+              }
             }
           }
+
           return rels;
         };
 
-        scope.getAttributeRelationships = function () {
+        scope.getAttributeRelationships = function (checkForActive) {
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
             if (scope.concept.relationships[i].type.conceptId !== '116680003') {
-              rels.push(scope.concept.relationships[i]);
+
+              // check hideInactive
+              if (!checkForActive || !scope.hideInactive || (scope.hideInactive && scope.concept.relationships[i].active === true)) {
+                rels.push(scope.concept.relationships[i]);
+              }
             }
           }
           return rels;
@@ -273,16 +348,55 @@ angular.module('singleConceptAuthoringApp')
           {id: 'INFERRED_RELATIONSHIP', abbr: 'Inferred'}
         ];
 
-        scope.addIsaRelationship = function () {
+        // Adds an Is A relationship at the specified position
+        // arg: afterIndex, int, the position after which relationship to be
+        // added NOTE: This is relative to is a relationships ONLY
+        scope.addIsaRelationship = function (afterIndex) {
+
+          console.debug('adding attribute relationship', afterIndex)
 
           var relationship = objectService.getNewIsaRelationship(scope.concept.id);
-          scope.concept.relationships.push(relationship);
+
+          // if afterIndex not supplied or invalid, simply add
+          if (afterIndex === null || afterIndex === undefined) {
+            scope.concept.relationships.push(relationship);
+          }
+
+          // otherwise, add at the index specified
+          else {
+            // find the index of the requested insertion point
+            var rels = scope.getIsARelationships();
+            var relIndex = scope.concept.relationships.indexOf(rels[afterIndex]);
+
+            console.debug('found relationship index', relIndex);
+
+            // add the relationship
+            scope.concept.relationships.splice(relIndex + 1, 0, relationship);
+          }
         };
 
-        scope.addAttributeRelationship = function () {
+        scope.addAttributeRelationship = function (afterIndex) {
+
+          console.debug('adding attribute relationship', afterIndex)
 
           var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
-          scope.concept.relationships.push(relationship);
+
+          // if afterIndex not supplied or invalid, simply add
+          if (afterIndex === null || afterIndex === undefined) {
+            scope.concept.relationships.push(relationship);
+          }
+
+          // otherwise, add at the index specified
+          else {
+            // find the index of the requested insertion point
+            var rels = scope.getAttributeRelationships();
+            var relIndex = scope.concept.relationships.indexOf(rels[afterIndex]);
+
+            console.debug('found relationship index', relIndex);
+
+            // add the relationship
+            scope.concept.relationships.splice(relIndex + 1, 0, relationship);
+          }
         };
 
         scope.toggleRelationshipActive = function (relationship) {
