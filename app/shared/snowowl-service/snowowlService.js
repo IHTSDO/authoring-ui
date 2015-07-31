@@ -29,16 +29,6 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
-    // Get Concept
-    // GET /browser/{path}/concepts/{conceptId}
-    function getConcept(conceptId, branch) {
-      return $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId).then(function (response) {
-        return response.data;
-      }, function (error) {
-        // TODO Handle error
-      });
-    }
-
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
       // strip unknown tags
@@ -282,9 +272,12 @@ angular.module('singleConceptAuthoringApp')
 
       var deferred = $q.defer();
       var concept = {};
-      getConcept(conceptId, branch).then(function (response) {
-        concept = response;
+      $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId).then(function (response) {
+        concept = response.data;
+        console.debug('snowowl', response.data);
         deferred.resolve(concept);
+      }, function (error) {
+        deferred.reject(concept);
       });
       return deferred.promise;
       //return concept;

@@ -74,6 +74,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     function initialize() {
       scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
         $scope.task = response;
+
       });
 
       // initialize classification display with ready status
