@@ -90,13 +90,6 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
-          // remove the display names from relationship type/target
-          // TODO Check if this is still necessary
-          angular.forEach(concept.relationships, function (rel) {
-            delete rel.target.fsn;
-            delete rel.type.fsn;
-          });
-
           $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
           // if new, use create
@@ -121,9 +114,10 @@ angular.module('singleConceptAuthoringApp')
 
           // if not new, use update
           else {
+            console.debug('update concept', concept);
             snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
 
-              console.debug('update', response);
+              console.debug('update response', response);
               if (response && response.conceptId) {
                 scope.concept = response;
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
@@ -449,6 +443,7 @@ angular.module('singleConceptAuthoringApp')
 
         // construct an id-name pair json object from relationship target
         scope.getConceptIdNamePairFromRelationshipTarget = function (relationship) {
+          console.debug('getConceptIdNamePair');
           return {
             id: relationship.target.conceptId,
             name: relationship.target.fsn
@@ -457,6 +452,7 @@ angular.module('singleConceptAuthoringApp')
 
         // construct an id-name pair json object from attribute type
         scope.getConceptIdNamePairFromAttributeType = function (relationship) {
+          console.debug('getConceptIdNamePair');
           return {
             id: relationship.type.conceptId,
             name: relationship.type.fsn
@@ -465,8 +461,11 @@ angular.module('singleConceptAuthoringApp')
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          console.debug('Drag-n-drop: Relationship Target');
+
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
+            console.error('Cannot update released relationship');
             return;
           }
 
@@ -480,21 +479,27 @@ angular.module('singleConceptAuthoringApp')
 
           // if name supplied, set the display name, otherwise retrieve it
           if (data.name) {
+
             relationship.target.fsn = data.name;
+            scope.updateRelationship(relationship);
           } else {
+            // TODO Do we yet have a FSN call?
             snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
               relationship.target.fsn = response.term;
+              scope.updateRelationship(relationship);
             });
           }
 
-          // update the relationship -- TODO Check if name required
-          scope.updateRelationship(relationship);
+
         };
 
-        scope.dropAttributeType = function (relationship, data) {
+        scope.dropRelationshipType = function (relationship, data) {
+
+          console.debug('Drag-n-drop:  Relationship Type')
 
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
+            console.error('Cannot update released relationship');
             return;
           }
 
@@ -510,14 +515,17 @@ angular.module('singleConceptAuthoringApp')
           // if name supplied, use it, otherwise retrieve it
           if (data.name) {
             relationship.type.fsn = data.name;
+            console.debug(relationship);
+            scope.updateRelationship(relationship);
           } else {
             snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
               relationship.type.fsn = response.term;
+              console.debug(relationship);
+              scope.updateRelationship(relationship);
             });
           }
 
-          // update the concept -- TODO Check if name required
-          scope.updateRelationship(relationship);
+
         };
 
         // dummy function added for now to prevent default behavior
