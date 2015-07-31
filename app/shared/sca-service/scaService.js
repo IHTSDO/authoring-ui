@@ -94,10 +94,12 @@ angular.module('singleConceptAuthoringApp')
             // temporary check to verify authentication on Edit component
             // will later be replaced by accountService call in app.js
             $rootScope.accountDetails = response.data.assignee;
-            
+
             return response.data;
           }, function (error) {
-            return {};
+            if (error.status === 403) {
+              $location.path('/login');
+            }
           }
         );
       },
