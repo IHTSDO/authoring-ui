@@ -100,6 +100,12 @@ angular.module('singleConceptAuthoringApp')
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
     function getRelationshipChanges(classifierId, projectId, taskId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes', {header : {'Content-Type' : 'text/csv'}}).then(function (response) {
+        return response.data.items;
+      });
+    }
+      
+    function downloadClassification(classifierId, projectId, taskId, branch) {
       return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes').then(function (response) {
         return response.data.items;
       });
@@ -379,7 +385,8 @@ angular.module('singleConceptAuthoringApp')
       addLanguages: addLanguages,
       getLanguages: getLanguages,
       addDialects: addDialects,
-      getDialects: getDialects
+      getDialects: getDialects,
+      downloadClassification: downloadClassification
 
     };
   }

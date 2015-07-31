@@ -76,6 +76,14 @@ angular.module('singleConceptAuthoringApp')
                 
             });
         };
+          
+        scope.downloadClassification = function()
+        {
+            snowowlService.downloadClassification(scope.classification.id, $routeParams.projectId,
+        $routeParams.taskId, scope.branch).then(function(response){
+                
+            });
+        };
         
 
         // notification of classification retrieved and set
