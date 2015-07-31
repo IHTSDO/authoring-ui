@@ -119,38 +119,6 @@ angular.module('singleConceptAuthoringApp.home', [
       }
     };
 
-//    function appendClassificationResults(task) {
-//
-////      task.classifications = [];
-////      task.latestClassification = null;
-////
-////      // TODO Update branch when branching is implemented
-////      snowowlService.getClassificationResultsForTask(task.projectKey, task.key, 'MAIN').then(function (response) {
-////
-////
-////        if (!response) {
-////          // do nothing
-////        } else {
-////
-////          // append the first result
-////          task.classifications = response;
-////          task.latestClassification = response[response.length-1];
-////
-////          console.debug('Revised task', task);
-////          
-//          // if the result is still running, start polling
-//          console.log(task);
-//          if (task.latestClassificationJson != undefined) {
-//              if(task.latestClassificationJson.status === 'RUNNING'){
-//                  pollForResult(task);
-//              }
-//            
-//          }
-////        }
-////      })
-//    }
-
-
 // Initialization:  get tasks and classifications
     function initialize() {
 
