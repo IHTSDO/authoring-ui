@@ -309,9 +309,9 @@ angular.module('singleConceptAuthoringApp')
         getFullConcept(moduleId, branch).then(function (response) {
           module.id = moduleId;
           module.branch = branch;
-          module.name = response.fsn
+          module.name = response.fsn;
 
-          console.log("Added module", module);
+          console.log('Added module', module);
 
           modules.push(module);
         });

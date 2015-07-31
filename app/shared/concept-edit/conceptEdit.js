@@ -54,7 +54,7 @@ angular.module('singleConceptAuthoringApp')
         scope.toggleHideInactive = function() {
           scope.hideInactive = !scope.hideInactive;
           $rootScope.$broadcast('editModelDraw');
-        }
+        };
 
         ////////////////////////////////
         // Concept Elements
@@ -178,7 +178,7 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(scope.concept.relationships, function(relationship) {
             relationship.moduleId = concept.moduleId;
           });
-        }
+        };
 
         ////////////////////////////////
         // Description Elements
@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp')
           var languages = [];
           scope.dialects.map(function (dialect) {
             // check if the ISO-639-1 2-letter code is already added
-            if (languages.indexOf(dialect.substring(0, 2)) == -1) {
+            if (languages.indexOf(dialect.substring(0, 2)) === -1) {
               languages.push(dialect.substring(0, 2).toLowerCase());
             }
           });
@@ -271,7 +271,7 @@ angular.module('singleConceptAuthoringApp')
 
           }
           return descs;
-        }
+        };
 
         // Adds a description to the concept
         // arg: afterIndex, integer, the index at which to add description after
@@ -280,7 +280,7 @@ angular.module('singleConceptAuthoringApp')
           var description = objectService.getNewDescription(scope.concept.id);
 
           // if not specified, simply push the new description
-          if (afterIndex == null || afterIndex == undefined) {
+          if (afterIndex === null || afterIndex === undefined) {
             scope.concept.descriptions.push(description);
           }
           // if in range, add after the specified afterIndex
@@ -353,7 +353,7 @@ angular.module('singleConceptAuthoringApp')
         // added NOTE: This is relative to is a relationships ONLY
         scope.addIsaRelationship = function (afterIndex) {
 
-          console.debug('adding attribute relationship', afterIndex)
+          console.debug('adding attribute relationship', afterIndex);
 
           var relationship = objectService.getNewIsaRelationship(scope.concept.id);
 
@@ -377,7 +377,7 @@ angular.module('singleConceptAuthoringApp')
 
         scope.addAttributeRelationship = function (afterIndex) {
 
-          console.debug('adding attribute relationship', afterIndex)
+          console.debug('adding attribute relationship', afterIndex);
 
           var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
 
