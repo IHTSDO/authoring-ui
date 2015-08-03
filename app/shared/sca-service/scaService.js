@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', '$location', function ($http, $rootScope, $location) {
+  .service('scaService', ['$http', '$rootScope', '$location', '$q', function ($http, $rootScope, $location, $q) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -63,20 +63,24 @@ angular.module('singleConceptAuthoringApp')
 
       // create a task for a project, assigned to current user
       createTaskForProject: function (projectKey, task) {
+
+        var deferred = $q.defer();
+
         if (!projectKey) {
-          console.error('Must specify projectKey to create a task');
-          return {};
+          deferred.reject('Must specify projectKey to create a task');
         }
         if (!task) {
-          console.error('Must specify task parameters to create a task');
+          deferred.reject('Must specify task parameters to create a task');
         }
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks', task).then(
+         $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks', task).then(
           function (response) {
-            return response;
-          }, function (error) {
-            // TODO Handle errors
+            deferred.resolve(response);
+          }, function (error, data) {
+            deferred.reject(error);
           }
         );
+
+        return deferred.promise;
       },
 
       // get a specific task for a project

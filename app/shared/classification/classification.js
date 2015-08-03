@@ -2,7 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', '$timeout', function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, $timeout) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', '$timeout',
+    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, $timeout) {
     return {
       restrict: 'A',
       transclude: false,
@@ -118,7 +119,7 @@ angular.module('singleConceptAuthoringApp')
 
         // start latest validation
         scope.startValidation = function() {
-          scaService.startValidation($routeParams.projectId, $routeParams.taskId).then(function(validation) {
+          scaService.startValidationForTask($routeParams.projectId, $routeParams.taskId).then(function(validation) {
             scope.validation = validation;
           })
         }
