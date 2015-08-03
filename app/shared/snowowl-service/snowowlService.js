@@ -29,16 +29,6 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
-    // Get Concept
-    // GET /browser/{path}/concepts/{conceptId}
-    function getConcept(conceptId, branch) {
-      return $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId).then(function (response) {
-        return response.data;
-      }, function (error) {
-        // TODO Handle error
-      });
-    }
-
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
       // strip unknown tags
@@ -100,6 +90,12 @@ angular.module('singleConceptAuthoringApp')
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
     function getRelationshipChanges(classifierId, projectId, taskId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes', {header : {'Content-Type' : 'text/csv'}}).then(function (response) {
+        return response.data.items;
+      });
+    }
+      
+    function downloadClassification(classifierId, projectId, taskId, branch) {
       return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes').then(function (response) {
         return response.data.items;
       });
@@ -276,9 +272,12 @@ angular.module('singleConceptAuthoringApp')
 
       var deferred = $q.defer();
       var concept = {};
-      getConcept(conceptId, branch).then(function (response) {
-        concept = response;
+      $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId).then(function (response) {
+        concept = response.data;
+        console.debug('snowowl', response.data);
         deferred.resolve(concept);
+      }, function (error) {
+        deferred.reject(concept);
       });
       return deferred.promise;
       //return concept;
@@ -309,9 +308,9 @@ angular.module('singleConceptAuthoringApp')
         getFullConcept(moduleId, branch).then(function (response) {
           module.id = moduleId;
           module.branch = branch;
-          module.name = response.fsn
+          module.name = response.fsn;
 
-          console.log("Added module", module);
+          console.log('Added module', module);
 
           modules.push(module);
         });
@@ -379,7 +378,8 @@ angular.module('singleConceptAuthoringApp')
       addLanguages: addLanguages,
       getLanguages: getLanguages,
       addDialects: addDialects,
-      getDialects: getDialects
+      getDialects: getDialects,
+      downloadClassification: downloadClassification
 
     };
   }

@@ -54,11 +54,17 @@ angular.module('singleConceptAuthoringApp')
         scope.toggleHideInactive = function() {
           scope.hideInactive = !scope.hideInactive;
           $rootScope.$broadcast('editModelDraw');
-        }
+        };
 
         ////////////////////////////////
         // Concept Elements
         ////////////////////////////////
+
+        // define characteristic types
+        scope.definitionStatuses = [
+          {id: 'PRIMITIVE', name: 'Primitive'},
+          {id: 'FULLY_DEFINED', name: 'Fully Defined'}
+        ];
 
         var inactivateConceptReasons = [
           {id: '', text: 'Ambiguous concept (inactive concept)'},
@@ -90,13 +96,6 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
-          // remove the display names from relationship type/target
-          // TODO Check if this is still necessary
-          angular.forEach(concept.relationships, function (rel) {
-            delete rel.target.fsn;
-            delete rel.type.fsn;
-          });
-
           $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
           // if new, use create
@@ -121,9 +120,10 @@ angular.module('singleConceptAuthoringApp')
 
           // if not new, use update
           else {
+            console.debug('update concept', concept);
             snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
 
-              console.debug('update', response);
+              console.debug('update response', response);
               if (response && response.conceptId) {
                 scope.concept = response;
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
@@ -156,9 +156,6 @@ angular.module('singleConceptAuthoringApp')
               // if reason is selected, deactivate all descriptions and
               // relationships
               if (reason) {
-                angular.forEach(scope.concept.descriptions, function (description) {
-                  description.active = false;
-                });
                 angular.forEach(scope.concept.relationships, function (relationship) {
                   relationship.active = false;
                 });
@@ -178,7 +175,7 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(scope.concept.relationships, function(relationship) {
             relationship.moduleId = concept.moduleId;
           });
-        }
+        };
 
         ////////////////////////////////
         // Description Elements
@@ -194,7 +191,7 @@ angular.module('singleConceptAuthoringApp')
           var languages = [];
           scope.dialects.map(function (dialect) {
             // check if the ISO-639-1 2-letter code is already added
-            if (languages.indexOf(dialect.substring(0, 2)) == -1) {
+            if (languages.indexOf(dialect.substring(0, 2)) === -1) {
               languages.push(dialect.substring(0, 2).toLowerCase());
             }
           });
@@ -271,7 +268,7 @@ angular.module('singleConceptAuthoringApp')
 
           }
           return descs;
-        }
+        };
 
         // Adds a description to the concept
         // arg: afterIndex, integer, the index at which to add description after
@@ -280,7 +277,7 @@ angular.module('singleConceptAuthoringApp')
           var description = objectService.getNewDescription(scope.concept.id);
 
           // if not specified, simply push the new description
-          if (afterIndex == null || afterIndex == undefined) {
+          if (afterIndex === null || afterIndex === undefined) {
             scope.concept.descriptions.push(description);
           }
           // if in range, add after the specified afterIndex
@@ -353,7 +350,7 @@ angular.module('singleConceptAuthoringApp')
         // added NOTE: This is relative to is a relationships ONLY
         scope.addIsaRelationship = function (afterIndex) {
 
-          console.debug('adding attribute relationship', afterIndex)
+          console.debug('adding attribute relationship', afterIndex);
 
           var relationship = objectService.getNewIsaRelationship(scope.concept.id);
 
@@ -377,7 +374,7 @@ angular.module('singleConceptAuthoringApp')
 
         scope.addAttributeRelationship = function (afterIndex) {
 
-          console.debug('adding attribute relationship', afterIndex)
+          console.debug('adding attribute relationship', afterIndex);
 
           var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
 
@@ -449,6 +446,7 @@ angular.module('singleConceptAuthoringApp')
 
         // construct an id-name pair json object from relationship target
         scope.getConceptIdNamePairFromRelationshipTarget = function (relationship) {
+          console.debug('getConceptIdNamePair');
           return {
             id: relationship.target.conceptId,
             name: relationship.target.fsn
@@ -457,6 +455,7 @@ angular.module('singleConceptAuthoringApp')
 
         // construct an id-name pair json object from attribute type
         scope.getConceptIdNamePairFromAttributeType = function (relationship) {
+          console.debug('getConceptIdNamePair');
           return {
             id: relationship.type.conceptId,
             name: relationship.type.fsn
@@ -465,8 +464,11 @@ angular.module('singleConceptAuthoringApp')
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          console.debug('Drag-n-drop: Relationship Target');
+
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
+            console.error('Cannot update released relationship');
             return;
           }
 
@@ -480,21 +482,27 @@ angular.module('singleConceptAuthoringApp')
 
           // if name supplied, set the display name, otherwise retrieve it
           if (data.name) {
+
             relationship.target.fsn = data.name;
+            scope.updateRelationship(relationship);
           } else {
+            // TODO Do we yet have a FSN call?
             snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
               relationship.target.fsn = response.term;
+              scope.updateRelationship(relationship);
             });
           }
 
-          // update the relationship -- TODO Check if name required
-          scope.updateRelationship(relationship);
+
         };
 
-        scope.dropAttributeType = function (relationship, data) {
+        scope.dropRelationshipType = function (relationship, data) {
+
+          console.debug('Drag-n-drop:  Relationship Type')
 
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
+            console.error('Cannot update released relationship');
             return;
           }
 
@@ -510,14 +518,17 @@ angular.module('singleConceptAuthoringApp')
           // if name supplied, use it, otherwise retrieve it
           if (data.name) {
             relationship.type.fsn = data.name;
+            console.debug(relationship);
+            scope.updateRelationship(relationship);
           } else {
             snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
               relationship.type.fsn = response.term;
+              console.debug(relationship);
+              scope.updateRelationship(relationship);
             });
           }
 
-          // update the concept -- TODO Check if name required
-          scope.updateRelationship(relationship);
+
         };
 
         // dummy function added for now to prevent default behavior
