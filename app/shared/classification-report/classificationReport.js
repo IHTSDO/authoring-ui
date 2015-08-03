@@ -9,7 +9,7 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: {
         // the table params
-        data: '=data'
+        items: '=items'
 
       },
       templateUrl: 'shared/classification-report/classificationReport.html',
@@ -24,7 +24,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
 
             // check all current data items for edit re-enable
-            angular.forEach(scope.data, function (item) {
+            angular.forEach(scope.items, function (item) {
               if (item.destinationId === data.concept.conceptId) {
                 item.isLoaded = false;
               }
@@ -37,7 +37,7 @@ angular.module('singleConceptAuthoringApp')
 
           console.debug('editConcept notification received', data.conceptId);
           // flag this item as loaded, no need to update UI State
-          angular.forEach(scope.data, function (item) {
+          angular.forEach(scope.items, function (item) {
             if (data.conceptId === item.destinationId) {
               item.isLoaded = true;
             }
@@ -63,15 +63,15 @@ angular.module('singleConceptAuthoringApp')
           orderBy: 'changeNature'
         }, {
           $scope: scope,
-          total: scope.data ? scope.data.length : 0, // length of data
+          total: scope.items ? scope.items.length : 0, // length of data
           getData: function ($defer, params) {
 
-            if (!scope.data || scope.data.length === 0) {
+            if (!scope.items || scope.items.length === 0) {
               $defer.resolve([]);
             } else {
               var orderedData = params.sorting() ?
-                $filter('orderBy')(scope.data, params.orderBy()) :
-                scope.data;
+                $filter('orderBy')(scope.items, params.orderBy()) :
+                scope.items;
 
               $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
@@ -106,7 +106,7 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // flag the relationships in data
-              angular.forEach(scope.data, function (item) {
+              angular.forEach(scope.items, function (item) {
                 item.isLoaded = scope.editPanelUiState.indexOf(item.destinationId) !== -1;
               });
 
@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         // on data change, update the table
-        scope.$watch('data', function () {
+        scope.$watch('items', function () {
           updateTable();
         });
 
