@@ -35,48 +35,54 @@ angular.module('singleConceptAuthoringApp')
             relationship.typeName = response.term;
           });
         }
+
         $rootScope.$on('comparativeModelAdded', function (event, model) {
-            snowowlService.getFullConcept(model.id, scope.branch).then(function(response){
-                var temp = response;
-                var id = temp.conceptId;
-                temp.conceptId = 'Before: ' + temp.conceptId;
-                scope.modelConcept = response;
-                snowowlService.getModelPreview(scope.classification.id, scope.branch, model.id).then(function(secondResponse){
-                    scope.modelConceptAfter = secondResponse;
-                    scope.displayModels = true;
-                    $timeout(function () {
-                        $rootScope.$broadcast('comparativeModelDraw');
-                    }, 1000);
-                });
+          snowowlService.getFullConcept(model.id, scope.branch).then(function (response) {
+            var temp = response;
+            var id = temp.conceptId;
+            temp.conceptId = 'Before: ' + temp.conceptId;
+            scope.modelConcept = response;
+            snowowlService.getModelPreview(scope.classification.id, scope.branch, model.id).then(function (secondResponse) {
+              scope.modelConceptAfter = secondResponse;
+              scope.displayModels = true;
+              $timeout(function () {
+                $rootScope.$broadcast('comparativeModelDraw');
+              }, 1000);
             });
+          });
         });
         var resizeClassificationSvg = function (concept, id) {
-            var elem = document.getElementById('#' + concept.conceptId);
-            var parentElem = document.getElementById('drawModel' + concept.conceptId);
+          var elem = document.getElementById('#' + concept.conceptId);
+          var parentElem = document.getElementById('drawModel' + concept.conceptId);
 
-            if (!elem || !parentElem) {
-              return;
-            }
+          if (!elem || !parentElem) {
+            return;
+          }
 
-            // set the height and width`
-            var width = parentElem.offsetWidth - 30;
-            var height = $('#editPanel-' + id).find('.editHeightSelector').height() + 41;
-            if (width < 0) {
-              return;
-            }
-            console.log(elem);
+          // set the height and width`
+          var width = parentElem.offsetWidth - 30;
+          var height = $('#editPanel-' + id).find('.editHeightSelector').height() + 41;
+          if (width < 0) {
+            return;
+          }
+          console.log(elem);
 
-            elem.setAttribute('width', width);
-            elem.setAttribute('height', height);
+          elem.setAttribute('width', width);
+          elem.setAttribute('height', height);
         };
-          
-        scope.saveClassification = function()
-        {
-            snowowlService.saveClassification(scope.branch, scope.classification.id).then(function(response){
-                
+
+        scope.saveClassification = function () {
+          snowowlService.saveClassification(scope.branch, scope.classification.id).then(function (response) {
+
+          });
+        };
+
+        scope.downloadClassification = function () {
+          snowowlService.downloadClassification(scope.classification.id, $routeParams.projectId,
+            $routeParams.taskId, scope.branch).then(function (response) {
+
             });
         };
-        
 
         // notification of classification retrieved and set
         $rootScope.$on('setClassification', function (event, classification) {
@@ -104,8 +110,20 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-
         });
+
+        ////////////////////////////////////
+        // Validation Functions
+        ////////////////////////////////////
+
+        // start latest validation
+        scope.startValidation = function() {
+          scaService.startValidation($routeParams.projectId, $routeParams.taskId).then(function(validation) {
+            scope.validation = validation;
+          })
+        }
+
+        // get latest validation
       }
 
     };

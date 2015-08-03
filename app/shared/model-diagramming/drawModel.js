@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
-              scope.$on('editModelDraw', function() {
+              scope.$on('layoutChanged', function() {
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
@@ -136,7 +136,7 @@ angular.module('singleConceptAuthoringApp')
                       sctClass = "sct-defined-concept";
 //                }
                       if (relationship.groupId == 0) {
-                          var rectAttr = drawSctBox(svg, x, y, relationship.target.fsn, relationship.target.conceptId, "sct-attribute");
+                          var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
                           connectElements(svg, circle2, rectAttr, 'center', 'left');
                           var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
                           connectElements(svg, rectAttr, rectTarget, 'right', 'left');
@@ -161,7 +161,7 @@ angular.module('singleConceptAuthoringApp')
 //                        } else {
                               sctClass = "sct-defined-concept";
 //                        }
-                              var rectRole = drawSctBox(svg, x + 85, y - 18, relationship.target.fsn, relationship.target.conceptId,"sct-attribute");
+                              var rectRole = drawSctBox(svg, x + 85, y - 18, relationship.type.fsn, relationship.type.conceptId,"sct-attribute");
                               connectElements(svg, conjunctionNode, rectRole, 'center', 'left');
                               var rectRole2 = drawSctBox(svg, x + 85 + rectRole.getBBox().width + 30, y - 18, relationship.target.fsn, relationship.target.conceptId, sctClass);
                               connectElements(svg, rectRole, rectRole2, 'right', 'left');

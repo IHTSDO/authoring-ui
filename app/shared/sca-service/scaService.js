@@ -27,23 +27,21 @@ angular.module('singleConceptAuthoringApp')
       getTasks: function () {
         return $http.get(apiEndpoint + 'projects/my-tasks').then(
           function (response) {
-              if ($rootScope.loggedIn === null) {
+            if ($rootScope.loggedIn === null) {
               $rootScope.loggedIn = true;
 
+              // temporary check to verify authentication on Home component
+              // will later be replaced by accountService call in app.js
               if (response.data.length > 0) {
                 $rootScope.accountDetails = response.data[0].assignee;
               }
             }
-            // temporary check to verify authentication
-            // will later be replaced by accountService call in app.js
-            
 
             return response.data;
           }, function (error) {
-              if(error.status === 403)
-                {
-                    $location.path( '/login');
-                }
+            if (error.status === 403) {
+              $location.path('/login');
+            }
           }
         );
       },
@@ -92,9 +90,16 @@ angular.module('singleConceptAuthoringApp')
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey).then(
           function (response) {
+
+            // temporary check to verify authentication on Edit component
+            // will later be replaced by accountService call in app.js
+            $rootScope.accountDetails = response.data.assignee;
+
             return response.data;
           }, function (error) {
-            return {};
+            if (error.status === 403) {
+              $location.path('/login');
+            }
           }
         );
       },
@@ -160,11 +165,11 @@ angular.module('singleConceptAuthoringApp')
 
       startClassification: function (projectKey, taskKey) {
         if (!projectKey) {
-          console.error('Must specify projectKey to save UI state');
+          console.error('Must specify projectKey to start classification');
           return {};
         }
         if (!taskKey) {
-          console.error('Must specify taskKey to save UI state');
+          console.error('Must specify taskKey to start classification');
           return {};
         }
 
@@ -175,7 +180,58 @@ angular.module('singleConceptAuthoringApp')
           }, function (error) {
             // TODO Handle errors
           });
+      },
+
+      ///////////////////////////////////////////////
+      // Validation
+      ///////////////////////////////////////////////
+
+      // Get latest classification for a task
+      // GET /projects/{projectKey}/tasks/{taskKey}/validation
+      getValidationForTask: function (projectKey, taskKey) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to get latest validation results');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to get latest validation results');
+          return {};
+        }
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/validation', {}).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            console.error('Error getting latest validation for ' + projectKey + ', ' + taskKey);
+            return null;
+          });
+      },
+
+      // Initiate  classification for a task
+      // POST /projects/{projectKey}/tasks/{taskKey}/validation
+      startValidationForTask: function (projectKey, taskKey) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to initiate validation');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to initiate validation');
+          return {};
+        }
+
+        // POST call takes no data
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/validation', {}).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            console.error('Error starting validation for ' + projectKey + ', ' + taskKey);
+            return null;
+          });
       }
+
+      // TODO Add project validation calls
+      // POST /projects/{projectKey}/validation
+      // GET /projects/{projectKey}/validation
+
     };
 
   }])

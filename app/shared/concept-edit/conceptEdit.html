@@ -33,9 +33,10 @@
     </div>
     <div class="pull-right m-l-15 m-r-15 ">
       <select name="select-primitive-choice" id="select-primitive-choice"
-              class="form-control  grey darken-4 primitive">
-        <option value="Choice 1">Primitive</option>
-        <option value="Choice 2">Fully Defined</option>
+              ng-model="concept.definitionStatus"
+              ng-change="saveConcept(concept)"
+              class="form-control  grey darken-4 primitive"
+              ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
     </div>
     <div class="pull-right p-t-5 no-margin edits">
@@ -153,10 +154,11 @@
          </div>-->
 
         <!-- attribute type -->
-        <div class="pull-left is_a" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
+        <div class="pull-left is_a" ui-draggable="true"
+             drag="getConceptIdNamePairFromAttributeType(relationship)"
              drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
-             ui-on-drop="dropAttributeType(relationship, $data)">
-          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
+             ui-on-drop="dropRelationshipType(relationship, $data)">
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic"disabled ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
                  placeholder="#"></textarea>
@@ -164,10 +166,11 @@
 
         <!-- linked concept -->
         <div class="pull-left sourcename" ui-draggable="true"
-             drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
+             drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
+             drag-channel="conceptPropertiesObj"
              drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" disabled ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
                  placeholder="#"></textarea>
@@ -208,7 +211,7 @@
 
         <!-- relationship group -->
         <div class="pull-left rolegroup">
-          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" disabled ng-model="relationship.groupId"
                  ng-change="updateRelationship(relationship)"
                  class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                  ui-on-drop="dropNullOp()"></textarea>
@@ -217,8 +220,8 @@
         <!-- attribute type -->
         <div class="pull-left sourcename" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
              drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
-             ui-on-drop="dropAttributeType(relationship, $data)">
-          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.type.fsn"
+             ui-on-drop="dropRelationshipType(relationship, $data)">
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" disabled ng-model="relationship.type.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
                  placeholder="#"></textarea>
@@ -229,7 +232,7 @@
              drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
              drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" ng-disabled="relationship.effectiveTime" ng-model="relationship.target.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" disabled" ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
                  placeholder="#"></textarea>
