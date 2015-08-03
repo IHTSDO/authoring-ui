@@ -156,9 +156,6 @@ angular.module('singleConceptAuthoringApp')
               // if reason is selected, deactivate all descriptions and
               // relationships
               if (reason) {
-                angular.forEach(scope.concept.descriptions, function (description) {
-                  description.active = false;
-                });
                 angular.forEach(scope.concept.relationships, function (relationship) {
                   relationship.active = false;
                 });
