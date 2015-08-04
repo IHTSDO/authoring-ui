@@ -232,7 +232,7 @@
              drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
              drop-channel="conceptPropertiesObj"
              ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" disabled" ng-model="relationship.target.fsn"
+          <textarea style="min-height: 37px; height: 37px; resize:none;" class="msd-elastic" disabled ng-model="relationship.target.fsn"
                  class="form-control color_{{relationship.groupId}}"
                  type="text"
                  placeholder="#"></textarea>
