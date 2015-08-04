@@ -109,13 +109,13 @@ angular.module('singleConceptAuthoringApp')
             console.debug('classification data: ', data, fileName);
 
             // create the hidden element
-            var a = document.createElement("a");
+            var a = document.createElement('a');
             document.body.appendChild(a);
             //a.style = "display: none";
 
             return function (data, fileName) {
               var
-                blob = new Blob([data], {type: "text/csv"}),
+                blob = new Blob([data], {type: 'text/csv'}),
                 url = window.URL.createObjectURL(blob);
 
               console.debug('blob', blob);
@@ -174,8 +174,8 @@ angular.module('singleConceptAuthoringApp')
           scope.startValidation = function () {
             scaService.startValidationForTask($routeParams.projectId, $routeParams.taskId).then(function (validation) {
               scope.validation = validation;
-            })
-          }
+            });
+          };
 
           // get latest validation
         }

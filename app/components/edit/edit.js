@@ -217,7 +217,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.addConceptToListFromId = function (conceptId) {
 
-      console.debug("adding concept to edit list from id", conceptId);
+      console.debug('adding concept to edit list from id', conceptId);
       if (!conceptId) {
         return;
       }
@@ -254,7 +254,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           console.debug('REMOVING', conceptId);
           $scope.editPanelUiState.splice(index, 1);
           $scope.updateUiState(); // update the ui state
-          flagEditedItems;        // update edited item flagging
+          flagEditedItems();        // update edited item flagging
         }
       });
     };
