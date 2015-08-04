@@ -90,14 +90,22 @@ angular.module('singleConceptAuthoringApp')
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
     function getRelationshipChanges(classifierId, projectId, taskId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes', {header : {'Content-Type' : 'text/csv'}}).then(function (response) {
+      return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes').then(function (response) {
         return response.data.items;
       });
     }
-      
-    function downloadClassification(classifierId, projectId, taskId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes').then(function (response) {
-        return response.data.items;
+
+    // get relationship changes as csv results
+    function downloadClassification(classifierId, branch) {
+      console.debug('downloadClassification', classifierId, branch);
+      return $http({
+        'method': 'GET',
+        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes',
+        'headers': {
+          'Accept': 'text/csv'
+        }
+      }).then(function (response) {
+        return response;
       });
     }
 
@@ -301,7 +309,7 @@ angular.module('singleConceptAuthoringApp')
     // arg: moduleIds, array of module SCTIDs
     // arg: branch, module branch
     function addModules(moduleIds, branch) {
-      moduleIds.map(function(moduleId) {
+      moduleIds.map(function (moduleId) {
         var module = {};
 
         // get the term, then add the module
@@ -346,6 +354,7 @@ angular.module('singleConceptAuthoringApp')
     function getDialects() {
       return dialects;
     }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
