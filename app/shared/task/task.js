@@ -57,16 +57,13 @@ angular.module('singleConceptAuthoringApp')
       scaService.createTaskForProject(taskProject.key, authoringTaskCreateRequest).then(
         function (response) {
 
-          $scope.msgSuccess = 'Task successfully created: ' + response.data.summary;
-          $scope.taskTitle = '';
-          $scope.taskProject = '';
-          $scope.taskDetails = '';
-
           // broadcast new task to any listening pages
           $rootScope.$broadcast('taskCreated', response.data);
+
+          // close modal
           $modalInstance.close();
       }, function (error) {
-          $scope.msgError = 'Error occurred when trying to create task';
+          $scope.msgError = 'Error occurred when trying to create task: ' + error;
       });
 
     };

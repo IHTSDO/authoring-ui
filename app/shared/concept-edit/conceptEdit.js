@@ -498,7 +498,7 @@ angular.module('singleConceptAuthoringApp')
 
         scope.dropRelationshipType = function (relationship, data) {
 
-          console.debug('Drag-n-drop:  Relationship Type')
+          console.debug('Drag-n-drop:  Relationship Type');
 
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
