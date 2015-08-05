@@ -7,11 +7,31 @@
  * automatically.
  */
 describe( 'edit section', function() {
-  beforeEach( module( 'singleConceptAuthoringApp.edit' ) );
+
+
+  var $controller;
+
+  beforeEach(inject(function(_$controller_){
+    angular.mock.module('singleConceptAuthoringApp');
+  }));
 
   it( 'should have a dummy test', inject( function() {
     expect( true ).toBeTruthy();
   }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   ////////////////////////////////////////////////////////
@@ -20,7 +40,7 @@ describe( 'edit section', function() {
 
   describe ('Edit Component: side bar elements loaded', function() {
 
-  })
+  });
 
   // taxonomy loaded: tab and root concept exist
 
@@ -39,8 +59,11 @@ describe( 'edit section', function() {
 
   describe ('Edit Component: setting views', function() {
 
-  })
+  });
   // initial view parameters correct (default)
+  it ('starts with default view', function() {
+
+  })
 
   // set view:  default
 

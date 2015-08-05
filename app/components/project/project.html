@@ -1,0 +1,44 @@
+<div ng-include src="'layout/header.html'"></div>
+<div class="row no-gutter sca-container">
+  <div ng-include style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
+       src="'layout/sidebar.html'"></div>
+
+  <div class="sca-column col-lg-9 col-md-9 col-sm-9">
+    <div class="row">
+      <div class="card bordered">
+        <div class="card-header">
+          <span class="card-title">{{project.title}}</span>
+        </div>
+        <div class="card-content no-padding">
+          <p style="padding:20px 0px 0px 10px"><strong>Project Lead</strong> {{project.lead}}</p>
+          <hr>
+          <p style="padding:0px 0px 0px 10px"><strong>QA Results </strong> {{qaStatus}}</p>
+          <hr>
+          <p style="padding:0px 0px 0px 10px"><strong>Classification Results </strong> {{classificationStatus}}</p>
+          <hr>
+          <p style="padding:0px 0px 0px 10px"><strong>Validation Results</strong> {{validationStatus}}></p>
+        </div>
+
+        <div class="card-action clearfix projecttasks">
+          <div class="p-10 pull-right">
+            <button class="btn btn-disabled btn-border" ng-click="promote()">Promote
+              <div class="ripple-wrapper"></div>
+            </button>
+          </div>
+          <div class="p-10 pull-right">
+            <button class="btn btn-success btn-border" ng-click="classify()">Classify
+              <div class="ripple-wrapper"></div>
+            </button>
+          </div>
+          <div class="p-10 pull-right">
+            <button class="btn btn-success btn-border" ng-click="validate()">Validate
+              <div class="ripple-wrapper"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

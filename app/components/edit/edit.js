@@ -228,14 +228,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         snowowlService.cleanConcept(response);
 
-        // search for an FSN description to display as name
-        // TODO Fix this when we finally get our concept retrieval!
-        angular.forEach(response.descriptions, function (desc) {
-          if (desc.type === 'FSN') {
-            response.fsn = desc.term;
-          }
-        });
-
         $scope.concepts.push(response);
         $timeout(function () {
           $rootScope.$broadcast('editModelDraw');
