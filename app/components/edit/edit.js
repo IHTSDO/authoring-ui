@@ -264,6 +264,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 // watch for concept saving from the edit panel
     $scope.$on('conceptEdit.saving', function (event, data) {
       $scope.saveIndicator = true;
+      $scope.saveConceptId = data.concept.conceptId;
       $scope.saveMessage = data.concept.conceptId ? 'Saving concept with id: ' + data.concept.conceptId : 'Saving new concept';
     });
     $scope.formatDate = function (date) {
@@ -287,6 +288,19 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.editPanelUiState.push(data.response.conceptId);
           $scope.updateUiState();
         }
+
+        // replace the concept in the array
+        for (var i = 0; i < $scope.concepts.length; i++) {
+          // if matching concept OR saveConceptId was blank (newly saved)
+          // replace the concept in list and break
+          if ($scope.concepts[i].conceptId === data.response.conceptId || (!$scope.saveConceptId && !$scope.concepts[i].conceptId)) {
+            $scope.concepts.splice(i, 1, data.response);
+            break;
+          }
+        }
+
+
+        console.debug('after save success', $scope.concepts);
       }
       else {
         $scope.saveMessage = 'Error saving concept, please make an additional change.';
@@ -396,15 +410,14 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
+
+      console.debug('createConcept', $scope.concepts);
       var concept = objectService.getNewConcept($scope.branch);
 
-      // add IsaRelationship
-      //concept.relationships
       $scope.concepts.unshift(concept);
 
-//      $timeout(function () {
-//        $scope.resizeSvg(concept);
-//      }, 500);
+      console.debug('after', $scope.concepts);
+
     };
 
 // removes concept from editing list (unused currently)
