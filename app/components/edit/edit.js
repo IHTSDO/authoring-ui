@@ -211,9 +211,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         flagEditedItems();
       }
     );
-    scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
-      $scope.task = response;
-    });
 
     $scope.addConceptToListFromId = function (conceptId) {
 
@@ -280,13 +277,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       var offset = String(String(new Date().toString()).split('(')[1]).split(')')[0];
       return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime + ' (' + offset + ')';
     };
-
-// on show model requests, toggle the model if not active
-    $scope.$on('conceptEdit.showModel', function (event, data) {
-      if ($scope.hideModel) {
-        $scope.toggleModel();
-      }
-    });
 
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
