@@ -22,7 +22,18 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
-
+      
+      //get notifications from the messaging service
+      getNotifications: function () {
+        return $http.get(apiEndpoint + 'notifications').then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          }
+        );
+      },
+                          
       // get tasks for current user across all projects
       getTasks: function () {
         return $http.get(apiEndpoint + 'projects/my-tasks').then(
