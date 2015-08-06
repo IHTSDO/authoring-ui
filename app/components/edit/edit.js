@@ -211,9 +211,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         flagEditedItems();
       }
     );
-    scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
-      $scope.task = response;
-    });
 
     $scope.addConceptToListFromId = function (conceptId) {
 
@@ -230,14 +227,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
         snowowlService.cleanConcept(response);
-
-        // search for an FSN description to display as name
-        // TODO Fix this when we finally get our concept retrieval!
-        angular.forEach(response.descriptions, function (desc) {
-          if (desc.type === 'FSN') {
-            response.fsn = desc.term;
-          }
-        });
 
         $scope.concepts.push(response);
         $timeout(function () {
@@ -267,6 +256,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 // watch for concept saving from the edit panel
     $scope.$on('conceptEdit.saving', function (event, data) {
       $scope.saveIndicator = true;
+      $scope.saveConceptId = data.concept.conceptId;
       $scope.saveMessage = data.concept.conceptId ? 'Saving concept with id: ' + data.concept.conceptId : 'Saving new concept';
     });
     $scope.formatDate = function (date) {
@@ -281,13 +271,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime + ' (' + offset + ')';
     };
 
-// on show model requests, toggle the model if not active
-    $scope.$on('conceptEdit.showModel', function (event, data) {
-      if ($scope.hideModel) {
-        $scope.toggleModel();
-      }
-    });
-
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
         $scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
@@ -297,6 +280,19 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.editPanelUiState.push(data.response.conceptId);
           $scope.updateUiState();
         }
+
+        // replace the concept in the array
+        for (var i = 0; i < $scope.concepts.length; i++) {
+          // if matching concept OR saveConceptId was blank (newly saved)
+          // replace the concept in list and break
+          if ($scope.concepts[i].conceptId === data.response.conceptId || (!$scope.saveConceptId && !$scope.concepts[i].conceptId)) {
+            $scope.concepts.splice(i, 1, data.response);
+            break;
+          }
+        }
+
+
+        console.debug('after save success', $scope.concepts);
       }
       else {
         $scope.saveMessage = 'Error saving concept, please make an additional change.';
@@ -406,15 +402,14 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
+
+      console.debug('createConcept', $scope.concepts);
       var concept = objectService.getNewConcept($scope.branch);
 
-      // add IsaRelationship
-      //concept.relationships
       $scope.concepts.unshift(concept);
 
-//      $timeout(function () {
-//        $scope.resizeSvg(concept);
-//      }, 500);
+      console.debug('after', $scope.concepts);
+
     };
 
 // removes concept from editing list (unused currently)

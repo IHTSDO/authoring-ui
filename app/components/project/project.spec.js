@@ -6,8 +6,8 @@
  * build process will exclude all `.spec.js` files from the build
  * automatically.
  */
-describe( 'promote section', function() {
-  beforeEach( module( 'singleConceptAuthoringApp.promote' ) );
+describe( 'project section', function() {
+  beforeEach( module( 'singleConceptAuthoringApp.project' ) );
 
   it( 'should have a dummy test', inject( function() {
     expect( true ).toBeTruthy();
