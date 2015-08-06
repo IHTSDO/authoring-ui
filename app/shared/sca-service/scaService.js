@@ -284,7 +284,7 @@ angular.module('singleConceptAuthoringApp')
 
         // POST call takes no data
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/validation', {}).then(function(response) {
-          return response.data
+          return response.data;
         }, function (error) {
           console.error('Error getting validation for project ' + projectKey);
           return null;

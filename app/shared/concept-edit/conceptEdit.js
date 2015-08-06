@@ -181,10 +181,56 @@ angular.module('singleConceptAuthoringApp')
         // Description Elements
         ////////////////////////////////
 
-        // on load, sort descriptions by type, alphabetically
-        scope.concept.descriptions.sort(function (a, b) {
-          return a.type > b.type;
-        });
+        // Reorder descriptions based on type and acceptability
+        // Must preserve position of untyped/new descriptions
+        function sortDescriptions() {
+
+          var newArray = [];
+
+          // get all typed descriptions
+          angular.forEach(scope.concept.descriptions, function(description) {
+            if (description.type) {
+              newArray.push(description);
+            }
+          });
+
+          // console.debug('typed descriptions', newArray);
+
+          // sort typed descriptions
+          newArray.sort(function(a, b) {
+            // FSN before SYN
+            if (a.type === 'FSN' && b.type === 'SYNONYM') {
+              return -1;
+            }
+            if (b.type === 'FSN' && a.type === 'SYNONYM') {
+              return 1;
+            }
+
+            // PREFERRED before ACCEPTABLE
+            console.debug(a.acceptabilityMap['900000000000508004'], b.acceptabilityMap['900000000000508004'], a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1);
+            return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
+
+          });
+
+          //console.debug('sorted typed descriptions', newArray);
+
+          // cycle over original descriptions (backward) to reinsert non-typed descriptions
+          for (var i = 0; i < scope.concept.descriptions.length; i++) {
+            if (!scope.concept.descriptions[i].type) {
+              newArray.splice(i, 0, scope.concept.descriptions[i]);
+            }
+          }
+
+          //console.debug('new array', newArray);
+
+          // replace descriptions
+          scope.concept.descriptions = newArray;
+
+          //
+        }
+
+        // on load, sort descriptions
+        sortDescriptions();
 
         // get language options from available dialects
         scope.getLanguageOptions = function () {
@@ -687,54 +733,9 @@ angular.module('singleConceptAuthoringApp')
             console.error('  Error: ', description.error);
           }
 
-        }
-
-        function sortDescriptions() {
-          // Reorder descriptions based on type and acceptability
-          // Must preserve position of untyped/new descriptions
-          var newArray = [];
-
-          // get all typed descriptions
-          angular.forEach(scope.concept.descriptions, function(description) {
-            if (description.type) {
-              newArray.push(description);
-            }
-          });
-
-          console.debug('typed descriptions', newArray);
-
-          // sort typed descriptions
-          newArray.sort(function(a, b) {
-            // FSN before SYN
-            if (a.type === 'FSN' && b.type === 'SYNONYM') {
-              return -1;
-            }
-            if (b.type === 'FSN' && a.type === 'SYNONYM') {
-              return 1;
-            }
-
-            // PREFERRED before ACCEPTABLE
-            console.debug(a.acceptabilityMap['900000000000508004'], b.acceptabilityMap['900000000000508004'], a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1);
-            return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
-
-          });
-
-          console.debug('sorted typed descriptions', newArray);
-
-          // cycle over original descriptions (backward) to reinsert non-typed descriptions
-          for (var i = 0; i < scope.concept.descriptions.length; i++) {
-            if (!scope.concept.descriptions[i].type) {
-              newArray.splice(i, 0, scope.concept.descriptions[i]);
-            }
-          };
-
-          console.debug('new array', newArray);
-
-          // replace descriptions
-          scope.concept.descriptions = newArray;
-
-          //
         };
+
+
 
         // function to update relationship and autosave if indicated
         scope.updateRelationship = function (relationship) {
