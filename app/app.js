@@ -28,9 +28,9 @@ angular
 
     //Insert any created modules here. Ideally one per major feature.
     'singleConceptAuthoringApp.home',
+    'singleConceptAuthoringApp.project',
     'singleConceptAuthoringApp.projects',
     'singleConceptAuthoringApp.projecttasks',
-    'singleConceptAuthoringApp.promote',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
@@ -50,7 +50,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, accountService, $cookies) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, accountService, $cookies, $timeout) {
 
     // set the default redirect/route
     $routeProvider.otherwise({
@@ -98,6 +98,20 @@ angular
             window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
           }
         });
+        
+        var poll = function() {
+            scaService.getNotifications().then( function(response){
+             if(response.data != null && response.data.length != 0)
+             {
+                 $rootScope.saveIndicator = true;
+                 $rootScope.saveMessage = response.data.event + ' (' + response.data.project + '/' + response.data.task + ')';
+                 $timeout(function () {
+                    $rootScope.saveIndicator = false;
+                  }, 4000);
+             }
+         });
+        }
+       $timeout(poll, 20000);
     });
 
     ///////////////////////////////////////////

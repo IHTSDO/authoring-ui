@@ -22,7 +22,18 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
-
+      
+      //get notifications from the messaging service
+      getNotifications: function () {
+        return $http.get(apiEndpoint + 'notifications').then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          }
+        );
+      },
+                          
       // get tasks for current user across all projects
       getTasks: function () {
         return $http.get(apiEndpoint + 'projects/my-tasks').then(
@@ -186,6 +197,23 @@ angular.module('singleConceptAuthoringApp')
           });
       },
 
+      startClassificationForProject: function(projectKey) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to start classification');
+          return {};
+        }
+
+        // POST call takes no data
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/classifications', {}).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            // TODO Handle errors
+          });
+      },
+
+      // TODO:  Add getClassificationForProject when/if implemented
+
       ///////////////////////////////////////////////
       // Validation
       ///////////////////////////////////////////////
@@ -230,11 +258,39 @@ angular.module('singleConceptAuthoringApp')
             console.error('Error starting validation for ' + projectKey + ', ' + taskKey);
             return null;
           });
-      }
+      },
 
-      // TODO Add project validation calls
-      // POST /projects/{projectKey}/validation
-      // GET /projects/{projectKey}/validation
+
+      getValidationForProject: function(projectKey) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to get latest validation results');
+          return {};
+        }
+
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/validation').then(function(response) {
+          return response.data;
+        }, function (error) {
+          console.error('Error getting validation for project ' + projectKey);
+          return null;
+        });
+
+      },
+
+      startValidationForProject: function(projectKey) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to start validation');
+          return {};
+        }
+
+        // POST call takes no data
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/validation', {}).then(function(response) {
+          return response.data;
+        }, function (error) {
+          console.error('Error getting validation for project ' + projectKey);
+          return null;
+        });
+
+      }
 
     };
 

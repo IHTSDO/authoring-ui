@@ -9,7 +9,7 @@
   <div class="col-md-4 no-padding">
     <p class="row">Module ID</p>
     <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="relationship.moduleId"
-                  ng-change="updateConcept(concept)" ng-options="module.id as (module.id + ': ' + module.name) for module in modules">
+                  ng-change="updateRelationship(relationship)" ng-options="module.id as (module.id + ': ' + module.name) for module in modules">
     </select>
   </div>
 </div>

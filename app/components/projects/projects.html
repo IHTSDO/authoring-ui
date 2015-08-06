@@ -28,7 +28,7 @@
             <tr ng-repeat="project in $data">
 
               <td data-title="'Project Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
-                ng-href="#/promote">{{project.title}} </a>
+                ng-href="#/project/{{project.key}}">{{project.title}} </a>
               </td>
               <td data-title="'Project Lead'" sortable="'projectKey'" filter="{ 'project': 'text' }">
 
