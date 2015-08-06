@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
                   // TODO:  For long names this will almost certainly cause a wrap/overlay problem
                   var size = {
                       width: element.width(),
-                      height: element.parent().parent().height() - 43
+                      height: element.parent().parent().height() - 44
                   };
                   return size
               };
