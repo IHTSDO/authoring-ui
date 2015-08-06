@@ -1,0 +1,41 @@
+<section class="tables-data">
+  <div class="table-responsive white">
+      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"   class="table table-full table-full-small">
+      <tr ng-repeat="result in $data">
+            <td data-title="'Differences'" sortable="'differences'">
+              <!-- Difference not currently defined, or possibly overlaps with changeNature -->
+                <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
+                <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">Removed</span>
+            </td>
+            <td data-title="'Source'" sortable="'source'">
+                {{result.sourceName}}
+            </td>
+              <td data-title="'Type'" sortable="'type'">
+                {{result.typeName}}
+            </td>
+              <td data-title="'Destination'" sortable="'destination'">
+                {{result.destinationName}}
+            </td>
+              <td data-title="'Group'" sortable="'group'">
+                {{result.group}}
+            </td>
+               <td data-title="'Characteristic Type'" sortable="'charType'">
+                   {{parseCharacteristic(result.characteristicTypeId)}}
+            </td>
+              <td >
+               <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left" tooltip=""
+                        title="View Model" ng-click="viewComparativeModel(result.sourceId)"><span class="md md-view-quilt "></span>
+
+                  <div class="ripple-wrapper"></div>
+                </button>
+                 <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
+                        title="Edit"><span class="md md-edit " ng-click="editDestinationConcept(result)"></span>
+
+                  <div class="ripple-wrapper"></div>
+                </button>
+            </td>
+        </tr>
+      </table>
+
+  </div>
+</section>
