@@ -63,7 +63,9 @@
 
     <!--Validate View -->
     <div ng-show="!hideValidation"
-         ng-class="['col-sm-12','col-md-12', {'col-lg-5' : !hideSidebar}, {'col-lg-8' : hideSidebar}]">
+         ng-class="['col-sm-12',
+         'col-md-12',
+         'col-lg-8']">
       <div validation validation-id="validation.id" task-key="taskKey" projectKey="projectKey"
            branch="branch"></div>
     </div>
@@ -72,27 +74,35 @@
     <!-- Classify View -->
     <div ng-show="!hideClassification"
          ng-class="['col-sm-12',
-         'col-md-12',
-         {'col-lg-5' : !hideSidebar}, {'col-lg-8' : hideSidebar}]">
+         'col-md-8',
+         'col-lg-8']">
       <div classification classification-id="classification.id" task-key="taskKey" projectKey="projectKey"
            branch="branch"></div>
     </div>
+
+    <!-- Concept/Model -->
     <div style="margin-right:0px; margin-bottom:38px;"
          class="row no-gutter"
          ng-class="[
          {'col-md-12' : hideSidebar && hideClassification && hideValidation},
          {'col-lg-12' : hideSidebar && hideClassification && hideValidation},
-         {'col-lg-4' : !hideClassification && !hideValidation},
-         {'col-md-4' : !hideClassification && !hideValidation},
-         {'col-lg-9' : hideClassification && hideValidation},
-         {'col-md-9' : hideClassification && hideValidation}]">
+         {'col-lg-4' : !hideClassification || !hideValidation},
+         {'col-md-4' : !hideClassification || !hideValidation},
+         {'col-lg-9' : !hideSidebar && hideClassification && hideValidation},
+         {'col-md-9' : !hideSidebar && hideClassification && hideValidation}]">
 
       <!-- create new concept header (displayed when no concepts in ng-repeat -->
       <div ng-show="concepts.length === 0" class="row no-gutter">
 
         <!-- Blank separator for model view if appropriate -->
         <div ng-show="!hideModel"
-             ng-class="['no-gutter', 'col-sm-7','col-md-7', {'col-lg-7' : !hideSidebar}, {'col-md-7' : !hideSidebar}, {'col-md-8' : hideSidebar}, {'col-lg-8' : hideSidebar}]"
+             ng-class="['no-gutter',
+             'col-sm-7',
+             'col-md-7',
+             {'col-lg-7' : !hideSidebar},
+             {'col-md-7' : !hideSidebar},
+             {'col-md-8' : hideSidebar},
+             {'col-lg-8' : hideSidebar}]"
              class="" style="height:100%;">
         </div>
 
@@ -114,11 +124,17 @@
       </div>
 
       <!-- concept edit & model pairs -->
-      <div class="row  no-gutter" ng-repeat="concept in concepts" id="concept-{{concept.conceptId}}">
+      <div class="row no-gutter" ng-repeat="concept in concepts" id="concept-{{concept.conceptId}}">
 
         <!-- Model View:  always hidden during classification view -->
         <div ng-show="!hideModel"
-             ng-class="['no-gutter', 'col-sm-7','col-md-7', {'col-lg-7' : !hideSidebar}, {'col-md-7' : !hideSidebar}, {'col-md-8' : hideSidebar}, {'col-lg-8' : hideSidebar}]"
+             ng-class="['no-gutter',
+             'col-sm-7',
+             'col-md-7',
+             {'col-lg-7' : !hideSidebar},
+             {'col-md-7' : !hideSidebar},
+             {'col-md-8' : hideSidebar},
+             {'col-lg-8' : hideSidebar}]"
              class="" style="height:100%;">
 
           <!-- models -->
@@ -126,13 +142,14 @@
         </div>
 
         <!-- Edit Panel-->
-        <div class="col-xs-12 col-sm-12" ng-class="[
+        <div class="col-xs-12 col-sm-12"
+             ng-class="[
           {'col-md-12': thisView === 'edit-no-model' && hideClassification && hideValidation},
           {'col-lg-12': thisView === 'edit-no-model' && hideClassification && hideValidation},
           {'col-md-5': thisView != 'edit-no-model' && !hideSidebar},
           {'col-lg-5': thisView != 'edit-no-model' && !hideSidebar},
-          {'col-lg-4' : !hideClassification || !hideValidation},
-          {'col-md-4' : !hideClassification || !hideValidation},
+          {'col-lg-12' : !hideClassification || !hideValidation},
+          {'col-md-12' : !hideClassification || !hideValidation},
           {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']">
 
           <!-- Create new concept banner (first element only) -->
@@ -152,5 +169,4 @@
     </div>
   </div>
 
-</div>
 </div>
