@@ -36,7 +36,7 @@
 
 </head>
 <body ng-app="singleConceptAuthoringApp" scroll-spy id="top"
-      class="theme-template-dark theme-blue">
+      class="theme-template-dark theme-blue" style="height:100%;">
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
                                                                                                                     your
@@ -46,10 +46,10 @@
 
 <!-- Add your site or application content here -->
 
-<main>
+<main style="height:100%;">
 
-  <div class="main-container">
-    <div ng-cloak ng-view bs-affix-target></div>
+  <div class="main-container" style="height:100%;">
+    <div ng-cloak ng-view bs-affix-target style="height:100%;"></div>
     <div ng-include="'layout/footer.html'"></div>
   </div>
 
