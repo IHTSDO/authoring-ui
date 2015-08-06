@@ -62,14 +62,15 @@
 
 
   <hr style="width:93%; border-color:#BEBEBE">
-  <div ng-show="classification">
+  <div ng-show="classification" class="p-l-15">
     <strong>Classification Report Completed: </strong> {{classification.completionDate | date: 'medium'}}
   </div>
-  <div style="padding: 15px; width: 100%">
+
+  <div style="padding: 15px; width: 100%" class="classification-btn">
 
     <button
       ng-class="classificationDisplayColor"
-      type="button" class="btn btn-default" style="width: 100%; margin-bottom: 10px; text-transform: none"
+      type="button" class="btn btn-default {{classificationDisplayText}}" style="width: 100%; margin-bottom: 10px; text-transform: none"
       ng-click="classify()">
       {{classificationDisplayText}}
     </button>

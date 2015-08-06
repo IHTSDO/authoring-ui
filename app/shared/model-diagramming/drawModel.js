@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
                   // TODO:  For long names this will almost certainly cause a wrap/overlay problem
                   var size = {
                       width: element.width(),
-                      height: element.parent().parent().height() - 43
+                      height: element.parent().parent().height() - 44
                   };
                   return size
               };
@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
-              scope.$on('layoutChanged', function() {
+              scope.$on('editModelDraw', function() {
                   scope.size = scope.getSize();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);

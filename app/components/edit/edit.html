@@ -1,10 +1,10 @@
 <div ng-include src="'layout/header.html'"></div>
 
 <!-- Hide container until view is selected -->
-<div class="sca-container" ng-if="thisView">
+<div class="sca-container" ng-if="thisView" style="">
 
   <!-- Control panel appears when elements are hidden -->
-  <div style="position:absolute; top:0px; bottom:0px; background-color: grey; width: 50px">
+  <div style="position:fixed; top:66px; bottom:0px; background-color: grey; width: 50px;">
 
     <!-- edit view controls -->
     <div ng-show="hideClassification">
@@ -77,9 +77,7 @@
       <div classification classification-id="classification.id" task-key="taskKey" projectKey="projectKey"
            branch="branch"></div>
     </div>
-
-    <!-- Concept Edit Panel -->
-    <div style="margin-right:0px;"
+    <div style="margin-right:0px; margin-bottom:38px;"
          class="row no-gutter"
          ng-class="[
          {'col-md-12' : hideSidebar && hideClassification && hideValidation},

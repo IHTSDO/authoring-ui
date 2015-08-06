@@ -199,6 +199,12 @@ angular.module('singleConceptAuthoringApp')
           // sort typed descriptions
           newArray.sort(function(a, b) {
             // FSN before SYN
+            if(a.active === false){
+                return -1;
+            }
+            if(b.active === false){
+                return 1;
+            }
             if (a.type === 'FSN' && b.type === 'SYNONYM') {
               return -1;
             }
@@ -208,8 +214,7 @@ angular.module('singleConceptAuthoringApp')
 
             // PREFERRED before ACCEPTABLE
             // console.debug(a.acceptabilityMap['900000000000508004'], b.acceptabilityMap['900000000000508004'], a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1);
-            return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
-
+                return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
           });
 
           //console.debug('sorted typed descriptions', newArray);
