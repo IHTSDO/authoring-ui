@@ -5,6 +5,7 @@ angular.module('singleConceptAuthoringApp.edit', [
   'ngRoute'
 ])
 
+  // TODO Seriously need to rethink this approach
   .config(function config($routeProvider) {
     $routeProvider
       .when('/edit/:projectId/:taskId', {
@@ -12,6 +13,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         templateUrl: 'components/edit/edit.html',
         resolve: {
           classifyMode: function () {
+            return false;
+          },
+          validateMode: function () {
             return false;
           }
         }
@@ -24,12 +28,29 @@ angular.module('singleConceptAuthoringApp.edit', [
         resolve: {
           classifyMode: function () {
             return true;
+          },
+          validateMode: function () {
+            return false;
+          }
+        }
+      });
+
+    $routeProvider
+      .when('/validate/:projectId/:taskId', {
+        controller: 'EditCtrl',
+        templateUrl: 'components/edit/edit.html',
+        resolve: {
+          classifyMode: function () {
+            return false;
+          },
+          validateMode: function () {
+            return true;
           }
         }
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode, validateMode) {
 
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
@@ -48,11 +69,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.pageTitle = $scope.classifyMode ? 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId : 'Edit Concept / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
 
     // initialize hide element variables
-    $scope.hideSidebar = classifyMode;
-    $scope.hideModel = classifyMode;
+    $scope.hideSidebar = classifyMode || validateMode;
+    $scope.hideModel = classifyMode || validateMode;
     $scope.hideClassification = !classifyMode;
+    $scope.hideValidation =
 
-    $scope.thisView = null;
+      $scope.thisView = null;
     $scope.lastView = null;
 
     $scope.setView = function (name) {
@@ -66,9 +88,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      // special case for returning to edit view from classify view
+      // special case for returning to edit view from classify or validation
+      // view
       if (name === 'edit') {
-        if (!$scope.lastView || $scope.lastView === 'classification') {
+        if (!$scope.lastView || $scope.lastView === 'classification' || $scope.lastView === 'validation') {
           name = 'edit-default';
         } else {
           name = $scope.lastView;
@@ -80,22 +103,32 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.thisView = name;
 
       switch ($scope.thisView) {
+        case 'validation':
+          $scope.hideValidation = false;
+          $scope.hideClassification = true;
+          $scope.hideModel = true;
+          $scope.hideSidebar = true;
+          break;
         case 'classification':
+          $scope.hideValidation = true;
           $scope.hideClassification = false;
           $scope.hideModel = true;
           $scope.hideSidebar = true;
           break;
         case 'edit-default':
+          $scope.hideValidation = true;
           $scope.hideClassification = true;
           $scope.hideModel = false;
           $scope.hideSidebar = false;
           break;
         case 'edit-no-sidebar':
+          $scope.hideValidation = true;
           $scope.hideClassification = true;
           $scope.hideModel = false;
           $scope.hideSidebar = true;
           break;
         case 'edit-no-model':
+          $scope.hideValidation = true;
           $scope.hideClassification = true;
           $scope.hideModel = true;
           $scope.hideSidebar = false;
@@ -290,7 +323,6 @@ angular.module('singleConceptAuthoringApp.edit', [
             break;
           }
         }
-
 
         console.debug('after save success', $scope.concepts);
       }
