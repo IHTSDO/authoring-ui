@@ -8,32 +8,6 @@
  */
 describe( 'edit section', function() {
 
-
-  var $controller;
-
-  beforeEach(inject(function(_$controller_){
-    angular.mock.module('singleConceptAuthoringApp');
-  }));
-
-  it( 'should have a dummy test', inject( function() {
-    expect( true ).toBeTruthy();
-  }));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   ////////////////////////////////////////////////////////
   // Test Group: Sidebar Elements Loaded
   ////////////////////////////////////////////////////////
@@ -43,27 +17,37 @@ describe( 'edit section', function() {
   });
 
   // taxonomy loaded: tab and root concept exist
+  describe ('Taxonomy widget loaded', function() {
+
+  });
 
   // search loaded: tab and search field exist
+  describe ('Search widget loaded', function() {
+
+  });
 
   // saved list loaded:  tab exists
+  describe ('Saved List loaded', function() {
+
+  });
 
   // task detail loaded:  tab and classify button exist
+  describe ('Task Detail loaded', function() {
 
+  });
   // feedback loaded:  tab exists
+  describe ('Feedback loaded', function() {
 
+  });
 
   ////////////////////////////////////////////////////////
   // Test Group: Views
   ////////////////////////////////////////////////////////
 
-  describe ('Edit Component: setting views', function() {
+  describe ('Edit Component: Setting views', function() {
 
   });
   // initial view parameters correct (default)
-  it ('starts with default view', function() {
-
-  })
 
   // set view:  default
 
