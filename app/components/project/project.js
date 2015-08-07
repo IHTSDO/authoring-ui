@@ -16,6 +16,7 @@ angular.module('singleConceptAuthoringApp.project', [
   .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', 'scaService', function ProjectCtrl($scope, $rootScope, $routeParams, scaService) {
 
     $scope.project = null;
+    $scope.projectKey = $routeParams.projectKey;
     $scope.validationStatus = null;
     $scope.classificationStatus = null;
 
@@ -37,11 +38,11 @@ angular.module('singleConceptAuthoringApp.project', [
      $scope.classification = response;
      });*/
     $scope.classificationStatus = 'Latest classification status not yet implemented in back-end';
-    $scope.qaStatus = 'QA Results not yet implemented in back-end';
 
     // on load, retrieve latest validation
     scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
-      $scope.validationStatus = response.status;
+      console.debug('project validation', response);
+      $rootScope.$broadcast('setValidation', {validation : response});
     });
 
     $scope.classify = function () {
@@ -69,79 +70,5 @@ angular.module('singleConceptAuthoringApp.project', [
     $scope.promote = function () {
       // TODO Promoting not yet available
     };
-
-    // test data put in by Ashley
-    var data = [{
-      differences: 'added',
-      source: 'Medication monitoring not indicated',
-      type: 'Is a',
-      destination: 'Procedure not indicated',
-      group: 0,
-      charType: 'Inferred'
-    },
-      {
-        differences: 'added',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Associated procedure',
-        group: 0,
-        charType: 'Inferred'
-      },
-      {
-        differences: 'added',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Subject relationship context',
-        group: 0,
-        charType: 'Inferred'
-      },
-      {
-        differences: 'added',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Procedure not indicated',
-        group: 0,
-        charType: 'Inferred'
-      },
-      {
-        differences: 'added',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Procedure not indicated',
-        group: 0,
-        charType: 'Inferred'
-      },
-      {
-        differences: 'added',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Procedure not indicated',
-        group: 0,
-        charType: 'Inferred'
-      },
-      {
-        differences: 'added',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Procedure not indicated',
-        group: 0,
-        charType: 'Inferred'
-      },
-      {
-        differences: 'added',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Procedure not indicated',
-        group: 0,
-        charType: 'Inferred'
-      },
-      {
-        differences: 'inactivated',
-        source: 'Medication monitoring not indicated',
-        type: 'Is a',
-        destination: 'Procedure not indicated',
-        group: 0,
-        charType: 'Inferred'
-      }];
 
   }]);

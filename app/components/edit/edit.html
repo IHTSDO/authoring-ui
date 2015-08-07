@@ -6,53 +6,41 @@
   <!-- Control panel appears when elements are hidden -->
   <div style="position:fixed; top:66px; bottom:0px; background-color: grey; width: 50px;">
 
-    <!-- edit view controls -->
-    <div ng-show="hideClassification">
 
-      <!-- Switch to Classify View -->
-      <button type="button" class="btn btn-default widget-toolbar green darken-1" title="Switch to Classify View"
-              style="width: 50px; height: 50px; margin: 0; padding: 0;"
-              ng-click="setView('classification')"><span
-        class="md md-notifications"></span></button>
+    <!-- Switch to Classify View -->
+    <button type="button" class="btn btn-default widget-toolbar green darken-1" title="Switch to Classify View"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="setView('classification')"><span
+      class="md md-notifications"></span></button>
 
-      <!-- Switch to Validate View -->
-      <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1" title="Switch to Classify View"
-              style="width: 50px; height: 50px; margin: 0; padding: 0;"
-              ng-click="setView('validation')"><span
-        class="md md-school"></span></button>
+    <!-- Switch to Validate View -->
+    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1" title="Switch to Classify View"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="setView('validation')"><span
+      class="md md-school"></span></button>
 
-      <!-- Edit View: Default -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
-              class="btn btn-default widget-toolbar light-blue" title="Restore Default View"
-              style="width: 50px; height: 50px; margin: 0; padding: 0;"
-              ng-click="setView('edit-default')" ng-show="hideClassification"><span
-        class="md md-dashboard"></span></button>
+    <!-- Edit View: Default -->
+    <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
+            class="btn btn-default widget-toolbar light-blue" title="Restore Default View"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="setView('edit-default')"> <span
+    class="md md-dashboard"></span></button>
 
-      <!-- Edit View:  No sidebar -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
-              class="btn btn-default widget-toolbar light-blue darken-2" title="Hide Sidebar"
-              style="width: 50px; height: 50px; margin: 0; padding: 0;"
-              ng-click="setView('edit-no-sidebar')" ng-show="hideClassification"><span
-        class="md md-assignment-return "></span></button>
+    <!-- Edit View:  No sidebar -->
+    <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
+            class="btn btn-default widget-toolbar light-blue darken-2" title="Hide Sidebar"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="setView('edit-no-sidebar')"> <span
+    class="md md-assignment-return "></span></button>
 
-      <!-- Edit View: No model -->
-      <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
-              class="btn btn-default widget-toolbar blue darken-1" title="Hide Model"
-              style="width: 50px; height: 50px; margin: 0; padding: 0;"
-              ng-click="setView('edit-no-model')" ng-show="hideClassification"><span
-        class="md md-now-widgets"></span></button>
-    </div>
-
-    <div ng-show="!hideClassification">
-      <!-- Switch to Edit View (note, use last state) -->
-      <button type="button" class="btn btn-default widget-toolbar blue" title="Switch to Edit View"
-              style="width: 50px; height: 50px; margin: 0; padding: 0;"
-              ng-click="setView('edit')"><span
-        class="md md-edit"></span></button>
-
-    </div>
-
+    <!-- Edit View: No model -->
+    <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
+            class="btn btn-default widget-toolbar blue darken-1" title="Hide Model"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="setView('edit-no-model')"> <span
+    class="md md-now-widgets"></span></button>
   </div>
+
 
   <!-- Main page content -->
   <div class="row no-gutter" style="padding-left: 50px;">
@@ -62,22 +50,19 @@
          ng-include src="'layout/sidebar-edit.html'"></div>
 
     <!--Validate View -->
-    <div ng-show="!hideValidation"
+    <div ng-if="!hideValidation"
          ng-class="['col-sm-12',
          'col-md-12',
          'col-lg-8']">
-      <div validation validation-id="validation.id" task-key="taskKey" projectKey="projectKey"
-           branch="branch"></div>
+      <div validation editable="true" show-title="true"></div>
     </div>
-
 
     <!-- Classify View -->
     <div ng-show="!hideClassification"
          ng-class="['col-sm-12',
          'col-md-8',
          'col-lg-8']">
-      <div classification classification-id="classification.id" task-key="taskKey" projectKey="projectKey"
-           branch="branch"></div>
+      <div classification branch="branch" editable="true"></div>
     </div>
 
     <!-- Concept/Model -->
@@ -161,7 +146,7 @@
 
           <!-- concepts -->
           <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept"
-               editList="editPanelUiState" branch="branch"
+               branch="branch"
                id="editPanel-{{concept.conceptId}}">
           </div>
         </div>

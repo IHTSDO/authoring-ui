@@ -11,7 +11,6 @@ angular.module('singleConceptAuthoringApp')
 
         // the branch of the concept
         branch: '=branch',
-        ctrlFn: '&'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -148,10 +147,10 @@ angular.module('singleConceptAuthoringApp')
         // function to toggle active status of concept
         // cascades to children components
         scope.toggleConceptActive = function (concept) {
-          // if inactive, simply set active and autosave
+          // if inactive, simply set active and autoSave
           if (!concept.active) {
             concept.active = true;
-            autosave();
+            autoSave();
           }
 
           // otherwise, open a select reason modal
@@ -168,8 +167,8 @@ angular.module('singleConceptAuthoringApp')
                   relationship.active = false;
                 });
 
-                // autosave
-                autosave();
+                // autoSave
+                autoSave();
               }
             });
           }
@@ -356,7 +355,7 @@ angular.module('singleConceptAuthoringApp')
           // if inactive, simply set active
           if (!description.active) {
             description.active = true;
-            autosave();
+            autoSave();
             $timeout(function () {
                 $rootScope.$broadcast('editModelDraw');
             }, 300);
@@ -367,7 +366,7 @@ angular.module('singleConceptAuthoringApp')
             // TODO Decide what the heck to do with result
             selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function (reason) {
               description.active = false;
-              autosave();
+              autoSave();
               $timeout(function () {
                 $rootScope.$broadcast('editModelDraw');
               }, 300);
@@ -485,7 +484,7 @@ angular.module('singleConceptAuthoringApp')
           $timeout(function () {
             $rootScope.$broadcast('editModelDraw');
           }, 300);
-          autosave();
+          autoSave();
         };
 
         ////////////////////////////////
@@ -758,7 +757,7 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
-        // function to update description and autosave if indicated
+        // function to update description and autoSave if indicated
         scope.updateDescription = function (description) {
 
          // console.debug('updateDescription');
@@ -766,7 +765,7 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
           if (scope.isDescriptionValid(description)) {
-            autosave();
+            autoSave();
             sortDescriptions();
           } else {
             console.error('  Error: ', description.error);
@@ -776,20 +775,20 @@ angular.module('singleConceptAuthoringApp')
 
 
 
-        // function to update relationship and autosave if indicated
+        // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship) {
           if (!relationship) {
             return;
           }
           relationship.sourceId = scope.concept.conceptId;
           if (scope.isRelationshipValid(relationship)) {
-            autosave();
+            autoSave();
           } else {
             console.error('  Error: ', relationship.error);
           }
         };
 
-        function autosave() {
+        function autoSave() {
 
           // add revision to session history
           scope.conceptSessionHistory.push(scope.concept);

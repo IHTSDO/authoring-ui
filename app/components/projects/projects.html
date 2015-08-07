@@ -1,6 +1,7 @@
 <div ng-include src="'layout/header.html'"></div>
 <div class="row no-gutter sca-container">
-  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include src="'layout/sidebar.html'"></div>
+  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
+       src="'layout/sidebar.html'"></div>
 
   <!---->
   <div class="sca-content col-lg-9 col-md-9 col-sm-9">
@@ -17,13 +18,13 @@
                      placeholder="Search All Projects" autofocus/>
             </div>
           </div>
-      
+
         </div>
 
         <div class="table-responsive white" style="margin-right:0px;">
 
-        
-          <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html" 
+
+          <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="project in $data">
 
@@ -31,30 +32,46 @@
                 ng-href="#/project/{{project.key}}">{{project.title}} </a>
               </td>
               <td data-title="'Project Lead'" sortable="'projectKey'" filter="{ 'project': 'text' }">
-
+                Not yet implemented
               </td>
-           
-              <td data-title="'Classification Results'" sortable="'classification'">
-                <button type="button" class="btn btn-round btn-default cyan lighten-2" tooltip=""
-                        title="Classification Results"><span class="md md-notifications "></span>
 
-                  <div class="ripple-wrapper"></div>
+              <td data-title="'Classification Results'" sortable="'latestClassificationStatus.status'">
+                Not yet implemented
+                <!--<a ng-href="#/classify/{{project.projectKey}}/{{project.key}}">
+                  <button ng-show="project.latestClassificationStatus != null"
+                          title="{{project.latestClassificationStatus.status}}" type="button"
+                          ng-class="[{gray : project.latestClassificationStatus.status === 'RUNNING'},
+                          {red : project.latestClassificationStatus.equivalentConceptsFound === true},
+                           {amber : project.latestClassificationStatus.redundantStatedRelationshipsFound === true},
+                           {green : project.latestClassificationStatus.redundantStatedRelationshipsFound === false && project.latestClassificationStatus.equivalentConceptsFound === false}]"
+                          class="btn btn-round btn-default lighten-2" tooltip="">
+                    <span class="md md-notifications "></span>
+                  </button>
+                </a>-->
+
+                <div class="ripple-wrapper"></div>
                 </button>
 
               </td>
-  
-              <td data-title="'QA Results'" sortable="'classification'">
-                <button type="button" class="btn btn-round btn-default deep-purple lighten-1" tooltip=""
-                        title="QA Results"><span class="md md-school "></span>
-
-                  <div class="ripple-wrapper"></div>
+              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+                <a ng-href="#/validate/{{project.projectKey}}/{{project.key}}">
+                  <button ng-show="project.latestValidationStatus != null"
+                          title="{{project.latestValidationStatus}}" type="button"
+                          ng-class="[{gray : project.latestValidationStatus === 'SCHEDULED'},
+                          {red : project.latestValidationStatus === 'FAILED'},
+                          {gray : project.latestValidationStatus === 'BUILDING'},
+                          {green : project.latestValidationStatus === 'COMPLETED'}]"
+                          class="btn btn-round btn-default lighten-2" tooltip="">
+                    <span class="md md-notifications "></span>
+                  </button>
+                </a>
                 </button>
 
               </td>
               <td data-title="'Status'" sortable="'Status'">
-                <span class="In Progress badge">In Progress</span>
+                <span class="In Progress badge">Not yet implemented</span>
               </td>
-            
+
             </tr>
           </table>
         </div>

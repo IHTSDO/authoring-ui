@@ -49,11 +49,14 @@
               <td data-title="'Last Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
-              <td data-title="'Classification Results'" sortable="'classification'">
+              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/classify/{{task.projectKey}}/{{task.key}}">
                   <button ng-show="task.latestClassificationJson != null"
                           title="{{task.latestClassificationJson.status}}" type="button"
-                          ng-class="[{gray : task.latestClassificationJson.status === 'RUNNING'}, {red : task.latestClassificationJson.equivalentConceptsFound === true}, {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true}, {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
+                          ng-class="[{gray : task.latestClassificationJson.status === 'RUNNING'},
+                          {red : task.latestClassificationJson.equivalentConceptsFound === true || task.latestClassification.status === 'FAILED'},
+                           {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
+                           {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default lighten-2" tooltip="">
                     <span class="md md-notifications "></span>
                   </button>
@@ -63,17 +66,24 @@
                 </button>
 
               </td>
-              <td data-title="'QA Results'" sortable="'classification'">
-                <button type="button" class="btn btn-round btn-default deep-purple lighten-1" tooltip=""
-                        title="QA Results"><span class="md md-school "></span>
-
-                  <div class="ripple-wrapper"></div>
+              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+                <a ng-href="#/validate/{{task.projectKey}}/{{task.key}}">
+                  <button ng-show="task.latestValidationStatus != null"
+                          title="{{task.latestValidationStatus}}" type="button"
+                          ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                          {red : task.latestValidationStatus === 'FAILED'},
+                          {gray : task.latestValidationStatus === 'BUILDING'},
+                          {green : task.latestValidationStatus === 'COMPLETED'}]"
+                          class="btn btn-round btn-default lighten-2" tooltip="">
+                    <span class="md md-notifications "></span>
+                  </button>
+                </a>
                 </button>
 
               </td>
               <td data-title="'Feedback'" sortable="'feedback'">
-                <button type="button" class="btn btn-round btn-default pink darken-1" tooltip=""
-                        title="Feedback Available"><span class="md md-forum "></span>
+                <button disabled type="button" class="btn btn-round btn-default pink darken-1" tooltip=""
+                        title="Not yet implemented"><span class="md md-forum "></span>
 
                   <div class="ripple-wrapper"></div>
                 </button>
