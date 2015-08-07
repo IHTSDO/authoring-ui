@@ -1,5 +1,5 @@
 <section class="tables-data">
-  <div ng-if="type != 'equivalence'" class="table-responsive white">
+  <div class="table-responsive white">
       <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"   class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
             <td data-title="'Differences'" sortable="'differences'">
@@ -30,41 +30,6 @@
                 </button>
                  <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                         title="Edit"><span class="md md-edit " ng-click="editDestinationConcept(result)"></span>
-
-                  <div class="ripple-wrapper"></div>
-                </button>
-            </td>
-        </tr>
-      </table>
-
-  </div>
-  <div ng-if="type === 'equivalence'" class="table-responsive white">
-      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"   class="table table-full table-full-small">
-      <tr ng-repeat="result in $data">
-<!--
-            <td data-title="'Differences'" sortable="'differences'">
-               Difference not currently defined, or possibly overlaps with changeNature 
-                <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
-                <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">Removed</span>
-            </td>
--->
-          
-            <td data-title="'Concept'" sortable="'source'">
-                {{result.equivalentConcepts[0].label}}
-            </td>
-            <td >
-                 <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
-                        title="Edit"><span class="md md-edit " ng-click="editEquivalentConcept(result.equivalentConcepts[0].id)"></span>
-
-                  <div class="ripple-wrapper"></div>
-                </button>
-            </td>
-            <td data-title="'Equivalence'" sortable="'source'">
-                {{result.equivalentConcepts[1].label}}
-            </td>
-            <td >
-                 <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
-                        title="Edit"><span class="md md-edit " ng-click="editEquivalentConcept(result.equivalentConcepts[1].id)"></span>
 
                   <div class="ripple-wrapper"></div>
                 </button>

@@ -220,7 +220,7 @@ border:1px solid #424242;
   .title-text {
     font-size: 12px;
     line-height:1;
-	max-width: 270px;
+	max-width: 200px;
     text-align: left;
   }
    .fsn{ text-align: left;}
@@ -862,3 +862,10 @@ border:none;
   border-bottom: 0px solid transparent;
 }
 .hasSVG{background-color:#fff;}
+// classification button
+  .classification-btn .Classify{background-color:#4CAF50; color:#fff;}
+  .classification-btn .Running{background-color:#424242; color:#fff;}
+.classification-btn .Failed{background-color:#D32F2F; color:#fff;}
+.classification-btn .btn-default:hover{background-color:#2E7D32; color:#fff;}
+.classification-btn .ng-click-active.amber{background-color:#424242}
+.btn-default.blue:hover, .btn-default.blue:active{background-color: #097fda; color:#fff;}

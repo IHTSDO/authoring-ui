@@ -1,0 +1,83 @@
+<section class="tables-data">
+
+  <!-- for ng-table checkboxes -->
+  <script type="text/ng-template" id="checkboxheader.html">
+    <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
+  </script>
+
+  <script type="text/ng-template" id="editheader.html">
+    <button type="button" class="btn btn-round btn-default blue"><span class="md md-edit"></span></button>
+  </script>
+
+  <div class="card">
+    <div role="tabpanel" class="m-15">
+      <div class="row">
+        <strong>Validation Report Completed: </strong> {{validation['report']['RVF Validation Result']['End time']}}<br>
+
+      </div>
+
+      <div class="table-responsive white" style="margin-right:0px;" ng-show="viewTop">
+
+
+        <table
+          ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
+          class="table table-full table-full-small">
+          <tr ng-repeat="assertion in $data">
+
+            <td data-title="'Failed Assertions'" sortable="'assertionText'">{{assertion.assertionText}}
+            </td>
+            <td data-title="'# of Cases'" sortable="'failureCount'">
+              {{assertion.failureCount}}
+            </td>
+
+            <td data-title="''" sortable="''">
+
+                <button
+                  title="View These Failures" type="button" ng-click="viewFailures(assertion)"
+                  class="btn btn-default blue">Load Cases</span>
+                </button>
+
+
+              <div class="ripple-wrapper"></div>
+              </button>
+
+            </td>
+          </tr>
+        </table>
+
+      </div>
+
+      <div class="table-responsive white" style="margin-right:0px;" ng-show="!viewTop">
+
+        <div class="row">
+          Assertion Failure: {{assertionFailureViewed}}
+        </div>
+
+
+        <table
+          ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
+          class="table table-full table-full-small">
+          <tr ng-repeat="failure in $data">
+
+            <td data-header="'checkboxheader.html'"><input type="checkbox" ng-model="failure.selected"</td>
+            <!-- other columns here -->
+
+            <td data-title="'Concept'" sortable="'failureText'">{{failure.concept}}
+            </td>
+            <td data-title="'Error Message'" sortable="'failureCount'">
+              {{failure.errorMessage}}
+            </td>
+
+            <td data-header="'editheader.html'">
+              <button type="button" class="btn btn-round btn-default blue" ng-click="editConcept(failure.concept)"><span class="md md-edit"></span></button>
+            </td>
+
+          </tr>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
