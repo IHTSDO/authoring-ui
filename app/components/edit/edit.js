@@ -307,6 +307,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
         $scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
+        
 
         // ensure concept is in edit panel ui state
         if ($scope.editPanelUiState.indexOf(data.response.conceptId) === -1) {
@@ -323,7 +324,9 @@ angular.module('singleConceptAuthoringApp.edit', [
             break;
           }
         }
-
+        $timeout(function () {
+              $rootScope.$broadcast('editModelDraw');
+          }, 300);
         console.debug('after save success', $scope.concepts);
       }
       else {
