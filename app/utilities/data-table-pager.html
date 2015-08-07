@@ -1,7 +1,7 @@
 <div class="p-t-20 paging">
   <ul class="pager">
 <!--      <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default pull-left">&laquo; Previous</button>-->
-      <li ng-class="{'disabled': !page.active}, {'blue': page.active}" ng-repeat="page in pages" ng-switch="page.type">
+      <li ng-class="[{'disabled': !page.active}, {'blue': page.active}]" ng-repeat="page in pages" ng-switch="page.type">
         <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default">Prev</button>
         <button type="button" ng-class="{'blue': !page.active}" ng-switch-when="first" ng-click="params.page(page.number)" class="btn btn-default"><span ng-bind="page.number"></span></button>
         <button type="button" ng-class="{'blue': !page.active}" ng-switch-when="page" ng-click="params.page(page.number)" class="btn btn-default"><span ng-bind="page.number"></span></button>

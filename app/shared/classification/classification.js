@@ -23,6 +23,8 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
+          scope.editable = attrs.editable === 'true';
+
           // helper function to populate names for all relationship display
           // names
           function getRelationshipNames(relationship) {
@@ -81,29 +83,6 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-         /* var saveData = (function () {
-            alert('ohai');
-            var a = document.createElement("a");
-            document.body.appendChild(a);
-            //a.style = "display: none";
-            return function (data, fileName) {
-              var json = JSON.stringify(data),
-                blob = new Blob([json], {type: "octet/stream"}),
-                url = window.URL.createObjectURL(blob);
-
-              // console.debug('ohai', url, fileName);
-              a.href = url;
-              a.download = fileName;
-              a.click();
-              window.URL.revokeObjectURL(url);
-            };
-          }());
-
-          var data = {x: 42, s: "hello, world", d: new Date()},
-            fileName = "my-download.json";
-
-          saveData(data, fileName);
-*/
           scope.dlcDialog = (function (data, fileName) {
 
             console.debug('classification data: ', data, fileName);
@@ -125,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
               a.click();
               window.URL.revokeObjectURL(url);
             };
-          } ());
+          }());
 
           scope.downloadClassification = function () {
 
@@ -177,7 +156,6 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          // get latest validation
         }
 
       };

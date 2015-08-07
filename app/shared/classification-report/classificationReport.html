@@ -28,7 +28,7 @@
 
                   <div class="ripple-wrapper"></div>
                 </button>
-                 <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
+                 <button ng-if="editable" ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                         title="Edit"><span class="md md-edit " ng-click="editDestinationConcept(result)"></span>
 
                   <div class="ripple-wrapper"></div>
