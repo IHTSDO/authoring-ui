@@ -53,7 +53,9 @@ angular.module('singleConceptAuthoringApp')
 
         scope.toggleHideInactive = function() {
           scope.hideInactive = !scope.hideInactive;
-          $rootScope.$broadcast('editModelDraw');
+          $timeout(function () {
+              $rootScope.$broadcast('editModelDraw');
+          }, 300);
         };
 
         ////////////////////////////////
@@ -330,10 +332,16 @@ angular.module('singleConceptAuthoringApp')
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
             scope.concept.descriptions.push(description);
+            $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+            }, 300);
           }
           // if in range, add after the specified afterIndex
           else {
             scope.concept.descriptions.splice(afterIndex + 1, 0, description);
+            $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+            }, 300);
           }
 
         };
@@ -343,6 +351,9 @@ angular.module('singleConceptAuthoringApp')
           if (!description.active) {
             description.active = true;
             autosave();
+            $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+            }, 300);
           }
 
           // otherwise, open a selct reason modal
@@ -351,6 +362,9 @@ angular.module('singleConceptAuthoringApp')
             selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function (reason) {
               description.active = false;
               autosave();
+              $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+              }, 300);
             });
           }
         };
@@ -408,6 +422,9 @@ angular.module('singleConceptAuthoringApp')
           // if afterIndex not supplied or invalid, simply add
           if (afterIndex === null || afterIndex === undefined) {
             scope.concept.relationships.push(relationship);
+            $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+            }, 300);
           }
 
           // otherwise, add at the index specified
@@ -420,6 +437,9 @@ angular.module('singleConceptAuthoringApp')
 
             // add the relationship
             scope.concept.relationships.splice(relIndex + 1, 0, relationship);
+            $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+              }, 300);
           }
         };
 
@@ -432,6 +452,9 @@ angular.module('singleConceptAuthoringApp')
           // if afterIndex not supplied or invalid, simply add
           if (afterIndex === null || afterIndex === undefined) {
             scope.concept.relationships.push(relationship);
+            $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+            }, 300);
           }
 
           // otherwise, add at the index specified
@@ -444,13 +467,18 @@ angular.module('singleConceptAuthoringApp')
 
             // add the relationship
             scope.concept.relationships.splice(relIndex + 1, 0, relationship);
+            $timeout(function () {
+                $rootScope.$broadcast('editModelDraw');
+            }, 300);
           }
         };
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
-
+          $timeout(function () {
+            $rootScope.$broadcast('editModelDraw');
+          }, 300);
           autosave();
         };
 
