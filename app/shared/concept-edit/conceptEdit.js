@@ -116,6 +116,9 @@ angular.module('singleConceptAuthoringApp')
               } else {
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 scope.concept.error = response.message;
+                $timeout(function () {
+                  $rootScope.$broadcast('editModelDraw');
+              }, 300);
               }
             });
           }
@@ -133,6 +136,9 @@ angular.module('singleConceptAuthoringApp')
               else {
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 scope.concept.error = response.message;
+                  $timeout(function () {
+                      $rootScope.$broadcast('editModelDraw');
+                  }, 300);
               }
             });
 
