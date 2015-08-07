@@ -9,13 +9,14 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: {
         // the table params
-        items: '=items'
+        items: '=items',
+        type: '=type'
 
       },
       templateUrl: 'shared/classification-report/classificationReport.html',
 
       link: function (scope, element, attrs, linkCtrl) {
-
+          console.log(scope.type);
         // listen for removal of concepts from editing panel
         scope.$on('stopEditing', function (event, data) {
           console.debug('classificationReport received stopEditing notification', data);
@@ -51,6 +52,13 @@ angular.module('singleConceptAuthoringApp')
 
           // issue notification of edit concept request
           $rootScope.$broadcast('editConcept', {conceptId: item.destinationId});
+
+        };
+          
+        // scope function to broadcast element to edit panel
+        scope.editEquivalentConcept = function (id) {
+          // issue notification of edit concept request
+          $rootScope.$broadcast('editConcept', {conceptId: id});
 
         };
 
