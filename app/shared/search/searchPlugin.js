@@ -100,7 +100,7 @@ angular.module('singleConceptAuthoringApp.search', [])
 
       this.history = [];
       this.setupCanvas = function () {
-        var searchHtml = "<div style='margin: 5px; height:95%;' class='panel panel-default'>";
+        var searchHtml = "<div style='5px 0px; height:95%;' class='panel panel-default'>";
         /*  searchHtml = searchHtml + "<div class='panel-heading'>";
          searchHtml = searchHtml + "<div class='row'>";
          searchHtml = searchHtml + "<div class='col-md-8' id='" + panel.divElement.id + "-panelTitle'><strong><span class='i18n' data-i18n-id='i18n_search'>Search</span></span></strong></div>";
@@ -126,11 +126,11 @@ angular.module('singleConceptAuthoringApp.search', [])
 // searchHtml = searchHtml + "</div>";
         /*            searchHtml = searchHtml + "</div>";
          searchHtml = searchHtml + "</div>";*/
-        searchHtml = searchHtml + "<div style='height:100%; padding:0px 15px 0px 15px;' id='" + panel.divElement.id + "-panelBody'>"; /* class='panel-body' */
+        searchHtml = searchHtml + "<div style='height:100%; padding-left:8px;' id='" + panel.divElement.id + "-panelBody'>"; /* class='panel-body' */
         searchHtml = searchHtml + '<form>';
         searchHtml = searchHtml + '<div class="form-group" style="margin-bottom: 2px;">';
-        searchHtml = searchHtml + '<div class="btn-group col-md-12 grey lighten-5 no-padding"><span class="pull-left col-md-11 no-padding"><input type="search" class="form-control m-5" id="' + panel.divElement.id + '-searchBox" placeholder="Enter search terms here" autocomplete="off"></span>';
-        searchHtml = searchHtml + '<span class="pull-right"><span id="'+ panel.divElement.id + '-clearButton" class="btn btn-round search-button btn-default grey lighten-5 m-t-10"><span class="md md-clear"></span></span></span></div>';
+        searchHtml = searchHtml + '<div class="btn-group col-md-12 grey lighten-5 no-padding"><span class="pull-left search-snomed no-padding"><input type="search" class="form-control m-5" id="' + panel.divElement.id + '-searchBox" placeholder="Enter search terms here" autocomplete="off"></span>';
+        searchHtml = searchHtml + '<span class="pull-right"><span id="'+ panel.divElement.id + '-clearButton" class="btn btn-round search-button btn-default grey lighten-5 snomed-clear"><span class="md md-clear"></span></span></span></div>';
         searchHtml = searchHtml + '</div>';
         searchHtml = searchHtml + '</form>';
 //            searchHtml = searchHtml + "<div id='" + panel.divElement.id +
