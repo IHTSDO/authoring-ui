@@ -137,7 +137,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // on load, set the initial view based on classify/validate parameters
     if (classifyMode === true) {
-      $rootScope.pageTitle = 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId
+      $rootScope.pageTitle = 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
       $scope.setView('classification');
     } else if (validateMode === true) {
       $rootScope.pageTitle = 'Validation / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;

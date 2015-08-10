@@ -3,7 +3,7 @@
 angular.module('singleConceptAuthoringApp')
 
   .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', '$timeout',
-    function ($rootScope, $filter, ngTableParams, $routeParams, snowowlService, scaService, $timeout) {
+    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, $timeout) {
       return {
         restrict: 'A',
         transclude: false,
@@ -37,7 +37,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.displayStatus = 'Failed';
                 break;
               case 'COMPLETED':
-                scope.displayStatus = 'Completed on ' + data.validation['report']['RVF Validation Result']['End time']
+                scope.displayStatus = 'Completed on ' + data.validation['report']['RVF Validation Result']['End time'];
                 break;
             }
 
@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp')
 
 
           // declare table parameters
-          scope.topTableParams = new ngTableParams({
+          scope.topTableParams = new NgTableParams({
               page: 1,
               count: 10,
               sorting: {failureCount: 'desc'},
@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
 
                 console.debug('get main data', assertionsFailed);
 
-                if (!assertionsFailed || assertionsFailed.length == 0) {
+                if (!assertionsFailed || assertionsFailed.length === 0) {
                   $defer.resolve([]);
                 } else {
 
@@ -82,7 +82,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
           // declare table parameters
-          scope.failureTableParams = new ngTableParams({
+          scope.failureTableParams = new NgTableParams({
               page: 1,
               count: 10,
               sorting: {concept: 'asc'},
@@ -95,7 +95,7 @@ angular.module('singleConceptAuthoringApp')
 
                 console.debug('get failure data', failures);
 
-                if (!failures || failures.length == 0) {
+                if (!failures || failures.length === 0) {
                   $defer.resolve([]);
                 } else {
 
