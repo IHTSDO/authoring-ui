@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
   })
 
-  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout) {
+  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout, $q) {
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Projects"
@@ -82,9 +82,9 @@ angular.module('singleConceptAuthoringApp.projects', [
       modalInstance.result.then(function () {
       }, function () {
       });
-    }
+    };
 
-// Initialization:  get projects
+    // Initialization:  get projects
     function initialize() {
 
       $scope.projects = [];
@@ -96,7 +96,27 @@ angular.module('singleConceptAuthoringApp.projects', [
           return;
         }
 
-        $scope.projects = response;
+        angular.forEach(response, function (project) {
+          var validation = scaService.getValidationForProject(project.key);
+          // TODO Implement this call in scaService once api call becomes available
+          // var classification = scaService.getClassificationForProject(project.key);
+
+          // TODO Add classification to this once it's implemented
+          $q.all([validation]).then(function (data) {
+
+            // add the validation status
+            project.latestValidationStatus = data[0].executionStatus;
+
+            // add the classification status
+            // TODO Implement
+
+            // push onto the projects list
+            $scope.projects.push(project);
+
+            console.debug($scope.projects);
+          });
+        });
+
 
       }, function (error) {
         // TODO Handle errors

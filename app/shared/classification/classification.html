@@ -37,22 +37,22 @@
 
       <!-- changed relationships -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-        <div classification-report items="classification.relationshipChanges" type="'relationshipChanges'"></div>
+        <div classification-report items="classification.relationshipChanges" type="'relationshipChanges'" editable="editable"></div>
       </div>
 
       <!-- redundant stated relationships -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
-        <div classification-report items="classification.redundantStatedRelationships" type="'relationshipChanges'"></div>
+        <div classification-report items="classification.redundantStatedRelationships" type="'relationshipChanges'" editable="editable"></div>
       </div>
 
       <!-- inferred not previously stated -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
-        <div classification-report items="classification.inferredNotPreviouslyStated" type="'relationshipChanges'"></div>
+        <div classification-report items="classification.inferredNotPreviouslyStated" type="'relationshipChanges'" editable="editable"></div>
       </div>
 
       <!-- equivalent concept errors -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
-        <div classification-report items="classification.equivalentConcepts" type="'equivalence'"></div>
+        <div classification-report items="classification.equivalentConcepts" type="'equivalence'" editable="editable"></div>
       </div>
 
     </div>
