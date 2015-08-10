@@ -66,16 +66,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // miscellaneous
     $scope.saveIndicator = false;
-    $rootScope.pageTitle = $scope.classifyMode ? 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId : 'Edit Concept / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
-
-    // initialize hide element variables
-    $scope.hideSidebar = classifyMode || validateMode;
-    $scope.hideModel = classifyMode || validateMode;
-    $scope.hideClassification = !classifyMode;
-    $scope.hideValidation =
-
-      $scope.thisView = null;
+    $scope.thisView = null;
     $scope.lastView = null;
+
 
     $scope.setView = function (name) {
       // console.debug('setting view (requested, this, last)', name,
@@ -142,11 +135,16 @@ angular.module('singleConceptAuthoringApp.edit', [
       }, 500);
     };
 
-    // set the initial view
-    if ($scope.hideClassification) {
-      $scope.setView('edit-default');
-    } else {
+    // on load, set the initial view based on classify/validate parameters
+    if (classifyMode === true) {
+      $rootScope.pageTitle = 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
       $scope.setView('classification');
+    } else if (validateMode === true) {
+      $rootScope.pageTitle = 'Validation / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
+      $scope.setView('validation');
+    } else {
+      $rootScope.pageTitle = 'Edit Concept / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
+      $scope.setView('edit-default');
     }
 
     // function to resize svg elements for concept models
@@ -607,8 +605,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           // do nothing
         } else {
 
-          console.debug('New validation detected');
+          console.debug('New validation detected', response);
           $scope.validation = response;
+
+          // if running, broadcast result without elements
+          if ($scope.validation) {
+            $rootScope.$broadcast('setValidation', {validation: $scope.validation});
+          }
+
         }
 
       });
@@ -616,6 +620,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // on load, get the latest classification
     $scope.classification = null;
+    $scope.validation = null;
     $scope.relationshipChanges = null;
     $scope.equivalentConcepts = null;
     $scope.getLatestClassification();

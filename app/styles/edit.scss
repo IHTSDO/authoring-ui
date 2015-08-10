@@ -1,3 +1,5 @@
+
+
 .dashboard-links a{color:#fff;}
 .tooltip{top:0px!important; }
 .popover{min-width:620px!important;}
@@ -30,7 +32,7 @@ color: rgba(0, 0, 0, 0.8);border-color:rgba(0, 0, 0, 0.8);}
 
 .toggle-buttons {
   background-color: #212121 !important;
-  padding: 1px 3px !important;
+  padding: 0px !important;
   color: #BEBEBE !important;
   &:hover {
     color: #2196F3 !important;
@@ -869,3 +871,71 @@ border:none;
 .classification-btn .btn-default:hover{background-color:#2E7D32; color:#fff;}
 .classification-btn .ng-click-active.amber{background-color:#424242}
 .btn-default.blue:hover, .btn-default.blue:active{background-color: #097fda; color:#fff;}
+.search-snomed{width:90%;}
+
+@media (max-width: 1380px) {
+	.title-text {
+    font-size: 11px!important;
+    max-width: 270px!important;
+	
+}
+.small-buttons {
+    padding: 2px 4.5% !important;
+    font-size: 14px !important;
+}	
+.snomed-clear{margin-top:5px;}
+}
+@media (min-width: 1701px) {
+.small-buttons {margin-top:5px}	
+.snomed-clear{margin-top:10px;}
+.nav > li > a {
+    position: relative;
+    display: block;
+    padding: 10px 12px;
+}
+}
+
+@media (max-width: 1700px) {
+.fsn {
+    padding-bottom: 3px;
+    font-size: 11.5px;
+}
+.title-text {
+    font-size: 11px!important;
+    max-width: 500px;
+	
+}
+.snomed-clear{margin-top:5px;}
+select.primitive{font-size:10px!important;height: 24px !important;}
+.edits button {
+    font-size: 12px;
+    padding: 3px 4px;
+    line-height: 14px;
+    box-shadow: none !important;
+}
+.concept-title{float:left!important;width:100%}
+.editing-form .col-md-9 {
+    width: 77%;
+}
+.editing-form .col-md-3 {
+    width: 23%;
+}
+.editing-form select{font-size: 10px !important;}
+.editing-form .typeid {
+    width: 12%;
+    padding-left: 1%;
+}
+.editing-form .description {
+    width: 52%;
+
+}
+.editing-form .acceptability {
+    width: 22%;}
+	.nav > li > a {
+    position: relative;
+    display: block;
+	font-size:12px;
+    padding: 10px 5px;
+}
+.small-buttons {padding: 2px 5%!important; font-size:14px!important}
+}

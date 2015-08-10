@@ -8,7 +8,7 @@
   </div>
   <!-- end validation error -->
   <div class="row p-5 grey darken-4  " style=" margin-right:0px;">
-    <div class="pull-left p-t-5">
+    <div class="pull-left">
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
       <button type="button" class="btn btn-default morebuttons grey darken-4 md md-more"
@@ -28,10 +28,10 @@
     <!-- draggable element -- concept name -->
     <div class="pull-left title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
-      <button type="button" class="btn-default darkbuttons grey darken-4 "><span class="fsn">{{concept.fsn}}</span><span
+      <button type="button" class="btn-default darkbuttons grey darken-4 title-text"><span class="fsn">{{concept.fsn}}</span><span
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
     </div>
-    <div class="pull-right m-l-15 m-r-15 ">
+    <div class="pull-right m-l-5 m-r-5 ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               ng-model="concept.definitionStatus"
               ng-change="saveConcept(concept)"
@@ -39,26 +39,26 @@
               ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
     </div>
-    <div class="pull-right p-t-5 no-margin edits">
-      <button type="button" class="btn-default editbuttons orange darken-3 md md-backspace"
+    <div class="pull-right no-margin edits concept-title">
+      <button type="button" class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
               title="Remove Concept" ng-click="removeConcept(concept)"></button>
       <!-- TODO Fix this. Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
 
       <button type="button"
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
-              title="Active/Inactive" ng-click="toggleConceptActive(concept)"></button>
+              title="Active/Inactive" ng-click="toggleConceptActive(concept)" class="small-buttons"></button>
       <button type="button"
               style="vertical-align: bottom"
-              class="btn-default editbuttons light-blue"
+              class="btn-default editbuttons light-blue small-buttons"
               ng-class="[{'md-flash-on' : !hideInactive}, {'md-flash-off' : hideInactive}]"
               title="Show/Hide Inactive Components" ng-click="toggleHideInactive()"></button>
 
-      <button type="button" class="btn-default editbuttons amber md md-undo " title="Undo Changes"></button>
-      <button type="button" class="btn-default editbuttons deep-purple lighten-1 md md-history"
+      <button type="button" class="btn-default editbuttons small-buttons amber md md-undo " title="Undo Changes"></button>
+      <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-1 md md-history"
               title="History"></button>
-      <button type="button" class="btn-default editbuttons blue md md-keyboard-return" title="Show Model" ng-click="showModel()"></button>
-      <button type="button" class="btn-default editbuttons teal md md-save" ng-click="saveConcept(concept)"
+      <button type="button" class="btn-default editbuttons small-buttons blue md md-keyboard-return" title="Show Model" ng-click="showModel()"></button>
+      <button type="button" class="btn-default editbuttons small-buttons teal md md-save" ng-click="saveConcept(concept)"
               title="Save"></button>
     </div>
   </div>

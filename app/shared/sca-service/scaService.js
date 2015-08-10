@@ -231,7 +231,7 @@ angular.module('singleConceptAuthoringApp')
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/validation', {}).then(
           function (response) {
-            return response;
+            return response.data;
           }, function (error) {
             console.error('Error getting latest validation for ' + projectKey + ', ' + taskKey);
             return null;
