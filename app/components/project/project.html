@@ -12,27 +12,36 @@
         </div>
         <div class="card-content">
 
-          <!--- Validation Results -->
-          <div class="card-title">
-            <button ng-init="validationCollapsed = false" ng-click="validationCollapsed = !validationCollapsed"
-                    type="button"
-                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : validationCollapsed, 'md-keyboard-arrow-down' : !validationCollapsed}]"></button>
-            Validation Results
-          </div>
 
-          <div ng-show="validationCollapsed === false">
-            <div validation editable="false" show-title="false"></div>
+          <div class="card">
+            <!--- Validation Results -->
+            <div class="card-title">
+              <button ng-init="validationCollapsed = false" ng-click="validationCollapsed = !validationCollapsed"
+                      type="button"
+                      ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : validationCollapsed, 'md-keyboard-arrow-down' : !validationCollapsed}]"></button>
+              Validation Results
+            </div>
+
+            <div ng-show="validationCollapsed === false">
+              <!-- TODO ng-if here because the damn two-way binding IS NOT WORKING -->
+               <div validation validation-container="validationContainer"
+                   editable="false" show-title="false"></div>
+            </div>
           </div>
 
           <!-- Classification Results -->
-         <div class="card-title">
-            <button ng-init="classificationCollapsed = false"
-                    ng-click="classificationCollapsed = !classificationCollapsed" type="button"
-                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]"></button>
-            Classification Results
-          </div>
+          <div class="card">
+            <div class="card-title">
+              <button ng-init="classificationCollapsed = false"
+                      ng-click="classificationCollapsed = !classificationCollapsed" type="button"
+                      ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]"></button>
+              Classification Results
+            </div>
 
-          <div class="card-title p-20" ng-show="classificationCollapsed === false">Not yet implemented.</div>
+            <div ng-show="classificationCollapsed === false">
+              <div classification classification-container="classificationContainer" branch="branch" editable="false"></div>
+            </div>
+          </div>
 
           <!-- Action Buttons -->
           <div class="card-action clearfix projecttasks">

@@ -9,6 +9,11 @@ angular.module('singleConceptAuthoringApp')
         transclude: false,
         replace: true,
         scope: {
+
+          // the classification container
+          // {equivalentConcepts : {...}, relationshipChanges: {...}, ...}
+          classificationContainer: '=',
+
           // the branch
           branch: '=branch'
         },
@@ -25,22 +30,45 @@ angular.module('singleConceptAuthoringApp')
 
           scope.editable = attrs.editable === 'true';
 
-          // helper function to populate names for all relationship display
-          // names
-          function getRelationshipNames(relationship) {
-            // get source name
-            snowowlService.getConceptPreferredTerm(relationship.sourceId, scope.branch).then(function (response) {
-              relationship.sourceName = response.term;
+          // function to get formatted summary tex
+          scope.getStatusText = function () {
+
+            // console.debug('getting text', scope.classificationContainer.status);
+
+
+            // check required elements
+            if (!scope.classificationContainer) {
+              return;
+            }
+            if (!scope.classificationContainer.status || scope.classificationContainer.status === '') {
+              return;
+            }
+
+            // get the human-readable execution status
+            var status = scope.classificationContainer.status.toLowerCase().replace(/\w\S*/g, function (txt) {
+              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
-            // get destination name
-            snowowlService.getConceptPreferredTerm(relationship.destinationId, scope.branch).then(function (response) {
-              relationship.destinationName = response.term;
-            });
-            // get type name
-            snowowlService.getConceptPreferredTerm(relationship.typeId, scope.branch).then(function (response) {
-              relationship.typeName = response.term;
-            });
-          }
+
+            // if loading, return loading text
+            if (status === 'Loading...') {
+              return status;
+            }
+
+            // get the end time if specified
+            if (status === 'Completed') {
+              var endTime = scope.classificationContainer.completionDate;
+              return status + ' ' + endTime;
+            }
+
+            // otherwise, return the status + start time
+            if (scope.classificationContainer.creationDate) {
+              var startTime = scope.classificationContainer.creationDate;
+              return status + ', started ' + startTime;
+            }
+
+            // default -- simply return the status
+            return status;
+          };
 
           $rootScope.$on('comparativeModelAdded', function (event, model) {
             snowowlService.getFullConcept(model.id, scope.branch).then(function (response) {
@@ -48,7 +76,7 @@ angular.module('singleConceptAuthoringApp')
               var id = temp.conceptId;
               temp.conceptId = 'Before: ' + temp.conceptId;
               scope.modelConcept = response;
-              snowowlService.getModelPreview(scope.classification.id, scope.branch, model.id).then(function (secondResponse) {
+              snowowlService.getModelPreview(scope.classificationContainer.id, scope.branch, model.id).then(function (secondResponse) {
                 scope.modelConceptAfter = secondResponse;
                 scope.displayModels = true;
                 $timeout(function () {
@@ -77,15 +105,10 @@ angular.module('singleConceptAuthoringApp')
             elem.setAttribute('height', height);
           };
 
-          scope.saveClassification = function () {
-            snowowlService.saveClassification(scope.branch, scope.classification.id).then(function (response) {
-
-            });
-          };
-
+          // creates element for dialog download of classification data
           scope.dlcDialog = (function (data, fileName) {
 
-            console.debug('classification data: ', data, fileName);
+            //console.debug('classification data: ', data, fileName);
 
             // create the hidden element
             var a = document.createElement('a');
@@ -106,44 +129,117 @@ angular.module('singleConceptAuthoringApp')
             };
           }());
 
+          scope.saveClassification = function () {
+            window.alert('Not yet implemented');
+          };
+
           scope.downloadClassification = function () {
 
-            snowowlService.downloadClassification(scope.classification.id, scope.branch).then(function (data) {
-              console.debug('classification csv retrieved, opening dialog with', data);
+            snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
+             // console.debug('classification csv retrieved, opening dialog with', data);
               var fileName = 'classifier_' + $routeParams.taskId;
               scope.dlcDialog(data.data, fileName);
             });
           };
 
-          // notification of classification retrieved and set
-          $rootScope.$on('setClassification', function (event, classification) {
+          // helper function to populate names for all relationship display
+          // names
+          function getRelationshipNames(relationship) {
+            // get source name
+            snowowlService.getConceptPreferredTerm(relationship.sourceId, scope.branch).then(function (response) {
+              relationship.sourceName = response.term;
+            });
+            // get destination name
+            snowowlService.getConceptPreferredTerm(relationship.destinationId, scope.branch).then(function (response) {
+              relationship.destinationName = response.term;
+            });
+            // get type name
+            snowowlService.getConceptPreferredTerm(relationship.typeId, scope.branch).then(function (response) {
+              relationship.typeName = response.term;
+            });
+          }
 
-            console.debug('setting classification', classification);
+          // process the classification object
+          scope.$watch('classificationContainer', function () {
 
-            if (!classification) {
-              console.error('Received setClassification notification, but no classification was sent');
+            //console.debug('classification container changed', scope.classificationContainer);
+
+            if (!scope.classificationContainer || !scope.classificationContainer.id) {
+              //console.debug('Either container or its id is null');
               return;
             }
 
-            scope.classification = classification;
+            // get relationship changes
+            snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {
+              scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
+              //console.debug('set relationship changes', scope.relationshipChanges);
 
-            // get the relationship names
-            angular.forEach(scope.classification.relationshipChanges, function (item) {
-              getRelationshipNames(item);
-            });
-            angular.forEach(scope.classification.equivalentConcepts, function (item) {
-              getRelationshipNames(item);
-            });
+              // get the relationship names
+              angular.forEach(scope.relationshipChanges, function (item) {
+                getRelationshipNames(item);
+              });
 
-            // separate the redundant stated relationships into own array
-            scope.classification.redundantStatedRelationships = [];
-            angular.forEach(scope.classification.relationshipChanges, function (item) {
-              if (item.changeNature === 'REDUNDANT') {
-                scope.classification.redundantStatedRelationships.push(item);
+              // copy the redundant stated relationships into their own array
+              if (scope.redundantStatedRelationshipsFound) {
+                scope.redundantStatedRelationships = [];
+                angular.forEach(scope.relationshipChanges, function (item) {
+                  if (item.changeNature === 'REDUNDANT') {
+                    scope.redundantStatedRelationships.push(item);
+                  }
+                });
               }
             });
 
-          });
+            // get equivalent concepts
+            if (scope.equivalentConceptsFound) {
+              snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
+                scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : [];
+                //console.debug('set equivalent concepts', scope.equivalentConcepts);
+
+                // get the relationship names
+                angular.forEach(scope.equivalentConcepts, function (item) {
+                  getRelationshipNames(item);
+                });
+              });
+            } else {
+              scope.equivalentConcepts = [];
+              //console.debug('set equivalent concepts', scope.equivalentConcepts);
+            }
+
+          }, true);
+
+          /*
+
+           // notification of classification retrieved and set
+           $rootScope.$on('setClassification', function (event, classification) {
+
+           console.debug('setting classification', classification);
+
+           if (!classification) {
+           console.error('Received setClassification notification, but no classification was sent');
+           return;
+           }
+
+           scope.classification = classification;
+
+           // get the relationship names
+           angular.forEach(scope.relationshipChanges, function (item) {
+           getRelationshipNames(item);
+           });
+           angular.forEach(scope.equivalentConcepts, function (item) {
+           getRelationshipNames(item);
+           });
+
+           // separate the redundant stated relationships into own array
+           scope.redundantStatedRelationships = [];
+           angular.forEach(scope.relationshipChanges, function (item) {
+           if (item.changeNature === 'REDUNDANT') {
+           scope.redundantStatedRelationships.push(item);
+           }
+           });
+
+           });
+           */
 
           ////////////////////////////////////
           // Validation Functions
@@ -151,9 +247,18 @@ angular.module('singleConceptAuthoringApp')
 
           // start latest validation
           scope.startValidation = function () {
-            scaService.startValidationForTask($routeParams.projectId, $routeParams.taskId).then(function (validation) {
-              scope.validation = validation;
-            });
+
+            // check if this is a task or project
+            if ($routeParams.taskId) {
+
+              scaService.startValidationForTask($routeParams.projectId, $routeParams.taskId).then(function (validation) {
+                // TODO
+              });
+            } else {
+              scaService.startValidationForProject($routeParams.projectId).then(function (response) {
+                // TODO
+              });
+            }
           };
 
         }

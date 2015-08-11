@@ -13,56 +13,57 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', 'scaService', function ProjectCtrl($scope, $rootScope, $routeParams, scaService) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', 'scaService', 'snowowlService', function ProjectCtrl($scope, $rootScope, $routeParams, scaService, snowowlService) {
 
     $scope.project = null;
-    $scope.projectKey = $routeParams.projectKey;
-    $scope.validationStatus = null;
-    $scope.classificationStatus = null;
 
-    // on load, retrieve projects list to retrieve name
+    // set the branch
+    $scope.branch = 'MAIN/' + $routeParams.projectKey;
+
+    $scope.validationContainer = {status: 'Loading...'};
+    $scope.classificationContainer = {status: 'Loading...'};
     scaService.getProjects().then(function (response) {
       console.debug('projects', response);
       angular.forEach(response, function (project) {
         if (project.key === $routeParams.projectKey) {
           console.debug('found project', project);
-          $scope.project = project;
-          $scope.project.lead = 'Lead data not yet implemented in back-end';
+          $scope.project = project
+
+
+          // get the lateswt classification for this project
+          snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
+            $scope.classificationContainer = response;
+          });
+
+
         }
       });
-    });
-
-    // on load, retrieve latest classification
-    // TODO API not yet implemented, scaService call not yet implemented
-    /* scaService.getClassificationForProject($routeParams.projectKey).then(function(response) {
-     $scope.classification = response;
-     });*/
-    $scope.classificationStatus = 'Latest classification status not yet implemented in back-end';
-
-    // on load, retrieve latest validation
-    scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
-      console.debug('project validation', response);
-      $rootScope.$broadcast('setValidation', {validation : response});
     });
 
     $scope.classify = function () {
       console.debug('classifying project');
       scaService.startClassificationForProject($scope.project.key).then(function (response) {
-        if (response && response.status === 'RUNNING') {
-          $scope.classificationStatus = 'Running';
+        if (response && response.status) {
+          $scope.classificationContainer = response;
         } else {
-          $scope.classificationStatus = 'Error attempting to start classification';
+          $scope.classificationContainer.executionStatus = 'Error starting classification';
         }
       });
     };
 
+    // on load, retrieve latest validation
+    scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
+      $scope.validationContainer = response;
+
+    });
+
     $scope.validate = function () {
       console.debug('validating project');
       scaService.startValidationForProject($scope.project.key).then(function (response) {
-        if (response && response.status === 'SCHEDULED') {
-          $scope.validationStatus = 'Scheduled';
+        if (response && response.status) {
+          $scope.validationContainer = response;
         } else {
-          $scope.validationStatus = 'Error attempting to start validation';
+          $scope.validationContainer.executionStatus = 'Error attempting to start validation';
         }
       });
     };

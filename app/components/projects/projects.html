@@ -28,10 +28,10 @@
                  class="table table-full table-full-small">
             <tr ng-repeat="project in $data">
 
-              <td data-title="'Project Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
+              <td data-title="'Project Name'" sortable="'title'" filter="{ 'title': 'text' }"><a
                 ng-href="#/project/{{project.key}}">{{project.title}} </a>
               </td>
-              <td data-title="'Project Lead'" sortable="'projectKey'" filter="{ 'project': 'text' }">
+              <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
                 Not yet implemented
               </td>
 

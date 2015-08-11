@@ -69,7 +69,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.thisView = null;
     $scope.lastView = null;
 
-
     $scope.setView = function (name) {
       // console.debug('setting view (requested, this, last)', name,
       // $scope.thisView, $scope.lastView); do nothing if no name supplied
@@ -146,7 +145,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $rootScope.pageTitle = 'Edit Concept / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
       $scope.setView('edit-default');
     }
-
+/*
     // function to resize svg elements for concept models
     $scope.resizeSvg = function (concept) {
 
@@ -183,7 +182,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         elem.setAttribute('width', width);
         elem.setAttribute('height', height);
       }
-    };
+    };*/
 
 // function to flag items in saved list if they exist in edit panel
     function flagEditedItems() {
@@ -305,7 +304,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
         $scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
-        
 
         // ensure concept is in edit panel ui state
         if ($scope.editPanelUiState.indexOf(data.response.conceptId) === -1) {
@@ -323,8 +321,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         }
         $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-          }, 300);
+          $rootScope.$broadcast('editModelDraw');
+        }, 300);
         console.debug('after save success', $scope.concepts);
       }
       else {
@@ -409,9 +407,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
 
-//        $timeout(function () {
-//          $scope.resizeSvg(clonedConcept);
-//        }, 600);
       });
     });
 
@@ -469,13 +464,18 @@ angular.module('singleConceptAuthoringApp.edit', [
       // otherwise, update the result
       else {
         $timeout(function () {
-          snowowlService.getClassificationResult($routeParams.projectId, $routeParams.taskId, classificationId, 'MAIN').then(function (data) {
+          snowowlService.getClassification($routeParams.projectId, $routeParams.taskId, classificationId, 'MAIN').then(function (data) {
 
             console.debug('Classification result status: ', data);
             // if completed, set flag and return
             if (data.data.status === 'COMPLETED') {
               console.debug('Polled -- COMPLETED');
-              $scope.classification = data.data;
+
+              // TODO:  Change this to $scope.classificationContainer.results
+              // or some such Brian suggests that the extra level of
+              // abstraction will result in correct handling of
+              // pointers/references
+              $scope.classificationContainer = data.data;
               $scope.setClassificationComponents();
 
               return;
@@ -492,17 +492,16 @@ angular.module('singleConceptAuthoringApp.edit', [
     // get the various elements of a classification once it has been retrieved
     $scope.setClassificationComponents = function () {
 
-      // console.debug('Retrieving classification components for',
-      // $scope.classification);
+      console.debug('Retrieving classification components for', $scope.classificationContainer);
 
-      if (!$scope.classification || !$scope.classification.id) {
+      if (!$scope.classificationContainer || !$scope.classificationContainer.id) {
         console.error('Cannot set classification components, classification or its id not set');
         return;
       }
 
       // get equivalent concepts
-      if ($scope.classification.equivalentConceptsFound) {
-        snowowlService.getEquivalentConcepts($scope.classification.id, $routeParams.projectId,
+      if ($scope.classificationContainer.equivalentConceptsFound) {
+        snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectId,
           $routeParams.taskId, $scope.branch).then(function (equivalentConcepts) {
             $scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
             console.debug('set equivalent concepts', $scope.equivalentConcepts);
@@ -512,44 +511,44 @@ angular.module('singleConceptAuthoringApp.edit', [
         console.debug('set equivalent concepts', $scope.equivalentConcepts);
       }
 
-      // get relationship changes
-      snowowlService.getRelationshipChanges($scope.classification.id, $routeParams.projectId,
-        $routeParams.taskId, $scope.branch).then(function (relationshipChanges) {
-          $scope.relationshipChanges = relationshipChanges ? relationshipChanges : {};
-          console.debug('set relationship changes', $scope.relationshipChanges);
-        });
     };
 
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
-      // console.debug('Getting latest classification');
+      console.debug('Getting latest classification');
 
       // TODO Update branch when branching is implemented
-      snowowlService.getClassificationResultsForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
-        if (!response) {
-          // console.debug('No classifications found');
-          // do nothing
+      snowowlService.getClassificationsForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
+        if (!response || response.length === 0) {
+          $scope.classificationContainer = { status : 'No classification found'};
         } else {
 
-          // if different result, replace
-          if ($scope.classification !== response[response.length - 1]) {
+          console.debug('classification found', response[0]);
 
-            // console.debug('New classification detected');
-            $scope.classification = response[response.length - 1];
+          // assign results to the classification container
+          $scope.classificationContainer = response[0];
+          /*
+           // if different result, replace
+           if ($scope.classificationContainer !== response[response.length - 1]) {
 
-            // if completed, retrieve all components
-            if ($scope.classification.status === 'COMPLETED') {
-              // console.debug('New classification is COMPLETED');
-              $scope.setClassificationComponents();
-            }
+           console.debug('New classification detected');
+           $scope.classificationContainer = response[response.length - 1];
 
-            // if still running, start polling for result
-            else if ($scope.classification.status === 'RUNNING') {
-              // console.debug('New classification is RUNNING');
-              $scope.pollForClassification();
-            }
-          }
+           // if completed, retrieve all components
+           if ($scope.classificationContainer.status === 'COMPLETED') {
+           console.debug('New classification is COMPLETED', $scope.classificationContainer);
+           $scope.setClassificationComponents();
+           }
+
+           // if still running, start polling for result
+           else if ($scope.classificationContainer.status === 'RUNNING') {
+           // console.debug('New classification is RUNNING');
+           $scope.pollForClassification();
+           }
+           }
+           }*/
+
         }
       });
     };
@@ -558,24 +557,24 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$watchGroup(['classification', 'relationshipChanges', 'equivalentConcepts'], function () {
 
       // do nothing if not set
-      if (!$scope.classification) {
+      if (!$scope.classificationContainer) {
         return;
       }
 
       // if running, broadcast result without elements
-      if ($scope.classification.status === 'RUNNING') {
-        $rootScope.$broadcast('setClassification', {classification: $scope.classification});
+      if ($scope.classificationContainer.status === 'RUNNING') {
+        $rootScope.$broadcast('setClassification', {classification: $scope.classificationContainer});
       }
 
       // if completed, check for all required fields and broadcast if populated
-      else if ($scope.classification.status === 'COMPLETED' && $scope.relationshipChanges && $scope.equivalentConcepts) {
+      else if ($scope.classificationContainer.status === 'COMPLETED' && $scope.relationshipChanges && $scope.equivalentConcepts) {
 
         // assemble the arrays
         // TODO:  Artifact of bizarre watch behavior
-        $scope.classification.relationshipChanges = $scope.relationshipChanges;
-        $scope.classification.equivalentConcepts = $scope.equivalentConcepts;
+        $scope.classificationContainer.relationshipChanges = $scope.relationshipChanges;
+        $scope.classificationContainer.equivalentConcepts = $scope.equivalentConcepts;
 
-        $rootScope.$broadcast('setClassification', $scope.classification);
+        $rootScope.$broadcast('setClassification', $scope.classificationContainer);
       }
     });
 
@@ -601,17 +600,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       // TODO Update branch when branching is implemented
       scaService.getValidationForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
         if (!response) {
-          console.debug('No validations found');
-          // do nothing
+          $scope.validationContainer = { executionStatus : 'No validation found'};
         } else {
 
           console.debug('New validation detected', response);
-          $scope.validation = response;
-
-          // if running, broadcast result without elements
-          if ($scope.validation) {
-            $rootScope.$broadcast('setValidation', {validation: $scope.validation});
-          }
+          $scope.validationContainer = response;
 
         }
 
@@ -619,13 +612,17 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     // on load, get the latest classification
-    $scope.classification = null;
-    $scope.validation = null;
+    $scope.classificationContainer = {
+      id: null,
+      status: 'Loading...',
+      equivalentConcepts: [],
+      relationshipChanges: []
+    };
+    $scope.validationContainer = {executionStatus: 'Loading...', report: null};
     $scope.relationshipChanges = null;
     $scope.equivalentConcepts = null;
     $scope.getLatestClassification();
     $scope.getLatestValidation();
 
   }
-)
-;
+);

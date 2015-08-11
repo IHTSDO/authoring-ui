@@ -20,6 +20,7 @@ angular.module('singleConceptAuthoringApp.home', [
     $rootScope.pageTitle = "My Tasks";
     $scope.tasks = null;
     $scope.classifications = null;
+    $scope.projects = [];
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
@@ -76,8 +77,7 @@ angular.module('singleConceptAuthoringApp.home', [
     $scope.openCreateTaskModal = function () {
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
-        controller: 'taskCtrl',
-        resolve: {}
+        controller: 'taskCtrl'
       });
 
       modalInstance.result.then(function () {
@@ -105,7 +105,7 @@ angular.module('singleConceptAuthoringApp.home', [
       // otherwise, update the result
       else {
         $timeout(function () {
-          snowowlService.getClassificationResult(task.projectKey, task.key, task.latestClassification.id, 'MAIN').then(function (data) {
+          snowowlService.getClassificationForTask(task.projectKey, task.key, task.latestClassification.id, 'MAIN').then(function (data) {
 
             // if completed, set flag and return
             if (data.data.status === 'COMPLETED') {
@@ -121,6 +121,16 @@ angular.module('singleConceptAuthoringApp.home', [
 
 // Initialization:  get tasks and classifications
     function initialize() {
+
+      // get all projects for task creation
+      scaService.getProjects().then(function(response) {
+        if (!response || response.length == 0) {
+          $scope.projects = [];
+          return;
+        } else {
+          $scope.projects = response;
+        }
+      });
 
       $scope.tasks = [];
       scaService.getTasks().then(function (response) {
