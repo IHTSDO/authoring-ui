@@ -10,13 +10,14 @@ angular.module('singleConceptAuthoringApp')
       scope: {
         // the table params
         items: '=items',
-        type: '=type'
+        editable: '=',
+        type: '='
 
       },
       templateUrl: 'shared/classification-report/classificationReport.html',
 
       link: function (scope, element, attrs, linkCtrl) {
-          console.log(scope.type);
+        console.log(scope.type);
         // listen for removal of concepts from editing panel
         scope.$on('stopEditing', function (event, data) {
           console.debug('classificationReport received stopEditing notification', data);
@@ -35,9 +36,7 @@ angular.module('singleConceptAuthoringApp')
 
         // listen for edit concpet notifications from this and other reports
         scope.$on('editConcept', function (event, data) {
-
-          console.debug('editConcept notification received', data.conceptId);
-          // flag this item as loaded, no need to update UI State
+       // flag this item as loaded, no need to update UI State
           angular.forEach(scope.items, function (item) {
             if (data.conceptId === item.destinationId) {
               item.isLoaded = true;
@@ -48,13 +47,11 @@ angular.module('singleConceptAuthoringApp')
         // scope function to broadcast element to edit panel
         scope.editDestinationConcept = function (item) {
 
-          console.debug('editDestinationConcept', item);
-
           // issue notification of edit concept request
           $rootScope.$broadcast('editConcept', {conceptId: item.destinationId});
 
         };
-          
+
         // scope function to broadcast element to edit panel
         scope.editEquivalentConcept = function (id) {
           // issue notification of edit concept request
@@ -101,28 +98,31 @@ angular.module('singleConceptAuthoringApp')
         // also reloads ng-table
         function updateTable() {
 
-          // get the current editing ui state
-          scaService.getUIState(
-            $routeParams.projectId, $routeParams.taskId, 'edit-panel')
-            .then(function (uiState) {
+          if (scope.editable) {
 
-              if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-                scope.editPanelUiState = [];
-              }
-              else {
-                scope.editPanelUiState = uiState;
-              }
+            // get the current editing ui state
+            scaService.getUIState(
+              $routeParams.projectId, $routeParams.taskId, 'edit-panel')
+              .then(function (uiState) {
 
-              // flag the relationships in data
-              angular.forEach(scope.items, function (item) {
-                item.isLoaded = scope.editPanelUiState.indexOf(item.destinationId) !== -1;
+                if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+                  scope.editPanelUiState = [];
+                }
+                else {
+                  scope.editPanelUiState = uiState;
+                }
+
+                // flag the relationships in data
+                angular.forEach(scope.items, function (item) {
+                  item.isLoaded = scope.editPanelUiState.indexOf(item.destinationId) !== -1;
+                });
+
+                // reload the table
+                scope.tableParams.reload();
               });
-
-              // reload the table
-              scope.tableParams.reload();
-            }
-          );
-
+          } else {
+            scope.tableParams.reload();
+          }
         }
 
         // on data change, update the table

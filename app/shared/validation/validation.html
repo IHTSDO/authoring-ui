@@ -6,15 +6,14 @@
   </script>
 
   <script type="text/ng-template" id="editheader.html">
-    <button ng-if="editable" type="button" class="btn btn-round btn-default blue"><span class="md md-edit"></spa
-      n></button>
+    <button ng-if="editable" type="button" class="btn btn-round btn-default blue"><span class="md md-edit"></span></button>
   </script>
 
   <div class="card">
     <div role="tabpanel" class="m-15">
       <div class="row">
 
-        <strong>Validation Report: </strong> {{displayStatus}}
+        <strong>Validation Report: </strong> {{getStatusText()}}
 
 
         <button ng-show="viewTop === false" class="btn btn-default blue pull-right" ng-click="viewTop = true">

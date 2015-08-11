@@ -3,7 +3,7 @@ angular.module('singleConceptAuthoringApp')
   .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, snowowlService, objectService, $routeParams) {
     return {
       restrict: 'A',
-      transclude: true,
+      transclude: false,
       replace: true,
       scope: {
         // the concept being displayed

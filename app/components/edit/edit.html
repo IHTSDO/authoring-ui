@@ -54,7 +54,7 @@
          ng-class="['col-sm-12',
          'col-md-12',
          'col-lg-8']">
-      <div validation editable="true" show-title="true"></div>
+      <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
     </div>
 
     <!-- Classify View -->
@@ -62,7 +62,7 @@
          ng-class="['col-sm-12',
          'col-md-8',
          'col-lg-8']">
-      <div classification branch="branch" editable="true"></div>
+      <div classification classification-container="classificationContainer" branch="branch" editable="true"></div>
     </div>
 
     <!-- Concept/Model -->
@@ -145,7 +145,7 @@
           </button>
 
           <!-- concepts -->
-          <div concept-edit ctrl-fn="showModel(arg, arg2)" concept="concept"
+          <div concept-edit concept="concept"
                branch="branch"
                id="editPanel-{{concept.conceptId}}">
           </div>

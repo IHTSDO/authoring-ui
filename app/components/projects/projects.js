@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
   })
 
-  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, $timeout, $q) {
+  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q) {
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Projects"
@@ -24,7 +24,8 @@ angular.module('singleConceptAuthoringApp.projects', [
     $scope.tableParams = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {name: 'asc'}
+        sorting: {title: 'asc'},
+        orderBy: 'title'
       },
       {
         filterDelay: 50,
@@ -40,7 +41,7 @@ angular.module('singleConceptAuthoringApp.projects', [
 
             if (searchStr) {
               mydata = $scope.projects.filter(function (item) {
-                return item.summary.toLowerCase().indexOf(searchStr) > -1 || item.projectKey.toLowerCase().indexOf(searchStr) > -1;
+                return item.title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.projects;
@@ -97,16 +98,26 @@ angular.module('singleConceptAuthoringApp.projects', [
         }
 
         angular.forEach(response, function (project) {
-          var validation = scaService.getValidationForProject(project.key);
+
           // TODO Implement this call in scaService once api call becomes available
-          // var classification = scaService.getClassificationForProject(project.key);
+          snowowlService.getClassificationsForProject(project.key, 'MAIN').then(function(response) {
+            console.debug('got classifications', response);
+
+          });
+          var equivalentConcepts = snowowlService.getRelationshipChanges(project.key);
+
+
+          var validation = scaService.getValidationForProject(project.key);
+
+
 
           // TODO Add classification to this once it's implemented
           $q.all([validation]).then(function (data) {
 
             // add the validation status
-            project.latestValidationStatus = data[0].executionStatus;
-
+            if (data[0]) {
+              project.latestValidationStatus = data[0].executionStatus;
+            }
             // add the classification status
             // TODO Implement
 

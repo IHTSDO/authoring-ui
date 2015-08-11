@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
-      
+
       //get notifications from the messaging service
       getNotifications: function () {
         return $http.get(apiEndpoint + 'notifications').then(
@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
-                          
+
       // get tasks for current user across all projects
       getTasks: function () {
         return $http.get(apiEndpoint + 'projects/my-tasks').then(
@@ -83,7 +83,7 @@ angular.module('singleConceptAuthoringApp')
         if (!task) {
           deferred.reject('Must specify task parameters to create a task');
         }
-         $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks', task).then(
+        $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks', task).then(
           function (response) {
             deferred.resolve(response);
           }, function (error, data) {
@@ -176,15 +176,18 @@ angular.module('singleConceptAuthoringApp')
       ///////////////////////////////////////////////
       // Classification
       ///////////////////////////////////////////////
-      //POST /projects/{projectKey}/tasks/{taskKey}/classifications
 
-      startClassification: function (projectKey, taskKey) {
+      // NOTE:  Task and project classification retrieval is done through snowowlService
+
+      // Initiate classification for a task
+      // POST /projects/{projectKey}/tasks/{taskKey}/classification
+      startClassificationForTask: function (projectKey, taskKey) {
         if (!projectKey) {
-          console.error('Must specify projectKey to start classification');
+          console.error('Must specify projectKey to initiate classification');
           return {};
         }
         if (!taskKey) {
-          console.error('Must specify taskKey to start classification');
+          console.error('Must specify taskKey to initiate classification');
           return {};
         }
 
@@ -193,32 +196,36 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response;
           }, function (error) {
-            // TODO Handle errors
+            console.error('Error starting classification for ' + projectKey + ', ' + taskKey);
+            return null;
           });
       },
 
-      startClassificationForProject: function(projectKey) {
+
+
+      // Start classification for a project
+      // GET /projects/{projectKey}/classification
+      startClassificationForProject: function (projectKey) {
         if (!projectKey) {
           console.error('Must specify projectKey to start classification');
           return {};
         }
 
         // POST call takes no data
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/classifications', {}).then(
-          function (response) {
-            return response;
-          }, function (error) {
-            // TODO Handle errors
-          });
-      },
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/classifications', {}).then(function (response) {
+          return response.data;
+        }, function (error) {
+          console.error('Error getting classification for project ' + projectKey);
+          return null;
+        });
 
-      // TODO:  Add getClassificationForProject when/if implemented
+      },
 
       ///////////////////////////////////////////////
       // Validation
       ///////////////////////////////////////////////
 
-      // Get latest classification for a task
+      // Get latest validation for a task
       // GET /projects/{projectKey}/tasks/{taskKey}/validation
       getValidationForTask: function (projectKey, taskKey) {
         if (!projectKey) {
@@ -238,7 +245,7 @@ angular.module('singleConceptAuthoringApp')
           });
       },
 
-      // Initiate  classification for a task
+      // Initiate validation for a task
       // POST /projects/{projectKey}/tasks/{taskKey}/validation
       startValidationForTask: function (projectKey, taskKey) {
         if (!projectKey) {
@@ -260,14 +267,15 @@ angular.module('singleConceptAuthoringApp')
           });
       },
 
-
-      getValidationForProject: function(projectKey) {
+      // Initiate validation for a project
+      // GET /projects/{projectKey}/validation
+      getValidationForProject: function (projectKey) {
         if (!projectKey) {
           console.error('Must specify projectKey to get latest validation results');
           return {};
         }
 
-        return $http.get(apiEndpoint + 'projects/' + projectKey + '/validation').then(function(response) {
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/validation').then(function (response) {
           return response.data;
         }, function (error) {
           console.error('Error getting validation for project ' + projectKey);
@@ -275,15 +283,17 @@ angular.module('singleConceptAuthoringApp')
         });
 
       },
-
-      startValidationForProject: function(projectKey) {
+      
+      // Get latest validation for a task
+      // GET /projects/{projectKey}/tasks/{taskKey}/validation
+      startValidationForProject: function (projectKey) {
         if (!projectKey) {
           console.error('Must specify projectKey to start validation');
           return {};
         }
 
         // POST call takes no data
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/validation', {}).then(function(response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/validation', {}).then(function (response) {
           return response.data;
         }, function (error) {
           console.error('Error getting validation for project ' + projectKey);

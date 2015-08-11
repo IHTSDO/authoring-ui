@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp')
     // Classification functions
     //////////////////////////////////////////////
 
-    function startClassification(taskId, branch) {
+    function startClassificationForTask(taskId, branch) {
       var JSON = '{"reasonerId": "au.csiro.snorocket.owlapi3.snorocket.factory"}';
       return $http.post(apiEndpoint + branch + '/tasks/' + taskId + '/classifications', JSON, {
         headers: {'Content-Type': 'application/json; charset=UTF-8'}
@@ -59,29 +59,36 @@ angular.module('singleConceptAuthoringApp')
 
     // get a specific classification result for projectId, taskId, and
     // classifierId
-    function getClassificationResult(projectId, taskId, classifierId, branch) {
+    function getClassificationForTask(projectId, taskId, classifierId, branch) {
       return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId).then(function (response) {
         return response;
+      });
+    };
+
+    // get a specific classification result for project id, classifier id, and branch
+    function getClassificationForProject(projectId, classifierId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/' + classifierId).then(function (response) {
+        return response.data;
       });
     }
 
     // get all classification results for a project (as of 7/21, snowowl
     // functionality not complete)
-    function getClassificationResultsForProject(projectId, branch) {
+    function getClassificationsForProject(projectId, branch) {
       return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/').then(function (response) {
         return response.data.items;
       });
     }
 
     // get all classification results for a project and task
-    function getClassificationResultsForTask(projectId, taskId, branch) {
+    function getClassificationsForTask(projectId, taskId, branch) {
       return $http.get(apiEndpoint + 'MAIN/' + projectId + '/' + taskId + '/classifications').then(function (response) {
         return response.data.items;
       });
     }
 
     // get equivalent concepts reported for a classifier id
-    function getEquivalentConcepts(classifierId, projectId, taskId, branch) {
+    function getEquivalentConcepts(classifierId, branch) {
       return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/equivalent-concepts').then(function (response) {
         return response.data.items;
       });
@@ -89,7 +96,7 @@ angular.module('singleConceptAuthoringApp')
 
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
-    function getRelationshipChanges(classifierId, projectId, taskId, branch) {
+    function getRelationshipChanges(classifierId, branch) {
       return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes').then(function (response) {
         return response.data.items;
       });
@@ -373,10 +380,11 @@ angular.module('singleConceptAuthoringApp')
       getRelationshipDisplayNames: getRelationshipDisplayNames,
       getFullConcept: getFullConcept,
       updateDescription: updateDescription,
-      startClassification: startClassification,
-      getClassificationResult: getClassificationResult,
-      getClassificationResultsForTask: getClassificationResultsForTask,
-      getClassificationResultsForProject: getClassificationResultsForProject,
+      startClassificationForTask: startClassificationForTask,
+      getClassificationForTask: getClassificationForTask,
+      getClassificationForProject : getClassificationForProject,
+      getClassificationsForTask: getClassificationsForTask,
+      getClassificationsForProject: getClassificationsForProject,
       getEquivalentConcepts: getEquivalentConcepts,
       getRelationshipChanges: getRelationshipChanges,
       cleanConcept: cleanConcept,
