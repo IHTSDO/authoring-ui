@@ -939,3 +939,43 @@ select.primitive{font-size:10px!important;height: 24px !important;}
 }
 .small-buttons {padding: 2px 5%!important; font-size:14px!important}
 }
+
+//classification Report
+.classify-buttons {
+    border: 1.5px solid!important;
+    border-radius: 3px!important;
+    background-color: transparent!important;
+}
+.classify-buttons[disabled] {
+    border-color: #bbb!important;
+    color: #bbb!important;
+}
+.accept-classification {
+    border-color: #00bcd4!important;
+    color: #00bcd4!important;
+    background-color: transparent!important;
+}
+.download-classification {
+    color: #00a6e5!important;
+    border-color:#00a6e5!important;
+}
+.download-classification:active, .download-classification:hover {
+    background-color: #00a6e5!important;
+    color:#fff!important;
+}
+.submit-validation {
+    color: #7e57c2!important;
+    border-color:#7e57c2!important;
+}
+.submit-validation:active, .submit-validation:hover {
+    background-color: #7e57c2!important;
+    color:#fff!important;
+}
+.submit-review {
+    color: #ff0990!important;
+    border-color:#ff0990!important;
+}
+.submit-review:active, .submit-review:hover {
+    background-color: #ff0990!important;
+    color:#fff!important;
+}
