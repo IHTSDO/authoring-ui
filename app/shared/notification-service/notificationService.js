@@ -11,7 +11,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 angular.module('singleConceptAuthoringApp')
   .service('notificationService', ['$rootScope', '$interval', 'scaService', function ($rootScope, $interval, scaService) {
-
     // polling variable
     var scaPoll = null;
 
