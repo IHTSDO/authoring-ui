@@ -23,17 +23,6 @@ angular.module('singleConceptAuthoringApp')
         );
       },
 
-      //get notifications from the messaging service
-      getNotifications: function () {
-        return $http.get(apiEndpoint + 'notifications').then(
-          function (response) {
-            return response;
-          }, function (error) {
-            // TODO Handle errors
-          }
-        );
-      },
-
       // get tasks for current user across all projects
       getTasks: function () {
         return $http.get(apiEndpoint + 'projects/my-tasks').then(
@@ -177,7 +166,8 @@ angular.module('singleConceptAuthoringApp')
       // Classification
       ///////////////////////////////////////////////
 
-      // NOTE:  Task and project classification retrieval is done through snowowlService
+      // NOTE:  Task and project classification retrieval is done through
+      // snowowlService
 
       // Initiate classification for a task
       // POST /projects/{projectKey}/tasks/{taskKey}/classification
@@ -200,8 +190,6 @@ angular.module('singleConceptAuthoringApp')
             return null;
           });
       },
-
-
 
       // Start classification for a project
       // GET /projects/{projectKey}/classification
@@ -283,7 +271,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
       },
-      
+
       // Get latest validation for a task
       // GET /projects/{projectKey}/tasks/{taskKey}/validation
       startValidationForProject: function (projectKey) {
@@ -300,9 +288,21 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
 
+      },
+
+      //////////////////////////////////////////
+      // Notifications
+      //////////////////////////////////////////
+
+      // Get notifications
+      getNotifications: function () {
+        return $http.get(apiEndpoint + 'notifications').then(function (response) {
+          return response;
+        }, function (error) {
+          console.error('Error getting notifications');
+          return null;
+        });
       }
+    }
 
-    };
-
-  }])
-;
+  }]);

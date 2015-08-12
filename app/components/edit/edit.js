@@ -50,7 +50,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, $routeParams, $timeout, classifyMode, validateMode) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, classifyMode, validateMode) {
 
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
@@ -64,8 +64,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.editPanelUiState = null;
     $scope.savedList = null;
 
-    // miscellaneous
-    $scope.saveIndicator = false;
+    // view saving
     $scope.thisView = null;
     $scope.lastView = null;
 
@@ -136,55 +135,18 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // on load, set the initial view based on classify/validate parameters
     if (classifyMode === true) {
-      $rootScope.pageTitle = 'Classification / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
+      $rootScope.pageTitle = 'Classification/' + $routeParams.projectId + '/' + $routeParams.taskId;
       $scope.setView('classification');
     } else if (validateMode === true) {
-      $rootScope.pageTitle = 'Validation / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
+      $rootScope.pageTitle = 'Validation/' + $routeParams.projectId + '/' + $routeParams.taskId;
       $scope.setView('validation');
     } else {
-      $rootScope.pageTitle = 'Edit Concept / ' + $routeParams.projectId + ' / ' + $routeParams.taskId;
+      $rootScope.pageTitle = 'Edit Concept/' + $routeParams.projectId + '/' + $routeParams.taskId;
       $scope.setView('edit-default');
     }
-/*
-    // function to resize svg elements for concept models
-    $scope.resizeSvg = function (concept) {
 
-      // if in classify mode, modify side-by-side models
-      if (classifyMode) {
-        // do nothing currently
-      }
 
-      // if in edit mode, modify the central model diagrams
-      else {
-
-        // get the svg drawModel object
-        var elem = document.getElementById('model' + concept.conceptId);
-
-        // get the parent div containing this draw model object
-        var parentElem = document.getElementById('drawModel' + concept.conceptId);
-
-        if (!elem || !parentElem) {
-          // console.debug('could not find svg element or parent div', elem,
-          // parentElem);
-          return;
-        }
-
-        // set the height and width`
-        var width = parentElem.offsetWidth - 30;
-        var height = $('#editPanel-' + concept.conceptId).find('.editHeightSelector').height() + 41;
-
-        // check that element is actually visible (i.e. we don't have negative
-        // width)
-        if (width < 0) {
-          return;
-        }
-
-        elem.setAttribute('width', width);
-        elem.setAttribute('height', height);
-      }
-    };*/
-
-// function to flag items in saved list if they exist in edit panel
+    // function to flag items in saved list if they exist in edit panel
     function flagEditedItems() {
 
       if ($scope.editPanelUiState && $scope.savedList) {
@@ -204,7 +166,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-// get edit panel list
+    // get edit panel list
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'edit-panel')
       .then(function (uiState) {
@@ -225,7 +187,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     );
 
-// get saved list
+    // get saved list
     scaService.getUIState(
       $routeParams.projectId, $routeParams.taskId, 'saved-list')
       .then(function (uiState) {
@@ -244,6 +206,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.addConceptToListFromId = function (conceptId) {
 
+      // send loading notification for user display
+      notificationService.sendNotification('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000);
+
       console.debug('adding concept to edit list from id', conceptId);
       if (!conceptId) {
         return;
@@ -259,6 +224,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         snowowlService.cleanConcept(response);
 
         $scope.concepts.push(response);
+
         $timeout(function () {
           $rootScope.$broadcast('editModelDraw');
         }, 800);
@@ -275,7 +241,16 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.updateUiState(); // update the ui state
           flagEditedItems();        // update edited item flagging
         }
-      });
+      }).finally(function() {
+        // send loading notification
+        if ($scope.concepts.length === $scope.editPanelUiState.length) {
+          notificationService.sendNotification('All concepts loaded', 10000);
+        } else {
+          // send loading notification for user display
+          notificationService.sendNotification('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000);
+        }
+
+      })
     };
 
 // helper function to save current edit list
@@ -283,12 +258,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       scaService.saveUIState($routeParams.projectId, $routeParams.taskId, 'edit-panel', $scope.editPanelUiState);
     };
 
-// watch for concept saving from the edit panel
-    $scope.$on('conceptEdit.saving', function (event, data) {
-      $scope.saveIndicator = true;
-      $scope.saveConceptId = data.concept.conceptId;
-      $scope.saveMessage = data.concept.conceptId ? 'Saving concept with id: ' + data.concept.conceptId : 'Saving new concept';
-    });
+    // watch for concept saving from the edit panel
+    // commented out in favor of notification service
+    /* $scope.$on('conceptEdit.saving', function (event, data) {
+     $scope.saveIndicator = true;
+     $scope.saveConceptId = data.concept.conceptId;
+     $scope.saveMessage = data.concept.conceptId ? 'Saving concept with id: ' + data.concept.conceptId : 'Saving new concept';
+     });*/
     $scope.formatDate = function (date) {
       var hours = date.getHours();
       var minutes = date.getMinutes();
@@ -301,9 +277,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime + ' (' + offset + ')';
     };
 
+    // TODO Make the two-way binding handle this via a $watch
     $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if (data.response && data.response.conceptId) {
-        $scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
+
+        // commented out in favor of notification service
+        //$scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
 
         // ensure concept is in edit panel ui state
         if ($scope.editPanelUiState.indexOf(data.response.conceptId) === -1) {
@@ -521,7 +500,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // TODO Update branch when branching is implemented
       snowowlService.getClassificationsForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
         if (!response || response.length === 0) {
-          $scope.classificationContainer = { status : 'No classification found'};
+          $scope.classificationContainer = {status: 'No classification found'};
         } else {
 
           console.debug('classification found', response[0]);
@@ -600,7 +579,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // TODO Update branch when branching is implemented
       scaService.getValidationForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
         if (!response) {
-          $scope.validationContainer = { executionStatus : 'No validation found'};
+          $scope.validationContainer = {executionStatus: 'No validation found'};
         } else {
 
           console.debug('New validation detected', response);

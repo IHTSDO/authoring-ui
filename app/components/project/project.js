@@ -13,14 +13,25 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', 'scaService', 'snowowlService', function ProjectCtrl($scope, $rootScope, $routeParams, scaService, snowowlService) {
+
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', 'scaService', 'snowowlService', 'notificationService', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, scaService, snowowlService, notificationService) {
+
+    $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
+
+    /*Sample Project Classification
+     entityType: "Classification"
+     event: "Classification completed successfully"
+     project: "WRPAS"*/
+
+
+    notificationService.sendNotification( 'Hi!', 5000);
 
     $scope.project = null;
 
     // set the branch
     $scope.branch = 'MAIN/' + $routeParams.projectKey;
 
-    $scope.validationContainer = {status: 'Loading...'};
+    $scope.validationContainer = {status: 'Loading...'}
     $scope.classificationContainer = {status: 'Loading...'};
     scaService.getProjects().then(function (response) {
       console.debug('projects', response);
@@ -39,6 +50,18 @@ angular.module('singleConceptAuthoringApp.project', [
         }
       });
     });
+
+    $scope.openCreateTaskModal = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/task/task.html',
+        controller: 'taskCtrl'
+      });
+
+      modalInstance.result.then(function () {
+      }, function () {
+      });
+    };
+
 
     $scope.classify = function () {
       console.debug('classifying project');
@@ -60,11 +83,7 @@ angular.module('singleConceptAuthoringApp.project', [
     $scope.validate = function () {
       console.debug('validating project');
       scaService.startValidationForProject($scope.project.key).then(function (response) {
-        if (response && response.status) {
-          $scope.validationContainer = response;
-        } else {
-          $scope.validationContainer.executionStatus = 'Error attempting to start validation';
-        }
+        $scope.validationContainer.status = response;
       });
     };
 

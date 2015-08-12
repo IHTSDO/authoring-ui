@@ -49,6 +49,7 @@
 <main style="height:100%;">
 
   <div class="main-container" style="height:100%;">
+    <div header></div>
     <div ng-cloak ng-view bs-affix-target style="height:100%;"></div>
     <div ng-include="'layout/footer.html'"></div>
   </div>
@@ -113,42 +114,53 @@
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="app.js"></script>
+
+<!-- SCA AngularJS services -->
 <script src="shared/accountService/accountService.js"></script>
 <script src="shared/endpoint-service/endpointService.js"></script>
 <script src="shared/snowowl-service/snowowlService.js"></script>
 <script src="shared/sca-service/scaService.js"></script>
 <script src="shared/object-service/objectService.js"></script>
-<script src="shared/taxonomy/taxonomyPlugin.js"></script>
-<script src="shared/search/searchPlugin.js"></script>
-<script src="shared/savedList/savedList.js"></script>
-<script src="shared/task-detail/taskDetail.js"></script>
-<script src="shared/concept-edit/conceptEdit.js"></script>
-<script src="shared/classification/classification.js"></script>
-<script src="shared/classification-report/classificationReport.js"></script>
-<script src="shared/inactivate-component-modal/inactivateComponentModal.js"></script>
-<script src="shared/model-diagramming/drawModel.js"></script>
-<script src="shared/validation/validation.js"></script>
-<script src="shared/resize/resize.js"></script>
+<script src="shared/notification-service/notificationService.js"></script>
+
+<!-- SCA Components / Views -->
+<script src="components/header/header.js"></script>
 <script src="components/about/about.js"></script>
 <script src="components/home/home.js"></script>
 <script src="components/projects/projects.js"></script>
 <script src="components/projecttasks/projecttasks.js"></script>
 <script src="components/project/project.js"></script>
 <script src="components/edit/edit.js"></script>
+
+<!-- SCA Shared Elements -->
+<script src="shared/taxonomy/taxonomyPlugin.js"></script>
+<script src="shared/search/searchPlugin.js"></script>
+<script src="shared/savedList/savedList.js"></script>
+<script src="shared/task-detail/taskDetail.js"></script>
+<script src="shared/concept-edit/conceptEdit.js"></script>
+<script src="shared/classification/classification.js"></script>
+<script src="shared/validation/validation.js"></script>
+<script src="shared/classification-report/classificationReport.js"></script>
+<script src="shared/inactivate-component-modal/inactivateComponentModal.js"></script>
+<script src="shared/model-diagramming/drawModel.js"></script>
+<script src="shared/task/task.js"></script>
+
+<!-- SCA Utilities -->
+<script src="shared/resize/resize.js"></script>
+<script src="shared/navbar/navbar-hover.js"></script>
+<script src="shared/navbar/navbar-search.js"></script>
+<script src="utilities/noui-slider.js"></script>
+<script src="shared/menu-link/menu-link.js"></script>
+<script src="shared/menu-toggle/menu-toggle.js"></script>
+<script src="vendors/side-nav.js"></script>
+<script src="vendors/fsm-sticky-header.js"></script>
+<script src="vendors/angular-smooth-scroll.js"></script>
+<script src="vendors/angular-placeholders.js"></script>
 <script src="utilities/formcontrol.js"></script>
 <script src="utilities/noui-slider.js"></script>
 <script src="utilities/scroll-spy.js"></script>
-<script charset="utf-8" src="vendors/jquery.svg.js"></script>
-<script charset="utf-8" src="shared/task/task.js"></script>
-<script charset="utf-8" src="shared/navbar/navbar-hover.js"></script>
-<script charset="utf-8" src="shared/navbar/navbar-search.js"></script>
-<script charset="utf-8" src="utilities/noui-slider.js"></script>
-<script charset="utf-8" src="shared/menu-link/menu-link.js"></script>
-<script charset="utf-8" src="shared/menu-toggle/menu-toggle.js"></script>
-<script charset="utf-8" src="vendors/side-nav.js"></script>
-<script charset="utf-8" src="vendors/fsm-sticky-header.js"></script>
-<script charset="utf-8" src="vendors/angular-smooth-scroll.js"></script>
-<script charset="utf-8" src="vendors/angular-placeholders.js"></script>
+<script src="vendors/jquery.svg.js"></script>
+
 <!-- endbuild -->
 </body>
 </html>

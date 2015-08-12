@@ -1,4 +1,4 @@
-<div ng-show="saveIndicator" class="bs-component" style="margin-left:0px; margin-right:0px;">
+<!--<div ng-show="saveIndicator" class="bs-component" style="margin-left:0px; margin-right:0px;">
     <div class="alert alert-dismissible alert-info saved blue">
           <button type="button" class="close" data-dismiss="alert">×</button>
          
@@ -13,4 +13,21 @@
         <p>
             <strong class="green-save">Loading Concepts ({{concepts.length + 1}}/{{editPanelUiState.length}}) ...</strong></p>
     </div>
+</div>-->
+
+<div ng-show="notification" class="bs-component" style="margin-left:0px; margin-right:0px">
+
+  <div class="alert saved blue" style="padding-right: 8px;">
+
+    <!-- NOTE: currently ::before 'x' icon is included on this button -->
+    <button type="button" class="blue pull-right" ng-click="clearNotification()">×</button>
+
+    <!-- if a link is provided, show it -->
+    <a ng-if="notification.url" ng-href="{{notification.url}}" class="pull-right">
+      <button type="button" class="md md-link blue" title="See results"></button>
+    </a>
+
+    <p><span ng-show="notification.time">{{notification.time | date: 'h:mm a'}}</span> <strong class="green-save">{{notification.message}}</strong>
+    </p>
+  </div>
 </div>
