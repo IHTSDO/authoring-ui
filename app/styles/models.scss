@@ -1,0 +1,94 @@
+
+.col-lg-7 .hasSVG svg{
+	overflow:visible;
+	
+	    margin-left: -68px;
+	transform: scale(0.79, 0.79);
+/*Firefox*/
+-moz-transform: scale(0.79, 0.79);
+/*Microsoft Internet Explorer*/
+-ms-transform: scale(0.79, 0.79);
+/*Chrome, Safari*/
+-webkit-transform: scale(0.79, 0.79);
+/*Opera*/
+-o-transform: scale(0.79, 0.79);
+}
+
+@media screen and (min-width: 1500px) {
+	
+.col-lg-7 .hasSVG svg{
+	overflow:visible;
+	
+	    margin-left: -68px;
+	transform: scale(0.80, 0.80);
+/*Firefox*/
+-moz-transform: scale(0.80, 0.80);
+/*Microsoft Internet Explorer*/
+-ms-transform: scale(0.80, 0.80);
+/*Chrome, Safari*/
+-webkit-transform: scale(0.80, 0.80);
+/*Opera*/
+-o-transform: scale(0.80, 0.80);
+}	
+	
+	
+}
+
+@media screen and (min-width: 1600px) {
+	
+.col-lg-7 .hasSVG svg{
+	overflow:visible;
+	
+	    margin-left: -40px;
+	transform: scale(0.85, 0.85);
+/*Firefox*/
+-moz-transform: scale(0.85, 0.85);
+/*Microsoft Internet Explorer*/
+-ms-transform: scale(0.85, 0.85);
+/*Chrome, Safari*/
+-webkit-transform: scale(0.85, 0.85);
+/*Opera*/
+-o-transform: scale(0.85, 0.85);
+}	
+	
+	
+}
+
+@media screen and (min-width: 1700px) {
+	
+.col-lg-7 .hasSVG svg{
+	overflow:visible;
+	
+	    margin-left: -20px;
+	transform: scale(0.93, 0.93);
+/*Firefox*/
+-moz-transform: scale(0.93, 0.93);
+/*Microsoft Internet Explorer*/
+-ms-transform: scale(0.93, 0.93);
+/*Chrome, Safari*/
+-webkit-transform: scale(0.93, 0.93);
+/*Opera*/
+-o-transform: scale(0.93, 0.93);
+}	
+	
+	
+}
+@media screen and (min-width: 1800px) {
+	
+.col-lg-7 .hasSVG svg{
+	overflow:visible;
+	
+	    margin-left: 20px;
+	transform: scale(1, 1);
+/*Firefox*/
+-moz-transform: scale(1, 1);
+/*Microsoft Internet Explorer*/
+-ms-transform: scale(1, 1);
+/*Chrome, Safari*/
+-webkit-transform: scale(1, 1);
+/*Opera*/
+-o-transform: scale(1, 1);
+}	
+	
+	
+}
