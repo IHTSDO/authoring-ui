@@ -33,12 +33,34 @@ color: rgba(0, 0, 0, 0.8);border-color:rgba(0, 0, 0, 0.8);}
 .toggle-buttons {
   background-color: #212121 !important;
   padding: 0px !important;
-  color: #BEBEBE !important;
+  color: #00a6e5 !important;
   &:hover {
     color: #2196F3 !important;
   }
 }
 
+.project-buttons {
+  background-color: transparent!important;
+  padding: 0px !important;
+  color: #BEBEBE !important;
+    font-size:18px;
+  &:hover {
+    color: #1269c3  !important;
+  }
+}
+.report-text {font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    padding-left:10px;
+    color:#424242 ;
+    font-family:Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;}
+.card .card-title {
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+    line-height: 14px;
+    font-family:Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
 .add-buttons {
   background-color: #424242 !important;
   padding: 1px 3px !important;
@@ -981,3 +1003,7 @@ select.primitive{font-size:10px!important;height: 24px !important;}
 }
 //alert
 .alert-info.saved {max-width:450px}
+
+.page-header {
+    margin: 0px;
+}
