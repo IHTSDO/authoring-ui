@@ -33,12 +33,34 @@ color: rgba(0, 0, 0, 0.8);border-color:rgba(0, 0, 0, 0.8);}
 .toggle-buttons {
   background-color: #212121 !important;
   padding: 0px !important;
-  color: #BEBEBE !important;
+  color: #00a6e5 !important;
   &:hover {
     color: #2196F3 !important;
   }
 }
 
+.project-buttons {
+  background-color: transparent!important;
+  padding: 0px !important;
+  color: #BEBEBE !important;
+    font-size:18px;
+  &:hover {
+    color: #1269c3  !important;
+  }
+}
+.report-text {font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    padding-left:10px;
+    color:#424242 ;
+    font-family:Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;}
+.card .card-title {
+    font-size: 14px;
+    font-weight: 400;
+    margin: 0;
+    line-height: 14px;
+    font-family:Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
 .add-buttons {
   background-color: #424242 !important;
   padding: 1px 3px !important;
@@ -938,4 +960,50 @@ select.primitive{font-size:10px!important;height: 24px !important;}
     padding: 10px 5px;
 }
 .small-buttons {padding: 2px 5%!important; font-size:14px!important}
+}
+
+//classification Report
+.classify-buttons {
+    border: 1.5px solid!important;
+    border-radius: 3px!important;
+    background-color: transparent!important;
+}
+.classify-buttons[disabled] {
+    border-color: #bbb!important;
+    color: #bbb!important;
+}
+.accept-classification {
+    border-color: #00bcd4!important;
+    color: #00bcd4!important;
+    background-color: transparent!important;
+}
+.download-classification {
+    color: #00a6e5!important;
+    border-color:#00a6e5!important;
+}
+.download-classification:active, .download-classification:hover {
+    background-color: #00a6e5!important;
+    color:#fff!important;
+}
+.submit-validation {
+    color: #7e57c2!important;
+    border-color:#7e57c2!important;
+}
+.submit-validation:active, .submit-validation:hover {
+    background-color: #7e57c2!important;
+    color:#fff!important;
+}
+.submit-review {
+    color: #ff0990!important;
+    border-color:#ff0990!important;
+}
+.submit-review:active, .submit-review:hover {
+    background-color: #ff0990!important;
+    color:#fff!important;
+}
+//alert
+.alert-info.saved {max-width:450px}
+
+.page-header {
+    margin: 0px;
 }

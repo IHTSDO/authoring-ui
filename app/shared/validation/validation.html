@@ -8,19 +8,42 @@
   <script type="text/ng-template" id="editheader.html">
     <button ng-if="editable" type="button" class="btn btn-round btn-default blue"><span class="md md-edit"></span></button>
   </script>
+<style>
+.validation-report-header{}
+.case-failures, .back-button{border-radius:5px}
+.back-button{background-color:transparent!important; border:1px solid #00a6e5!important; color:#00a6e5}
+.back-button:hover{background-color:#00a6e5!important; border:1px solid #00a6e5!important; }
+.validation-report .checkbox input[type=checkbox]:after, .validation-report .checkbox-inline input[type=checkbox]:after, .validation-report input[type=checkbox]:after {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-top: -2px;
+    margin-right: 5px;
+    border: 1px solid #DBDBDB;
+    border-radius: 2px;
+    transition: 240ms;
+}
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
+    margin-left: -33px;
+}
+</style>
+  <div class="row validation-report-header ">
+<div class="col-md-6">
+       <div class="p-t-15 "> <strong>Validation Report: </strong> {{getStatusText()}}</div>
 
-  <div class="card">
-    <div role="tabpanel" class="m-15">
-      <div class="row">
-
-        <strong>Validation Report: </strong> {{getStatusText()}}
-
-
-        <button ng-show="viewTop === false" class="btn btn-default blue pull-right" ng-click="viewTop = true">
-          Back to Report
+</div><div class="col-md-6 p-t-10 ">
+     <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true">
+          <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
         </button>
 
+</div>
+        
+
       </div>
+  <div class="card m-10 validation-report">
+    <div role="tabpanel" class="">
+    
 
       <div class="table-responsive white" style="margin-right:0px;" ng-show="viewTop">
 
@@ -40,7 +63,7 @@
 
               <button
                 title="View These Failures" type="button" ng-click="viewFailures(assertion)"
-                class="btn btn-default blue">Load Cases</span>
+                class="btn btn-default blue case-failures">Load Cases</span> <i class="glyphicon glyphicon-chevron-right treeButton"></i>
               </button>
 
 
@@ -55,7 +78,7 @@
 
       <div class="table-responsive white" style="margin-right:0px;" ng-show="!viewTop">
 
-        <div class="row">
+        <div class="row p-10">
           <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
         </div>
 
