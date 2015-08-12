@@ -1,10 +1,11 @@
-<div class="edits editing-form "> 
-  
+<div class="edits editing-form ">
+
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="concept.error">
     <button type="button" class="close" data-dismiss="alert">×</button>
     <h4>Validation Error!</h4>
-    {{concept.error}} </div>
+    {{concept.error}}
+  </div>
   <!-- end validation error -->
   <div class="row p-5 grey darken-4 concept-headers " style=" margin-right:0px;">
     <div class="pull-left">
@@ -19,9 +20,9 @@
           <label>Popup Title:</label>
           <input type="text" ng-model="dynamicPopover.title" class="form-control">
         </div>
-      </script> 
+      </script>
     </div>
-    
+
     <!-- draggable element -- concept name -->
     <div class="pull-left title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
@@ -40,7 +41,7 @@
       <button type="button" class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
               title="Remove Concept" ng-click="removeConcept(concept)"></button>
       <!-- TODO Fix this. Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
-      
+
       <button type="button"
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
@@ -50,40 +51,52 @@
               class="btn-default editbuttons light-blue small-buttons"
               ng-class="[{'md-flash-on' : !hideInactive}, {'md-flash-off' : hideInactive}]"
               title="Show/Hide Inactive Components" ng-click="toggleHideInactive()"></button>
-      <button type="button" class="btn-default editbuttons small-buttons amber md md-undo " title="Undo Changes"></button>
+      <button type="button" class="btn-default editbuttons small-buttons amber md md-undo "
+              title="Undo Changes"></button>
       <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-1 md md-history"
               title="History"></button>
-      <button type="button" class="btn-default editbuttons small-buttons blue md md-keyboard-return" title="Show Model" ng-click="showModel()"></button>
-      <button type="button" class="btn-default editbuttons small-buttons teal md md-save" ng-click="saveConcept(concept)"
+      <button type="button" class="btn-default editbuttons small-buttons blue md md-keyboard-return" title="Show Model"
+              ng-click="showModel()"></button>
+      <button type="button" class="btn-default editbuttons small-buttons teal md md-save"
+              ng-click="saveConcept(concept)"
               title="Save"></button>
     </div>
   </div>
 
   <!-- Toggle-able collapsed concept elements -->
-  <div ng-show="!isCollapsed" class="editHeightSelector"> 
-    
+  <div ng-show="!isCollapsed" class="editHeightSelector">
+
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions(true)">
       <div class="row darken-3 p-t-5 grey ">
         <div class="col-md-12 no-padding">
           <button class="grey darken-3 md md-more button-width"
-                    popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
+                  popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
+
+          <!-- Undo Changes -->
           <button type="button" class="amber md md-undo button-width" title="Undo Changes"></button>
+
+          <!-- Undo Changes -->
           <button type="button" class=" blue accent-2 md md-history button-width"
-                    title="Undo Changes"></button>
-          <!-- TODO Fix this &#45;&#45; Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+                  title="Undo Changes"></button>
+
+          <!-- Active/Inactive -->
           <button type="button"
-                    style="vertical-align: bottom"
-                    ng-click="toggleDescriptionActive(description)"
-                    ng-class="[btn-default, md, 'md-settings-power button-width', {green : description.active}, {red: !description.active}]"
-                    title="Active/Inactive"> </button>
-         
+                  style="vertical-align: bottom"
+                  ng-click="toggleDescriptionActive(description)"
+                  ng-class="[btn-default, md, 'md-settings-power button-width', {green : description.active}, {red: !description.active}]"
+                  title="Active/Inactive"></button>
+
+          <!-- Case Significance -->
           <button type="button" class=" blue accent-2 md md-spellcheck button-width"
-                    title="Undo Changes"></button>
-                     <div class="pull-left description no-padding">
-            <textarea style="" class="msd-elastic resizable-text" ng-blur="updateDescription(description)" ng-disabled="description.effectiveTime"
-                   ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
-                   placeholder="Description" ui-on-drop="dropNullOp()">
+                  title="Case Significance (IN PROGRESS)"></button>
+
+
+          <div class="pull-left description no-padding">
+            <textarea style="" class="msd-elastic resizable-text" ng-blur="updateDescription(description)"
+                      ng-disabled="description.effectiveTime"
+                      ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
+                      placeholder="Description" ui-on-drop="dropNullOp()">
             </textarea>
           </div>
           <div class="pull-left typeid">
@@ -109,136 +122,131 @@
                     ng-change="updateDescription(description)"
                     id="select-acceptability-choice" class="form-control color_{{relationship.groupId}}">
             </select>
-        </div>
-         <button type="button" ng-click="addDescription($index)" class="btn-default add-buttons md md-add-circle button-width"
-                    title="Add New Description"></button>
-       
+          </div>
+          <button type="button" ng-click="addDescription($index)"
+                  class="btn-default add-buttons md md-add-circle button-width"
+                  title="Add New Description"></button>
+
         </div>
       </div>
     </div>
-    
+
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getIsARelationships(true)">
-      <div class="row darken-3 p-t-5 grey"> 
+      <div class="row darken-3 p-t-5 grey">
         <!-- Button controls -->
         <div class="col-md-12 no-padding">
-         
-            <button class="btn-default grey darken-3 md md-more button-width"
-                    ng-click="showAttributeDetails = !showAttributeDetails"
-                    popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
-                    title="Some title here"></button>
-            <button type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
-            <button type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
-            <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
-            <button type="button"
-                    style="vertical-align: bottom"
-                    ng-click="toggleRelationshipActive(relationship)"
-                    ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
-                    title="Active/Inactive"> </button>
-            <!-- relationship group, unused for isA relationships --> 
-        <!--<div class="pull-left rolegroup">
-           <input disabled
-                  class="form-control color_{{relationship.groupId}}" type="text" placeholder="-"
-                  ui-on-drop="dropNullOp()">
-         </div>--> 
-        
-        <!-- attribute type -->
-        <div class="pull-left is_a" ui-draggable="true"
-             drag="getConceptIdNamePairFromAttributeType(relationship)"
-             drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
-             ui-on-drop="dropRelationshipType(relationship, $data)">
-          <textarea style="" class="msd-elastic"disabled ng-model="relationship.type.fsn"
-                 class="form-control color_{{relationship.groupId}}"
-                 type="text"
-                 placeholder="#">
+
+          <button class="btn-default grey darken-3 md md-more button-width"
+                  ng-click="showAttributeDetails = !showAttributeDetails"
+                  popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
+                  title="Some title here"></button>
+          <button type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
+          <button type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
+          <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+          <button type="button"
+                  style="vertical-align: bottom"
+                  ng-click="toggleRelationshipActive(relationship)"
+                  ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
+                  title="Active/Inactive"></button>
+          <!-- relationship group, unused for isA relationships -->
+          <!--<div class="pull-left rolegroup">
+             <input disabled
+                    class="form-control color_{{relationship.groupId}}" type="text" placeholder="-"
+                    ui-on-drop="dropNullOp()">
+           </div>-->
+
+          <!-- attribute type -->
+          <div class="pull-left is_a" ui-draggable="true"
+               drag="getConceptIdNamePairFromAttributeType(relationship)"
+               drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+               ui-on-drop="dropRelationshipType(relationship, $data)">
+          <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
+                    class="form-control color_{{relationship.groupId}}"
+                    type="text"
+                    placeholder="#">
           </textarea>
-        </div>
+          </div>
           <!-- linked concept -->
-        <div class="pull-left sourcename" ui-draggable="true"
-             drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
-             drag-channel="conceptPropertiesObj"
-             drop-channel="conceptPropertiesObj"
-             ui-on-drop="dropRelationshipTarget(relationship, $data)">
+          <div class="pull-left sourcename" ui-draggable="true"
+               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
+               drag-channel="conceptPropertiesObj"
+               drop-channel="conceptPropertiesObj"
+               ui-on-drop="dropRelationshipTarget(relationship, $data)">
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
-                 class="form-control color_{{relationship.groupId}}"
-                 type="text"
-                 placeholder="#">
+                    class="form-control color_{{relationship.groupId}}"
+                    type="text"
+                    placeholder="#">
           </textarea>
+          </div>
+          <div class="pull-right button-width">
+            <button type="button" ng-click="addIsaRelationship($index)"
+                    class="btn-default add-buttons grey  md md-add-circle"
+                    title="Add New Is A Relationship"></button>
+          </div>
         </div>
-         <div class="pull-right button-width">
-          <button type="button" ng-click="addIsaRelationship($index)"
-                  class="btn-default add-buttons grey  md md-add-circle"
-                  title="Add New Is A Relationship"></button>
-        </div>
-        </div>
-        
-     
-        
-      
-       
+
+
       </div>
     </div>
-    
+
     <!-- rows: Concept Attributes (in relationships) -->
     <div ng-repeat="relationship in getAttributeRelationships(true)">
-      <div class="row darken-3 p-t-5 p-b-5 grey"> 
+      <div class="row darken-3 p-t-5 p-b-5 grey">
         <!-- Button controls -->
         <div class="col-md-12 no-padding">
-         
-            <button class="btn-default grey darken-3 md md-more button-width"
-                    ng-click="showAttributeDetails = !showAttributeDetails"
-                    popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
 
-                    title="Some title here"></button>
-            <button type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
-            <button type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
-            <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
-            <button type="button"
-                    style="vertical-align: bottom"
-                    ng-click="toggleRelationshipActive(relationship)"
-                    ng-class="[btn, btn-default, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
-                    title="Active/Inactive"> </button>
+          <button class="btn-default grey darken-3 md md-more button-width"
+                  ng-click="showAttributeDetails = !showAttributeDetails"
+                  popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
+
+                  title="Some title here"></button>
+          <button type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
+          <button type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
+          <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+          <button type="button"
+                  style="vertical-align: bottom"
+                  ng-click="toggleRelationshipActive(relationship)"
+                  ng-class="[btn, btn-default, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
+                  title="Active/Inactive"></button>
           <!-- relationship group -->
-        <div class="pull-left rolegroup">
+          <div class="pull-left rolegroup">
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.groupId"
-                 ng-change="updateRelationship(relationship)"
-                 class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
-                 ui-on-drop="dropNullOp()">
+                    ng-change="updateRelationship(relationship)"
+                    class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
+                    ui-on-drop="dropNullOp()">
           </textarea>
-        </div>
-         <!-- attribute type -->
-        <div class="pull-left attr " ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
-             drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
-             ui-on-drop="dropRelationshipType(relationship, $data)">
+          </div>
+          <!-- attribute type -->
+          <div class="pull-left attr " ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
+               drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+               ui-on-drop="dropRelationshipType(relationship, $data)">
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
-                 class="form-control color_{{relationship.groupId}}"
-                 type="text"
-                 placeholder="#">
+                    class="form-control color_{{relationship.groupId}}"
+                    type="text"
+                    placeholder="#">
           </textarea>
-        </div>
-        
-        <!-- linked concept -->
-        <div class="pull-left relations " ui-draggable="true"
-             drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
-             drop-channel="conceptPropertiesObj"
-             ui-on-drop="dropRelationshipTarget(relationship, $data)">
+          </div>
+
+          <!-- linked concept -->
+          <div class="pull-left relations " ui-draggable="true"
+               drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
+               drop-channel="conceptPropertiesObj"
+               ui-on-drop="dropRelationshipTarget(relationship, $data)">
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
-                 class="form-control color_{{relationship.groupId}}"
-                 type="text"
-                 placeholder="#">
+                    class="form-control color_{{relationship.groupId}}"
+                    type="text"
+                    placeholder="#">
           </textarea>
+          </div>
+          <div class="pull-left button-width">
+            <button type="button" ng-click="addAttributeRelationship($index)"
+                    class="btn-default add-buttons grey  md md-add-circle"
+                    title="Add New Attribute"></button>
+          </div>
         </div>
-         <div class="pull-left button-width">
-          <button type="button" ng-click="addAttributeRelationship($index)"
-                  class="btn-default add-buttons grey  md md-add-circle"
-                  title="Add New Attribute"></button>
-        </div>
-        </div>
-        
-      
-        
-       
-       
+
+
       </div>
     </div>
   </div>
