@@ -20,7 +20,16 @@
 
       <div class="pull-left" ng-include src="'layout/notification.html'"></div>
 
-
+<style>
+.legend.dropdown-menu {
+    border: none;
+    padding: 0;
+    margin-top: 0px !important;
+	margin-left: -140px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+	z-index:10000;
+}
+</style>
 
     <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services" ng-if="!loggedIn">
       <li>
@@ -36,6 +45,27 @@
       </li>
       <li>
         <a ng-href="#/logout">Logout</a>
+      </li>
+         <li class="dropdown pull-right">
+         <!--<li>
+           <div class="btn-group" dropdown dropdown-append-to-body legend>
+      <button id="btn-append-to-body" type="button" class="btn pointer btn btn-round-sm btn-link" dropdown-toggle>
+       <i class="md md-help f20"></i>
+      </button>
+      <ul class="dropdown-menu legend" role="menu" aria-labelledby="btn-append-to-body">
+        <li role="menuitem"><a href="#">Action</a></li>
+        <li role="menuitem"><a href="#">Another action</a></li>
+        <li role="menuitem"><a href="#">Something else here</a></li>
+        <li class="divider"></li>
+        <li role="menuitem"><a href="#">Separated link</a></li>
+      </ul>
+    </div>
+        </li>
+         <!--
+        <button class="dropdown-toggle pointer btn btn-round-sm btn-link " bs-dropdown
+                data-template="layout/legend.html">
+          <i class="md md-settings f20"></i>
+        </button> -->
       </li>
     </ul>
   </div>
