@@ -24,7 +24,12 @@ angular.module('singleConceptAuthoringApp.projects', [
     $scope.tableParams = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {title: 'asc'},
+        sorting: {
+          title: 'asc',
+          lead: 'asc',
+          latestClassificationJson: 'asc',
+          validationStatus: 'asc'
+        },
         orderBy: 'title'
       },
       {
@@ -56,12 +61,16 @@ angular.module('singleConceptAuthoringApp.projects', [
       }
     );
 
-    // watch for task creation events
-    $scope.$on('taskCreated', function (event, task) {
-      if ($scope.projects) {
-        $scope.projects.unshift(task);
-      }
-    });
+    $scope.openCreateTaskModal = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/task/task.html',
+        controller: 'taskCtrl'
+      });
+
+      modalInstance.result.then(function () {
+      }, function () {
+      });
+    };
 
     // on successful set, reload table parameters
     $scope.$watch('projects', function () {
@@ -97,37 +106,7 @@ angular.module('singleConceptAuthoringApp.projects', [
           return;
         }
 
-        angular.forEach(response, function (project) {
-
-          // TODO Implement this call in scaService once api call becomes available
-          snowowlService.getClassificationsForProject(project.key, 'MAIN').then(function(response) {
-            console.debug('got classifications', response);
-
-          });
-          var equivalentConcepts = snowowlService.getRelationshipChanges(project.key);
-
-
-          var validation = scaService.getValidationForProject(project.key);
-
-
-
-          // TODO Add classification to this once it's implemented
-          $q.all([validation]).then(function (data) {
-
-            // add the validation status
-            if (data[0]) {
-              project.latestValidationStatus = data[0].executionStatus;
-            }
-            // add the classification status
-            // TODO Implement
-
-            // push onto the projects list
-            $scope.projects.push(project);
-
-            console.debug($scope.projects);
-          });
-        });
-
+        $scope.projects = response;
 
       }, function (error) {
         // TODO Handle errors

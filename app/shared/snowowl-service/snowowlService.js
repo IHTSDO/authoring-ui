@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', function ($http, $q, $watch) {
+  .service('snowowlService', ['$http', '$q', function ($http, $q) {
     var apiEndpoint = '../snowowl/snomed-ct/v2/';
 
     /////////////////////////////////////

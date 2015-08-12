@@ -26,7 +26,7 @@ angular
     'ang-drag-drop',
     'monospaced.elastic',
 
-    //Insert any created modules here. Ideally one per major feature.
+    //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
     'singleConceptAuthoringApp.project',
     'singleConceptAuthoringApp.projects',
@@ -50,12 +50,15 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, accountService, $cookies, $timeout) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, $cookies, $timeout) {
 
     // set the default redirect/route
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
+
+    // begin polling the sca endpoint at 10s intervals
+    notificationService.startScaPolling(10000);
 
     // get endpoint information and set route provider options
     endpointService.getEndpoints().then(function (data) {
