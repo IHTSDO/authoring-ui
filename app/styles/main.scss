@@ -2,11 +2,14 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 // bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
+@import url(http://fonts.googleapis.com/css?family=Cabin+Condensed);
 @import "home.scss";
 @import "about.scss";
 @import "ihtsdo.scss";
 @import "fonts.scss";
 @import "edit.scss";
+@import "editpanel.scss";
+@import "models.scss";
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
