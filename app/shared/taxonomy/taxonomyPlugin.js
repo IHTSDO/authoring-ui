@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
 
 .controller( 'taxonomyCtrl', ['$scope', '$routeParams', '$location', 'endpointService', function AppCtrl ( $scope, $routeParams, $location, endpointService) {
 
-        $scope.branch = "MAIN/" + $routeParams.projectId + "/" + $routeParams.taskId;
+        $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
         var options = {
 					serverUrl: "/snowowl",
 					edition: "snomed-ct/v2/browser",
@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
 					statusSearchFilter: "activeOnly",
 					highlightByEffectiveTime: "false",
                     taskSet: false,
-                    taskId: null
+                    taskKey: null
 				};
         var globalMarkerColor = 'black';
         var componentsRegistry = [];

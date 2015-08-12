@@ -52,7 +52,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     });
 
     $scope.classify = function() {
-      scaService.startClassificationForTask($routeParams.projectId, $routeParams.taskId).then(function(response) {
+      scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
 
         console.debug('Classification start response', response);
 
@@ -72,7 +72,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
 
     function initialize() {
-      scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
+      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
       });
 

@@ -48,41 +48,41 @@ angular.module('singleConceptAuthoringApp')
     // Classification functions
     //////////////////////////////////////////////
 
-    function startClassificationForTask(taskId, branch) {
+    function startClassificationForTask(taskKey, branch) {
       var JSON = '{"reasonerId": "au.csiro.snorocket.owlapi3.snorocket.factory"}';
-      return $http.post(apiEndpoint + branch + '/tasks/' + taskId + '/classifications', JSON, {
+      return $http.post(apiEndpoint + branch + '/tasks/' + taskKey + '/classifications', JSON, {
         headers: {'Content-Type': 'application/json; charset=UTF-8'}
       }).then(function (response) {
         return response;
       });
     }
 
-    // get a specific classification result for projectId, taskId, and
+    // get a specific classification result for projectKey, taskKey, and
     // classifierId
-    function getClassificationForTask(projectId, taskId, classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId).then(function (response) {
+    function getClassificationForTask(projectKey, taskKey, classifierId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
         return response;
       });
     };
 
     // get a specific classification result for project id, classifier id, and branch
-    function getClassificationForProject(projectId, classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/' + classifierId).then(function (response) {
+    function getClassificationForProject(projectKey, classifierId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
       });
     }
 
     // get all classification results for a project (as of 7/21, snowowl
     // functionality not complete)
-    function getClassificationsForProject(projectId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/').then(function (response) {
+    function getClassificationsForProject(projectKey, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectKey + '/classifications/').then(function (response) {
         return response.data.items;
       });
     }
 
     // get all classification results for a project and task
-    function getClassificationsForTask(projectId, taskId, branch) {
-      return $http.get(apiEndpoint + 'MAIN/' + projectId + '/' + taskId + '/classifications').then(function (response) {
+    function getClassificationsForTask(projectKey, taskKey, branch) {
+      return $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
         return response.data.items;
       });
     }

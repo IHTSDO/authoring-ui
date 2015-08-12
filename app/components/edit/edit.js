@@ -8,7 +8,7 @@ angular.module('singleConceptAuthoringApp.edit', [
   // TODO Seriously need to rethink this approach
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/edit/:projectId/:taskId', {
+      .when('/edit/:projectKey/:taskKey', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {
@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
 
     $routeProvider
-      .when('/classify/:projectId/:taskId', {
+      .when('/classify/:projectKey/:taskKey', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {
@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
 
     $routeProvider
-      .when('/validate/:projectId/:taskId', {
+      .when('/validate/:projectKey/:taskKey', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {
@@ -53,9 +53,9 @@ angular.module('singleConceptAuthoringApp.edit', [
   .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, classifyMode, validateMode) {
 
     // TODO: Update this when $scope.branching is enabled
-    $scope.branch = 'MAIN/' + $routeParams.projectId + '/' + $routeParams.taskId;
-    $scope.projectKey = $routeParams.projectId;
-    $scope.taskKey = $routeParams.taskId;
+    $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+    $scope.projectKey = $routeParams.projectKey;
+    $scope.taskKey = $routeParams.taskKey;
 
     // displayed concept array
     $scope.concepts = [];
@@ -135,13 +135,13 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // on load, set the initial view based on classify/validate parameters
     if (classifyMode === true) {
-      $rootScope.pageTitle = 'Classification/' + $routeParams.projectId + '/' + $routeParams.taskId;
+      $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.setView('classification');
     } else if (validateMode === true) {
-      $rootScope.pageTitle = 'Validation/' + $routeParams.projectId + '/' + $routeParams.taskId;
+      $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.setView('validation');
     } else {
-      $rootScope.pageTitle = 'Edit Concept/' + $routeParams.projectId + '/' + $routeParams.taskId;
+      $rootScope.pageTitle = 'Edit Concept/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.setView('edit-default');
     }
 
@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // get edit panel list
     scaService.getUIState(
-      $routeParams.projectId, $routeParams.taskId, 'edit-panel')
+      $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
       .then(function (uiState) {
 
         if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
@@ -189,7 +189,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // get saved list
     scaService.getUIState(
-      $routeParams.projectId, $routeParams.taskId, 'saved-list')
+      $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
       .then(function (uiState) {
 
         if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
@@ -255,7 +255,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // helper function to save current edit list
     $scope.updateUiState = function () {
-      scaService.saveUIState($routeParams.projectId, $routeParams.taskId, 'edit-panel', $scope.editPanelUiState);
+      scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', $scope.editPanelUiState);
     };
 
     // watch for concept saving from the edit panel
@@ -443,7 +443,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // otherwise, update the result
       else {
         $timeout(function () {
-          snowowlService.getClassification($routeParams.projectId, $routeParams.taskId, classificationId, 'MAIN').then(function (data) {
+          snowowlService.getClassification($routeParams.projectKey, $routeParams.taskKey, classificationId, 'MAIN').then(function (data) {
 
             console.debug('Classification result status: ', data);
             // if completed, set flag and return
@@ -480,8 +480,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // get equivalent concepts
       if ($scope.classificationContainer.equivalentConceptsFound) {
-        snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectId,
-          $routeParams.taskId, $scope.branch).then(function (equivalentConcepts) {
+        snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
+          $routeParams.taskKey, $scope.branch).then(function (equivalentConcepts) {
             $scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
             console.debug('set equivalent concepts', $scope.equivalentConcepts);
           });
@@ -498,7 +498,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       console.debug('Getting latest classification');
 
       // TODO Update branch when branching is implemented
-      snowowlService.getClassificationsForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
+      snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
         if (!response || response.length === 0) {
           $scope.classificationContainer = {status: 'No classification found'};
         } else {
@@ -577,7 +577,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       console.debug('Getting latest validation');
 
       // TODO Update branch when branching is implemented
-      scaService.getValidationForTask($routeParams.projectId, $routeParams.taskId, $scope.branch).then(function (response) {
+      scaService.getValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
         if (!response) {
           $scope.validationContainer = {executionStatus: 'No validation found'};
         } else {
