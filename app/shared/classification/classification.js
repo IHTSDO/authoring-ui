@@ -177,7 +177,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
               // copy the redundant stated relationships into their own array
-              if (scope.redundantStatedRelationshipsFound) {
+              if (scope.classificationContainer.redundantStatedRelationshipsFound) {
                 scope.redundantStatedRelationships = [];
                 angular.forEach(scope.relationshipChanges, function (item) {
                   if (item.changeNature === 'REDUNDANT') {
