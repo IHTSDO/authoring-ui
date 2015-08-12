@@ -101,7 +101,7 @@ angular.module('singleConceptAuthoringApp')
           // $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
           var saveMessage = concept.conceptId ? 'Saving concept with id: ' + concept.conceptId : 'Saving new concept';
-          notificationService.sendNotification(saveMessage, 0);
+          notificationService.sendNotification(saveMessage, 10000);
 
           // if new, use create
           if (!concept.conceptId) {
@@ -146,12 +146,19 @@ angular.module('singleConceptAuthoringApp')
             //console.debug('update concept', concept);
             snowowlService.updateConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
+              // send notification of success with timeout
+              var saveMessage = 'Concept with id: ' + response.conceptId + ' saved';
+              notificationService.sendNotification(saveMessage, 5000);
+
               console.debug('update response', response);
               if (response && response.conceptId) {
                 scope.concept = response;
+
+                // TODO Remove this once two-way binding is successfully implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
               else {
+                // TODO Remove this once two-way binding is successfully implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 scope.concept.error = response.message;
                 $timeout(function () {
@@ -224,26 +231,43 @@ angular.module('singleConceptAuthoringApp')
 
           // sort typed descriptions
           newArray.sort(function (a, b) {
-            // FSN before SYN
-            if (a.active === false) {
-              return -1;
-            }
-            if (b.active === false) {
+            // active before inactive
+            if (a.active === false && b.active === true) {
               return 1;
             }
+            if (b.active === false && a.active == true) {
+              return -1;
+            }
+
+            // sort based on type
             if (a.type === 'FSN' && b.type === 'SYNONYM') {
               return -1;
             }
             if (b.type === 'FSN' && a.type === 'SYNONYM') {
               return 1;
             }
+            if (!a.type && b.type) {
+              return 1;
+            }
+            if (!b.type && a.type) {
+              return -1;
+            }
 
             // PREFERRED before ACCEPTABLE
-            // console.debug(a.acceptabilityMap['900000000000508004'],
-            // b.acceptabilityMap['900000000000508004'],
-            // a.acceptabilityMap['900000000000508004'] >
-            // b.acceptabilityMap['900000000000508004'] ? -1 : 1);
-            return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
+
+            if (a.acceptabilityMap && b.acceptabilityMap) {
+              return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
+            }
+
+            if (a.acceptabilityMap && !b.acceptabilityMap) {
+              return -1;
+            }
+            if (!b.acceptabilityMap && a.acceptabilityMap) {
+              return 1;
+            }
+
+            // default: equivalent sort position
+            return 0;
           });
 
           //console.debug('sorted typed descriptions', newArray);
