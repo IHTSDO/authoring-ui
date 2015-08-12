@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp.search', [])
 
   .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, scaService) {
 
-    $scope.branch = "MAIN/" + $routeParams.projectId + "/" + $routeParams.taskId;
+    $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
     var options = {
       serverUrl: "/snowowl",
       edition: "snomed-ct/v2/browser",
@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       statusSearchFilter: "activeOnly",
       highlightByEffectiveTime: "false",
       taskSet: false,
-      taskId: null
+      taskKey: null
     };
     
     $scope.saveUIState = function (projectKey, taskKey, panelId, uiState) {
@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       if ($scope.findItemInSavedList(item) === false) {
         // push component on list and update ui state
         $scope.savedList.items.push(component);
-        $scope.saveUIState($routeParams.projectId, $routeParams.taskId, "saved-list", $scope.savedList);
+        $scope.saveUIState($routeParams.projectKey, $routeParams.taskKey, "saved-list", $scope.savedList);
       }
     };
 

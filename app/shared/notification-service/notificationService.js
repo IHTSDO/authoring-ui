@@ -67,7 +67,7 @@ angular.module('singleConceptAuthoringApp')
                     var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                     });
-                    msg = 'Validation ' + event + ' for project' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
+                    msg = 'Validation ' + event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
                     if (newNotification.task) {
                       url = '#/validate/' + newNotification.project + '/' + newNotification.task;
                     } else {

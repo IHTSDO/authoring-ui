@@ -134,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
 
             snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
              // console.debug('classification csv retrieved, opening dialog with', data);
-              var fileName = 'classifier_' + $routeParams.taskId;
+              var fileName = 'classifier_' + $routeParams.taskKey;
               scope.dlcDialog(data.data, fileName);
             });
           };
@@ -246,13 +246,13 @@ angular.module('singleConceptAuthoringApp')
           scope.startValidation = function () {
 
             // check if this is a task or project
-            if ($routeParams.taskId) {
+            if ($routeParams.taskKey) {
 
-              scaService.startValidationForTask($routeParams.projectId, $routeParams.taskId).then(function (validation) {
+              scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (validation) {
                 // TODO
               });
             } else {
-              scaService.startValidationForProject($routeParams.projectId).then(function (response) {
+              scaService.startValidationForProject($routeParams.projectKey).then(function (response) {
                 // TODO
               });
             }

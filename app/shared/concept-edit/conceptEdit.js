@@ -106,7 +106,7 @@ angular.module('singleConceptAuthoringApp')
           // if new, use create
           if (!concept.conceptId) {
 
-            snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
+            snowowlService.createConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
               //console.debug('create', response);
               // successful response will have conceptId
@@ -144,7 +144,7 @@ angular.module('singleConceptAuthoringApp')
           // if not new, use update
           else {
             //console.debug('update concept', concept);
-            snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
+            snowowlService.updateConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
               console.debug('update response', response);
               if (response && response.conceptId) {
