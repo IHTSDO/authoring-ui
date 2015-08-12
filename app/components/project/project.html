@@ -3,78 +3,85 @@
        src="'layout/sidebar.html'"></div>
 
   <div class="sca-column col-lg-9 col-md-9 col-sm-9 ">
-  <div class="page-header p-15">
-    <h1>
-      <i class="md md-laptop-mac"></i>
-      {{project.title}}
-    </h1>
-    <p class="lead">
-      Lead: Not yet implemented
-    </p>
-  </div>
-  
+    <div class="page-header p-15">
+      <h1>
+        <i class="md md-laptop-mac"></i>
+        {{project.title}}
+      </h1>
+
+      <p class="lead">
+        Lead: Not yet implemented
+      </p>
+    </div>
+
     <div class="row">
 
- 
+
+      <div class="card bordered">
+        <!--- Validation Results -->
+        <div class="card-header">
+          <div class="card-title">
+            <button ng-init="validationCollapsed = false" ng-click="validationCollapsed = !validationCollapsed"
+                    type="button"
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : validationCollapsed, 'md-keyboard-arrow-right' : !validationCollapsed}]">
+              <span class="report-text">Validation Results</span></button>
+
+          </div>
+        </div>
+        <div ng-show="validationCollapsed === true">
+          <!-- TODO ng-if here because the damn two-way binding IS NOT WORKING -->
+          <div class="card-content clearfix">
+            <div validation validation-container="validationContainer"
+                 editable="false" show-title="false"></div>
+          </div>
+        </div>
+      </div>
 
 
-         <div class="card bordered">
-            <!--- Validation Results -->
-            <div class="card-header">
-            <div class="card-title">
-              <button ng-init="validationCollapsed = false" ng-click="validationCollapsed = !validationCollapsed"
-                      type="button"
-                      ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : validationCollapsed, 'md-keyboard-arrow-right' : !validationCollapsed}]"><span class="report-text">Validation Results</span></button>
-              
-            </div>
-</div>
-            <div ng-show="validationCollapsed === true">
-              <!-- TODO ng-if here because the damn two-way binding IS NOT WORKING -->
-               <div class="card-content clearfix">  <div validation validation-container="validationContainer"
-                   editable="false" show-title="false"></div> </div>
-            </div>
+      <!-- Classification Results -->
+      <div class="card bordered">
+        <div class="card-header">
+          <div class="card-title">
+            <button ng-init="classificationCollapsed = true"
+                    ng-click="classificationCollapsed = !classificationCollapsed" type="button"
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
+              <span class="report-text">Classification Results</span></button>
+
+          </div>
+        </div>
+
+
+        <div ng-show="classificationCollapsed === false">
+          <div class="card-content clearfix">
+            <div classification classification-container="classificationContainer" branch="branch"
+                 editable="false"></div>
           </div>
 
+        </div>
 
-
-          <!-- Classification Results -->
-          <div class="card bordered">
-           <div class="card-header">
-            <div class="card-title">
-              <button ng-init="classificationCollapsed = true"
-                      ng-click="classificationCollapsed = !classificationCollapsed" type="button"
-                      ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]"><span class="report-text">Classification Results</span></button>
-            
-            </div>
-</div>
-            
-
-            <div ng-show="classificationCollapsed === false">
-              <div class="card-content clearfix"> <div classification classification-container="classificationContainer" branch="branch" editable="false"></div></div>
-               <div class="card-action clearfix projecttasks">
-            <div class="p-10 pull-right">
-              <button class="btn btn-disabled btn-border" ng-click="promote()">Promote
-                <div class="ripple-wrapper"></div>
-              </button>
-            </div>
-            <div class="p-10 pull-right">
-              <button class="btn btn-success btn-border" ng-click="classify()">Classify
-                <div class="ripple-wrapper"></div>
-              </button>
-            </div>
-            <div class="p-10 pull-right">
-              <button class="btn btn-success btn-border" ng-click="validate()">Validate
-                <div class="ripple-wrapper"></div>
-              </button>
-            </div>
+        <div class="card-action clearfix projecttasks">
+          <div class="p-10 pull-right">
+            <button class="btn btn-disabled btn-border" ng-click="promote()">Promote
+              <div class="ripple-wrapper"></div>
+            </button>
           </div>
-            </div>
-        
+          <div class="p-10 pull-right">
+            <button class="btn btn-success btn-border" ng-click="classify()">Classify
+              <div class="ripple-wrapper"></div>
+            </button>
+          </div>
+          <div class="p-10 pull-right">
+            <button class="btn btn-success btn-border" ng-click="validate()">Validate
+              <div class="ripple-wrapper"></div>
+            </button>
+          </div>
+        </div>
 
-          <!-- Action Buttons -->
-         
-     </div>
-     
+
+        <!-- Action Buttons -->
+
+      </div>
+
     </div>
 
   </div>
