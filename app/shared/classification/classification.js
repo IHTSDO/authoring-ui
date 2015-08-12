@@ -33,9 +33,6 @@ angular.module('singleConceptAuthoringApp')
           // function to get formatted summary tex
           scope.getStatusText = function () {
 
-            // console.debug('getting text', scope.classificationContainer.status);
-
-
             // check required elements
             if (!scope.classificationContainer) {
               return;

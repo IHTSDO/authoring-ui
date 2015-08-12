@@ -21,37 +21,36 @@ angular.module('singleConceptAuthoringApp')
 
           console.debug('Received notification', notification);
 
-          if (notification)
+          if (notification) {
 
-          // cancel any existing timeout
+            // cancel any existing timeout
             if (timeout) {
               $timeout.cancel(timeout);
             }
 
-          // set the notification
-          scope.notification = notification;
+            // set the notification
+            scope.notification = notification;
 
-          // if a duration supplied, apply it
-          if (notification.durationInMs > 0) {
-            timeout = $timeout(function () {
-              scope.notification = null;
-            }, notification.durationInMs);
+            // if a duration supplied, apply it
+            if (notification.durationInMs > 0) {
+              timeout = $timeout(function () {
+                scope.notification = null;
+              }, notification.durationInMs);
+            }
           }
-        });
 
-        // watch for changes in page title to format breadcrumbs
-        scope.$watch('pageTitle', function () {
-          if ($rootScope.pageTitle) {
-            scope.titleSections = $rootScope.pageTitle.split('/');
-          }
-        });
+          // watch for changes in page title to format breadcrumbs
+          scope.$watch('pageTitle', function () {
+            if ($rootScope.pageTitle) {
+              scope.titleSections = $rootScope.pageTitle.split('/');
+            }
+          });
 
-        // clear notification (by user request)
-        scope.clearNotification = function () {
-          scope.notification = null;
-        };
+          // clear notification (by user request)
+          scope.clearNotification = function () {
+            scope.notification = null;
+          };
+        });
       }
     }
-      ;
-  }])
-;
+  }]);
