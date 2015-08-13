@@ -72,7 +72,8 @@
          {'col-lg-4' : !hideClassification || !hideValidation},
          {'col-md-4' : !hideClassification || !hideValidation},
          {'col-lg-9' : !hideSidebar && hideClassification && hideValidation},
-         {'col-md-9' : !hideSidebar && hideClassification && hideValidation}]">
+         {'col-md-9' : !hideSidebar && hideClassification && hideValidation}]"
+         >
 
       <!-- create new concept header (displayed when no concepts in ng-repeat -->
       <div ng-show="concepts.length === 0" class="row no-gutter">
@@ -90,7 +91,8 @@
         </div>
 
         <!-- The create concept button -->
-        <div class="editing-form grey darken-3" ng-class="[
+        <div
+             class="editing-form grey darken-3" ng-class="[
           {'col-md-12': thisView === 'edit-no-model' && hideClassification},
           {'col-lg-12': thisView === 'edit-no-model' && hideClassification},
           {'col-md-5': thisView != 'edit-no-model' && !hideSidebar},
@@ -99,7 +101,8 @@
           {'col-md-4' : !hideClassification || !hideValidation},
           {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
 
-          <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
+          <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                  type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
                   title="Active"><i
             class="md md-add-circle pull-right"></i> Create New Concept
           </button>
@@ -136,7 +139,8 @@
           {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']">
 
           <!-- Create new concept banner (first element only) -->
-          <button ng-show="$index === 0" type="button" ng-click="createConcept()"
+          <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                  ng-show="$index === 0" type="button" ng-click="createConcept()"
                   class="btn-default btn-block create-new-concept"
                   title="Active"><i
             class="md md-add-circle pull-right"></i> Create New Concept

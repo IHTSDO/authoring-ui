@@ -145,7 +145,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('edit-default');
     }
 
-
     // function to flag items in saved list if they exist in edit panel
     function flagEditedItems() {
 
@@ -241,7 +240,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.updateUiState(); // update the ui state
           flagEditedItems();        // update edited item flagging
         }
-      }).finally(function() {
+      }).finally(function () {
         // send loading notification
         if ($scope.concepts.length === $scope.editPanelUiState.length) {
           notificationService.sendNotification('All concepts loaded', 10000);
@@ -252,6 +251,31 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       })
     };
+
+    $scope.dropConcept = function (conceptIdNamePair) {
+
+      console.debug('Dropping concept', conceptIdNamePair);
+
+      var conceptId = conceptIdNamePair.id;
+
+      notificationService.sendNotification('Adding concept ' + conceptId + ' to edit panel', 10000);
+
+      snowowlService.getFullConcept(conceptId, $scope.branch).then(function (concept) {
+
+        var conceptLoaded = false;
+        angular.forEach($scope.concepts, function (existingConcept) {
+          if (concept.id === existingConcept.id) {
+            var conceptLoaded = true;
+          }
+        });
+        if (!conceptLoaded) {
+          $scope.concepts.push(concept);
+          notificationService.sendNotification('Concept ' + conceptId + ' successfully added to edit list', 5000);
+        } else {
+          notificationService.sendNotification('Concept ' + conceptId + ' already present in edit list', 5000);
+        }
+      })
+    }
 
 // helper function to save current edit list
     $scope.updateUiState = function () {
@@ -282,7 +306,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       if (data.response && data.response.conceptId) {
 
         // commented out in favor of notification service
-        //$scope.saveMessage = 'Concept with id: ' + data.response.conceptId + ' saved at: ' + $scope.formatDate(new Date());
+        //$scope.saveMessage = 'Concept with id: ' + data.response.conceptId +
+        // ' saved at: ' + $scope.formatDate(new Date());
 
         // ensure concept is in edit panel ui state
         if ($scope.editPanelUiState.indexOf(data.response.conceptId) === -1) {
