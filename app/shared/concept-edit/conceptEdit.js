@@ -235,7 +235,7 @@ angular.module('singleConceptAuthoringApp')
             if (a.active === false && b.active === true) {
               return 1;
             }
-            if (b.active === false && a.active == true) {
+            if (b.active === false && a.active === true) {
               return -1;
             }
 
@@ -619,9 +619,11 @@ angular.module('singleConceptAuthoringApp')
             relationship.target.fsn = data.name;
             scope.updateRelationship(relationship);
           } else {
-            // TODO Do we yet have a FSN call?
-            snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
-              relationship.target.fsn = response.term;
+
+            relationship.target.fsn = 'Retrieving...';
+            // get full concept and extract name
+            snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+              relationship.target.fsn = response.fsn;
               scope.updateRelationship(relationship);
             });
           }

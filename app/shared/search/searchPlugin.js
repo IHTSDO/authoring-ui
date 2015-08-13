@@ -2,7 +2,7 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.search', [])
 
-  .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, scaService) {
+  .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$compile', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, $compile, scaService) {
 
     $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
     var options = {
@@ -58,7 +58,7 @@ angular.module('singleConceptAuthoringApp.search', [])
           return $scope.results[i];
       }
       return null;
-    }
+    };
     $scope.findItemInSavedList = function (id) {
       if (!$scope.savedList || !$scope.savedList.items) {
         return false;
@@ -69,7 +69,15 @@ angular.module('singleConceptAuthoringApp.search', [])
         }
       }
       return false;
-    }
+    };
+    
+    // drag and drop object
+    // NOTE: Search plugin returns weird names it seems
+    // so leave retrieval to the drop target function
+    $scope.getConceptPropertiesObj = function (conceptId) {
+      console.debug('Getting concept properties obj', conceptId);
+      return {id: conceptId, name: null};
+    };
 
     var componentsRegistry = [];
     var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
@@ -494,11 +502,11 @@ angular.module('singleConceptAuthoringApp.search', [])
                 }).done(function (result) {
                   $scope.results = result.descriptions;
                   $.each(result.descriptions, function (field) {
-                    resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
+                    resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + field.concept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
                     if (field.concept.active == false) {
                     }
                     else{
-                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
+                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div  class='result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + "OHAI " + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
                     }
                   });
                   $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
@@ -523,11 +531,11 @@ angular.module('singleConceptAuthoringApp.search', [])
                 }).done(function (result) {
                   $scope.results = result.matches;
                   $.each(result.matches, function (field) {
-                    resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
+                    resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + field.concept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
                     if (field.concept.active == false) {
                     }
                     else{
-                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'><i class='glyphicon glyphicon-pencil'</button></td></tr>"
+                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'><i class='glyphicon glyphicon-pencil'</button></td></tr>"
                     }
                   });
                   $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
@@ -626,13 +634,14 @@ angular.module('singleConceptAuthoringApp.search', [])
                   }
                   $.each(matchedDescriptions, function (i, field) {
                     $scope.results = matchedDescriptions;
-                    resultsHtml = resultsHtml + "<tr class='resultRow selectable-row";
+                    resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + field.concept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
                     //console.log(field.active + " " +
                     // field.conceptActive);
                     if (field.concept.active == false) {
                     }
                     else{
-                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='jqui-draggable result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'><a href='javascript:void(0);' style='color: inherit;text-decoration: inherit;'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</a></div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr>"
+
+                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + "OHAI3 " +  field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr>"
                     }
                   });
 //                                    var remaining = result.length() - (skipTo
@@ -645,7 +654,11 @@ angular.module('singleConceptAuthoringApp.search', [])
 // displayed</td></tr>" } if (skipTo == 0) { $('#' + panel.divElement.id +
 // '-resultsTable').html(resultsHtml); } else { $('#' + panel.divElement.id +
 // '-resultsTable').append(resultsHtml); }
-                  $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
+
+
+                  // PG Need to compile added html for angular
+                  $('#' + panel.divElement.id + '-resultsTable').html(
+                    $compile(resultsHtml)($scope));
                   $("#" + panel.divElement.id + "-more").click(function (event) {
                     panel.search(t, (parseInt(skipTo) + parseInt(returnLimit)), returnLimit, true);
                   });
