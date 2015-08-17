@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp')
           // branch this report is good for
           branch: '='
         },
-        templateUrl: 'shared/feedback/feedback.html'
+        templateUrl: 'shared/feedback/feedback.html',
 
         link: function (scope, element, attrs, linkCtrl) {
 
@@ -75,8 +75,7 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
             // reload the tables
-            scope.feedbackList.reload();
-            scope.feedbackList.reload();
+            scope.feedbackTableParams.reload();
 
           }, true); // make sure to check object inequality, not reference!
 
