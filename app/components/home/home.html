@@ -77,18 +77,19 @@
                     <span class="md md-school "></span>
                   </button>
                 </a>
-                </button>
 
               </td>
-              <td data-title="'Feedback'" sortable="'feedback'">
-                <button disabled type="button" class="btn btn-round btn-default pink darken-1" tooltip=""
-                        title="Not yet implemented"><span class="md md-email"></span>
+              <td data-title="'Feedback'" sortable="''">
+                <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
+                  <button type="button" class="btn btn-round btn-default pink darken-1" tooltip=""
+                          title="View Feedback"><span class="md md-email"></span>
 
-                  <div class="ripple-wrapper"></div>
-                </button>
+                    <div class="ripple-wrapper"></div>
+                  </button>
+                </a>
               </td>
               <td data-title="'Status'" sortable="'status'">
-               <span class="badge {{task.status}}"> {{task.status}} </span>
+                <span class="badge {{task.status}}"> {{task.status}} </span>
               </td>
             </tr>
           </table>

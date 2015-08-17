@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get relationship changes as csv results
     function downloadClassification(classifierId, branch) {
-      console.debug('downloadClassification', classifierId, branch);
+      // console.debug('downloadClassification', classifierId, branch);
       return $http({
         'method': 'GET',
         'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes',
@@ -289,7 +289,7 @@ angular.module('singleConceptAuthoringApp')
       var concept = {};
       $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId).then(function (response) {
         concept = response.data;
-        console.debug('snowowl', response.data);
+        // console.debug('snowowl', response.data);
         deferred.resolve(concept);
       }, function (error) {
         deferred.reject(concept);
@@ -325,7 +325,7 @@ angular.module('singleConceptAuthoringApp')
           module.branch = branch;
           module.name = response.fsn;
 
-          console.log('Added module', module);
+          // console.log('Added module', module);
 
           modules.push(module);
         });
@@ -342,7 +342,7 @@ angular.module('singleConceptAuthoringApp')
     // TODO:  Currently unused, language options are extracted from dialects
     function addLanguages(newLanguages) {
       languages = languages.concat(newLanguages);
-      console.log('Language Options set to', languages);
+      // console.log('Language Options set to', languages);
     }
 
     // get language options
@@ -354,7 +354,7 @@ angular.module('singleConceptAuthoringApp')
     // add new dialect options
     function addDialects(newDialects) {
       dialects = dialects.concat(newDialects);
-      console.debug('Dialect options set to: ', dialects);
+      // console.debug('Dialect options set to: ', dialects);
     }
 
     // get dialect options

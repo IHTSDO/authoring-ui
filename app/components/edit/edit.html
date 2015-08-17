@@ -61,6 +61,13 @@
       <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
     </div>
 
+    <!-- Feedback View -->
+    <div ng-if="!hideFeedback"
+         ng-class="['col-sm-12',
+         'col-md-12',
+         'col-lg-8']">
+      <div feedback feedback-container="validationContainer" branch="branch" editable="true"></div>
+
     <!-- Classify View -->
     <div ng-show="!hideClassification"
          ng-class="['col-sm-12',
