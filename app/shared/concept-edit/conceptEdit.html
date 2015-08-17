@@ -66,7 +66,7 @@
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions(true)">
       <div class="row darken-3 p-t-5 grey ">
-        <div class="col-md-12 no-padding">
+        <div class="col-md-12 no-padding color_{{relationship.groupId}}">
           <button class="grey darken-3 md md-more button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
 
@@ -132,7 +132,7 @@
     <div ng-repeat="relationship in getIsARelationships(true)">
       <div class="row darken-3 p-t-5 grey">
         <!-- Button controls -->
-        <div class="col-md-12 no-padding">
+        <div class="col-md-12 no-padding color_{{relationship.groupId}}">
 
           <button class="btn-default grey darken-3 md md-more button-width"
                   ng-click="showAttributeDetails = !showAttributeDetails"
@@ -191,7 +191,7 @@
     <div ng-repeat="relationship in getAttributeRelationships(true)">
       <div class="row darken-3 p-t-5 p-b-5 grey">
         <!-- Button controls -->
-        <div class="col-md-12 no-padding">
+        <div class="col-md-12 no-padding form-control color_{{relationship.groupId}}">
 
           <button class="btn-default grey darken-3 md md-more button-width"
                   ng-click="showAttributeDetails = !showAttributeDetails"
