@@ -78,6 +78,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, classifyMode, validateMode, feedbackMode) {
 
+    console.debug('Mode variables', classifyMode, validateMode, feedbackMode);
+
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
     $scope.projectKey = $routeParams.projectKey;
@@ -95,8 +97,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.lastView = null;
 
     $scope.setView = function (name) {
-      // console.debug('setting view (requested, this, last)', name,
-      // $scope.thisView, $scope.lastView); do nothing if no name supplied
+      console.debug('setting view (requested, this, last)', name,
+        $scope.thisView, $scope.lastView);
+
+      // do nothing if no name supplied
       if (!name) {
         return;
       }
@@ -116,6 +120,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.hideModel = true;
           $scope.hideSidebar = true;
           $scope.hideFeedback = true;
+          $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'feedback':
           $scope.hideValidation = true;
@@ -123,12 +128,15 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.hideModel = true;
           $scope.hideSidebar = true;
           $scope.hideFeedback = false;
+          $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          break;
         case 'classification':
           $scope.hideValidation = true;
           $scope.hideClassification = false;
           $scope.hideModel = true;
           $scope.hideSidebar = true;
           $scope.hideFeedback = true;
+          $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'edit-default':
           $scope.hideValidation = true;
@@ -136,6 +144,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.hideModel = false;
           $scope.hideSidebar = false;
           $scope.hideFeedback = true;
+          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'edit-no-sidebar':
           $scope.hideValidation = true;
@@ -143,6 +152,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.hideModel = false;
           $scope.hideSidebar = true;
           $scope.hideFeedback = true;
+          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'edit-no-model':
           $scope.hideValidation = true;
@@ -150,8 +160,15 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.hideModel = true;
           $scope.hideSidebar = false;
           $scope.hideFeedback = true;
+          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         default:
+          $scope.hideValidation = true;
+          $scope.hideClassification = true;
+          $scope.hideModel = true;
+          $scope.hideSidebar = true;
+          $scope.hideFeedback = true;
+          $rootScope.pageTitle = 'Invalid View Requested';
           break;
       }
 
@@ -162,15 +179,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // on load, set the initial view based on classify/validate parameters
     if (classifyMode === true) {
-      $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-      $scope.setView('classification');
+       $scope.setView('classification');
     } else if (validateMode === true) {
-      $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.setView('validation');
     } else if (feedbackMode === true) {
-      $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.setView('feedback');
     } else {
-      $rootScope.pageTitle = 'Edit Concept/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.setView('edit-default');
     }
 
@@ -525,7 +539,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     // get the various elements of a classification once it has been retrieved
     $scope.setClassificationComponents = function () {
 
-      // console.debug('Retrieving classification components for', $scope.classificationContainer);
+      // console.debug('Retrieving classification components for',
+      // $scope.classificationContainer);
 
       if (!$scope.classificationContainer || !$scope.classificationContainer.id) {
         console.error('Cannot set classification components, classification or its id not set');
@@ -537,7 +552,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
           $routeParams.taskKey, $scope.branch).then(function (equivalentConcepts) {
             $scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
-            // console.debug('set equivalent concepts', $scope.equivalentConcepts);
+            // console.debug('set equivalent concepts',
+            // $scope.equivalentConcepts);
           });
       } else {
         $scope.equivalentConcepts = [];
