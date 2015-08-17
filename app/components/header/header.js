@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp')
         // durationInMs: [String]}
         scope.$on('notification', function (event, notification) {
 
-          console.debug('Received notification', notification);
+          // console.debug('Received notification', notification);
 
           if (notification) {
 

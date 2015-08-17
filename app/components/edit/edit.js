@@ -5,7 +5,7 @@ angular.module('singleConceptAuthoringApp.edit', [
   'ngRoute'
 ])
 
-  // TODO Seriously need to rethink this approach
+  // TODO Seriously (SERIOUSLY) need to rethink this approach
   .config(function config($routeProvider) {
     $routeProvider
       .when('/edit/:projectKey/:taskKey', {
@@ -16,6 +16,9 @@ angular.module('singleConceptAuthoringApp.edit', [
             return false;
           },
           validateMode: function () {
+            return false;
+          },
+          feedbackMode: function () {
             return false;
           }
         }
@@ -31,6 +34,26 @@ angular.module('singleConceptAuthoringApp.edit', [
           },
           validateMode: function () {
             return false;
+          },
+          feedbackMode: function () {
+            return false;
+          }
+        }
+      });
+
+    $routeProvider
+      .when('/feedback/:projectKey/:taskKey', {
+        controller: 'EditCtrl',
+        templateUrl: 'components/edit/edit.html',
+        resolve: {
+          classifyMode: function () {
+            return false;
+          },
+          validateMode: function () {
+            return false;
+          },
+          feedbackMode: function () {
+            return true;
           }
         }
       });
@@ -45,12 +68,15 @@ angular.module('singleConceptAuthoringApp.edit', [
           },
           validateMode: function () {
             return true;
+          },
+          feedbackMode: function () {
+            return false;
           }
         }
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, classifyMode, validateMode) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, classifyMode, validateMode, feedbackMode) {
 
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -79,16 +105,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      // special case for returning to edit view from classify or validation
-      // view
-      if (name === 'edit') {
-        if (!$scope.lastView || $scope.lastView === 'classification' || $scope.lastView === 'validation') {
-          name = 'edit-default';
-        } else {
-          name = $scope.lastView;
-        }
-      }
-
       // set this and last view
       $scope.lastView = $scope.thisView;
       $scope.thisView = name;
@@ -99,30 +115,41 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.hideClassification = true;
           $scope.hideModel = true;
           $scope.hideSidebar = true;
+          $scope.hideFeedback = true;
           break;
+        case 'feedback':
+          $scope.hideValidation = true;
+          $scope.hideClassification = true;
+          $scope.hideModel = true;
+          $scope.hideSidebar = true;
+          $scope.hideFeedback = false;
         case 'classification':
           $scope.hideValidation = true;
           $scope.hideClassification = false;
           $scope.hideModel = true;
           $scope.hideSidebar = true;
+          $scope.hideFeedback = true;
           break;
         case 'edit-default':
           $scope.hideValidation = true;
           $scope.hideClassification = true;
           $scope.hideModel = false;
           $scope.hideSidebar = false;
+          $scope.hideFeedback = true;
           break;
         case 'edit-no-sidebar':
           $scope.hideValidation = true;
           $scope.hideClassification = true;
           $scope.hideModel = false;
           $scope.hideSidebar = true;
+          $scope.hideFeedback = true;
           break;
         case 'edit-no-model':
           $scope.hideValidation = true;
           $scope.hideClassification = true;
           $scope.hideModel = true;
           $scope.hideSidebar = false;
+          $scope.hideFeedback = true;
           break;
         default:
           break;
@@ -140,6 +167,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     } else if (validateMode === true) {
       $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.setView('validation');
+    } else if (feedbackMode === true) {
+      $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
     } else {
       $rootScope.pageTitle = 'Edit Concept/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.setView('edit-default');
@@ -208,14 +237,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       // send loading notification for user display
       notificationService.sendNotification('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000);
 
-      console.debug('adding concept to edit list from id', conceptId);
+      // console.debug('adding concept to edit list from id', conceptId);
       if (!conceptId) {
         return;
       }
       // get the concept and add it to the stack
       snowowlService.getFullConcept(conceptId, $scope.branch).then(function (response) {
 
-        console.debug('Response received for ' + conceptId, response);
+        // console.debug('Response received for ' + conceptId, response);
         if (!response) {
           return;
         }
@@ -229,13 +258,13 @@ angular.module('singleConceptAuthoringApp.edit', [
         }, 800);
       }, function (error) {
 
-        console.debug('Error loading concept ' + conceptId, error);
+        // console.debug('Error loading concept ' + conceptId, error);
 
         // if an error, remove from edit list and update
         // TODO This is not fully desired behavior, but addresses WRP-887
         var index = $scope.editPanelUiState.indexOf(conceptId);
         if (index !== -1) {
-          console.debug('REMOVING', conceptId);
+          // console.debug('REMOVING', conceptId);
           $scope.editPanelUiState.splice(index, 1);
           $scope.updateUiState(); // update the ui state
           flagEditedItems();        // update edited item flagging
@@ -254,7 +283,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.dropConcept = function (conceptIdNamePair) {
 
-      console.debug('Dropping concept', conceptIdNamePair);
+      // console.debug('Dropping concept', conceptIdNamePair);
 
       var conceptId = conceptIdNamePair.id;
 
@@ -327,7 +356,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $timeout(function () {
           $rootScope.$broadcast('editModelDraw');
         }, 300);
-        console.debug('after save success', $scope.concepts);
+        // console.debug('after save success', $scope.concepts);
       }
       else {
         $scope.saveMessage = 'Error saving concept, please make an additional change.';
@@ -435,12 +464,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
 
-      console.debug('createConcept', $scope.concepts);
+      // console.debug('createConcept', $scope.concepts);
       var concept = objectService.getNewConcept($scope.branch);
 
       $scope.concepts.unshift(concept);
 
-      console.debug('after', $scope.concepts);
+      // console.debug('after', $scope.concepts);
 
     };
 
@@ -458,7 +487,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to poll for the result of a classification run
     $scope.pollForClassification = function (classificationId) {
 
-      console.debug('Polling for classification result', classificationId);
+      // console.debug('Polling for classification result', classificationId);
 
       // check prerequisites
       if (!classificationId) {
@@ -470,10 +499,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         $timeout(function () {
           snowowlService.getClassification($routeParams.projectKey, $routeParams.taskKey, classificationId, 'MAIN').then(function (data) {
 
-            console.debug('Classification result status: ', data);
+            // console.debug('Classification result status: ', data);
             // if completed, set flag and return
             if (data.data.status === 'COMPLETED') {
-              console.debug('Polled -- COMPLETED');
+              // console.debug('Polled -- COMPLETED');
 
               // TODO:  Change this to $scope.classificationContainer.results
               // or some such Brian suggests that the extra level of
@@ -496,7 +525,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // get the various elements of a classification once it has been retrieved
     $scope.setClassificationComponents = function () {
 
-      console.debug('Retrieving classification components for', $scope.classificationContainer);
+      // console.debug('Retrieving classification components for', $scope.classificationContainer);
 
       if (!$scope.classificationContainer || !$scope.classificationContainer.id) {
         console.error('Cannot set classification components, classification or its id not set');
@@ -508,11 +537,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
           $routeParams.taskKey, $scope.branch).then(function (equivalentConcepts) {
             $scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
-            console.debug('set equivalent concepts', $scope.equivalentConcepts);
+            // console.debug('set equivalent concepts', $scope.equivalentConcepts);
           });
       } else {
         $scope.equivalentConcepts = [];
-        console.debug('set equivalent concepts', $scope.equivalentConcepts);
+        // console.debug('set equivalent concepts', $scope.equivalentConcepts);
       }
 
     };
@@ -520,7 +549,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
-      console.debug('Getting latest classification');
+      // console.debug('Getting latest classification');
 
       // TODO Update branch when branching is implemented
       snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
@@ -528,7 +557,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.classificationContainer = {status: 'No classification found'};
         } else {
 
-          console.debug('classification found', response[0]);
+          // console.debug('classification found', response[0]);
 
           // assign results to the classification container
           $scope.classificationContainer = response[0];
@@ -585,8 +614,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     // watch for notification of classification starting
     $scope.$on('startClassification', function (event, classificationId) {
 
-      console.debug('edit.js, received notification startClassification',
-        classificationId);
+      // console.debug('edit.js, received notification startClassification',
+      //  classificationId);
 
       $scope.pollForClassification(classificationId);
 
@@ -599,7 +628,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to get the latest validation result
     $scope.getLatestValidation = function () {
 
-      console.debug('Getting latest validation');
+      // console.debug('Getting latest validation');
 
       // TODO Update branch when branching is implemented
       scaService.getValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
@@ -607,7 +636,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.validationContainer = {executionStatus: 'No validation found'};
         } else {
 
-          console.debug('New validation detected', response);
+          // console.debug('New validation detected', response);
           $scope.validationContainer = response;
 
         }
