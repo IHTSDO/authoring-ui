@@ -25,7 +25,6 @@ module.exports = function(config) {
       'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
       'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
-      'bower_components/angular-animate/angular-animate.js',
       'bower_components/angular-aria/angular-aria.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-cookies/angular-cookies.js',
@@ -58,6 +57,8 @@ module.exports = function(config) {
       'bower_components/angular-ui-sortable/sortable.js',
       'bower_components/angular-native-dragdrop/draganddrop.js',
       'bower_components/angular-elastic/elastic.js',
+      'bower_components/tinymce-dist/tinymce.min.js',
+      'bower_components/angular-ui-tinymce/src/tinymce.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/components/*.js",
