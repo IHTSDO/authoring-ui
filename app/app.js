@@ -59,7 +59,7 @@ angular
     });
 
     // begin polling the sca endpoint at 10s intervals
-    notificationService.startScaPolling(10000);
+    scaService.startPolling(10000);
 
     // get endpoint information and set route provider options
     endpointService.getEndpoints().then(function (data) {
@@ -101,20 +101,6 @@ angular
             window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
           }
         });
-        
-        var poll = function() {
-            scaService.getNotifications().then( function(response){
-             if(response.data != null && response.data.length != 0)
-             {
-                 $rootScope.saveIndicator = true;
-                 $rootScope.saveMessage = response.data.event + ' (' + response.data.project + '/' + response.data.task + ')';
-                 $timeout(function () {
-                    $rootScope.saveIndicator = false;
-                  }, 4000);
-             }
-         });
-        }
-       $timeout(poll, 20000);
     });
 
     ///////////////////////////////////////////

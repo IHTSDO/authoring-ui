@@ -69,7 +69,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       });
     };
 
-
+    $scope.submitForReview = function() {
+      scaService.markTaskForReview($routeParams.projectKey, $routeParams.taskKey);
+    };
 
     function initialize() {
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {

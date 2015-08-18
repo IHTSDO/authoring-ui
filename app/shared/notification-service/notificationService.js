@@ -10,99 +10,53 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 angular.module('singleConceptAuthoringApp')
-  .service('notificationService', ['$rootScope', '$interval', 'scaService', function ($rootScope, $interval, scaService) {
-    // polling variable
-    var scaPoll = null;
-
-    // start polling
-    function startScaPolling(intervalInMs) {
-      console.debug('Starting notification polling with interval ' + intervalInMs + 'ms');
-
-      // instantiate poll (every 10s)
-      scaPoll = $interval(function () {
-
-          scaService.getNotifications().then(function (response) {
-            if (response && response.data && response.data[0]) {
-
-              console.debug('NEW NOTIFICATION', response);
-
-              // getNotifications returns an array, get the latest
-              // TODO Fold all results into a drop-down list in top right corner
-              var newNotification = response.data[0];
-
-              var msg = '';
-              var url = '';
-
-              if (newNotification.entityType) {
-
-                // construct message and url based on entity type
-                switch(newNotification.entityType) {
-
-                  /*
-                  Classification completion object structure
-                   entityType: "Classification"
-                   event: "Classification completed successfully"
-                   project: "WRPAS"
-                   task: "WRPAS-98" (omitted for project)
-                   */
-                  case 'Classification':
-                    msg = newNotification.event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
-                    if (newNotification.task) {
-                      url = '#/classify/' + newNotification.project + '/' + newNotification.task;
-                    } else {
-                      url = '#/project/' + newNotification.project;
-                    }
-                    break;
-
-                   /*
-                   Validation completion object structure
-                   entityType: "Validation"
-                   event: "COMPLETED"
-                   project: "WRPAS"
-                   task: "WRPAS-98" (omitted for project)
-                   */
-                  case 'Validation':
-
-                    // conver
-                    var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
-                      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                    });
-                    msg = 'Validation ' + event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
-                    if (newNotification.task) {
-                      url = '#/validate/' + newNotification.project + '/' + newNotification.task;
-                    } else {
-                      url = '#/project/' + newNotification.project;
-                    }
-                    break;
-                }
-              } else {
-                msg = 'Unknown notification received';
-              }
-              // broadcast the time, message, link, and raw data
-              $rootScope.$broadcast('notification', {time: new Date(), message: msg, url: url, data: newNotification, durationInMs: 0});
-            }
-          });
-        }, intervalInMs);
-    }
-
-    // stop polling
-    function stopScaPolling() {
-      console.debug('Canceling notification polling');
-      if (scaPoll) {
-        $interval.cancel(scaPoll);
-      }
-    }
+  .service('notificationService', ['$rootScope', function ($rootScope) {
 
     // force a notification to be sent from elsewhere in the app
     // simple broadcast, but ensures event text is uniform
-    function sendNotification(message, durationInMs) {
-      console.debug('Sending app-wide notification',message);
+    function sendMessage(message, durationInMs, url) {
+      console.debug('Sending app-wide notification', message);
+
+      if (!message || message.length === 0) {
+        console.error('Cannot send empty application notification');
+      }
 
       var notification = {
-        time: null,
+        type: 'MESSAGE',
         message: message,
-        url: null,
-        data: '',
+        url: url,
+        durationInMs: durationInMs
+      };
+      $rootScope.$broadcast('notification', notification);
+    }
+
+    function sendWarning(message, durationInMs, url) {
+      console.debug('Sending app-wide warning', message);
+
+      if (!message || message.length === 0) {
+        console.error('Cannot send empty application notification');
+      }
+
+      var notification = {
+        type: 'WARNING',
+        message: message,
+        url: url,
+        durationInMs: durationInMs
+      };
+      $rootScope.$broadcast('notification', notification);
+    }
+
+    function sendError(message, durationInMs, url, time) {
+      console.debug('Sending app-wide error', message);
+
+      if (!message || message.length === 0) {
+        console.error('Cannot send empty application notification');
+      }
+
+      var notification = {
+        type: 'ERROR',
+        message: message,
+        url: url,
         durationInMs: durationInMs
       };
       $rootScope.$broadcast('notification', notification);
@@ -114,8 +68,8 @@ angular.module('singleConceptAuthoringApp')
 ////////////////////////////////////////////
     return {
 
-      startScaPolling: startScaPolling,
-      stopScaPolling: stopScaPolling,
-      sendNotification: sendNotification
+      sendMessage: sendMessage,
+      sendWarning: sendWarning,
+      sendError: sendError
     };
   }]);

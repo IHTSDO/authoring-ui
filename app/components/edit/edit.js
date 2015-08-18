@@ -249,7 +249,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.addConceptToListFromId = function (conceptId) {
 
       // send loading notification for user display
-      notificationService.sendNotification('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000);
+      notificationService.sendMessage('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000, null);
 
       // console.debug('adding concept to edit list from id', conceptId);
       if (!conceptId) {
@@ -286,10 +286,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       }).finally(function () {
         // send loading notification
         if ($scope.concepts.length === $scope.editPanelUiState.length) {
-          notificationService.sendNotification('All concepts loaded', 10000);
+          notificationService.sendMessage('All concepts loaded', 10000, null);
         } else {
           // send loading notification for user display
-          notificationService.sendNotification('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000);
+          notificationService.sendMessage('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000, null);
         }
 
       });
@@ -301,7 +301,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var conceptId = conceptIdNamePair.id;
 
-      notificationService.sendNotification('Adding concept ' + conceptId + ' to edit panel', 10000);
+      notificationService.sendMessage('Adding concept ' + conceptId + ' to edit panel', 10000, null);
 
       snowowlService.getFullConcept(conceptId, $scope.branch).then(function (concept) {
 
@@ -313,9 +313,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptLoaded) {
           $scope.concepts.push(concept);
-          notificationService.sendNotification('Concept ' + conceptId + ' successfully added to edit list', 5000);
+          notificationService.sendMessage('Concept ' + conceptId + ' successfully added to edit list', 5000, null);
         } else {
-          notificationService.sendNotification('Concept ' + conceptId + ' already present in edit list', 5000);
+          notificationService.sendMessage('Concept ' + conceptId + ' already present in edit list', 5000, null);
         }
       });
     };
@@ -323,25 +323,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 // helper function to save current edit list
     $scope.updateUiState = function () {
       scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', $scope.editPanelUiState);
-    };
-
-    // watch for concept saving from the edit panel
-    // commented out in favor of notification service
-    /* $scope.$on('conceptEdit.saving', function (event, data) {
-     $scope.saveIndicator = true;
-     $scope.saveConceptId = data.concept.conceptId;
-     $scope.saveMessage = data.concept.conceptId ? 'Saving concept with id: ' + data.concept.conceptId : 'Saving new concept';
-     });*/
-    $scope.formatDate = function (date) {
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
-      var ampm = hours >= 12 ? 'pm' : 'am';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      var strTime = hours + ':' + minutes + ' ' + ampm;
-      var offset = String(String(new Date().toString()).split('(')[1]).split(')')[0];
-      return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime + ' (' + offset + ')';
     };
 
     // TODO Make the two-way binding handle this via a $watch
@@ -498,43 +479,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Classification functions           //
     ////////////////////////////////////////
 
-    // function to poll for the result of a classification run
-    $scope.pollForClassification = function (classificationId) {
-
-      // console.debug('Polling for classification result', classificationId);
-
-      // check prerequisites
-      if (!classificationId) {
-        console.error('Cannot poll results for null classification');
-      }
-
-      // otherwise, update the result
-      else {
-        $timeout(function () {
-          snowowlService.getClassification($routeParams.projectKey, $routeParams.taskKey, classificationId, 'MAIN').then(function (data) {
-
-            // console.debug('Classification result status: ', data);
-            // if completed, set flag and return
-            if (data.data.status === 'COMPLETED') {
-              // console.debug('Polled -- COMPLETED');
-
-              // TODO:  Change this to $scope.classificationContainer.results
-              // or some such Brian suggests that the extra level of
-              // abstraction will result in correct handling of
-              // pointers/references
-              $scope.classificationContainer = data.data;
-              $scope.setClassificationComponents();
-
-              return;
-            } else {
-
-              // otherwise, continue polling
-              $scope.pollForClassification(classificationId);
-            }
-          });
-        }, 5000);
-      }
-    };
 
     // get the various elements of a classification once it has been retrieved
     $scope.setClassificationComponents = function () {
@@ -547,17 +491,20 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      // get equivalent concepts
+      // get relationship changes
+      snowowlService.getRelationshipChanges($scope.classificationContainer.id, $scope.branch).then(function(relationshipChanges) {
+        $scope.classificationContainer.relationshipChanges = relationshipChanges ? relationshipChanges : {};
+      });
+
+
+      // get equivalent concepts if detected
       if ($scope.classificationContainer.equivalentConceptsFound) {
         snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
           $routeParams.taskKey, $scope.branch).then(function (equivalentConcepts) {
-            $scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
-            // console.debug('set equivalent concepts',
-            // $scope.equivalentConcepts);
+            $scope.classificationContainer.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
           });
       } else {
-        $scope.equivalentConcepts = [];
-        // console.debug('set equivalent concepts', $scope.equivalentConcepts);
+        $scope.classificationContainer.equivalentConcepts = [];
       }
 
     };
@@ -573,69 +520,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.classificationContainer = {status: 'No classification found'};
         } else {
 
-          // console.debug('classification found', response[0]);
-
           // assign results to the classification container
           $scope.classificationContainer = response[0];
-          /*
-           // if different result, replace
-           if ($scope.classificationContainer !== response[response.length - 1]) {
+          $scope.setClassificationComponents();
 
-           console.debug('New classification detected');
-           $scope.classificationContainer = response[response.length - 1];
-
-           // if completed, retrieve all components
-           if ($scope.classificationContainer.status === 'COMPLETED') {
-           console.debug('New classification is COMPLETED', $scope.classificationContainer);
-           $scope.setClassificationComponents();
-           }
-
-           // if still running, start polling for result
-           else if ($scope.classificationContainer.status === 'RUNNING') {
-           // console.debug('New classification is RUNNING');
-           $scope.pollForClassification();
-           }
-           }
-           }*/
 
         }
       });
     };
-
-    // watch classification for changes requiring broadcast
-    $scope.$watchGroup(['classification', 'relationshipChanges', 'equivalentConcepts'], function () {
-
-      // do nothing if not set
-      if (!$scope.classificationContainer) {
-        return;
-      }
-
-      // if running, broadcast result without elements
-      if ($scope.classificationContainer.status === 'RUNNING') {
-        $rootScope.$broadcast('setClassification', {classification: $scope.classificationContainer});
-      }
-
-      // if completed, check for all required fields and broadcast if populated
-      else if ($scope.classificationContainer.status === 'COMPLETED' && $scope.relationshipChanges && $scope.equivalentConcepts) {
-
-        // assemble the arrays
-        // TODO:  Artifact of bizarre watch behavior
-        $scope.classificationContainer.relationshipChanges = $scope.relationshipChanges;
-        $scope.classificationContainer.equivalentConcepts = $scope.equivalentConcepts;
-
-        $rootScope.$broadcast('setClassification', $scope.classificationContainer);
-      }
-    });
-
-    // watch for notification of classification starting
-    $scope.$on('startClassification', function (event, classificationId) {
-
-      // console.debug('edit.js, received notification startClassification',
-      //  classificationId);
-
-      $scope.pollForClassification(classificationId);
-
-    });
 
     //////////////////////////////////////////
     // Latest Validation
@@ -643,35 +535,47 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // function to get the latest validation result
     $scope.getLatestValidation = function () {
-
-      // console.debug('Getting latest validation');
-
-      // TODO Update branch when branching is implemented
+  // TODO Update branch when branching is implemented
       scaService.getValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
         if (!response) {
           $scope.validationContainer = {executionStatus: 'No validation found'};
         } else {
-
-          // console.debug('New validation detected', response);
           $scope.validationContainer = response;
-
         }
-
       });
     };
 
-    // on load, get the latest classification
+    //////////////////////////////////////////
+    // Review and Feedback
+    //////////////////////////////////////////
+
+    // get latest review
+    $scope.getLatestReview = function() {
+      scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+        $scope.feedbackContainer.review = response ? response : {};
+      });
+    };
+
+    // initialize the container objects
     $scope.classificationContainer = {
       id: null,
-      status: 'Loading...',
+      status: 'Loading...',  // NOTE: Overwritten by validation field
       equivalentConcepts: [],
       relationshipChanges: []
     };
-    $scope.validationContainer = {executionStatus: 'Loading...', report: null};
-    $scope.relationshipChanges = null;
-    $scope.equivalentConcepts = null;
+    $scope.validationContainer = {
+      executionStatus: 'Loading...',  // NOTE: Overwritten by validation field
+      report: null
+    };
+    $scope.feedbackContainer = {
+      review: null,
+      feedback: null
+    };
+
+    // populate the container objects
     $scope.getLatestClassification();
     $scope.getLatestValidation();
+    $scope.getLatestReview();
 
   }
 );
