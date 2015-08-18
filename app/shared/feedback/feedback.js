@@ -24,84 +24,121 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
+          ////////////////////////////////////////////////////
+          // NOTE
+          //
+          // Both ng-table and dragndrop.js reserve the keyword
+          // $data.  For this particular situation, where dragndrop
+          // functionality is wrapped inside an ng-table, the
+          // ng-table data is handled by explicit arrays.  This breaks
+          // the binding between the displayed data and the original
+          // feedbackContainer elements, necessitating some rather
+          // cumbersome functions, which are marked accordingly
+          ////////////////////////////////////////////////////
+
+
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
 
-          // instantiate validation container if not supplied
-          if (!scope.feedbackContainer) {
-            scope.feedbackContainer = {
-              conceptsToReview: [
-                {
-                  fsn: 'Concept 1 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 2 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 3 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 4 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 5 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 6 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 7 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 8 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                }
-              ],
-              conceptsReviewed: [
-                {
-                  fsn: 'Concept 1 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 2 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 3 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                },
-                {
-                  fsn: 'Concept 4 (demo)',
-                  conceptId: 1092837,
-                  feedback: 'Some sample feedback'
-                }
-              ]
-            };
-          }
+/*
+          // TEST DATA FOR SORTING WORK/DEMO
 
+          scope.feedbackContainer = {
+            conceptsToReview: [
+              {
+                term: 'Concept 1 (demo)',
+                id: 1,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 2 (demo)',
+                id: 2,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 3 (demo)',
+                id: 3,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 4 (demo)',
+                id: 4,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 5 (demo)',
+                id: 5,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 6 (demo)',
+                id: 6,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 7 (demo)',
+                id: 7,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 8 (demo)',
+                id: 8,
+                feedback: 'Some sample feedback'
+              }
+            ],
+            conceptsReviewed: [
+              {
+                term: 'Concept 9 (demo)',
+                id: 9,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 10 (demo)',
+                id: 10,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 11 (demo)',
+                id: 11,
+                feedback: 'Some sample feedback'
+              },
+              {
+                term: 'Concept 12 (demo)',
+                id: 12,
+                feedback: 'Some sample feedback'
+              }
+            ]
+          };
+*/
 
-          // arrays used for ng-table data
-          scope.conceptsToReview = [];
-          scope.conceptsReviewed = [];
+          // declare viewed arrays for ng-table
+          scope.conceptsToReviewViewed = [];
+          scope.conceptsReviewedViewed = [];
+
+          // Cumbersome function to set selected flag on actual element
+          // SEE NOTE AT START
+          scope.setSelected = function(concept) {
+
+            // cycle over concepts to review
+            angular.forEach(scope.feedbackContainer.review.conceptsToReview, function(c) {
+              if (c.id === concept.id) {
+
+                // reverse the flag on both elements
+                c.selected = !c.selected;
+                concept.selected = !concept.selected;
+                return;
+              }
+            });
+
+            // cycle over concepts reviewed
+            angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function(c) {
+              if (c.id === concept.id) {
+                c.selected = !c.selected;
+                return;
+              }
+            });
+          };
 
           // declare table parameters
           scope.conceptsToReviewTableParams = new NgTableParams({
@@ -112,23 +149,31 @@ angular.module('singleConceptAuthoringApp')
             },
             {
               filterDelay: 50,
-              total: scope.feedbackContainer && scope.feedbackContainer.conceptsToReview ?
-                scope.feedbackContainer.conceptsToReview.length : 0,
+              total: scope.feedbackContainer && scope.feedbackContainer.review && scope.feedbackContainer.review.conceptsToReview ?
+                scope.feedbackContainer.review.conceptsToReview.length : 0,
 
               getData: function ($defer, params) {
 
-                console.debug('getData for conceptsToReview from ', scope.feedbackContainer.conceptsToReview);
+                console.debug('getdata');
 
-                if (!scope.feedbackContainer.conceptsToReview || scope.feedbackContainer.conceptsToReview.length === 0) {
-                  $defer.resolve([]);
+                if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
+                  scope.conceptsToReviewViewed = [];
                 } else {
 
-                  var orderedData = scope.feedbackContainer.conceptsToReview;
+                  console.debug('getData', scope.feedbackContainer.review.conceptsToReview);
 
-                  params.total(scope.feedbackContainer.conceptsToReview.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                  // hard set the new total
+                  params.total(scope.feedbackContainer.review.conceptsToReview.length);
 
-                  scope.conceptsToReview = (orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  // sort -- note this doubletriggers $watch statement....
+                  // but we want the actual order to be preserved in the
+                  // original  array for reordering purposes
+                  scope.feedbackContainer.review.conceptsToReview = params.sorting() ? $filter('orderBy')(scope.feedbackContainer.review.conceptsToReview, params.orderBy()) : scope.feedbackContainer.review.conceptsToReview;
+
+                  // TODO Enable filtering
+
+                  // extract the paged results -- SEE NOTE AT START
+                  scope.conceptsToReviewViewed = (scope.feedbackContainer.review.conceptsToReview.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
             }
@@ -143,22 +188,26 @@ angular.module('singleConceptAuthoringApp')
             },
             {
               filterDelay: 50,
-              total: scope.feedbackContainer && scope.feedbackContainer.conceptsReviewed ?
-                scope.feedbackContainer.conceptsReviewed.length : 0,
+              total: scope.feedbackContainer && scope.feedbackContainer.review && scope.feedbackContainer.review.conceptsReviewed ?
+                scope.feedbackContainer.review.conceptsReviewed.length : 0,
               getData: function ($defer, params) {
 
-                console.debug('getData for conceptsReviewed from ', scope.feedbackContainer.conceptsReviewed);
-
-                if (!scope.feedbackContainer.conceptsReviewed || scope.feedbackContainer.conceptsReviewed.length === 0) {
-                  $defer.resolve([]);
+                if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsReviewed || scope.feedbackContainer.review.conceptsReviewed.length === 0) {
+                  scope.conceptsReviewedViewed = [];
                 } else {
 
-                  var orderedData = scope.feedbackContainer.conceptsReviewed;
+                  // hard set the new total
+                  params.total(scope.feedbackContainer.review.conceptsReviewed.length);
 
-                  params.total(scope.feedbackContainer.conceptsReviewed.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                  // sort -- note this doubletriggers $watch statement....
+                  // but we want the actual order to be preserved in the
+                  // original  array for reordering purposes
+                  scope.feedbackContainer.review.conceptsReviewed = params.sorting() ? $filter('orderBy')(scope.feedbackContainer.review.conceptsReviewed, params.orderBy()) : scope.feedbackContainer.review.conceptsReviewed;
 
-                  scope.conceptsReviewed = (orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  // TODO Enable filtering
+
+                  // extract the paged results -- SEE NOTE AT START
+                  scope.conceptsReviewedViewed = (scope.feedbackContainer.review.conceptsReviewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
             }
@@ -166,41 +215,185 @@ angular.module('singleConceptAuthoringApp')
 
           // function called when dropping concept
           // targetIndex: the point at which to insert the dropped concept
-          // conceptObj: {startIndex: N, concept: {...}}
-          scope.dropConceptToReview = function (targetIndex, conceptObj) {
-            console.debug('drop event', targetIndex, conceptObj);
+          // draggedConcept: {startIndex: N, concept: {...}}
+          scope.dropConcept = function (droppedConcept, draggedConcept, actionTab) {
 
-            if (targetIndex === conceptObj.index) {
-              // do nothing
+            console.debug('drop event', droppedConcept, draggedConcept, actionTab);
+
+            if (droppedConcept === draggedConcept) {
+              // do nothing if same target as source
             } else {
 
+              // copy array (to avoid triggering watch statement below)
+              // on drop, disable auto-sorting of table params  -- otherwise
+              // drag/drop makes no sense, will only be auto-re-ordered
+              var newConceptArray = [];
+              switch (actionTab) {
+                case 1:
+                  newConceptArray = scope.feedbackContainer.review.conceptsToReview;
+                  scope.conceptsToReviewTableParams.sorting('');
+                  break;
+                case 2:
+                  newConceptArray = scope.feedbackContainer.review.conceptsReviewed;
+                  scope.conceptsReviewedTableParams.sorting('');
+                  break;
+                default:
+                  console.error('Invalid tab selected for grouping selected concepts');
+                  return;
+              }
 
+              // find the index at which the target concept is located
+              // NOTE: This cannot be passed in simply, due to filtering
+              var droppedIndex = -1;
+              var draggedIndex = -1;
+              for (var i = 0; i < newConceptArray.length; i++) {
 
-              // disable auto-sorting of table params  -- otherwise drag/drop
-              // makes no sense!
-              scope.conceptsToReviewTableParams.sorting('');
+                // NOTE: Compare by id, as dragged/dropped concepts have
+                // $hashkey which prevents true equality checking
+                if (newConceptArray[i].id === droppedConcept.id) {
+                  console.debug('found dropped');
+                  droppedIndex = i;
+                }
+                if (newConceptArray[i].id === draggedConcept.id) {
+                  draggedIndex = i;
+                  console.debug('found dragged');
+                }
+              }
 
-              // insert very slight timeout to allow dragndrop to check for requested
-              // effects (deleting too fast causes undefined-access errors)
+              // check that both indices were found
+              if (droppedIndex === -1 || draggedIndex === -1) {
+                console.error('Error determining indices for drag and drop');
+                return;
+              }
+
+              // insert very slight timeout to allow dragndrop to check for
+              // requested effects (deleting too fast causes undefined-access
+              // errors)
               $timeout(function () {
                 // remove the passed object
-                scope.feedbackContainer.conceptsToReview.splice(conceptObj.index, 1);
+                newConceptArray.splice(draggedIndex, 1);
 
-               // insert the dragged concept at the target index
-                scope.feedbackContainer.conceptsToReview.splice(targetIndex, 0, conceptObj.concept);
+                // insert the dragged concept at the target index
+                newConceptArray.splice(droppedIndex, 0, draggedConcept);
 
-                scope.conceptsToReviewTableParams.reload();
+                // replace the appropriate array
+                switch (actionTab) {
+                  case 1:
+                    scope.feedbackContainer.review.conceptsToReview = newConceptArray;
+                    scope.conceptsToReviewTableParams.reload();
+                    break;
+                  case 2:
+                    scope.feedbackContainer.review.conceptsReviewed = newConceptArray;
+                    scope.conceptsReviewedTableParams.reload();
+                    break;
+                  default:
+                    console.error('Invalid tab selected for grouping selected concepts');
+                    return;
+                }
 
-              }, 10);
+
+              }, 25);
 
             }
 
           };
 
+          // allow for grouped reordering
+          scope.groupSelectedConcepts = function (actionTab) {
+            console.debug('reordering based on selected items for tab', actionTab);
 
-          // on load, initialize tables
-          scope.conceptsToReviewTableParams.reload();
-          scope.conceptsReviewedTableParams.reload();
+            // copy array (to avoid triggering watch statement below)
+            var newConceptArray = [];
+            switch (actionTab) {
+              case 1:
+                newConceptArray = scope.feedbackContainer.review.conceptsToReview;
+                break;
+              case 2:
+                newConceptArray = scope.feedbackContainer.review.conceptsReviewed;
+                break;
+              default:
+                console.error('Invalid tab selected for grouping selected concepts');
+                return;
+            }
+
+            // find the insertion point
+            var selectedFound = false;
+            var insertIndex = -1;
+            for (var i = 0; i < newConceptArray.length; i++) {
+              console.debug('checking element for selected', newConceptArray[i]);
+
+              // if selected, mark entry into selected items
+              if (newConceptArray[i].selected === true) {
+                selectedFound = true;
+              }
+
+              // stop if not selected and a previously selected item was found
+              // set the insert to index to after the last found selected
+              else if (selectedFound === true) {
+                insertIndex = i;
+                break;
+              }
+            }
+
+            // check that a selected item was found and is not the last item
+            if (insertIndex === -1 || insertIndex === newConceptArray.length - 1) {
+              return;
+            }
+
+            // cycle over all concepts to review in reverse
+            var conceptsToInsert = [];
+            for (var i = newConceptArray.length - 1; i > insertIndex; i--) {
+
+              // if selected, save (FILO) and remove
+              if (newConceptArray[i].selected) {
+                conceptsToInsert.unshift(newConceptArray[i]);;
+                newConceptArray.splice(i, 1);
+              }
+            }
+
+            // splice in the array at the insert point
+            Array.prototype.splice.apply(newConceptArray, [insertIndex, 0].concat(conceptsToInsert));
+
+            // assign to feedback container to trigger watch statement
+            switch (actionTab) {
+              case 1:
+                scope.feedbackContainer.review.conceptsToReview = newConceptArray;
+                scope.conceptsToReviewTableParams.reload();
+                break;
+              case 2:
+                scope.feedbackContainer.review.conceptsReviewed = newConceptArray;
+                scope.conceptsReviewedTableParams.reload();
+                break;
+              default:
+                return;
+            }
+          };
+
+          scope.$watch('feedbackContainer', function () {
+
+            console.debug('feedbackContainer changed', scope.feedbackContainer);
+
+            if (!scope.feedbackContainer) {
+              return;
+            }
+
+            // on initial load, split concepts
+            if (scope.feedbackContainer.review && !scope.feedbackContainer.review.conceptsToReview) {
+
+              // For now, simply put all concepts into conceptsToReview
+              // TODO They SAY they don't want persistence via ui state here.... :)
+              scope.feedbackContainer.review.conceptsToReview = scope.feedbackContainer.review.concepts;
+              scope.feedbackContainer.review.conceptsReviewed = [];
+            }
+
+            // on load, initialize tables
+            scope.conceptsToReviewTableParams.reload();
+            scope.conceptsReviewedTableParams.reload();
+
+            // TODO process feedback
+          }, true);
+
+
 
         }
 

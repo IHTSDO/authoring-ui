@@ -101,7 +101,7 @@ angular.module('singleConceptAuthoringApp')
           // $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
           var saveMessage = concept.conceptId ? 'Saving concept with id: ' + concept.conceptId : 'Saving new concept';
-          notificationService.sendNotification(saveMessage, 10000);
+          notificationService.sendMessage(saveMessage, 10000, null);
 
           // if new, use create
           if (!concept.conceptId) {
@@ -120,7 +120,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // send notification of success with timeout
                 var saveMessage = 'Concept with id: ' + response.conceptId + ' saved';
-                notificationService.sendNotification(saveMessage, 5000);
+                notificationService.sendMessage(saveMessage, 5000, null);
               }
 
               // handle error
@@ -130,7 +130,7 @@ angular.module('singleConceptAuthoringApp')
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
 
                 // send notification of error with timeout to cleaer previous save message
-                notificationService.sendNotification('Error saving concept', 5000);
+                notificationService.sendError('Error saving concept', 10000);
 
                 // set the local error
                 scope.concept.error = response.message;
@@ -148,7 +148,7 @@ angular.module('singleConceptAuthoringApp')
 
               // send notification of success with timeout
               var saveMessage = 'Concept with id: ' + response.conceptId + ' saved';
-              notificationService.sendNotification(saveMessage, 5000);
+              notificationService.sendMessage(saveMessage, 5000, null);
 
               console.debug('update response', response);
               if (response && response.conceptId) {
