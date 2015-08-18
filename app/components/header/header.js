@@ -52,5 +52,5 @@ angular.module('singleConceptAuthoringApp')
           };
         });
       }
-    }
+    };
   }]);
