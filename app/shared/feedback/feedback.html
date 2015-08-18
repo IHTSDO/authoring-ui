@@ -1,114 +1,177 @@
 <section class="tables-data">
 
   <!-- for ng-table checkboxes -->
+  <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
+  resulting in elements being placed outside of the table (i.e. position: fixed)
+  -->
   <script type="text/ng-template" id="checkboxheader.html">
-    <input ng-if="editable" type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
+    <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
   </script>
 
-  <script type="text/ng-template" id="editheader.html">
-    <button ng-if="editable" type="button" class="btn btn-round btn-default blue"><span class="md md-edit"></span></button>
+  <script type="text/ng-template" id="filterHeader.html">
+    <input type="text" ng-model="filter">
+
   </script>
-<style>
-.validation-report-header{}
-.case-failures, .back-button{border-radius:5px}
-.back-button{background-color:transparent!important; border:1px solid #00a6e5!important; color:#00a6e5}
-.back-button:hover{background-color:#00a6e5!important; border:1px solid #00a6e5!important; }
-.validation-report .checkbox input[type=checkbox]:after, .validation-report .checkbox-inline input[type=checkbox]:after, .validation-report input[type=checkbox]:after {
-    content: "";
-    display: block;
-    width: 20px;
-    height: 20px;
-    margin-top: -2px;
-    margin-right: 5px;
-    border: 1px solid #DBDBDB;
-    border-radius: 2px;
-    transition: 240ms;
-}
-.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
-    margin-left: -33px;
-}
-</style>
-  <div class="row validation-report-header ">
-<div class="col-md-6">
-       <div class="p-t-15 "> <strong>Validation Report: </strong> {{getStatusText()}}</div>
 
-</div><div class="col-md-6 p-t-10 ">
-     <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true">
-          <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
-        </button>
+  <style>
+    .feedback-report-header {
+    }
 
-</div>
-        
+    .feedback-report .checkbox input[type=checkbox]:after, .feedback-report .checkbox-inline input[type=checkbox]:after, .feedback-report input[type=checkbox]:after {
+      content: "";
+      display: block;
+      width: 20px;
+      height: 20px;
+      margin-top: -2px;
+      margin-right: 5px;
+      border: 1px solid #DBDBDB;
+      border-radius: 2px;
+      transition: 240ms;
+    }
 
+    .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
+      margin-left: -33px;
+    }
+
+    .col-checkbox {
+      width: 10%;
+    }
+
+    .col-concept {
+      width: 80%;
+    }
+
+    .col-controls {
+      width: 10%;
+      padding-right: 0px;
+    }
+
+    .h-45 {
+      height: 45px;
+    }
+
+  </style>
+  <div class="row no-gutter">
+
+
+    <!-- Concept Review -->
+    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-xs-12 no-padding">
+
+      <div class="row classification-report ">
+        <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+
+          <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
+                                                    aria-controls="home" role="tab"
+                                                    data-toggle="tab"> Concepts To Review</a></li>
+          <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab"
+                                              data-toggle="tab">Concepts Reviewed</a>
+          </li>
+
+
+          <div class="pull-right p-r-20">
+            <button class="btn btn-round btn-default black" tooltip=""><span class="md md-layers "></span>
+            </button>
+            <button class="btn btn-round btn-default pink lighten-2" tooltip=""><span class="md md-forum "></span>
+            </button>
+            <button class="btn btn-round btn-default green lighten-2" tooltip=""><span
+              class="md md-playlist-add "></span></button>
+            <button class="btn btn-round btn-default blue lighten-2" tooltip=""><span class="md md-edit "></span>
+            </button>
+          </div>
+        </ul>
       </div>
-  <div class="card m-10 validation-report">
-    <div role="tabpanel" class="">
-    
 
-      <div class="table-responsive white" style="margin-right:0px;" ng-show="viewTop">
+      <!-- Tab panes -->
+      <div class="tab-content row m-t-10 col-sm-12 no-padding">
 
+        <!-- Concepts To Review -->
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
 
-        <table
-          ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
-          class="table table-full table-full-small">
-          <tr ng-repeat="assertion in $data">
+          <table ng-table="conceptsToReviewTableParams" template-pagination="utilities/data-table-pager.html"
+                 class="table table-full table-full-small">
 
-            <td data-title="'Failed Assertions'" sortable="'assertionText'">{{assertion.assertionText}}
-            </td>
-            <td data-title="'# of Cases'" sortable="'failureCount'">
-              {{assertion.failureCount}}
-            </td>
-
-            <td data-title="''" sortable="''">
-
-              <button
-                title="View These Failures" type="button" ng-click="viewFailures(assertion)"
-                class="btn btn-default blue case-failures">Load Cases</span> <i class="glyphicon glyphicon-chevron-right treeButton"></i>
-              </button>
+            <tr ng-repeat="concept in conceptsToReview">
 
 
-              <div class="ripple-wrapper"></div>
-              </button>
+              <td class="col-checkbox" data-title="'TBD'" sortable="'selected'">
+                <input type="checkbox" ng-model="concept.selected">
+              </td>
 
-            </td>
-          </tr>
-        </table>
+              <td class="col-concept" data-title="'Concept'" sortable="'fsn'"
+                  ui-draggable="true" drag="{index: $index, concept: concept}"
+                  drag-channel="feedbackConcept" drop-channel="feedbackConcept"
+                  ui-on-drop="dropConceptToReview($index, $data)">
+                {{concept.fsn}}
+              </td>
 
-      </div>
+              <td class="col-controls" data-title="'Filter TBD'" sortable="''">
+                <button class="btn btn-round btn-default pink lighten-2" tooltip=""><span class="md md-forum "></span>
+                </button>
+                <button class="btn btn-round btn-default green lighten-2" tooltip=""><span
+                  class="md md-playlist-add "></span></button>
+                <button class="btn btn-round btn-default blue lighten-2" tooltip=""><span class="md md-edit "></span>
+                </button>
+              </td>
+            </tr>
+          </table>
 
-      <div class="table-responsive white" style="margin-right:0px;" ng-show="!viewTop">
+        </div>
 
-        <div class="row p-10">
-          <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
+        <!-- Concepts Reviewed -->
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+
+          <table ng-table="conceptsReviewedTableParams" template-pagination="utilities/data-table-pager.html"
+                 class="table table-full table-full-small">
+            <tr ng-repeat="concept in conceptsReviewed" ui-draggable="true" drag="concept"
+                drag-channel="feedbackConcept" ui-on-drop="dropConcept(target, $data)">
+
+              <td class="col-checkbox" data-title="'TBD'" sortable="'selected'">
+                <input type="checkbox" ng-model="concept.selected">
+              </td>
+
+              <td class="col-concept" data-title="'Concept'" sortable="'fsn'">
+                {{concept.fsn}}
+              </td>
+
+              <td class="col-controls" data-title="'Filter TBD'" sortable="''">
+                <button class="btn btn-round btn-default pink lighten-2" tooltip=""><span class="md md-forum "></span>
+                </button>
+                <button class="btn btn-round btn-default green lighten-2" tooltip=""><span
+                  class="md md-playlist-add "></span></button>
+                <button class="btn btn-round btn-default blue lighten-2" tooltip=""><span class="md md-edit "></span>
+                </button>
+              </td>
+            </tr>
+          </table>
+
         </div>
 
 
-        <table
-          ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
-          class="table table-full table-full-small">
-          <tr ng-repeat="failure in $data">
-
-            <td ng-if="editable" data-header="'checkboxheader.html'"><input type="checkbox" ng-model="failure.selected"</td>
-            <!-- other columns here -->
-
-            <td data-title="'Concept'" sortable="'failureText'"><span class="muted">Not yet implemented</span>
-            </td>
-            <td data-title="'Error Message'" sortable="'failureCount'">
-              {{failure.errorMessage}}
-            </td>
-
-            <td ng-if="editable" data-header="'editheader.html'">
-              <button type="button" class="btn btn-round btn-default blue" ng-click="editConcept(failure.concept)">
-                <sp
-                  an class="md md-edit"></span>
-              </button>
-            </td>
-
-          </tr>
-        </table>
-
       </div>
 
+    </div>
+
+
+    <!-- Feedback Panel -->
+    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 no-padding">
+      <div class="row classification-report h-45">
+
+        <div class="switch pull-right p-t-5 p-r-10">
+          <label>
+            Review in Progress
+            <input type="checkbox" ng-model="reviewComplete">
+            <span class="lever"></span>
+            Review Complete
+          </label>
+        </div>
+      </div>
+
+      <div class="m-t-10" style="width:100%">
+        <input class="m-5" style="width:95%">
+      </div>
+
+
+      <p>WYSIWYG text editor to be inserted here. Some problems with tinymce, may want to try textAngular after all.</p>
     </div>
   </div>
 </section>
