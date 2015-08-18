@@ -32,9 +32,9 @@ angular.module('singleConceptAuthoringApp')
 
               // temporary check to verify authentication on Home component
               // will later be replaced by accountService call in app.js
-              if (response.data.length > 0) {
-                $rootScope.accountDetails = response.data[0].assignee;
-              }
+//              if (response.data.length > 0) {
+//                $rootScope.accountDetails = response.data[0].assignee;
+//              }
             }
 
             return response.data;
@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
 
             // temporary check to verify authentication on Edit component
             // will later be replaced by accountService call in app.js
-            $rootScope.accountDetails = response.data.assignee;
+//            $rootScope.accountDetails = response.data.assignee;
 
             return response.data;
           }, function (error) {
@@ -303,6 +303,6 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
-    }
+    };
 
   }]);

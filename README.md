@@ -32,7 +32,7 @@ Any modules, services, directives, filters etc should be included within the /sh
 ## Additional Configuration
 
 
-In order to obtain api-endpoint information within the local environment and avoid CORS errors when accessing SNOWOWL endpoints a configuration similar to the following (very basic) should be used: 
+In order to obtain api-endpoint information within the local environment and avoid CORS errors when accessing SNOWOWL and IMS endpoints a configuration similar to the following (very basic) should be used: 
 
 ```
 user 'details here';
@@ -58,6 +58,10 @@ http {
 		location /snowowl {
 			proxy_pass https://dev-term.ihtsdotools.org/snowowl;
 		}
+        
+        location /ims-api {
+			proxy_pass https://dev-ims.ihtsdotools.org/api;
+		}
 	}
 	server {
 		listen		8081;
@@ -73,9 +77,13 @@ http {
 		location /snowowl {
 			proxy_pass https://dev-term.ihtsdotools.org/snowowl;
 		}
+        
+        location /ims-api {
+			proxy_pass https://dev-ims.ihtsdotools.org/api;
+		}
 	}
 }
 ```
-In order to access these location after running nginx you should use the url 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on runninf 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server). 
+In order to access these location after running nginx you should use the url 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on running 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server). 
 
 These urls are used so that the browser picks up the authentication cookies used by IMS correctly. Using localhost instead will leave the developer unable to log in. 
