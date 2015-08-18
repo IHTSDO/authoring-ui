@@ -71,14 +71,13 @@ angular
       // don't want either true or false here please!
       $rootScope.loggedIn = null;
 
-      /* accountService.getAccount(accountUrl).success(function (data) {
-       $rootScope.accountDetails = data.data;
-       console.log("LoggedIn");
-       $rootScope.loggedIn = true;
-       }).error(function () {
-       console.log("LoggedOut");
-       $rootScope.loggedIn = false;
-       });*/
+      accountService.getAccount(accountUrl).success(function (data) {
+                $rootScope.accountDetails = data;
+                console.log(data);
+                $rootScope.loggedIn = true;
+            }).error(function () {
+                $rootScope.loggedIn = false;
+            });
 
       // add required endpoints to route provider
       $routeProvider
