@@ -126,10 +126,12 @@ angular.module('singleConceptAuthoringApp')
               // handle error
               else {
 
-                // TODO Remove this once two-way binding is successfully implemented
+                // TODO Remove this once two-way binding is successfully
+                // implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
 
-                // send notification of error with timeout to cleaer previous save message
+                // send notification of error with timeout to cleaer previous
+                // save message
                 notificationService.sendError('Error saving concept', 10000);
 
                 // set the local error
@@ -154,11 +156,13 @@ angular.module('singleConceptAuthoringApp')
               if (response && response.conceptId) {
                 scope.concept = response;
 
-                // TODO Remove this once two-way binding is successfully implemented
+                // TODO Remove this once two-way binding is successfully
+                // implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
               else {
-                // TODO Remove this once two-way binding is successfully implemented
+                // TODO Remove this once two-way binding is successfully
+                // implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 scope.concept.error = response.message;
                 $timeout(function () {
@@ -227,8 +231,6 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          // console.debug('typed descriptions', newArray);
-
           // sort typed descriptions
           newArray.sort(function (a, b) {
             // active before inactive
@@ -240,21 +242,24 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // sort based on type
-            if (a.type === 'FSN' && b.type === 'SYNONYM') {
-              return -1;
-            }
-            if (b.type === 'FSN' && a.type === 'SYNONYM') {
-              return 1;
-            }
-            if (!a.type && b.type) {
-              return 1;
-            }
-            if (!b.type && a.type) {
-              return -1;
+            if (a.type !== b.type) {
+
+              console.debug(a.type, b.type);
+
+              // check both provided
+              if (!a.type && b.type) {
+                return 1;
+              }
+              if (!b.type && a.type) {
+                return -1;
+              }
+
+              // sort based on type (both provided)
+              var descOrderMap = {'FSN': 0, 'SYNONYM': 1, 'TEXT_DEFINITION': 2};
+              return descOrderMap[a.type] < descOrderMap[b.type] ? -1 : 1;
             }
 
             // PREFERRED before ACCEPTABLE
-
             if (a.acceptabilityMap && b.acceptabilityMap) {
               return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
             }
@@ -267,7 +272,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // default: equivalent sort position
-            return 0;
+            return a.term < b.term ? -1 : 1;
           });
 
           //console.debug('sorted typed descriptions', newArray);
