@@ -95,8 +95,8 @@ angular.module('singleConceptAuthoringApp')
                   feedback: 'Some sample feedback'
                 }
               ]
-            }
-          };
+            };
+          }
 
 
           // arrays used for ng-table data
@@ -117,7 +117,7 @@ angular.module('singleConceptAuthoringApp')
 
               getData: function ($defer, params) {
 
-                console.debug('getData for conceptsToReview from ', scope.feedbackContainer.conceptsToReview)
+                console.debug('getData for conceptsToReview from ', scope.feedbackContainer.conceptsToReview);
 
                 if (!scope.feedbackContainer.conceptsToReview || scope.feedbackContainer.conceptsToReview.length === 0) {
                   $defer.resolve([]);
@@ -147,7 +147,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.feedbackContainer.conceptsReviewed.length : 0,
               getData: function ($defer, params) {
 
-                console.debug('getData for conceptsReviewed from ', scope.feedbackContainer.conceptsReviewed)
+                console.debug('getData for conceptsReviewed from ', scope.feedbackContainer.conceptsReviewed);
 
                 if (!scope.feedbackContainer.conceptsReviewed || scope.feedbackContainer.conceptsReviewed.length === 0) {
                   $defer.resolve([]);

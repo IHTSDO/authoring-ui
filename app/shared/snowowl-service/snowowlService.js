@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
       return $http.get(apiEndpoint + branch + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
         return response;
       });
-    };
+    }
 
     // get a specific classification result for project id, classifier id, and branch
     function getClassificationForProject(projectKey, classifierId, branch) {

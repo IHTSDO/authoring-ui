@@ -292,7 +292,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendNotification('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000);
         }
 
-      })
+      });
     };
 
     $scope.dropConcept = function (conceptIdNamePair) {
@@ -317,8 +317,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         } else {
           notificationService.sendNotification('Concept ' + conceptId + ' already present in edit list', 5000);
         }
-      })
-    }
+      });
+    };
 
 // helper function to save current edit list
     $scope.updateUiState = function () {
