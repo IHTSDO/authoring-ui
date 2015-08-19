@@ -100,7 +100,7 @@ angular.module('singleConceptAuthoringApp')
           // removed in favor of notificaiton service
           // $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
-          var saveMessage = concept.conceptId ? 'Saving concept with id: ' + concept.conceptId : 'Saving new concept';
+          var saveMessage = concept.conceptId ? 'Saving concept: ' + concept.fsn : 'Saving new concept';
           notificationService.sendMessage(saveMessage, 10000, null);
 
           // if new, use create
@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp')
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
 
                 // send notification of success with timeout
-                var saveMessage = 'Concept with id: ' + response.conceptId + ' saved';
+                var saveMessage = 'Concept saved: ' + response.fsn;
                 notificationService.sendMessage(saveMessage, 5000, null);
               }
 
@@ -149,7 +149,7 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.updateConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
               // send notification of success with timeout
-              var saveMessage = 'Concept with id: ' + response.conceptId + ' saved';
+              var saveMessage = 'Concept saved:' + concept.fsn;
               notificationService.sendMessage(saveMessage, 5000, null);
 
               console.debug('update response', response);
@@ -244,8 +244,6 @@ angular.module('singleConceptAuthoringApp')
             // sort based on type
             if (a.type !== b.type) {
 
-              console.debug(a.type, b.type);
-
               // check both provided
               if (!a.type && b.type) {
                 return 1;
@@ -274,8 +272,6 @@ angular.module('singleConceptAuthoringApp')
             // default: equivalent sort position
             return a.term < b.term ? -1 : 1;
           });
-
-          //console.debug('sorted typed descriptions', newArray);
 
           // cycle over original descriptions (backward) to reinsert non-typed
           // descriptions
