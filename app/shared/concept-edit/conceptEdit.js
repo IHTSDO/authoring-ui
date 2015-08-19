@@ -323,44 +323,88 @@ angular.module('singleConceptAuthoringApp')
         // List of acceptable reasons for inactivating a description
         // TODO:  More metadata to be retrieved on init and stored
         var inactivateDescriptionReasons = [
-          {
-            id: '',
-            text: 'ALTERNATIVE association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'MOVED FROM association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'MOVED TO association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
-          },
-          {
-            id: '',
-            text: 'REFERS TO concept association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'REPLACED BY association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'SAME AS association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'SIMILAR TO association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'WAS A association reference set (foundation metadata concept)'
-          },
-          {id: '', text: 'No reason'}
-        ];
+            {
+              id: '', text: 'No reason'
+            },
+            {
+              id: '',
+              text: 'Component moved elsewhere (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Concept non-current (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Duplicate component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Erroneous component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Inappropriate component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Limited component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Outdated component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Pending move (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'ALTERNATIVE association reference set (foundation metadata concept)'
+            }
+            ,
+            {
+              id: '',
+              text: 'MOVED FROM association reference set (foundation metadata concept)'
+            }
+            ,
+            {
+              id: '',
+              text: 'MOVED TO association reference set (foundation metadata concept)'
+            }
+            ,
+            {
+              id: '',
+              text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
+            }
+            ,
+            {
+              id: '',
+              text: 'REFERS TO concept association reference set (foundation metadata concept)'
+            }
+            ,
+            {
+              id: '',
+              text: 'REPLACED BY association reference set (foundation metadata concept)'
+            }
+            ,
+            {
+              id: '',
+              text: 'SAME AS association reference set (foundation metadata concept)'
+            }
+            ,
+            {
+              id: '',
+              text: 'SIMILAR TO association reference set (foundation metadata concept)'
+            }
+            ,
+            {
+              id: '',
+              text: 'WAS A association reference set (foundation metadata concept)'
+            }
+
+          ]
+          ;
 
         // get viewed descriptions
         scope.getDescriptions = function (checkForActive) {
