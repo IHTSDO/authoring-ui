@@ -212,6 +212,16 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+            
+          scope.addToReviewed = function(item){
+              scope.feedbackContainer.review.conceptsReviewed.push(item);
+              var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function(x) {return x.id; }).indexOf(item.id);
+              scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
+          };
+            
+          scope.addToEdit = function(item){
+              $rootScope.$broadcast('editConcept', {conceptId: item.id});
+          };
 
           // function called when dropping concept
           // targetIndex: the point at which to insert the dropped concept
@@ -342,12 +352,12 @@ angular.module('singleConceptAuthoringApp')
 
             // cycle over all concepts to review in reverse
             var conceptsToInsert = [];
-            for (var i = newConceptArray.length - 1; i > insertIndex; i--) {
+            for (var j = newConceptArray.length - 1; j > insertIndex; j--) {
 
               // if selected, save (FILO) and remove
-              if (newConceptArray[i].selected) {
-                conceptsToInsert.unshift(newConceptArray[i]);;
-                newConceptArray.splice(i, 1);
+              if (newConceptArray[j].selected) {
+                conceptsToInsert.unshift(newConceptArray[j]);
+                newConceptArray.splice(j, 1);
               }
             }
 
