@@ -313,9 +313,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptLoaded) {
           $scope.concepts.push(concept);
-          notificationService.sendMessage('Concept ' + conceptId + ' successfully added to edit list', 5000, null);
+          notificationService.sendMessage('Concept ' + concept.fsn + ' successfully added to edit list', 5000, null);
         } else {
-          notificationService.sendMessage('Concept ' + conceptId + ' already present in edit list', 5000, null);
+          notificationService.sendWarning('Concept ' + concept.fsn + ' already present in edit list', 5000, null);
         }
       });
     };
