@@ -212,6 +212,12 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+            
+          scope.addToReviewed = function(item){
+              scope.feedbackContainer.review.conceptsReviewed.push(item);
+              var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function(x) {return x.id; }).indexOf(item.id);
+              scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
+          };
 
           // function called when dropping concept
           // targetIndex: the point at which to insert the dropped concept
