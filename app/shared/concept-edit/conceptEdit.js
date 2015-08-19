@@ -361,48 +361,39 @@ angular.module('singleConceptAuthoringApp')
             {
               id: '',
               text: 'ALTERNATIVE association reference set (foundation metadata concept)'
-            }
-            ,
+            },
             {
               id: '',
               text: 'MOVED FROM association reference set (foundation metadata concept)'
-            }
-            ,
+            },
             {
               id: '',
               text: 'MOVED TO association reference set (foundation metadata concept)'
-            }
-            ,
+            },
             {
               id: '',
               text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
-            }
-            ,
+            },
             {
               id: '',
               text: 'REFERS TO concept association reference set (foundation metadata concept)'
-            }
-            ,
+            },
             {
               id: '',
               text: 'REPLACED BY association reference set (foundation metadata concept)'
-            }
-            ,
+            },
             {
               id: '',
               text: 'SAME AS association reference set (foundation metadata concept)'
-            }
-            ,
+            },
             {
               id: '',
               text: 'SIMILAR TO association reference set (foundation metadata concept)'
-            }
-            ,
+            },
             {
               id: '',
               text: 'WAS A association reference set (foundation metadata concept)'
             }
-
           ]
           ;
 
