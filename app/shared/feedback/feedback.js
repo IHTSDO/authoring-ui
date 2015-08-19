@@ -342,12 +342,12 @@ angular.module('singleConceptAuthoringApp')
 
             // cycle over all concepts to review in reverse
             var conceptsToInsert = [];
-            for (var i = newConceptArray.length - 1; i > insertIndex; i--) {
+            for (var j = newConceptArray.length - 1; j > insertIndex; j--) {
 
               // if selected, save (FILO) and remove
-              if (newConceptArray[i].selected) {
-                conceptsToInsert.unshift(newConceptArray[i]);;
-                newConceptArray.splice(i, 1);
+              if (newConceptArray[j].selected) {
+                conceptsToInsert.unshift(newConceptArray[j]);
+                newConceptArray.splice(j, 1);
               }
             }
 
