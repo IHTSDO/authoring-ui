@@ -218,6 +218,10 @@ angular.module('singleConceptAuthoringApp')
               var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function(x) {return x.id; }).indexOf(item.id);
               scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
           };
+            
+          scope.addToEdit = function(item){
+              $rootScope.$broadcast('editConcept', {conceptId: item.id});
+          };
 
           // function called when dropping concept
           // targetIndex: the point at which to insert the dropped concept
