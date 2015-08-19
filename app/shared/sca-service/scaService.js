@@ -289,6 +289,19 @@ angular.module('singleConceptAuthoringApp')
         });
 
       },
+        
+      //////////////////////////////////////////
+      // Update Status
+      //////////////////////////////////////////
+        
+      changeTaskStatus: function (projectKey, taskKey, object) {
+        $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          notificationService.sendMessage('Task ' + taskKey + ' marked for review');
+        }, function (error) {
+          console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
+          notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+        });
+      },
 
       //////////////////////////////////////////
       // Review
@@ -304,7 +317,7 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // mark as ready for review
+      // get latest review
       getReviewForTask: function (projectKey, taskKey) {
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
           return response.data;

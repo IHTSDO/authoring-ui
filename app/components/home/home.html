@@ -81,7 +81,7 @@
 
               <td data-title="'Feedback'" sortable="''">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
-                  <button type="button" class="btn btn-round btn-default pink darken-1" tooltip=""
+                  <button ng-show="task.status == 'In Review'"type="button" class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
                     <div class="ripple-wrapper"></div>
                   </button>
