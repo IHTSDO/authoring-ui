@@ -163,21 +163,29 @@ angular.module('singleConceptAuthoringApp')
                 if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
                   scope.conceptsToReviewViewed = [];
                 } else {
-
-                  console.debug('getData', scope.feedbackContainer.review.conceptsToReview);
+                  var myData = [];
+                    
+                  var searchStr = params.filter().search;
+                    if (searchStr) {
+                       myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
+                        return item.term.indexOf(searchStr) > -1 || item.id.indexOf(searchStr) > -1;
+                      });
+                    } else {
+                        myData = scope.feedbackContainer.review.conceptsToReview;
+                    }
 
                   // hard set the new total
-                  params.total(scope.feedbackContainer.review.conceptsToReview.length);
+                  params.total(myData.length);
 
                   // sort -- note this doubletriggers $watch statement....
                   // but we want the actual order to be preserved in the
                   // original  array for reordering purposes
-                  scope.feedbackContainer.review.conceptsToReview = params.sorting() ? $filter('orderBy')(scope.feedbackContainer.review.conceptsToReview, params.orderBy()) : scope.feedbackContainer.review.conceptsToReview;
+                  myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
 
                   // TODO Enable filtering
 
                   // extract the paged results -- SEE NOTE AT START
-                  scope.conceptsToReviewViewed = (scope.feedbackContainer.review.conceptsToReview.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
             }
@@ -199,19 +207,28 @@ angular.module('singleConceptAuthoringApp')
                 if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsReviewed || scope.feedbackContainer.review.conceptsReviewed.length === 0) {
                   scope.conceptsReviewedViewed = [];
                 } else {
-
+                  var myData = [];
+                    
+                  var searchStr = params.filter().search;
+                    if (searchStr) {
+                      myData = scope.feedbackContainer.review.conceptsReviewed.filter(function (item) {
+                        return item.term.indexOf(searchStr) > -1 || item.id.indexOf(searchStr) > -1;
+                      });
+                    } else {
+                        myData = scope.feedbackContainer.review.conceptsReviewed;
+                    }
                   // hard set the new total
-                  params.total(scope.feedbackContainer.review.conceptsReviewed.length);
-
+                  params.total(myData.length);
+                    
                   // sort -- note this doubletriggers $watch statement....
                   // but we want the actual order to be preserved in the
                   // original  array for reordering purposes
-                  scope.feedbackContainer.review.conceptsReviewed = params.sorting() ? $filter('orderBy')(scope.feedbackContainer.review.conceptsReviewed, params.orderBy()) : scope.feedbackContainer.review.conceptsReviewed;
+                  myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
 
                   // TODO Enable filtering
 
                   // extract the paged results -- SEE NOTE AT START
-                  scope.conceptsReviewedViewed = (scope.feedbackContainer.review.conceptsReviewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  scope.conceptsReviewedViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
             }
