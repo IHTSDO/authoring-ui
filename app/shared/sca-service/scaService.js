@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', '$location', '$q', function ($http, $rootScope, $location, $q) {
+  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', function ($http, $rootScope, $location, $q, $interval, notificationService) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -32,9 +32,9 @@ angular.module('singleConceptAuthoringApp')
 
               // temporary check to verify authentication on Home component
               // will later be replaced by accountService call in app.js
-              if (response.data.length > 0) {
-                $rootScope.accountDetails = response.data[0].assignee;
-              }
+//              if (response.data.length > 0) {
+//                $rootScope.accountDetails = response.data[0].assignee;
+//              }
             }
 
             return response.data;
@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
 
             // temporary check to verify authentication on Edit component
             // will later be replaced by accountService call in app.js
-            $rootScope.accountDetails = response.data.assignee;
+//            $rootScope.accountDetails = response.data.assignee;
 
             return response.data;
           }, function (error) {
@@ -289,20 +289,126 @@ angular.module('singleConceptAuthoringApp')
         });
 
       },
-
+        
       //////////////////////////////////////////
-      // Notifications
+      // Update Status
       //////////////////////////////////////////
-
-      // Get notifications
-      getNotifications: function () {
-        return $http.get(apiEndpoint + 'notifications').then(function (response) {
-          return response;
+        
+      updateTask: function (projectKey, taskKey, object) {
+        $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          notificationService.sendMessage('Task ' + taskKey + ' marked for review');
         }, function (error) {
-          console.error('Error getting notifications');
+          console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
+          notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+        });
+      },
+
+      //////////////////////////////////////////
+      // Review
+      //////////////////////////////////////////
+
+      // mark as ready for review -- no return value
+      markTaskForReview: function (projectKey, taskKey) {
+        $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
+          notificationService.sendMessage('Task ' + taskKey + ' marked for review');
+        }, function (error) {
+          console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
+          notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+        });
+      },
+
+      // get latest review
+      getReviewForTask: function (projectKey, taskKey) {
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
+          return response.data;
+        }, function (error) {
+
+          // 404 errors indicate no review is available
+          if (error.status !== 404) {
+            console.error('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, error);
+            notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
+          }
           return null;
         });
-      }
-    }
+      },
 
-  }]);
+      //////////////////////////////////////////
+      // Notification Polling
+      //////////////////////////////////////////
+
+      // start polling
+      startPolling: function (intervalInMs) {
+        console.debug('Starting notification polling with interval ' + intervalInMs + 'ms');
+
+        // instantiate poll (every 10s)
+        var scaPoll = $interval(function () {
+
+          $http.get(apiEndpoint + 'notifications').then(function (response) {
+            if (response && response.data && response.data[0]) {
+
+              console.debug('NEW NOTIFICATION', response);
+
+              // getNotifications returns an array, get the latest
+              // TODO Fold all results into a drop-down list in top right corner
+              var newNotification = response.data[0];
+
+              var msg = null;
+              var url = null;
+
+              if (newNotification.entityType) {
+
+                // construct message and url based on entity type
+                switch (newNotification.entityType) {
+
+                  /*
+                   Classification completion object structure
+                   entityType: "Classification"
+                   event: "Classification completed successfully"
+                   project: "WRPAS"
+                   task: "WRPAS-98" (omitted for project)
+                   */
+                  case 'Classification':
+                    msg = newNotification.event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
+                    if (newNotification.task) {
+                      url = '#/classify/' + newNotification.project + '/' + newNotification.task;
+                    } else {
+                      url = '#/project/' + newNotification.project;
+                    }
+                    break;
+
+                  /*
+                   Validation completion object structure
+                   entityType: "Validation"
+                   event: "COMPLETED"
+                   project: "WRPAS"
+                   task: "WRPAS-98" (omitted for project)
+                   */
+                  case 'Validation':
+
+                    // conver
+                    var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
+                      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    });
+                    msg = 'Validation ' + event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
+                    if (newNotification.task) {
+                      url = '#/validate/' + newNotification.project + '/' + newNotification.task;
+                    } else {
+                      url = '#/project/' + newNotification.project;
+                    }
+                    break;
+                }
+              } else {
+                console.error('Unknown notification type received', newNotification);
+                notificationService.sendError('Unknown notification received', 10000, null);
+              }
+
+              notificationService.sendMessage(msg, 0, url);
+            }
+          });
+        }, intervalInMs);
+      }
+
+    };
+
+  }])
+;

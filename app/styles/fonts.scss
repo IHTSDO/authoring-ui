@@ -5482,9 +5482,6 @@ body > .select2-container.open {
 }
 
 .input-group > .ui-select-bootstrap {
-  &.dropdown {
-    position: static;
-  }
   > input.ui-select-search.form-control {
     border-radius: 4px 0 0 4px;
   }

@@ -227,7 +227,7 @@ button,
     .editing-form textarea,
     .editing-form select {
         font-size: 11px !important;
-        height: 30px !important;
+       
     }
     .form-control {
         height: 30px;
@@ -390,40 +390,7 @@ button,
     background-color: #424242;
     color: #fff;
 }
-/* colors */
-.color_0 {
-    background-color: #fce4ec !important;
-}
-.color_1 {
-    background-color: #fffde7 !important;
-}
-.color_2 {
-    background-color: #ede7f6 !important;
-}
-.color_3 {
-    background-color: #ffccbc !important;
-}
-.color_3 {
-    background-color: #ffccbc !important;
-}
-.color_4 {
-    background-color: #fff3e0 !important;
-}
-.color_5 {
-    background-color: #f9fbe7 !important;
-}
-.color_6 {
-    background-color: #f1f8e9 !important;
-}
-.color_7 {
-    background-color: #e0f2f1 !important;
-}
-.color_8 {
-    background-color: #FFEBEE !important;
-}
-.color_9 {
-    background-color: #e8eaf6 !important;
-}
+
 input:focus.color_0,
 textarea:focus.color_0,
 select:focus.color_0,
@@ -545,6 +512,13 @@ select.primitive {
     line-height: 13px;
 }
 .Completed.badge {
+    background-color: #8bc34a;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+}
+.In.Review.badge {
     background-color: #8bc34a;
     font-size: 13px;
     padding: 6px 10px;

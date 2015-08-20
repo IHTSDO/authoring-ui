@@ -100,13 +100,13 @@ angular.module('singleConceptAuthoringApp')
           // removed in favor of notificaiton service
           // $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
 
-          var saveMessage = concept.conceptId ? 'Saving concept with id: ' + concept.conceptId : 'Saving new concept';
-          notificationService.sendNotification(saveMessage, 0);
+          var saveMessage = concept.conceptId ? 'Saving concept: ' + concept.fsn : 'Saving new concept';
+          notificationService.sendMessage(saveMessage, 10000, null);
 
           // if new, use create
           if (!concept.conceptId) {
 
-            snowowlService.createConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
+            snowowlService.createConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
               //console.debug('create', response);
               // successful response will have conceptId
@@ -119,18 +119,20 @@ angular.module('singleConceptAuthoringApp')
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
 
                 // send notification of success with timeout
-                var saveMessage = 'Concept with id: ' + response.conceptId + ' saved';
-                notificationService.sendNotification(saveMessage, 5000);
+                var saveMessage = 'Concept saved: ' + response.fsn;
+                notificationService.sendMessage(saveMessage, 5000, null);
               }
 
               // handle error
               else {
 
-                // TODO Remove this once two-way binding is successfully implemented
+                // TODO Remove this once two-way binding is successfully
+                // implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
 
-                // send notification of error with timeout to cleaer previous save message
-                notificationService.sendNotification('Error saving concept', 5000);
+                // send notification of error with timeout to cleaer previous
+                // save message
+                notificationService.sendError('Error saving concept', 10000);
 
                 // set the local error
                 scope.concept.error = response.message;
@@ -144,14 +146,23 @@ angular.module('singleConceptAuthoringApp')
           // if not new, use update
           else {
             //console.debug('update concept', concept);
-            snowowlService.updateConcept($routeParams.projectId, $routeParams.taskId, concept).then(function (response) {
+            snowowlService.updateConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
+
+              // send notification of success with timeout
+              var saveMessage = 'Concept saved:' + concept.fsn;
+              notificationService.sendMessage(saveMessage, 5000, null);
 
               console.debug('update response', response);
               if (response && response.conceptId) {
                 scope.concept = response;
+
+                // TODO Remove this once two-way binding is successfully
+                // implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
               else {
+                // TODO Remove this once two-way binding is successfully
+                // implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 scope.concept.error = response.message;
                 $timeout(function () {
@@ -220,33 +231,47 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          // console.debug('typed descriptions', newArray);
-
           // sort typed descriptions
           newArray.sort(function (a, b) {
-            // FSN before SYN
-            if (a.active === false) {
-              return -1;
-            }
-            if (b.active === false) {
+            // active before inactive
+            if (a.active === false && b.active === true) {
               return 1;
             }
-            if (a.type === 'FSN' && b.type === 'SYNONYM') {
+            if (b.active === false && a.active === true) {
               return -1;
             }
-            if (b.type === 'FSN' && a.type === 'SYNONYM') {
-              return 1;
+
+            // sort based on type
+            if (a.type !== b.type) {
+
+              // check both provided
+              if (!a.type && b.type) {
+                return 1;
+              }
+              if (!b.type && a.type) {
+                return -1;
+              }
+
+              // sort based on type (both provided)
+              var descOrderMap = {'FSN': 0, 'SYNONYM': 1, 'TEXT_DEFINITION': 2};
+              return descOrderMap[a.type] < descOrderMap[b.type] ? -1 : 1;
             }
 
             // PREFERRED before ACCEPTABLE
-            // console.debug(a.acceptabilityMap['900000000000508004'],
-            // b.acceptabilityMap['900000000000508004'],
-            // a.acceptabilityMap['900000000000508004'] >
-            // b.acceptabilityMap['900000000000508004'] ? -1 : 1);
-            return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
-          });
+            if (a.acceptabilityMap && b.acceptabilityMap) {
+              return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
+            }
 
-          //console.debug('sorted typed descriptions', newArray);
+            if (a.acceptabilityMap && !b.acceptabilityMap) {
+              return -1;
+            }
+            if (!b.acceptabilityMap && a.acceptabilityMap) {
+              return 1;
+            }
+
+            // default: equivalent sort position
+            return a.term < b.term ? -1 : 1;
+          });
 
           // cycle over original descriptions (backward) to reinsert non-typed
           // descriptions
@@ -298,44 +323,79 @@ angular.module('singleConceptAuthoringApp')
         // List of acceptable reasons for inactivating a description
         // TODO:  More metadata to be retrieved on init and stored
         var inactivateDescriptionReasons = [
-          {
-            id: '',
-            text: 'ALTERNATIVE association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'MOVED FROM association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'MOVED TO association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
-          },
-          {
-            id: '',
-            text: 'REFERS TO concept association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'REPLACED BY association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'SAME AS association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'SIMILAR TO association reference set (foundation metadata concept)'
-          },
-          {
-            id: '',
-            text: 'WAS A association reference set (foundation metadata concept)'
-          },
-          {id: '', text: 'No reason'}
-        ];
+            {
+              id: '', text: 'No reason'
+            },
+            {
+              id: '',
+              text: 'Component moved elsewhere (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Concept non-current (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Duplicate component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Erroneous component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Inappropriate component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Limited component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Outdated component (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'Pending move (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'ALTERNATIVE association reference set (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'MOVED FROM association reference set (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'MOVED TO association reference set (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
+            },
+            {
+              id: '',
+              text: 'REFERS TO concept association reference set (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'REPLACED BY association reference set (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'SAME AS association reference set (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'SIMILAR TO association reference set (foundation metadata concept)'
+            },
+            {
+              id: '',
+              text: 'WAS A association reference set (foundation metadata concept)'
+            }
+          ]
+          ;
 
         // get viewed descriptions
         scope.getDescriptions = function (checkForActive) {
@@ -595,9 +655,11 @@ angular.module('singleConceptAuthoringApp')
             relationship.target.fsn = data.name;
             scope.updateRelationship(relationship);
           } else {
-            // TODO Do we yet have a FSN call?
-            snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
-              relationship.target.fsn = response.term;
+
+            relationship.target.fsn = 'Retrieving...';
+            // get full concept and extract name
+            snowowlService.getFullConcept(data.id, scope.branch).then(function (response) {
+              relationship.target.fsn = response.fsn;
               scope.updateRelationship(relationship);
             });
           }

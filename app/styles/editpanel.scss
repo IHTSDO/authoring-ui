@@ -131,10 +131,7 @@ aside.editpanel ul a {
 .editing-form input[type=submit].state-initial {
     width: 100px;
 }
-.editing-form textarea {
-    height: 200px;
-    resize: vertical;
-}
+
 .editing-form input[type=radio],
 .editing-form input[type=checkbox] {
     position: absolute;
@@ -361,7 +358,7 @@ aside.editpanel ul a {
     width: 47%;
     padding-left: .5%;
 }
-textarea{min-height: 30px!important; height: 30px!important; resize:none; line-height:12px; font-family: 'Open Sans Condensed', sans-serif;}
+textarea{min-height: 30px!important; resize:none; line-height:12px; font-family: 'Open Sans Condensed', sans-serif;}
 		
 		.button-width{width:4.5%; margin-right:.5%; padding:0% .5%!important; float:left; height:100%; min-height:30px; font-size:14px!important;}
 /* form widths */
@@ -371,3 +368,49 @@ select.form-control {
    
 }
 .fsn-title-button {padding:0px;}
+
+/* Colours */
+
+/* colors c3e1ff*/
+.color_ input, .color_ textarea, .color_ select { 
+    background-color: #c3e1ff !important;
+}
+
+.color_0 input, .color_0 textarea, .color_0 select { 
+    background-color: #dedeff !important;
+}
+.color_1 input, .color_1 textarea, .color_1 select{ 
+    background-color: #dedeff !important;
+}
+
+.color_2 input, .color_2 textarea, .color_2 select{  
+    background-color: #dedeff !important;
+}
+.color_3 input, .color_3 textarea, .color_3 select{ 
+    background-color: #dedeff !important;
+}
+.color_4 input, .color_4 textarea, .color_4 select{ 
+    background-color: #dedeff !important;
+}
+.color_5 input, .color_5 textarea, .color_5 select{ 
+    background-color: #dedeff !important;
+}
+.color_6 {
+    background-color: #f1f8e9 !important;
+}
+.color_7 {
+    background-color: #e0f2f1 !important;
+}
+.color_8 {
+    background-color: #FFEBEE !important;
+}
+.color_9 {
+    background-color: #e8eaf6 !important;
+}
+
+.is_a input, .is_a textarea, .is_a select{ 
+    background-color: #fffde7 !important;
+}
+.attr input, .attr textarea, .attr select{ 
+    background-color: #fffde7 !important;
+}

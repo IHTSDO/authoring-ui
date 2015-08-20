@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', '$timeout',
-    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, $timeout) {
+  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', '$timeout',
+    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, $timeout) {
       return {
         restrict: 'A',
         transclude: false,

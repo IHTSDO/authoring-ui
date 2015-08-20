@@ -30,7 +30,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
           $scope.savedList.items.splice(index, 1);
 
           scaService.saveUIState(
-            $routeParams.projectId, $routeParams.taskId, 'saved-list', $scope.savedList
+            $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
           );
         }
       }

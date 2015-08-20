@@ -10,7 +10,7 @@
  */
 angular
   .module('singleConceptAuthoringApp', [
-    'ngAnimate',
+/*    'ngAnimate',*/
     'ngAria',
     'ngCookies',
     'ngMessages',
@@ -25,6 +25,7 @@ angular
     'ui.sortable',
     'ang-drag-drop',
     'monospaced.elastic',
+    'textAngular',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
@@ -35,6 +36,7 @@ angular
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
     'singleConceptAuthoringApp.search',
+    'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail'
   ])
@@ -48,6 +50,20 @@ angular
     // animation prevents removal of grey backdrop on close
     $modalProvider.options.animation = false;
 
+    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions){
+      // $delegate is the taOptions we are decorating
+      // register the tool with textAngular
+      taRegisterTool('taxonomy', {
+        iconclass: "fa fa-link",
+        action: function(){
+          window.alert('Not yet functional -- will allow insertion of concepts from Taxonomy widget');
+        }
+      });
+      // add the button to the default toolbar definition
+      taOptions.toolbar[1].push('taxonomy');
+      return taOptions;
+    }]);
+
   })
 
   .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, $cookies, $timeout) {
@@ -58,7 +74,7 @@ angular
     });
 
     // begin polling the sca endpoint at 10s intervals
-    notificationService.startScaPolling(10000);
+    scaService.startPolling(10000);
 
     // get endpoint information and set route provider options
     endpointService.getEndpoints().then(function (data) {
@@ -70,14 +86,13 @@ angular
       // don't want either true or false here please!
       $rootScope.loggedIn = null;
 
-      /* accountService.getAccount(accountUrl).success(function (data) {
-       $rootScope.accountDetails = data.data;
-       console.log("LoggedIn");
-       $rootScope.loggedIn = true;
-       }).error(function () {
-       console.log("LoggedOut");
-       $rootScope.loggedIn = false;
-       });*/
+      accountService.getAccount(accountUrl).success(function (data) {
+                $rootScope.accountDetails = data;
+                console.log(data);
+                $rootScope.loggedIn = true;
+            }).error(function () {
+                $rootScope.loggedIn = false;
+            });
 
       // add required endpoints to route provider
       $routeProvider
@@ -101,20 +116,6 @@ angular
             window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
           }
         });
-        
-        var poll = function() {
-            scaService.getNotifications().then( function(response){
-             if(response.data != null && response.data.length != 0)
-             {
-                 $rootScope.saveIndicator = true;
-                 $rootScope.saveMessage = response.data.event + ' (' + response.data.project + '/' + response.data.task + ')';
-                 $timeout(function () {
-                    $rootScope.saveIndicator = false;
-                  }, 4000);
-             }
-         });
-        }
-       $timeout(poll, 20000);
     });
 
     ///////////////////////////////////////////

@@ -18,14 +18,6 @@ angular.module('singleConceptAuthoringApp.project', [
 
     $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
-    /*Sample Project Classification
-     entityType: "Classification"
-     event: "Classification completed successfully"
-     project: "WRPAS"*/
-
-
-    notificationService.sendNotification( 'Hi!', 5000);
-
     $scope.project = null;
 
     // set the branch

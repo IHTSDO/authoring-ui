@@ -11,8 +11,14 @@
             ng-click="setView('classification')"><span
       class="md md-notifications"></span></button>
 
+    <!-- Switch to Feedback/Review View -->
+    <button type="button" class="btn btn-default widget-toolbar pink darken-1" title="Switch to Feedback View"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="setView('feedback')"><span
+      class="md md-email"></span></button>
+
     <!-- Switch to Validate View -->
-    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1" title="Switch to Classify View"
+    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1" title="Switch to Validation View"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('validation')"><span
       class="md md-school"></span></button>
@@ -22,21 +28,21 @@
             class="btn btn-default widget-toolbar light-blue" title="Restore Default View"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('edit-default')"> <span
-    class="md md-dashboard"></span></button>
+      class="md md-dashboard"></span></button>
 
     <!-- Edit View:  No sidebar -->
     <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
             class="btn btn-default widget-toolbar light-blue darken-2" title="Hide Sidebar"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('edit-no-sidebar')"> <span
-    class="md md-assignment-return "></span></button>
+      class="md md-assignment-return "></span></button>
 
     <!-- Edit View: No model -->
     <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
             class="btn btn-default widget-toolbar blue darken-1" title="Hide Model"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('edit-no-model')"> <span
-    class="md md-now-widgets"></span></button>
+      class="md md-now-widgets"></span></button>
   </div>
 
 
@@ -55,6 +61,14 @@
       <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
     </div>
 
+    <!-- Feedback View -->
+    <div ng-if="!hideFeedback"
+         ng-class="['col-sm-12',
+         'col-md-12',
+         'col-lg-8']">
+      <div feedback feedback-container="feedbackContainer" branch="branch" editable="true"></div>
+    </div>
+
     <!-- Classify View -->
     <div ng-show="!hideClassification"
          ng-class="['col-sm-12',
@@ -67,12 +81,12 @@
     <div style="margin-right:0px; margin-bottom:38px;"
          class="row no-gutter"
          ng-class="[
-         {'col-md-12' : hideSidebar && hideClassification && hideValidation},
-         {'col-lg-12' : hideSidebar && hideClassification && hideValidation},
-         {'col-lg-4' : !hideClassification || !hideValidation},
-         {'col-md-4' : !hideClassification || !hideValidation},
-         {'col-lg-9' : !hideSidebar && hideClassification && hideValidation},
-         {'col-md-9' : !hideSidebar && hideClassification && hideValidation}]">
+         {'col-md-12' : thisView === 'edit-no-sidebar'},
+         {'col-lg-12' : thisView === 'edit-no-sidebar'},
+         {'col-lg-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+         {'col-md-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+         {'col-lg-9' : thisView === 'edit-no-model' || thisView === 'edit-default'},
+         {'col-md-9' : thisView === 'edit-no-model' || thisView === 'edit-default'}]">
 
       <!-- create new concept header (displayed when no concepts in ng-repeat -->
       <div ng-show="concepts.length === 0" class="row no-gutter">
@@ -90,16 +104,18 @@
         </div>
 
         <!-- The create concept button -->
-        <div class="editing-form grey darken-3" ng-class="[
-          {'col-md-12': thisView === 'edit-no-model' && hideClassification},
-          {'col-lg-12': thisView === 'edit-no-model' && hideClassification},
-          {'col-md-5': thisView != 'edit-no-model' && !hideSidebar},
-          {'col-lg-5': thisView != 'edit-no-model' && !hideSidebar},
-          {'col-lg-4' : !hideClassification || !hideValidation},
-          {'col-md-4' : !hideClassification || !hideValidation},
+        <div
+          class="editing-form grey darken-3" ng-class="[
+          {'col-md-12': thisView === 'edit-no-model'},
+          {'col-lg-12': thisView === 'edit-no-model'},
+          {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+          {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+          {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+          {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
           {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
 
-          <button type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
+          <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                  type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
                   title="Active"><i
             class="md md-add-circle pull-right"></i> Create New Concept
           </button>
@@ -121,22 +137,24 @@
              class="" style="height:100%;">
 
           <!-- models -->
-          <div draw-model style="" concept="concept" id="drawModel{{concept.conceptId}}"></div>
+          <div draw-model concept="concept" id="drawModel{{concept.conceptId}}"></div>
         </div>
 
         <!-- Edit Panel-->
         <div class="col-xs-12 col-sm-12"
              ng-class="[
-          {'col-md-12': thisView === 'edit-no-model' && hideClassification && hideValidation},
-          {'col-lg-12': thisView === 'edit-no-model' && hideClassification && hideValidation},
-          {'col-md-5': thisView != 'edit-no-model' && !hideSidebar},
-          {'col-lg-5': thisView != 'edit-no-model' && !hideSidebar},
-          {'col-lg-12' : !hideClassification || !hideValidation},
-          {'col-md-12' : !hideClassification || !hideValidation},
-          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']">
+          {'col-md-12': thisView === 'edit-no-model'},
+          {'col-lg-12': thisView === 'edit-no-model'},
+          {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+          {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+          {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+          {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
+
 
           <!-- Create new concept banner (first element only) -->
-          <button ng-show="$index === 0" type="button" ng-click="createConcept()"
+          <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                  ng-show="$index === 0" type="button" ng-click="createConcept()"
                   class="btn-default btn-block create-new-concept"
                   title="Active"><i
             class="md md-add-circle pull-right"></i> Create New Concept
