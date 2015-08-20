@@ -87,7 +87,7 @@
         <!-- Concepts To Review -->
         <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
 
-          <table ng-table="conceptsToReviewTableParams" template-pagination="utilities/data-table-pager.html"
+          <table show-filter="true" ng-table="conceptsToReviewTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
 
             <tr ng-repeat="concept in conceptsToReviewViewed">
@@ -102,7 +102,7 @@
                 {{concept.term}}
               </td>
 
-              <td class="col-controls" data-title="'Filter TBD'" sortable="''">
+              <td class="col-controls" header="'ng-table/headers/search.html'">
                 <button class="btn btn-round btn-default pink lighten-2" title=""><span class="md md-forum "></span>
                 </button>
                 <button class="btn btn-round btn-default green lighten-2" title="" ng-click="addToReviewed(concept)"><span
@@ -114,18 +114,21 @@
           </table>
           <script type="text/ng-template" id="ng-table/headers/checkbox.html">
             <input type="checkbox" ng-model="checkboxes.checked" ng-change="checkAll()" id="select_all" name="filter-checkbox" value="" />
-        </script>
-
+          </script>
+          <script type="text/ng-template" id="ng-table/headers/search.html">
+            <input type="text" ng-model="conceptsToReviewTableParams.filter()['search']" class="form-control"
+                     placeholder="Search" autofocus/>
+          </script>
         </div>
 
         <!-- Concepts Reviewed -->
         <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
 
-          <table ng-table="conceptsReviewedTableParams" template-pagination="utilities/data-table-pager.html"
+          <table show-filter="true" ng-table="conceptsReviewedTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="concept in conceptsReviewedViewed">
 
-              <td class="col-checkbox" data-title="'TBD'" sortable="'selected'">
+              <td class="col-checkbox" header="'ng-table/headers/checkbox.html'">
                 <input type="checkbox" ng-model="concept.selected">
               </td>
 
@@ -136,17 +139,20 @@
                 {{concept.term}}
               </td>
 
-              <td class="col-controls" data-title="'Filter TBD'" sortable="''">
+              <td class="col-controls" header="'ng-table/headers/search.html'">
                 <button class="btn btn-round btn-default pink lighten-2" title=""><span class="md md-forum "></span>
                 </button>
-                <button class="btn btn-round btn-default green lighten-2" title="Add too feedback" ng-click="addToReviewed()"><span
+                <button class="btn btn-round btn-default green lighten-2" title="Add to feedback" ng-click="addToReviewed()"><span
                   class="md md-playlist-add " ng-click="addToReviewed()"></span></button>
                 <button class="btn btn-round btn-default blue lighten-2" title="Show in edit panel" ng-click="addToEdit(concept)"><span class="md md-edit "></span>
                 </button>
               </td>
             </tr>
           </table>
-
+          <script type="text/ng-template" id="ng-table/headers/searchReviewed.html">
+            <input type="text" ng-model="conceptsReviewedTableParams.filter()['search']" class="form-control"
+                     placeholder="Search" autofocus/>
+          </script>
         </div>
       </div>
 
