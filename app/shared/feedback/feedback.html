@@ -73,9 +73,9 @@
             </button>
             <button class="btn btn-round btn-default pink lighten-2" title=""><span class="md md-forum "></span>
             </button>
-            <button class="btn btn-round btn-default green lighten-2" title=""><span
+            <button class="btn btn-round btn-default green lighten-2" title="Mark Selected as Reviewed" ng-click="addMultipleToReviewed()"><span
               class="md md-playlist-add "></span></button>
-            <button class="btn btn-round btn-default blue lighten-2" title="Show selected in edit panel"><span class="md md-edit "></span>
+            <button class="btn btn-round btn-default blue lighten-2" title="Show selected in edit panel" ng-click="addMultipleToEdit()"><span class="md md-edit "></span>
             </button>
           </div>
         </ul>
@@ -91,8 +91,8 @@
                  class="table table-full table-full-small">
 
             <tr ng-repeat="concept in conceptsToReviewViewed">
-              <td class="col-checkbox" header="'checkboxheader.html'" sortable="'selected'">
-                <input type="checkbox" ng-model="concept.selected" ng-change="setSelected(concept)">
+              <td class="col-checkbox" header="'ng-table/headers/checkbox.html'">
+                <input type="checkbox" ng-model="concept.selected">
               </td>
 
               <td class="col-concept" data-title="'Concept'" sortable="'term'"
@@ -112,6 +112,9 @@
               </td>
             </tr>
           </table>
+          <script type="text/ng-template" id="ng-table/headers/checkbox.html">
+            <input type="checkbox" ng-model="checkboxes.checked" ng-change="checkAll()" id="select_all" name="filter-checkbox" value="" />
+        </script>
 
         </div>
 

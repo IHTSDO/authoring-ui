@@ -118,30 +118,31 @@ angular.module('singleConceptAuthoringApp')
           // declare viewed arrays for ng-table
           scope.conceptsToReviewViewed = [];
           scope.conceptsReviewedViewed = [];
+            scope.allChecked = false;
 
           // Cumbersome function to set selected flag on actual element
           // SEE NOTE AT START
-          scope.setSelected = function(concept) {
-
-            // cycle over concepts to review
-            angular.forEach(scope.feedbackContainer.review.conceptsToReview, function(c) {
-              if (c.id === concept.id) {
-
-                // reverse the flag on both elements
-                c.selected = !c.selected;
-                concept.selected = !concept.selected;
-                return;
-              }
-            });
-
-            // cycle over concepts reviewed
-            angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function(c) {
-              if (c.id === concept.id) {
-                c.selected = !c.selected;
-                return;
-              }
-            });
-          };
+//          scope.setSelected = function(concept) {
+//
+//            // cycle over concepts to review
+//            angular.forEach(scope.feedbackContainer.review.conceptsToReview, function(c) {
+//              if (c.id === concept.id) {
+//
+//                // reverse the flag on both elements
+//                c.selected = !c.selected;
+//                concept.selected = !concept.selected;
+//                return;
+//              }
+//            });
+//
+//            // cycle over concepts reviewed
+//            angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function(c) {
+//              if (c.id === concept.id) {
+//                c.selected = !c.selected;
+//                return;
+//              }
+//            });
+//          };
 
           // declare table parameters
           scope.conceptsToReviewTableParams = new NgTableParams({
@@ -220,10 +221,40 @@ angular.module('singleConceptAuthoringApp')
               scope.feedbackContainer.review.conceptsReviewed.push(item);
               var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function(x) {return x.id; }).indexOf(item.id);
               scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
+              scope.clearChecked();
+              scope.conceptsToReviewTableParams.reload();
+              scope.conceptsReviewedTableParams.reload();
+          };
+            
+          scope.clearChecked = function(){
+              angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function(item) {
+                  if(item.selected === true)
+                  {
+                      item.selected = false;
+                  }
+              });
           };
             
           scope.addToEdit = function(item){
               $rootScope.$broadcast('editConcept', {conceptId: item.id});
+          };
+            
+          scope.addMultipleToEdit = function() {
+              angular.forEach(scope.conceptsToReviewViewed, function(item) {
+                  console.log(item);
+                  if(item.selected === true)
+                  {
+                      scope.addToEdit(item);
+                  }
+              });
+          };
+          scope.addMultipleToReviewed = function() {
+              angular.forEach(scope.conceptsToReviewViewed, function(item) {
+                  if(item.selected === true)
+                  {
+                      scope.addToReviewed(item);
+                  }
+              });
           };
 
           // function called when dropping concept
@@ -420,15 +451,31 @@ angular.module('singleConceptAuthoringApp')
               // For now, simply put all concepts into conceptsToReview
               // TODO They SAY they don't want persistence via ui state here.... :)
               scope.feedbackContainer.review.conceptsToReview = scope.feedbackContainer.review.concepts;
+              
+          
+              angular.forEach(scope.feedbackContainer.review.conceptsToReview, function(item) {
+                  if (angular.isDefined(item)) {
+                    item.selected = scope.allChecked;
+                  }
+              });
               scope.feedbackContainer.review.conceptsReviewed = [];
 
               // on load, initialize tables -- all subsequent reloads are manual
               scope.conceptsToReviewTableParams.reload();
-              scope.conceptsReviewedTableParams.reload();
             }
 
             // TODO process feedback
           }, true);
+            
+          
+            
+          // watch for check all checkbox
+          scope.checkAll = function() {
+              scope.allChecked = !scope.allChecked;
+              angular.forEach(scope.conceptsToReviewViewed, function(item) {
+                item.selected = scope.allChecked;
+              });
+          };
 
           scope.openSearchModal = function (str) {
             var modalInstance = $modal.open({
