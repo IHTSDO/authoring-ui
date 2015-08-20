@@ -109,7 +109,7 @@
 
         <div class="row" style="margin-right:0px;">
           <div class="col-md-4">
-            <h3 class="table-title p-20">My Tasks</h3>
+            <h3 class="table-title p-20">Review Tasks</h3>
           </div>
           <div class="col-md-6">
             <div class="table-search">
@@ -134,6 +134,9 @@
               </td>
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
+              </td>
+              <td data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
+                {{task.assignee.displayName}}
               </td>
               <td data-title="'Last Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
@@ -180,9 +183,11 @@
                   </button>
                 </a>
               </td>
+<!--
               <td data-title="'Status'" sortable="'status'">
                 <span class="badge {{task.status}}"> {{task.status}} </span>
               </td>
+-->
             </tr>
           </table>
 
