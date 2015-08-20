@@ -1,0 +1,22 @@
+<div id="searchModal">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h4 class="modal-title">Search Concepts</h4>
+  </div>
+
+  <div class="modal-body">
+    <input ng-model="searchStr" style="width: 90%" placeholder="Enter search terms..."
+           ng-model-options='{ debounce: 1000 }' ng-change='search(searchStr)'>
+
+    <table class="table table-condensed">
+      <tr ng-repeat =  "result in results">
+        <td> <button class="btn btn-round md md-insert-link blue m-r-10" title="Insert Concept Reference" ng-click="select(result)"></button> {{result.term}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="modal-footer">
+
+  </div>
+</div>
+

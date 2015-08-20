@@ -102,7 +102,7 @@ angular.module('singleConceptAuthoringApp')
 
             // get the current editing ui state
             scaService.getUIState(
-              $routeParams.projectId, $routeParams.taskId, 'edit-panel')
+              $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
               .then(function (uiState) {
 
                 if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {

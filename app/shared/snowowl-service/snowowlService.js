@@ -48,41 +48,41 @@ angular.module('singleConceptAuthoringApp')
     // Classification functions
     //////////////////////////////////////////////
 
-    function startClassificationForTask(taskId, branch) {
+    function startClassificationForTask(taskKey, branch) {
       var JSON = '{"reasonerId": "au.csiro.snorocket.owlapi3.snorocket.factory"}';
-      return $http.post(apiEndpoint + branch + '/tasks/' + taskId + '/classifications', JSON, {
+      return $http.post(apiEndpoint + branch + '/tasks/' + taskKey + '/classifications', JSON, {
         headers: {'Content-Type': 'application/json; charset=UTF-8'}
       }).then(function (response) {
         return response;
       });
     }
 
-    // get a specific classification result for projectId, taskId, and
+    // get a specific classification result for projectKey, taskKey, and
     // classifierId
-    function getClassificationForTask(projectId, taskId, classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/' + taskId + '/classifications/' + classifierId).then(function (response) {
+    function getClassificationForTask(projectKey, taskKey, classifierId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
         return response;
       });
-    };
+    }
 
     // get a specific classification result for project id, classifier id, and branch
-    function getClassificationForProject(projectId, classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/' + classifierId).then(function (response) {
+    function getClassificationForProject(projectKey, classifierId, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
       });
     }
 
     // get all classification results for a project (as of 7/21, snowowl
     // functionality not complete)
-    function getClassificationsForProject(projectId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectId + '/classifications/').then(function (response) {
+    function getClassificationsForProject(projectKey, branch) {
+      return $http.get(apiEndpoint + branch + '/' + projectKey + '/classifications/').then(function (response) {
         return response.data.items;
       });
     }
 
     // get all classification results for a project and task
-    function getClassificationsForTask(projectId, taskId, branch) {
-      return $http.get(apiEndpoint + 'MAIN/' + projectId + '/' + taskId + '/classifications').then(function (response) {
+    function getClassificationsForTask(projectKey, taskKey, branch) {
+      return $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
         return response.data.items;
       });
     }
@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get relationship changes as csv results
     function downloadClassification(classifierId, branch) {
-      console.debug('downloadClassification', classifierId, branch);
+      // console.debug('downloadClassification', classifierId, branch);
       return $http({
         'method': 'GET',
         'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes',
@@ -289,7 +289,7 @@ angular.module('singleConceptAuthoringApp')
       var concept = {};
       $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId).then(function (response) {
         concept = response.data;
-        console.debug('snowowl', response.data);
+        // console.debug('snowowl', response.data);
         deferred.resolve(concept);
       }, function (error) {
         deferred.reject(concept);
@@ -325,7 +325,7 @@ angular.module('singleConceptAuthoringApp')
           module.branch = branch;
           module.name = response.fsn;
 
-          console.log('Added module', module);
+          // console.log('Added module', module);
 
           modules.push(module);
         });
@@ -342,7 +342,7 @@ angular.module('singleConceptAuthoringApp')
     // TODO:  Currently unused, language options are extracted from dialects
     function addLanguages(newLanguages) {
       languages = languages.concat(newLanguages);
-      console.log('Language Options set to', languages);
+      // console.log('Language Options set to', languages);
     }
 
     // get language options
@@ -354,12 +354,29 @@ angular.module('singleConceptAuthoringApp')
     // add new dialect options
     function addDialects(newDialects) {
       dialects = dialects.concat(newDialects);
-      console.debug('Dialect options set to: ', dialects);
+      // console.debug('Dialect options set to: ', dialects);
     }
 
     // get dialect options
     function getDialects() {
       return dialects;
+    }
+
+    //////////////////////////
+    // Browser Functions
+    //////////////////////////
+    //http://local.ihtsdotools.org:8081/snowowl/snomed-ct/v2/browser
+    // /MAIN/WRPAS/WRPAS-22/descriptions?query=test&limit=50
+    // &searchMode=partialMatching&lang=english&statusFilter=activeOnly
+    // &skipTo=0&returnLimit=100
+    // Update Existing Concept
+    // PUT /browser/{path}/concepts/{conceptId}
+    function getDescriptionsForQuery(project, task, searchStr) {
+      return $http.get(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/descriptions?query=' + searchStr + '&limit=50&searchMode=partialMatching&lang=english&statusFilter=activeOnly&skipTo=0&returnLimit=100').then(function(response) {
+        return response.data;
+      }, function (error) {
+        return error.data;
+      });
     }
 
     ////////////////////////////////////////////
@@ -396,7 +413,8 @@ angular.module('singleConceptAuthoringApp')
       getLanguages: getLanguages,
       addDialects: addDialects,
       getDialects: getDialects,
-      downloadClassification: downloadClassification
+      downloadClassification: downloadClassification,
+      getDescriptionsForQuery: getDescriptionsForQuery
 
     };
   }

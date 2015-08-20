@@ -134,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
 
             snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
              // console.debug('classification csv retrieved, opening dialog with', data);
-              var fileName = 'classifier_' + $routeParams.taskId;
+              var fileName = 'classifier_' + $routeParams.taskKey;
               scope.dlcDialog(data.data, fileName);
             });
           };
@@ -177,7 +177,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
               // copy the redundant stated relationships into their own array
-              if (scope.redundantStatedRelationshipsFound) {
+              if (scope.classificationContainer.redundantStatedRelationshipsFound) {
                 scope.redundantStatedRelationships = [];
                 angular.forEach(scope.relationshipChanges, function (item) {
                   if (item.changeNature === 'REDUNDANT') {
@@ -205,39 +205,6 @@ angular.module('singleConceptAuthoringApp')
 
           }, true);
 
-          /*
-
-           // notification of classification retrieved and set
-           $rootScope.$on('setClassification', function (event, classification) {
-
-           console.debug('setting classification', classification);
-
-           if (!classification) {
-           console.error('Received setClassification notification, but no classification was sent');
-           return;
-           }
-
-           scope.classification = classification;
-
-           // get the relationship names
-           angular.forEach(scope.relationshipChanges, function (item) {
-           getRelationshipNames(item);
-           });
-           angular.forEach(scope.equivalentConcepts, function (item) {
-           getRelationshipNames(item);
-           });
-
-           // separate the redundant stated relationships into own array
-           scope.redundantStatedRelationships = [];
-           angular.forEach(scope.relationshipChanges, function (item) {
-           if (item.changeNature === 'REDUNDANT') {
-           scope.redundantStatedRelationships.push(item);
-           }
-           });
-
-           });
-           */
-
           ////////////////////////////////////
           // Validation Functions
           ////////////////////////////////////
@@ -246,17 +213,35 @@ angular.module('singleConceptAuthoringApp')
           scope.startValidation = function () {
 
             // check if this is a task or project
-            if ($routeParams.taskId) {
+            if ($routeParams.taskKey) {
 
-              scaService.startValidationForTask($routeParams.projectId, $routeParams.taskId).then(function (validation) {
+              scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (validation) {
                 // TODO
               });
             } else {
-              scaService.startValidationForProject($routeParams.projectId).then(function (response) {
+              scaService.startValidationForProject($routeParams.projectKey).then(function (response) {
                 // TODO
               });
             }
           };
+
+          /////////////////////////////////////////
+          // Review functions
+          /////////////////////////////////////////
+          scope.submitForReview = function() {
+            scaService.updateTask(
+              $routeParams.projectKey, $routeParams.taskKey,
+              {
+                'status': 'In Review',
+                'reviewer': {
+                  'email': $rootScope.accountDetails.email,
+                  'name': $rootScope.accountDetails.login,
+                  'avatarUrl': '',
+                  'displayName': $rootScope.accountDetails.firstName + $rootScope.accountDetails.lastName
+                },
+              });
+          };
+
 
         }
 

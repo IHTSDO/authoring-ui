@@ -52,7 +52,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     });
 
     $scope.classify = function() {
-      scaService.startClassificationForTask($routeParams.projectId, $routeParams.taskId).then(function(response) {
+      scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
 
         console.debug('Classification start response', response);
 
@@ -69,10 +69,22 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       });
     };
 
-
+    $scope.submitForReview = function() {
+      scaService.updateTask(
+        $routeParams.projectKey, $routeParams.taskKey,
+        {
+          'status': 'Ready for Review',
+          'reviewer': {
+            'email': $rootScope.accountDetails.email,
+            'name': $rootScope.accountDetails.login,
+            'avatarUrl': '',
+            'displayName': $rootScope.accountDetails.firstName + $rootScope.accountDetails.lastName
+          },
+        });
+    };
 
     function initialize() {
-      scaService.getTaskForProject($routeParams.projectId, $routeParams.taskId).then(function (response) {
+      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
       });
 
