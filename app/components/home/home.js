@@ -152,7 +152,7 @@ angular.module('singleConceptAuthoringApp.home', [
               console.debug('Checking task', task.key, task.status, task.reviewer);
 
               // add all ready for review tasks
-              if (task.status === 'Ready for Review') {
+              if (task.status === 'In Review' && !task.reviewer) {
                 $scope.reviewTasks.push(task);
               }
 
