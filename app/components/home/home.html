@@ -92,7 +92,9 @@
                 </a>
               </td>
               <td data-title="'Status'" sortable="'status'">
-                <span class="badge {{task.status}}"> {{task.status}} </span>
+                <span ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for Review </span>
+                <span ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}"> {{task.status}} </span>
+                <span ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}} </span>
               </td>
             </tr>
           </table>
