@@ -402,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
                   },
                 });
             }
-          }
+          };
 
 
           scope.$watch('feedbackContainer', function (oldValue, newValue) {
@@ -436,7 +436,7 @@ angular.module('singleConceptAuthoringApp')
               controller: 'searchModalCtrl',
               resolve: {
                 searchStr: function() {
-                  return str
+                  return str;
                 }
               }
             });
@@ -456,7 +456,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.editConceptTest = function() {
             window.alert('OHAI THERE!');
-          }
+          };
 
 
         }
