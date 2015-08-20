@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', 'scaService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, scaService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -40,6 +40,9 @@ angular.module('singleConceptAuthoringApp')
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
+
+          // the feedback contents
+          scope.htmlVariable = '';
 
 /*
           // TEST DATA FOR SORTING WORK/DEMO
@@ -144,8 +147,8 @@ angular.module('singleConceptAuthoringApp')
           scope.conceptsToReviewTableParams = new NgTableParams({
               page: 1,
               count: 10,
-              sorting: {fsn: 'asc'},
-              orderBy: ''
+              sorting: {term: 'asc'},
+              orderBy: 'term'
             },
             {
               filterDelay: 50,
@@ -183,8 +186,8 @@ angular.module('singleConceptAuthoringApp')
           scope.conceptsReviewedTableParams = new NgTableParams({
               page: 1,
               count: 10,
-              sorting: {fsn: 'desc'},
-              orderBy: 'fsn'
+              sorting: {term: 'asc'},
+              orderBy: 'term'
             },
             {
               filterDelay: 50,
@@ -312,14 +315,17 @@ angular.module('singleConceptAuthoringApp')
           scope.groupSelectedConcepts = function (actionTab) {
             console.debug('reordering based on selected items for tab', actionTab);
 
-            // copy array (to avoid triggering watch statement below)
+            // copy array (for convenience) and disable sorting
+            // otherwise grouping will be overriden
             var newConceptArray = [];
             switch (actionTab) {
               case 1:
                 newConceptArray = scope.feedbackContainer.review.conceptsToReview;
+                scope.conceptsToReviewTableParams.sorting('');
                 break;
               case 2:
                 newConceptArray = scope.feedbackContainer.review.conceptsReviewed;
+                scope.conceptsReviewedTableParams.sorting('');
                 break;
               default:
                 console.error('Invalid tab selected for grouping selected concepts');
@@ -330,7 +336,6 @@ angular.module('singleConceptAuthoringApp')
             var selectedFound = false;
             var insertIndex = -1;
             for (var i = 0; i < newConceptArray.length; i++) {
-              console.debug('checking element for selected', newConceptArray[i]);
 
               // if selected, mark entry into selected items
               if (newConceptArray[i].selected === true) {
@@ -344,6 +349,8 @@ angular.module('singleConceptAuthoringApp')
                 break;
               }
             }
+
+            console.debug('insert index', insertIndex);
 
             // check that a selected item was found and is not the last item
             if (insertIndex === -1 || insertIndex === newConceptArray.length - 1) {
@@ -360,6 +367,8 @@ angular.module('singleConceptAuthoringApp')
                 newConceptArray.splice(j, 1);
               }
             }
+
+            console.debug('elements to shift', conceptsToInsert);
 
             // splice in the array at the insert point
             Array.prototype.splice.apply(newConceptArray, [insertIndex, 0].concat(conceptsToInsert));
@@ -379,9 +388,25 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
-          scope.$watch('feedbackContainer', function () {
+          scope.changeReviewStatus = function(reviewComplete) {
+            if (reviewComplete) {
+              scaService.updateTask(
+                $routeParams.projectKey, $routeParams.taskKey,
+                {
+                  'status': reviewComplete ? 'Review Complete' : 'In Review',
+                  'reviewer': {
+                    'email': $rootScope.accountDetails.email,
+                    'name': $rootScope.accountDetails.login,
+                    'avatarUrl': '',
+                    'displayName': $rootScope.accountDetails.firstName + $rootScope.accountDetails.lastName
+                  },
+                });
+            }
+          }
 
-            console.debug('feedbackContainer changed', scope.feedbackContainer);
+
+          scope.$watch('feedbackContainer', function (oldValue, newValue) {
+
 
             if (!scope.feedbackContainer) {
               return;
@@ -390,19 +415,48 @@ angular.module('singleConceptAuthoringApp')
             // on initial load, split concepts
             if (scope.feedbackContainer.review && !scope.feedbackContainer.review.conceptsToReview) {
 
+              console.debug('Initial load detected, setting concepts to review & concepts reviewed');
+
               // For now, simply put all concepts into conceptsToReview
               // TODO They SAY they don't want persistence via ui state here.... :)
               scope.feedbackContainer.review.conceptsToReview = scope.feedbackContainer.review.concepts;
               scope.feedbackContainer.review.conceptsReviewed = [];
-            }
 
-            // on load, initialize tables
-            scope.conceptsToReviewTableParams.reload();
-            scope.conceptsReviewedTableParams.reload();
+              // on load, initialize tables -- all subsequent reloads are manual
+              scope.conceptsToReviewTableParams.reload();
+              scope.conceptsReviewedTableParams.reload();
+            }
 
             // TODO process feedback
           }, true);
 
+          scope.openSearchModal = function (str) {
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/search-modal/searchModal.html',
+              controller: 'searchModalCtrl',
+              resolve: {
+                searchStr: function() {
+                  return str
+                }
+              }
+            });
+
+            modalInstance.result.then(function (result) {
+              console.debug('selected:', result);
+
+              scope.htmlVariable += ' ' +
+
+                '<p><a ng-click="editConceptTest()">' + result.fsn + '</a></p>';
+          //      + '<a style=\"color: teal\" ng-click=\"editConcept(' + result.conceptId + '\">' + result.fsn + '<button class=\"btn btn-round teal fa fa-edit\" ng-click=\"editConcept(' + result.conceptId + ')\"</button>' + result.fsn + '</a>';
+
+              console.debug(scope.htmlVariable);
+            }, function () {
+            });
+          };
+
+          scope.editConceptTest = function() {
+            window.alert('OHAI THERE!');
+          }
 
 
         }

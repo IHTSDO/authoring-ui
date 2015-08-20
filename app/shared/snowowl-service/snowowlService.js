@@ -362,6 +362,23 @@ angular.module('singleConceptAuthoringApp')
       return dialects;
     }
 
+    //////////////////////////
+    // Browser Functions
+    //////////////////////////
+    //http://local.ihtsdotools.org:8081/snowowl/snomed-ct/v2/browser
+    // /MAIN/WRPAS/WRPAS-22/descriptions?query=test&limit=50
+    // &searchMode=partialMatching&lang=english&statusFilter=activeOnly
+    // &skipTo=0&returnLimit=100
+    // Update Existing Concept
+    // PUT /browser/{path}/concepts/{conceptId}
+    function getDescriptionsForQuery(project, task, searchStr) {
+      return $http.get(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/descriptions?query=' + searchStr + '&limit=50&searchMode=partialMatching&lang=english&statusFilter=activeOnly&skipTo=0&returnLimit=100').then(function(response) {
+        return response.data;
+      }, function (error) {
+        return error.data;
+      });
+    }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -396,7 +413,8 @@ angular.module('singleConceptAuthoringApp')
       getLanguages: getLanguages,
       addDialects: addDialects,
       getDialects: getDialects,
-      downloadClassification: downloadClassification
+      downloadClassification: downloadClassification,
+      getDescriptionsForQuery: getDescriptionsForQuery
 
     };
   }

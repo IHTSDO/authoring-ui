@@ -294,7 +294,7 @@ angular.module('singleConceptAuthoringApp')
       // Update Status
       //////////////////////////////////////////
         
-      changeTaskStatus: function (projectKey, taskKey, object) {
+      updateTask: function (projectKey, taskKey, object) {
         $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
           notificationService.sendMessage('Task ' + taskKey + ' marked for review');
         }, function (error) {

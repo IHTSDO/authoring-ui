@@ -205,39 +205,6 @@ angular.module('singleConceptAuthoringApp')
 
           }, true);
 
-          /*
-
-           // notification of classification retrieved and set
-           $rootScope.$on('setClassification', function (event, classification) {
-
-           console.debug('setting classification', classification);
-
-           if (!classification) {
-           console.error('Received setClassification notification, but no classification was sent');
-           return;
-           }
-
-           scope.classification = classification;
-
-           // get the relationship names
-           angular.forEach(scope.relationshipChanges, function (item) {
-           getRelationshipNames(item);
-           });
-           angular.forEach(scope.equivalentConcepts, function (item) {
-           getRelationshipNames(item);
-           });
-
-           // separate the redundant stated relationships into own array
-           scope.redundantStatedRelationships = [];
-           angular.forEach(scope.relationshipChanges, function (item) {
-           if (item.changeNature === 'REDUNDANT') {
-           scope.redundantStatedRelationships.push(item);
-           }
-           });
-
-           });
-           */
-
           ////////////////////////////////////
           // Validation Functions
           ////////////////////////////////////
@@ -257,6 +224,24 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           };
+
+          /////////////////////////////////////////
+          // Review functions
+          /////////////////////////////////////////
+          scope.submitForReview = function() {
+            scaService.updateTask(
+              $routeParams.projectKey, $routeParams.taskKey,
+              {
+                'status': 'In Review',
+                'reviewer': {
+                  'email': $rootScope.accountDetails.email,
+                  'name': $rootScope.accountDetails.login,
+                  'avatarUrl': '',
+                  'displayName': $rootScope.accountDetails.firstName + $rootScope.accountDetails.lastName
+                },
+              });
+          };
+
 
         }
 

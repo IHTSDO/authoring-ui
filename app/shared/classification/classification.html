@@ -15,7 +15,7 @@
 
         <!-- if not editable, do not display validate and submit buttons. NOTE: Editable is a string, not a boolean -->
         <button ng-if="editable !== 'false'" class="btn btn-default green classify-buttons submit-validation" ng-click="startValidation()" style="text-transform: none">Validate</button>
-        <button ng-if="editable !== 'false'" class="btn btn-default grey classify-buttons submit-review" style="text-transform: none">Submit For Review</button>
+        <button ng-if="editable !== 'false'" class="btn btn-default grey classify-buttons submit-review" ng-click="submitForReview()" style="text-transform: none">Submit For Review</button>
       </div>
     </div>
 
