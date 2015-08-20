@@ -4,6 +4,7 @@ angular.module('singleConceptAuthoringApp.search', [])
 
   .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$compile', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, $compile, scaService) {
 
+    console.debug('entered searchCtrl');
     $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
     var options = {
       serverUrl: "/snowowl",
@@ -82,6 +83,7 @@ angular.module('singleConceptAuthoringApp.search', [])
     var componentsRegistry = [];
     var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
 
+    console.debug(spa);
     function searchPanel(divElement, options) {
       var thread = null;
       var panel = this;

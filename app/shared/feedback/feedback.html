@@ -97,7 +97,7 @@
                 <input type="checkbox" ng-model="concept.selected" ng-change="setSelected(concept)">
               </td>
 
-              <td class="col-concept" data-title="'Concept'" sortable="'fsn'"
+              <td class="col-concept" data-title="'Concept'" sortable="'term'"
                   ui-draggable="true" drag="concept"
                   drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                   ui-on-drop="dropConcept(concept, $data, actionTab)">
@@ -128,7 +128,7 @@
                 <input type="checkbox" ng-model="concept.selected">
               </td>
 
-              <td class="col-concept" data-title="'Concept'" sortable="'fsn'"
+              <td class="col-concept" data-title="'Concept'" sortable="'term'"
                   ui-draggable="true" drag="concept"
                   drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                   ui-on-drop="dropConcept(concept, $data, actionTab)">
@@ -159,19 +159,22 @@
         <div class="switch pull-right p-t-5 p-r-10">
           <label>
             Review in Progress
-            <input type="checkbox" ng-model="reviewComplete">
+            <input type="checkbox" ng-model="reviewComplete" ng-change="changeReviewStatus(reviewComplete)">
             <span class="lever"></span>
             Review Complete
           </label>
         </div>
       </div>
 
-      <div class="m-t-10" style="width:100%">
-        <input class="m-5" style="width:95%">
+      <div class="m-t-20" style="width:100%">
+        <input type='text' style="width:90%" placeholder='Search concepts...'
+               ng-model='conceptFilter'
+               ng-model-options='{ debounce: 1000 }'
+               ng-change='openSearchModal(conceptFilter)'>
       </div>
 
 
-      <text-angular ng-model="htmlVariable"></text-angular>
+      <text-angular ng-model="htmlVariable" ta-toolbar="[['bold','italics', 'ul', 'ol', 'redo', 'undo', 'taxonomy']]"></text-angular>
     </div>
   </div>
 </section>

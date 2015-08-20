@@ -36,6 +36,7 @@ angular
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
     'singleConceptAuthoringApp.search',
+    'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail'
   ])
@@ -48,6 +49,20 @@ angular
     // due to current angular-ui bug where the
     // animation prevents removal of grey backdrop on close
     $modalProvider.options.animation = false;
+
+    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions){
+      // $delegate is the taOptions we are decorating
+      // register the tool with textAngular
+      taRegisterTool('taxonomy', {
+        iconclass: "fa fa-link",
+        action: function(){
+          window.alert('Not yet functional -- will allow insertion of concepts from Taxonomy widget');
+        }
+      });
+      // add the button to the default toolbar definition
+      taOptions.toolbar[1].push('taxonomy');
+      return taOptions;
+    }]);
 
   })
 
