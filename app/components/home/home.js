@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
 // Initialization:  get tasks and classifications
     function initialize() {
-
+      $scope.reviewTasks = [];
       // get all projects for task creation
       scaService.getProjects().then(function (response) {
         if (!response || response.length == 0) {
@@ -144,7 +144,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
           // get tasks from WRPAS project
           // TODO Change this once we have API call for review-tasks
-          $scope.reviewTasks = [];
+          
           scaService.getTasksForProject('WRPAS').then(function (response) {
             console.debug('Retrieved tasks for project WRPAS', response);
             angular.forEach(response, function (task) {
