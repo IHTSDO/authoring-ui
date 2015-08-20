@@ -91,9 +91,7 @@
                  class="table table-full table-full-small">
 
             <tr ng-repeat="concept in conceptsToReviewViewed">
-
-
-              <td class="col-checkbox" data-title="'TBD'" sortable="'selected'">
+              <td class="col-checkbox" header="'checkboxheader.html'" sortable="'selected'">
                 <input type="checkbox" ng-model="concept.selected" ng-change="setSelected(concept)">
               </td>
 
