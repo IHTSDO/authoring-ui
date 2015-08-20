@@ -156,9 +156,9 @@ angular.module('singleConceptAuthoringApp.home', [
                 $scope.reviewTasks.push(task);
               }
 
-              // add all assigned tasks in review
-              else if ((task.status === 'In Review' || task.status === 'Review Complete')) { // commented out for now && task.reviewer && task.reviewer.name === $rootScope.accountDetails.login) {
-                $scope.reviewTasks.push(task);
+              // add all assigned tasks in review that match the logged in user into My Tasks.
+              else if (task.status === 'In Review' || task.status === 'Review Complete' && task.reviewer && task.reviewer.name === $rootScope.accountDetails.login) {
+                $scope.tasks.push(task);
               }
             });
           })
