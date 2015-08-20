@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('header', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
+  .directive('scaHeader', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
     return {
       restrict: '',
       transclude: false,
