@@ -366,13 +366,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.updateTask(
                 $routeParams.projectKey, $routeParams.taskKey,
                 {
-                  'status': reviewComplete ? 'Ready For Promotion' : 'In Review',
-                  'reviewer': {
-                    'email': $rootScope.accountDetails.email,
-                    'name': $rootScope.accountDetails.login,
-                    'avatarUrl': '',
-                    'displayName': $rootScope.accountDetails.firstName + $rootScope.accountDetails.lastName
-                  },
+                  'status': reviewComplete ? 'Ready For Promotion' : 'In Review'
                 });
             }
           };

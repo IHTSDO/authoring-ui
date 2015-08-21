@@ -67,7 +67,6 @@ angular.module('singleConceptAuthoringApp')
           },
           orderBy: 'changeNature'
         }, {
-          $scope: scope,
           total: scope.items ? scope.items.length : 0, // length of data
           getData: function ($defer, params) {
 
@@ -77,8 +76,8 @@ angular.module('singleConceptAuthoringApp')
               var orderedData = params.sorting() ?
                 $filter('orderBy')(scope.items, params.orderBy()) :
                 scope.items;
-
-              $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                params.total(orderedData.length);
+                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
           }
         });
