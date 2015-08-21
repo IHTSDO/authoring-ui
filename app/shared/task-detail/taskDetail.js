@@ -73,7 +73,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       scaService.updateTask(
         $routeParams.projectKey, $routeParams.taskKey,
         {
-          'status': 'Ready for Review'
+          'status': 'In Review'
         });
     };
 
