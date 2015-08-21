@@ -154,6 +154,9 @@ angular.module('singleConceptAuthoringApp.home', [
         notificationService.sendError("Cannot claim review task, already assigned", 10000, null, null);
       }
     }
+    $scope.isReviewer = function(){
+        return accountService.isReviewer();  
+    };
 
 // Initialization:  get tasks and classifications
     function initialize() {

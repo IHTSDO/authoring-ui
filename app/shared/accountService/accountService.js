@@ -44,11 +44,19 @@ angular.module('singleConceptAuthoringApp')
     function getRoleForProject(project) {
 
     }
+    
+    function isReviewer() {
+        if (accountDetails.roles.indexOf('ROLE_ihtsdo-sca-reviwer')) {
+            return true;
+        }
+        else{return false;}
+    }
 
     return {
       getAccount: getAccount,
       getRoleForTask: getRoleForTask,
-      getRoleForProject: getRoleForProject
+      getRoleForProject: getRoleForProject,
+      isReviewer: isReviewer
     };
 
   })
