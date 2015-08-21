@@ -49,7 +49,7 @@ angular.module('singleConceptAuthoringApp')
       getAccount: getAccount,
       getRoleForTask: getRoleForTask,
       getRoleForProject: getRoleForProject
-    }
+    };
 
   })
 ;
