@@ -13,6 +13,12 @@
 
   </script>
 
+  <script type="text/ng-template" id="ng-table/filters/hasFeedback.html">
+    <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value="" /> None
+    <br />
+    <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50" /> 50 years
+  </script>
+
   <style>
     .feedback-report-header {
     }
@@ -109,8 +115,8 @@
 
         <!-- only appears if author row -->
         <div class="pull-right p-r-20" ng-if="role === 'AUTHOR'">
-          <button class="btn btn-round btn-default pink lighten-2" title="Toggle viewing only concepts with feedback"
-                  ng-click="groupSelectedConcepts(actionTab)"><span class="md md-email "></span>
+          <button class="btn btn-round btn-default pink lighten-2" title="Hide/show concepts without feedback"
+                  ng-click="toggleViewOnlyConceptsWithFeedback()"><span class="md md-email "></span>
           </button>
         </div>
 
@@ -183,7 +189,7 @@
             </td>
 
             <!-- Reviewer Controls -->
-            <td ng-if="role === 'REVIEWER'" class="col-controls" header="'ng-table/headers/search.html'">
+            <td ng-if="role === 'REVIEWER'" class="col-controls">
               <button class="btn btn-round btn-default pink lighten-2" title="View/submit feedback for concept"
                       ng-click="selectConceptForFeedback(concept)"><span class="md md-forum "></span>
               </button>
