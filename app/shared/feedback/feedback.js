@@ -412,8 +412,41 @@ angular.module('singleConceptAuthoringApp')
               scope.feedbackContainer.review.conceptsToReview = scope.feedbackContainer.review.concepts;
 
               angular.forEach(scope.feedbackContainer.review.conceptsToReview, function (item) {
+
+                // apply checked if required by allChecked
                 if (angular.isDefined(item)) {
                   item.selected = scope.allChecked;
+                }
+
+                // set follow up request flag to false
+                item.requestFollowup = false;
+
+                // process messages
+                if (item.messages) {
+
+                  // sort messages by reverse creation date
+                  item.messages.sort(function (a, b) {
+                    return a.creationDate < b.creationDate;
+                  });
+
+                  // cycle over all concepts to check for follow up request
+                  // condition met if another user has left feedback with the flag
+                  // later than the last feedback left by current user
+                  for (var i = 0; i < item.messages.length; i++) {
+                    console.debug(item.messages[i].fromUsername, $rootScope.accountDetails.login);
+                    // if own feedback, break
+                    if (item.messages[i].fromUsername === $rootScope.accountDetails.login) {
+
+                      console.debug('found own feedback, breaking');
+                      break;
+                    }
+
+                    // if another's feedback, check for flag
+                    if (item.messages[i].feedbackRequested) {
+                      console.debug('found feedback requested');
+                      item.requestFollowup = true;
+                    }
+                  }
                 }
               });
               scope.feedbackContainer.review.conceptsReviewed = [];
@@ -525,7 +558,9 @@ angular.module('singleConceptAuthoringApp')
             window.alert('OHAI THERE!');
           };
 
-          scope.submitFeedback = function () {
+          scope.submitFeedback = function (requestFollowup) {
+
+            console.debug('sending feedback', requestFollowup);
 
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {
               window.alert('Cannot submit empty feedback');
@@ -541,7 +576,7 @@ angular.module('singleConceptAuthoringApp')
               subjectConceptIds.push(subjectConcept.id);
             });
 
-            scaService.addFeedbackToReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds).then(function (response) {
+            scaService.addFeedbackToReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds, requestFollowup).then(function (response) {
 
               // re-retrieve the review
               // TODO For some reason getting duplicate entries on simple push of feedback into list.... for now, just retrieving, though this is inefficient
