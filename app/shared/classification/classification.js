@@ -232,13 +232,7 @@ angular.module('singleConceptAuthoringApp')
             scaService.updateTask(
               $routeParams.projectKey, $routeParams.taskKey,
               {
-                'status': 'In Review',
-                'reviewer': {
-                  'email': $rootScope.accountDetails.email,
-                  'name': $rootScope.accountDetails.login,
-                  'avatarUrl': '',
-                  'displayName': $rootScope.accountDetails.firstName + $rootScope.accountDetails.lastName
-                },
+                'status': 'In Review'
               });
           };
 
