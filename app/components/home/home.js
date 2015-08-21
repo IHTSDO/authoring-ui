@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, scaService, snowowlService) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService) {
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Tasks";
@@ -42,7 +42,9 @@ angular.module('singleConceptAuthoringApp.home', [
 
             if (searchStr) {
               mydata = $scope.tasks.filter(function (item) {
-                return item.summary.toLowerCase().indexOf(searchStr) > -1 || item.projectKey.toLowerCase().indexOf(searchStr) > -1;
+                return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.tasks;
@@ -78,7 +80,9 @@ angular.module('singleConceptAuthoringApp.home', [
 
             if (searchStr) {
               mydata = $scope.reviewTasks.filter(function (item) {
-                return item.summary.toLowerCase().indexOf(searchStr) > -1 || item.projectKey.toLowerCase().indexOf(searchStr) > -1;
+                return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.reviewTasks;
@@ -131,6 +135,29 @@ angular.module('singleConceptAuthoringApp.home', [
       });
     };
 
+
+    $scope.assignReviewer = function (task) {
+      if (task && !task.reviewer) {
+        var updateObj = {
+          "reviewer": {
+            "email": $rootScope.accountDetails.email,
+            "avatarUrl": "",
+            "name": $rootScope.accountDetails.login,
+            "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+          }
+        };
+
+        scaService.updateTask(task.projectKey, task.key, updateObj).then(function() {
+          $location.url('feedback/' + task.projectKey + '/' + task.key);
+        })
+      } else {
+        notificationService.sendError("Cannot claim review task, already assigned", 10000, null, null);
+      }
+    }
+    $scope.isReviewer = function(){
+        return accountService.isReviewer();  
+    };
+
 // Initialization:  get tasks and classifications
     function initialize() {
       $scope.reviewTasks = [];
@@ -144,7 +171,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
           // get tasks from WRPAS project
           // TODO Change this once we have API call for review-tasks
-          
+
           scaService.getTasksForProject('WRPAS').then(function (response) {
             console.debug('Retrieved tasks for project WRPAS', response);
             angular.forEach(response, function (task) {
@@ -156,7 +183,8 @@ angular.module('singleConceptAuthoringApp.home', [
                 $scope.reviewTasks.push(task);
               }
 
-              // add all assigned tasks in review that match the logged in user into My Tasks.
+              // add all assigned tasks in review that match the logged in user
+              // into My Tasks.
               else if (task.status === 'In Review' || task.status === 'Review Complete' && task.reviewer && task.reviewer.name === $rootScope.accountDetails.login) {
                 $scope.tasks.push(task);
               }
