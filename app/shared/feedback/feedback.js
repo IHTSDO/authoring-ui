@@ -100,9 +100,28 @@ angular.module('singleConceptAuthoringApp')
                     myData = scope.feedbackContainer.review.conceptsToReview;
                   }*/
 
+                  console.debug(params.filter());
                   var myData = params.filter() ?
                     $filter('filter')(scope.feedbackContainer.review.conceptsToReview, params.filter()) :
                     scope.feedbackContainer.review.conceptsToReview;
+
+                  // filter based on presence of feedback if requested
+                  if (scope.viewOnlyConceptsWithFeedback) {
+                    console.debug('Retrieving only concepts with messages');
+                    //myData =  $filter('filter')(myData, { 'messages': '!'});
+
+                    // really ahckish solution because the above filter for swome bizarre reason isn't working
+                    var newData = [];
+                    angular.forEach(myData, function(item) {
+                      if (item.messages && item.messages.length > 0) {
+                        newData.push(item);
+                      }
+                      myData = newData;
+                    })
+
+                    //  $scope.filteredItems = $filter('filter')($scope.items, { 'colours': '!!' });
+                  }
+                  console.debug(myData);
 
                   // hard set the new total
                   params.total(myData.length);
@@ -158,6 +177,13 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+
+          // controls to allow author to view only concepts with feedeback
+          scope.viewOnlyConceptsWithFeedback = false;
+          scope.toggleViewOnlyConceptsWithFeedback = function() {
+            scope.viewOnlyConceptsWithFeedback = ! scope.viewOnlyConceptsWithFeedback;
+            scope.conceptsToReviewTableParams.reload();
+          }
 
           scope.addToReviewed = function (item) {
             scope.feedbackContainer.review.conceptsReviewed.push(item);
