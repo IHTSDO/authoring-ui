@@ -295,16 +295,18 @@ angular.module('singleConceptAuthoringApp')
       //////////////////////////////////////////
         
       updateTask: function (projectKey, taskKey, object) {
-        $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-          notificationService.sendMessage('Task ' + taskKey + ' marked for review');
+        return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          notificationService.sendMessage('Task ' + taskKey + ' marked ' + response.status, 5000, null, null);
+          return response;
         }, function (error) {
           console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
           notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+          return false;
         });
       },
 
       //////////////////////////////////////////
-      // Review
+      // Review & Feedback
       //////////////////////////////////////////
 
       // mark as ready for review -- no return value
@@ -330,6 +332,22 @@ angular.module('singleConceptAuthoringApp')
           }
           return null;
         });
+      },
+
+      // add feedback to a review
+      addFeedbackToReview: function(projectKey, taskKey, messageHtml, subjectConceptIds) {
+        var feedbackContainer = {
+          subjectConceptIds : subjectConceptIds,
+          messageHtml : messageHtml
+        };
+
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/message', feedbackContainer).then(function (response) {
+          return response.data;
+
+        }, function(error) {
+          console.error('Error submitting feedback for task ' + taskKey + ' in project ' + projectKey, feedbackContainer, error);
+          notificationService.sendError('Error submitting feedback', 10000);
+        })
       },
 
       //////////////////////////////////////////

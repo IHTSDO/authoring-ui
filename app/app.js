@@ -55,8 +55,9 @@ angular
       // register the tool with textAngular
       taRegisterTool('taxonomy', {
         iconclass: "fa fa-link",
-        action: function(){
-          window.alert('Not yet functional -- will allow insertion of concepts from Taxonomy widget');
+        action: function(scope){
+          window.alert('Not yet functional.  Use input box to access search widget');
+          // DOes not work, too easy but had to try :D  scope.openSearchModal();
         }
       });
       // add the button to the default toolbar definition
@@ -86,13 +87,7 @@ angular
       // don't want either true or false here please!
       $rootScope.loggedIn = null;
 
-      accountService.getAccount(accountUrl).success(function (data) {
-                $rootScope.accountDetails = data;
-                console.log(data);
-                $rootScope.loggedIn = true;
-            }).error(function () {
-                $rootScope.loggedIn = false;
-            });
+      accountService.getAccount(accountUrl);
 
       // add required endpoints to route provider
       $routeProvider
