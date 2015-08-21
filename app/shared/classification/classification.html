@@ -2,13 +2,7 @@
   <div role="tabpanel" class="m-15">
     <div class="row">
       <div class="pull-left p-5"><strong>Classification Report: </strong> {{getStatusText()}}</div>
-<style>
-.classification-report {border-bottom: #ddd solid 2px; background-color:#fafafa; margin-top:5px; border-top: 1px solid #F0F0F0;}
-.classification-report .nav-tabs li a {padding:10px 15px; }
-.nav-tabs li.redundant a:focus:hover, .nav-tabs li.redundant a:hover, .nav-tabs li.redundant.active a {color:#b3168c;    box-shadow: inset 0 -2px 0 #b3168c;     }
-.nav-tabs li.ienp a:focus:hover, .nav-tabs li.ienp a:hover, .nav-tabs li.ienp.active a {color:#ef9800;    box-shadow: inset 0 -2px 0 #ef9800;     }
-.nav-tabs li.equivalency a:focus:hover, .nav-tabs li.equivalency a:hover, .nav-tabs li.equivalency.active a {color:#ce394a;    box-shadow: inset 0 -2px 0 #ce394a;     }
-</style>
+
       <div class="pull-right ">
         <button disabled class="btn btn-default green classify-buttons accept-classification" style="text-transform: none" ng-click="saveClassification()">Accept Classification Results</button>
         <button class="btn btn-default green classify-buttons download-classification" ng-click="downloadClassification()" style="text-transform: none">Download</button>

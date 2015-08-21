@@ -371,7 +371,7 @@ select.form-control {
 
 /* Colours */
 
-/* colors c3e1ff*/
+/* colors */
 .color_ input, .color_ textarea, .color_ select { 
     background-color: #c3e1ff !important;
 }
@@ -414,3 +414,84 @@ select.form-control {
 .attr input, .attr textarea, .attr select{ 
     background-color: #fffde7 !important;
 }
+/* edit panel buttons */
+.blue.darken-2 {
+    background-color: #1976D2;
+    color: #fff;
+}
+.blue.darken-3 {
+    background-color: #1565C0;
+    color: #fff;
+}
+.blue.darken-4 {
+    background-color: #0D47A1;
+    color: #fff;
+}
+.classification-report {border-bottom: #ddd solid 2px; background-color:#fafafa; margin-top:5px; border-top: 1px solid #F0F0F0;}
+.classification-report .nav-tabs li a {padding:10px 15px; }
+.nav-tabs li.redundant a:focus:hover, .nav-tabs li.redundant a:hover, .nav-tabs li.redundant.active a {color:#b3168c;    box-shadow: inset 0 -2px 0 #b3168c;     }
+.nav-tabs li.ienp a:focus:hover, .nav-tabs li.ienp a:hover, .nav-tabs li.ienp.active a {color:#ef9800;    box-shadow: inset 0 -2px 0 #ef9800;     }
+.nav-tabs li.equivalency a:focus:hover, .nav-tabs li.equivalency a:hover, .nav-tabs li.equivalency.active a {color:#ce394a;    box-shadow: inset 0 -2px 0 #ce394a;     }
+
+/* button nav*/
+.button-nav {position:fixed; top:66px; bottom:0px; background-color: grey; width: 50px; }
+.button-nav .md{font-size:22px;}
+.button-nav .validate:hover {background-color:#4527a0; color:#fff}
+
+.task-details .btn{padding:0px;margin:0px; width: 100%; margin-bottom: 10px; text-transform: none}
+.task-details .iconbase {
+    width: 40px;
+    height: 40px;
+    padding: 6px 8px;
+    float: left;
+    font-size: 18px;
+}
+.review.btn-default:hover {
+    background-color: #c2185b;
+    color: #fff;
+}
+.validate.btn-default:hover {
+    background-color: #512da8;
+    color: #fff;
+}
+.task-details .button-link{ padding: 8px 15px; float:left; font-weight:500}
+.pink1 {
+    background-color: #e91e63;
+    color: #fff;
+}
+
+/* screenshots colours 
+
+
+.color_ input, .color_ textarea, .color_ select { 
+    background-color: #303030 !important;  color: #c3e1ff !important;
+}
+
+.color_0 input, .color_0 textarea, .color_0 select { 
+    background-color: #303030 !important;  color: #dedeff !important;
+}
+.color_1 input, .color_1 textarea, .color_1 select{ 
+    background-color: #303030 !important;  color: #dedeff !important;
+}
+
+.color_2 input, .color_2 textarea, .color_2 select{  
+    background-color: #303030 !important;  color: #dedeff !important;
+}
+.color_3 input, .color_3 textarea, .color_3 select{ 
+    background-color: #303030 !important; color: #dedeff !important;
+}
+.is_a input, .is_a textarea, .is_a select{ 
+    background-color: #303030 !important; color: #fffde7 !important;
+}
+.attr input, .attr textarea, .attr select{ 
+    background-color: #303030 !important; color: #fffde7 !important;
+}
+.green {
+    background-color: #303030 !important;
+    color: #4CAF50 !important;
+}
+.blue {
+    background-color: #303030 !important;
+    color: #00a6e5 !important;
+}
+*/
