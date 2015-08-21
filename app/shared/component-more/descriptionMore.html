@@ -2,30 +2,21 @@
   <div class="col-md-4 no-padding">
     <p class="row">Module</p>
     <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId"
-                  ng-change="updateDescription(description)" ng-options="module.id as (module.id + ': ' + module.name) for module in modules">
+                  ng-change="updateDescription(description)" ng-options="module.id as module.name for module in modules">
     </select>
   </div>
   <div class="col-md-1 no-padding SCTID">
     <p class="row">SCTID</p>
     <span class="fields row"> {{description.descriptionId}}</span> </div>
   <div class="col-md-2 no-padding lang">
-    <p>Dialect</p>
+    <p>Language</p>
     <select name="select-choice2" id="select-choice2" class="dropdowns"
-                  ng-model="description.lang" ng-change="updateDescription(description)" ng-options="dialect as dialect for dialect in dialects">
+                  ng-model="description.lang" ng-change="updateDescription(description)" ng-options="language as language for language in languages">
 
     </select>
-    {{dialects}}
   </div>
   <div class="col-md-2 no-padding ">
     <p class="row">Effective Time</p>
     <span class="fields row"> {{description.effectiveTime}}</span> </div>
-  <div class="col-md-3 no-padding case">
-    <p>Case Significance</p>
-    <select name="select-choice" id="select-choice3" class="dropdowns"
-                ng-model="description.caseSignificance" ng-change="updateDescription(description)">
-      <option value="CASE_INSENSITIVE">Case insensitive</option>
-      <option value="ENTIRE_TERM_CASE_SENSITIVE">Entire term case sensitive</option>
-      <option value="INITIAL_CHARACTER_CASE_INSENSITIVE" default>Only initial character case insensitive</option>
-    </select>
-  </div>
+
 </div>
