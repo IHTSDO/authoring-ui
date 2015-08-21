@@ -129,16 +129,16 @@
               </span>
           </div>
         </div>
-
+<!--          Left in as a placeholder for reviewer role functionality-->
+<!--        <div class="table-responsive white" style="margin-right:0px;" ng-if="isReviewer()">-->
         <div class="table-responsive white" style="margin-right:0px;">
-
 
           <table ng-table="reviewTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="task in $data">
 
               <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
-                ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">{{task.summary}}</a>
+                ng-click="assignReviewer(task)">{{task.summary}}</a>
               </td>
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
