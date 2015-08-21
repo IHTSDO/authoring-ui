@@ -292,21 +292,24 @@ angular.module('singleConceptAuthoringApp')
         // on load, sort descriptions
         sortDescriptions();
 
-        // get language options from available dialects
-        scope.getLanguageOptions = function () {
-          var languages = [];
-          scope.dialects.map(function (dialect) {
-            // check if the ISO-639-1 2-letter code is already added
-            if (languages.indexOf(dialect.substring(0, 2)) === -1) {
-              languages.push(dialect.substring(0, 2).toLowerCase());
-            }
-          });
+        // languages available
+        scope.languages = [
+          'en'
+        ];
 
-          return languages;
-        };
-
-        // extract the acceptable languages from the dialects
-
+        /// define case significances
+        scope.caseSignificances = [
+          {
+            id: 'CASE_INSENSITIVE', abbr: 'Case insensitive'
+          },
+          {
+            id: 'ENTIRE_TERM_CASE_SENSITIVE', abbr: 'Entire term case sensitive'
+          },
+          {
+            id: 'INITIAL_CHARACTER_CASE_INSENSITIVE',
+            abbr: 'Only initial character case insensitive'
+          }
+        ];
         // Define definition types
         scope.descTypeIds = [
           {id: '900000000000003001', abbr: 'FSN', name: 'FSN'},
@@ -314,11 +317,74 @@ angular.module('singleConceptAuthoringApp')
           {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
         ];
 
+        // the actual dialects
+        scope.dialects = [
+
+          {abbr: 'en-us', ids: ['900000000000508004']},
+          {abbr: 'en-gb', ids: ['900000000000509007']},
+          {
+            abbr: 'en-us & en-gb',
+            ids: ['900000000000508004', '900000000000509007']
+          },
+        ];
+
         // define acceptability types
         scope.acceptabilities = [
           {id: 'PREFERRED', abbr: 'Preferred'},
           {id: 'ACCEPTABLE', abbr: 'Acceptable'}
         ];
+
+        // the disploayed dialect and acceptability
+        scope.selectedDialect = null;
+        scope.selectedAcceptability = null;
+
+        scope.getCurrentDialectAndAcceptability = function (description) {
+
+          var dialect = null;
+          var accepta
+
+          // extract the acceptabilityMap dialect ids
+          var dialectIds = description.acceptabilityMap.keys;
+
+          // match the dialect ids against the current dialects
+          angular.forEach(scope.dialects, function (dialect) {
+
+            // if different lengths, not a match
+            if (dialect.ids.length === dialectIds.length) {
+
+
+              // perform a non-intersection
+              var diffArray = array1.filter(function (n) {
+                return array2.indexOf(n) != -1
+              });
+            }
+          })
+        };
+
+        // dialect object is item in scope.dialects, acceptability is item in
+        // scope.acceptabilities
+        scope.setDialectAndAcceptability = function (description, dialectSelection, acceptabilitySelection) {
+
+          description.acceptabilityMap = [];
+          angular.forEach(dialectSelection, function (dialect) {
+            description.acceptabilityMap[dialect.id] = acceptabilitySelection.id;
+          });
+
+          autoSave();
+        };
+
+        scope.setCaseSignificance = function (description, caseSignificance) {
+          if (!caseSignificance || !description) {
+            return;
+          }
+
+          // if current case significance clicked, do nothing
+          if (description.caseSignificance === caseSignificance) {
+            return;
+          }
+          description.caseSignificance = caseSignificance;
+          autoSave();
+        };
 
         // List of acceptable reasons for inactivating a description
         // TODO:  More metadata to be retrieved on init and stored
