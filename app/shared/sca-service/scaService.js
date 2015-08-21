@@ -335,10 +335,13 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // add feedback to a review
-      addFeedbackToReview: function(projectKey, taskKey, messageHtml, subjectConceptIds) {
+      addFeedbackToReview: function(projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
+
+        console.debug('adding feedback', projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup);
         var feedbackContainer = {
           subjectConceptIds : subjectConceptIds,
-          messageHtml : messageHtml
+          messageHtml : messageHtml,
+          feedbackRequested : requestFollowup
         };
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/message', feedbackContainer).then(function (response) {

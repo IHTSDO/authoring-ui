@@ -176,7 +176,7 @@
                 data-title="'Read/Unread'" sortable="''">
               <div class="pull-right">
 
-                <button class="btn btn-round btn-default purple lighten-2" title="Flagged for follow-up"><span
+                <button class="btn btn-round btn-default purple lighten-2" title="Flagged for follow-up" ng-show="concept.requestFollowup"><span
                   class="md md-flag"></span></button>
                 <button ng-show="concept.messages.length > 0" class="btn btn-round btn-default pink lighten-2"
                         title="View/submit feedback for concept"
@@ -272,7 +272,8 @@
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
 
         <div ng-repeat="feedback in viewedFeedback track by feedback.id">
-          Feedback received {{feedback.creationDate | date : 'short'}} from {{feedback.fromUsername}}:
+          <button class="btn btn-round btn-default purple lighten-2" title="Reviewer requested follow-up" ng-show="feedback.feedbackRequested"><span
+            class="md md-flag"></span></button> Feedback received {{feedback.creationDate | date : 'short'}} from {{feedback.fromUsername}}:
           <p compile-html="feedback.messageHtml"></p>
 
           <hr>
@@ -298,10 +299,12 @@
                   ta-toolbar="[['bold','italics', 'ul', 'ol', 'redo', 'undo', 'taxonomy']]"></text-angular>
 
     <div class="col-md-12 no-padding p-10">
-      Request follow-up <input type="checkbox" ng-model="selectedConcept.folllowUp">
+      <div class="pull-left" ng-show="role === 'REVIEWER'">
+      Request follow-up <input type="checkbox" ng-model="requestFollowup">
+        </div>
 
       <div class="pull-right ">
-        <button class="btn btn-default grey classify-buttons submit-review" ng-click="submitFeedback()"
+        <button class="btn btn-default grey classify-buttons submit-review" ng-click="submitFeedback(requestFollowup)"
                 style="text-transform: none">Submit Feedback
         </button>
         <button class="btn btn-default amber classify-buttons submit-validation" ng-click="startValidation()"
