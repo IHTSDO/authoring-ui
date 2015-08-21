@@ -437,7 +437,7 @@ angular.module('singleConceptAuthoringApp')
             var conceptIds = [];
             angular.forEach(scope.subjectConcepts, function (concept) {
               conceptIds.push(concept.id);
-            })
+            });
 
             // cycle over all currently displayed concepts
             angular.forEach(scope.conceptsToReviewViewed, function (concept) {
@@ -451,11 +451,11 @@ angular.module('singleConceptAuthoringApp')
             // sort by creation date
             viewedFeedback.sort(function(a, b) {
               return a.creationDate < b.creationDate;
-            })
+            });
 
             // set the scope variable for display
             scope.viewedFeedback = viewedFeedback;
-          };
+          }
 
           scope.toTrustedHtml = function(htmlCode) {
             return $compile(htmlCode);
@@ -529,9 +529,9 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push of feedback into list.... for now, just retrieving, though this is inefficient
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
                 scope.feedbackContainer.review = response;
-              })
+              });
             });
-          }
+          };
 
         }
 

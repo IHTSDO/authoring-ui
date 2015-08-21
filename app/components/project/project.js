@@ -23,14 +23,14 @@ angular.module('singleConceptAuthoringApp.project', [
     // set the branch
     $scope.branch = 'MAIN/' + $routeParams.projectKey;
 
-    $scope.validationContainer = {status: 'Loading...'}
+    $scope.validationContainer = {status: 'Loading...'};
     $scope.classificationContainer = {status: 'Loading...'};
     scaService.getProjects().then(function (response) {
       console.debug('projects', response);
       angular.forEach(response, function (project) {
         if (project.key === $routeParams.projectKey) {
           console.debug('found project', project);
-          $scope.project = project
+          $scope.project = project;
 
 
           // get the lateswt classification for this project

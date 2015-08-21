@@ -347,7 +347,7 @@ angular.module('singleConceptAuthoringApp')
         }, function(error) {
           console.error('Error submitting feedback for task ' + taskKey + ' in project ' + projectKey, feedbackContainer, error);
           notificationService.sendError('Error submitting feedback', 10000);
-        })
+        });
       },
 
       //////////////////////////////////////////
