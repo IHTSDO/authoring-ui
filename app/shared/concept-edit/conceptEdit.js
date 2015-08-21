@@ -354,9 +354,10 @@ angular.module('singleConceptAuthoringApp')
 
 
               // perform a non-intersection
-              var diffArray = array1.filter(function (n) {
+              // TODO Return to this after questions answered (vague, huh?)
+             /* var diffArray = array1.filter(function (n) {
                 return array2.indexOf(n) != -1
-              });
+              });*/
             }
           })
         };

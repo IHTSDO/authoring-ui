@@ -90,28 +90,26 @@ angular.module('singleConceptAuthoringApp')
                 if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
                   scope.conceptsToReviewViewed = [];
                 } else {
-                  var myData = [];
 
-                  var searchStr = params.filter().search;
+                  /*var searchStr = params.filter().search;
                   if (searchStr) {
                     myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
                       return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                     });
                   } else {
                     myData = scope.feedbackContainer.review.conceptsToReview;
-                  }
+                  }*/
+
+                  var myData = params.filter() ?
+                    $filter('filter')(scope.feedbackContainer.review.conceptsToReview, params.filter()) :
+                    scope.feedbackContainer.review.conceptsToReview;
 
                   // hard set the new total
                   params.total(myData.length);
 
-                  // sort -- note this doubletriggers $watch statement....
-                  // but we want the actual order to be preserved in the
-                  // original  array for reordering purposes
                   myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
 
-                  // TODO Enable filtering
-
-                  // extract the paged results -- SEE NOTE AT START
+                  // extract the paged results
                   scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
