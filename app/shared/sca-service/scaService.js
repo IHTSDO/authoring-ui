@@ -353,6 +353,19 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
+        //POST /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
+      markConceptFeedbackRead: function(projectKey, taskKey, conceptId) {
+        console.debug('marking concept feedback as read', projectKey, taskKey, conceptId);
+
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
+          return response;
+        }, function(error) {
+          console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
+          notificationService.sendError('Error marking feedback read', 10000);
+          return null;
+        })
+      },
+
       //////////////////////////////////////////
       // Notification Polling
       //////////////////////////////////////////

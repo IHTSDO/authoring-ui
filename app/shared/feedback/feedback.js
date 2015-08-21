@@ -92,13 +92,13 @@ angular.module('singleConceptAuthoringApp')
                 } else {
 
                   /*var searchStr = params.filter().search;
-                  if (searchStr) {
-                    myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
-                      return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
-                    });
-                  } else {
-                    myData = scope.feedbackContainer.review.conceptsToReview;
-                  }*/
+                   if (searchStr) {
+                   myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
+                   return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                   });
+                   } else {
+                   myData = scope.feedbackContainer.review.conceptsToReview;
+                   }*/
 
                   console.debug(params.filter());
                   var myData = params.filter() ?
@@ -110,16 +110,18 @@ angular.module('singleConceptAuthoringApp')
                     console.debug('Retrieving only concepts with messages');
                     //myData =  $filter('filter')(myData, { 'messages': '!'});
 
-                    // really ahckish solution because the above filter for swome bizarre reason isn't working
+                    // really ahckish solution because the above filter for
+                    // swome bizarre reason isn't working
                     var newData = [];
-                    angular.forEach(myData, function(item) {
+                    angular.forEach(myData, function (item) {
                       if (item.messages && item.messages.length > 0) {
                         newData.push(item);
                       }
                       myData = newData;
                     })
 
-                    //  $scope.filteredItems = $filter('filter')($scope.items, { 'colours': '!!' });
+                    //  $scope.filteredItems = $filter('filter')($scope.items,
+                    // { 'colours': '!!' });
                   }
                   console.debug(myData);
 
@@ -180,8 +182,8 @@ angular.module('singleConceptAuthoringApp')
 
           // controls to allow author to view only concepts with feedeback
           scope.viewOnlyConceptsWithFeedback = false;
-          scope.toggleViewOnlyConceptsWithFeedback = function() {
-            scope.viewOnlyConceptsWithFeedback = ! scope.viewOnlyConceptsWithFeedback;
+          scope.toggleViewOnlyConceptsWithFeedback = function () {
+            scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
             scope.conceptsToReviewTableParams.reload();
           }
 
@@ -395,6 +397,9 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          ////////////////////////////////////////////////////////////////////
+          // Watch freedback container -- used as Initialization Block
+          ////////////////////////////////////////////////////////////////////
           scope.$watch('feedbackContainer', function (oldValue, newValue) {
 
             if (!scope.feedbackContainer) {
@@ -418,11 +423,19 @@ angular.module('singleConceptAuthoringApp')
                   item.selected = scope.allChecked;
                 }
 
-                // set follow up request flag to false
+                // set follow up request flag to false (overwritten below)
                 item.requestFollowup = false;
 
-                // process messages
-                if (item.messages) {
+                // if no feedback on this concept
+                if (!item.messages || item.messages.length === 0) {
+
+                  console.debug('marking concept with no feedback as absent');
+                  item.read = 'absent'; // provide dummy value for sorting
+
+                }
+
+                // otherwise, process feedback
+                else {
 
                   // sort messages by reverse creation date
                   item.messages.sort(function (a, b) {
@@ -430,24 +443,22 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   // cycle over all concepts to check for follow up request
-                  // condition met if another user has left feedback with the flag
-                  // later than the last feedback left by current user
+                  // condition met if another user has left feedback with the
+                  // flag later than the last feedback left by current user
                   for (var i = 0; i < item.messages.length; i++) {
-                    console.debug(item.messages[i].fromUsername, $rootScope.accountDetails.login);
+
                     // if own feedback, break
                     if (item.messages[i].fromUsername === $rootScope.accountDetails.login) {
-
-                      console.debug('found own feedback, breaking');
                       break;
                     }
 
                     // if another's feedback, check for flag
                     if (item.messages[i].feedbackRequested) {
-                      console.debug('found feedback requested');
                       item.requestFollowup = true;
                     }
                   }
                 }
+
               });
               scope.feedbackContainer.review.conceptsReviewed = [];
 
@@ -496,11 +507,19 @@ angular.module('singleConceptAuthoringApp')
               // if concept is in selected list and has messages, add them
               if (conceptIds.indexOf(concept.id) !== -1 && concept.messages && concept.messages.length > 0) {
                 viewedFeedback = viewedFeedback.concat(concept.messages);
+
+                // mark read if unread is indicated
+                if (!concept.read) {
+                  scaService.markConceptFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
+                    concept.read = true;
+
+                  })
+                }
               }
             });
 
             // sort by creation date
-            viewedFeedback.sort(function(a, b) {
+            viewedFeedback.sort(function (a, b) {
               return a.creationDate < b.creationDate;
             });
 
@@ -508,7 +527,7 @@ angular.module('singleConceptAuthoringApp')
             scope.viewedFeedback = viewedFeedback;
           }
 
-          scope.toTrustedHtml = function(htmlCode) {
+          scope.toTrustedHtml = function (htmlCode) {
             return $compile(htmlCode);
           };
 
@@ -579,8 +598,10 @@ angular.module('singleConceptAuthoringApp')
             scaService.addFeedbackToReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds, requestFollowup).then(function (response) {
 
               // re-retrieve the review
-              // TODO For some reason getting duplicate entries on simple push of feedback into list.... for now, just retrieving, though this is inefficient
-              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+              // TODO For some reason getting duplicate entries on simple push
+              // of feedback into list.... for now, just retrieving, though
+              // this is inefficient
+              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.feedbackContainer.review = response;
               });
             });

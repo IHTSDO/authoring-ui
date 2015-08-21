@@ -173,14 +173,14 @@
 
             <!-- Author Controls -->
             <td ng-if="role === 'AUTHOR'" class=" col-controls"
-                data-title="'Read/Unread'" sortable="''">
+                data-title="'Read/Unread'" sortable="'read'">
               <div class="pull-right">
 
                 <button class="btn btn-round btn-default purple lighten-2" title="Flagged for follow-up" ng-show="concept.requestFollowup"><span
                   class="md md-flag"></span></button>
                 <button ng-show="concept.messages.length > 0" class="btn btn-round btn-default pink lighten-2"
                         title="View/submit feedback for concept"
-                        ng-click="selectConceptForFeedback(concept)"><span class="md md-email "></span>
+                        ng-click="selectConceptForFeedback(concept)"><span ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></span>
                 </button>
                 <button class="btn btn-round btn-default blue lighten-2" title="" ng-click="addToEdit(concept.id)"><span
                   class="md md-edit "></span>
