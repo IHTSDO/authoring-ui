@@ -1,4 +1,4 @@
-<section class="tables-data">
+<section class="tables-data feedback">
 
   <!-- for ng-table checkboxes -->
   <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
@@ -49,14 +49,41 @@
     .h-45 {
       height: 45px;
     }
+.feedback table{min-height:300px;}
 
+.add-shadow{
+box-shadow: inset 12px 0px 22px -14px #ABABAB;
+-webkit-box-shadow: inset 12px 0px 22px -14px #ABABAB;
+-moz-box-shadow: inset 12px 0px 22px -14px #ABABAB;
+-o-box-shadow: inset 12px 0px 22px -14px #ABABAB;
+background-color:#fff;
+padding:5px!important;
+}
+input.feedback-search {margin:0px 4%; padding: 5px 0px; width:92%;}
+.feedback .btn-group, .feedback .btn-toolbar {
+    margin-left: 0px;
+}
+.feedback .ta-scroll-window { margin-left: 0px;}
   </style>
 
   <!-- Concept Review -->
+
+     <div class="col-md-12 clearfix">
+
+      <div class="switch pull-right p-r-10 h-45">
+        <label>
+          Review in Progress
+          <input type="checkbox" ng-model="reviewComplete" ng-change="changeReviewStatus(reviewComplete)">
+          <span class="lever"></span>
+          Review Complete
+        </label>
+      </div>
+    </div>
   <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 no-padding">
 
-    <div class="row classification-report ">
-      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+     <div role="tabpanel">
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1"
+          style="">
 
         <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
                                                      aria-controls="home" role="tab"
@@ -101,7 +128,7 @@
 
         <table show-filter="true" ng-table="conceptsToReviewTableParams"
                template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small">
+               class="table table-full table-full-small clearfix">
 
           <tr ng-repeat="concept in conceptsToReviewViewed">
 
@@ -155,6 +182,7 @@
           <input type="text" ng-model="conceptsToReviewTableParams.filter()['search']" class="form-control"
                  placeholder="Search" autofocus/>
         </script>
+    
       </div>
 
       <!-- Concepts Reviewed -->
@@ -198,8 +226,8 @@
   </div>
 
   <!-- Feedback List Panel -->
-  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 no-padding">
-    <div class="row classification-report ">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 add-shadow">
+    <div class="row  ">
       <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
         <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
@@ -227,21 +255,11 @@
 
 
   <!-- Feedback Editor Panel -->
-  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
-    <div class="row classification-report">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding add-shadow">
+ 
 
-      <div class="switch pull-right p-r-10 h-45">
-        <label>
-          Review in Progress
-          <input type="checkbox" ng-model="reviewComplete" ng-change="changeReviewStatus(reviewComplete)">
-          <span class="lever"></span>
-          Review Complete
-        </label>
-      </div>
-    </div>
-
-    <div class="m-t-20" style="width:100%">
-      <input type='text' style="width:90%" placeholder='Search concepts...'
+    <div class="col-md-12 no-padding">
+      <input type='text' class="feedback-search "placeholder='Search concepts...'
              ng-model='conceptFilter'
              ng-model-options='{ debounce: 1000 }'
              ng-change='openSearchModal(conceptFilter)'>
@@ -251,7 +269,7 @@
     <text-angular ng-model="htmlVariable"
                   ta-toolbar="[['bold','italics', 'ul', 'ol', 'redo', 'undo', 'taxonomy']]"></text-angular>
 
-
+ <div class="col-md-12 no-padding p-10">
     Request follow-up <input type="checkbox" ng-model="selectedConcept.folllowUp">
 
     <div class="pull-right ">
@@ -262,10 +280,10 @@
               style="text-transform: none">Clear
       </button>
 
-
+</div>
     </div>
 
-    <p></p>
+  
 
     <div class="row" ng-show="subjectConcepts.length > 0">
       <div class="col-12">
