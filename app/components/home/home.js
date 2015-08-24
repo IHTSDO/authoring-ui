@@ -160,6 +160,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
 // Initialization:  get tasks and classifications
     function initialize() {
+      $scope.tasks = [];
       $scope.reviewTasks = [];
       // get all projects for task creation
       scaService.getProjects().then(function (response) {
@@ -185,13 +186,15 @@ angular.module('singleConceptAuthoringApp.home', [
 
               // add all assigned tasks in review that match the logged in user
               // into My Tasks.
-              else if (task.status === 'In Review' || task.status === 'Review Complete' && task.reviewer && task.reviewer.name === $rootScope.accountDetails.login) {
+              else if (task.status === 'In Review' || task.status === 'Review Complete' && task.reviewer && task.reviewer.username === $rootScope.accountDetails.login) {
                 $scope.tasks.push(task);
               }
             });
           })
         }
       });
+/*
+      Commented out for now -- tasks are sorted above
 
       // get tasks across all projects
       $scope.tasks = [];
@@ -203,7 +206,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.tasks = response;
       }, function (error) {
-      });
+      });*/
 
       $timeout(function () {
         scaService.getTasks().then(function (response) {
