@@ -142,7 +142,7 @@ angular.module('singleConceptAuthoringApp.home', [
           "reviewer": {
             "email": $rootScope.accountDetails.email,
             "avatarUrl": "",
-            "name": $rootScope.accountDetails.login,
+            "username": $rootScope.accountDetails.login,
             "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
           }
         };
