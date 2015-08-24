@@ -363,7 +363,7 @@ angular.module('singleConceptAuthoringApp')
           console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
           notificationService.sendError('Error marking feedback read', 10000);
           return null;
-        })
+        });
       },
 
       //////////////////////////////////////////
