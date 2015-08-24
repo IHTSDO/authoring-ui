@@ -81,7 +81,7 @@
                 </a>
               </td>
 
-              <td data-title="'Feedback'" sortable="''">
+              <td data-title="'Feedback'" sortable="'unreadFeedbackMessages'">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
                   <button ng-if="task.status == 'In Review' && !task.unreadFeebackMessages" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
@@ -89,7 +89,7 @@
 
                     <div class="ripple-wrapper"></div>
                   </button>
-                  <button ng-if="task.status == 'In Review' && task.unreadFeebackMessages" type="button"
+                  <button ng-if="task.unreadFeebackMessages" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-forum"></span>
 
@@ -135,8 +135,8 @@
               </span>
           </div>
         </div>
-<!--          Left in as a placeholder for reviewer role functionality-->
-<!--        <div class="table-responsive white" style="margin-right:0px;" ng-if="isReviewer()">-->
+        <!--          Left in as a placeholder for reviewer role functionality-->
+        <!--        <div class="table-responsive white" style="margin-right:0px;" ng-if="isReviewer()">-->
         <div class="table-responsive white" style="margin-right:0px;">
 
           <table ng-table="reviewTableParams" template-pagination="utilities/data-table-pager.html"
@@ -195,19 +195,19 @@
 
                     <div class="ripple-wrapper"></div>
                   </button>
-                  <button ng-if="task.status == 'In Review' && task.unreadFeebackMessages" type="button"
+                  <button ng-if="task.unreadFeebackMessages" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback"><span class="md md-drafts"></span>
+                          title="View Feedback"><span class="md md-forum"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
                 </a>
               </td>
-<!--
-              <td data-title="'Status'" sortable="'status'">
-                <span class="badge {{task.status}}"> {{task.status}} </span>
-              </td>
--->
+              <!--
+                            <td data-title="'Status'" sortable="'status'">
+                              <span class="badge {{task.status}}"> {{task.status}} </span>
+                            </td>
+              -->
             </tr>
           </table>
 

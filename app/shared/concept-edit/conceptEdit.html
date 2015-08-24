@@ -171,12 +171,15 @@
                   ng-click="toggleRelationshipActive(relationship)"
                   ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
                   title="Active/Inactive"></button>
-          <!-- relationship group, unused for isA relationships -->
-          <!--<div class="pull-left rolegroup">
-             <input disabled
-                    class="form-control color_{{relationship.groupId}}" type="text" placeholder="-"
+
+          <!-- relationship group -->
+          <div class="pull-left rolegroup">
+          <textarea style="" class="msd-elastic" disabled ng-model="relationship.groupId"
+                    ng-change="updateRelationship(relationship)"
+                    class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
-           </div>-->
+          </textarea>
+          </div>
 
           <!-- attribute type -->
           <div class="pull-left is_a" ui-draggable="true"
