@@ -341,7 +341,7 @@ angular.module('singleConceptAuthoringApp')
         scope.getCurrentDialectAndAcceptability = function (description) {
 
           var dialect = null;
-          var accepta
+          //var accepta
 
           // extract the acceptabilityMap dialect ids
           var dialectIds = description.acceptabilityMap.keys;
@@ -359,7 +359,7 @@ angular.module('singleConceptAuthoringApp')
                 return array2.indexOf(n) != -1
               });*/
             }
-          })
+          });
         };
 
         // dialect object is item in scope.dialects, acceptability is item in
