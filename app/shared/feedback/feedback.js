@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp')
                         newData.push(item);
                       }
                       myData = newData;
-                    })
+                    });
 
                     //  $scope.filteredItems = $filter('filter')($scope.items,
                     // { 'colours': '!!' });
@@ -185,7 +185,7 @@ angular.module('singleConceptAuthoringApp')
           scope.toggleViewOnlyConceptsWithFeedback = function () {
             scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
             scope.conceptsToReviewTableParams.reload();
-          }
+          };
 
           scope.addToReviewed = function (item) {
             scope.feedbackContainer.review.conceptsReviewed.push(item);
@@ -513,7 +513,7 @@ angular.module('singleConceptAuthoringApp')
                   scaService.markConceptFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
                     concept.read = true;
 
-                  })
+                  });
                 }
               }
             });
