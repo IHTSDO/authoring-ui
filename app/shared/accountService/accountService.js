@@ -31,12 +31,12 @@ angular.module('singleConceptAuthoringApp')
     function getRoleForTask(task) {
 
       // check assignee
-      if (accountDetails.login === task.assignee.name) {
+      if (accountDetails.login === task.assignee.username) {
         return 'AUTHOR';
       }
 
       // check reviewer
-      if (accountDetails.login === task.reviewer.name) {
+      if (accountDetails.login === task.reviewer.username) {
         return 'REVIEWER';
       }
     }
