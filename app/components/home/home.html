@@ -83,9 +83,15 @@
 
               <td data-title="'Feedback'" sortable="''">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
-                  <button ng-show="task.status == 'In Review'" type="button"
+                  <button ng-if="task.status == 'In Review' && !task.unreadFeebackMessages" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
+
+                    <div class="ripple-wrapper"></div>
+                  </button>
+                  <button ng-if="task.status == 'In Review' && task.unreadFeebackMessages" type="button"
+                          class="btn btn-round btn-default pink darken-1" tooltip=""
+                          title="View Feedback"><span class="md md-forum"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
@@ -183,9 +189,15 @@
 
               <td data-title="'Feedback'" sortable="''">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
-                  <button ng-show="task.status == 'In Review'" type="button"
+                  <button ng-if="task.status == 'In Review' && !task.unreadFeebackMessages" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
+
+                    <div class="ripple-wrapper"></div>
+                  </button>
+                  <button ng-if="task.status == 'In Review' && task.unreadFeebackMessages" type="button"
+                          class="btn btn-round btn-default pink darken-1" tooltip=""
+                          title="View Feedback"><span class="md md-drafts"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
