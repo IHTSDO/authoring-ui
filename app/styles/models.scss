@@ -1,17 +1,79 @@
+//.modelScrollBox {
+//    height: 100%;
+//    width: 100%;
+//    overflow: hidden;
+//}
+
+.modelHeader {
+   overflow:auto;
+   height: 100%;
+   width: 100%;
+}
 
 .col-lg-7 .hasSVG svg{
-	overflow:visible;
-	
-	    margin-left: -68px;
-	transform: scale(0.79, 0.79);
+    overflow:visible;
+
+        margin-left: -68px;
+    transform: scale(0.65, 0.65);
 /*Firefox*/
--moz-transform: scale(0.79, 0.79);
+-moz-transform: scale(0.65, 0.65);
 /*Microsoft Internet Explorer*/
--ms-transform: scale(0.79, 0.79);
+-ms-transform: scale(0.65, 0.65);
 /*Chrome, Safari*/
--webkit-transform: scale(0.79, 0.79);
+-webkit-transform: scale(0.65, 0.65);
 /*Opera*/
--o-transform: scale(0.79, 0.79);
+-o-transform: scale(0.65, 0.65);
+}
+
+@media screen and (min-width: 1300px) {
+    .col-lg-12 .hasSVG svg{
+        overflow:visible;
+
+            margin-left: -68px;
+        transform: scale(0.7, 0.7);
+    /*Firefox*/
+    -moz-transform: scale(0.7, 0.7);
+    /*Microsoft Internet Explorer*/
+    -ms-transform: scale(0.7, 0.7);
+    /*Chrome, Safari*/
+    -webkit-transform: scale(0.7, 0.7);
+    /*Opera*/
+    -o-transform: scale(0.7, 0.7);
+    }
+}
+
+@media screen and (min-width: 1300px) {
+    .col-lg-7 .hasSVG svg{
+        overflow:visible;
+
+            margin-left: -68px;
+        transform: scale(0.75, 0.75);
+    /*Firefox*/
+    -moz-transform: scale(0.75, 0.75);
+    /*Microsoft Internet Explorer*/
+    -ms-transform: scale(0.75, 0.75);
+    /*Chrome, Safari*/
+    -webkit-transform: scale(0.75, 0.75);
+    /*Opera*/
+    -o-transform: scale(0.75, 0.75);
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .col-lg-7 .hasSVG svg{
+        overflow:visible;
+
+            margin-left: -68px;
+        transform: scale(0.79, 0.79);
+    /*Firefox*/
+    -moz-transform: scale(0.79, 0.79);
+    /*Microsoft Internet Explorer*/
+    -ms-transform: scale(0.79, 0.79);
+    /*Chrome, Safari*/
+    -webkit-transform: scale(0.79, 0.79);
+    /*Opera*/
+    -o-transform: scale(0.79, 0.79);
+    }
 }
 
 @media screen and (min-width: 1500px) {
