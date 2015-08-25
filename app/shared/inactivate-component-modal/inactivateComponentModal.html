@@ -11,15 +11,24 @@
     <select id="taskProject" name="select-reason" class="form-control"
             ng-options="reason as reason.text for reason in reasons"
             ng-model="reasonSelected">
-            <option value='' disabled>- Select a reason -</option>
+      <option value='' disabled>- Select a reason (required) -</option>
     </select>
 
+    <div ng-show="historicalReasons.length > 0">
+      <hr>
+
+      <select id="historicalReason" name="historical-reason" class="form-control"
+              ng-options="historicalReason as historicalReason.text for historicalReason in historicalReasons"
+              ng-model="historicalReasonSelected">
+        <option value='' disabled>- Select a historical reason (optional) -</option>
+      </select>
+    </div>
   </div>
 
   <div class="modal-footer">
 
     <button type="button" class="btn btn-success"
-            ng-click="selectReason(reasonSelected)">Select
+            ng-click="selectReason(reasonSelected, historicalReason)">Select
     </button>
   </div>
 

@@ -296,7 +296,7 @@ angular.module('singleConceptAuthoringApp')
         
       updateTask: function (projectKey, taskKey, object) {
         return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-          notificationService.sendMessage('Task ' + taskKey + ' marked ' + response.status, 5000, null, null);
+          notificationService.sendMessage('Task ' + taskKey + ' marked ' + response.data.status, 5000, null, null);
           return response;
         }, function (error) {
           console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
@@ -335,10 +335,13 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // add feedback to a review
-      addFeedbackToReview: function(projectKey, taskKey, messageHtml, subjectConceptIds) {
+      addFeedbackToReview: function(projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
+
+        console.debug('adding feedback', projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup);
         var feedbackContainer = {
           subjectConceptIds : subjectConceptIds,
-          messageHtml : messageHtml
+          messageHtml : messageHtml,
+          feedbackRequested : requestFollowup
         };
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/message', feedbackContainer).then(function (response) {
@@ -347,6 +350,19 @@ angular.module('singleConceptAuthoringApp')
         }, function(error) {
           console.error('Error submitting feedback for task ' + taskKey + ' in project ' + projectKey, feedbackContainer, error);
           notificationService.sendError('Error submitting feedback', 10000);
+        });
+      },
+
+        //POST /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
+      markConceptFeedbackRead: function(projectKey, taskKey, conceptId) {
+        console.debug('marking concept feedback as read', projectKey, taskKey, conceptId);
+
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
+          return response;
+        }, function(error) {
+          console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
+          notificationService.sendError('Error marking feedback read', 10000);
+          return null;
         });
       },
 

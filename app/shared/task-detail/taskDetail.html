@@ -52,13 +52,14 @@
   </div>
 
 
-  <div
+  <div 
     style="border-style: dotted; border-color: #BEBEBE; width: 93%; margin-left: 15px; margin-right: 15px; min-height: 100px; background-color:lightgrey">
 
     <p style="">Drop File Here</p>
 
   </div>
 
+<div class="task-details">
 
   <hr style="width:93%; border-color:#BEBEBE">
   <div ng-show="classification" class="p-l-15">
@@ -69,12 +70,15 @@
 
     <button
       ng-class="classificationDisplayColor"
-      type="button" class="btn btn-default {{classificationDisplayText}}" style="width: 100%; margin-bottom: 10px; text-transform: none"
+      type="button" class="btn btn-default {{classificationDisplayText}}" 
       ng-click="classify()">
-      {{classificationDisplayText}}
+      <span class="md md-notifications green darken-1 iconbase"></span> <span class="button-link">{{classificationDisplayText}}</span>
     </button>
 
-    <button type="button" class="btn btn-default green" style="width: 100%; text-transform: none" ng-click="submitForReview()">Submit For Review
+    <button type="button" class="btn btn-default  pink1 review" style="width: 100%; text-transform: none" ng-click="submitForReview()"> <span class="md md-forum pink darken-2 iconbase"></span> <span class="button-link">Submit For Review</span>
     </button>
+    
+     <button ng-if="editable !== 'false'" class="btn btn-default deep-purple validate" ng-click="startValidation()" style="text-transform: none"><span class="md md-school deep-purple darken-2 iconbase"></span> <span class="button-link">Validate</span></button>
   </div>
+</div>
 </div>
