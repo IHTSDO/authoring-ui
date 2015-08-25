@@ -31,7 +31,7 @@
                 ng-href="#/project/{{project.key}}">{{project.title}} </a>
               </td>
               <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
-                Not yet implemented
+                {{project.projectLead.displayName}}
               </td>
 
               <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
