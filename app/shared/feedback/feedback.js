@@ -433,6 +433,10 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          scope.getDateFromFeedback = function(feedback) {
+            return new Date(feedback.creationDate);
+          }
+
           ////////////////////////////////////////////////////////////////////
           // Watch freedback container -- used as Initialization Block
           ////////////////////////////////////////////////////////////////////
@@ -473,10 +477,11 @@ angular.module('singleConceptAuthoringApp')
                 // otherwise, process feedback
                 else {
 
-                  // sort messages by reverse creation date
+                 /* // sort messages by reverse creation date
                   item.messages.sort(function (a, b) {
-                    return a.creationDate < b.creationDate;
-                  });
+                    console.debug(new Date(a.creationDate), new Date(b.creationDate) ,new Date(a.creationDate) < new Date( b.creationDate), a.creationDate < b.creationDate );
+                    return new Date(a.creationDate) < new Date( b.creationDate);
+                  });*/
 
                   // cycle over all concepts to check for follow up request
                   // condition met if another user has left feedback with the
