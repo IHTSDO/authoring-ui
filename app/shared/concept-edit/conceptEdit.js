@@ -186,7 +186,7 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason(concept, 'Concept', inactivateConceptReasons).then(function (reason) {
+            selectInactivationReason(concept, 'Concept', inactivateConceptReasons, null).then(function (reason) {
 
               scope.concept.active = false;
 
@@ -424,7 +424,10 @@ angular.module('singleConceptAuthoringApp')
             {
               id: '',
               text: 'Pending move (foundation metadata concept)'
-            },
+            }
+            ];
+
+        var inactivateDescriptionHistoricalReasons = [
             {
               id: '',
               text: 'ALTERNATIVE association reference set (foundation metadata concept)'
@@ -511,10 +514,10 @@ angular.module('singleConceptAuthoringApp')
             }, 300);
           }
 
-          // otherwise, open a selct reason modal
+          // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason(description, 'Description', inactivateDescriptionReasons).then(function (reason) {
+            selectInactivationReason(description, 'Description', inactivateDescriptionReasons, inactivateDescriptionHistoricalReasons).then(function (reason) {
               description.active = false;
               autoSave();
               $timeout(function () {
@@ -642,7 +645,7 @@ angular.module('singleConceptAuthoringApp')
         ////////////////////////////////
 
         // deactivation modal for reason s elect
-        var selectInactivationReason = function (component, componentType, reasons) {
+        var selectInactivationReason = function (component, componentType, reasons, historicalReasons) {
 
           var deferred = $q.defer();
 
@@ -655,6 +658,9 @@ angular.module('singleConceptAuthoringApp')
               },
               reasons: function () {
                 return reasons;
+              },
+              historicalReasons: function() {
+                return historicalReasons ? historicalReasons : [];
               }
             }
           });
