@@ -278,7 +278,7 @@
       <!-- Concepts To Review -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
 
-        <div ng-repeat="feedback in viewedFeedback track by feedback.id">
+        <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
           <button class="btn btn-round btn-default purple lighten-2" title="Reviewer requested follow-up"
                   ng-show="feedback.feedbackRequested"><span
             class="md md-flag"></span></button>
