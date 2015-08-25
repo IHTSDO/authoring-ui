@@ -85,10 +85,21 @@
                   title="Active/Inactive"></button>
 
           <!-- Case Significance -->
-          <button type="button" class=" blue accent-2 md md-spellcheck button-width"
-                  title="Case Significance (IN PROGRESS)"></button>
+          <span dropdown>
+            <button dropdown-toggle type="button" class=" blue accent-2 md md-spellcheck button-width"
+                    title="Case Significance (IN PROGRESS)"></button>
+            <ul style="min-width: 300px;" class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+              <li ng-repeat="caseSignificance in caseSignificances" style="color: black"
+                  ng-click="setCaseSignificance(description, caseSignificance.id)">
+                <span class="md md-check" ng-show="caseSignificance.id === description.caseSignificance"> </span>
+                {{caseSignificance.id}}
+              </li>
+
+            </ul>
+          </span>
 
 
+          <!-- Term -->
           <div class="pull-left description no-padding">
             <textarea style="" class="msd-elastic resizable-text" ng-blur="updateDescription(description)"
                       ng-disabled="description.effectiveTime"
@@ -96,6 +107,8 @@
                       placeholder="Description" ui-on-drop="dropNullOp()">
             </textarea>
           </div>
+
+          <!-- TypeId -->
           <div class="pull-left typeid">
             <select ng-disabled="description.effectiveTime"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
@@ -103,22 +116,34 @@
                     name="select-type" id="select-type-choice" class="form-control color_{{relationship.groupId}}">
             </select>
           </div>
+
+          <!-- Dialect & Acceptability-->
           <div class="pull-left language">
             <select ng-disabled="description.effectiveTime"
-                    ng-options="language as language for language in getLanguageOptions()"
-                    ng-model="description.lang"
-                    ng-change="updateDescription(description)"
-                    name="select-language" id="select-language-choice"
+                    ng-options="language as language for language in languages"
+                    name="select-dialect" id="select-dialect-choice"
                     class="form-control color_{{relationship.groupId}}">
             </select>
+
+            <!--
+            TODO: Need to discuss how to handle multiple acceptability/dialect pairs
+            ng-model="dialectChoice"
+                    ng-change="setDialect(description, dialectChoice)"
+                    -->
           </div>
           <div class="pull-left acceptability">
             <select ng-disabled="description.effectiveTime"
                     ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
-                    ng-model="description.acceptabilityMap['900000000000508004']" name="select-acceptability"
+                    ng-model="description.acceptabilityMap['900000000000509007']"
                     ng-change="updateDescription(description)"
                     id="select-acceptability-choice" class="form-control color_{{relationship.groupId}}">
             </select>
+
+            <!--
+            TODO See above
+                ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
+                    ng-model="description.acceptabilityMap[dialectChoice]" name="select-acceptability"
+                    -->
           </div>
           <button type="button" ng-click="addDescription($index)"
                   class="btn-default add-buttons md md-add-circle button-width"
@@ -146,12 +171,15 @@
                   ng-click="toggleRelationshipActive(relationship)"
                   ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
                   title="Active/Inactive"></button>
-          <!-- relationship group, unused for isA relationships -->
-          <!--<div class="pull-left rolegroup">
-             <input disabled
-                    class="form-control color_{{relationship.groupId}}" type="text" placeholder="-"
+
+          <!-- relationship group -->
+          <div class="pull-left rolegroup">
+          <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
+                    ng-change="updateRelationship(relationship)"
+                    class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
-           </div>-->
+          </textarea>
+          </div>
 
           <!-- attribute type -->
           <div class="pull-left is_a" ui-draggable="true"

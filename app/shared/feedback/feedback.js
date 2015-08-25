@@ -90,28 +90,47 @@ angular.module('singleConceptAuthoringApp')
                 if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
                   scope.conceptsToReviewViewed = [];
                 } else {
-                  var myData = [];
 
-                  var searchStr = params.filter().search;
-                  if (searchStr) {
-                    myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
-                      return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  /*var searchStr = params.filter().search;
+                   if (searchStr) {
+                   myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
+                   return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                   });
+                   } else {
+                   myData = scope.feedbackContainer.review.conceptsToReview;
+                   }*/
+
+                  console.debug(params.filter());
+                  var myData = params.filter() ?
+                    $filter('filter')(scope.feedbackContainer.review.conceptsToReview, params.filter()) :
+                    scope.feedbackContainer.review.conceptsToReview;
+
+                  // filter based on presence of feedback if requested
+                  if (scope.viewOnlyConceptsWithFeedback) {
+                    console.debug('Retrieving only concepts with messages');
+                    //myData =  $filter('filter')(myData, { 'messages': '!'});
+
+                    // really ahckish solution because the above filter for
+                    // swome bizarre reason isn't working
+                    var newData = [];
+                    angular.forEach(myData, function (item) {
+                      if (item.messages && item.messages.length > 0) {
+                        newData.push(item);
+                      }
+                      myData = newData;
                     });
-                  } else {
-                    myData = scope.feedbackContainer.review.conceptsToReview;
+
+                    //  $scope.filteredItems = $filter('filter')($scope.items,
+                    // { 'colours': '!!' });
                   }
+                  console.debug(myData);
 
                   // hard set the new total
                   params.total(myData.length);
 
-                  // sort -- note this doubletriggers $watch statement....
-                  // but we want the actual order to be preserved in the
-                  // original  array for reordering purposes
                   myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
 
-                  // TODO Enable filtering
-
-                  // extract the paged results -- SEE NOTE AT START
+                  // extract the paged results
                   scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
@@ -160,6 +179,13 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+
+          // controls to allow author to view only concepts with feedeback
+          scope.viewOnlyConceptsWithFeedback = false;
+          scope.toggleViewOnlyConceptsWithFeedback = function () {
+            scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
+            scope.conceptsToReviewTableParams.reload();
+          };
 
           scope.addToReviewed = function (item) {
             scope.feedbackContainer.review.conceptsReviewed.push(item);
@@ -371,6 +397,9 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          ////////////////////////////////////////////////////////////////////
+          // Watch freedback container -- used as Initialization Block
+          ////////////////////////////////////////////////////////////////////
           scope.$watch('feedbackContainer', function (oldValue, newValue) {
 
             if (!scope.feedbackContainer) {
@@ -388,9 +417,48 @@ angular.module('singleConceptAuthoringApp')
               scope.feedbackContainer.review.conceptsToReview = scope.feedbackContainer.review.concepts;
 
               angular.forEach(scope.feedbackContainer.review.conceptsToReview, function (item) {
+
+                // apply checked if required by allChecked
                 if (angular.isDefined(item)) {
                   item.selected = scope.allChecked;
                 }
+
+                // set follow up request flag to false (overwritten below)
+                item.requestFollowup = false;
+
+                // if no feedback on this concept
+                if (!item.messages || item.messages.length === 0) {
+
+                  console.debug('marking concept with no feedback as absent');
+                  item.read = 'absent'; // provide dummy value for sorting
+
+                }
+
+                // otherwise, process feedback
+                else {
+
+                  // sort messages by reverse creation date
+                  item.messages.sort(function (a, b) {
+                    return a.creationDate < b.creationDate;
+                  });
+
+                  // cycle over all concepts to check for follow up request
+                  // condition met if another user has left feedback with the
+                  // flag later than the last feedback left by current user
+                  for (var i = 0; i < item.messages.length; i++) {
+
+                    // if own feedback, break
+                    if (item.messages[i].fromUsername === $rootScope.accountDetails.login) {
+                      break;
+                    }
+
+                    // if another's feedback, check for flag
+                    if (item.messages[i].feedbackRequested) {
+                      item.requestFollowup = true;
+                    }
+                  }
+                }
+
               });
               scope.feedbackContainer.review.conceptsReviewed = [];
 
@@ -439,11 +507,19 @@ angular.module('singleConceptAuthoringApp')
               // if concept is in selected list and has messages, add them
               if (conceptIds.indexOf(concept.id) !== -1 && concept.messages && concept.messages.length > 0) {
                 viewedFeedback = viewedFeedback.concat(concept.messages);
+
+                // mark read if unread is indicated
+                if (!concept.read) {
+                  scaService.markConceptFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
+                    concept.read = true;
+
+                  });
+                }
               }
             });
 
             // sort by creation date
-            viewedFeedback.sort(function(a, b) {
+            viewedFeedback.sort(function (a, b) {
               return a.creationDate < b.creationDate;
             });
 
@@ -451,7 +527,7 @@ angular.module('singleConceptAuthoringApp')
             scope.viewedFeedback = viewedFeedback;
           }
 
-          scope.toTrustedHtml = function(htmlCode) {
+          scope.toTrustedHtml = function (htmlCode) {
             return $compile(htmlCode);
           };
 
@@ -501,7 +577,9 @@ angular.module('singleConceptAuthoringApp')
             window.alert('OHAI THERE!');
           };
 
-          scope.submitFeedback = function () {
+          scope.submitFeedback = function (requestFollowup) {
+
+            console.debug('sending feedback', requestFollowup);
 
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {
               window.alert('Cannot submit empty feedback');
@@ -517,11 +595,13 @@ angular.module('singleConceptAuthoringApp')
               subjectConceptIds.push(subjectConcept.id);
             });
 
-            scaService.addFeedbackToReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds).then(function (response) {
+            scaService.addFeedbackToReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds, requestFollowup).then(function (response) {
 
               // re-retrieve the review
-              // TODO For some reason getting duplicate entries on simple push of feedback into list.... for now, just retrieving, though this is inefficient
-              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+              // TODO For some reason getting duplicate entries on simple push
+              // of feedback into list.... for now, just retrieving, though
+              // this is inefficient
+              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.feedbackContainer.review = response;
               });
             });
