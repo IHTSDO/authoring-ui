@@ -153,16 +153,11 @@ angular.module('singleConceptAuthoringApp')
                 if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsReviewed || scope.feedbackContainer.review.conceptsReviewed.length === 0) {
                   scope.conceptsReviewedViewed = [];
                 } else {
-                  var myData = [];
 
-                  var searchStr = params.filter().search;
-                  if (searchStr) {
-                    myData = scope.feedbackContainer.review.conceptsReviewed.filter(function (item) {
-                      return item.term.indexOf(searchStr) > -1 || item.id.indexOf(searchStr) > -1;
-                    });
-                  } else {
-                    myData = scope.feedbackContainer.review.conceptsReviewed;
-                  }
+                  var myData = params.filter() ?
+                    $filter('filter')(scope.feedbackContainer.review.conceptsReviewed, params.filter()) :
+                    scope.feedbackContainer.review.conceptsReviewed;
+
                   // hard set the new total
                   params.total(myData.length);
 
@@ -187,43 +182,84 @@ angular.module('singleConceptAuthoringApp')
             scope.conceptsToReviewTableParams.reload();
           };
 
+          // move item from ToReview to Reviewed
           scope.addToReviewed = function (item) {
+            item.selected = false;
             scope.feedbackContainer.review.conceptsReviewed.push(item);
             var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
               return x.id;
             }).indexOf(item.id);
             scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
-            scope.clearChecked();
             scope.conceptsToReviewTableParams.reload();
             scope.conceptsReviewedTableParams.reload();
           };
 
-          scope.clearChecked = function () {
-            angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (item) {
-              if (item.selected === true) {
-                item.selected = false;
-              }
-            });
+          // move item from Reviewed to ToReview
+          scope.returnToReview = function (item) {
+            item.selected = false;
+            scope.feedbackContainer.review.conceptsToReview.push(item);
+            var elementPos = scope.feedbackContainer.review.conceptsReviewed.map(function (x) {
+              return x.id;
+            }).indexOf(item.id);
+            scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
+            scope.conceptsReviewedTableParams.reload();
+            scope.conceptsToReviewTableParams.reload();
+          };
+
+          scope.selectAll = function (actionTab, isChecked) {
+            console.debug('selectAll', actionTab, isChecked);
+            if (actionTab === 1) {
+              angular.forEach(scope.conceptsToReviewViewed, function (item) {
+             item.selected = isChecked;
+              });
+            } else if (actionTab === 2) {
+              angular.forEach(scope.conceptsReviewedViewed, function (item) {
+                item.selected = isChecked;
+              });
+            }
           };
 
           scope.addToEdit = function (id) {
             $rootScope.$broadcast('editConcept', {conceptId: id});
           };
 
-          scope.addMultipleToEdit = function () {
-            angular.forEach(scope.conceptsToReviewViewed, function (item) {
-              console.log(item);
-              if (item.selected === true) {
-                scope.addToEdit(item.id);
-              }
-            });
+          // add all selected objects to edit panel list
+          // depending on current viewed tab
+          scope.addMultipleToEdit = function (actionTab) {
+            if (actionTab === 1) {
+              angular.forEach(scope.conceptsToReviewViewed, function (item) {
+                if (item.selected === true) {
+                  scope.addToEdit(item.id);
+                }
+              });
+            } else if (actionTab === 2) {
+              angular.forEach(scope.conceptsReviewedViewed, function (item) {
+                if (item.selected === true) {
+                  scope.addToEdit(item.id);
+                }
+              });
+            }
           };
-          scope.addMultipleToReviewed = function () {
-            angular.forEach(scope.conceptsToReviewViewed, function (item) {
-              if (item.selected === true) {
-                scope.addToReviewed(item);
-              }
-            });
+
+          // move all selected objects from one list to the other
+          // depending on current viewed tab
+          scope.moveMultipleToOtherList = function (actionTab) {
+            if (actionTab === 1) {
+              angular.forEach(scope.conceptsToReviewViewed, function (item) {
+                if (item.selected === true) {
+                  console.debug('adding to reviewed list', item);
+                  scope.addToReviewed(item);
+                }
+              });
+            } else if (actionTab === 2) {
+              angular.forEach(scope.conceptsReviewedViewed, function (item) {
+                console.debug('checking item', item);
+                if (item.selected === true) {
+                  console.debug('adding to to review list', item);
+                  scope.returnToReview(item);
+                }
+              });
+            }
           };
 
           // function called when dropping concept

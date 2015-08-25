@@ -14,9 +14,9 @@
   </script>
 
   <script type="text/ng-template" id="ng-table/filters/hasFeedback.html">
-    <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value="" /> None
-    <br />
-    <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50" /> 50 years
+    <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value=""/> None
+    <br/>
+    <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
   </script>
 
   <style>
@@ -97,69 +97,72 @@
       </label>
     </div>
   </div>
+
   <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 no-padding">
 
-    <div role="tabpanel">
-      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1"
-          style="">
+    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
-        <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
-                                                  aria-controls="home" role="tab"
-                                                  data-toggle="tab"> Concepts <span ng-show="role === 'REVIEWER'">to Review</span><span
+      <li role="presentation" class="active">
+        <a style="margin: 0"
+           ng-click="actionTab=1"
+           aria-controls="home"
+           role="tab"
+           data-toggle="tab"> Concepts <span ng-show="role === 'REVIEWER'">to Review</span><span
           ng-show="role === 'AUTHOR'">with Feedback</span></a>
-        </li>
-        <li role="presentation" class="" ng-if="role === 'REVIEWER'"><a ng-click="actionTab=2" aria-controls="home"
-                                                                        role="tab"
-                                                                        data-toggle="tab">Concepts Reviewed</a>
-        </li>
+      </li>
+      <li role="presentation" class="" ng-show="role === 'REVIEWER'"
+        ><a style="margin: 0"
+            ng-click="actionTab=2"
+            aria-controls="home"
+            role="tab"
+            data-toggle="tab">Concepts Reviewed</a>
+      </li>
 
-        <!-- only appears if author row -->
-        <div class="pull-right p-r-20" ng-if="role === 'AUTHOR'">
-          <button class="btn btn-round btn-default pink lighten-2" title="Hide/show concepts without feedback"
-                  ng-click="toggleViewOnlyConceptsWithFeedback()"><span class="md md-email "></span>
-          </button>
-        </div>
+      <!-- only appears if author row -->
+      <div class="pull-right p-r-20" ng-if="role === 'AUTHOR'">
+        <button class="btn btn-round btn-default pink lighten-2" title="Hide/show concepts without feedback"
+                ng-click="toggleViewOnlyConceptsWithFeedback()"><span class="md md-email "></span>
+        </button>
+      </div>
 
 
-        <!-- Only appears if reviewer role -->
-        <div class="pull-right p-r-20" ng-if="role === 'REVIEWER'">
-          <button class="btn btn-round btn-default black" title="Group selected concepts"
-                  ng-click="groupSelectedConcepts(actionTab)"><span class="md md-layers "></span>
-          </button>
-          <button class="btn btn-round btn-default pink lighten-2" title="Add feedback to selected concepts"
-                  ng-click="selectConceptsForFeedback()"><span class="md md-forum "></span>
-          </button>
-          <button class="btn btn-round btn-default green lighten-2" title="Mark selected as reviewed"
-                  ng-click="addMultipleToReviewed()"><span
-            class="md md-playlist-add "></span></button>
-          <button class="btn btn-round btn-default blue lighten-2" title="Show selected in edit panel"
-                  ng-click="addMultipleToEdit()"><span class="md md-edit "></span>
-          </button>
-        </div>
-<!--
-        &lt;!&ndash; search field appears here for authors &ndash;&gt;
-        <div class="pull-right p-r-20" ng-if="role === 'AUTHOR'">
+      <!-- Only appears if reviewer role -->
+      <div class="pull-right p-r-20" ng-if="role === 'REVIEWER'">
+        <button class="btn btn-round btn-default black" title="Group selected concepts"
+                ng-click="groupSelectedConcepts(actionTab)"><span class="md md-layers "></span>
+        </button>
+        <button class="btn btn-round btn-default pink lighten-2" title="Add feedback to selected concepts"
+                ng-click="selectConceptsForFeedback()"><span class="md md-forum "></span>
+        </button>
+        <button class="btn btn-round btn-default green lighten-2" title="Mark selected as reviewed"
+                ng-click="moveMultipleToOtherList(actionTab)"><span
+          class="md md-playlist-add "></span></button>
+        <button class="btn btn-round btn-default blue lighten-2" title="Show selected in edit panel"
+                ng-click="addMultipleToEdit(actionTab)"><span class="md md-edit "></span>
+        </button>
+      </div>
+      <!--
+              &lt;!&ndash; search field appears here for authors &ndash;&gt;
+              <div class="pull-right p-r-20" ng-if="role === 'AUTHOR'">
 
-          <input placeholder="Filter..." type="text" ng-model="conceptsToReviewTableParams.filter().search"
-                 ng-model-options="{debounce: 500}" ng-change="conceptsToReviewTableParams.reload()">
+                <input placeholder="Filter..." type="text" ng-model="conceptsToReviewTableParams.filter().search"
+                       ng-model-options="{debounce: 500}" ng-change="conceptsToReviewTableParams.reload()">
 
-        </div>-->
-      </ul>
-    </div>
+              </div>-->
+    </ul>
 
     <!-- Tab panes -->
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
 
       <!-- Concepts To Review -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-
         <table show-filter="true" ng-table="conceptsToReviewTableParams"
                template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small clearfix">
 
           <tr ng-repeat="concept in conceptsToReviewViewed">
 
-            <td class="col-checkbox" header="'ng-table/headers/checkbox.html'">
+            <td class="col-checkbox" header="'ng-table/headers/checkboxToReview.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
@@ -176,11 +179,13 @@
                 data-title="'Read/Unread'" sortable="'read'">
               <div class="pull-right">
 
-                <button class="btn btn-round btn-default purple lighten-2" title="Flagged for follow-up" ng-show="concept.requestFollowup"><span
+                <button class="btn btn-round btn-default purple lighten-2" title="Flagged for follow-up"
+                        ng-show="concept.requestFollowup"><span
                   class="md md-flag"></span></button>
                 <button ng-show="concept.messages.length > 0" class="btn btn-round btn-default pink lighten-2"
                         title="View/submit feedback for concept"
-                        ng-click="selectConceptForFeedback(concept)"><span ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></span>
+                        ng-click="selectConceptForFeedback(concept)"><span
+                  ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "></span>
                 </button>
                 <button class="btn btn-round btn-default blue lighten-2" title="" ng-click="addToEdit(concept.id)"><span
                   class="md md-edit "></span>
@@ -202,13 +207,9 @@
             </td>
           </tr>
         </table>
-        <script type="text/ng-template" id="ng-table/headers/checkbox.html">
-          <input type="checkbox" ng-model="checkboxes.checked" ng-change="checkAll()" id="select_all"
+        <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
+          <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)" id="select_all_to_review"
                  name="filter-checkbox" value=""/>
-        </script>
-        <script type="text/ng-template" id="ng-table/headers/search.html">
-          <input type="text" ng-model="conceptsToReviewTableParams.filter()['search']" class="form-control"
-                 placeholder="Search" autofocus/>
         </script>
 
       </div>
@@ -216,34 +217,40 @@
       <!-- Concepts Reviewed -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}" ng-if="role === 'REVIEWER'">
 
+        Reviewed {{actionTab}}
+
         <table show-filter="true" ng-table="conceptsReviewedTableParams"
                template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
           <tr ng-repeat="concept in conceptsReviewedViewed">
 
-            <td class="col-checkbox" header="'ng-table/headers/checkbox.html'">
+            <td class="col-checkbox" header="'ng-table/headers/checkboxReviewed.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
-            <td class="col-concept" data-title="'Concept'" sortable="'term'"
+            <td class="col-concept" data-title="'Concept'" sortable="'term'"  filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)">
               {{concept.term}}
             </td>
 
-            <td class="col-controls" header="'ng-table/headers/search.html'">
+            <td class="col-controls">
               <button class="btn btn-round btn-default pink lighten-2" title=""><span class="md md-forum "></span>
               </button>
-              <button class="btn btn-round btn-default green lighten-2" title="Add to feedback"
-                      ng-click="addToReviewed()"><span
-                class="md md-playlist-add " ng-click="addToReviewed()"></span></button>
+              <button class="btn btn-round btn-default green lighten-2" title="Return to Review"
+                      ng-click="returnToReview(concept)"><span
+                class="md md-playlist-add " ></span></button>
               <button class="btn btn-round btn-default blue lighten-2" title="Show in edit panel"
                       ng-click="addToEdit(concept.id)"><span class="md md-edit "></span>
               </button>
             </td>
           </tr>
         </table>
+        <script type="text/ng-template" id="ng-table/headers/checkboxReviewed.html">
+          <input type="checkbox" ng-model="checkedReviewed" ng-change="selectAll(actionTab, checkedReviewed)" id="select_all_reviewed"
+                 name="filter-checkbox" value=""/>
+        </script>
         <script type="text/ng-template" id="ng-table/headers/searchReviewed.html">
           <input type="text" ng-model="conceptsReviewedTableParams.filter()['search']" class="form-control"
                  placeholder="Search" autofocus/>
@@ -272,8 +279,10 @@
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
 
         <div ng-repeat="feedback in viewedFeedback track by feedback.id">
-          <button class="btn btn-round btn-default purple lighten-2" title="Reviewer requested follow-up" ng-show="feedback.feedbackRequested"><span
-            class="md md-flag"></span></button> Feedback received {{feedback.creationDate | date : 'short'}} from {{feedback.fromUsername}}:
+          <button class="btn btn-round btn-default purple lighten-2" title="Reviewer requested follow-up"
+                  ng-show="feedback.feedbackRequested"><span
+            class="md md-flag"></span></button>
+          Feedback received {{feedback.creationDate | date : 'short'}} from {{feedback.fromUsername}}:
           <p compile-html="feedback.messageHtml"></p>
 
           <hr>
@@ -300,8 +309,8 @@
 
     <div class="col-md-12 no-padding p-10">
       <div class="pull-left" ng-show="role === 'REVIEWER'">
-      Request follow-up <input type="checkbox" ng-model="requestFollowup">
-        </div>
+        Request follow-up <input type="checkbox" ng-model="requestFollowup">
+      </div>
 
       <div class="pull-right ">
         <button class="btn btn-default grey classify-buttons submit-review" ng-click="submitFeedback(requestFollowup)"
@@ -326,6 +335,8 @@
   </div>
   </div>
 
+
+  {{conceptsReviewed}}
 
 </section>
 
