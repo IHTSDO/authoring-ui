@@ -120,9 +120,10 @@
           <!-- Dialect & Acceptability-->
           <div class="pull-left language">
             <select ng-disabled="description.effectiveTime"
-                    ng-options="language as language for language in languages"
+                    ng-model="description.lang"
                     name="select-dialect" id="select-dialect-choice"
                     class="form-control color_{{relationship.groupId}}">
+              <option>en</option>
             </select>
 
             <!--
