@@ -83,13 +83,19 @@
 
               <td data-title="'Feedback'" sortable="'unreadFeedbackMessages'">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
-                  <button ng-if="task.status == 'In Review' && !task.unreadFeebackMessages" type="button"
+                  <button ng-if="task.status == 'In Review' && task.feedbackMessagesStatus === 'none'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
-                  <button ng-if="task.unreadFeebackMessages" type="button"
+                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
+                          class="btn btn-round btn-default pink darken-1" tooltip=""
+                          title="View Feedback"><span class="md md-drafts"></span>
+
+                    <div class="ripple-wrapper"></div>
+                  </button>
+                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-forum"></span>
 
@@ -189,13 +195,19 @@
 
               <td data-title="'Feedback'" sortable="''">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
-                  <button ng-if="task.status == 'In Review' && !task.unreadFeebackMessages" type="button"
+                  <button ng-if="task.status == 'In Review' && task.feedbackMessagesStatus === 'none'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
-                  <button ng-if="task.unreadFeebackMessages" type="button"
+                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
+                          class="btn btn-round btn-default pink darken-1" tooltip=""
+                          title="View Feedback"><span class="md md-drafts"></span>
+
+                    <div class="ripple-wrapper"></div>
+                  </button>
+                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-forum"></span>
 
