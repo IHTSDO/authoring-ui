@@ -395,6 +395,26 @@ angular.module('singleConceptAuthoringApp')
                 switch (newNotification.entityType) {
 
                   /*
+                  Feedback completion object structure
+                  {
+                  project: "WRPAS",
+                  task: "WRPAS-76",
+                  entityType: "Feedback",
+                  event: "new"}
+                   */
+
+                  case 'Feedback':
+                    if (newNotification.event) {
+                      // convert to first-character capitalized for all words
+                      newNotification.event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                      });
+                    }
+                    msg =  newNotification.event + ' feedback for project ' + newNotification.project + ' and task ' + newNotification.task;
+                    url = '#/feedback/' + newNotification.project + '/' + newNotification.task;
+                    break;
+
+                  /*
                    Classification completion object structure
                    entityType: "Classification"
                    event: "Classification completed successfully"
@@ -419,7 +439,7 @@ angular.module('singleConceptAuthoringApp')
                    */
                   case 'Validation':
 
-                    // conver
+                    // convert to first-character capitalized for all words
                     var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                     });
@@ -430,13 +450,19 @@ angular.module('singleConceptAuthoringApp')
                       url = '#/project/' + newNotification.project;
                     }
                     break;
+                  default:
+                    console.error('Unknown entity type for notification, stopping', + newNotification);
+                    return;
                 }
+
+                // send the notification and url
+                notificationService.sendMessage(msg, 0, url);
               } else {
                 console.error('Unknown notification type received', newNotification);
                 notificationService.sendError('Unknown notification received', 10000, null);
               }
 
-              notificationService.sendMessage(msg, 0, url);
+
             }
           });
         }, intervalInMs);
