@@ -40,6 +40,8 @@ angular.module('singleConceptAuthoringApp')
         return 'AUTHOR';
       }
 
+      return null;
+
 
     }
 
