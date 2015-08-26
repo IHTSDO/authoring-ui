@@ -95,7 +95,8 @@
     <div class="switch pull-right p-r-10 h-45">
       <label>
         Review in Progress
-        <input ng-disabled="role != 'REVIEWER'" type="checkbox" ng-model="reviewComplete" ng-change="changeReviewStatus(reviewComplete)">
+        <input ng-disabled="role != 'REVIEWER'" type="checkbox" ng-model="reviewComplete"
+               ng-change="changeReviewStatus(reviewComplete)">
         <span class="lever"></span>
         Review Complete
       </label>
@@ -259,8 +260,8 @@
   </div>
 
   <!-- Feedback List Panel -->
-  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 add-shadow">
-    <div class="row  " ng-show="subjectConcepts.length > 0">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 add-shadow" ng-show="subjectConcepts.length > 0">
+    <div class="row  ">
       <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
         <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
@@ -292,7 +293,7 @@
 
   <!-- Feedback Editor Panel -->
   <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding add-shadow"
-       ng-show="subjectConcepts.length > 0">>
+       ng-show="subjectConcepts.length > 0">
 
 
     <div class="col-md-12 no-padding">
@@ -334,7 +335,7 @@
     </div>
 
     <hr>
-    <pre class="white-box ng-binding">{{htmlVariable}}</pre>
+    <input ng-model="htmlVariable" class="" style="width: 100%; height: 800px">
   </div>
 </section>
 
