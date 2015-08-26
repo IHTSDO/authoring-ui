@@ -167,8 +167,8 @@
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)"><button ng-if="modifiedSinceReview" class="btn btn-round btn-default blue lighten-2" title="New"><span
-                  class="md md-grade "></span>
+                ui-on-drop="dropConcept(concept, $data, actionTab)"><button ng-show="modifiedSinceReview" class="btn btn-round btn-default blue lighten-2" title="New"><span
+                  class="md md-grade"></span>
                 </button>
               {{concept.term}}
             </td>
