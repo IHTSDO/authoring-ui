@@ -166,6 +166,7 @@
             <td class="col-concept" data-title="'Concept'" sortable="'term'"
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
+                drag-handle-class="red"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)"><button ng-show="modifiedSinceReview" class="btn btn-round btn-default blue lighten-2" title="New"><span
                   class="md md-grade"></span>
@@ -336,8 +337,7 @@
       </div>
     </div>
 
-    <hr>
-    <input ng-model="htmlVariable" class="" style="width: 100%; height: 800px">
+
   </div>
 </section>
 
