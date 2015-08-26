@@ -44,6 +44,10 @@ angular.module('singleConceptAuthoringApp')
           scope.htmlVariable = '';
           scope.requestFollowup = false;
 
+          // select all booleans for each table
+          scope.checkedToReview = false;
+          scope.checkedReviewed = false;
+
           // get the user information to determine role
           // values: AUTHOR, REVIEWER
 
@@ -52,6 +56,7 @@ angular.module('singleConceptAuthoringApp')
             if (task) {
               scope.task = task;
               scope.reviewComplete = task.status === 'Ready For Promotion';
+              console.debug('review complete', scope.reviewComplete);
               scope.role = accountService.getRoleForTask(task);
               console.debug('Role found: ', scope.role);
 
@@ -190,8 +195,16 @@ angular.module('singleConceptAuthoringApp')
             scope.conceptsToReviewTableParams.reload();
           };
 
+          function updateReviewedListUiState() {
+            var conceptIds = [];
+            angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {
+              conceptIds.push(concept.id);
+            });
+            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
+          }
+
           // move item from ToReview to Reviewed
-          scope.addToReviewed = function (item) {
+          scope.addToReviewed = function (item, stopUiStateUpdate) {
             item.selected = false;
             scope.feedbackContainer.review.conceptsReviewed.push(item);
             var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
@@ -200,10 +213,16 @@ angular.module('singleConceptAuthoringApp')
             scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
             scope.conceptsToReviewTableParams.reload();
             scope.conceptsReviewedTableParams.reload();
+
+            // if stop request not indicated (or not supplied), update ui state
+            if (!stopUiStateUpdate) {
+              updateReviewedListUiState();
+            }
+
           };
 
           // move item from Reviewed to ToReview
-          scope.returnToReview = function (item) {
+          scope.returnToReview = function (item, stopUiStateUpdate) {
             item.selected = false;
             scope.feedbackContainer.review.conceptsToReview.push(item);
             var elementPos = scope.feedbackContainer.review.conceptsReviewed.map(function (x) {
@@ -212,13 +231,18 @@ angular.module('singleConceptAuthoringApp')
             scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
             scope.conceptsReviewedTableParams.reload();
             scope.conceptsToReviewTableParams.reload();
+
+            // if stop request not indicated (or not supplied), update ui state
+            if (!stopUiStateUpdate) {
+              updateReviewedListUiState();
+            }
           };
 
           scope.selectAll = function (actionTab, isChecked) {
             console.debug('selectAll', actionTab, isChecked);
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
-             item.selected = isChecked;
+                item.selected = isChecked;
               });
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
@@ -251,12 +275,13 @@ angular.module('singleConceptAuthoringApp')
 
           // move all selected objects from one list to the other
           // depending on current viewed tab
+          // NOTE:  Apply stopUiUpdate flag
           scope.moveMultipleToOtherList = function (actionTab) {
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true) {
                   console.debug('adding to reviewed list', item);
-                  scope.addToReviewed(item);
+                  scope.addToReviewed(item, true);
                 }
               });
             } else if (actionTab === 2) {
@@ -264,10 +289,13 @@ angular.module('singleConceptAuthoringApp')
                 console.debug('checking item', item);
                 if (item.selected === true) {
                   console.debug('adding to to review list', item);
-                  scope.returnToReview(item);
+                  scope.returnToReview(item, true);
                 }
               });
             }
+
+            // update the ui state
+            updateReviewedListUiState();
           };
 
           // function called when dropping concept
@@ -354,8 +382,6 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-
-
           // allow for grouped reordering
           scope.groupSelectedConcepts = function (actionTab) {
             console.debug('reordering based on selected items for tab', actionTab);
@@ -433,9 +459,8 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
-
           scope.changeReviewStatus = function (reviewComplete) {
-            if (reviewComplete) {
+            if (reviewComplete != null && reviewComplete != undefined) {
               scaService.updateTask(
                 $routeParams.projectKey, $routeParams.taskKey,
                 {
@@ -444,7 +469,7 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
-          scope.getDateFromFeedback = function(feedback) {
+          scope.getDateFromFeedback = function (feedback) {
             return new Date(feedback.creationDate);
           };
 
@@ -457,72 +482,81 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            // on initial load or reload, process the concepts
-            if (scope.feedbackContainer.review && !scope.feedbackContainer.review.conceptsToReview) {
+            // pre-processing on initial load (conceptsToReview and
+            // conceptsReviewed do not yet exist)
+            if (scope.feedbackContainer.review && !scope.feedbackContainer.review.conceptsToReview && !scope.feedbackContainer.review.conceptsReviewed) {
 
               console.debug('Initial load detected, setting concepts to review & concepts reviewed', scope.feedbackContainer.review.concepts);
 
-              // For now, simply put all concepts into conceptsToReview
-              // TODO They SAY they don't want persistence via ui state
-              // here.... :)
-              scope.feedbackContainer.review.conceptsToReview = scope.feedbackContainer.review.concepts;
+              // get the ui state
+              var reviewedListIds = null;
+              scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+                reviewedListIds = response;
+                console.debug('reviewed list ids', reviewedListIds);
 
-              angular.forEach(scope.feedbackContainer.review.conceptsToReview, function (item) {
+                // local arrays to avoid multiple watch triggers
+                var conceptsToReview = [];
+                var conceptsReviewed = [];
 
-                // apply checked if required by allChecked
-                if (angular.isDefined(item)) {
-                  item.selected = scope.allChecked;
-                }
+                // cycle over all concepts for pre-processing
+                angular.forEach(scope.feedbackContainer.review.concepts, function (item) {
 
-                // set follow up request flag to false (overwritten below)
-                item.requestFollowup = false;
+                  // set follow up request flag to false (overwritten below)
+                  item.requestFollowup = false;
 
-                // if no feedback on this concept
-                if (!item.messages || item.messages.length === 0) {
+                  // if no feedback on this concept
+                  if (!item.messages || item.messages.length === 0) {
+                    item.read = 'absent'; // provide dummy value for sorting by
+                                          // alphabetical value
+                  }
 
-                  console.debug('marking concept with no feedback as absent');
-                  item.read = 'absent'; // provide dummy value for sorting
-
-                }
-
-                // otherwise, process feedback
-                else {
-
-                 /* // sort messages by reverse creation date
-                  item.messages.sort(function (a, b) {
-                    console.debug(new Date(a.creationDate), new Date(b.creationDate) ,new Date(a.creationDate) < new Date( b.creationDate), a.creationDate < b.creationDate );
-                    return new Date(a.creationDate) < new Date( b.creationDate);
-                  });*/
-
-                  // cycle over all concepts to check for follow up request
-                  // condition met if another user has left feedback with the
-                  // flag later than the last feedback left by current user
-                  for (var i = 0; i < item.messages.length; i++) {
-
-                    // if own feedback, break
-                    if (item.messages[i].fromUsername === $rootScope.accountDetails.login) {
-                      break;
-                    }
-
-                    // if another's feedback, check for flag
-                    if (item.messages[i].feedbackRequested) {
-                      item.requestFollowup = true;
+                  // otherwise, process feedback
+                  else {
+                    // cycle over all concepts to check for follow up request
+                    // condition met if another user has left feedback with the
+                    // flag later than the last feedback left by current user
+                    for (var i = 0; i < item.messages.length; i++) {
+                      // if own feedback, break
+                      if (item.messages[i].fromUsername === $rootScope.accountDetails.login) {
+                        break;
+                      }
+                      // if another's feedback, check for flag
+                      if (item.messages[i].feedbackRequested) {
+                        item.requestFollowup = true;
+                      }
                     }
                   }
-                }
 
+                  // add item to appropriate tab/list
+                  if (reviewedListIds.indexOf(item.id) === -1) {
+
+                    // apply check-all status
+                    item.selected = scope.checkedToReview;
+                    conceptsToReview.push(item);
+                  }
+
+                  // otherwise, on reviewed list
+                  else {
+                    item.selected = scope.checkedReviewed;
+                    conceptsReviewed.push(item);
+                  }
+                });
+
+                // set the scope variables
+                scope.feedbackContainer.review.conceptsToReview = conceptsToReview;
+                scope.feedbackContainer.review.conceptsReviewed = conceptsReviewed;
+
+                // on load, initialize tables -- all subsequent reloads are
+                // manual
+                scope.conceptsToReviewTableParams.reload();
+                scope.conceptsReviewedTableParams.reload();
+
+                // load currently viewed feedback (on reload)
+                getViewedFeedback();
               });
-              scope.feedbackContainer.review.conceptsReviewed = [];
-
-              // on load, initialize tables -- all subsequent reloads are manual
-              scope.conceptsToReviewTableParams.reload();
-
-              // load currently viewed feedback (on reload)
-              getViewedFeedback();
             }
-
-            // TODO process feedback
-          }, true);
+          }, true)
+          ;
 
           // check all request
           scope.checkAll = function () {
@@ -620,7 +654,7 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          scope.dropConceptIntoEditor = function(concept) {
+          scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
 
             scope.htmlVariable += ' ' +
@@ -628,7 +662,6 @@ angular.module('singleConceptAuthoringApp')
 
             console.debug(scope.htmlVariable);
           };
-
 
           scope.submitFeedback = function (requestFollowup) {
 
@@ -664,7 +697,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.feedbackContainer.review = response;
               });
-            }, function() {
+            }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
           };
