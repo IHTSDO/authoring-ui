@@ -48,6 +48,7 @@ angular.module('singleConceptAuthoringApp')
           scope.role = 'ROLE NOT AVAILABLE';
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
+              scope.task = task;
               scope.role = accountService.getRoleForTask(task);
               console.debug('Role found: ', scope.role);
             }
@@ -346,6 +347,8 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
+
+
           // allow for grouped reordering
           scope.groupSelectedConcepts = function (actionTab) {
             console.debug('reordering based on selected items for tab', actionTab);
@@ -435,7 +438,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getDateFromFeedback = function(feedback) {
             return new Date(feedback.creationDate);
-          }
+          };
 
           ////////////////////////////////////////////////////////////////////
           // Watch freedback container -- used as Initialization Block
@@ -602,21 +605,22 @@ angular.module('singleConceptAuthoringApp')
               console.debug('selected:', result);
 
               scope.htmlVariable += ' ' +
-
-                '<p><a ng-click="addToEdit(' + result.conceptId + ')">' + result.fsn + '<span class="md md-edit"></span></a></p>';
-              //      + '<a style=\"color: teal\" ng-click=\"editConcept(' +
-              // result.conceptId + '\">' + result.fsn + '<button class=\"btn
-              // btn-round teal fa fa-edit\" ng-click=\"editConcept(' +
-              // result.conceptId + ')\"</button>' + result.fsn + '</a>';
+                '<p><a ng-click="addToEdit(' + result.conceptId + ')">' + result.fsn + '<span class="md md-edit"></span></a></p>' + ' ';
 
               console.debug(scope.htmlVariable);
             }, function () {
             });
           };
 
-          scope.editConceptTest = function () {
-            window.alert('OHAI THERE!');
+          scope.dropConceptIntoEditor = function(concept) {
+            console.debug('dropped concept into editor', concept);
+
+            scope.htmlVariable += ' ' +
+              '<p><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '<span class="md md-edit"></span></a></p>' + ' ';
+
+            console.debug(scope.htmlVariable);
           };
+
 
           scope.submitFeedback = function (requestFollowup) {
 
