@@ -112,23 +112,22 @@ angular.module('singleConceptAuthoringApp.home', [
       // get tasks from WRPAS project
       // TODO Change this once we have API call for review-tasks
       scaService.getTasksForProject('WRPAS').then(function (response) {
-        console.debug('Retrieved tasks for project WRPAS', response);
-        angular.forEach(response, function (task) {
+         angular.forEach(response, function (task) {
 
       //    console.debug('Checking task', task.key, task.status, task.reviewer);
 
-          // add all ready for review tasks
-          if (task.status === 'In Review' && !task.reviewer) {
+          // ready for review task (no reviewer) where assignee is not the current user
+          if (task.status === 'In Review' && !task.reviewer) { //} && task.assignee.username != $rootScope.accountDetails.login) {
             reviewTasks.push(task);
           }
 
-          // add all assigned tasks in review that match the logged in user
-          // into My Tasks.
+
+          // in review tasks where reviewer is the current user
           else if (task.reviewer && task.reviewer.username === $rootScope.accountDetails.login) {
-            tasks.push(task);
+            reviewTasks.push(task);
           }
 
-          // otherwise, push into tasks
+          // non-review tasks where current user is the assignee
           else if (task.assignee && task.assignee.username === $rootScope.accountDetails.login) {
             tasks.push(task);
           }
@@ -136,6 +135,9 @@ angular.module('singleConceptAuthoringApp.home', [
 
         $scope.tasks = tasks;
         $scope.reviewTasks = reviewTasks;
+
+        console.debug('tasks: ', tasks);
+        console.debug('review tasks: ', reviewTasks);
 
         notificationService.sendMessage('All tasks loaded', 5000);
 
