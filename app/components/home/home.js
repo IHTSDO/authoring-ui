@@ -112,12 +112,14 @@ angular.module('singleConceptAuthoringApp.home', [
       // get tasks from WRPAS project
       // TODO Change this once we have API call for review-tasks
       scaService.getTasksForProject('WRPAS').then(function (response) {
-         angular.forEach(response, function (task) {
+        angular.forEach(response, function (task) {
 
-      //    console.debug('Checking task', task.key, task.status, task.reviewer);
+          //    console.debug('Checking task', task.key, task.status,
+          // task.reviewer);
 
-          // ready for review task (no reviewer) where assignee is not the current user
-          if (task.status === 'In Review' && !task.reviewer) { //} && task.assignee.username != $rootScope.accountDetails.login) {
+          // ready for review task (no reviewer) where assignee is not the
+          // current user
+          if (task.status === 'In Review' && !task.reviewer && task.assignee.username != $rootScope.accountDetails.login) {
             reviewTasks.push(task);
           }
 
@@ -172,7 +174,9 @@ angular.module('singleConceptAuthoringApp.home', [
       });
     };
 
-    $scope.assignReviewer = function (task) {
+    $scope.viewReviewTask = function (task) {
+
+      // if no reviewer, assign current user and go to feedback view
       if (task && !task.reviewer) {
         var updateObj = {
           "reviewer": {
@@ -185,11 +189,13 @@ angular.module('singleConceptAuthoringApp.home', [
 
         scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
           $location.url('feedback/' + task.projectKey + '/' + task.key);
-        })
+        });
+
+        // otherwise, simply go to feedback view
       } else {
-        notificationService.sendError("Cannot claim review task, already assigned", 10000, null, null);
+        $location.url('feedback/' + task.projectKey + '/' + task.key);
       }
-    }
+    };
     $scope.isReviewer = function () {
       return accountService.isReviewer();
     };

@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'accountService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, accountService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'accountService', 'notificationService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, accountService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -40,18 +40,24 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
 
-          // the feedback contents
+          // the editor scope variables
           scope.htmlVariable = '';
+          scope.requestFollowup = false;
 
           // get the user information to determine role
           // values: AUTHOR, REVIEWER
-          scope.role = 'ROLE NOT AVAILABLE';
+
+          scope.role = null;
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
               scope.task = task;
               scope.reviewComplete = task.status === 'Ready For Promotion';
               scope.role = accountService.getRoleForTask(task);
               console.debug('Role found: ', scope.role);
+
+              if (!scope.role) {
+                notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
+              }
             }
           });
 
@@ -635,6 +641,8 @@ angular.module('singleConceptAuthoringApp')
               window.alert('Cannot submit feedback without specifying concepts');
             }
 
+            notificationService.sendMessage('Submitting feedback...', 10000, null);
+
             // extract the subject concept ids
             var subjectConceptIds = [];
             angular.forEach(scope.subjectConcepts, function (subjectConcept) {
@@ -644,6 +652,11 @@ angular.module('singleConceptAuthoringApp')
 
             scaService.addFeedbackToReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds, requestFollowup).then(function (response) {
 
+              notificationService.sendMessage('Feedback submitted', 5000, null);
+              // clear the htmlVariable and requestFolllowUp flag
+              scope.htmlVariable = '';
+              scope.requestFollowup = false;
+
               // re-retrieve the review
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
@@ -651,6 +664,8 @@ angular.module('singleConceptAuthoringApp')
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.feedbackContainer.review = response;
               });
+            }, function() {
+              notificationService.sendError('Error submitting feedback', 5000, null);
             });
           };
 
