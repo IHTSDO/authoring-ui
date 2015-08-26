@@ -89,7 +89,9 @@
   <div class="col-md-12 clearfix">
 
     <div class="pull-left h-45">
-      Reviewer: {{task.reviewer.displayName}}
+      <span ng-show="role === 'REVEIWER'">Author: {{task.assignee.displayName}}</span>
+      <span ng-show="role === 'AUTHOR' && task.reviewer">Reviewer: {{task.reviewer.displayName}}</span>
+      <span ng-show="role === 'AUTHOR' && !task.reviewer">Reviewer: Review not yet claimed</span>
     </div>
 
     <div class="switch pull-right p-r-10 h-45">
