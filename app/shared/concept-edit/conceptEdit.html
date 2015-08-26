@@ -88,11 +88,16 @@
           <span dropdown>
             <button dropdown-toggle type="button" class=" blue accent-2 md md-spellcheck button-width"
                     title="Case Significance (IN PROGRESS)"></button>
-            <ul style="min-width: 300px;" class="dropdown-menu" role="menu" aria-labelledby="btn-append-to-body">
+                      
+            <ul style="min-width: 250px;" class="dropdown-menu case-s" role="menu" aria-labelledby="btn-append-to-body">
+     
               <li ng-repeat="caseSignificance in caseSignificances" style="color: black"
                   ng-click="setCaseSignificance(description, caseSignificance.id)">
-                <span class="md md-check" ng-show="caseSignificance.id === description.caseSignificance"> </span>
-                {{caseSignificance.id}}
+                 
+                <span class="md md-radio-button-on col-md-1 no-padding " ng-show="caseSignificance.id === description.caseSignificance">  </span>
+                <span class="md md-radio-button-off col-md-1 no-padding  " ng-hide="caseSignificance.id === description.caseSignificance"> </span>
+                <span class= "col-md-11 no-padding {{caseSignificance.id}}"></span>
+             
               </li>
 
             </ul>
