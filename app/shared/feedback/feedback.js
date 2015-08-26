@@ -607,7 +607,7 @@ angular.module('singleConceptAuthoringApp')
               console.debug('selected:', result);
 
               scope.htmlVariable += ' ' +
-                '<p><a ng-click="addToEdit(' + result.conceptId + ')">' + result.fsn + '<span class="md md-edit"></span></a></p>' + ' ';
+                '<p class="clearfix"><a ng-click="addToEdit(' + result.conceptId + ')">' + result.fsn + '<span class="md md-edit"></span></a></p>' + ' ';
 
               console.debug(scope.htmlVariable);
             }, function () {
@@ -618,7 +618,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('dropped concept into editor', concept);
 
             scope.htmlVariable += ' ' +
-              '<p><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '<span class="md md-edit"></span></a></p>' + ' ';
+              '<p class="clearfix"><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '<span class="md md-edit"></span></a></p>' + ' ';
 
             console.debug(scope.htmlVariable);
           };
