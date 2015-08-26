@@ -249,7 +249,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.addConceptToListFromId = function (conceptId) {
 
       // send loading notification for user display
-      notificationService.sendMessage('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000, null);
+      notificationService.sendMessage('Loading concepts...', 10000, null);
 
       // console.debug('adding concept to edit list from id', conceptId);
       if (!conceptId) {
@@ -289,7 +289,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendMessage('All concepts loaded', 10000, null);
         } else {
           // send loading notification for user display
-          notificationService.sendMessage('Loading concepts (' + $scope.concepts.length + '/' + $scope.editPanelUiState.length + ')', 10000, null);
+          notificationService.sendMessage('Loading concepts...', 10000, null);
         }
 
       });
