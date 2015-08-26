@@ -169,7 +169,7 @@
             <tr ng-repeat="task in $data">
 
               <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
-                ng-click="assignReviewer(task)">{{task.summary}}</a>
+                ng-click="viewReviewTask(task)">{{task.summary}}</a>
               </td>
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
