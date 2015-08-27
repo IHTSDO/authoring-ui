@@ -1,16 +1,11 @@
 .dashboard-links a {
     color: #fff;
 }
+	/*model bg */
+		.modelScrollBox{background-color:#fff;}
+		.concept-bg{background-color:#424242}
 .tooltip {
     top: 0px !important;
-}
-.popover {
-    min-width: 620px !important;
-}
-.pop-edit p {
-    font-size: 12px;
-    color: #fff !important;
-    margin: 0px !important;
 }
 .popover select.form-control {
     margin: 0px !important;
@@ -22,40 +17,6 @@ button,
 .model-header h4 {
     margin-left: 10px;
     font-size: 12px;
-}
-.popover {
-    background-color: rgba(0, 0, 0, 0.8);
-    background: rgba(0, 0, 0, 0.8);
-    color: rgba(0, 0, 0, 0.8);
-    border-color: rgba(0, 0, 0, 0.8);
-}
-.popover.left > .arrow:after {
-    border-left-color: rgba(0, 0, 0, 0.8);
-}
-.alert-danger.validation {
-    margin: 0px;
-    border-radius: 0px;
-}
-.popover .dropdowns {
-    background-color: #fff !important;
-}
-.popover .fields {
-    padding: 4px 0px;
-    color: #eee !important;
-}
-.description-popover .SCTID {
-    width: 100px;
-}
-.description-popover .moduleId {
-    width: 170px;
-}
-.description-popover .lang {
-    width: 45px;
-    margin-right: 10px;
-}
-.description-popover .case {
-    width: 251px;
-    margin-right: 10px;
 }
 .darkbuttons:active,
 .darkbuttons:focus {

@@ -1,3 +1,22 @@
+<style>
+  .Available.badge {
+    background-color: #00b0ff;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+
+  .Claimed.badge {
+    background-color: grey;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+
+</style>
+
 <div class="row no-gutter sca-container">
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
        ng-include src="'layout/sidebar.html'"></div>
@@ -128,7 +147,7 @@
           <div class="col-md-6">
             <div class="table-search">
               <input type="text" ng-model="reviewTableParams.filter()['search']" class="form-control"
-                     placeholder="Search My Review Tasks" autofocus/>
+                     placeholder="Search Available Review Tasks" autofocus/>
             </div>
           </div>
           <div class="col-md-2">
@@ -150,13 +169,18 @@
             <tr ng-repeat="task in $data">
 
               <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
-                ng-click="assignReviewer(task)">{{task.summary}}</a>
+                ng-click="viewReviewTask(task)">{{task.summary}}</a>
               </td>
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
               </td>
               <td data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
+              </td>
+              <td data-title="'Review Status'" sortable="'reviewer'">
+                <span ng-if="task.reviewer" class="badge Claimed"> Claimed </span>
+                <span ng-if="!task.reviewer" class="badge Available" >Available</span>
+
               </td>
               <td data-title="'Last Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
@@ -195,12 +219,14 @@
 
               <td data-title="'Feedback'" sortable="''">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
+                  <!--
+                    Removed -- if no feedback, don't want icon, right?
                   <button ng-if="task.status == 'In Review' && task.feedbackMessagesStatus === 'none'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
 
                     <div class="ripple-wrapper"></div>
-                  </button>
+                  </button>-->
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-drafts"></span>

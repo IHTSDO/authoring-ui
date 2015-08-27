@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', 'scaService', 'snowowlService', function taskDetailCtrl($rootScope, $scope, $routeParams, $location, scaService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', 'scaService', 'snowowlService', 'notificationService', function taskDetailCtrl($rootScope, $scope, $routeParams, $location, scaService, snowowlService, notificationService) {
 
     var panelId = 'task-detail';
     $scope.task = null;
@@ -69,6 +69,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       });
     };
 
+    $scope.startValidation = function() {
+      notificationService.sendMessage('Submitting task for validation...');
+      scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+        notificationService.sendMessage('Task successfully submitted for validation', 10000, null);
+      }, function() {
+        notificationService.sendMessage('Error submitting task for validation', 5000, null);
+      });
+    };
     $scope.submitForReview = function() {
       scaService.updateTask(
         $routeParams.projectKey, $routeParams.taskKey,
