@@ -103,7 +103,7 @@
     <div class="switch pull-right p-10 h-45">
       <label>
         Review in Progress
-        <input ng-disabled="role != 'REVIEWER || reviewComplete'" type="checkbox" ng-model="reviewComplete"
+        <input ng-disabled="role != 'REVIEWER' || reviewComplete" type="checkbox" ng-model="reviewComplete"
                ng-change="changeReviewStatus(reviewComplete)">
         <span class="lever"></span>
         Review Complete
@@ -174,7 +174,6 @@
             <td class="col-concept" data-title="'Concept'" sortable="'term'"
                 filter="{ 'term': 'text' }"
                 ui-draggable="true" drag="concept"
-                drag-handle-class="red"
                 drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)"><button ng-show="modifiedSinceReview" class="btn btn-round btn-default blue lighten-2" title="New"><span
                   class="md md-grade"></span>
