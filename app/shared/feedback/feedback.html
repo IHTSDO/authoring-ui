@@ -82,19 +82,25 @@
     .feedback .ta-scroll-window {
       margin-left: 0px;
     }
+	.feedback-header{background-color:#fbfbfb; border-top:solid 1px #ececec; border-bottom:solid 1px #ececec;}
+	.feedback-tabs{background-color:#fafafa;}
+	.feedback-tabs .nav-tabs ul{padding:0px; box-shadow:inset 0 -2px 0 #dcdcdc!important; width:100%;}
+	.feedback-window{background-color:#E7E7E7; height:100%;}
+	section thead input
+	 {background-color:#fff;}
   </style>
 
   <!-- Concept Review -->
 
-  <div class="col-md-12 clearfix">
+  <div class="col-md-12 clearfix feedback-header">
 
-    <div class="pull-left h-45">
+    <div class="pull-left p-10">
       <span ng-show="role === 'REVIEWER'">Author: {{task.assignee.displayName}}</span>
       <span ng-show="role === 'AUTHOR' && task.reviewer">Reviewer: {{task.reviewer.displayName}}</span>
       <span ng-show="role === 'AUTHOR' && !task.reviewer">Reviewer: Review not yet claimed</span>
     </div>
 
-    <div class="switch pull-right p-r-10 h-45">
+    <div class="switch pull-right p-10 h-45">
       <label>
         Review in Progress
         <input ng-disabled="role != 'REVIEWER || reviewComplete'" type="checkbox" ng-model="reviewComplete"
@@ -107,7 +113,7 @@
 
   <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 no-padding">
 
-    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs feedback-tabs" role="tablist" ng-init="actionTab=1">
 
       <li role="presentation" class="active">
         <a style="margin: 0"
@@ -126,7 +132,7 @@
       </li>
 
       <!-- only appears if author row -->
-      <div class="pull-right p-r-20" ng-if="role === 'AUTHOR'">
+      <div class="pull-right p-10" ng-if="role === 'AUTHOR'">
         <button class="btn btn-round btn-default pink lighten-2" title="Hide/show concepts without feedback"
                 ng-click="toggleViewOnlyConceptsWithFeedback()"><span class="md md-email "></span>
         </button>
@@ -134,7 +140,7 @@
 
 
       <!-- Only appears if reviewer role -->
-      <div class="pull-right p-r-20" ng-if="role === 'REVIEWER'">
+      <div class="pull-right p-10" ng-if="role === 'REVIEWER'">
         <button class="btn btn-round btn-default black" title="Group selected concepts"
                 ng-click="groupSelectedConcepts(actionTab)"><span class="md md-layers "></span>
         </button>
@@ -301,7 +307,7 @@
        ng-show="subjectConcepts.length > 0">
 
 
-    <div class="col-md-12 no-padding">
+    <div class="col-md-12 no-padding concept-filter">
       <input type='text' class="feedback-search " placeholder='Search concepts...'
              ng-model='conceptFilter'
              ng-model-options='{ debounce: 1000 }'
