@@ -1,22 +1,24 @@
-<div class="pop-edit description-popover row">
-  <div class="col-md-4 no-padding">
-    <p class="row">Module</p>
-    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId"
-                  ng-change="updateDescription(description)" ng-options="module.id as module.name for module in modules">
-    </select>
-  </div>
-  <div class="col-md-1 no-padding SCTID">
-    <p class="row">SCTID</p>
+<div class="pop-edit description-more row">
+ <div class="sct-id pull-left">
+   <label class="control-label">SCTID</label>
     <span class="fields row"> {{description.descriptionId}}</span> </div>
-  <div class="col-md-2 no-padding lang">
-    <p>Language</p>
+ 
+ 
+  <div class="lang-id pull-left">
+  <label class="control-label">Language</label>
     <select name="select-choice2" id="select-choice2" class="dropdowns"
                   ng-model="description.lang" ng-change="updateDescription(description)" ng-options="language as language for language in languages">
 
     </select>
   </div>
-  <div class="col-md-2 no-padding ">
-    <p class="row">Effective Time</p>
+  <div class="time pull-left ">
+   <label class="control-label">Effective Time</label>
     <span class="fields row"> {{description.effectiveTime}}</span> </div>
-
+ <div class="module-id pull-left">
+  
+    <label class="control-label">Module Id</label>
+    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId"
+                  ng-change="updateDescription(description)" ng-options="module.id as module.name for module in modules">
+    </select>
+  </div>
 </div>

@@ -1,15 +1,15 @@
 
-<div class="pop-edit description-popover row">
-  <div class="col-md-4 no-padding ">
-    <p class="row">SCTID</p>
+<div class="pop-edit concept-more row">
+   <div class="concept-id pull-left">
+    <label class="control-label">SCTID</label>
     <span class="fields row"> {{relationship.relationshipId}}</span> </div>
-  <div class="col-md-4 no-padding ">
-    <p class="row">Effective Time</p>
+  <div class="time pull-left">
+    <label class="control-label">Effective Time</label>
     <span class="fields row"> {{relationship.effectiveTime}}</span> </div>
-  <div class="col-md-4 no-padding">
-    <p class="row">Module ID</p>
+  <div class="module pull-left">
+      <label class="control-label">Module Id</label>
     <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="relationship.moduleId"
-                  ng-change="updateRelationship(relationship)" ng-options="module.id as (module.id + ': ' + module.name) for module in modules">
+                  ng-change="updateRelationship(relationship)" ng-options="module.id as (module.name) for module in modules">
     </select>
   </div>
 </div>

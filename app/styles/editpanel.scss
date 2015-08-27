@@ -1,5 +1,5 @@
 .editpanel {
-    background-color: #eee !important;
+  
     color: #737373 !important;
 }
 .editpanel a {
@@ -331,8 +331,8 @@ aside.editpanel ul a {
     padding-left: 0px;
 }
 .editing-form .is_a {
-    width: 22%;
-    padding-left: 1%;
+    width: 22.5%;
+    padding-left: .5%;
 }
 .editing-form .attr {
     width: 25%;
@@ -343,15 +343,15 @@ aside.editpanel ul a {
     padding-left: 0px;
 }
 .editing-form .characteristictype {
-    width: 10%;
-    padding-left: 1%;
+    width: 10.5%;
+    padding-left: .5%;
 }
 .editing-form .sourceid {
-    width: 12%;
-    padding-left: 1%;
+    width: 12.5%;
+    padding-left: .5%;
 }
 .editing-form .sourcename {
-    width: 50%;
+    width: 49.5%;
     padding-left: .5%;
 }
 .editing-form .relations {
@@ -361,6 +361,7 @@ aside.editpanel ul a {
 textarea{min-height: 30px!important; resize:none; line-height:12px; font-family: 'Open Sans Condensed', sans-serif;}
 		
 		.button-width{width:4.5%; margin-right:.5%; padding:0% .5%!important; float:left; height:100%; min-height:30px; font-size:14px!important;}
+	
 /* form widths */
 select.form-control {
 
@@ -513,4 +514,66 @@ border-bottom: 1px solid #ebebeb;
 }
 
 .case-s li:nth-child(3) {border-color:transparent}
+/* popover */
+.popover {
+   color:#353535
+}
+.popover.left > .arrow:after {
+  
+}
+.alert-danger.validation {
+    margin: 0px;
+    border-radius: 0px;
+}
+.popover .dropdowns {
+    background-color: #fff !important;
+}
+.popover .fields {
+    padding: 4px 0px;
+ 
+}
+.description-popover .SCTID {
+    width: 100px;
+}
+.description-popover .moduleId {
+    width: 170px;
+}
+.description-popover .lang {
+    width: 45px;
+    margin-right: 10px;
+}
+.description-popover .case {
+    width: 251px;
+    margin-right: 10px;
+}
+.popover {
+    min-width: 600px !important;
+}
+.pop-edit {
+    font-size: 12px;
+    
+    margin: 0px !important;
+}
 
+.popover select{    margin-bottom:0px!important; padding:0px!important;}
+.control-label {
+   
+    font-weight: 400;
+	width:100%;
+	padding-bottom:3px;
+	margin-bottom:3px;
+    color: rgba(0,0,0,.4);
+    -webkit-transition: all .2s ease-out;
+    -o-transition: all .2s ease-out;
+    transition: all .2s ease-out;
+	 box-shadow: inset 0 -1px 0 #ddd!important;
+}
+/* Concept level */
+.concept-more .concept-id{width:14%; margin-right:3%}
+.concept-more .time{width:15%; margin-right:3%}
+.concept-more .module{width:65%;}
+/* description level */
+.description-more .sct-id{width:12%; margin-right:3%}
+.description-more .time{width:15%; margin-right:3%}
+.description-more .lang-id{width:12%; margin-right:3%}
+.description-more .module-id{width:52%;}
