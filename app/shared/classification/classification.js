@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', '$timeout',
-    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, $timeout) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', 'notificationService','$timeout',
+    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, notificationService, $timeout) {
       return {
         restrict: 'A',
         transclude: false,
@@ -212,15 +212,22 @@ angular.module('singleConceptAuthoringApp')
           // start latest validation
           scope.startValidation = function () {
 
+
             // check if this is a task or project
             if ($routeParams.taskKey) {
-
+              notificationService.sendMessage('Submitting task for validation...');
               scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (validation) {
-                // TODO
+                notificationService.sendMessage('Task successfully submitted for validation');
+              }, function() {
+                notificationService.sendMessage('Error submitting task for validation');
               });
             } else {
+              notificationService.sendMessage('Submitting project for validation...');
+
               scaService.startValidationForProject($routeParams.projectKey).then(function (response) {
-                // TODO
+                notificationService.sendMessage('Project successfully submitted for validation');
+              }, function() {
+                notificationService.sendMessage('Error submitting project for validation');
               });
             }
           };
