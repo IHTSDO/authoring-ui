@@ -460,7 +460,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.changeReviewStatus = function (reviewComplete) {
-            if (reviewComplete != null && reviewComplete != undefined) {
+            if (reviewComplete !== null && reviewComplete !== undefined) {
               scaService.updateTask(
                 $routeParams.projectKey, $routeParams.taskKey,
                 {
@@ -492,6 +492,12 @@ angular.module('singleConceptAuthoringApp')
               var reviewedListIds = null;
               scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
                 reviewedListIds = response;
+
+                // ensure response is in form of array for indexOf checking later
+                if (!reviewedListIds || !Array.isArray(reviewedListIds)) {
+                  console.debug('reviewedListIds', reviewedListIds, reviewedListIds.length);
+                  reviewedListIds = [];
+                }
                 console.debug('reviewed list ids', reviewedListIds);
 
                 // local arrays to avoid multiple watch triggers
@@ -527,13 +533,13 @@ angular.module('singleConceptAuthoringApp')
                     }
                   }
 
-                  // add item to appropriate tab/list
+                  // check if id is in reviewed list
                   if (reviewedListIds.indexOf(item.id) === -1) {
-
                     // apply check-all status
                     item.selected = scope.checkedToReview;
                     conceptsToReview.push(item);
                   }
+
 
                   // otherwise, on reviewed list
                   else {
