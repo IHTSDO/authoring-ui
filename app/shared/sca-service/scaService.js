@@ -289,11 +289,11 @@ angular.module('singleConceptAuthoringApp')
         });
 
       },
-        
+
       //////////////////////////////////////////
       // Update Status
       //////////////////////////////////////////
-        
+
       updateTask: function (projectKey, taskKey, object) {
         return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
           notificationService.sendMessage('Task ' + taskKey + ' marked ' + response.data.status, 5000, null, null);
@@ -335,33 +335,114 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // add feedback to a review
-      addFeedbackToReview: function(projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
+      addFeedbackToReview: function (projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
 
         console.debug('adding feedback', projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup);
         var feedbackContainer = {
-          subjectConceptIds : subjectConceptIds,
-          messageHtml : messageHtml,
-          feedbackRequested : requestFollowup
+          subjectConceptIds: subjectConceptIds,
+          messageHtml: messageHtml,
+          feedbackRequested: requestFollowup
         };
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/message', feedbackContainer).then(function (response) {
           return response.data;
 
-        }, function(error) {
+        }, function (error) {
           console.error('Error submitting feedback for task ' + taskKey + ' in project ' + projectKey, feedbackContainer, error);
           notificationService.sendError('Error submitting feedback', 10000);
         });
       },
 
-        //POST /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
-      markConceptFeedbackRead: function(projectKey, taskKey, conceptId) {
+      //POST
+      // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
+      markConceptFeedbackRead: function (projectKey, taskKey, conceptId) {
         console.debug('marking concept feedback as read', projectKey, taskKey, conceptId);
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
           return response;
-        }, function(error) {
+        }, function (error) {
           console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
           notificationService.sendError('Error marking feedback read', 10000);
+          return null;
+        });
+      },
+
+      //////////////////////////////////////////
+      // Conflicts, Rebase, and Promotion
+      //////////////////////////////////////////
+
+      // POST /projects/{projectKey}/promote 
+      // Promote the project to MAIN
+      promoteProject: function (projectKey) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/promote', {}).then(function (response) {
+          console.debug('Project ' + projectKey + ' promoted', response);
+          return response;
+        }, function (error) {
+          console.error('Error promoting project ' + projectKey);
+          notificationService.sendError('Error promoting project', 10000);
+          return null;
+        });
+      },
+
+      // GET /projects/{projectKey}/rebase 
+      // Generate the conflicts report between the Project and MAIN
+      getConflictReportForProject: function (projectKey) {
+        return $http.get(apiEndpoint + '/projects/' + projectKey + '/rebase').then(function (response) {
+          console.debug('Project ' + projectKey + ' conflict report obtained', response);
+          return response;
+        }, function (error) {
+          console.error('Error getting conflict report for project ' + projectKey);
+          notificationService.sendError('Error getting conflict report for project', 10000);
+          return null;
+        });
+      },
+
+      // POST /projects/{projectKey}/rebase 
+      // Rebase the project from MAIN
+      rebaseProject: function (projectKey) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/rebase', {}).then(function (response) {
+          console.debug('Project ' + projectKey + ' rebased', response);
+          return response;
+        }, function (error) {
+          console.error('Error rebasing project ' + projectKey);
+          notificationService.sendError('Error rebasing project', 10000);
+          return null;
+        });
+      },
+      // POST /projects/{projectKey}/tasks/{taskKey}/promote 
+      // Promote the task to the Project
+      promoteTask: function (projectKey, taskKey) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks' + taskKey + '/promote', {}).then(function (response) {
+          console.debug('Project ' + projectKey + ', task ' + taskKey + ' promoted', response);
+          return response;
+        }, function (error) {
+          console.error('Error promoting project ' + projectKey + ', task ' + taskKey);
+          notificationService.sendError('Error promoting task', 10000);
+          return null;
+        });
+      },
+      // GET /projects/{projectKey}/tasks/{taskKey}/rebase 
+      // Generate the conflicts report between the Task and the Project
+      getConflictReportForTask: function (projectKey, taskKey) {
+        return $http.get(apiEndpoint + '/projects/' + projectKey + '/tasks' + taskKey + '/rebase').then(function (response) {
+          console.debug('Project ' + projectKey + ', task ' + taskKey + ' conflict report obtained', response);
+          return response;
+        }, function (error) {
+          console.error('Error retrieving conflict report for project ' + projectKey + ', task ' + taskKey);
+          notificationService.sendError('Error retrieving conflict report', 10000);
+          return null;
+        });
+      },
+
+      // POST /projects/{projectKey}/tasks/{taskKey}/rebase 
+      // Rebase the task from the project
+      rebaseTask: function (projectKey, taskKey) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks' + taskKey + '/promote', {}).then(function (response) {
+          console.debug('Project ' + projectKey + ', task ' + taskKey + ' rebased', response);
+          return response;
+        }, function (error) {
+          console.error('Error rebasing project ' + projectKey + ', task ' + taskKey);
+          notificationService.sendError('Error rebasing task', 10000);
           return null;
         });
       },
@@ -395,12 +476,12 @@ angular.module('singleConceptAuthoringApp')
                 switch (newNotification.entityType) {
 
                   /*
-                  Feedback completion object structure
-                  {
-                  project: "WRPAS",
-                  task: "WRPAS-76",
-                  entityType: "Feedback",
-                  event: "new"}
+                   Feedback completion object structure
+                   {
+                   project: "WRPAS",
+                   task: "WRPAS-76",
+                   entityType: "Feedback",
+                   event: "new"}
                    */
 
                   case 'Feedback':
@@ -410,7 +491,7 @@ angular.module('singleConceptAuthoringApp')
                         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                       });
                     }
-                    msg =  newNotification.event + ' feedback for project ' + newNotification.project + ' and task ' + newNotification.task;
+                    msg = newNotification.event + ' feedback for project ' + newNotification.project + ' and task ' + newNotification.task;
                     url = '#/feedback/' + newNotification.project + '/' + newNotification.task;
                     break;
 
@@ -451,7 +532,7 @@ angular.module('singleConceptAuthoringApp')
                     }
                     break;
                   default:
-                    console.error('Unknown entity type for notification, stopping', + newNotification);
+                    console.error('Unknown entity type for notification, stopping', +newNotification);
                     return;
                 }
 
@@ -461,7 +542,6 @@ angular.module('singleConceptAuthoringApp')
                 console.error('Unknown notification type received', newNotification);
                 notificationService.sendError('Unknown notification received', 10000, null);
               }
-
 
             }
           });
