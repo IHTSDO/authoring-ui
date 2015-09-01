@@ -54,6 +54,9 @@ angular.module('singleConceptAuthoringApp.search', [])
       if (!$scope.results) {
         return null;
       }
+      if($scope.conceptIdSearch === true){
+        return $scope.results;
+      }
       for (var i = 0, len = $scope.results.length; i < len; i++) {
         if ($scope.results[i].concept.conceptId === id)
           return $scope.results[i];
@@ -500,17 +503,22 @@ angular.module('singleConceptAuthoringApp.search', [])
               if (t.substr(-2, 1) == "0") {
                 // Search conceptId
                 xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + t,function (result) {
-
+                $scope.conceptIdSearch = true;
                 }).done(function (result) {
-                  $scope.results = result.descriptions;
-                  $.each(result.descriptions, function (field) {
-                    resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + field.concept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
-                    if (field.concept.active == false) {
+                  
+                  $.each(result.descriptions, function (index, field) {
+                    if(field.type === "FSN" && field.active === true)
+                    {
+                    $scope.results = field;
+                    resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + result.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
+                    if (result.active == false) {
                     }
                     else{
-                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div  class='result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + "OHAI " + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'>Add</button></td></tr>"
+                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div  class='result-item' data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</td><td class='col-md-1'><button data-concept-id='" + result.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr></td></tr>"
+                    }
                     }
                   });
+                  
                   $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                   $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
                   $('#' + panel.divElement.id + '-resultsTable').find(".jqui-draggable").draggable({
