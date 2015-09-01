@@ -7274,7 +7274,7 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 }
 .timeline {
   list-style: none;
-  padding: 20px 0;
+  padding: 10px 0;
   position: relative;
 }
 .timeline:before {
@@ -7315,7 +7315,7 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
   left: 50%;
   margin-left: -25px;
   z-index: 100;
-  background: #EEE;
+  background: transparent;
 }
 .theme-bg-lighten-5,
 .theme-lighten-5 {
@@ -7337,9 +7337,10 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
   right: auto;
 }
 .timeline-title {
-  font-size: 14px;
+  font-size: 13px;
   margin: 0;
-  font-weight: 500;
+  font-weight: 400;
+  color:#444;
 }
 .timeline-body {
   line-height: 17px;
@@ -7354,7 +7355,7 @@ ul.timeline:before {
   left: 10px;
 }
 ul.timeline > li > .timeline-panel {
-  width: calc(60%);
+  width: calc(90%);
   float: right;
 }
 ul.timeline > li > .timeline-badge {
@@ -7544,7 +7545,8 @@ input[type=radio]:before {
 }
 .page-header h1,
 .theme-text {
-  color: #00a6e5;
+  color: #424242;
+  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .todo-app .filters .filter {
   color: #00a6e5;
