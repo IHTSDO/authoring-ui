@@ -6,7 +6,7 @@
  
   <div class="lang-id pull-left">
   <label class="control-label">Language</label>
-    <select name="select-choice2" id="select-choice2" class="dropdowns"
+    <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="static"
                   ng-model="description.lang" ng-change="updateDescription(description)" ng-options="language as language for language in languages">
 
     </select>
@@ -17,7 +17,7 @@
  <div class="module-id pull-left">
   
     <label class="control-label">Module Id</label>
-    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId"
+    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId" ng-disabled="static"
                   ng-change="updateDescription(description)" ng-options="module.id as module.name for module in modules">
     </select>
   </div>

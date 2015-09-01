@@ -376,7 +376,7 @@ angular.module('singleConceptAuthoringApp')
       promoteProject: function (projectKey) {
         return $http.post(apiEndpoint + '/projects/' + projectKey + '/promote', {}).then(function (response) {
           console.debug('Project ' + projectKey + ' promoted', response);
-          return response;
+          return response.data;
         }, function (error) {
           console.error('Error promoting project ' + projectKey);
           notificationService.sendError('Error promoting project', 10000);
@@ -389,7 +389,7 @@ angular.module('singleConceptAuthoringApp')
       getConflictReportForProject: function (projectKey) {
         return $http.get(apiEndpoint + '/projects/' + projectKey + '/rebase').then(function (response) {
           console.debug('Project ' + projectKey + ' conflict report obtained', response);
-          return response;
+          return response.data;
         }, function (error) {
           console.error('Error getting conflict report for project ' + projectKey);
           notificationService.sendError('Error getting conflict report for project', 10000);
@@ -402,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
       rebaseProject: function (projectKey) {
         return $http.post(apiEndpoint + '/projects/' + projectKey + '/rebase', {}).then(function (response) {
           console.debug('Project ' + projectKey + ' rebased', response);
-          return response;
+          return response.data;
         }, function (error) {
           console.error('Error rebasing project ' + projectKey);
           notificationService.sendError('Error rebasing project', 10000);
@@ -412,9 +412,9 @@ angular.module('singleConceptAuthoringApp')
       // POST /projects/{projectKey}/tasks/{taskKey}/promote 
       // Promote the task to the Project
       promoteTask: function (projectKey, taskKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks' + taskKey + '/promote', {}).then(function (response) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
           console.debug('Project ' + projectKey + ', task ' + taskKey + ' promoted', response);
-          return response;
+          return response.data;
         }, function (error) {
           console.error('Error promoting project ' + projectKey + ', task ' + taskKey);
           notificationService.sendError('Error promoting task', 10000);
@@ -424,9 +424,9 @@ angular.module('singleConceptAuthoringApp')
       // GET /projects/{projectKey}/tasks/{taskKey}/rebase 
       // Generate the conflicts report between the Task and the Project
       getConflictReportForTask: function (projectKey, taskKey) {
-        return $http.get(apiEndpoint + '/projects/' + projectKey + '/tasks' + taskKey + '/rebase').then(function (response) {
+        return $http.get(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/rebase').then(function (response) {
           console.debug('Project ' + projectKey + ', task ' + taskKey + ' conflict report obtained', response);
-          return response;
+          return response.data;
         }, function (error) {
           console.error('Error retrieving conflict report for project ' + projectKey + ', task ' + taskKey);
           notificationService.sendError('Error retrieving conflict report', 10000);
@@ -437,9 +437,9 @@ angular.module('singleConceptAuthoringApp')
       // POST /projects/{projectKey}/tasks/{taskKey}/rebase 
       // Rebase the task from the project
       rebaseTask: function (projectKey, taskKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks' + taskKey + '/promote', {}).then(function (response) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
           console.debug('Project ' + projectKey + ', task ' + taskKey + ' rebased', response);
-          return response;
+          return response.data;
         }, function (error) {
           console.error('Error rebasing project ' + projectKey + ', task ' + taskKey);
           notificationService.sendError('Error rebasing task', 10000);

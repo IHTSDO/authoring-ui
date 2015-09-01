@@ -11,10 +11,15 @@ angular.module('singleConceptAuthoringApp')
 
         // the branch of the concept
         branch: '=branch',
+
+        // whether to display as static list for conflicts
+        static: '@static'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
       link: function (scope, element, attrs, linkCtrl) {
+
+
 
         if (!scope.concept) {
           console.error('conceptEdit directive requires concept to be specified');
@@ -25,13 +30,32 @@ angular.module('singleConceptAuthoringApp')
           console.error('conceptEdit directive requires branch to be specified');
         }
 
+        if (!scope.static) {
+          console.error('conceptEdit directive requires static state to be specified');
+        }
+
+        console.debug('before check', scope.static, scope.static === false, scope.static === 'false');
+
+        // convert static flag from string to boolean
+        if (scope.static === 'false') {
+          scope.isStatic = false;
+        } else {
+          scope.isStatic = true;
+        }
+        console.debug('after check', scope.isStatic, !scope.isStatic);
+
+
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;
+
+            // id required, used in drawModel.js
             $('#model' + concept.conceptId).css('display', 'inline-block');
           }
           else {
             scope.isCollapsed = true;
+
+            // id required, used in drawModel.js
             $('#model' + concept.conceptId).css('display', 'none');
           }
 
@@ -257,11 +281,11 @@ angular.module('singleConceptAuthoringApp')
               return descOrderMap[a.type] < descOrderMap[b.type] ? -1 : 1;
             }
 
-            // PREFERRED before ACCEPTABLE
-            if (a.acceptabilityMap && b.acceptabilityMap) {
+            // TODO PREFERRED before ACCEPTABLE -- but which dialect?
+          /*  if (a.acceptabilityMap && b.acceptabilityMap) {
               return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
             }
-
+*/
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }

@@ -8,80 +8,19 @@ angular.module('singleConceptAuthoringApp.edit', [
   // TODO Seriously (SERIOUSLY) need to rethink this approach
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/edit/:projectKey/:taskKey', {
+      .when('/:mode/:projectKey/:taskKey', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {
-          classifyMode: function () {
-            return false;
-          },
-          validateMode: function () {
-            return false;
-          },
-          feedbackMode: function () {
-            return false;
-          }
-        }
-      });
-
-    $routeProvider
-      .when('/classify/:projectKey/:taskKey', {
-        controller: 'EditCtrl',
-        templateUrl: 'components/edit/edit.html',
-        resolve: {
-          classifyMode: function () {
-            return true;
-          },
-          validateMode: function () {
-            return false;
-          },
-          feedbackMode: function () {
-            return false;
-          }
-        }
-      });
-
-    $routeProvider
-      .when('/feedback/:projectKey/:taskKey', {
-        controller: 'EditCtrl',
-        templateUrl: 'components/edit/edit.html',
-        resolve: {
-          classifyMode: function () {
-            return false;
-          },
-          validateMode: function () {
-            return false;
-          },
-          feedbackMode: function () {
-            return true;
-          }
-        }
-      });
-
-    $routeProvider
-      .when('/validate/:projectKey/:taskKey', {
-        controller: 'EditCtrl',
-        templateUrl: 'components/edit/edit.html',
-        resolve: {
-          classifyMode: function () {
-            return false;
-          },
-          validateMode: function () {
-            return true;
-          },
-          feedbackMode: function () {
-            return false;
-          }
         }
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, classifyMode, validateMode, feedbackMode) {
-
-    console.debug('Mode variables', classifyMode, validateMode, feedbackMode);
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout) {
 
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+    $scope.projectBranch = 'MAIN/' + $routeParams.projectKey;
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
@@ -115,59 +54,27 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       switch ($scope.thisView) {
         case 'validation':
-          $scope.hideValidation = false;
-          $scope.hideClassification = true;
-          $scope.hideModel = true;
-          $scope.hideSidebar = true;
-          $scope.hideFeedback = true;
           $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'feedback':
-          $scope.hideValidation = true;
-          $scope.hideClassification = true;
-          $scope.hideModel = true;
-          $scope.hideSidebar = true;
-          $scope.hideFeedback = false;
           $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'classification':
-          $scope.hideValidation = true;
-          $scope.hideClassification = false;
-          $scope.hideModel = true;
-          $scope.hideSidebar = true;
-          $scope.hideFeedback = true;
           $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
+        case 'conflicts':
+          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          break;
         case 'edit-default':
-          $scope.hideValidation = true;
-          $scope.hideClassification = true;
-          $scope.hideModel = false;
-          $scope.hideSidebar = false;
-          $scope.hideFeedback = true;
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'edit-no-sidebar':
-          $scope.hideValidation = true;
-          $scope.hideClassification = true;
-          $scope.hideModel = false;
-          $scope.hideSidebar = true;
-          $scope.hideFeedback = true;
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'edit-no-model':
-          $scope.hideValidation = true;
-          $scope.hideClassification = true;
-          $scope.hideModel = true;
-          $scope.hideSidebar = false;
-          $scope.hideFeedback = true;
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         default:
-          $scope.hideValidation = true;
-          $scope.hideClassification = true;
-          $scope.hideModel = true;
-          $scope.hideSidebar = true;
-          $scope.hideFeedback = true;
           $rootScope.pageTitle = 'Invalid View Requested';
           break;
       }
@@ -178,14 +85,22 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     // on load, set the initial view based on classify/validate parameters
-    if (classifyMode === true) {
-       $scope.setView('classification');
-    } else if (validateMode === true) {
+    if ($routeParams.mode === 'classify') {
+      $scope.setView('classification');
+    } else if ($routeParams.mode === 'validate') {
       $scope.setView('validation');
-    } else if (feedbackMode === true) {
+    } else if ($routeParams.mode === 'feedback') {
       $scope.setView('feedback');
-    } else {
+    } else if ($routeParams.mode === 'conflicts') {
+      $scope.setView('conflicts');
+    } else if ($routeParams.mode === 'edit') {
       $scope.setView('edit-default');
+    }
+
+    // if improper route, send error and halt
+    else {
+      notificationService.sendError('Bad URL request for task view detected (' + $routeParams.mode + ').  Acceptable values are: edit, classify, conflicts, feedback, and validate');
+      return;
     }
 
     // function to flag items in saved list if they exist in edit panel
@@ -475,7 +390,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Classification functions           //
     ////////////////////////////////////////
 
-
     // get the various elements of a classification once it has been retrieved
     $scope.setClassificationComponents = function () {
 
@@ -488,10 +402,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // get relationship changes
-      snowowlService.getRelationshipChanges($scope.classificationContainer.id, $scope.branch).then(function(relationshipChanges) {
+      snowowlService.getRelationshipChanges($scope.classificationContainer.id, $scope.branch).then(function (relationshipChanges) {
         $scope.classificationContainer.relationshipChanges = relationshipChanges ? relationshipChanges : {};
       });
-
 
       // get equivalent concepts if detected
       if ($scope.classificationContainer.equivalentConceptsFound) {
@@ -508,19 +421,14 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
-      // console.debug('Getting latest classification');
-
-      // TODO Update branch when branching is implemented
       snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
         if (!response || response.length === 0) {
           $scope.classificationContainer = {status: 'No classification found'};
         } else {
-
-          // assign results to the classification container
-          $scope.classificationContainer = response[0];
+          // assign results to the classification container (note,
+          // chronological order, use last value)
+          $scope.classificationContainer = response[response.length - 1];
           $scope.setClassificationComponents();
-
-
         }
       });
     };
@@ -531,7 +439,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // function to get the latest validation result
     $scope.getLatestValidation = function () {
-  // TODO Update branch when branching is implemented
       scaService.getValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
         if (!response) {
           $scope.validationContainer = {executionStatus: 'No validation found'};
@@ -546,11 +453,26 @@ angular.module('singleConceptAuthoringApp.edit', [
     //////////////////////////////////////////
 
     // get latest review
-    $scope.getLatestReview = function() {
-      scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+    $scope.getLatestReview = function () {
+      scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.feedbackContainer.review = response ? response : {};
       });
     };
+
+    //////////////////////////////////////////
+    // Conflict Report
+    //////////////////////////////////////////
+    $scope.startConflictReportPolling = function () {
+      $timeout(function() {
+        scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.conflictsContainer.conflicts = response ? response : {};
+        });
+      }, 10000);
+    };
+
+    //////////////////////////////////////////
+    // Initialization
+    //////////////////////////////////////////
 
     // initialize the container objects
     $scope.classificationContainer = {
@@ -567,11 +489,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       review: null,
       feedback: null
     };
+    $scope.conflictsContainer = {
+      conflicts: { concepts: [] }
+    };
 
     // populate the container objects
     $scope.getLatestClassification();
     $scope.getLatestValidation();
     $scope.getLatestReview();
+    $scope.startConflictReportPolling();
 
   }
 );
