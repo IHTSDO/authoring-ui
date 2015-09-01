@@ -1,9 +1,15 @@
+<style>
+  .no-gutter {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+</style>
+
 <!-- Hide container until view is selected -->
 <div class="sca-container" ng-if="thisView" style="">
 
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
-
 
     <!-- Switch to Classify View -->
     <button type="button" class="btn btn-default widget-toolbar green darken-1" title="Switch to Classify View"
@@ -18,10 +24,21 @@
       class="md md-email"></span></button>
 
     <!-- Switch to Validate View -->
-    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1 validate" title="Switch to Validation View"
+    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1 validate"
+            title="Switch to Validation View"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('validation')"><span
       class="md md-school"></span></button>
+
+    <!-- Switch to Conflict View -->
+    <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts"
+            ng-class="[
+            {'red' : conflictsContainer.conflicts.concepts.length > 0},
+            {'grey' : !conflictsContainer.conflicts.concepts || conflictsContainer.conflicts.concepts.length === 0}]"
+            title="Switch to Resolve Conflicts View"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="setView('conflicts')"><span
+      class="md md-warning"></span></button>
 
     <!-- Edit View: Default -->
     <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
@@ -49,125 +66,428 @@
   <!-- Main page content -->
   <div class="row no-gutter" style="padding-left: 50px;">
 
-    <!-- Sidebar -->
-    <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
-         ng-include src="'layout/sidebar-edit.html'"></div>
+    <!-- Default edit view -->
+    <div ng-if="thisView === 'edit-default'">
 
-    <!--Validate View -->
-    <div ng-if="!hideValidation"
-         ng-class="['col-sm-12',
-         'col-md-12',
-         'col-lg-8']">
-      <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
-    </div>
-
-    <!-- Feedback View -->
-    <div ng-if="!hideFeedback"
-         ng-class="['col-sm-12',
-         'col-md-12',
-         'col-lg-8']">
-      <div feedback feedback-container="feedbackContainer" branch="branch" editable="true"></div>
-    </div>
-
-    <!-- Classify View -->
-    <div ng-show="!hideClassification"
-         ng-class="['col-sm-12',
-         'col-md-8',
-         'col-lg-8']">
-      <div classification classification-container="classificationContainer" branch="branch" editable="true"></div>
-    </div>
-
-    <!-- Concept/Model -->
-    <div style="margin-right:0px; margin-bottom:38px;"
-         class="row no-gutter"
-         ng-class="[
-         {'col-md-12' : thisView === 'edit-no-sidebar'},
-         {'col-lg-12' : thisView === 'edit-no-sidebar'},
-         {'col-lg-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-         {'col-md-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-         {'col-lg-9' : thisView === 'edit-no-model' || thisView === 'edit-default'},
-         {'col-md-9' : thisView === 'edit-no-model' || thisView === 'edit-default'}]">
-
-      <!-- create new concept header (displayed when no concepts in ng-repeat -->
-      <div ng-show="concepts.length === 0" class="row no-gutter">
-
-        <!-- Blank separator for model view if appropriate -->
-        <div ng-show="!hideModel"
-             ng-class="['no-gutter',
-             'col-sm-7',
-             'col-md-7',
-             {'col-lg-7' : !hideSidebar},
-             {'col-md-7' : !hideSidebar},
-             {'col-md-8' : hideSidebar},
-             {'col-lg-8' : hideSidebar}]"
-             class="" style="height:100%;">
-        </div>
-
-        <!-- The create concept button -->
-        <div
-          class="editing-form grey darken-3" ng-class="[
-          {'col-md-12': thisView === 'edit-no-model'},
-          {'col-lg-12': thisView === 'edit-no-model'},
-          {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-          {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-          {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-          {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
-
-          <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
-                  type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
-                  title="Active"><i
-            class="md md-add-circle pull-right"></i> Create New Concept
-          </button>
-        </div>
-      </div>
-
-      <!-- concept edit & model pairs -->
-      <div class="row no-gutter" ng-repeat="concept in concepts" id="concept-{{concept.conceptId}}">
-
-        <!-- Model View:  always hidden during classification view -->
-        <div ng-show="!hideModel"
-             ng-class="['no-gutter',
-             'col-sm-7',
-             'col-md-7',
-             {'col-lg-7' : !hideSidebar},
-             {'col-md-7' : !hideSidebar},
-             {'col-md-8' : hideSidebar},
-             {'col-lg-8' : hideSidebar}]"
-             class="" style="height:100%;">
-
-          <!-- models -->
-          <div draw-model class="modelScrollBox" concept="concept" id="drawModel{{concept.conceptId}}"></div>
-        </div>
-
-        <!-- Edit Panel-->
-        <div class="col-xs-12 col-sm-12"
-             ng-class="[
-          {'col-md-12': thisView === 'edit-no-model'},
-          {'col-lg-12': thisView === 'edit-no-model'},
-          {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-          {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-          {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-          {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-          {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
+      <!-- sidebar -->
+      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
+           ng-include src="'layout/sidebar-edit.html'"></div>
 
 
-          <!-- Create new concept banner (first element only) -->
-          <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
-                  ng-show="$index === 0" type="button" ng-click="createConcept()"
-                  class="btn-default btn-block create-new-concept"
-                  title="Active"><i
-            class="md md-add-circle pull-right"></i> Create New Concept
-          </button>
+      <!-- models & concepts-->
+      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
 
-          <!-- concepts -->
-          <div concept-edit concept="concept"
-               branch="branch"
-               id="editPanel-{{concept.conceptId}}">
+        <!-- headers -->
+        <div class="row no-gutter">
+
+          <!-- model header (blank) -->
+          <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="height: 100%">
+            &nbsp;
+          </div>
+
+          <!-- concept header (create new concept button) -->
+          <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="margin-right:0px;">
+            <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                    type="button" ng-click="createConcept()"
+                    class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
           </div>
         </div>
+
+        <!-- model & concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+          <!-- model -->
+          <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="height: 100%">
+            <div draw-model class="modelScrollBox" concept="concept" ></div>
+          </div>
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="false"
+              >
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Edit view with no sidebar -->
+    <div ng-if="thisView === 'edit-no-sidebar'">
+
+      <!-- models & concepts-->
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+        <!-- headers -->
+        <div class="row no-gutter">
+
+          <!-- model header (blank) -->
+          <div class="no-gutter col-sm-7 col-md-7 col-lg-7" style="height: 100%">
+            &nbsp;
+          </div>
+
+          <!-- concept header (create new concept button) -->
+          <div class="no-gutter col-sm-5 col-md-5 col-lg-5" style="margin-right:0px;">
+            <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                    type="button" ng-click="createConcept()"
+                    class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
+          </div>
+        </div>
+
+        <!-- model & concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+          <!-- model -->
+          <div class="no-gutter col-sm-7 col-md-7 col-lg-7" style="height: 100%">
+            <div draw-model class="modelScrollBox" concept="concept" ></div>
+          </div>
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-5 col-md-5 col-lg-5" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="false"
+              >
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- Edit view with no model -->
+    <div ng-if="thisView === 'edit-no-model'">
+
+      <!-- sidebar -->
+      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
+           ng-include src="'layout/sidebar-edit.html'"></div>
+
+      <!-- concepts-->
+      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+
+        <!-- headers -->
+        <div class="row no-gutter">
+          <!-- concept header (create new concept button) -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                    type="button" ng-click="createConcept()"
+                    class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
+          </div>
+        </div>
+
+        <!-- model & concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="false"
+              >
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Validation view -->
+    <div ng-if="thisView === 'validation'">
+
+      <!-- validation report -->
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+        <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
+      </div>
+
+      <!-- concept edit : non-static, can create -->
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+        <!-- headers -->
+        <div class="row no-gutter">
+          <!-- concept header (create new concept button) -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                    type="button" ng-click="createConcept()"
+                    class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
+          </div>
+        </div>
+
+        <!-- model & concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="false"
+              >
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
+
+    <!-- Classification view -->
+    <div ng-if="thisView === 'classification'">
+
+      <!-- classification report -->
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+        <div classification classification-container="classificationContainer" branch="branch" editable="true"></div>
+      </div>
+
+      <!-- concept edit : non-static, can create -->
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+        <!-- header -->
+        <div class="row no-gutter">
+          <!-- concept header (create new concept button) -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                    type="button" ng-click="createConcept()"
+                    class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
+          </div>
+        </div>
+
+        <!-- concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="false"
+              >
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Review/Feedback view -->
+    <div ng-if="thisView === 'feedback'">
+
+      <!-- feedback report -->
+      <div
+        class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+        <div feedback feedback-container="feedbackContainer" branch="branch" editable="true"></div>
+      </div>
+
+      <!-- concept edit : author -> non-static, can create, reviewer -> static, cannot create -->
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+
+        <!-- header -->
+        <div class="row no-gutter">
+          <!-- concept header (create new concept button) -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                    type="button" ng-click="createConcept()"
+                    class="btn-default btn-block create-new-concept"
+                    title="Active"><i
+              class="md md-add-circle pull-right"></i> Create New Concept
+            </button>
+          </div>
+        </div>
+
+        <!-- concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="false"
+              >
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Conflict view -->
+    <div ng-if="thisView === 'conflicts'">
+
+      <!-- conflict report -->
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+        <div conflicts conflict-container="conflictContainer" target-branch="branch" source-branch="projectBranch"></div>
+      </div>
+
+      <!-- from base branch:  non-editable, non-creatable -->
+      <div class="no-gutter col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-3">
+
+        <!-- concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" id="concept-base-{{concept.conceptId}}">
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="true"
+              >
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- editable, non-creatable -->
+      <div class="no-gutter col-xs-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+
+        <!-- concept data-->
+        <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+          <!-- concept -->
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+            <div concept-edit concept="concept"
+                 branch="branch" static="false"
+              >
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <!--
+
+    OLD EDIT FORMAT, REFACTORED IN FAVOR OF DIRECT VIEW MANIPULATION
+        &lt;!&ndash; Sidebar &ndash;&gt;
+        <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
+             ng-include src="'layout/sidebar-edit.html'"></div>
+
+        &lt;!&ndash;Validate View &ndash;&gt;
+        <div ng-if="!hideValidation"
+             ng-class="['col-sm-12',
+             'col-md-12',
+             'col-lg-8']">
+          <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
+        </div>
+
+        &lt;!&ndash; Feedback View &ndash;&gt;
+        <div ng-if="!hideFeedback"
+             ng-class="['col-sm-12',
+             'col-md-12',
+             'col-lg-8']">
+          <div feedback feedback-container="feedbackContainer" branch="branch" editable="true"></div>
+        </div>
+
+        &lt;!&ndash; Classify View &ndash;&gt;
+        <div ng-show="!hideClassification"
+             ng-class="['col-sm-12',
+             'col-md-8',
+             'col-lg-8']">
+          <div classification classification-container="classificationContainer" branch="branch" editable="true"></div>
+        </div>
+
+        &lt;!&ndash; Concept/Model &ndash;&gt;
+        <div style="margin-right:0px; margin-bottom:38px;"
+             class="row no-gutter"
+             ng-class="[
+             {'col-md-12' : thisView === 'edit-no-sidebar'},
+             {'col-lg-12' : thisView === 'edit-no-sidebar'},
+             {'col-lg-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+             {'col-md-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+             {'col-lg-9' : thisView === 'edit-no-model' || thisView === 'edit-default'},
+             {'col-md-9' : thisView === 'edit-no-model' || thisView === 'edit-default'}]">
+
+          &lt;!&ndash; create new concept header (displayed when no concepts in ng-repeat &ndash;&gt;
+          <div ng-show="concepts.length === 0" class="row no-gutter">
+
+            &lt;!&ndash; Blank separator for model view if appropriate &ndash;&gt;
+            <div ng-show="!hideModel"
+                 ng-class="['no-gutter',
+                 'col-sm-7',
+                 'col-md-7',
+                 {'col-lg-7' : !hideSidebar},
+                 {'col-md-7' : !hideSidebar},
+                 {'col-md-8' : hideSidebar},
+                 {'col-lg-8' : hideSidebar}]"
+                 class="" style="height:100%;">
+            </div>
+
+            &lt;!&ndash; The create concept button &ndash;&gt;
+            <div
+              class="editing-form grey darken-3" ng-class="[
+              {'col-md-12': thisView === 'edit-no-model'},
+              {'col-lg-12': thisView === 'edit-no-model'},
+              {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+              {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+              {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+              {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+              {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
+
+              <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                      type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
+                      title="Active"><i
+                class="md md-add-circle pull-right"></i> Create New Concept
+              </button>
+            </div>
+          </div>
+
+          &lt;!&ndash; concept edit & model pairs &ndash;&gt;
+          <div class="row no-gutter" ng-repeat="concept in concepts" >
+
+            &lt;!&ndash; Model View:  always hidden during classification view &ndash;&gt;
+            <div ng-show="!hideModel"
+                 ng-class="['no-gutter',
+                 'col-sm-7',
+                 'col-md-7',
+                 {'col-lg-7' : !hideSidebar},
+                 {'col-md-7' : !hideSidebar},
+                 {'col-md-8' : hideSidebar},
+                 {'col-lg-8' : hideSidebar}]"
+                 class="" style="height:100%;">
+
+              &lt;!&ndash; models &ndash;&gt;
+              <div draw-model class="modelScrollBox" concept="concept" ></div>
+            </div>
+
+            &lt;!&ndash; Edit Panel&ndash;&gt;
+            <div class="col-xs-12 col-sm-12"
+                 ng-class="[
+              {'col-md-12': thisView === 'edit-no-model'},
+              {'col-lg-12': thisView === 'edit-no-model'},
+              {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+              {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
+              {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+              {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
+              {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
+
+
+              &lt;!&ndash; Create new concept banner (first element only) &ndash;&gt;
+              <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                      ng-show="$index === 0" type="button" ng-click="createConcept()"
+                      class="btn-default btn-block create-new-concept"
+                      title="Active"><i
+                class="md md-add-circle pull-right"></i> Create New Concept
+              </button>
+
+              &lt;!&ndash; concepts &ndash;&gt;
+              <div concept-edit concept="concept"
+                   branch="branch" static="'false'"
+                   >
+              </div>
+            </div>
+          </div>
+        </div>-->
+
   </div>
 
 </div>
