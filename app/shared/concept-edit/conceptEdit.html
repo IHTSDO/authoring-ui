@@ -106,7 +106,7 @@
 
           <!-- Term -->
           <div class="pull-left description no-padding">
-            <textarea style="" class="msd-elastic resizable-text" ng-blur="updateDescription(description)"
+            <textarea style="" class="msd-elastic resizable-text" ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
                       ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
                       placeholder="Description" ui-on-drop="dropNullOp()">
