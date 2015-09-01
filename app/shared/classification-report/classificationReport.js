@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp')
         scope.editDestinationConcept = function (item) {
 
           // issue notification of edit concept request
-          $rootScope.$broadcast('editConcept', {conceptId: item.destinationId});
+          $rootScope.$broadcast('editConcept', {conceptId: item.sourceId});
 
         };
 
