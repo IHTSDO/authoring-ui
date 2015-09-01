@@ -3,14 +3,15 @@
   <!-- Timeline formatter and concept ids.extension input -->
   <div class="row">
 
-    <div class="col col-md-6">
-      <ul class="timeline" style="padding:10px;">
+    <div class="col col-md-12">
+      <ul class="timeline" >
         <li>
           <div class="timeline-badge">
             <i class="icon-circle theme-border"></i>
           </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
+            <label class="control-label">Task Title:</label>
               <h4 class="timeline-title">{{task.summary}}</h4>
             </div>
           </div>
@@ -22,6 +23,7 @@
           </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
+             <label class="control-label">Task Details:</label>
               <h4 class="timeline-title">{{task.description}}</h4>
             </div>
           </div>
@@ -30,18 +32,9 @@
     </div>
 
 
-    <div class="col col-md-6">
-      <div style="background-color: white; padding: 10px;">
-        <p style="muted;">Concept ids.extension</p>
-        <button type="button" class="btn btn-default green" style="width: 100%; text-transform: none">Load File
-     <span
-       class="md md-cloud-upload pull-right"></span></button>
-      </div>
-
-    </div>
   </div>
 
-  <hr style="width:93%; border-color:#BEBEBE">
+  <hr style="width:93%; border-color:#ddd">
 
   <div style="padding: 15px; width: 100%">
     Upload New File

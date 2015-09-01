@@ -14,6 +14,7 @@ button,
 .btn {
     border: none !important;
 }
+
 .model-header h4 {
     margin-left: 10px;
     font-size: 12px;
@@ -40,6 +41,7 @@ button,
 .project-buttons:hover {
     color: #1269c3 !important;
 }
+.green.darken-1:hover, .green.darken-1:focus, .green.darken-1:active{background-color:#2d7130;color:#fff; border-color:transparent;}
 .report-text {
     font-size: 16px;
     font-weight: 400;
@@ -64,7 +66,7 @@ button,
     color: #00a6e5 !important;
 }
 .saved-list-buttons {
-    background-color: #eee !important;
+    background-color: transparent !important;
     padding: 0px 3px !important;
     color: #424242 !important;
     font-size: 18px !important;
@@ -176,6 +178,8 @@ button,
 .green-save {
     font-weight: 600;
 }
+.timeline-heading .control-label{box-shadow:none!important;padding-bottom:0px!important;}
+#top > main > div > div:nth-child(2) > div > div.sca-column.col-lg-9.col-md-9.col-sm-9 > div.row.project-page > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div.pull-right {display:none;}
 @media screen and (max-width: 1850px) {
     .editing-form button,
     .editing-form .btn {
@@ -610,7 +614,7 @@ select.primitive {
         padding: 10px 5px;
     }
     .small-buttons {
-        padding: 2px 5% !important;
+        padding: 2px 6.2% !important;
         font-size: 14px !important;
     }
 	.concept-headers {padding-bottom:5px;}
@@ -662,3 +666,38 @@ select.primitive {
 .page-header {
     margin: 0px;
 }
+/*projects page*/
+.arrow-purple {
+	width: 0; 
+	height: 0; 
+	margin-top:22px;
+	border-top: 8px solid transparent;
+	border-bottom: 8px solid transparent; 
+	
+	border-right:8px solid #7e57c2; 
+}
+.arrow-green {
+	width: 0; 
+	height: 0; 
+	margin-top:22px;
+	border-top: 8px solid transparent;
+	border-bottom: 8px solid transparent; 
+	
+	border-right:8px solid #4CAF50; 
+}
+
+.project-icon{height:60px;width:60px;float:right;border-radius:0px 4px 4px 0px;}
+.project-icon .md{font-size:24px;text-align:center; line-height:60px;width:100%; float:left;}
+.project-page .card{margin:20px;}
+.project-page .card .card-header {padding:0px;border-radius:4px;}
+.project-page .card .card-header button{padding-left:20px!important; padding-top:20px!important;}
+.card, .panel, .theme-picker .theme-item:hover, .well, .z-depth-0 {
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.07), 1px 2px 5px 1px rgba(0, 0, 0, 0.06);
+}
+.project-main-buttons button{background-color:#fff!important; border:1px solid #eee!important;border-radius:4px; text-transform:none; color: #424242;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;padding:0px 10px 0px 0px!important;line-height:30px;}
+	.project-main-buttons button:hover {color:#009cd7}
+	.project-main-buttons button:disabled{background-color:#fff!important; border:1px solid #eee!important;border-radius:4px; text-transform:none; color: #eee!important;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;padding:0px 10px 0px 0px!important;line-height:30px;}
+	.project-main-buttons .project-icon{height:30px;width:30px;float:right;border-radius:4px 0px 0px 4px; margin-right:10px; }
+	.project-main-buttons .project-icon .md{line-height:30px; font-size:16px;}
