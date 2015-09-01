@@ -1,4 +1,3 @@
-'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.search', [])
 
@@ -36,6 +35,7 @@ angular.module('singleConceptAuthoringApp.search', [])
 
       // get item from results and disable the item element
       var component = $scope.findItem(item);
+      console.log(component);
       if (!item) {
         return;
       }
@@ -55,7 +55,14 @@ angular.module('singleConceptAuthoringApp.search', [])
         return null;
       }
       if($scope.conceptIdSearch === true){
-        return $scope.results;
+          var result = {
+                concept : {
+                    conceptId : $scope.results.conceptId,
+                    FSN : $scope.results.term
+                },
+                term : $scope.results.term
+          }
+        return result;
       }
       for (var i = 0, len = $scope.results.length; i < len; i++) {
         if ($scope.results[i].concept.conceptId === id)
