@@ -27,26 +27,24 @@ angular.module('singleConceptAuthoringApp')
               scope.size = scope.getSize();
               drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               scope.$watch('concept', function(newVal, oldVal){
-                  scope.size = scope.getSize();
+                  document.getElementById('canvas-' + scope.concept.conceptId).remove();
+                  document.getElementById('image-' + scope.concept.conceptId).remove();
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
-              scope.$watch('view', function(newVal, oldVal){
-                  scope.size = scope.getSize();
-                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-              }, true);
-              scope.$watch(scope.getSize(), function(newVal, oldVal){
-                  scope.size = scope.getSize();
-                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-              }, true);
-              scope.$on('editModelDraw', function() {
-                  scope.size = scope.getSize();
-                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-              }, true);
-              scope.$on('comparativeModelDraw', function() {
-                  scope.size.height = '600px';
-                  scope.size.width = '100%';
-                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-              }, true);
+//              scope.$watch('view', function(newVal, oldVal){
+//                  scope.size = scope.getSize();
+//                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+//              }, true);
+//              scope.$watch(scope.getSize(), function(newVal, oldVal){
+//                  scope.size = scope.getSize();
+//                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+//              }, true);
+//              scope.$on('editModelDraw', function() {
+//                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+//              }, true);
+//              scope.$on('comparativeModelDraw', function() {
+//                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+//              }, true);
               function drawConceptDiagram (concept, div, options) {
                   var svgIsaModel = [];
                   var svgAttrModel = [];
@@ -74,13 +72,13 @@ angular.module('singleConceptAuthoringApp')
                       }
                   }
                   var parentDiv = div;
-                  parentDiv.svg('destroy');
+                  //parentDiv.svg('destroy');
 
                   parentDiv.svg({
                       settings: {
-                          height: scope.size.height,
-                          width: scope.size.width,
-                          id: 'model' + concept.conceptId
+                          height: '1000px',
+                          width: '2000px',
+                          id: 'svg-' + concept.conceptId
                       }});
                   var svg = parentDiv.svg('get');
                   loadDefs(svg);
@@ -177,6 +175,7 @@ angular.module('singleConceptAuthoringApp')
                   svgCode = svgCode.replace('width="1000px" height="2000px"', 'width="' + maxX + '" height="' + y + '"');
 //            var b64 = Base64.encode(svgCode);
 
+                    convertToPng(svgCode, concept.conceptId);
               }
 
               function drawSctBox(svg, x, y, label, sctid, cssClass) {
@@ -372,6 +371,71 @@ angular.module('singleConceptAuthoringApp')
                   svg.line(g, x+6, y-8, x+6, y+3, {stroke: 'black', strokeWidth: 2});
                   svg.line(g, x-7, y+7, x+7, y+7, {stroke: 'black', strokeWidth: 2});
                   return g;
+              }
+              
+              function convertToPng(svg, id) {
+                  var canvas = document.createElement('canvas');
+                  canvas.id = "canvas-" + id;
+                  canvas.width = 2000;
+                  canvas.height = 1000;
+                  element.append(canvas);
+                  
+                  var c = document.getElementById('canvas-' + id);
+                    var ctx = c.getContext('2d');
+                    ctx.drawSvg(svg, 0, 0, 2000, 1000);
+                    cropImageFromCanvas(ctx, document.getElementById('canvas-' + id));
+                    
+                    element.find('#svg-' + id).remove();
+                  
+                  var img = new Image();
+                  img.id = 'image-' + id;
+                  if(element.find('#image-' + id))
+                  {
+                      element.find('#image-' + id).remove();
+                  }
+                  img.src = canvas.toDataURL();
+                  element.find('#canvas-' + id).remove();
+                  element.append(img);
+                  element.find('#image-' + id).addClass('img-responsive');
+                  element.find('#image-' + id).css('max-width', '100%');
+                  element.find('#image-' + id).css('max-height', '100%');
+                  element.find('#image-' + id).css('padding', '10px');
+                  
+              }
+              
+              function cropImageFromCanvas(ctx, canvas) {
+
+                    var w = canvas.width,
+                    h = canvas.height,
+                    pix = {x:[], y:[]},
+                    imageData = ctx.getImageData(0,0,canvas.width,canvas.height),
+                    x, y, index;
+
+                    for (y = 0; y < h; y++) {
+                        for (x = 0; x < w; x++) {
+                            index = (y * w + x) * 4;
+                            if (imageData.data[index+3] > 0) {
+
+                                pix.x.push(x);
+                                pix.y.push(y);
+
+                            }   
+                        }
+                    }
+                    pix.x.sort(function(a,b){return a-b});
+                    pix.y.sort(function(a,b){return a-b});
+                    var n = pix.x.length-1;
+
+                    w = pix.x[n] - pix.x[0];
+                    h = pix.y[n] - pix.y[0];
+                    var cut = ctx.getImageData(pix.x[0], pix.y[0], w, h);
+
+                    canvas.width = w;
+                    canvas.height = h;
+                    ctx.putImageData(cut, 0, 0);
+
+                    var image = canvas.toDataURL();
+
               }
 
               function saveAsPng(svg) {
