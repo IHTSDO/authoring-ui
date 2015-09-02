@@ -75,6 +75,7 @@
 
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions(true)">
+
       <div class="row darken-3 p-t-5 grey ">
         <div class="col-md-12 no-padding color_{{relationship.groupId}}">
           <button class="grey darken-3 md md-more button-width"
@@ -133,35 +134,27 @@
             </select>
           </div>
 
-          <!-- Dialect & Acceptability-->
-          <div class="pull-left language">
-            <select ng-disabled="description.effectiveTime"
-                    ng-model="description.lang"
+          <!-- Dialect & Acceptability
+               NOTE: Initial displayed dialect is en-us (if defined), then en-gb (if defined), then none
+               TODO: This will be revisited once automations go in
+               -->
+          <div class="pull-left language"
+               ng-init="selectedDialect = getInitialSelectedDialect(description)">
+            <select ng-model="selectedDialect" ng-disabled="description.effectiveTime"
                     name="select-dialect" id="select-dialect-choice"
                     class="form-control color_{{relationship.groupId}}">
-              <option>en</option>
+              <option value="900000000000508004">en-us</option>
+              <option value="900000000000509007">en-gb</option>
             </select>
 
-            <!--
-            TODO: Need to discuss how to handle multiple acceptability/dialect pairs
-            ng-model="dialectChoice"
-                    ng-change="setDialect(description, dialectChoice)"
-                    -->
           </div>
           <div class="pull-left acceptability">
             <select ng-disabled="description.effectiveTime"
                     ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
-                    ng-model="description.acceptabilityMap['900000000000509007']"
-                    ng-change="updateDescription(description)"
+                    ng-model="description.acceptabilityMap[selectedDialect]"
                     id="select-acceptability-choice" class="form-control color_{{relationship.groupId}}">
             </select>
-
-            <!--
-            TODO See above
-                ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
-                    ng-model="description.acceptabilityMap[dialectChoice]" name="select-acceptability"
-                    -->
-          </div>
+            </div>
           <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
                   class="btn-default add-buttons md md-add-circle button-width"
                   title="Add New Description"></button>
