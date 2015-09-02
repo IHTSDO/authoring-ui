@@ -62,6 +62,11 @@ angular.module('singleConceptAuthoringApp')
       $rootScope.$broadcast('notification', notification);
     }
 
+    function clear() {
+      console.debug('Clearing notifications');
+      $rootScope.$broadcast('clearNotifications');
+    }
+
 ////////////////////////////////////////////
 // Method Visibility
 // TODO All methods currently visible!
@@ -70,6 +75,7 @@ angular.module('singleConceptAuthoringApp')
 
       sendMessage: sendMessage,
       sendWarning: sendWarning,
-      sendError: sendError
+      sendError: sendError,
+      clear : clear
     };
   }]);

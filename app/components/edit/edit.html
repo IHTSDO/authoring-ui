@@ -356,15 +356,15 @@
 
           <!-- base concept -->
           <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 col-xl-5 no-gutter">
-            <div concept-edit concept="conflictConceptPair.baseConcept"
+            <div ng-if="conflictConceptPair.baseConcept" concept-edit concept="conflictConceptPair.baseConcept"
                  branch="projectBranch" static="true">
             </div>
           </div>
 
           <!-- branch concept -->
           <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 no-gutter">
-            <div concept-edit concept="conflictConceptPair.branchConcept"
-                 branch="branch" static="false">
+            <div ng-if="conflictConceptPair.branchConcept" concept-edit concept="conflictConceptPair.branchConcept"
+                 branch="branch" parent-branch="projectBranch" static="false">
             </div>
           </div>
         </div>

@@ -28,6 +28,11 @@ angular.module('singleConceptAuthoringApp')
           return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + '  ' + strTime + ' (' + offset + ')';
         };
 
+        // clear notification (by user request or notification)
+        scope.clearNotification = function () {
+          scope.notification = null;
+        };
+
         // Expected format from notificationService.js
         // {message: ..., url: ..., durationInMs: ...}
         scope.$on('notification', function (event, notification) {
@@ -52,10 +57,9 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          // clear notification (by user request)
-          scope.clearNotification = function () {
-            scope.notification = null;
-          };
+          scope.$on('clearNotifications', function (event, data) {
+            scope.clearNotification();
+          });
 
           // watch for changes in page title to format breadcrumbs
           scope.$watch('pageTitle', function () {

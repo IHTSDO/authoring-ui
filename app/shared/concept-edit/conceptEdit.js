@@ -7,17 +7,22 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: {
         // the concept being displayed
-        concept: '=concept',
+        concept: '=',
 
         // the branch of the concept
-        branch: '=branch',
+        branch: '=',
+
+        // the parent branch of the concept (not required)
+        parentBranch: '=',
 
         // whether to display as static list for conflicts
-        static: '@static'
+        static: '@?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
       link: function (scope, element, attrs, linkCtrl) {
+
+
 
         if (!scope.concept) {
           console.error('conceptEdit directive requires concept to be specified');
@@ -28,17 +33,13 @@ angular.module('singleConceptAuthoringApp')
           console.error('conceptEdit directive requires branch to be specified');
         }
 
-        if (!scope.static) {
-          console.error('conceptEdit directive requires static state to be specified');
-        }
-
         console.debug('before check', scope.static, scope.static === false, scope.static === 'false');
 
         // convert static flag from string to boolean
-        if (scope.static === 'false') {
-          scope.isStatic = false;
-        } else {
+        if (scope.static === 'true') {
           scope.isStatic = true;
+        } else {
+          scope.isStatic = false;
         }
         console.debug('after check', scope.isStatic, !scope.isStatic);
 
@@ -57,6 +58,8 @@ angular.module('singleConceptAuthoringApp')
           }
 
         };
+
+        console.debug(scope.concept, scope.branch, scope.parentBranch, scope.static);
 
         // concept history for undoing changes
         scope.conceptSessionHistory = [];
@@ -103,7 +106,7 @@ angular.module('singleConceptAuthoringApp')
           $rootScope.$broadcast('stopEditing', {concept: concept});
         };
 
-        scope.saveConcept = function (suppressMessage) {
+        scope.saveConcept = function () {
 
           // delete any existing error before passing to services
           delete scope.concept.error;
@@ -366,11 +369,10 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
         };
 
-        scope.getInitialSelectedDialect = function(description) {
+        scope.getInitialSelectedDialect = function (description) {
           return description.acceptabilityMap.hasOwnProperty('900000000000508004') ? '900000000000508004' :
-            (description.acceptabilityMap.hasOwnProperty('900000000000508004') ? '900000000000508004' : '')
-        }
-
+            (description.acceptabilityMap.hasOwnProperty('900000000000508004') ? '900000000000508004' : '');
+        };
 
         // List of acceptable reasons for inactivating a description
         // TODO:  More metadata to be retrieved on init and stored
@@ -956,10 +958,26 @@ angular.module('singleConceptAuthoringApp')
           scope.saveConcept();
         }
 
+        scope.revertConcept = function () {
+          if (!scope.parentBranch) {
+            return;
+          }
+
+          notificationService.sendMessage('Reverting concept ' + scope.concept.fsn + ' to parent branch ' + scope.parentBranch, 0);
+
+          snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response) {
+            scope.concept = response;
+            notificationService.clear();
+            autoSave();
+          }, function (error) {
+            notificationService.sendError('Error reverting: Could not retrieve concept ' + scope.concept.conceptId + ' from parent branch ' + scope.parentBranch);
+          });
+
+        };
+
         scope.showModel = function () {
           $rootScope.$broadcast('conceptEdit.showModel');
         };
-
       }
     };
   })
