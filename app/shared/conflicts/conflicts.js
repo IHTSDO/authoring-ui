@@ -259,13 +259,15 @@ angular.module('singleConceptAuthoringApp')
               var draggedIndex = -1;
               for (var i = 0; i < newConceptArray.length; i++) {
 
-                // NOTE: Compare by id, as dragged/dropped concepts have
+                console.debug('checking concept', newConceptArray[i]);
+
+                // NOTE: Compare by.conceptId, as dragged/dropped concepts have
                 // $hashkey which prevents true equality checking
-                if (newConceptArray[i].id === droppedConcept.id) {
+                if (newConceptArray[i].conceptId === droppedConcept.conceptId) {
                   console.debug('found dropped');
                   droppedIndex = i;
                 }
-                if (newConceptArray[i].id === draggedConcept.id) {
+                if (newConceptArray[i].conceptId === draggedConcept.conceptId) {
                   draggedIndex = i;
                   console.debug('found dragged');
                 }
