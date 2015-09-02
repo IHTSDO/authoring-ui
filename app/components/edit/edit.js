@@ -11,8 +11,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       .when('/:mode/:projectKey/:taskKey', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
-        resolve: {
-        }
+        resolve: {}
       });
   })
 
@@ -356,15 +355,37 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      // remove the concept
-      var index = $scope.concepts.indexOf(data.concept);
-      $scope.concepts.splice(index, 1);
-      $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.conceptId), 1);
-      $scope.updateUiState();
+      console.debug('Received stopEditing request', data);
 
-      // set editing flags
-      flagEditedItems();
+      // if in conflicts view, remove from conflict lists
+      if ($scope.thisView === 'conflicts') {
+        for (var i = 0; i < $scope.conflictConceptsBase.length; i++) {
+          if ($scope.conflictConceptsBase[i].conceptId === data.conceptId) {
+            $scope.conflictConceptsBase.splice(i, 1);
+            break;
+          }
+        }
+        for (i = 0; i < $scope.conflictConceptsBranch.length; i++) {
+          if ($scope.conflictConceptsBranch[i].conceptId === data.conceptId) {
+            $scope.conflictConceptsBranch.splice(i, 1);
+            break;
+          }
+        }
+        $scope.setConflictConceptPairs();
+      }
 
+      // otherwise, editing view, remove from edit list
+      else {
+
+        // remove the concept
+        var index = $scope.concepts.indexOf(data.concept);
+        $scope.concepts.splice(index, 1);
+        $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.conceptId), 1);
+        $scope.updateUiState();
+
+        // set editing flags
+        flagEditedItems();
+      }
     });
 
 // creates a blank (unsaved) concept in the editing list
@@ -460,21 +481,137 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     //////////////////////////////////////////
-    // Conflict Report
+    // Conflict Report & Controls
     //////////////////////////////////////////
+
+    // initialize concept edit arrays
+    $scope.conflictConceptsBase = [];
+    $scope.conflictConceptsBranch = [];
+
     $scope.startConflictReportPolling = function () {
-      $timeout(function() {
-        scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.conflictsContainer.conflicts = response ? response : {};
-        });
-      }, 10000);
+
+      // set timeout to put all loaded concepts into conflicts container
+      // TODO Remove this once actual conflict data begins to be retrieved
+      $timeout(function () {
+        console.debug('setting conflicts.concepts to', $scope.concepts);
+        $scope.conflictsContainer.conflicts.concepts = $scope.concepts;
+      }, 5000);
+      /*
+       TODO: Renable once done with dummy data
+       $timeout(function() {
+       scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+       $scope.conflictsContainer.conflicts = response ? response : {};
+       });
+       }, 10000);*/
     };
 
-    //////////////////////////////////////////
-    // Initialization
-    //////////////////////////////////////////
+    $scope.setConflictConceptPairs = function () {
 
-    // initialize the container objects
+      console.debug('getting conflict concept pairs', $scope.conflictConceptsBase, $scope.conflictConceptsBranch);
+      var conflictConceptPairs = [];
+
+      // cycle over base conflict concepts
+      angular.forEach($scope.conflictConceptsBase, function (conflictConceptBase) {
+
+        var conflictConceptPair = {baseConcept: conflictConceptBase};
+
+        console.debug('Finding match for ', conflictConceptBase.conceptId);
+        // cycle over the branch conflict concepts for a match
+        angular.forEach($scope.conflictConceptsBranch, function (conflictConceptBranch) {
+          if (conflictConceptBranch.conceptId === conflictConceptBase.conceptId) {
+            console.debug('Found match for ', conflictConceptBase.conceptId);
+            conflictConceptPair.branchConcept = conflictConceptBranch;
+          }
+        });
+        conflictConceptPairs.push(conflictConceptPair);
+      });
+
+      // TODO Consider case where a project concept exists but branch does not?
+
+      console.debug('conflict concept pairs', conflictConceptPairs);
+      $scope.conflictConceptPairs = conflictConceptPairs;
+    };
+
+    // watch for concept conflict selection from the conflicts view
+    $scope.$on('editConflictConcepts', function (event, data) {
+
+      if (!data) {
+        return;
+      }
+      console.debug('Received request to load conflict concepts', data);
+
+      var conceptIds = data.conceptIds;
+
+      console.debug('adding concept to edit list for ids', conceptIds);
+      if (!conceptIds || !Array.isArray(conceptIds)) {
+        return;
+      }
+
+      // remove any concept ids that already exist
+      angular.forEach($scope.conflictConceptsBranch, function (concept) {
+        if (conceptIds.indexOf(concept.id) !== -1) {
+          conceptIds.splice(conceptIds.indexOf(concept.id), 1);
+        }
+      });
+
+      // send loading notification for user display
+      notificationService.sendMessage('Loading ' + conceptIds.length + ' concepts for conflict review...', 10000, null);
+
+      var finalLength = $scope.conflictConceptsBase + conceptIds.length;
+      console.debug('final length expected', finalLength);
+
+      // cycle over requested ids
+      angular.forEach(conceptIds, function (conceptId) {
+
+        // get the task branch concept
+        snowowlService.getFullConcept(conceptId, $scope.branch).then(function (response) {
+
+            console.debug('branch concept', response);
+            $scope.conflictConceptsBranch.push(response);
+
+            // TODO Figure out why the hell this isn't working
+            console.debug(finalLength, $scope.conflictConceptsBranch.length, $scope.conflictConceptsBase.length, $scope.conflictConceptsBranch.length === finalLength, $scope.conflictConceptsBase.length === finalLength);
+            if ($scope.conflictConceptsBranch.length === finalLength && $scope.conflictConceptsBase.length === finalLength) {
+              notificationService.sendMessage('Successfully loaded concepts in conflict', 5000);
+            }
+
+            $scope.setConflictConceptPairs();
+
+          },
+          function (error) {
+
+            // TODO Replace with error, but for now ignore created conccpets
+            // that do not exist on the base branch
+          }
+        )
+        ;
+
+        // get the project base concept
+        snowowlService.getFullConcept(conceptId, $scope.projectBranch).then(function (response) {
+
+            console.debug('base concept', response);
+            $scope.conflictConceptsBase.push(response);
+
+
+            console.debug(finalLength, $scope.conflictConceptsBranch.length, $scope.conflictConceptsBase.length, $scope.conflictConceptsBranch.length === finalLength, $scope.conflictConceptsBase.length === finalLength);
+          if ($scope.conflictConceptsBranch.length === finalLength && $scope.conflictConceptsBase.length === finalLength) {
+              notificationService.sendMessage('Successfully loaded concepts in conflict', 5000);
+            }
+
+            $scope.setConflictConceptPairs();
+          },
+          function (error) {
+            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.projectBranch, 0);
+          }
+        );
+      });
+    });
+
+//////////////////////////////////////////
+// Initialization
+//////////////////////////////////////////
+
+// initialize the container objects
     $scope.classificationContainer = {
       id: null,
       status: 'Loading...',  // NOTE: Overwritten by validation field
@@ -482,7 +619,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       relationshipChanges: []
     };
     $scope.validationContainer = {
-      executionStatus: 'Loading...',  // NOTE: Overwritten by validation field
+      executionStatus: 'Loading...',  // NOTE: Overwritten by validation
+                                      // field
       report: null
     };
     $scope.feedbackContainer = {
@@ -490,14 +628,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       feedback: null
     };
     $scope.conflictsContainer = {
-      conflicts: { concepts: [] }
+      conflicts: {concepts: []}
     };
 
-    // populate the container objects
+// populate the container objects
     $scope.getLatestClassification();
     $scope.getLatestValidation();
     $scope.getLatestReview();
     $scope.startConflictReportPolling();
 
   }
-);
+)
+;
