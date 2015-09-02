@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
                   // TODO:  For long names this will almost certainly cause a wrap/overlay problem
                   var size = {
                       width: element.width(),
-                      height: element.parent().parent().children().eq(1).height() - 44
+                      height: element.parent().parent().children().eq(1).height()
                   };
                   return size
               };
@@ -32,14 +32,13 @@ angular.module('singleConceptAuthoringApp')
                   drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               }, true);
 //              scope.$watch('view', function(newVal, oldVal){
-//                  scope.size = scope.getSize();
-//                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-//              }, true);
-//              scope.$watch(scope.getSize(), function(newVal, oldVal){
-//                  scope.size = scope.getSize();
+//                  document.getElementById('canvas-' + scope.concept.conceptId).remove();
+//                  document.getElementById('image-' + scope.concept.conceptId).remove();
 //                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
 //              }, true);
 //              scope.$on('editModelDraw', function() {
+//                  //document.getElementById('canvas-' + scope.concept.conceptId).remove();
+//                  //document.getElementById('image-' + scope.concept.conceptId).remove();
 //                  drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
 //              }, true);
 //              scope.$on('comparativeModelDraw', function() {
