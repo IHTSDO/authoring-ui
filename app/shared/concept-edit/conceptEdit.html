@@ -1,5 +1,17 @@
 <div class="edits editing-form ">
 
+  <style>
+    .revert-button {
+      color: white;
+      background-color: red;
+      border-radius: 10px;
+      padding: 15px;
+      margin-right: 10px;
+      text-transform: none;
+    }
+
+  </style>
+
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="concept.error">
     <button type="button" class="close" data-dismiss="alert">×</button>
@@ -34,6 +46,7 @@
       <button type="button" class="btn-default  grey darken-4 title-text fsn-title-button"><span class="fsn">{{concept.fsn}}</span><span
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
     </div>
+
     <div class="pull-right m-l-5 m-r-5 ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               ng-disabled="isStatic"
@@ -44,10 +57,13 @@
       </select>
     </div>
     <div class="pull-right no-margin edits concept-title">
+
+      <!-- Revert button only appears if parent is specified -->
+      <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">Revert</button>
+
+      <!-- control buttons -->
       <button ng-if="!isStatic" type="button" class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
               title="Remove Concept" ng-click="removeConcept(concept)"></button>
-      <!-- TODO Fix this. Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
-
       <button ng-if="!isStatic"
               type="button"
               style="vertical-align: bottom"
