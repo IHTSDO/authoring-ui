@@ -940,13 +940,13 @@ angular.module('singleConceptAuthoringApp')
           }
           if(activeFsn.length !== 1)
           {
-              scope.concept.warning = 'Concept with id: ' + concept.conceptId + ' Must have exactly one active FSN. Autosaving Suspended until corrected.'
+              scope.concept.warning = 'Concept with id: ' + concept.conceptId + ' Must have exactly one active FSN. Autosaving Suspended until corrected.';
               return false;
           }
 
           // check descriptions
-          for (var i = 0; i < concept.descriptions.length; i++) {
-            if (!scope.isDescriptionValid(concept.descriptions[i])) {
+          for (var k = 0; k < concept.descriptions.length; k++) {
+            if (!scope.isDescriptionValid(concept.descriptions[k])) {
               return false;
             }
           }
