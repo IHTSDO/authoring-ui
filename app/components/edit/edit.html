@@ -97,11 +97,11 @@
         </div>
 
         <!-- model & concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" >
+        <div class="row no-gutter" ng-repeat="concept in concepts">
 
           <!-- model -->
           <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="height: 100%">
-            <div draw-model class="modelScrollBox" concept="concept" ></div>
+            <div draw-model class="modelScrollBox" concept="concept"></div>
           </div>
 
           <!-- concept -->
@@ -143,11 +143,11 @@
         </div>
 
         <!-- model & concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" >
+        <div class="row no-gutter" ng-repeat="concept in concepts">
 
           <!-- model -->
           <div class="no-gutter col-sm-7 col-md-7 col-lg-7" style="height: 100%">
-            <div draw-model class="modelScrollBox" concept="concept" ></div>
+            <div draw-model class="modelScrollBox" concept="concept"></div>
           </div>
 
           <!-- concept -->
@@ -188,7 +188,7 @@
         </div>
 
         <!-- model & concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" >
+        <div class="row no-gutter" ng-repeat="concept in concepts">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -228,7 +228,7 @@
         </div>
 
         <!-- model & concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" >
+        <div class="row no-gutter" ng-repeat="concept in concepts">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -267,7 +267,7 @@
         </div>
 
         <!-- concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" >
+        <div class="row no-gutter" ng-repeat="concept in concepts">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -307,7 +307,7 @@
         </div>
 
         <!-- concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" >
+        <div class="row no-gutter" ng-repeat="concept in concepts">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -327,42 +327,32 @@
 
       <!-- conflict report -->
       <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-        <div conflicts conflict-container="conflictContainer" target-branch="branch" source-branch="projectBranch"></div>
+        <div conflicts conflicts-container="conflictsContainer" target-branch="branch"
+             source-branch="projectBranch"></div>
       </div>
 
-      <!-- from base branch:  non-editable, non-creatable -->
-      <div class="no-gutter col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-3">
+      <!-- base and branch concept pairs -->
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
 
-        <!-- concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" id="concept-base-{{concept.conceptId}}">
+        <div class="row no-gutter darken-3 grey" ng-repeat="conflictConceptPair in conflictConceptPairs">
 
-          <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
-            <div concept-edit concept="concept"
-                 branch="branch" static="true"
-              >
+          <!-- base concept -->
+          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 col-xl-5 no-gutter">
+            <div concept-edit concept="conflictConceptPair.baseConcept"
+                 branch="projectBranch" static="true">
             </div>
           </div>
 
-        </div>
-      </div>
-
-      <!-- editable, non-creatable -->
-      <div class="no-gutter col-xs-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
-
-        <!-- concept data-->
-        <div class="row no-gutter" ng-repeat="concept in concepts" >
-
-          <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
-            <div concept-edit concept="concept"
-                 branch="branch" static="false"
-              >
+          <!-- branch concept -->
+          <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 no-gutter">
+            <div concept-edit concept="conflictConceptPair.branchConcept"
+                 branch="branch" static="false">
             </div>
           </div>
-
         </div>
+
       </div>
+
 
     </div>
     <!--

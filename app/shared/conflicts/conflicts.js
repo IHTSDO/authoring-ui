@@ -9,8 +9,8 @@ angular.module('singleConceptAuthoringApp')
         transclude: false,
         replace: true,
         scope: {
-          // feedback container structure:
-          // { conceptsToReview: [...], conceptsReviewed: [...] }
+          // conflicts container structure:
+          // { conceptsToResolve: [...], conceptsResolved: [...] }
 
           conflictsContainer: '=',
 
@@ -21,128 +21,318 @@ angular.module('singleConceptAuthoringApp')
           targetBranch: '='
 
         },
-        templateUrl: 'shared/conflict-report/conflictReport.html',
+        templateUrl: 'shared/conflicts/conflicts.html',
 
         link: function (scope, element, attrs, linkCtrl) {
 
-          // dummy data for now
-          scope.conflictsContainer.concepts = [
-            { taskKey: '1', taskName: 'Some Task', projectName: 'Some Project', author: 'Some Author', term: 'Concept One', conceptId: '1' },
-            { taskKey: '2', taskName: 'Some Task', projectName: 'Some Project', author: 'Some Author', term: 'Concept Two', conceptId: '2' },
-            { taskKey: '3', taskName: 'Some Task', projectName: 'Some Project', author: 'Some Author', term: 'Concept Three', conceptId: '3' },
-            { taskKey: '4', taskName: 'Some Task', projectName: 'Some Project', author: 'Some Author', term: 'Concept Four', conceptId: '4' },
-            { taskKey: '5', taskName: 'Some Task', projectName: 'Some Project', author: 'Some Author', term: 'Concept Five', conceptId: '5' },
-            { taskKey: '6', taskName: 'Some Task', projectName: 'Some Project', author: 'Some Author', term: 'Concept Six', conceptId: '6' },
-          ];
-
-          scope.conflictsContainer.conflictsResolved = [];
-
-          scope.conflictsContainer.conflictsToResolve = [];
-
-          // declare table parameters
-          scope.conceptsToReviewTableParams = new NgTableParams({
+          // declare To Resolve table parameters
+          scope.conceptsToResolveTableParams = new NgTableParams({
               page: 1,
               count: 10,
-              sorting: {term: 'asc'},
-              orderBy: 'term'
+              sorting: {fsn: 'asc'},
+              orderBy: 'fsn'
             },
             {
               filterDelay: 50,
-              total: scope.feedbackContainer && scope.feedbackContainer.review && scope.feedbackContainer.review.conceptsToReview ?
-                scope.feedbackContainer.review.conceptsToReview.length : 0,
+              total: scope.conflictsContainer && scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.conceptsToResolve ?
+                scope.conflictsContainer.conflicts.conceptsToResolve.length : 0,
 
               getData: function ($defer, params) {
 
-                console.debug('getdata');
-
-                if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
-                  scope.conceptsToReviewViewed = [];
+                if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsToResolve || scope.conflictsContainer.conflicts.conceptsToResolve.length === 0) {
+                  console.debug('in null if');
+                  scope.conceptsToResolveViewed = [];
                 } else {
 
-                  /*var searchStr = params.filter().search;
-                   if (searchStr) {
-                   myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
-                   return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
-                   });
-                   } else {
-                   myData = scope.feedbackContainer.review.conceptsToReview;
-                   }*/
+                  console.debug(scope.conflictsContainer.conflicts);
 
-                  console.debug(params.filter());
-                  var myData = params.filter() ?
-                    $filter('filter')(scope.feedbackContainer.review.conceptsToReview, params.filter()) :
-                    scope.feedbackContainer.review.conceptsToReview;
+                  // filter
+                  var conceptsToResolveViewed = params.filter() ?
+                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsToResolve, params.filter()) :
+                    scope.conflictsContainer.conflicts.conceptsToResolve;
 
-                  // filter based on presence of feedback if requested
-                  if (scope.viewOnlyConceptsWithFeedback) {
-                    console.debug('Retrieving only concepts with messages');
-                    //myData =  $filter('filter')(myData, { 'messages': '!'});
-
-                    // really ahckish solution because the above filter for
-                    // swome bizarre reason isn't working
-                    var newData = [];
-                    angular.forEach(myData, function (item) {
-                      if (item.messages && item.messages.length > 0) {
-                        newData.push(item);
-                      }
-                      myData = newData;
-                    });
-
-                    //  $scope.filteredItems = $filter('filter')($scope.items,
-                    // { 'colours': '!!' });
-                  }
-                  console.debug(myData);
+                  console.debug(conceptsToResolveViewed);
 
                   // hard set the new total
-                  params.total(myData.length);
+                  params.total(conceptsToResolveViewed.length);
 
-                  myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
+                  // order
+                  conceptsToResolveViewed = params.sorting() ? $filter('orderBy')(conceptsToResolveViewed, params.orderBy()) : conceptsToResolveViewed;
 
                   // extract the paged results
-                  scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  scope.conceptsToResolveViewed = (conceptsToResolveViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+
+                  console.debug(scope.conceptsToResolveViewed);
+
                 }
               }
             }
           );
 
-          // declare table parameters
-          scope.conceptsReviewedTableParams = new NgTableParams({
+          // declare Resolved table parameters
+          scope.conceptsResolvedTableParams = new NgTableParams({
               page: 1,
               count: 10,
-              sorting: {term: 'asc'},
-              orderBy: 'term'
+              sorting: {fsn: 'asc'},
+              orderBy: 'fsn'
             },
             {
               filterDelay: 50,
-              total: scope.feedbackContainer && scope.feedbackContainer.review && scope.feedbackContainer.review.conceptsReviewed ?
-                scope.feedbackContainer.review.conceptsReviewed.length : 0,
+              total: scope.conflictsContainer && scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.conceptsResolved ?
+                scope.conflictsContainer.conflicts.conceptsResolved.length : 0,
+
               getData: function ($defer, params) {
 
-                if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsReviewed || scope.feedbackContainer.review.conceptsReviewed.length === 0) {
-                  scope.conceptsReviewedViewed = [];
+                if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsResolved || scope.conflictsContainer.conflicts.conceptsResolved.length === 0) {
+                  scope.conceptsResolvedViewed = [];
                 } else {
 
-                  var myData = params.filter() ?
-                    $filter('filter')(scope.feedbackContainer.review.conceptsReviewed, params.filter()) :
-                    scope.feedbackContainer.review.conceptsReviewed;
+
+                  // filter
+                  var conceptsResolvedViewed = params.filter() ?
+                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsResolved, params.filter()) :
+                    scope.conflictsContainer.conflicts.conceptsResolved;
 
                   // hard set the new total
-                  params.total(myData.length);
+                  params.total(conceptsResolvedViewed.length);
 
-                  // sort -- note this doubletriggers $watch statement....
-                  // but we want the actual order to be preserved in the
-                  // original  array for reordering purposes
-                  myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
+                  // order
+                  conceptsResolvedViewed = params.sorting() ? $filter('orderBy')(conceptsResolvedViewed, params.orderBy()) : conceptsResolvedViewed;
 
-                  // TODO Enable filtering
-
-                  // extract the paged results -- SEE NOTE AT START
-                  scope.conceptsReviewedViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  // extract the paged results
+                  scope.conceptsResolvedViewed = (conceptsResolvedViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
             }
           );
+
+          //////////////////////////////////////////////
+          // Resolved List Functions
+          //////////////////////////////////////////////
+
+          // update the resolved list
+          function updateResolvedListUiState() {
+            var conceptIds = [];
+            angular.forEach(scope.conflictsContainer.conflicts.conceptsResolved, function (concept) {
+              conceptIds.push(concept.id);
+            });
+            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'resolved-list', conceptIds);
+          }
+
+          // move item from ToResolve to Resolved
+          scope.addToResolved = function (item, stopUiStateUpdate) {
+            item.selected = false;
+            scope.conflictsContainer.conflicts.conceptsResolved.push(item);
+            var elementPos = scope.conflictsContainer.conflicts.conceptsToResolve.map(function (x) {
+              return x.id;
+            }).indexOf(item.id);
+            scope.conflictsContainer.conflicts.conceptsToResolve.splice(elementPos, 1);
+            scope.conceptsToResolveTableParams.reload();
+            scope.conceptsResolvedTableParams.reload();
+
+            // if stop request not indicated (or not supplied), update ui state
+            if (!stopUiStateUpdate) {
+              updateResolvedListUiState();
+            }
+
+          };
+
+          // move item from Resolved to ToResolve
+          scope.returnToResolve = function (item, stopUiStateUpdate) {
+            item.selected = false;
+            scope.conflictsContainer.conflicts.conceptsToResolve.push(item);
+            var elementPos = scope.conflictsContainer.conflicts.conceptsResolved.map(function (x) {
+              return x.id;
+            }).indexOf(item.id);
+            scope.conflictsContainer.conflicts.conceptsResolved.splice(elementPos, 1);
+            scope.conceptsResolvedTableParams.reload();
+            scope.conceptsToResolveTableParams.reload();
+
+            // if stop request not indicated (or not supplied), update ui state
+            if (!stopUiStateUpdate) {
+              updateResolvedListUiState();
+            }
+          };
+
+          scope.selectAll = function (actionTab, isChecked) {
+            console.debug('selectAll', actionTab, isChecked);
+            if (actionTab === 1) {
+              angular.forEach(scope.conceptsToResolveViewed, function (item) {
+                item.selected = isChecked;
+              });
+            } else if (actionTab === 2) {
+              angular.forEach(scope.conceptsResolvedViewed, function (item) {
+                item.selected = isChecked;
+              });
+            }
+          };
+
+          // move all selected objects from one list to the other
+          // depending on current viewed tab
+          // NOTE:  Apply stopUiUpdate flag
+          scope.moveMultipleToOtherList = function (actionTab) {
+            if (actionTab === 1) {
+              angular.forEach(scope.conceptsToResolveViewed, function (item) {
+                if (item.selected === true) {
+                  console.debug('adding to resolved list', item);
+                  scope.addToResolved(item, true);
+                }
+              });
+            } else if (actionTab === 2) {
+              angular.forEach(scope.conceptsResolvedViewed, function (item) {
+                console.debug('checking item', item);
+                if (item.selected === true) {
+                  console.debug('adding to to resolve list', item);
+                  scope.returnToResolve(item, true);
+                }
+              });
+            }
+
+            // update the ui state
+            updateResolvedListUiState();
+          };
+
+          //////////////////////////////////
+          // Add To Edit List functions
+          //////////////////////////////////
+
+          scope.addToEdit = function (concept) {
+            // note that edit list notification expects array of concept ids
+            $rootScope.$broadcast('editConflictConcepts', {conceptIds: [concept.conceptId]});
+          };
+
+          // add all selected objects to edit panel list
+          // depending on current viewed tab
+          scope.addMultipleToEdit = function (actionTab) {
+            var conceptIds = [];
+            if (actionTab === 1) {
+              angular.forEach(scope.conceptsToResolveViewed, function (item) {
+                if (item.selected === true) {
+                  conceptIds.push(item.conceptId);
+                }
+              });
+            } else if (actionTab === 2) {
+              angular.forEach(scope.conceptsResolvedViewed, function (item) {
+                if (item.selected === true) {
+                  conceptIds.push(item.conceptId);
+                }
+              });
+            }
+
+            if (conceptIds.length > 0) {
+              $rootScope.$broadcast('editConflictConcepts', {conceptIds: conceptIds});
+            }
+          };
+
+          // function called when dropping concept
+          // targetIndex: the point at which to insert the dropped concept
+          // draggedConcept: {startIndex: N, concept: {...}}
+          scope.dropConcept = function (droppedConcept, draggedConcept, actionTab) {
+
+            console.debug('drop event', droppedConcept, draggedConcept, actionTab);
+
+            if (droppedConcept === draggedConcept) {
+              // do nothing if same target as source
+            } else {
+
+              // copy array (to avoid triggering watch statement below)
+              // on drop, disable auto-sorting of table params  -- otherwise
+              // drag/drop makes no sense, will only be auto-re-ordered
+              var newConceptArray = [];
+              switch (actionTab) {
+                case 1:
+                  newConceptArray = scope.conflictsContainer.conflicts.conceptsToResolve;
+                  scope.conceptsToResolveTableParams.sorting('');
+                  break;
+                case 2:
+                  newConceptArray = scope.conflictsContainer.conflicts.conceptsResolved;
+                  scope.conceptsResolvedTableParams.sorting('');
+                  break;
+                default:
+                  console.error('Invalid tab selected for grouping selected concepts');
+                  return;
+              }
+
+              // find the index at which the target concept is located
+              // NOTE: This cannot be passed in simply, due to filtering
+              var droppedIndex = -1;
+              var draggedIndex = -1;
+              for (var i = 0; i < newConceptArray.length; i++) {
+
+                // NOTE: Compare by id, as dragged/dropped concepts have
+                // $hashkey which prevents true equality checking
+                if (newConceptArray[i].id === droppedConcept.id) {
+                  console.debug('found dropped');
+                  droppedIndex = i;
+                }
+                if (newConceptArray[i].id === draggedConcept.id) {
+                  draggedIndex = i;
+                  console.debug('found dragged');
+                }
+              }
+
+              // check that both indices were found
+              if (droppedIndex === -1 || draggedIndex === -1) {
+                console.error('Error determining indices for drag and drop');
+                return;
+              }
+
+              // insert very slight timeout to allow dragndrop to check for
+              // requested effects (deleting too fast causes undefined-access
+              // errors)
+              $timeout(function () {
+                // remove the passed object
+                newConceptArray.splice(draggedIndex, 1);
+
+                // insert the dragged concept at the target index
+                newConceptArray.splice(droppedIndex, 0, draggedConcept);
+
+                // replace the appropriate array
+                switch (actionTab) {
+                  case 1:
+                    scope.conflictsContainer.conflicts.conceptsToResolve = newConceptArray;
+                    scope.conceptsToResolveTableParams.reload();
+                    break;
+                  case 2:
+                    scope.conflictsContainer.conflicts.conceptsResolved = newConceptArray;
+                    scope.conceptsResolvedTableParams.reload();
+                    break;
+                  default:
+                    console.error('Invalid tab selected for grouping selected concepts');
+                    return;
+                }
+
+              }, 25);
+            }
+          };
+
+          ////////////////////////////////////////////////////////////////////
+          // Watch freedback container -- used as Initialization Block
+          ////////////////////////////////////////////////////////////////////
+          scope.$watch('conflictsContainer', function () {
+
+            console.debug('conflictsContainer changed', scope.conflictsContainer);
+
+            if (!scope.conflictsContainer) {
+              return;
+            }
+
+            // pre-processing on initial load (conceptsToResolve and
+            // conceptsResolved do not yet exist)
+            if (scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.concepts.length > 0 && !scope.conflictsContainer.conflicts.conceptsToResolve && !scope.conflictsContainer.conflicts.conceptsResolved) {
+
+              console.debug('initial setup');
+
+              // INITIAL SETUP:  put all concepts into toResolve
+              scope.conflictsContainer.conflicts.conceptsToResolve = scope.conflictsContainer.conflicts.concepts;
+              scope.conflictsContainer.conflicts.conceptsResolved = [];
+
+              // on load, initialize tables -- all subsequent reloads manual
+              scope.conceptsToResolveTableParams.reload();
+              scope.conceptsResolvedTableParams.reload();
+            }
+          }, true);
         }
-      }
+      };
     }])
 ;

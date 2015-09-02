@@ -399,7 +399,9 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.setCaseSignificance = function (description, caseSignificance) {
-          if (!caseSignificance || !description) {
+
+          // if arguments not supplied or static element, do nothing
+          if (!caseSignificance || !description || scope.isStatic) {
             return;
           }
 
@@ -730,6 +732,10 @@ angular.module('singleConceptAuthoringApp')
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          // cancel if static
+          if (scope.isStatic) {
+            return;
+          }
           console.debug('Drag-n-drop: Relationship Target');
 
           // check if modifications can be made (via effectiveTime)
@@ -764,6 +770,11 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.dropRelationshipType = function (relationship, data) {
+
+          // cancel if static
+          if (scope.isStatic) {
+            return;
+          }
 
           console.debug('Drag-n-drop:  Relationship Type');
 

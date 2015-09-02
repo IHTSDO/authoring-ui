@@ -39,7 +39,7 @@
       </select>
     </div>
     <div class="pull-right no-margin edits concept-title">
-      <button type="button" class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
+      <button ng-if="!isStatic" type="button" class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
               title="Remove Concept" ng-click="removeConcept(concept)"></button>
       <!-- TODO Fix this. Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
 
@@ -85,18 +85,19 @@
           <!-- Active/Inactive -->
           <button type="button"
                   style="vertical-align: bottom"
+                  ng-disabled="isStatic"
                   ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'md-settings-power button-width', {green : description.active}, {red: !description.active}]"
                   title="Active/Inactive"></button>
 
           <!-- Case Significance -->
           <span dropdown>
-            <button ng-disabled="isStatic" dropdown-toggle type="button" class=" blue accent-2 md md-spellcheck button-width"
+            <button dropdown-toggle type="button" class=" blue accent-2 md md-spellcheck button-width"
                     title="Case Significance (IN PROGRESS)"></button>
                       
             <ul style="min-width: 250px;" class="dropdown-menu case-s" role="menu" aria-labelledby="btn-append-to-body">
      
-              <li ng-repeat="caseSignificance in caseSignificances" style="color: black"
+              <li ng-disabled="isStatic" ng-repeat="caseSignificance in caseSignificances" style="color: black"
                   ng-click="setCaseSignificance(description, caseSignificance.id)">
                  
                 <span class="md md-radio-button-on col-md-1 no-padding " ng-show="caseSignificance.id === description.caseSignificance">  </span>
@@ -180,13 +181,14 @@
           <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
           <button type="button"
                   style="vertical-align: bottom"
+                  ng-disabled="isStatic"
                   ng-click="toggleRelationshipActive(relationship)"
                   ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
                   title="Active/Inactive"></button>
 
           <!-- relationship group -->
           <div class="pull-left rolegroup">
-          <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
+          <textarea style="" class="msd-elastic" ng-model="relationship.groupId" ng-disabled="isStatic"
                     ng-change="updateRelationship(relationship)"
                     class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
@@ -210,7 +212,7 @@
                drag-channel="conceptPropertiesObj"
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
+          <textarea style="" ng-disabled="isStatic" class="msd-elastic" disabled ng-model="relationship.target.fsn"
                     class="form-control color_{{relationship.groupId}}"
                     type="text"
                     placeholder="#">
@@ -243,12 +245,13 @@
           <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
           <button type="button"
                   style="vertical-align: bottom"
+                  ng-disabled="isStatic"
                   ng-click="toggleRelationshipActive(relationship)"
                   ng-class="[btn, btn-default, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
                   title="Active/Inactive"></button>
           <!-- relationship group -->
           <div class="pull-left rolegroup">
-          <textarea style="" class="msd-elastic" disabled ng-model="relationship.groupId"
+          <textarea style="" class="msd-elastic"  ng-disabled="isStatic" ng-model="relationship.groupId"
                     ng-change="updateRelationship(relationship)"
                     class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
@@ -257,6 +260,7 @@
           <!-- attribute type -->
           <div class="pull-left attr " ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
                drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+               ng-disabled="isStatic"
                ui-on-drop="dropRelationshipType(relationship, $data)">
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
                     class="form-control color_{{relationship.groupId}}"
