@@ -13,7 +13,7 @@
    </div>
   <div class="module pull-left">
     <label class="control-label">Module Id</label> 
-    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="concept.moduleId" ng-disabled="static"
+    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="concept.moduleId" ng-disabled="isStatic"
                   ng-change="setConceptModule(concept)" ng-options="module.id as (module.name) for module in modules">
     </select>
    <!-- removed module id "module.id + ': ' + "-->
