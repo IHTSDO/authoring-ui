@@ -300,11 +300,88 @@ angular.module('singleConceptAuthoringApp')
                     scope.conceptsResolvedTableParams.reload();
                     break;
                   default:
-                    console.error('Invalid tab selected for grouping selected concepts');
+                    console.error('Invalid tab selected dropping conflict concept');
                     return;
                 }
 
               }, 25);
+            }
+          };
+
+          // allow for grouped reordering
+          scope.groupSelectedConcepts = function (actionTab) {
+            console.debug('reordering based on selected items for tab', actionTab);
+
+            // copy array (for convenience) and disable sorting
+            // otherwise grouping will be overriden
+            var newConceptArray = [];
+            switch (actionTab) {
+              case 1:
+                newConceptArray = scope.conflictsContainer.conflicts.conceptsToResolve;
+                scope.conceptsToResolveTableParams.sorting('');
+                break;
+              case 2:
+                newConceptArray = scope.conflictsContainer.conflicts.conceptsResolved;
+                scope.conceptsResolvedTableParams.sorting('');
+                break;
+              default:
+                console.error('Invalid tab selected for grouping selected concepts');
+                return;
+            }
+
+            // find the insertion point
+            var selectedFound = false;
+            var insertIndex = -1;
+            for (var i = 0; i < newConceptArray.length; i++) {
+
+              // if selected, mark entry into selected items
+              if (newConceptArray[i].selected === true) {
+                selectedFound = true;
+              }
+
+              // stop if not selected and a previously selected item was found
+              // set the insert to index to after the last found selected
+              else if (selectedFound === true) {
+                insertIndex = i;
+                break;
+              }
+            }
+
+            console.debug('insert index', insertIndex);
+
+            // check that a selected item was found and is not the last item
+            if (insertIndex === -1 || insertIndex === newConceptArray.length - 1) {
+              return;
+            }
+
+            // cycle over all concepts to.conflicts in reverse
+            var conceptsToInsert = [];
+            for (var j = newConceptArray.length - 1; j > insertIndex; j--) {
+
+              // if selected, save (FILO) and remove
+              if (newConceptArray[j].selected) {
+                conceptsToInsert.unshift(newConceptArray[j]);
+                newConceptArray.splice(j, 1);
+              }
+            }
+
+            console.debug('elements to shift', conceptsToInsert);
+
+            // splice in the array at the insert point
+            Array.prototype.splice.apply(newConceptArray, [insertIndex, 0].concat(conceptsToInsert));
+
+            // assign to conflicts container to trigger watch statement
+            switch (actionTab) {
+              case 1:
+                scope.conflictsContainer.conflicts.conceptsToResolve = newConceptArray;
+                scope.conceptsToResolveTableParams.reload();
+                break;
+              case 2:
+                scope.conflictsContainer.conflicts.conceptsResolved = newConceptArray;
+                scope.conceptsResolvedTableParams.reload();
+                break;
+              default:
+                return;
             }
           };
 
