@@ -110,6 +110,7 @@ angular.module('singleConceptAuthoringApp')
 
           // delete any existing error before passing to services
           delete scope.concept.error;
+          delete scope.concept.warning;
 
           // deep copy the concept for subsequent modification
           // (1) relationship display names
@@ -927,6 +928,20 @@ angular.module('singleConceptAuthoringApp')
           if (!concept.moduleId) {
             console.error('Concept moduleId must be set');
             return false;
+          }
+          var activeFsn = [];
+          for(var i = 0; i < concept.descriptions.length; i++)
+          {
+              console.log(concept.descriptions[i]);
+               if(concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true)
+               {
+                    activeFsn.push(concept.descriptions[i]);   
+               }
+          }
+          if(activeFsn.length !== 1)
+          {
+              scope.concept.warning = 'Concept with id: ' + concept.conceptId + ' Must have exactly one active FSN. Autosaving Suspended until corrected.'
+              return false;
           }
 
           // check descriptions
