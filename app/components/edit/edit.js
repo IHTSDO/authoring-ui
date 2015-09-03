@@ -34,8 +34,15 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.thisView = null;
     $scope.lastView = null;
 
-    $scope.rebase = function(){
-        scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function(response){});
+    $scope.rebase = function () {
+      notificationService.sendMessage('Rebasing task...', 0);
+      scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+
+        console.debug('rebase task completed', response);
+        if (response !== null) {
+          notificationService.sendMessage('Task successfully rebased', 5000);
+        }
+      });
     };
     $scope.setView = function (name) {
       console.debug('setting view (requested, this, last)', name,
@@ -362,14 +369,19 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // if in conflicts view, remove from conflict lists
       if ($scope.thisView === 'conflicts') {
+
+        console.debug('conflict mode, remove pair');
         for (var i = 0; i < $scope.conflictConceptsBase.length; i++) {
-          if ($scope.conflictConceptsBase[i].conceptId === data.conceptId) {
+          console.debug('checking', $scope.conflictConceptsBase[i].conceptId, data.concept.conceptId);
+          if ($scope.conflictConceptsBase[i].conceptId === data.concept.conceptId) {
+            console.debug('removing base concept');
             $scope.conflictConceptsBase.splice(i, 1);
             break;
           }
         }
         for (i = 0; i < $scope.conflictConceptsBranch.length; i++) {
-          if ($scope.conflictConceptsBranch[i].conceptId === data.conceptId) {
+          if ($scope.conflictConceptsBranch[i].conceptId === data.concept.conceptId) {
+            console.debug('removing branch concept');
             $scope.conflictConceptsBranch.splice(i, 1);
             break;
           }
@@ -505,7 +517,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($scope.conflictsContainer.conflicts.sourceReviewId) {
         snowowlService.getReview($scope.conflictsContainer.conflicts.sourceReviewId).then(function (response) {
 
-          console.debug('review',  response);
+          console.debug('review', response);
           if (!response) {
             deferred.reject();
           } else {
@@ -584,7 +596,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       if (!data) {
         return;
       }
-      console.debug('Received request to load conflict concepts', data);
 
       var conceptIds = data.conceptIds;
 
@@ -601,10 +612,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
 
       // send loading notification for user display
-      notificationService.sendMessage('Loading ' + conceptIds.length + ' concepts for conflict review...', 10000, null);
+      notificationService.sendMessage('Loading concepts for conflict review...', 5000, null);
 
       var finalLength = $scope.conflictConceptsBase + conceptIds.length;
-      console.debug('final length expected', finalLength);
 
       // cycle over requested ids
       angular.forEach(conceptIds, function (conceptId) {
@@ -612,37 +622,35 @@ angular.module('singleConceptAuthoringApp.edit', [
         // get the task branch concept
         snowowlService.getFullConcept(conceptId, $scope.branch).then(function (response) {
 
-            console.debug('branch concept', response);
+            // push to branch list
             $scope.conflictConceptsBranch.push(response);
 
-            // TODO Figure out why the hell this isn't working
-            console.debug(finalLength, $scope.conflictConceptsBranch.length, $scope.conflictConceptsBase.length, $scope.conflictConceptsBranch.length === finalLength, $scope.conflictConceptsBase.length === finalLength);
-            if ($scope.conflictConceptsBranch.length === finalLength && $scope.conflictConceptsBase.length === finalLength) {
+            // check if all requested concepts loaded
+            if (parseInt($scope.conflictConceptsBranch.length) === parseInt(finalLength) && parseInt($scope.conflictConceptsBase.length) === parseInt(finalLength)) {
               notificationService.sendMessage('Successfully loaded concepts in conflict', 5000);
             }
 
+            // set the pairs
             $scope.setConflictConceptPairs();
 
           },
           function (error) {
-
-            // TODO Replace with error, but for now ignore created conccpets
-            // that do not exist on the base branch
+            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.branch, 0);
           }
-        )
-        ;
+        );
 
         // get the project base concept
         snowowlService.getFullConcept(conceptId, $scope.projectBranch).then(function (response) {
 
-            console.debug('base concept', response);
+            // push to base list
             $scope.conflictConceptsBase.push(response);
 
-            console.debug(finalLength, $scope.conflictConceptsBranch.length, $scope.conflictConceptsBase.length, $scope.conflictConceptsBranch.length === finalLength, $scope.conflictConceptsBase.length === finalLength);
-            if ($scope.conflictConceptsBranch.length === finalLength && $scope.conflictConceptsBase.length === finalLength) {
+            // check if all requested concepts loaded
+            if (parseInt($scope.conflictConceptsBranch.length) === parseInt(finalLength) && parseInt($scope.conflictConceptsBase.length) === parseInt(finalLength)) {
               notificationService.sendMessage('Successfully loaded concepts in conflict', 5000);
             }
 
+            // set the pairs
             $scope.setConflictConceptPairs();
           },
           function (error) {
@@ -652,11 +660,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-//////////////////////////////////////////
-// Initialization
-//////////////////////////////////////////
+    //////////////////////////////////////////
+    // Initialization
+    //////////////////////////////////////////
 
-// initialize the container objects
+    // initialize the container objects
     $scope.classificationContainer = {
       id: null,
       status: 'Loading...',  // NOTE: Overwritten by validation field
