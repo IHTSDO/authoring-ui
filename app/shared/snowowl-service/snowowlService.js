@@ -379,6 +379,20 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    ////////////////////////////////
+    // Review Functions
+    ////////////////////////////////
+
+    // Get a single review (for conflict purposes)
+    // GET /reviews/{id}
+    function getReview(id) {
+      return $http.get(apiEndpoint + '/reviews/' + id).then(function(response) {
+        return response.data;
+      }, function(error) {
+        return null;
+      });
+    }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -414,7 +428,8 @@ angular.module('singleConceptAuthoringApp')
       addDialects: addDialects,
       getDialects: getDialects,
       downloadClassification: downloadClassification,
-      getDescriptionsForQuery: getDescriptionsForQuery
+      getDescriptionsForQuery: getDescriptionsForQuery,
+      getReview : getReview
 
     };
   }
