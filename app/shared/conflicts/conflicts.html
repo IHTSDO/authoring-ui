@@ -113,11 +113,12 @@
            role="tab"
            data-toggle="tab">Conflicts ({{conflictsContainer.conflicts.conceptsToResolve.length}})</a>
       </li>
-      <li role="presentation" class="" ><a style="margin: 0"
-            ng-click="actionTab=2"
-            aria-controls="home"
-            role="tab"
-            data-toggle="tab">Conflicts Resolved ({{conflictsContainer.conflicts.conceptsResolved.length}})</a>
+      <li role="presentation" class=""><a style="margin: 0"
+                                          ng-click="actionTab=2"
+                                          aria-controls="home"
+                                          role="tab"
+                                          data-toggle="tab">Conflicts Resolved
+                                                            ({{conflictsContainer.conflicts.conceptsResolved.length}})</a>
       </li>
 
 
@@ -182,7 +183,8 @@
               <button class="btn btn-round btn-default green lighten-2" title=""
                       ng-click="addToResolved(concept)"><span
                 class="md md-playlist-add "></span></button>
-              <button class="btn btn-round btn-default grey lighten-2" title="Show in edit panel" ng-click="addToEdit(concept)"><span
+              <button class="btn btn-round btn-default grey lighten-2" title="Show in edit panel"
+                      ng-click="addToEdit(concept)"><span
                 class="md md-edit "></span>
               </button>
               <button class="btn btn-round btn-default blue lighten-2" title="" ng-click="showModel(concept)"><span
@@ -262,7 +264,7 @@
         </script>
 
       </div>
-
+    </div>
   </div>
 </section>
 
