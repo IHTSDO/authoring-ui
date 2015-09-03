@@ -112,6 +112,7 @@ angular.module('singleConceptAuthoringApp')
 
           // update the resolved list
           function updateResolvedListUiState() {
+            console.debug('updateReswolvedListUiState')
             var uiState = {};
             var ids = [];
             angular.forEach(scope.conflictsContainer.conflicts.conceptsResolved, function (concept) {
@@ -126,15 +127,20 @@ angular.module('singleConceptAuthoringApp')
 
           // move item from ToResolve to Resolved
           scope.addToResolved = function (item, stopUiStateUpdate) {
-            console.debug('addToResolved', item, stopUiStateUpdate);
+
+            // deselect the item and push it to resolved list
             item.selected = false;
             scope.conflictsContainer.conflicts.conceptsResolved.push(item);
-            console.debug(scope.conflictsContainer.conflicts.conceptsResolved);
+
+            // find the index of the element by its id
             var elementPos = scope.conflictsContainer.conflicts.conceptsToResolve.map(function (x) {
               return x.id;
             }).indexOf(item.id);
+
+            // remove from ToResolve
             scope.conflictsContainer.conflicts.conceptsToResolve.splice(elementPos, 1);
-            console.debug(scope.conflictsContainer.conflicts.conceptsToResolve);
+
+            // reload tables
             scope.conceptsToResolveTableParams.reload();
             scope.conceptsResolvedTableParams.reload();
 
@@ -147,12 +153,20 @@ angular.module('singleConceptAuthoringApp')
 
           // move item from Resolved to ToResolve
           scope.returnToResolve = function (item, stopUiStateUpdate) {
+
+            // deselect item and move it to ToResolve list
             item.selected = false;
             scope.conflictsContainer.conflicts.conceptsToResolve.push(item);
+
+            // find element position by its id
             var elementPos = scope.conflictsContainer.conflicts.conceptsResolved.map(function (x) {
               return x.id;
             }).indexOf(item.id);
+
+            // remove from Resolved
             scope.conflictsContainer.conflicts.conceptsResolved.splice(elementPos, 1);
+
+            // reload tables
             scope.conceptsResolvedTableParams.reload();
             scope.conceptsToResolveTableParams.reload();
 
@@ -418,11 +432,13 @@ angular.module('singleConceptAuthoringApp')
               // get ui state
               scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
 
-                var conceptIdsResolved = response.hasOwnProperty('resolved') ? response.resolved : [];
+                console.debug('uistate', response);
+                var conceptIdsResolved = response.hasOwnProperty('resolvedIds') ? response.resolvedIds : [];
 
                 // check timestamp -- if altered, clear the resolved list
                 if (response.hasOwnProperty('timestamp')) {
                   if (response.timestamp !== scope.conflictsTimestamp) {
+                    console.debug('timestamp not current');
                     conceptIdsResolved = [];
                     notificationService.sendWarning('New conflict report detected, marking all conflicts not resolved');
                   }
@@ -430,6 +446,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // sort the concepts into Resolved and ToResolve
                 angular.forEach(scope.conflictsContainer.conflicts.concepts, function (concept) {
+                  console.debug(concept.id, conceptIdsResolved);
                   if (conceptIdsResolved.indexOf(concept.id) !== -1) {
                     scope.conflictsContainer.conflicts.conceptsResolved.push(concept);
                   } else {
