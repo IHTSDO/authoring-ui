@@ -155,9 +155,7 @@ angular.module('singleConceptAuthoringApp')
                 // implemented
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
 
-                // send notification of error with timeout to cleaer previous
-                // save message
-                notificationService.sendError('Error saving concept', 10000);
+                scope.concept.error = response.message;
 
                 // set the local error
                 scope.concept.error = response.message;
