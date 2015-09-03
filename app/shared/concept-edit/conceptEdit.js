@@ -7,14 +7,22 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: {
         // the concept being displayed
-        concept: '=concept',
+        concept: '=',
 
         // the branch of the concept
-        branch: '=branch',
+        branch: '=',
+
+        // the parent branch of the concept (not required)
+        parentBranch: '=',
+
+        // whether to display as static list for conflicts
+        static: '@?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
       link: function (scope, element, attrs, linkCtrl) {
+
+
 
         if (!scope.concept) {
           console.error('conceptEdit directive requires concept to be specified');
@@ -25,17 +33,33 @@ angular.module('singleConceptAuthoringApp')
           console.error('conceptEdit directive requires branch to be specified');
         }
 
+        console.debug('before check', scope.static, scope.static === false, scope.static === 'false');
+
+        // convert static flag from string to boolean
+        if (scope.static === 'true') {
+          scope.isStatic = true;
+        } else {
+          scope.isStatic = false;
+        }
+        console.debug('after check', scope.isStatic, !scope.isStatic);
+
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
             scope.isCollapsed = false;
+
+            // id required, used in drawModel.js
             $('#model' + concept.conceptId).css('display', 'inline-block');
           }
           else {
             scope.isCollapsed = true;
+
+            // id required, used in drawModel.js
             $('#model' + concept.conceptId).css('display', 'none');
           }
 
         };
+
+        console.debug(scope.concept, scope.branch, scope.parentBranch, scope.static);
 
         // concept history for undoing changes
         scope.conceptSessionHistory = [];
@@ -82,10 +106,11 @@ angular.module('singleConceptAuthoringApp')
           $rootScope.$broadcast('stopEditing', {concept: concept});
         };
 
-        scope.saveConcept = function (suppressMessage) {
+        scope.saveConcept = function () {
 
           // delete any existing error before passing to services
           delete scope.concept.error;
+          delete scope.concept.warning;
 
           // deep copy the concept for subsequent modification
           // (1) relationship display names
@@ -257,11 +282,11 @@ angular.module('singleConceptAuthoringApp')
               return descOrderMap[a.type] < descOrderMap[b.type] ? -1 : 1;
             }
 
-            // PREFERRED before ACCEPTABLE
-            if (a.acceptabilityMap && b.acceptabilityMap) {
-              return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
-            }
-
+            // TODO PREFERRED before ACCEPTABLE -- but which dialect?
+            /*  if (a.acceptabilityMap && b.acceptabilityMap) {
+             return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
+             }
+             */
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }
@@ -319,13 +344,8 @@ angular.module('singleConceptAuthoringApp')
 
         // the actual dialects
         scope.dialects = [
-
-          {abbr: 'en-us', ids: ['900000000000508004']},
-          {abbr: 'en-gb', ids: ['900000000000509007']},
-          {
-            abbr: 'en-us & en-gb',
-            ids: ['900000000000508004', '900000000000509007']
-          },
+          {abbr: 'en-us', id: '900000000000508004'},
+          {abbr: 'en-gb', id: '900000000000509007'}
         ];
 
         // define acceptability types
@@ -334,48 +354,10 @@ angular.module('singleConceptAuthoringApp')
           {id: 'ACCEPTABLE', abbr: 'Acceptable'}
         ];
 
-        // the disploayed dialect and acceptability
-        scope.selectedDialect = null;
-        scope.selectedAcceptability = null;
-
-        scope.getCurrentDialectAndAcceptability = function (description) {
-
-          var dialect = null;
-          //var accepta
-
-          // extract the acceptabilityMap dialect ids
-          var dialectIds = description.acceptabilityMap.keys;
-
-          // match the dialect ids against the current dialects
-          angular.forEach(scope.dialects, function (dialect) {
-
-            // if different lengths, not a match
-            if (dialect.ids.length === dialectIds.length) {
-
-
-              // perform a non-intersection
-              // TODO Return to this after questions answered (vague, huh?)
-             /* var diffArray = array1.filter(function (n) {
-                return array2.indexOf(n) != -1
-              });*/
-            }
-          });
-        };
-
-        // dialect object is item in scope.dialects, acceptability is item in
-        // scope.acceptabilities
-        scope.setDialectAndAcceptability = function (description, dialectSelection, acceptabilitySelection) {
-
-          description.acceptabilityMap = [];
-          angular.forEach(dialectSelection, function (dialect) {
-            description.acceptabilityMap[dialect.id] = acceptabilitySelection.id;
-          });
-
-          autoSave();
-        };
-
         scope.setCaseSignificance = function (description, caseSignificance) {
-          if (!caseSignificance || !description) {
+
+          // if arguments not supplied or static element, do nothing
+          if (!caseSignificance || !description || scope.isStatic) {
             return;
           }
 
@@ -387,45 +369,50 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
         };
 
+        scope.getInitialSelectedDialect = function (description) {
+          return description.acceptabilityMap.hasOwnProperty('900000000000508004') ? '900000000000508004' :
+            (description.acceptabilityMap.hasOwnProperty('900000000000508004') ? '900000000000508004' : '');
+        };
+
         // List of acceptable reasons for inactivating a description
         // TODO:  More metadata to be retrieved on init and stored
         var inactivateDescriptionReasons = [
-            {
-              id: '', text: 'No reason'
-            },
-            {
-              id: '',
-              text: 'Component moved elsewhere (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'Concept non-current (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'Duplicate component (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'Erroneous component (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'Inappropriate component (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'Limited component (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'Outdated component (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'Pending move (foundation metadata concept)'
-            }
-            ];
+          {
+            id: '', text: 'No reason'
+          },
+          {
+            id: '',
+            text: 'Component moved elsewhere (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'Concept non-current (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'Duplicate component (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'Erroneous component (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'Inappropriate component (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'Limited component (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'Outdated component (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'Pending move (foundation metadata concept)'
+          }
+        ];
 
         var inactivateDescriptionHistoricalReasons = [
             {
@@ -659,7 +646,7 @@ angular.module('singleConceptAuthoringApp')
               reasons: function () {
                 return reasons;
               },
-              historicalReasons: function() {
+              historicalReasons: function () {
                 return historicalReasons ? historicalReasons : [];
               }
             }
@@ -706,6 +693,10 @@ angular.module('singleConceptAuthoringApp')
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          // cancel if static
+          if (scope.isStatic) {
+            return;
+          }
           console.debug('Drag-n-drop: Relationship Target');
 
           // check if modifications can be made (via effectiveTime)
@@ -740,6 +731,11 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.dropRelationshipType = function (relationship, data) {
+
+          // cancel if static
+          if (scope.isStatic) {
+            return;
+          }
 
           console.debug('Drag-n-drop:  Relationship Type');
 
@@ -893,10 +889,21 @@ angular.module('singleConceptAuthoringApp')
             console.error('Concept moduleId must be set');
             return false;
           }
+          var activeFsn = [];
+          for (var i = 0; i < concept.descriptions.length; i++) {
+            console.log(concept.descriptions[i]);
+            if (concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true) {
+              activeFsn.push(concept.descriptions[i]);
+            }
+          }
+          if (activeFsn.length !== 1) {
+            scope.concept.warning = 'Concept with id: ' + concept.conceptId + ' Must have exactly one active FSN. Autosaving Suspended until corrected.';
+            return false;
+          }
 
           // check descriptions
-          for (var i = 0; i < concept.descriptions.length; i++) {
-            if (!scope.isDescriptionValid(concept.descriptions[i])) {
+          for (var k = 0; k < concept.descriptions.length; k++) {
+            if (!scope.isDescriptionValid(concept.descriptions[k])) {
               return false;
             }
           }
@@ -951,10 +958,26 @@ angular.module('singleConceptAuthoringApp')
           scope.saveConcept();
         }
 
+        scope.revertConcept = function () {
+          if (!scope.parentBranch) {
+            return;
+          }
+
+          notificationService.sendMessage('Reverting concept ' + scope.concept.fsn + ' to parent branch ' + scope.parentBranch, 0);
+
+          snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response) {
+            scope.concept = response;
+            notificationService.clear();
+            autoSave();
+          }, function (error) {
+            notificationService.sendError('Error reverting: Could not retrieve concept ' + scope.concept.conceptId + ' from parent branch ' + scope.parentBranch);
+          });
+
+        };
+
         scope.showModel = function () {
           $rootScope.$broadcast('conceptEdit.showModel');
         };
-
       }
     };
   })
