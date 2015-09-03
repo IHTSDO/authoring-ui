@@ -437,8 +437,8 @@ angular.module('singleConceptAuthoringApp')
       // POST /projects/{projectKey}/tasks/{taskKey}/rebase 
       // Rebase the task from the project
       rebaseTask: function (projectKey, taskKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
-          console.debug('Project ' + projectKey + ', task ' + taskKey + ' rebased', response);
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
+          notificationService.sendMessage('Task Rebased', 10000);
           return response.data;
         }, function (error) {
           console.error('Error rebasing project ' + projectKey + ', task ' + taskKey);
