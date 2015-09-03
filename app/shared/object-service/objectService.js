@@ -72,7 +72,7 @@ angular.module('singleConceptAuthoringApp')
         'relationships': [],
         'fsn': null,
         'definitionStatus': 'PRIMITIVE',
-        'active': false,
+        'active': true,
         'moduleId': '900000000000207008'
       };
 
