@@ -34,6 +34,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.thisView = null;
     $scope.lastView = null;
 
+    $scope.rebase = function(){
+        scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function(response){});
+    };
     $scope.setView = function (name) {
       console.debug('setting view (requested, this, last)', name,
         $scope.thisView, $scope.lastView);

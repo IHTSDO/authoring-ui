@@ -490,6 +490,13 @@ select.primitive {
     margin: 0px;
     line-height: 13px;
 }
+.Review.Completed.badge {
+    background-color: blue;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+}
 .Escalation.badge {
     background-color: red;
     font-size: 13px;
