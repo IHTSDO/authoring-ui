@@ -112,7 +112,7 @@ angular.module('singleConceptAuthoringApp')
 
           // update the resolved list
           function updateResolvedListUiState() {
-            console.debug('updateReswolvedListUiState')
+            console.debug('updateReswolvedListUiState');
             var uiState = {};
             var ids = [];
             angular.forEach(scope.conflictsContainer.conflicts.conceptsResolved, function (concept) {

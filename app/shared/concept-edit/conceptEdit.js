@@ -342,8 +342,8 @@ angular.module('singleConceptAuthoringApp')
 
         // the actual dialects
         scope.dialects = [
-          {abbr: 'en-us', id: '900000000000508004'},
-          {abbr: 'en-gb', id: '900000000000509007'}
+          {abbr: 'en-us', id: '900000000000508007'},
+          {abbr: 'en-gb', id: '900000000000509004'}
         ];
 
         // define acceptability types
@@ -449,8 +449,7 @@ angular.module('singleConceptAuthoringApp')
               id: '',
               text: 'WAS A association reference set (foundation metadata concept)'
             }
-          ]
-          ;
+          ];
 
         // get viewed descriptions
         scope.getDescriptions = function (checkForActive) {
