@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -488,21 +488,66 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conflictConceptsBase = [];
     $scope.conflictConceptsBranch = [];
 
-    $scope.startConflictReportPolling = function () {
+    $scope.conflictsSourceBranch = null;
+    $scope.conflictsTargetBranch = null;
 
-      // set timeout to put all loaded concepts into conflicts container
-      // TODO Remove this once actual conflict data begins to be retrieved
-      $timeout(function () {
-        console.debug('setting conflicts.concepts to', $scope.concepts);
-        $scope.conflictsContainer.conflicts.concepts = $scope.concepts;
-      }, 5000);
-      /*
-       TODO: Renable once done with dummy data
-       $timeout(function() {
-       scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-       $scope.conflictsContainer.conflicts = response ? response : {};
-       });
-       }, 10000);*/
+    var conflictsPoll = null;
+
+    $scope.pollForConflictsReview = function () {
+
+      console.debug('polling for conflicts', $scope.conflictsContainer.conflicts.sourceReviewId);
+      var deferred = $q.defer();
+
+      // if the source review exists, begin polling
+      if ($scope.conflictsContainer.conflicts.sourceReviewId) {
+        snowowlService.getReview($scope.conflictsContainer.conflicts.sourceReviewId).then(function (response) {
+
+          console.debug('review',  response);
+          if (!response) {
+            deferred.reject();
+          } else {
+            deferred.resolve(response);
+          }
+        });
+      } else {
+        notificationService.sendError('Unable to poll for conflicts data', 10000);
+        deferred.reject();
+      }
+
+      return deferred.promise;
+
+    };
+
+    $scope.getLatestConflictsReport = function () {
+
+      console.debug('getting latest conflicts report');
+
+      scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        $scope.conflictsContainer.conflicts = response ? response : {};
+
+        // immediately poll once
+        $scope.pollForConflictsReview().then(function (response) {
+
+          // set the source and target branches
+          $scope.conflictsSourceBranch = response.source.path;
+          $scope.conflictsTargetBranch = response.target.path;
+
+          // if poll successful, set up interval polling
+          var conflictsPoll = $interval(function () {
+            $scope.pollForConflictsReview().then(function (response) {
+
+              // TODO Set date
+
+              // TODO Check for stale state
+
+            }, function () {
+              console.debug('failed to retrieve review, cancelling polling');
+              $interval.cancel(conflictsPoll);
+            });
+          }, 10000);
+        });
+
+      });
     };
 
     $scope.setConflictConceptPairs = function () {
@@ -526,13 +571,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         conflictConceptPairs.push(conflictConceptPair);
       });
 
-      // TODO Consider case where a project concept exists but branch does not?
-
       console.debug('conflict concept pairs', conflictConceptPairs);
       $scope.conflictConceptPairs = conflictConceptPairs;
     };
 
-    // watch for concept conflict selection from the conflicts view
+// watch for concept conflict selection from the conflicts view
     $scope.$on('editConflictConcepts', function (event, data) {
 
       if (!data) {
@@ -592,9 +635,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             console.debug('base concept', response);
             $scope.conflictConceptsBase.push(response);
 
-
             console.debug(finalLength, $scope.conflictConceptsBranch.length, $scope.conflictConceptsBase.length, $scope.conflictConceptsBranch.length === finalLength, $scope.conflictConceptsBase.length === finalLength);
-          if ($scope.conflictConceptsBranch.length === finalLength && $scope.conflictConceptsBase.length === finalLength) {
+            if ($scope.conflictConceptsBranch.length === finalLength && $scope.conflictConceptsBase.length === finalLength) {
               notificationService.sendMessage('Successfully loaded concepts in conflict', 5000);
             }
 
@@ -635,7 +677,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.getLatestClassification();
     $scope.getLatestValidation();
     $scope.getLatestReview();
-    $scope.startConflictReportPolling();
+    $scope.getLatestConflictsReport();
 
   }
 )

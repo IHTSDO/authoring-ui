@@ -112,11 +112,11 @@ angular.module('singleConceptAuthoringApp')
 
           // update the resolved list
           function updateResolvedListUiState() {
-            var conceptIds = [];
+            var ids = [];
             angular.forEach(scope.conflictsContainer.conflicts.conceptsResolved, function (concept) {
-              conceptIds.push(concept.id);
+              ids.push(concept.id);
             });
-            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'resolved-list', conceptIds);
+            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'resolved-list', ids);
           }
 
           // move item from ToResolve to Resolved
@@ -197,8 +197,9 @@ angular.module('singleConceptAuthoringApp')
           //////////////////////////////////
 
           scope.addToEdit = function (concept) {
+            console.debug('adding to edit', concept);
             // note that edit list notification expects array of concept ids
-            $rootScope.$broadcast('editConflictConcepts', {conceptIds: [concept.conceptId]});
+            $rootScope.$broadcast('editConflictConcepts', {conceptIds: [concept.id]});
           };
 
           // add all selected objects to edit panel list
@@ -208,13 +209,13 @@ angular.module('singleConceptAuthoringApp')
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToResolveViewed, function (item) {
                 if (item.selected === true) {
-                  conceptIds.push(item.conceptId);
+                  conceptIds.push(item.id);
                 }
               });
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsResolvedViewed, function (item) {
                 if (item.selected === true) {
-                  conceptIds.push(item.conceptId);
+                  conceptIds.push(item.id);
                 }
               });
             }
@@ -261,13 +262,13 @@ angular.module('singleConceptAuthoringApp')
 
                 console.debug('checking concept', newConceptArray[i]);
 
-                // NOTE: Compare by.conceptId, as dragged/dropped concepts have
+                // NOTE: Compare by.id, as dragged/dropped concepts have
                 // $hashkey which prevents true equality checking
-                if (newConceptArray[i].conceptId === droppedConcept.conceptId) {
+                if (newConceptArray[i].id === droppedConcept.id) {
                   console.debug('found dropped');
                   droppedIndex = i;
                 }
-                if (newConceptArray[i].conceptId === draggedConcept.conceptId) {
+                if (newConceptArray[i].id === draggedConcept.id) {
                   draggedIndex = i;
                   console.debug('found dragged');
                 }
