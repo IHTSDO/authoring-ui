@@ -22,8 +22,6 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl) {
 
-
-
         if (!scope.concept) {
           console.error('conceptEdit directive requires concept to be specified');
           return;
@@ -320,36 +318,13 @@ angular.module('singleConceptAuthoringApp')
           'en'
         ];
 
-        /// define case significances
-        scope.caseSignificances = [
-          {
-            id: 'CASE_INSENSITIVE', abbr: 'Case insensitive'
-          },
-          {
-            id: 'ENTIRE_TERM_CASE_SENSITIVE', abbr: 'Entire term case sensitive'
-          },
-          {
-            id: 'INITIAL_CHARACTER_CASE_INSENSITIVE',
-            abbr: 'Only initial character case insensitive'
-          }
-        ];
         // Define definition types
+        // NOTE:  PT is not a SNOMEDCT type, used to set acceptabilities
         scope.descTypeIds = [
           {id: '900000000000003001', abbr: 'FSN', name: 'FSN'},
+          {id: '', abbr: 'PT', name: 'PT'},
           {id: '900000000000013009', abbr: 'SYN', name: 'SYNONYM'},
           {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
-        ];
-
-        // the actual dialects
-        scope.dialects = [
-          {abbr: 'en-us', id: '900000000000508007'},
-          {abbr: 'en-gb', id: '900000000000509004'}
-        ];
-
-        // define acceptability types
-        scope.acceptabilities = [
-          {id: 'PREFERRED', abbr: 'Preferred'},
-          {id: 'ACCEPTABLE', abbr: 'Acceptable'}
         ];
 
         scope.setCaseSignificance = function (description, caseSignificance) {
@@ -413,43 +388,43 @@ angular.module('singleConceptAuthoringApp')
         ];
 
         var inactivateDescriptionHistoricalReasons = [
-            {
-              id: '',
-              text: 'ALTERNATIVE association reference set (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'MOVED FROM association reference set (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'MOVED TO association reference set (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
-            },
-            {
-              id: '',
-              text: 'REFERS TO concept association reference set (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'REPLACED BY association reference set (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'SAME AS association reference set (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'SIMILAR TO association reference set (foundation metadata concept)'
-            },
-            {
-              id: '',
-              text: 'WAS A association reference set (foundation metadata concept)'
-            }
-          ];
+          {
+            id: '',
+            text: 'ALTERNATIVE association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'MOVED FROM association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'MOVED TO association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
+          },
+          {
+            id: '',
+            text: 'REFERS TO concept association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'REPLACED BY association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'SAME AS association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'SIMILAR TO association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'WAS A association reference set (foundation metadata concept)'
+          }
+        ];
 
         // get viewed descriptions
         scope.getDescriptions = function (checkForActive) {
@@ -511,10 +486,83 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+        /// define case significances
+        scope.getCaseSignificanceDisplayText = function (description) {
+          switch (description.caseSignificance) {
+            case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
+              return 'Ci';
+            case 'CASE_INSENSITIVE':
+              return 'ci';
+            default:
+              return '??';
+          }
+        };
+
+        // Authors report only two vaqlues used, switch between them on toggle
+        scope.toggleCaseSignificance = function (description) {
+          if (description.caseSignificance === 'CASE_INSENSITIVE') {
+            description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+          } else {
+            description.caseSignificance = 'CASE_INSENSITIVE';
+          }
+
+          autoSave();
+        };
+
+        // the available dialects (NOTE: Currently boolean us/gb)
+        scope.dialects = {
+          'en-us': '900000000000509007',
+          'en-gb': '900000000000508004'
+        };
+
+        // define acceptability types (NOTE: Currently boolean P/A
+        scope.acceptabilityAbbrs = {
+          'PREFERRED': 'P',
+          'ACCEPTABLE': 'A'
+        };
+
+        // toggles the acceptability map entry based on dialect name
+        // if no value, sets to PREFERRED
+        scope.toggleAcceptability = function (description, dialectName) {
+          description.acceptabilityMap[scope.dialects[dialectName]] =
+            description.acceptabilityMap[scope.dialects[dialectName]] === 'PREFERRED' ?
+              'ACCEPTABLE' : 'PREFERRED';
+
+          autoSave();
+        };
+
+        /*
+
+        conceptEdit.js:536
+        en-gb
+        900000000000509004
+        undefined
+        Object {900000000000509007: "ACCEPTABLE", 900000000000508004: "PREFERRED"}
+        undefined
+        undefined
+        undefined
+
+        /*
+
+        // returns the display abbreviation for a specified dialect
+         */
+        scope.getAcceptabilityDisplayText = function (description, dialectName) {
+          var dialectId = scope.dialects[dialectName];
+          var acceptability = description.acceptabilityMap[dialectId];
+          console.debug(
+            dialectName,
+            dialectId,
+            acceptability,
+            description.acceptabilityMap,
+            description.acceptabilityMap[dialectId],
+            acceptability,
+            scope.acceptabilityAbbrs[acceptability]);
+          return scope.acceptabilityAbbrs[acceptability];
+        };
+
         ////////////////////////////////
         // Relationship Elements
         ////////////////////////////////
-
         scope.getIsARelationships = function (checkForActive) {
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
