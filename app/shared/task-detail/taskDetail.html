@@ -72,6 +72,8 @@
     </button>
     
      <button ng-if="editable !== 'false'" class="btn btn-default deep-purple validate" ng-click="startValidation()" style="text-transform: none"><span class="md md-school deep-purple darken-2 iconbase"></span> <span class="button-link">Validate</span></button>
+      
+      <button ng-if="editable !== 'false'" ng-disabled="task.status !== 'Review Completed'" class="btn btn-default blue darken-1 promote" ng-click="promote()" style="text-transform: none"><span class="md md-call-merge blue darken-2 iconbase"></span> <span class="button-link">Promote</span></button>
   </div>
 </div>
 </div>
