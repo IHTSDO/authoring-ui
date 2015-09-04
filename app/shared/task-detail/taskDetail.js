@@ -68,6 +68,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }
       });
     };
+    $scope.promote = function(){
+        scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+               notificationService.sendMessage('Task promoting...', 10000, null);
+        });
+    };
 
     $scope.startValidation = function() {
       notificationService.sendMessage('Submitting task for validation...');
