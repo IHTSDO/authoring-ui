@@ -413,10 +413,9 @@ angular.module('singleConceptAuthoringApp')
       // Promote the task to the Project
       promoteTask: function (projectKey, taskKey) {
         return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
-          console.debug('Project ' + projectKey + ', task ' + taskKey + ' promoted', response);
+          notificationService.sendMessage('Task Promoted Successfully', 10000);
           return response.data;
         }, function (error) {
-          console.error('Error promoting project ' + projectKey + ', task ' + taskKey);
           notificationService.sendError('Error promoting task', 10000);
           return null;
         });
