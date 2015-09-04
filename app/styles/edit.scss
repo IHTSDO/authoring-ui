@@ -463,21 +463,21 @@ select.primitive {
     font-weight: normal;
 }
 .In.Progress.badge {
-    background-color: #00b0ff;
+    background-color: #E68FBB;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+}
+.Promoted.badge {
+    background-color: #F3CB67;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
 }
 .New.badge {
-    background-color: #4CAF50;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-}
-.Ready.For.Promotion.badge {
-    background-color: #8bc34a;
+    background-color: #F3CB67;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;
@@ -491,14 +491,14 @@ select.primitive {
     line-height: 13px;
 }
 .Review.Completed.badge {
-    background-color: blue;
+    background-color: #01A2E1;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
 }
-.Escalation.badge {
-    background-color: red;
+.Promoted.badge {
+    background-color: cyan;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;

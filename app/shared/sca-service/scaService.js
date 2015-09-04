@@ -375,7 +375,7 @@ angular.module('singleConceptAuthoringApp')
       // Promote the project to MAIN
       promoteProject: function (projectKey) {
         return $http.post(apiEndpoint + '/projects/' + projectKey + '/promote', {}).then(function (response) {
-          console.debug('Project ' + projectKey + ' promoted', response);
+          notificationService.sendMessage('Project Promoted Successfully', 10000);
           return response.data;
         }, function (error) {
           console.error('Error promoting project ' + projectKey);
@@ -401,7 +401,7 @@ angular.module('singleConceptAuthoringApp')
       // Rebase the project from MAIN
       rebaseProject: function (projectKey) {
         return $http.post(apiEndpoint + '/projects/' + projectKey + '/rebase', {}).then(function (response) {
-          console.debug('Project ' + projectKey + ' rebased', response);
+          notificationService.sendMessage('Project Rebased Successfully', 10000);
           return response.data;
         }, function (error) {
           console.error('Error rebasing project ' + projectKey);
@@ -413,10 +413,9 @@ angular.module('singleConceptAuthoringApp')
       // Promote the task to the Project
       promoteTask: function (projectKey, taskKey) {
         return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
-          console.debug('Project ' + projectKey + ', task ' + taskKey + ' promoted', response);
+          notificationService.sendMessage('Task Promoted Successfully', 10000);
           return response.data;
         }, function (error) {
-          console.error('Error promoting project ' + projectKey + ', task ' + taskKey);
           notificationService.sendError('Error promoting task', 10000);
           return null;
         });
