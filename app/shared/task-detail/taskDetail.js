@@ -71,6 +71,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     $scope.promote = function(){
         scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
                notificationService.sendMessage('Task promoting...', 10000, null);
+               scaService.updateTask(
+                $routeParams.projectKey, $routeParams.taskKey,
+                {
+                  'status': 'PROMOTED'
+                });
         });
     };
 
