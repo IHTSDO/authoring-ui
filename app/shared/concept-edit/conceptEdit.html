@@ -10,6 +10,16 @@
       text-transform: none;
     }
 
+    .button-width-acceptability {
+      width: 7%;
+      margin-left: 0.5%;
+      padding: 0% 0.5% !important;
+      float: left;
+      height: 100%;
+      min-height: 30px;
+      font-size: 14px !important;
+    }
+
   </style>
 
   <!-- begin validation error -->
@@ -59,10 +69,13 @@
     <div class="pull-right no-margin edits concept-title">
 
       <!-- Revert button only appears if parent is specified -->
-      <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">Revert</button>
+      <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
+        Revert
+      </button>
 
       <!-- control buttons -->
-      <button ng-if="!isStatic" type="button" class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
+      <button ng-if="!isStatic" type="button"
+              class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
               title="Remove Concept" ng-click="removeConcept(concept)"></button>
       <button ng-if="!isStatic"
               type="button"
@@ -74,12 +87,15 @@
               class="btn-default editbuttons light-blue small-buttons"
               ng-class="[{'md-flash-on' : !hideInactive}, {'md-flash-off' : hideInactive}]"
               title="Show/Hide Inactive Components" ng-click="toggleHideInactive()"></button>
-      <button type="button" class="btn-default editbuttons small-buttons amber md md-undo "
+
+      <!-- Commented out until functional
+    <button type="button" class="btn-default editbuttons small-buttons amber md md-undo "
               title="Undo Changes"
               ng-if="!isStatic"></button>
       <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-1 md md-history"
               title="History"
-              ng-if="!isStatic"></button>
+              ng-if="!isStatic"></button>-->
+
       <button type="button" class="btn-default editbuttons small-buttons blue md md-keyboard-return" title="Show Model"
               ng-click="showModel()"
               ng-if="!isStatic"></button>
@@ -97,12 +113,12 @@
           <button class="grey darken-3 md md-more button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
 
-          <!-- Undo Changes -->
+          <!-- Commented out until functional
           <button ng-if="!isStatic" type="button" class="amber md md-undo button-width" title="Undo Changes"></button>
 
-          <!-- Undo Changes -->
+
           <button ng-if="!isStatic" type="button" class=" blue accent-2 md md-history button-width"
-                  title="Undo Changes"></button>
+                  title="Undo Changes"></button> -->
 
           <!-- Active/Inactive -->
           <button type="button"
@@ -113,28 +129,34 @@
                   title="Active/Inactive"></button>
 
           <!-- Case Significance -->
-          <span dropdown>
-            <button dropdown-toggle type="button" class=" blue accent-2 md md-spellcheck button-width"
-                    title="Case Significance (IN PROGRESS)"></button>
-                      
-            <ul style="min-width: 250px;" class="dropdown-menu case-s" role="menu" aria-labelledby="btn-append-to-body">
-     
-              <li ng-disabled="isStatic" ng-repeat="caseSignificance in caseSignificances" style="color: black"
-                  ng-click="setCaseSignificance(description, caseSignificance.id)">
-                 
-                <span class="md md-radio-button-on col-md-1 no-padding " ng-show="caseSignificance.id === description.caseSignificance">  </span>
-                <span class="md md-radio-button-off col-md-1 no-padding  " ng-hide="caseSignificance.id === description.caseSignificance"> </span>
-                <span class= "col-md-11 no-padding {{caseSignificance.id}}"></span>
-             
-              </li>
 
-            </ul>
-          </span>
+          <button type="button" class=" blue accent-2 button-width" ng-disabled="isStatic"
+                  title="Case Significance " ng-click="toggleCaseSignificance(description)">
+
+            <span class="md col-md-1 no-padding">{{getCaseSignificanceDisplayText(description)}}</span>
+
+
+          </button>
+          <!--
+      <ul style="min-width: 250px;" class="dropdown-menu case-s" role="menu" aria-labelledby="btn-append-to-body">
+
+        <li ng-disabled="isStatic" ng-repeat="caseSignificance in caseSignificances" style="color: black"
+            ng-click="setCaseSignificance(description, caseSignificance.id)">
+
+          <span class="md md-radio-button-on col-md-1 no-padding " ng-show="caseSignificance.id === description.caseSignificance">  </span>
+          <span class="md md-radio-button-off col-md-1 no-padding  " ng-hide="caseSignificance.id === description.caseSignificance"> </span>
+          <span class= "col-md-11 no-padding {{caseSignificance.id}}"></span>
+
+        </li>
+
+      </ul>
+       -->
 
 
           <!-- Term -->
           <div class="pull-left description no-padding">
-            <textarea style="" class="msd-elastic resizable-text" ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
+            <textarea style="" class="msd-elastic resizable-text" ng-change="updateDescription(description)"
+                      ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
                       ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
                       placeholder="Description" ui-on-drop="dropNullOp()">
@@ -143,36 +165,59 @@
 
           <!-- TypeId -->
           <div class="pull-left typeid">
-            <select ng-disabled="description.effectiveTime"
+            <select ng-disabled="description.effectiveTime || isStatic"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
                     ng-model="description.type" ng-change="updateDescription(description)"
                     name="select-type" id="select-type-choice" class="form-control color_{{relationship.groupId}}">
             </select>
           </div>
 
-          <!-- Dialect & Acceptability
-               NOTE: Initial displayed dialect is en-us (if defined), then en-gb (if defined), then none
-               TODO: This will be revisited once automations go in
-               -->
-          <div class="pull-left language"
-               ng-init="selectedDialect = getInitialSelectedDialect(description)">
-            <select ng-model="selectedDialect" ng-disabled="description.effectiveTime"
-                    name="select-dialect" id="select-dialect-choice"
-                    class="form-control color_{{relationship.groupId}}">
-              <option value="900000000000508004">en-us</option>
-              <option value="900000000000509007">en-gb</option>
-            </select>
+          <!-- Dialect / Acceptability: Never displayed for FSN -->
+          <div ng-if="description.type != 'FSN'">
+            <!-- en-us acceptability -->
+            <button type="button"
+                    class=" blue accent-2 button-width-acceptability"
+                    ng-disabled="isStatic || description.effectiveTime"
+                    title="Case Significance " ng-click="toggleAcceptability(description, 'en-us')">us:
+                                                                                                    {{getAcceptabilityDisplayText(description,
+                                                                                                    'en-us')}}
+            </button>
 
+            <!-- en-gb acceptability -->
+            <button type="button" class=" blue accent-2 button-width-acceptability"
+                    ng-disabled="isStatic || description.effectiveTime"
+                    title="Case Significance " ng-click="toggleAcceptability(description, 'en-gb')">gb:
+                                                                                                    {{getAcceptabilityDisplayText(description,
+                                                                                                    'en-gb')}}
+            </button>
           </div>
-          <div class="pull-left acceptability">
-            <select ng-disabled="description.effectiveTime"
-                    ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
-                    ng-model="description.acceptabilityMap[selectedDialect]"
-                    id="select-acceptability-choice" class="form-control color_{{relationship.groupId}}">
-            </select>
-            </div>
+
+          <!-- Old dialect/acceptability (pre 9/4 meeting with Penni)
+              NOTE: Initial displayed dialect is en-us (if defined), then en-gb (if defined), then none
+              TODO: This will be revisited once automations go in
+
+         <div class="pull-left language"
+              ng-init="selectedDialect = getInitialSelectedDialect(description)">
+           <select ng-model="selectedDialect" ng-disabled="description.effectiveTime"
+                   name="select-dialect" id="select-dialect-choice"
+                   class="form-control color_{{relationship.groupId}}">
+             <option value="900000000000508004">en-us</option>
+             <option value="900000000000509007">en-gb</option>
+           </select>
+
+         </div>
+         <div class="pull-left acceptability">
+           <select ng-disabled="description.effectiveTime"
+                   ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
+                   ng-model="description.acceptabilityMap[selectedDialect]"
+                   id="select-acceptability-choice" class="form-control color_{{relationship.groupId}}">
+           </select>
+           </div>
+
+                          -->
+
           <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
-                  class="btn-default add-buttons md md-add-circle button-width"
+                  class="btn-default add-buttons md md-add-circle button-width pull-right"
                   title="Add New Description"></button>
 
         </div>
@@ -189,8 +234,11 @@
                   ng-click="showAttributeDetails = !showAttributeDetails"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
                   title="Some title here"></button>
+
+          <!-- Commented out until functional
           <button ng-if="!isStatic" type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
           <button ng-if="!isStatic" type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
+-->
 
           <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
           <button type="button"
@@ -254,8 +302,13 @@
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
 
                   title="Some title here"></button>
+
+          <!-- Commented out until functional
           <button ng-if="!isStatic" type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
           <button ng-if="!isStatic" type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
+          -->
+
+
           <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
           <button type="button"
                   style="vertical-align: bottom"
@@ -265,7 +318,7 @@
                   title="Active/Inactive"></button>
           <!-- relationship group -->
           <div class="pull-left rolegroup">
-          <textarea style="" class="msd-elastic"  ng-disabled="isStatic" ng-model="relationship.groupId"
+          <textarea style="" class="msd-elastic" ng-disabled="isStatic" ng-model="relationship.groupId"
                     ng-change="updateRelationship(relationship)"
                     class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
@@ -294,7 +347,7 @@
                     placeholder="#">
           </textarea>
           </div>
-          <div ng-if="!isStatic" class="pull-left button-width">
+          <div ng-if="!isStatic" class="pull-right button-width">
             <button type="button" ng-click="addAttributeRelationship($index)"
                     class="btn-default add-buttons grey  md md-add-circle"
                     title="Add New Attribute"></button>
