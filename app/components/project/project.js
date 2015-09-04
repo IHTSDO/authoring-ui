@@ -78,9 +78,17 @@ angular.module('singleConceptAuthoringApp.project', [
         $scope.validationContainer.status = response;
       });
     };
+      
+    $scope.rebase = function () {
+      scaService.rebaseProject($scope.project.key).then(function (response) {
+        notificationService.sendMessage('Project Rebasing...', 10000, null);
+      });
+    };
 
     $scope.promote = function () {
-      // TODO Promoting not yet available
+      scaService.promoteProject($scope.project.key).then(function (response) {
+        notificationService.sendMessage('Project promoting...', 10000, null);
+      });
     };
 
   }]);
