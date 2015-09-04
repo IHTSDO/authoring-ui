@@ -19,8 +19,8 @@ angular.module('singleConceptAuthoringApp')
         'lang': 'en',
         'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
         'acceptabilityMap': {
-        /*  '900000000000509007': 'PREFERRED',*/
-        /*  '900000000000508004': 'PREFERRED'*/
+          '900000000000509007': 'PREFERRED',
+          '900000000000508004': 'PREFERRED'
         }
       };
     }
@@ -72,18 +72,20 @@ angular.module('singleConceptAuthoringApp')
         'relationships': [],
         'fsn': null,
         'definitionStatus': 'PRIMITIVE',
-        'active': false,
+        'active': true,
         'moduleId': '900000000000207008'
       };
 
       // add FSN description
       var desc = getNewDescription(null);
       desc.type = 'FSN';
+      //desc.acceptabilityMap = { '900000000000508004' : 'PREFERRED' };
       concept.descriptions.push(desc);
 
       // add SYNONYM description
       desc = getNewDescription(null);
       desc.type = 'SYNONYM';
+      //desc.acceptabilityMap = { '900000000000508004' : 'PREFERRED' };
       concept.descriptions.push(desc);
 
       // add IsA relationship
