@@ -55,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
               scope.task = task;
-              scope.reviewComplete = task.status === 'Ready For Promotion';
+              scope.reviewComplete = task.status === 'REVIEW_COMPLETED';
               console.debug('review complete', scope.reviewComplete);
               scope.role = accountService.getRoleForTask(task);
               console.debug('Role found: ', scope.role);
@@ -464,7 +464,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.updateTask(
                 $routeParams.projectKey, $routeParams.taskKey,
                 {
-                  'status': reviewComplete ? 'Ready For Promotion' : 'In Review'
+                  'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'
                 });
             }
           };

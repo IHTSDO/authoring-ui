@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
           // ready for review task (no reviewer) where assignee is not the
           // current user
-          if (task.status === 'In Review' && !task.reviewer && task.assignee.username != $rootScope.accountDetails.login) {
+          if (task.status === 'IN_REVIEW' && !task.reviewer && task.assignee.username != $rootScope.accountDetails.login) {
             reviewTasks.push(task);
           }
 

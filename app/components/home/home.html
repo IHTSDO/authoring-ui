@@ -102,7 +102,7 @@
 
               <td data-title="'Feedback'" sortable="'unreadFeedbackMessages'">
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
-                  <button ng-if="task.status == 'In Review' && task.feedbackMessagesStatus === 'none'" type="button"
+                  <button ng-if="task.status == 'IN_REVIEW' && task.feedbackMessagesStatus === 'none'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
 
@@ -123,9 +123,9 @@
                 </a>
               </td>
               <td data-title="'Status'" sortable="'status'">
-                <span ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for Review </span>
-                <span ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}"> {{task.status}} </span>
-                <span ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}} </span>
+                <span ng-if="task.status === 'IN_REVIEW' && !task.reviewer" class="badge {{task.status}}"> Ready for Review </span>
+                <span ng-if="task.status === 'IN_REVIEW' && task.reviewer" class="badge {{task.status}}"> {{task.status}} </span>
+                <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
               </td>
             </tr>
           </table>
@@ -221,7 +221,7 @@
                 <a ng-href="#/feedback/{{task.projectKey}}/{{task.key}}">
                   <!--
                     Removed -- if no feedback, don't want icon, right?
-                  <button ng-if="task.status == 'In Review' && task.feedbackMessagesStatus === 'none'" type="button"
+                  <button ng-if="task.status == 'IN_REVIEW' && task.feedbackMessagesStatus === 'none'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
                           title="View Feedback"><span class="md md-email"></span>
 
