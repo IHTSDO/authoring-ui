@@ -549,14 +549,6 @@ angular.module('singleConceptAuthoringApp')
         scope.getAcceptabilityDisplayText = function (description, dialectName) {
           var dialectId = scope.dialects[dialectName];
           var acceptability = description.acceptabilityMap[dialectId];
-          console.debug(
-            dialectName,
-            dialectId,
-            acceptability,
-            description.acceptabilityMap,
-            description.acceptabilityMap[dialectId],
-            acceptability,
-            scope.acceptabilityAbbrs[acceptability]);
           return scope.acceptabilityAbbrs[acceptability];
         };
 

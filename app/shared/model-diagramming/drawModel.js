@@ -14,6 +14,8 @@ angular.module('singleConceptAuthoringApp')
           link: function (scope, element, attrs, linkCtrl, snowowlService) {
               scope.view = true;
               var idSequence = 0;
+
+              console.debug(element);
               
               scope.getSize = function(){
                   // NOTE:  -43 offset required to account for height of header/switch elements
