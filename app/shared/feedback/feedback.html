@@ -100,7 +100,11 @@
       <span ng-show="role === 'AUTHOR' && !task.reviewer">Reviewer: Review not yet claimed</span>
     </div>
 
-    <div class="switch pull-right p-10 h-45">
+    <div ng-if="role === 'AUTHOR'" class="switch pull-right p-10 h-45">
+        <button class="btn btn-default orange classify-buttons accept-classification" style="text-transform: none" ng-click="cancelReview()">Cancel Review</button>
+    </div>
+
+    <div ng-if="role === 'REVIEWER'" class="switch pull-right p-10 h-45">
       <label>
         Review in Progress
         <input ng-disabled="role != 'REVIEWER' || reviewComplete" type="checkbox" ng-model="reviewComplete"
