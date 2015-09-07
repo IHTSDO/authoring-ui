@@ -322,7 +322,6 @@ angular.module('singleConceptAuthoringApp')
         // NOTE:  PT is not a SNOMEDCT type, used to set acceptabilities
         scope.descTypeIds = [
           {id: '900000000000003001', abbr: 'FSN', name: 'FSN'},
-          {id: '', abbr: 'PT', name: 'PT'},
           {id: '900000000000013009', abbr: 'SYN', name: 'SYNONYM'},
           {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
         ];
@@ -524,6 +523,11 @@ angular.module('singleConceptAuthoringApp')
         // toggles the acceptability map entry based on dialect name
         // if no value, sets to PREFERRED
         scope.toggleAcceptability = function (description, dialectName) {
+
+          if (!description.acceptabilityMap) {
+            description.acceptabilityMap = {};
+          }
+
           description.acceptabilityMap[scope.dialects[dialectName]] =
             description.acceptabilityMap[scope.dialects[dialectName]] === 'PREFERRED' ?
               'ACCEPTABLE' : 'PREFERRED';
@@ -533,21 +537,31 @@ angular.module('singleConceptAuthoringApp')
 
         /*
 
-        conceptEdit.js:536
-        en-gb
-        900000000000509004
-        undefined
-        Object {900000000000509007: "ACCEPTABLE", 900000000000508004: "PREFERRED"}
-        undefined
-        undefined
-        undefined
+         conceptEdit.js:536
+         en-gb
+         900000000000509004
+         undefined
+         Object {900000000000509007: "ACCEPTABLE", 900000000000508004: "PREFERRED"}
+         undefined
+         undefined
+         undefined
 
-        /*
+         /*
 
-        // returns the display abbreviation for a specified dialect
+         // returns the display abbreviation for a specified dialect
          */
         scope.getAcceptabilityDisplayText = function (description, dialectName) {
+          if (!description || !dialectName) {
+            return null;
+          }
           var dialectId = scope.dialects[dialectName];
+
+          // if no acceptability map specified, return null
+          if (!description.acceptabilityMap) {
+            return null;
+          }
+
+          // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
           return scope.acceptabilityAbbrs[acceptability];
         };
@@ -806,6 +820,62 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
+        /**
+         * Function called when dropping a description on another description
+         * @param target the description dropped on
+         * @param source the dragged description
+         */
+        scope.dropDescription = function (target, source) {
+
+          // check arguments
+          if (!target || !source) {
+            console.error('Cannot drop description, either source or target not specified');
+            return;
+          }
+
+          // check if target is released (not valid target)
+          if (target.effectiveTime) {
+            console.warning('Cannot drop description on previously released description');
+            return;
+          }
+
+          // check if target is static
+          if (scope.isStatic) {
+            return;
+          }
+
+          // copy description object and replace target description
+          target = angular.copy(source);
+        };
+
+        /**
+         * Function called when dropping a relationship on another relationship
+         * @param target the relationship dropped on
+         * @param source the dragged relationship
+         */
+        scope.dropRelationship = function (target, source) {
+
+          // check arguments
+          if (!target || !source) {
+            console.error('Cannot drop relationship, either source or target not specified');
+            return;
+          }
+
+          // check if target is released (not valid target)
+          if (target.effectiveTime) {
+            console.warning('Cannot drop relationship on previously released relationship');
+            return;
+          }
+
+          // check if target is static
+          if (scope.isStatic) {
+            return;
+          }
+
+          // copy relationship object and replace target relationship
+          target = angular.copy(source);
+        };
+
         // dummy function added for now to prevent default behavior
         // of dropping into untagged input boxes.  Issue has been raised
         // with the repository developers, but not up to forking and fixing
@@ -964,6 +1034,8 @@ angular.module('singleConceptAuthoringApp')
           if (!description) {
             return;
           }
+
+
           if (scope.isDescriptionValid(description)) {
             autoSave();
             sortDescriptions();

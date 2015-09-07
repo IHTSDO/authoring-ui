@@ -106,7 +106,8 @@
   <div ng-show="!isCollapsed" class="editHeightSelector">
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in getDescriptions(true)">
+    <div ng-repeat="description in getDescriptions(true)" 
+         ng-drag="description" drag-channel="conceptEditDescription" drop-channel="conceptEditDescription" ui-on-drop="dropDescription(description, $data)">
 
       <div class="row darken-3 p-t-5 grey ">
         <div class="col-md-12 no-padding color_{{relationship.groupId}}">
@@ -137,21 +138,6 @@
 
 
           </button>
-          <!--
-      <ul style="min-width: 250px;" class="dropdown-menu case-s" role="menu" aria-labelledby="btn-append-to-body">
-
-        <li ng-disabled="isStatic" ng-repeat="caseSignificance in caseSignificances" style="color: black"
-            ng-click="setCaseSignificance(description, caseSignificance.id)">
-
-          <span class="md md-radio-button-on col-md-1 no-padding " ng-show="caseSignificance.id === description.caseSignificance">  </span>
-          <span class="md md-radio-button-off col-md-1 no-padding  " ng-hide="caseSignificance.id === description.caseSignificance"> </span>
-          <span class= "col-md-11 no-padding {{caseSignificance.id}}"></span>
-
-        </li>
-
-      </ul>
-       -->
-
 
           <!-- Term -->
           <div class="pull-left description no-padding">
@@ -192,30 +178,6 @@
             </button>
           </div>
 
-          <!-- Old dialect/acceptability (pre 9/4 meeting with Penni)
-              NOTE: Initial displayed dialect is en-us (if defined), then en-gb (if defined), then none
-              TODO: This will be revisited once automations go in
-
-         <div class="pull-left language"
-              ng-init="selectedDialect = getInitialSelectedDialect(description)">
-           <select ng-model="selectedDialect" ng-disabled="description.effectiveTime"
-                   name="select-dialect" id="select-dialect-choice"
-                   class="form-control color_{{relationship.groupId}}">
-             <option value="900000000000508004">en-us</option>
-             <option value="900000000000509007">en-gb</option>
-           </select>
-
-         </div>
-         <div class="pull-left acceptability">
-           <select ng-disabled="description.effectiveTime"
-                   ng-options="acceptability.id as acceptability.abbr for acceptability in acceptabilities"
-                   ng-model="description.acceptabilityMap[selectedDialect]"
-                   id="select-acceptability-choice" class="form-control color_{{relationship.groupId}}">
-           </select>
-           </div>
-
-                          -->
-
           <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
                   class="btn-default add-buttons md md-add-circle button-width pull-right"
                   title="Add New Description"></button>
@@ -225,7 +187,8 @@
     </div>
 
     <!-- rows: Concept IsA Relationships -->
-    <div ng-repeat="relationship in getIsARelationships(true)">
+    <div ng-repeat="relationship in getIsARelationships(true)"
+         ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship" ui-on-drop="dropRelationship(relationship, $data)">
       <div class="row darken-3 p-t-5 grey">
         <!-- Button controls -->
         <div class="col-md-12 no-padding color_{{relationship.groupId}}">
@@ -292,7 +255,8 @@
     </div>
 
     <!-- rows: Concept Attributes (in relationships) -->
-    <div ng-repeat="relationship in getAttributeRelationships(true)">
+    <div ng-repeat="relationship in getAttributeRelationships(true)"
+         ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship" ui-on-drop="dropRelationship(relationship, $data)">
       <div class="row darken-3 p-t-5 p-b-5 grey">
         <!-- Button controls -->
         <div class="col-md-12 no-padding form-control color_{{relationship.groupId}}">
