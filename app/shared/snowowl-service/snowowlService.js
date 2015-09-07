@@ -122,7 +122,7 @@ angular.module('singleConceptAuthoringApp')
     function getModelPreview(classifierId, branch, id) {
       return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/concept-preview/' + id).then(function (response) {
         var temp = response.data;
-        temp.conceptId = 'After: ' + temp.conceptId;
+        temp.conceptId = 'After-' + temp.conceptId;
         return temp;
       });
     }
