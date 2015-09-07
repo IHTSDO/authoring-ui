@@ -106,11 +106,13 @@
   <div ng-show="!isCollapsed" class="editHeightSelector">
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in getDescriptions(true)" 
-         ng-drag="description" drag-channel="conceptEditDescription" drop-channel="conceptEditDescription" ui-on-drop="dropDescription(description, $data)">
-
+    <div ng-repeat="description in getDescriptions(true)">
       <div class="row darken-3 p-t-5 grey ">
-        <div class="col-md-12 no-padding color_{{relationship.groupId}}">
+        <div class="col-md-12 no-padding color_{{relationship.groupId}}"
+             ui-draggable="isStatic" drag="description"
+             drag-channel="conceptEditDescription"
+             drop-channel="conceptEditDescription"
+             ui-on-drop="dropDescription(concept, description, $data)">
           <button class="grey darken-3 md md-more button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
 
@@ -141,11 +143,13 @@
 
           <!-- Term -->
           <div class="pull-left description no-padding">
+
+
             <textarea style="" class="msd-elastic resizable-text" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
                       ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
-                      placeholder="Description" ui-on-drop="dropNullOp()">
+                      placeholder="Description)">
             </textarea>
           </div>
 
@@ -154,16 +158,17 @@
             <select ng-disabled="description.effectiveTime || isStatic"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
                     ng-model="description.type" ng-change="updateDescription(description)"
-                    name="select-type" id="select-type-choice" class="form-control color_{{relationship.groupId}}">
+                    name="select-type" id="select-type-choice" class="form-control color_{{relationship.groupId}}"
+                    ui-on-drop="">
             </select>
           </div>
 
           <!-- Dialect / Acceptability: Never displayed for FSN -->
-          <div ng-if="description.type != 'FSN'">
+          <div>
             <!-- en-us acceptability -->
             <button type="button"
                     class=" blue accent-2 button-width-acceptability"
-                    ng-disabled="isStatic || description.effectiveTime"
+                    ng-disabled="isStatic || description.effectiveTime || description.type === 'FSN'"
                     title="Case Significance " ng-click="toggleAcceptability(description, 'en-us')">us:
                                                                                                     {{getAcceptabilityDisplayText(description,
                                                                                                     'en-us')}}
@@ -171,7 +176,7 @@
 
             <!-- en-gb acceptability -->
             <button type="button" class=" blue accent-2 button-width-acceptability"
-                    ng-disabled="isStatic || description.effectiveTime"
+                    ng-disabled="isStatic || description.effectiveTime  || description.type === 'FSN'"
                     title="Case Significance " ng-click="toggleAcceptability(description, 'en-gb')">gb:
                                                                                                     {{getAcceptabilityDisplayText(description,
                                                                                                     'en-gb')}}
@@ -188,10 +193,16 @@
 
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getIsARelationships(true)"
-         ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship" ui-on-drop="dropRelationship(relationship, $data)">
+         ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
+         ui-on-drop="dropRelationship(relationship, $data)">
       <div class="row darken-3 p-t-5 grey">
         <!-- Button controls -->
-        <div class="col-md-12 no-padding color_{{relationship.groupId}}">
+        <div class="col-md-12 no-padding color_{{relationship.groupId}}"
+             ui-draggable="isStatic" drag="relationship"
+             drag-channel="conceptEditRelationship"
+             drop-channel="conceptEditRelationship"
+             ui-on-drop="dropRelationship(concept, relationship, $data)">
+
 
           <button class="btn-default grey darken-3 md md-more button-width"
                   ng-click="showAttributeDetails = !showAttributeDetails"
@@ -256,11 +267,17 @@
 
     <!-- rows: Concept Attributes (in relationships) -->
     <div ng-repeat="relationship in getAttributeRelationships(true)"
-         ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship" ui-on-drop="dropRelationship(relationship, $data)">
+         ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
+         ui-on-drop="dropRelationship(relationship, $data)">
       <div class="row darken-3 p-t-5 p-b-5 grey">
-        <!-- Button controls -->
-        <div class="col-md-12 no-padding form-control color_{{relationship.groupId}}">
 
+        <div class="col-md-12 no-padding form-control color_{{relationship.groupId}}"
+             ui-draggable="isStatic" drag="relationship"
+             drag-channel="conceptEditRelationship"
+             drop-channel="conceptEditRelationship"
+             ui-on-drop="dropRelationship(concept, relationship, $data)">
+
+          <!-- Button controls -->
           <button class="btn-default grey darken-3 md md-more button-width"
                   ng-click="showAttributeDetails = !showAttributeDetails"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
