@@ -64,14 +64,15 @@
     <button
       ng-class="classificationDisplayColor"
       type="button" class="btn btn-default {{classificationDisplayText}}" 
+      ng-disabled="task.status === 'New'"
       ng-click="classify()">
       <span class="md md-notifications green darken-1 iconbase"></span> <span class="button-link">{{classificationDisplayText}}</span>
     </button>
 
-    <button type="button" class="btn btn-default  pink1 review" style="width: 100%; text-transform: none" ng-click="submitForReview()"> <span class="md md-forum pink darken-2 iconbase"></span> <span class="button-link">Submit For Review</span>
+    <button type="button" class="btn btn-default  pink1 review" ng-disabled="task.status === 'New' || task.status === 'In Review'" style="width: 100%; text-transform: none" ng-click="submitForReview()"> <span class="md md-forum pink darken-2 iconbase"></span> <span class="button-link">Submit For Review</span>
     </button>
     
-     <button ng-if="editable !== 'false'" class="btn btn-default deep-purple validate" ng-click="startValidation()" style="text-transform: none"><span class="md md-school deep-purple darken-2 iconbase"></span> <span class="button-link">Validate</span></button>
+     <button ng-if="editable !== 'false'" ng-disabled="task.status === 'New'" class="btn btn-default deep-purple validate" ng-click="startValidation()" style="text-transform: none"><span class="md md-school deep-purple darken-2 iconbase"></span> <span class="button-link">Validate</span></button>
       
       <button ng-if="editable !== 'false'" ng-disabled="task.status !== 'Review Completed'" class="btn btn-default blue darken-1 promote" ng-click="promote()" style="text-transform: none"><span class="md md-call-merge blue darken-2 iconbase"></span> <span class="button-link">Promote</span></button>
   </div>
