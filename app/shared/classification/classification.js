@@ -71,7 +71,7 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.getFullConcept(model.id, scope.branch).then(function (response) {
               var temp = response;
               var id = temp.conceptId;
-              temp.conceptId = 'Before: ' + temp.conceptId;
+              temp.conceptId = 'Before-' + temp.conceptId;
               scope.modelConcept = response;
               snowowlService.getModelPreview(scope.classificationContainer.id, scope.branch, model.id).then(function (secondResponse) {
                 scope.modelConceptAfter = secondResponse;
