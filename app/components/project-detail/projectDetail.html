@@ -6,7 +6,33 @@
 </style>
 
 <!-- Hide container until view is selected -->
-<div class="sca-container" ng-if="thisView" style="">
+<div class="sca-container" style="">
+  <!-- conflict report -->
+  <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+    <div conflicts conflicts-container="conflictsContainer" target-branch="branch"
+         source-branch="projectBranch"></div>
+  </div>
 
+  <!-- base and branch concept pairs -->
+  <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
+
+    <div class="row no-gutter darken-3 grey" ng-repeat="conflictConceptPair in conflictConceptPairs">
+
+      <!-- base concept -->
+      <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 col-xl-5 no-gutter">
+        <div ng-if="conflictConceptPair.baseConcept" concept-edit concept="conflictConceptPair.baseConcept"
+             branch="conflictsSourceBranch" static="true">
+        </div>
+      </div>
+
+      <!-- branch concept -->
+      <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 no-gutter">
+        <div ng-if="conflictConceptPair.branchConcept" concept-edit concept="conflictConceptPair.branchConcept"
+             branch="conflictsTargetBranch" parent-branch="conflictsSourceBranch" static="false">
+        </div>
+      </div>
+    </div>
+
+  </div>
 
 </div>
