@@ -534,7 +534,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.getLatestReview = function () {
       // if no task specified, retrieve for project
       if (!$scope.taskKey) {
-        scaService.getReviewForProject()
+        scaService.getReviewForProject($routeParams.projectKey).then(function (response) {
+          $scope.feedbackContainer.review = response ? response : {};
+        });
       } else {
 
         scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -560,21 +562,20 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       console.debug('getting latest conflicts report');
 
-      scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-        $scope.conflictsContainer.conflicts = response ? response : {};
-
-        // immediately poll once
-        if ($scope.conflictsContainer.conflicts.sourceReviewId) {
-          snowowlService.getReview($scope.conflictsContainer.conflicts.sourceReviewId).then(function (response) {
-
-            // set the source and target branches
-            $scope.conflictsSourceBranch = response.source.path;
-            $scope.conflictsTargetBranch = response.target.path;
-          });
-        }
-      });
+      if (!$scope.taskKey) {
+        scaService.getConflictReportForProject($routeParams.projectKey).then(function(response) {
+          $scope.conflictsContainer.conflicts = response ? response : {};
+        });
+      } else {
+        scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.conflictsContainer.conflicts = response ? response : {};
+        });
+      }
     };
 
+    /**
+     * 
+     */
     $scope.setConflictConceptPairs = function () {
 
       console.debug('getting conflict concept pairs', $scope.conflictConceptsBase, $scope.conflictConceptsBranch);
@@ -670,14 +671,16 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-    // helper function to apply results of branch state change
-    // NOTE: Rather clumsy flag setting, but meh
-    function updateBranchState(branchState) {
+    /**
+     * Set page functionality based on branch state
+     * @param branchState
+     */
+    function setBranchFunctionality(branchState) {
 
       if (branchState === 'FORWARD') {
         $scope.canRebase = false;
         $scope.canPromote = true;
-        $scope.canConflict = true;
+        $scope.canConflict =   true;
       } else if (branchState === 'UP_TO_DATE') {
         $scope.canRebase = false;
         $scope.canPromote = false;
@@ -704,7 +707,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // check if notification matches this branch
       if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
-        updateBranchState(data.event);
+        setBranchFunctionality(data.event);
       }
     });
 
@@ -737,7 +740,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           // functionality complete INAPPROPRIATE CALL TO GET BRANCH
           // INFORMATION
           snowowlService.getBranch($scope.targetBranch).then(function (response) {
-            updateBranchState(response.state);
+            setBranchFunctionality(response.state);
           });
         }
       });
@@ -753,7 +756,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 // TODO: Chris Swires -- delete this once the monitorTask functionality
 // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
     snowowlService.getBranch($scope.targetBranch).then(function (response) {
-      updateBranchState(response.state);
+      setBranchFunctionality(response.state);
     });
 
 // initialize the container objects

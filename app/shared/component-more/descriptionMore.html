@@ -1,24 +1,35 @@
-<div class="pop-edit description-more row">
- <div class="sct-id pull-left">
-   <label class="control-label">SCTID</label>
-    <span class="fields row"> {{description.descriptionId}}</span> </div>
+<div>
+  <div class="pop-edit description-more row">
+    <div class="sct-id pull-left">
+      <label class="control-label">SCTID</label>
+      <span class="fields row"> {{description.descriptionId}}</span></div>
 
 
-  <div class="lang-id pull-left">
-  <label class="control-label">Language</label>
-    <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="isStatic"
-                  ng-model="description.lang" ng-change="updateDescription(description)" ng-options="language as language for language in languages">
+    <div class="lang-id pull-left">
+      <label class="control-label">Language</label>
+      <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="isStatic"
+              ng-model="description.lang" ng-change="updateDescription(description)"
+              ng-options="language as language for language in languages">
 
-    </select>
+      </select>
+    </div>
+    <div class="time pull-left ">
+      <label class="control-label">Effective Time</label>
+      <span class="fields row"> {{description.effectiveTime}}</span></div>
+    <div class="module-id pull-left">
+
+      <label class="control-label">Module Id</label>
+      <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
+              ng-model="description.moduleId" ng-disabled="isStatic"
+              ng-change="updateDescription(description)" ng-options="module.id as module.name for module in modules">
+      </select>
+    </div>
   </div>
-  <div class="time pull-left ">
-   <label class="control-label">Effective Time</label>
-    <span class="fields row"> {{description.effectiveTime}}</span> </div>
- <div class="module-id pull-left">
 
-    <label class="control-label">Module Id</label>
-    <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1" ng-model="description.moduleId" ng-disabled="isStatic"
-                  ng-change="updateDescription(description)" ng-options="module.id as module.name for module in modules">
-    </select>
+  <div ng-if="!description.active" class="pop-edit description-more row">
+    <div class="module pull-left">
+      <label class="control-label">Inactivation Reason</label>
+      <span class="fields row">{{description.inactivationIndicator}}</span>
+    </div>
   </div>
 </div>
