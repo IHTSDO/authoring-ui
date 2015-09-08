@@ -3,57 +3,62 @@
        src="'layout/sidebar.html'"></div>
 
   <div class="sca-column col-lg-9 col-md-9 col-sm-9 ">
-    <div class="page-header col-md-12 ">
-    <div class="page-header col-md-3 p-t-15">
-      <h1>
-     
-        {{project.title}}
-      </h1>
+    <div class="page-header row ">
+      <div class="page-header col-md-3 p-t-15">
+        <h1>
 
-      <p class="lead">
+          {{project.title}}
+        </h1>
+
+        <p class="lead">
           {{project.projectLead.displayName}}
-      </p>
-    </div>
-    <div class="page-header col-md-9 p-t-10 project-main-buttons">
-  
-          <div class="p-10 pull-right">
-            <button class="btn btn-disabled btn-border" ng-click="promote()"><span class="project-icon blue darken-1 pull-left"><span class="md md-call-merge"></span></span>Promote
-              <div class="ripple-wrapper"></div>
-            </button>
-          </div>
-          <div class="p-10 pull-right">
-            <button class="btn btn-success btn-border" ng-click="rebase()"><span class="project-icon yellow darken-2 pull-left"><span class="md md-autorenew"></span></span>Rebase
-              <div class="ripple-wrapper"></div>
-            </button>
-          </div>
-          <div class="p-10 pull-right">
-            <button class="btn btn-success btn-border" ng-click="classify()"><span class="project-icon green pull-left"><span class="md md-notifications"></span></span>Classify
-              <div class="ripple-wrapper"></div>
-            </button>
-          </div>
-          <div class="p-10 pull-right">
-            <button class="btn btn-success btn-border" ng-click="validate()"><span class="project-icon deep-purple lighten-1 pull-left"><span class="md md-school"></span></span>Validate
-              <div class="ripple-wrapper"></div>
-            </button>
-          </div>
+        </p>
+      </div>
+      <div class="page-header col-md-9 p-t-10 project-main-buttons">
+
+        <div class="p-10 pull-right">
+          <button class="btn btn-disabled btn-border" ng-click="promote()"><span
+            class="project-icon blue darken-1 pull-left"><span class="md md-call-merge"></span></span>Promote
+            <div class="ripple-wrapper"></div>
+          </button>
         </div>
-   
+        <div class="p-10 pull-right">
+          <button class="btn btn-success btn-border" ng-click="rebase()"><span
+            class="project-icon yellow darken-2 pull-left"><span class="md md-autorenew"></span></span>Rebase
+            <div class="ripple-wrapper"></div>
+          </button>
+        </div>
+        <div class="p-10 pull-right">
+          <button class="btn btn-success btn-border" ng-click="classify()"><span
+            class="project-icon green pull-left"><span class="md md-notifications"></span></span>Classify
+            <div class="ripple-wrapper"></div>
+          </button>
+        </div>
+        <div class="p-10 pull-right">
+          <button class="btn btn-success btn-border" ng-click="validate()"><span
+            class="project-icon deep-purple lighten-1 pull-left"><span class="md md-school"></span></span>Validate
+            <div class="ripple-wrapper"></div>
+          </button>
+        </div>
+      </div>
+
     </div>
     <div class="row project-page">
 
-
+      <!--- Validation Results -->
       <div class="card">
-        <!--- Validation Results -->
+
         <div class="card-header">
           <div class="card-title">
             <button ng-init="validationCollapsed = false" ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : validationCollapsed, 'md-keyboard-arrow-right' : !validationCollapsed}]">
-              <span class="report-text">Validation Results</span> </button>
-             
-<span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-school"></span></span>
- <span class="arrow-purple pull-right"></span>
-<div class="clearfix"></div>
+              <span class="report-text">Validation Results</span></button>
+
+            <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-school"></span></span>
+            <span class="arrow-purple pull-right"></span>
+
+            <div class="clearfix"></div>
           </div>
         </div>
         <div ng-show="validationCollapsed === true">
@@ -73,9 +78,11 @@
             <button ng-init="classificationCollapsed = true"
                     ng-click="classificationCollapsed = !classificationCollapsed" type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
-              <span class="report-text">Classification Results</span></button><span class="project-icon green pull-right"><span class="md md-notifications"></span></span>
- <span class="arrow-green pull-right"></span>
-<div class="clearfix"></div>
+              <span class="report-text">Classification Results</span></button>
+            <span class="project-icon green pull-right"><span class="md md-notifications"></span></span>
+            <span class="arrow-green pull-right"></span>
+
+            <div class="clearfix"></div>
 
           </div>
         </div>
@@ -95,33 +102,35 @@
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <button ng-init="conflictsCollapsed = true"
-                    ng-click="conflictsCollapsed = !conflictsCollapsed" type="button"
-                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
-              <span class="report-text">Conflicts Results</span></button><span class="project-icon red pull-right"><span class="md md-warning"></span></span>
+            <a ng-href="#/projects/project/{{project.key}}/conflicts">
+              <button ng-init="conflictsCollapsed = true"
+                      ng-click="conflictsCollapsed = !conflictsCollapsed" type="button"
+                      ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
+                <span class="report-text">Conflicts Results</span></button>
+            </a>
+            <span class="project-icon red pull-right"><span class="md md-warning"></span></span>
             <span class="arrow-green pull-right"></span>
+
             <div class="clearfix"></div>
 
           </div>
         </div>
+        <!--
+                <div ng-show="conflictsCollapsed === false">
 
-        <div ng-show="conflictsCollapsed === false">
+                  <a ng-href="#/projects/project/{{project.key}}/conflicts">
+                    View Conflicts
+                  </a>
 
-          {{project}}
-          <a ng-href="#/projects/project/{{project.key}}/conflicts">
-            View Conflicts
-          </a>
+                  <div class="card-content clearfix">
+                    <div conflicts conflicts-container="conflictsContainer" branch="branch"
+                         editable="false"></div>
+                  </div>
 
-          <div class="card-content clearfix">
-            <div conflicts conflicts-container="conflictsContainer" branch="branch"
-                 editable="false"></div>
-          </div>
-
-        </div>
+                </div>-->
 
       </div>
 
     </div>
-    {{project}}
   </div>
 
