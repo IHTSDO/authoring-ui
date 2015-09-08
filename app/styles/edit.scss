@@ -171,13 +171,14 @@ button,
     background-color: transparent !important;
 }
 .saved {
-    min-width: 600px;
+   
     padding: 8px 30px 8px 8px;
     margin: 14px 36px;
 }
 .green-save {
     font-weight: 600;
 }
+.alert{font-size:12px;}
 .timeline-heading .control-label{box-shadow:none!important;padding-bottom:0px!important;}
 #top > main > div > div:nth-child(2) > div > div.sca-column.col-lg-9.col-md-9.col-sm-9 > div.row.project-page > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div.pull-right {display:none;}
 @media screen and (max-width: 1850px) {
@@ -355,7 +356,7 @@ button,
     background-color: #424242;
     color: #fff;
 }
-
+.text-center{text-align:center; font-size:13px; font-family: 'Roboto', sans-serif;}
 input:focus.color_0,
 textarea:focus.color_0,
 select:focus.color_0,
@@ -364,6 +365,7 @@ input:active.color_0,
 select:active.color_0 {
     box-shadow: inset 0 -2px 0 #E0299B !important;
 }
+.row{border:none!important;}
 input:focus.color_1,
 textarea:focus.color_1,
 select:focus.color_1,
@@ -542,90 +544,6 @@ select.primitive {
     width: 90%;
 }
 .concept-headers {padding-bottom:5px;}
-@media (max-width: 1380px) {
-    .title-text {
-        font-size: 11px !important;
-        max-width: 270px !important;
-    }
-    .small-buttons {
-        padding: 2px 4.5% !important;
-        font-size: 14px !important;
-    }
-    .snomed-clear {
-        margin-top: 5px;
-    }
-}
-@media (min-width: 1701px) {
-    .small-buttons {
-        margin-top: 5px;
-    }
-    .snomed-clear {
-        margin-top: 10px;
-    }
-    .nav > li > a {
-        position: relative;
-        display: block;
-        padding: 10px 12px;
-    }
-	.concept-headers {padding-bottom:0px;}
-}
-@media (max-width: 1700px) {
-    .fsn {
-        padding-bottom: 3px;
-        font-size: 11.5px;
-    }
-    .title-text {
-        font-size: 11px !important;
-        max-width: 500px;
-    }
-    .snomed-clear {
-        margin-top: 5px;
-    }
-    select.primitive {
-        font-size: 10px !important;
-        height: 24px !important;
-    }
-    .edits button {
-        font-size: 12px;
-        padding: 3px 4px;
-        line-height: 14px;
-        box-shadow: none !important;
-    }
-    .concept-title {
-        float: left !important;
-        width: 100%;
-    }
-    .editing-form .col-md-9 {
-        width: 77%;
-    }
-    .editing-form .col-md-3 {
-        width: 23%;
-    }
-    .editing-form select {
-        font-size: 10px !important;
-    }
-    .editing-form .typeid {
-        width: 12%;
-        padding-left: 1%;
-    }
-    .editing-form .description {
-        width: 52%;
-    }
-    .editing-form .acceptability {
-        width: 22%;
-    }
-    .nav > li > a {
-        position: relative;
-        display: block;
-        font-size: 12px;
-        padding: 10px 5px;
-    }
-    .small-buttons {
-        padding: 2px 6.2% !important;
-        font-size: 14px !important;
-    }
-	.concept-headers {padding-bottom:5px;}
-}
 .classify-buttons {
     border: 1.5px solid !important;
     border-radius: 3px !important;
@@ -667,9 +585,7 @@ select.primitive {
     background-color: #ff0990 !important;
     color: #fff !important;
 }
-.alert-info.saved {
-    max-width: 450px;
-}
+
 .page-header {
     margin: 0px;
 }
