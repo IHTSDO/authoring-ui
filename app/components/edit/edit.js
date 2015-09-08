@@ -750,11 +750,16 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conflictsContainer = {
       conflicts: null
     };
+    
+    $scope.viewReview = function() {
+        $scope.getLatestReview();
+        $scope.setView('feedback');
+    };
 
 // populate the container objects
     $scope.getLatestClassification();
     $scope.getLatestValidation();
-    $scope.getLatestReview();
+    //$scope.getLatestReview();
     $scope.getLatestConflictsReport();
 
   }
