@@ -119,7 +119,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-6 col-md-6 col-lg-6 grey darken-3" style="margin-right:0px;">
             <div concept-edit concept="concept" id="height-{{concept.conceptId}}'"
-                 branch="branch" static="false"
+                 branch="targetBranch" static="false"
               >
             </div>
           </div>
@@ -168,7 +168,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3" style="margin-right:0px;">
             <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
-                 branch="branch" static="false"
+                 branch="targetBranch" static="false"
               >
             </div>
           </div>
@@ -211,7 +211,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 " style="margin-right:0px;">
             <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
-                 branch="branch" static="false"
+                 branch="targetBranch" static="false"
               >
             </div>
           </div>
@@ -226,7 +226,7 @@
 
       <!-- validation report -->
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-        <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
+        <div validation validation-container="validationContainer" branch="targetBranch" editable="true"></div>
       </div>
 
       <!-- concept edit : non-static, can create -->
@@ -254,7 +254,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
             <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
-                 branch="branch" static="false"
+                 branch="targetBranch" static="false"
               >
             </div>
           </div>
@@ -268,7 +268,7 @@
 
       <!-- classification report -->
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-        <div classification classification-container="classificationContainer" branch="branch" editable="true"></div>
+        <div classification classification-container="classificationContainer" branch="targetBranch" editable="true"></div>
       </div>
 
       <!-- concept edit : non-static, can create -->
@@ -296,7 +296,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
             <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
-                 branch="branch" static="false"
+                 branch="targetBranch" static="false"
               >
             </div>
           </div>
@@ -311,7 +311,7 @@
       <!-- feedback report -->
       <div
         class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-        <div feedback feedback-container="feedbackContainer" branch="branch" editable="true"></div>
+        <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
       </div>
 
       <!-- concept edit : author -> non-static, can create, reviewer -> static, cannot create -->
@@ -339,7 +339,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
             <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
-                 branch="branch" static="false"
+                 branch="targetBranch" static="false"
               >
             </div>
           </div>
@@ -354,8 +354,8 @@
 
       <!-- conflict report -->
       <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-        <div conflicts conflicts-container="conflictsContainer" target-branch="branch"
-             source-branch="projectBranch"></div>
+        <div conflicts conflicts-container="conflictsContainer" target-branch="targetBranch"
+             source-branch="sourceBranch"></div>
       </div>
 
       <!-- base and branch concept pairs -->
@@ -365,14 +365,14 @@
 
           <!-- base concept -->
           <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5 col-xl-5 no-gutter">
-            <div ng-if="conflictConceptPair.baseConcept" concept-edit concept="conflictConceptPair.baseConcept"
+            <div ng-if="conflictConceptPair.sourceConcept" concept-edit concept="conflictConceptPair.sourceConcept"
                  branch="conflictsSourceBranch" static="true">
             </div>
           </div>
 
           <!-- branch concept -->
           <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7 col-xl-7 no-gutter">
-            <div ng-if="conflictConceptPair.branchConcept" concept-edit concept="conflictConceptPair.branchConcept"
+            <div ng-if="conflictConceptPair.targetConcept" concept-edit concept="conflictConceptPair.targetConcept"
                  branch="conflictsTargetBranch" parent-branch="conflictsSourceBranch" static="false">
             </div>
           </div>
@@ -394,7 +394,7 @@
              ng-class="['col-sm-12',
              'col-md-12',
              'col-lg-8']">
-          <div validation validation-container="validationContainer" branch="branch" editable="true"></div>
+          <div validation validation-container="validationContainer" branch="targetBranch" editable="true"></div>
         </div>
 
         &lt;!&ndash; Feedback View &ndash;&gt;
@@ -402,7 +402,7 @@
              ng-class="['col-sm-12',
              'col-md-12',
              'col-lg-8']">
-          <div feedback feedback-container="feedbackContainer" branch="branch" editable="true"></div>
+          <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
         </div>
 
         &lt;!&ndash; Classify View &ndash;&gt;
@@ -410,7 +410,7 @@
              ng-class="['col-sm-12',
              'col-md-8',
              'col-lg-8']">
-          <div classification classification-container="classificationContainer" branch="branch" editable="true"></div>
+          <div classification classification-container="classificationContainer" branch="targetBranch" editable="true"></div>
         </div>
 
         &lt;!&ndash; Concept/Model &ndash;&gt;
@@ -498,7 +498,7 @@
 
               &lt;!&ndash; concepts &ndash;&gt;
               <div concept-edit concept="concept"
-                   branch="branch" static="'false'"
+                   branch="targetBranch" static="'false'"
                    >
               </div>
             </div>

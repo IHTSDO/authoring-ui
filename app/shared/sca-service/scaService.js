@@ -335,7 +335,7 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // add feedback to a review
-      addFeedbackToReview: function (projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
+      addFeedbackToTaskReview: function (projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
 
         console.debug('adding feedback', projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup);
         var feedbackContainer = {
@@ -355,13 +355,71 @@ angular.module('singleConceptAuthoringApp')
 
       //POST
       // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
-      markConceptFeedbackRead: function (projectKey, taskKey, conceptId) {
+      markTaskFeedbackRead: function (projectKey, taskKey, conceptId) {
         console.debug('marking concept feedback as read', projectKey, taskKey, conceptId);
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
           return response;
         }, function (error) {
           console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
+          notificationService.sendError('Error marking feedback read', 10000);
+          return null;
+        });
+      },
+
+      // mark as ready for review -- no return value
+      markProjectForReview: function (projectKey) {
+        $http.post(apiEndpoint + 'projects/' + projectKey + '/review').then(function (response) {
+          notificationService.sendMessage('Project ' + projectKey + ' marked for review');
+        }, function (error) {
+          console.error('Error marking project ready for review ' + projectKey);
+          notificationService.sendError('Error marking project ready for review: ' + projectKey, 10000);
+        });
+      },
+
+      // get latest review
+      getReviewForProject: function (projectKey) {
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/review').then(function (response) {
+          return response.data;
+        }, function (error) {
+
+          // 404 errors indicate no review is available
+          if (error.status !== 404) {
+            console.error('Error retrieving review for project ' + projectKey, error);
+            notificationService.sendError('Error retrieving review for project ' + projectKey, 10000);
+          }
+          return null;
+        });
+      },
+
+      // add feedback to a review
+      addFeedbackToProjectReview: function (projectKey, messageHtml, subjectConceptIds, requestFollowup) {
+
+        console.debug('adding feedback', projectKey,messageHtml, subjectConceptIds, requestFollowup);
+        var feedbackContainer = {
+          subjectConceptIds: subjectConceptIds,
+          messageHtml: messageHtml,
+          feedbackRequested: requestFollowup
+        };
+
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/review/message', feedbackContainer).then(function (response) {
+          return response.data;
+
+        }, function (error) {
+          console.error('Error submitting feedback for project ' + projectKey, feedbackContainer, error);
+          notificationService.sendError('Error submitting feedback', 10000);
+        });
+      },
+
+      //POST
+      // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
+      markProjectFeedbackRead: function (projectKey,conceptId) {
+        console.debug('marking concept feedback as read', projectKey, conceptId);
+
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
+          return response;
+        }, function (error) {
+          console.error('Error marking feedback read in project ' + projectKey + ' for concept ' + conceptId);
           notificationService.sendError('Error marking feedback read', 10000);
           return null;
         });
