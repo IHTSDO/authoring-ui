@@ -307,27 +307,16 @@ aside.editpanel ul a {
     border-color: #2fa94f;
     background-color: #41ca65;
 }
-/* form widths */
-.editing-form .acceptability {
-    width: 15%;
-    padding-left: .5%;
-}
-.editing-form .col-md-3 {
-    width: 20%;
-}
-.editing-form .col-md-9 {
-    width: 80%;
-}
-.editing-form .language {
-    width: 7%;
-    padding-left: .5%;
-}
-.editing-form .typeid {
-    width: 8%;
-    padding-left: .5%;
-}
-.editing-form .description {
-    width: 40%;
+
+textarea, input{height: 30px!important; resize:none; line-height:12px!important; font-family: 'Open Sans Condensed', sans-serif;}
+		
+		.button-width{width:4.5%; margin-right:.5%; padding:0% .5%!important; float:left; height:100%; min-height:30px; font-size:14px!important;}
+
+/* Global form widths */
+.concept-headers .col-md-1 {width: 9.33333%;}
+.concept-headers .col-md-13 {width: 21%;}
+.editing-form .rolegroup {
+    width: 4.5%;
     padding-left: 0px;
 }
 .editing-form .is_a {
@@ -338,10 +327,120 @@ aside.editpanel ul a {
     width: 25%;
     padding-left: .5%;
 }
+.editing-form .sourcename {
+    width: 57.5%;
+    padding-left: .5%;
+}
+.editing-form .relations {
+    width: 55%;
+    padding-left: .5%;
+}
+	@media (max-width: 1380px) {
+    .title-text {
+        font-size: 11px !important;
+        max-width: 270px !important;
+    }
+    .small-buttons {
+        padding: 2px 4.5% !important;
+        font-size: 14px !important;
+    }
+    .snomed-clear {
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 1793px) {
+    .fsn {
+        padding-bottom: 3px;
+        font-size: 11.5px;
+    }
+  
+    .snomed-clear {
+        margin-top: 5px;
+    }
+    select.primitive {
+        font-size: 10px !important;
+        height: 24px !important;
+    }
+   
+   
+    .editing-form .col-md-9 {
+        width: 77%;
+    }
+    .editing-form .col-md-3 {
+        width: 23%;
+    }
+    .editing-form select {
+        font-size: 10px !important;
+    }
+    .editing-form .typeid {
+        width: 12%;
+        padding-left: 1%;
+    }
+    .editing-form .description {
+        width: 52%;
+    }
+    .editing-form .acceptability {
+        width: 22%;
+    }
+    .nav > li > a {
+        position: relative;
+        display: block;
+        font-size: 12px;
+        padding: 10px 5px;
+    }
+    .small-buttons {
+        padding: 2px 4.2% !important;
+        font-size: 14px !important;
+    }
+	.concept-headers {padding-bottom:5px;}
+}
+@media (min-width: 1701px) {
+    .small-buttons {
+        margin-top: 5px;
+    }
+    .snomed-clear {
+        margin-top: 10px;
+    }
+    .nav > li > a {
+        position: relative;
+        display: block;
+        padding: 10px 12px;
+    }
+	.concept-headers {padding-bottom:0px;}
+}
+@media (min-width: 1794px) {
+.editing-form .acceptability {
+    width: 15%;
+    padding-left: .5%;
+}
+.editing-form .col-md-3 {
+    width: 20%;
+}
+.editing-form .col-md-9 {
+    width: 80%;
+}
+/* form widths */
 .editing-form .rolegroup {
-    width: 3%;
+    width: 4.5%;
     padding-left: 0px;
 }
+
+.editing-form .language {
+    width: 7%;
+    padding-left: .5%;
+}
+.editing-form .typeid {
+    width: 8%;
+    padding-left: .5%;
+}
+.editing-form .description {
+    width: 56.35%;
+    padding-left: 0px;
+}
+
+
+
 .editing-form .characteristictype {
     width: 10.5%;
     padding-left: .5%;
@@ -350,18 +449,7 @@ aside.editpanel ul a {
     width: 12.5%;
     padding-left: .5%;
 }
-.editing-form .sourcename {
-    width: 49.5%;
-    padding-left: .5%;
 }
-.editing-form .relations {
-    width: 47%;
-    padding-left: .5%;
-}
-textarea{min-height: 30px!important; resize:none; line-height:12px; font-family: 'Open Sans Condensed', sans-serif;}
-		
-		.button-width{width:4.5%; margin-right:.5%; padding:0% .5%!important; float:left; height:100%; min-height:30px; font-size:14px!important;}
-	
 /* form widths */
 select.form-control {
 
@@ -373,31 +461,38 @@ select.form-control {
 /* Colours */
 
 /* colors */
-.color_ input, .color_ textarea, .color_ select { 
+.color_ input, .color_ textarea, .color_ select, .color_ .custom-button { 
     background-color: #c3e1ff !important;
+	color: #474747 !important;
 }
 
-.color_0 input, .color_0 textarea, .color_0 select { 
+.color_0 input, .color_0 textarea, .color_0 select, .color_0 .custom-button { 
     background-color: #dedeff !important;
+	color: #474747 !important;
 }
-.color_1 input, .color_1 textarea, .color_1 select{ 
+.color_1 input, .color_1 textarea, .color_1 select, .color_1 .custom-button{ 
     background-color: #dedeff !important;
+	color: #474747 !important;
 }
 
-.color_2 input, .color_2 textarea, .color_2 select{  
+.color_2 input, .color_2 textarea, .color_2 select, .color_2 .custom-button{  
     background-color: #dedeff !important;
+	color: #474747 !important;
 }
 .color_3 input, .color_3 textarea, .color_3 select{ 
     background-color: #dedeff !important;
+	color: #474747 !important;
 }
 .color_4 input, .color_4 textarea, .color_4 select{ 
     background-color: #dedeff !important;
 }
 .color_5 input, .color_5 textarea, .color_5 select{ 
     background-color: #dedeff !important;
+	color: #474747 !important;
 }
 .color_6 {
     background-color: #f1f8e9 !important;
+	color: #474747 !important;
 }
 .color_7 {
     background-color: #e0f2f1 !important;

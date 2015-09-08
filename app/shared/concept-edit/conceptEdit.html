@@ -35,7 +35,7 @@
   </div>
   <!-- end validation error -->
   <div class="row p-5 grey darken-4 concept-headers " style=" margin-right:0px;">
-    <div class="pull-left">
+    <div class="pull-left col-md-1 no-padding">
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
       <button type="button" class="btn btn-default morebuttons grey darken-4 md md-more"
@@ -51,13 +51,13 @@
     </div>
 
     <!-- draggable element -- concept name -->
-    <div class="pull-left title-text"
+    <div class="pull-left col-md-6 no-padding title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
       <button type="button" class="btn-default  grey darken-4 title-text fsn-title-button"><span class="fsn">{{concept.fsn}}</span><span
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
     </div>
 
-    <div class="pull-right m-l-5 m-r-5 ">
+    <div class="pull-right m-l-5 m-r-5 col-md-2 no-padding ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               ng-disabled="isStatic"
               ng-model="concept.definitionStatus"
@@ -66,7 +66,7 @@
               ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
     </div>
-    <div class="pull-right no-margin edits concept-title">
+    <div class="pull-right no-margin edits concept-title col-md-13 no-padding">
 
       <!-- Revert button only appears if parent is specified -->
       <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
@@ -84,7 +84,7 @@
               title="Active/Inactive" ng-click="toggleConceptActive(concept)" class="small-buttons"></button>
       <button type="button"
               style="vertical-align: bottom"
-              class="btn-default editbuttons light-blue small-buttons"
+              class="btn-default editbuttons light-blue small-buttons color_{{relationship.groupId}}"
               ng-class="[{'md-flash-on' : !hideInactive}, {'md-flash-off' : hideInactive}]"
               title="Show/Hide Inactive Components" ng-click="toggleHideInactive()"></button>
 
@@ -133,10 +133,10 @@
 
           <!-- Case Significance -->
 
-          <button type="button" class=" blue accent-2 button-width" ng-disabled="isStatic"
+          <button type="button" class=" blue accent-2 button-width custom-button text-center" ng-disabled="isStatic"
                   title="Case Significance " ng-click="toggleCaseSignificance(description)">
 
-            <span class="md col-md-1 no-padding">{{getCaseSignificanceDisplayText(description)}}</span>
+            <span class="md col-md-12 no-padding text-center">{{getCaseSignificanceDisplayText(description)}}</span>
 
 
           </button>
@@ -167,19 +167,19 @@
           <div>
             <!-- en-us acceptability -->
             <button type="button"
-                    class=" blue accent-2 button-width-acceptability"
+                    class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="isStatic || description.effectiveTime || description.type === 'FSN'"
-                    title="Case Significance " ng-click="toggleAcceptability(description, 'en-us')">us:
+                    title="Case Significance " ng-click="toggleAcceptability(description, 'en-us')"> <span class="md col-md-12 no-padding text-center">us:
                                                                                                     {{getAcceptabilityDisplayText(description,
-                                                                                                    'en-us')}}
+                                                                                                    'en-us')}}</span>
             </button>
 
             <!-- en-gb acceptability -->
-            <button type="button" class=" blue accent-2 button-width-acceptability"
+            <button type="button" class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="isStatic || description.effectiveTime  || description.type === 'FSN'"
-                    title="Case Significance " ng-click="toggleAcceptability(description, 'en-gb')">gb:
+                    title="Case Significance " ng-click="toggleAcceptability(description, 'en-gb')"> <span class="md col-md-12 no-padding text-center">gb:
                                                                                                     {{getAcceptabilityDisplayText(description,
-                                                                                                    'en-gb')}}
+                                                                                                    'en-gb')}}</span>
             </button>
           </div>
 
@@ -266,12 +266,12 @@
     </div>
 
     <!-- rows: Concept Attributes (in relationships) -->
-    <div ng-repeat="relationship in getAttributeRelationships(true)"
+    <div ng-repeat="relationship in getAttributeRelationships(true)" 
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
          ui-on-drop="dropRelationship(relationship, $data)">
-      <div class="row darken-3 p-t-5 p-b-5 grey">
+      <div class="row darken-3 p-t-5 grey clearfix ">
 
-        <div class="col-md-12 no-padding form-control color_{{relationship.groupId}}"
+        <div class=" clearfix col-md-12 no-padding form-control color_{{relationship.groupId}}"
              ui-draggable="isStatic" drag="relationship"
              drag-channel="conceptEditRelationship"
              drop-channel="conceptEditRelationship"
@@ -299,9 +299,9 @@
                   title="Active/Inactive"></button>
           <!-- relationship group -->
           <div class="pull-left rolegroup">
-          <textarea style="" class="msd-elastic" ng-disabled="isStatic" ng-model="relationship.groupId"
+          <textarea style="" ng-disabled="isStatic" ng-model="relationship.groupId"
                     ng-change="updateRelationship(relationship)"
-                    class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
+                    class="msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
           </textarea>
           </div>
@@ -310,8 +310,8 @@
                drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
                ng-disabled="isStatic"
                ui-on-drop="dropRelationshipType(relationship, $data)">
-          <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
-                    class="form-control color_{{relationship.groupId}}"
+          <textarea style="" disabled ng-model="relationship.type.fsn"
+                    class="msd-elastic form-control color_{{relationship.groupId}}"
                     type="text"
                     placeholder="#">
           </textarea>
@@ -322,8 +322,8 @@
                drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipTarget(relationship, $data)">
-          <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
-                    class="form-control color_{{relationship.groupId}}"
+          <textarea style="" disabled ng-model="relationship.target.fsn"
+                    class="msd-elastic form-control color_{{relationship.groupId}}"
                     type="text"
                     placeholder="#">
           </textarea>
