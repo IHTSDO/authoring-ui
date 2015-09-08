@@ -179,6 +179,15 @@ button,
     font-weight: 600;
 }
 .alert{font-size:12px;}
+ .model-header h4 {
+        font-size: 12px;
+        font-weight: 500;
+       
+		margin:0px;
+    }
+	.model-header{font-size:12px;}
+	 .model-header input{height:10px!important;}
+	 .model-header label{margin-bottom:0px;}
 .timeline-heading .control-label{box-shadow:none!important;padding-bottom:0px!important;}
 #top > main > div > div:nth-child(2) > div > div.sca-column.col-lg-9.col-md-9.col-sm-9 > div.row.project-page > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div.pull-right {display:none;}
 @media screen and (max-width: 1850px) {
@@ -206,11 +215,7 @@ button,
     .fsn {
         text-align: left;
     }
-    .model-header h4 {
-        font-size: 12px;
-        font-weight: 500;
-        padding-left: 10px;
-    }
+   
 	
 }
 @media screen and (min-width: 1851px) {
