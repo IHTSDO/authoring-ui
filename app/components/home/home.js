@@ -105,46 +105,16 @@ angular.module('singleConceptAuthoringApp.home', [
 
       $scope.tasks = [];
       $scope.reviewTasks = [];
-
-      var tasks = [];
-      var reviewTasks = [];
-
-      // get tasks from WRPAS project
-      // TODO Change this once we have API call for review-tasks
-      scaService.getTasksForProject('WRPAS').then(function (response) {
-        angular.forEach(response, function (task) {
-
-          //    console.debug('Checking task', task.key, task.status,
-          // task.reviewer);
-
-          // ready for review task (no reviewer) where assignee is not the
-          // current user
-          if (task.status === 'IN_REVIEW' && !task.reviewer && task.assignee.username != $rootScope.accountDetails.login) {
-            reviewTasks.push(task);
-          }
-
-
-          // in review tasks where reviewer is the current user
-          else if (task.reviewer && task.reviewer.username === $rootScope.accountDetails.login) {
-            reviewTasks.push(task);
-          }
-
-          // non-review tasks where current user is the assignee
-          else if (task.assignee && task.assignee.username === $rootScope.accountDetails.login) {
-            tasks.push(task);
-          }
+        scaService.getTasks().then(function (response) {
+            $scope.tasks = response;
+        });
+        
+        scaService.getReviewTasks().then(function (response) {
+            $scope.reviewTasks = response;
         });
 
-        $scope.tasks = tasks;
-        $scope.reviewTasks = reviewTasks;
-
-        console.debug('tasks: ', tasks);
-        console.debug('review tasks: ', reviewTasks);
-
         notificationService.sendMessage('All tasks loaded', 5000);
-
-      });
-    }
+    };
 
     // on successful set, reload table parameters
     $scope.$watch('tasks', function () {
@@ -188,12 +158,12 @@ angular.module('singleConceptAuthoringApp.home', [
         };
 
         scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
-          $location.url('feedback/' + task.projectKey + '/' + task.key);
+          $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
         });
 
         // otherwise, simply go to feedback view
       } else {
-        $location.url('feedback/' + task.projectKey + '/' + task.key);
+        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
       }
     };
     $scope.isReviewer = function () {

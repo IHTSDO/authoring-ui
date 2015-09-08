@@ -18,7 +18,9 @@ angular.module('singleConceptAuthoringApp')
           sourceBranch: '=',
 
           // branch this conflict report was generated for
-          targetBranch: '='
+          targetBranch: '=',
+
+          editable: '&'
 
         },
         templateUrl: 'shared/conflicts/conflicts.html',
@@ -36,36 +38,39 @@ angular.module('singleConceptAuthoringApp')
               filterDelay: 50,
               total: scope.conflictsContainer && scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.conceptsToResolve ?
                 scope.conflictsContainer.conflicts.conceptsToResolve.length : 0,
-
               getData: function ($defer, params) {
 
                 if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsToResolve || scope.conflictsContainer.conflicts.conceptsToResolve.length === 0) {
-                  console.debug('in null if');
-                  scope.conceptsToResolveViewed = [];
+                  $defer.resolve([]);
                 } else {
 
-                  console.debug(scope.conflictsContainer.conflicts);
+                  var orderedData = scope.conflictsContainer.conflicts.conceptsToResolve;
 
-                  // filter
-                  var conceptsToResolveViewed = params.filter() ?
-                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsToResolve, params.filter()) :
-                    scope.conflictsContainer.conflicts.conceptsToResolve;
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
 
-                  console.debug(conceptsToResolveViewed);
-
-                  // hard set the new total
-                  params.total(conceptsToResolveViewed.length);
-
-                  // order
-                  conceptsToResolveViewed = params.sorting() ? $filter('orderBy')(conceptsToResolveViewed, params.orderBy()) : conceptsToResolveViewed;
-
-                  // extract the paged results
-                  scope.conceptsToResolveViewed = (conceptsToResolveViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-
-                  console.debug(scope.conceptsToResolveViewed);
-
+                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
+//              getData: function ($defer, params) {
+//
+//                if (!scope.conflictsContainer ||
+// !scope.conflictsContainer.conflicts ||
+// !scope.conflictsContainer.conflicts.conceptsToResolve ||
+// scope.conflictsContainer.conflicts.conceptsToResolve.length === 0) {
+// console.debug('in null if'); scope.conceptsToResolveViewed = []; } else {
+// console.debug(scope.conflictsContainer.conflicts);  // filter var
+// conceptsToResolveViewed = params.filter() ?
+// $filter('filter')(scope.conflictsContainer.conflicts.conceptsToResolve,
+// params.filter()) : scope.conflictsContainer.conflicts.conceptsToResolve;
+// console.debug(conceptsToResolveViewed);  // hard set the new total
+// params.total(conceptsToResolveViewed.length);  // order
+// conceptsToResolveViewed = params.sorting() ?
+// $filter('orderBy')(conceptsToResolveViewed, params.orderBy()) :
+// conceptsToResolveViewed;  // extract the paged results
+// scope.conceptsToResolveViewed =
+// (conceptsToResolveViewed.slice((params.page() - 1) * params.count(),
+// params.page() * params.count()));  } }
             }
           );
 
@@ -80,29 +85,36 @@ angular.module('singleConceptAuthoringApp')
               filterDelay: 50,
               total: scope.conflictsContainer && scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.conceptsResolved ?
                 scope.conflictsContainer.conflicts.conceptsResolved.length : 0,
-
               getData: function ($defer, params) {
 
                 if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsResolved || scope.conflictsContainer.conflicts.conceptsResolved.length === 0) {
-                  scope.conceptsResolvedViewed = [];
+                  $defer.resolve([]);
                 } else {
 
+                  var orderedData = scope.conflictsContainer.conflicts.conceptsResolved;
 
-                  // filter
-                  var conceptsResolvedViewed = params.filter() ?
-                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsResolved, params.filter()) :
-                    scope.conflictsContainer.conflicts.conceptsResolved;
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
 
-                  // hard set the new total
-                  params.total(conceptsResolvedViewed.length);
-
-                  // order
-                  conceptsResolvedViewed = params.sorting() ? $filter('orderBy')(conceptsResolvedViewed, params.orderBy()) : conceptsResolvedViewed;
-
-                  // extract the paged results
-                  scope.conceptsResolvedViewed = (conceptsResolvedViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
+//              getData: function ($defer, params) {
+//
+//                if (!scope.conflictsContainer ||
+// !scope.conflictsContainer.conflicts ||
+// !scope.conflictsContainer.conflicts.conceptsResolved ||
+// scope.conflictsContainer.conflicts.conceptsResolved.length === 0) {
+// scope.conceptsResolvedViewed = []; } else {   // filter var
+// conceptsResolvedViewed = params.filter() ?
+// $filter('filter')(scope.conflictsContainer.conflicts.conceptsResolved,
+// params.filter()) : scope.conflictsContainer.conflicts.conceptsResolved;  //
+// hard set the new total params.total(conceptsResolvedViewed.length);  //
+// order conceptsResolvedViewed = params.sorting() ?
+// $filter('orderBy')(conceptsResolvedViewed, params.orderBy()) :
+// conceptsResolvedViewed;  // extract the paged results
+// scope.conceptsResolvedViewed = (conceptsResolvedViewed.slice((params.page()
+// - 1) * params.count(), params.page() * params.count())); } }
             }
           );
 
@@ -411,6 +423,10 @@ angular.module('singleConceptAuthoringApp')
           ////////////////////////////////////////////////////////////////////
           // Watch freedback container -- used as Initialization Block
           ////////////////////////////////////////////////////////////////////
+
+          // flag for information displayed to user on load
+          scope.conflictsInitialized = false;
+
           scope.$watch('conflictsContainer', function () {
 
             console.debug('conflictsContainer changed', scope.conflictsContainer);
@@ -419,55 +435,70 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            // pre-processing on initial load (conceptsToResolve and
-            // conceptsResolved do not yet exist)
-            if (scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.concepts.length > 0 && !scope.conflictsContainer.conflicts.conceptsToResolve && !scope.conflictsContainer.conflicts.conceptsResolved) {
+            // pre-processing on initial load, detected by the following
+            // conditions: * conflicts object exists * conflicts object has a
+            // sourceReviewId * conceptsToResolve and conceptsResolved do not
+            // yet exist
+            if (scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.sourceReviewId && !scope.conflictsContainer.conflicts.conceptsToResolve && !scope.conflictsContainer.conflicts.conceptsResolved) {
 
-              console.debug('initial setup');
+              // if no concepts (indicating no conflict), add empty array
+              if (!scope.conflictsContainer.conflicts.concepts) {
+                scope.conflictsContainer.conflicts.concepts = [];
+              }
 
               // initialize the lists
               scope.conflictsContainer.conflicts.conceptsToResolve = [];
               scope.conflictsContainer.conflicts.conceptsResolved = [];
 
-              // get ui state
-              scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
+              // PROJECT VIEW: no ui state retrieval yet
+              if (!$routeParams.taskKey) {
 
-                console.debug('uistate', response);
-                var conceptIdsResolved = response.hasOwnProperty('resolvedIds') ? response.resolvedIds : [];
-
-                // check timestamp -- if altered, clear the resolved list
-                if (response.hasOwnProperty('timestamp')) {
-                  if (response.timestamp !== scope.conflictsTimestamp) {
-                    console.debug('timestamp not current');
-                    conceptIdsResolved = [];
-                    notificationService.sendWarning('New conflict report detected, marking all conflicts not resolved');
-                  }
-                }
+                console.debug('initializing for project');
 
                 // sort the concepts into Resolved and ToResolve
+                // TODO No ui-state support, put all into ToResolve
                 angular.forEach(scope.conflictsContainer.conflicts.concepts, function (concept) {
-                  console.debug(concept.id, conceptIdsResolved);
-
-                  // get the preferred term
-                  // TODO Replace once the FSNs are returned with the conflict report
-                  snowowlService.getConceptPreferredTerm(concept.id, scope.sourceBranch).then(function(response) {
-                    concept.term = response.term;
-                  });
-
-                  if (conceptIdsResolved.indexOf(concept.id) !== -1) {
-                    scope.conflictsContainer.conflicts.conceptsResolved.push(concept);
-                  } else {
-                    scope.conflictsContainer.conflicts.conceptsToResolve.push(concept);
-                  }
+                  scope.conflictsContainer.conflicts.conceptsToResolve.push(concept);
                 });
+
+                scope.conflictsInitialized = true;
 
                 // on load, initialize tables -- all subsequent reloads manual
                 scope.conceptsToResolveTableParams.reload();
                 scope.conceptsResolvedTableParams.reload();
 
-              });
+              }
 
+              // TASK VIEW: ui state retrieval
+              else {
 
+                console.debug('initializing for task');
+
+                // get ui state
+                scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
+
+                  console.debug('uistate', response);
+                  var conceptIdsResolved = response.hasOwnProperty('resolvedIds') ? response.resolvedIds : [];
+
+                  // sort the concepts into Resolved and ToResolve based on ui state
+                  angular.forEach(scope.conflictsContainer.conflicts.concepts, function (concept) {
+                    console.debug(concept.id, conceptIdsResolved);
+
+                    if (conceptIdsResolved.indexOf(concept.id) !== -1) {
+                      scope.conflictsContainer.conflicts.conceptsResolved.push(concept);
+                    } else {
+                      scope.conflictsContainer.conflicts.conceptsToResolve.push(concept);
+                    }
+                  });
+
+                  scope.conflictsInitialized = true;
+
+                  // on load, initialize tables -- all subsequent reloads manual
+                  scope.conceptsToResolveTableParams.reload();
+                  scope.conceptsResolvedTableParams.reload();
+
+                });
+              }
             }
           }, true);
         }

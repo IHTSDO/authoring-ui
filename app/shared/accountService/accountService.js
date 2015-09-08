@@ -31,7 +31,7 @@ angular.module('singleConceptAuthoringApp')
     function getRoleForTask(task) {
 
       // check reviewer first
-      if (accountDetails.login === task.reviewer.username) {
+      if (task.reviewer && accountDetails.login === task.reviewer.username) {
         return 'REVIEWER';
       }
 
