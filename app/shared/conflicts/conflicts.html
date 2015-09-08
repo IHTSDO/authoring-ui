@@ -145,8 +145,7 @@
         <table show-filter="true" ng-table="conceptsToResolveTableParams"
                template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
-
-          <tr ng-repeat="concept in conceptsToResolveViewed">
+          <tr ng-repeat="concept in $data">
 
             <!-- select control -->
             <td class="col-checkbox" header="'ng-table/headers/checkboxToResolve.html'">
@@ -208,7 +207,7 @@
                template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
 
-          <tr ng-repeat="concept in conceptsResolvedViewed">
+          <tr ng-repeat="concept in $data">
 
             <!-- select control -->
             <td class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
