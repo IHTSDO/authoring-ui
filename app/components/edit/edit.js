@@ -94,6 +94,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     } else if ($routeParams.mode === 'validate') {
       $scope.setView('validation');
     } else if ($routeParams.mode === 'feedback') {
+      $scope.getLatestReview();
       $scope.setView('feedback');
     } else if ($routeParams.mode === 'conflicts') {
       $scope.setView('conflicts');
