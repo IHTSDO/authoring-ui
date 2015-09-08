@@ -311,12 +311,12 @@
 
       <!-- feedback report -->
       <div
-        class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+        class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 no-padding">
         <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
       </div>
 
       <!-- concept edit : author -> non-static, can create, reviewer -> static, cannot create -->
-      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding">
 
         <!-- header -->
         <div class="row no-gutter">
@@ -325,8 +325,7 @@
             <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
                     type="button" ng-click="createConcept()"
                     class="btn-default btn-block create-new-concept"
-                    title="Active"><i
-              class="md md-add-circle pull-right"></i> Create New Concept
+                    title="Active"><i class="md md-add-circle pull-right"></i> Create New Concept
             </button>
           </div>
         </div>
@@ -383,5 +382,7 @@
 
 
     </div>
+
   </div>
+
 </div>
