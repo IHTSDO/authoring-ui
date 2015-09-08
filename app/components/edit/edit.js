@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
@@ -731,6 +731,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         console.debug('rebase task completed', response);
         if (response !== null) {
           notificationService.sendMessage('Task successfully rebased', 5000);
+          $window.location.reload();
 
           // TODO: Chris Swires -- delete this once the monitorTask
           // functionality complete INAPPROPRIATE CALL TO GET BRANCH
