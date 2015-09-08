@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'accountService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, accountService, notificationService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'snowowlService', 'accountService', 'notificationService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, snowowlService, accountService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -447,6 +447,13 @@ angular.module('singleConceptAuthoringApp')
                 // sort the concepts into Resolved and ToResolve
                 angular.forEach(scope.conflictsContainer.conflicts.concepts, function (concept) {
                   console.debug(concept.id, conceptIdsResolved);
+
+                  // get the preferred term
+                  // TODO Replace once the FSNs are returned with the conflict report
+                  snowowlService.getConceptPreferredTerm(concept.id, scope.sourceBranch).then(function(response) {
+                    concept.term = response.term;
+                  });
+
                   if (conceptIdsResolved.indexOf(concept.id) !== -1) {
                     scope.conflictsContainer.conflicts.conceptsResolved.push(concept);
                   } else {

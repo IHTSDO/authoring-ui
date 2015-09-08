@@ -157,7 +157,7 @@ angular.module('singleConceptAuthoringApp')
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/pt').then(function (response) {
         return response.data;
       }, function (error) {
-        // TODO Handle error
+         return { term : 'Could not determine preferred term'};
       });
 
     }
@@ -393,6 +393,21 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    //////////////////////////////////////////////////////
+    // Branch Functions
+    //
+    // NOTE: Intended for debugging ONLY
+    //       Use scaService for true function
+    //////////////////////////////////////////////////////
+
+//    https://dev-term.ihtsdotools.org/snowowl/snomed-ct/v2/branches/MAIN/WRPAS/WRPAS-72/
+    function getBranch(branch) {
+      return $http.get(apiEndpoint + '/branches/' + branch).then(function(response) {
+        return response.data;
+      }, function(error) {
+        return null;
+      });
+    }
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -429,7 +444,8 @@ angular.module('singleConceptAuthoringApp')
       getDialects: getDialects,
       downloadClassification: downloadClassification,
       getDescriptionsForQuery: getDescriptionsForQuery,
-      getReview : getReview
+      getReview : getReview,
+      getBranch : getBranch
 
     };
   }

@@ -34,16 +34,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.thisView = null;
     $scope.lastView = null;
 
-    $scope.rebase = function () {
-      notificationService.sendMessage('Rebasing task...', 0);
-      scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+    // control variables
+    $scope.canRebase = false;
+    $scope.canPromote = false;
+    $scope.canConflict = false;
 
-        console.debug('rebase task completed', response);
-        if (response !== null) {
-          notificationService.sendMessage('Task successfully rebased', 5000);
-        }
-      });
-    };
     $scope.setView = function (name) {
       console.debug('setting view (requested, this, last)', name,
         $scope.thisView, $scope.lastView);
@@ -541,27 +536,14 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.conflictsContainer.conflicts = response ? response : {};
 
         // immediately poll once
-        $scope.pollForConflictsReview().then(function (response) {
+        if ($scope.conflictsContainer.conflicts.sourceReviewId) {
+          snowowlService.getReview($scope.conflictsContainer.conflicts.sourceReviewId).then(function (response) {
 
-          // set the source and target branches
-          $scope.conflictsSourceBranch = response.source.path;
-          $scope.conflictsTargetBranch = response.target.path;
-
-          // if poll successful, set up interval polling
-          var conflictsPoll = $interval(function () {
-            $scope.pollForConflictsReview().then(function (response) {
-
-              // TODO Set date
-
-              // TODO Check for stale state
-
-            }, function () {
-              console.debug('failed to retrieve review, cancelling polling');
-              $interval.cancel(conflictsPoll);
-            });
-          }, 10000);
-        });
-
+            // set the source and target branches
+            $scope.conflictsSourceBranch = response.source.path;
+            $scope.conflictsTargetBranch = response.target.path;
+          });
+        }
       });
     };
 
@@ -660,9 +642,90 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
+    // helper function to apply results of branch state change
+    // NOTE: Rather clumsy flag setting, but meh
+    function updateBranchState(branchState) {
+
+      if (branchState === 'FORWARD') {
+        $scope.canRebase = false;
+        $scope.canPromote = true;
+        $scope.canConflict = true;
+      } else if (branchState === 'UP_TO_DATE') {
+        $scope.canRebase = false;
+        $scope.canPromote = false;
+        $scope.canConflict = true;
+      } else if (branchState === 'BEHIND') {
+        $scope.canRebase = true;
+        $scope.canPromote = false;
+        $scope.canConflict = true;
+      } else if (branchState === 'STALE') {
+        // TODO
+      } else if (branchState === 'DIVERGED') {
+        $scope.canRebase = true;
+        $scope.canPromote = false;
+        $scope.canConflict = true;
+      }
+    }
+
+    // watch for task updates
+    // NOTE This is duplicated in taskDetail.js, propagate any changes
+    // TODO: Chris Swires -- no changes should be needed here, but this is
+    // the trigger for branch state changes, data is the entirely of the
+    // notification object processed in scaService.js
+    $scope.$on('notification.branchState', function (event, data) {
+
+      // check if notification matches this branch
+      if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
+        updateBranchState(data.event);
+      }
+    });
+
+
+    ////////////////////////////////////
+    // Rebase
+    /////////////////////////////////////
+
+    $scope.rebase = function () {
+
+      console.debug($scope.conflictsContainer);
+
+      // if unresolved conflicts exist, confirm with user before continuing
+      if ($scope.conflictsContainer && $scope.conflictsContainer.conflicts && $scope.conflictsContainer.conflicts.conflictsToResolve && $scope.conflictsContainer.conflictsToResolve.length > 0) {
+        var response = window.confirm('Unresolved conflicts detected.  Rebasing may cause your changes to be lost.  Continue?');
+
+        if (!response) {
+          return;
+        }
+      }
+
+      // rebase the task
+      notificationService.sendMessage('Rebasing task...', 0);
+      scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+        console.debug('rebase task completed', response);
+        if (response !== null) {
+          notificationService.sendMessage('Task successfully rebased', 5000);
+
+          // TODO: Chris Swires -- delete this once the monitorTask functionality
+          // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
+          snowowlService.getBranch($scope.branch).then(function (response) {
+            updateBranchState(response.state);
+          });
+        }
+      });
+    };
+
     //////////////////////////////////////////
     // Initialization
     //////////////////////////////////////////
+
+    // start monitoring of task
+    scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
+
+    // TODO: Chris Swires -- delete this once the monitorTask functionality
+    // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
+    snowowlService.getBranch($scope.branch).then(function (response) {
+      updateBranchState(response.state);
+    });
 
     // initialize the container objects
     $scope.classificationContainer = {
@@ -680,8 +743,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       review: null,
       feedback: null
     };
+
+    // initialize with empty concepts list
+    // but do not initialize conflictsToResolve, conflictsResolved
     $scope.conflictsContainer = {
-      conflicts: {concepts: []}
+      conflicts: null
     };
 
 // populate the container objects
@@ -691,5 +757,4 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.getLatestConflictsReport();
 
   }
-)
-;
+);

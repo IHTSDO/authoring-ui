@@ -154,28 +154,29 @@
             </td>
 
             <!-- concept term -->
-            <td class="col-concept" data-title="'Concept'" sortable="''"
+            <td class="col-concept" data-title="'Concept'" sortable="'term'"
                 filter="{}"
                 ui-draggable="true" drag="concept"
                 drag-channel="conflictsConcept" drop-channel="conflictsConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)">
-              {{concept.fsn}}
+              {{concept.term}} ({{concept.id}})
             </td>
+            <!--
+            Commented out until project/task/author information included in conflicts report
+                        &lt;!&ndash; project &ndash;&gt;
+                        <td class="col-concept" data-title="'Project'" sortable="''">
+                          Some Project
+                        </td>
 
-            <!-- project -->
-            <td class="col-concept" data-title="'Project'" sortable="''">
-              Some Project
-            </td>
+                        &lt;!&ndash; task name &ndash;&gt;
+                        <td class="col-concept" data-title="'Task Name'" sortable="''">
+                          Some Task
+                        </td>
 
-            <!-- task name -->
-            <td class="col-concept" data-title="'Task Name'" sortable="''">
-              Some Task
-            </td>
-
-            <!-- author -->
-            <td class="col-concept" data-title="'Author'" sortable="''">
-              Some Author
-            </td>
+                        &lt;!&ndash; author &ndash;&gt;
+                        <td class="col-concept" data-title="'Author'" sortable="''">
+                          Some Author
+                        </td>-->
 
             <!-- controls -->
             <td class="col-controls">
@@ -215,7 +216,7 @@
             </td>
 
             <!-- concept term -->
-            <td class="col-concept" data-title="'Concept'" sortable="''"
+            <td class="col-concept" data-title="'Concept'" sortable="'term'"
                 filter="{}"
                 ui-draggable="true" drag="concept"
                 drag-channel="conflictsConcept" drop-channel="conflictsConcept"
@@ -224,24 +225,26 @@
                       title="New"><span
                 class="md md-grade"></span>
               </button>
-              {{concept.fsn}}
+              {{concept.term}} ({{concept.id}})
             </td>
 
-            <!-- project -->
-            <td class="col-concept" data-title="'Project'" sortable="''">
-              Some Project
-            </td>
+            <!--
+          Commented out until project/task/author information included in conflicts report
+                      &lt;!&ndash; project &ndash;&gt;
+                      <td class="col-concept" data-title="'Project'" sortable="''">
+                        Some Project
+                      </td>
 
-            <!-- task name -->
-            <td class="col-concept" data-title="'Task Name'" sortable="''">
-              Some Task
-            </td>
+                      &lt;!&ndash; task name &ndash;&gt;
+                      <td class="col-concept" data-title="'Task Name'" sortable="''">
+                        Some Task
+                      </td>
 
-            <!-- author -->
-            <td class="col-concept" data-title="'Author'" sortable="''">
-              Some Author
-            </td>
-
+                      &lt;!&ndash; author &ndash;&gt;
+                      <td class="col-concept" data-title="'Author'" sortable="''">
+                        Some Author
+                      </td>
+          -->
             <!-- controls -->
             <td class="col-controls">
 

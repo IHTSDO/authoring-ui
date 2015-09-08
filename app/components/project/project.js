@@ -25,6 +25,9 @@ angular.module('singleConceptAuthoringApp.project', [
 
     $scope.validationContainer = {status: 'Loading...'};
     $scope.classificationContainer = {status: 'Loading...'};
+    $scope.conflictsContainer = { conflicts: {}};
+
+    // TODO Replace this with straight getProject call when available
     scaService.getProjects().then(function (response) {
       console.debug('projects', response);
       angular.forEach(response, function (project) {
@@ -33,16 +36,21 @@ angular.module('singleConceptAuthoringApp.project', [
           $scope.project = project;
 
 
-          // get the lateswt classification for this project
-          snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
-            $scope.classificationContainer = response;
-          });
+          // get the lateswt classification for this project (if exists)
+          if ($scope.project.latestClassificationJson) {
+            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
+              $scope.classificationContainer = response;
+            });
+          } else {
+            $scope.classificationContainer.status = 'Classification not yet run';
+          }
 
 
         }
       });
     });
 
+    // task creation from projects page
     $scope.openCreateTaskModal = function () {
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
@@ -55,6 +63,7 @@ angular.module('singleConceptAuthoringApp.project', [
     };
 
 
+    // classify the project
     $scope.classify = function () {
       console.debug('classifying project');
       scaService.startClassificationForProject($scope.project.key).then(function (response) {
@@ -72,23 +81,34 @@ angular.module('singleConceptAuthoringApp.project', [
 
     });
 
+    // on load, retrieve latest conflict report
+    scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
+      console.debug($scope.conflictsContainer);
+      $scope.conflictsContainer.conflicts = response ? response : null;
+    });
+
+    // validate the project
     $scope.validate = function () {
       console.debug('validating project');
       scaService.startValidationForProject($scope.project.key).then(function (response) {
         $scope.validationContainer.status = response;
       });
     };
-      
+
+    // rebase the project
     $scope.rebase = function () {
       scaService.rebaseProject($scope.project.key).then(function (response) {
         notificationService.sendMessage('Project Rebasing...', 10000, null);
       });
     };
 
+    // promote the project
     $scope.promote = function () {
       scaService.promoteProject($scope.project.key).then(function (response) {
         notificationService.sendMessage('Project promoting...', 10000, null);
       });
     };
+
+    // TODO Run conflicts generation here?
 
   }]);

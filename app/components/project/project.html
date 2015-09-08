@@ -89,14 +89,39 @@
 
         </div>
 
-        
+      </div>
 
+      <!-- Conflict Report Results -->
+      <div class="card ">
+        <div class="card-header">
+          <div class="card-title">
+            <button ng-init="conflictsCollapsed = true"
+                    ng-click="conflictsCollapsed = !conflictsCollapsed" type="button"
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
+              <span class="report-text">Conflicts Results</span></button><span class="project-icon red pull-right"><span class="md md-warning"></span></span>
+            <span class="arrow-green pull-right"></span>
+            <div class="clearfix"></div>
 
-        <!-- Action Buttons -->
+          </div>
+        </div>
+
+        <div ng-show="conflictsCollapsed === false">
+
+          {{project}}
+          <a ng-href="#/projects/project/{{project.key}}/conflicts">
+            View Conflicts
+          </a>
+
+          <div class="card-content clearfix">
+            <div conflicts conflicts-container="conflictsContainer" branch="branch"
+                 editable="false"></div>
+          </div>
+
+        </div>
 
       </div>
 
     </div>
-
+    {{project}}
   </div>
 
