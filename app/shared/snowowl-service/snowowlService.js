@@ -188,6 +188,14 @@ angular.module('singleConceptAuthoringApp')
     // Description functions
     ////////////////////////////////////////////////////
 
+    function getDescriptionProperties(descriptionId, branch) {
+      return $http.get(apiEndpoint + branch + '/descriptions/' + descriptionId).then(function(response) {
+        return response.data;
+      }, function(error) {
+        return null;
+      });
+    }
+
     // Retrieve descriptions of a concept
     // GET /{path}/concepts/{conceptId}/descriptions
     function getConceptDescriptions(conceptId, branch) {
@@ -217,6 +225,24 @@ angular.module('singleConceptAuthoringApp')
         return response.data.conceptDescriptions;
       }, function (error) {
         // TODO Handle error
+      });
+    }
+
+    ///////////////////////////////////////////////////
+    // Relationship functions
+    //////////////////////////////////////////////////
+
+    /**
+     * Get the properties for a specified relationship
+     * @param relationshipId the relationshipId
+     * @param branch the relationship's branch
+     * @returns the relationship properties object
+     */
+    function getRelationshipProperties(relationshipId, branch) {
+      return $http.get(apiEndpoint + branch + 'relationships/' + relationshipId).then(function(response) {
+        return response.data;
+      }, function(error) {
+        return null;
       });
     }
 
@@ -415,6 +441,8 @@ angular.module('singleConceptAuthoringApp')
     return {
 
       getConceptProperties: getConceptProperties,
+      getDescriptionProperties: getDescriptionProperties,
+      getRelationshipProperties: getRelationshipProperties,
       getConceptPreferredTerm: getConceptPreferredTerm,
       updateConcept: updateConcept,
       createConcept: createConcept,

@@ -38,9 +38,8 @@
     <div class="pull-left col-md-1 no-padding">
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
-      <button type="button" class="btn btn-default morebuttons grey darken-4 md md-more"
-              popover-template="'shared/component-more/conceptMore.html'" popover-placement="left"
-        ></button>
+      <button ng-click="setConceptProperties(concept)" type="button" class="btn btn-default morebuttons grey darken-4 md md-more"
+              popover-template="'shared/component-more/conceptMore.html'" popover-placement="left" popover-trigger="click: click"></button>
       <script type="text/ng-template" id="myPopoverTemplate.html">
         <div>{{dynamicPopover.content}}</div>
         <div class="form-group">
@@ -113,9 +112,8 @@
              drag-channel="conceptEditDescription"
              drop-channel="conceptEditDescription"
              ui-on-drop="dropDescription(concept, description, $data)">
-          <button class="grey darken-3 md md-more button-width"
-                  popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"></button>
-
+          <button ng-click="setDescriptionProperties(description)" class="grey darken-3 md md-more button-width"
+                  popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left" ng-click="populateDescriptionMore(description)"></button>
           <!-- Commented out until functional
           <button ng-if="!isStatic" type="button" class="amber md md-undo button-width" title="Undo Changes"></button>
 
@@ -205,7 +203,7 @@
 
 
           <button class="btn-default grey darken-3 md md-more button-width"
-                  ng-click="showAttributeDetails = !showAttributeDetails"
+                  ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
                   title="Some title here"></button>
 
@@ -279,7 +277,7 @@
 
           <!-- Button controls -->
           <button class="btn-default grey darken-3 md md-more button-width"
-                  ng-click="showAttributeDetails = !showAttributeDetails"
+                  ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
 
                   title="Some title here"></button>
