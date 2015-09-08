@@ -120,7 +120,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         } else {
           notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion', 0);
         }
-      })
+      });
 
 
     };
