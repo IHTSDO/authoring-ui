@@ -18,7 +18,9 @@ angular.module('singleConceptAuthoringApp')
           sourceBranch: '=',
 
           // branch this conflict report was generated for
-          targetBranch: '='
+          targetBranch: '=',
+
+          editable: '&'
 
         },
         templateUrl: 'shared/conflicts/conflicts.html',
@@ -445,7 +447,7 @@ angular.module('singleConceptAuthoringApp')
 
             // pre-processing on initial load (conceptsToResolve and
             // conceptsResolved do not yet exist)
-            if (scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.concepts.length > 0 && !scope.conflictsContainer.conflicts.conceptsToResolve && !scope.conflictsContainer.conflicts.conceptsResolved) {
+            if (scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.concepts && scope.conflictsContainer.conflicts.concepts.length > 0 && !scope.conflictsContainer.conflicts.conceptsToResolve && !scope.conflictsContainer.conflicts.conceptsResolved) {
 
               console.debug('initial setup');
 

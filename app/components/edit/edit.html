@@ -17,8 +17,9 @@
             ng-click="setView('classification')"><span
       class="md md-notifications"></span></button>
 
-    <!-- Switch to Feedback/Review View -->
-    <button type="button" class="btn btn-default widget-toolbar review pink1 " title="Switch to Feedback View"
+    <!-- Switch to Feedback/Review View -- Task View Only -->
+    <button ng-if="taskKey"
+            type="button" class="btn btn-default widget-toolbar review pink1 " title="Switch to Feedback View"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('feedback')"><span
       class="md md-email"></span></button>
@@ -41,22 +42,22 @@
             ng-click="setView('conflicts')"><span
       class="md md-warning"></span></button>
 
-    <!-- Edit View: Default -->
-    <button type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
+    <!-- Edit View: Default -- Task View Only -->
+    <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
             class="btn btn-default widget-toolbar blue darken-4" title="Restore Default View"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('edit-default')"> <span
       class="md md-dvr"></span></button>
 
-    <!-- Edit View:  No sidebar -->
-    <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
+    <!-- Edit View:  No sidebar -- Task View Only -->
+    <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
             class="btn btn-default widget-toolbar blue darken-3" title="Hide Sidebar"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('edit-no-sidebar')"> <span
       class="md md-web "></span></button>
 
-    <!-- Edit View: No model -->
-    <button type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
+    <!-- Edit View: No model -- Task View Only -->
+    <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
             class="btn btn-default widget-toolbar blue darken-2" title="Hide Model"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('edit-no-model')"> <span
@@ -382,129 +383,5 @@
 
 
     </div>
-    <!--
-
-    OLD EDIT FORMAT, REFACTORED IN FAVOR OF DIRECT VIEW MANIPULATION
-        &lt;!&ndash; Sidebar &ndash;&gt;
-        <div ng-show="!hideSidebar" class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
-             ng-include src="'layout/sidebar-edit.html'"></div>
-
-        &lt;!&ndash;Validate View &ndash;&gt;
-        <div ng-if="!hideValidation"
-             ng-class="['col-sm-12',
-             'col-md-12',
-             'col-lg-8']">
-          <div validation validation-container="validationContainer" branch="targetBranch" editable="true"></div>
-        </div>
-
-        &lt;!&ndash; Feedback View &ndash;&gt;
-        <div ng-if="!hideFeedback"
-             ng-class="['col-sm-12',
-             'col-md-12',
-             'col-lg-8']">
-          <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
-        </div>
-
-        &lt;!&ndash; Classify View &ndash;&gt;
-        <div ng-show="!hideClassification"
-             ng-class="['col-sm-12',
-             'col-md-8',
-             'col-lg-8']">
-          <div classification classification-container="classificationContainer" branch="targetBranch" editable="true"></div>
-        </div>
-
-        &lt;!&ndash; Concept/Model &ndash;&gt;
-        <div style="margin-right:0px; margin-bottom:38px;"
-             class="row no-gutter"
-             ng-class="[
-             {'col-md-12' : thisView === 'edit-no-sidebar'},
-             {'col-lg-12' : thisView === 'edit-no-sidebar'},
-             {'col-lg-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-             {'col-md-4' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-             {'col-lg-9' : thisView === 'edit-no-model' || thisView === 'edit-default'},
-             {'col-md-9' : thisView === 'edit-no-model' || thisView === 'edit-default'}]">
-
-          &lt;!&ndash; create new concept header (displayed when no concepts in ng-repeat &ndash;&gt;
-          <div ng-show="concepts.length === 0" class="row no-gutter">
-
-            &lt;!&ndash; Blank separator for model view if appropriate &ndash;&gt;
-            <div ng-show="!hideModel"
-                 ng-class="['no-gutter',
-                 'col-sm-7',
-                 'col-md-7',
-                 {'col-lg-7' : !hideSidebar},
-                 {'col-md-7' : !hideSidebar},
-                 {'col-md-8' : hideSidebar},
-                 {'col-lg-8' : hideSidebar}]"
-                 class="" style="height:100%;">
-            </div>
-
-            &lt;!&ndash; The create concept button &ndash;&gt;
-            <div
-              class="editing-form grey darken-3" ng-class="[
-              {'col-md-12': thisView === 'edit-no-model'},
-              {'col-lg-12': thisView === 'edit-no-model'},
-              {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-              {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-              {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-              {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-              {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
-
-              <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
-                      type="button" ng-click="createConcept()" class="btn-default btn-block create-new-concept"
-                      title="Active"><i
-                class="md md-add-circle pull-right"></i> Create New Concept
-              </button>
-            </div>
-          </div>
-
-          &lt;!&ndash; concept edit & model pairs &ndash;&gt;
-          <div class="row no-gutter" ng-repeat="concept in concepts" >
-
-            &lt;!&ndash; Model View:  always hidden during classification view &ndash;&gt;
-            <div ng-show="!hideModel"
-                 ng-class="['no-gutter',
-                 'col-sm-7',
-                 'col-md-7',
-                 {'col-lg-7' : !hideSidebar},
-                 {'col-md-7' : !hideSidebar},
-                 {'col-md-8' : hideSidebar},
-                 {'col-lg-8' : hideSidebar}]"
-                 class="" style="height:100%;">
-
-              &lt;!&ndash; models &ndash;&gt;
-              <div draw-model class="modelScrollBox" concept="concept" ></div>
-            </div>
-
-            &lt;!&ndash; Edit Panel&ndash;&gt;
-            <div class="col-xs-12 col-sm-12"
-                 ng-class="[
-              {'col-md-12': thisView === 'edit-no-model'},
-              {'col-lg-12': thisView === 'edit-no-model'},
-              {'col-md-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-              {'col-lg-5': thisView != 'edit-no-model' && thisView != 'edit-no-sidebar'},
-              {'col-lg-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-              {'col-md-12' : thisView === 'classification' || thisView === 'validation' || thisView === 'feedback'},
-              {'col-md-4' : hideSidebar}, {'col-lg-4' : hideSidebar}, 'no-gutter']" style="margin-right:0px;">
-
-
-              &lt;!&ndash; Create new concept banner (first element only) &ndash;&gt;
-              <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
-                      ng-show="$index === 0" type="button" ng-click="createConcept()"
-                      class="btn-default btn-block create-new-concept"
-                      title="Active"><i
-                class="md md-add-circle pull-right"></i> Create New Concept
-              </button>
-
-              &lt;!&ndash; concepts &ndash;&gt;
-              <div concept-edit concept="concept"
-                   branch="targetBranch" static="'false'"
-                   >
-              </div>
-            </div>
-          </div>
-        </div>-->
-
   </div>
-
 </div>

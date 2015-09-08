@@ -123,7 +123,7 @@
 
 
       <!-- Multiselect controls -->
-      <div class="pull-right p-10">
+      <div class="pull-right p-10" ng-if="editable">
         <button class="btn btn-round btn-default black" title="Group selected concepts"
                 ng-click="groupSelectedConcepts(actionTab)"><span class="md md-layers "></span>
         </button>
@@ -148,7 +148,7 @@
           <tr ng-repeat="concept in $data">
 
             <!-- select control -->
-            <td class="col-checkbox" header="'ng-table/headers/checkboxToResolve.html'">
+            <td ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxToResolve.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
@@ -178,7 +178,7 @@
                         </td>-->
 
             <!-- controls -->
-            <td class="col-controls">
+            <td ng-if="editable" class="col-controls">
 
               <button class="btn btn-round btn-default green lighten-2" title=""
                       ng-click="addToResolved(concept)"><span
@@ -210,7 +210,7 @@
           <tr ng-repeat="concept in $data">
 
             <!-- select control -->
-            <td class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
+            <td  ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
@@ -245,7 +245,7 @@
                       </td>
           -->
             <!-- controls -->
-            <td class="col-controls">
+            <td ng-if="editable"  class="col-controls">
 
               <button class="btn btn-round btn-default green lighten-2" title=""
                       ng-click="returnToResolve(concept)"><span

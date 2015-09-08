@@ -15,9 +15,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
 
     $routeProvider
-      .when('/projects/project/:projectKey/:mode  ', {
-        controller: 'ProjectConflictsCtrl',
-        templateUrl: 'components/project-detail/projectDetail.html',
+      .when('/projects/project/:projectKey/:mode', {
+        controller: 'EditCtrl',
+        templateUrl: 'components/edit/edit.html',
         resolve: {}
       });
   })
@@ -556,31 +556,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     var conflictsPoll = null;
 
-    $scope.pollForConflictsReview = function () {
-
-      console.debug('polling for conflicts', $scope.conflictsContainer.conflicts.sourceReviewId);
-      var deferred = $q.defer();
-
-      // if the source review exists, begin polling
-      if ($scope.conflictsContainer.conflicts.sourceReviewId) {
-        snowowlService.getReview($scope.conflictsContainer.conflicts.sourceReviewId).then(function (response) {
-
-          console.debug('review', response);
-          if (!response) {
-            deferred.reject();
-          } else {
-            deferred.resolve(response);
-          }
-        });
-      } else {
-        notificationService.sendError('Unable to poll for conflicts data', 10000);
-        deferred.reject();
-      }
-
-      return deferred.promise;
-
-    };
-
     $scope.getLatestConflictsReport = function () {
 
       console.debug('getting latest conflicts report');
@@ -625,7 +600,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.conflictConceptPairs = conflictConceptPairs;
     };
 
-// watch for concept conflict selection from the conflicts view
+    // watch for concept conflict selection from the conflicts view
     $scope.$on('editConflictConcepts', function (event, data) {
 
       if (!data) {
@@ -695,8 +670,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-// helper function to apply results of branch state change
-// NOTE: Rather clumsy flag setting, but meh
+    // helper function to apply results of branch state change
+    // NOTE: Rather clumsy flag setting, but meh
     function updateBranchState(branchState) {
 
       if (branchState === 'FORWARD') {
