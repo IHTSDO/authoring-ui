@@ -197,12 +197,12 @@ angular.module('singleConceptAuthoringApp')
               var taskObj = {
                 'status' : 'IN_PROGRESS',
                 'reviewer' : null
-              }
+              };
                scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function(response) {
                 window.alert(response);
               });
             }
-          }
+          };
 
           // controls to allow author to view only concepts with feedeback
           scope.viewOnlyConceptsWithFeedback = false;
