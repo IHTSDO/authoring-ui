@@ -19,80 +19,11 @@
     <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
   </script>
 
-  <style>
-    .feedback-report-header {
-    }
-
-    .feedback-report .checkbox input[type=checkbox]:after, .feedback-report .checkbox-inline input[type=checkbox]:after, .feedback-report input[type=checkbox]:after {
-      content: "";
-      display: block;
-      width: 20px;
-      height: 20px;
-      margin-top: -2px;
-      margin-right: 5px;
-      border: 1px solid #DBDBDB;
-      border-radius: 2px;
-      transition: 240ms;
-    }
-
-    .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
-      margin-left: -33px;
-    }
-
-    .col-checkbox {
-      width: 10%;
-    }
-
-    .col-concept {
-      width: 80%;
-    }
-
-    .col-controls {
-      width: 10%;
-      padding-right: 0px;
-    }
-
-    .h-45 {
-      height: 45px;
-    }
-
-    .feedback table {
-      min-height: 300px;
-    }
-
-    .add-shadow {
-      box-shadow: inset 12px 0px 22px -14px #ABABAB;
-      -webkit-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-      -moz-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-      -o-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-      background-color: #fff;
-      padding: 5px !important;
-    }
-
-    input.feedback-search {
-      margin: 0px 4%;
-      padding: 5px 0px;
-      width: 92%;
-    }
-
-    .feedback .btn-group, .feedback .btn-toolbar {
-      margin-left: 0px;
-    }
-
-    .feedback .ta-scroll-window {
-      margin-left: 0px;
-    }
-	.feedback-header{background-color:#fbfbfb; border-top:solid 1px #ececec; border-bottom:solid 1px #ececec;}
-	.feedback-tabs{background-color:#fafafa;}
-	.feedback-tabs .nav-tabs ul{padding:0px; box-shadow:inset 0 -2px 0 #dcdcdc!important; width:100%;}
-	.feedback-window{background-color:#E7E7E7; height:100%;}
-	section thead input
-	 {background-color:#fff;}
-  </style>
+ 
 
   <!-- Concept Review -->
 
-  <div class="col-md-12 clearfix feedback-heade no-padding">
+  <div class="col-md-12 clearfix feedback-header no-padding ">
 
     <div class="pull-left p-10">
       <span ng-show="role === 'REVIEWER'">Author: {{task.assignee.displayName}}</span>
@@ -104,7 +35,7 @@
         <button class="btn btn-default orange classify-buttons accept-classification" style="text-transform: none" ng-click="cancelReview()">Cancel Review</button>
     </div>
 
-    <div ng-if="role === 'REVIEWER'" class="switch pull-right p-10 h-45">
+    <div ng-if="role === 'REVIEWER'" class="switch pull-right p-r-10 h-40">
       <label>
         Review in Progress
         <input ng-disabled="role != 'REVIEWER' || reviewComplete" type="checkbox" ng-model="reviewComplete"
@@ -114,8 +45,8 @@
       </label>
     </div>
   </div>
-
-  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 no-padding">
+  <div class="col-md-12 clearfix h-100 no-padding ">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-xs-12 no-padding feedback-view h-100">
 
     <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs feedback-tabs" role="tablist" ng-init="actionTab=1">
 
@@ -171,7 +102,7 @@
 
           <tr ng-repeat="concept in conceptsToReviewViewed">
 
-            <td class="col-checkbox" header="'ng-table/headers/checkboxToReview.html'">
+            <td class="col-checkbox clearfix" header="'ng-table/headers/checkboxToReview.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
@@ -188,7 +119,7 @@
             <!-- Author Controls -->
             <td ng-if="role === 'AUTHOR'" class=" col-controls"
                 data-title="'Read/Unread'" sortable="'read'">
-              <div class="pull-right">
+              <div class="pull-right ">
 
                 <button class="btn btn-round btn-default purple lighten-2" title="Flagged for follow-up"
                         ng-show="concept.requestFollowup"><span
@@ -277,7 +208,7 @@
 
   <!-- Feedback List Panel -->
   <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-xs-12 add-shadow" ng-show="subjectConcepts.length > 0">
-    <div class="row  ">
+    <div class="row col-sm-12 no-padding table-test">
       <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
         <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
@@ -285,10 +216,10 @@
                                                   data-toggle="tab">Feedback</a></li>
 
       </ul>
-    </div>
+
 
     <!-- Tab panes -->
-    <div class="tab-content row m-t-10 col-sm-12 no-padding">
+    <div class="tab-content row m-t-10 col-sm-12 no-padding clearfix">
 
       <!-- Concepts To Review -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
@@ -303,7 +234,9 @@
           <hr>
         </div>
       </div>
-    </div>
+    </div> <div class="clearflix"></div>
+       </div>
+       <div class="clearflix"></div>
   </div>
 
 
@@ -324,12 +257,11 @@
                   ng-model="htmlVariable"
                   ta-toolbar="[['bold','italics', 'ul', 'ol', 'redo', 'undo', 'taxonomy']]"></text-angular>
 
-    <div class="col-md-12 no-padding p-10">
-      <div class="pull-left" ng-show="role === 'REVIEWER'">
-        Request follow-up <input type="checkbox" ng-model="requestFollowup">
+    <div class="col-md-12 no-padding p-10 m-t-10">
+      <div class="pull-left follow-up" ng-show="role === 'REVIEWER'"> <span class="pull-left p-t-10"> Request follow-up </span><span class="pull-left p-5"><input type="checkbox" ng-model="requestFollowup"></span>
       </div>
 
-      <div class="pull-right ">
+      <div class="pull-right follow-up-right ">
         <button class="btn btn-default grey classify-buttons submit-review" ng-click="submitFeedback(requestFollowup)"
                 style="text-transform: none">Submit Feedback
         </button>
@@ -349,7 +281,7 @@
         </ul>
       </div>
     </div>
-
+</div>
 
   </div>
 </section>
