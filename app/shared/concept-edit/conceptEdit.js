@@ -137,6 +137,9 @@ angular.module('singleConceptAuthoringApp')
 
                 scope.concept = response;
 
+                // ensure descriptions are sorted
+                sortDescriptions();
+
                 // broadcast new concept to add to ui state edit-panel
                 // TODO Make the two-way binding do this
                 $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
@@ -176,6 +179,9 @@ angular.module('singleConceptAuthoringApp')
               console.debug('update response', response);
               if (response && response.conceptId) {
                 scope.concept = response;
+
+                // ensure descriptions are sorted
+                sortDescriptions();
 
                 // TODO Remove this once two-way binding is successfully
                 // implemented
@@ -239,6 +245,31 @@ angular.module('singleConceptAuthoringApp')
         // Description Elements
         ////////////////////////////////
 
+        // define available languages
+        scope.languages = [
+          'en'
+        ];
+
+        // Define definition types
+        // NOTE:  PT is not a SNOMEDCT type, used to set acceptabilities
+        scope.descTypeIds = [
+          {id: '900000000000003001', abbr: 'FSN', name: 'FSN'},
+          {id: '900000000000013009', abbr: 'SYN', name: 'SYNONYM'},
+          {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
+        ];
+
+        // define the available dialects
+        scope.dialects = {
+          'en-us': '900000000000509007',
+          'en-gb': '900000000000508004'
+        };
+
+        // define acceptability types
+        scope.acceptabilityAbbrs = {
+          'PREFERRED': 'P',
+          'ACCEPTABLE': 'A'
+        };
+
         // Reorder descriptions based on type and acceptability
         // Must preserve position of untyped/new descriptions
         function sortDescriptions() {
@@ -254,6 +285,9 @@ angular.module('singleConceptAuthoringApp')
 
           // sort typed descriptions
           newArray.sort(function (a, b) {
+
+            // console.debug('sort on active', a.active, b.active);
+
             // active before inactive
             if (a.active === false && b.active === true) {
               return 1;
@@ -263,6 +297,8 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // sort based on type
+
+            // console.debug('sort on type', a.type, b.type);
             if (a.type !== b.type) {
 
               // check both provided
@@ -278,11 +314,8 @@ angular.module('singleConceptAuthoringApp')
               return descOrderMap[a.type] < descOrderMap[b.type] ? -1 : 1;
             }
 
-            // TODO PREFERRED before ACCEPTABLE -- but which dialect?
-            /*  if (a.acceptabilityMap && b.acceptabilityMap) {
-             return a.acceptabilityMap['900000000000508004'] > b.acceptabilityMap['900000000000508004'] ? -1 : 1;
-             }
-             */
+            // sort on acceptability map existence
+            // console.debug('sort on acceptability map', a.acceptabilityMap, b.acceptabilityMap);
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }
@@ -290,7 +323,56 @@ angular.module('singleConceptAuthoringApp')
               return 1;
             }
 
-            // default: equivalent sort position
+            // sort on en-us value first
+            var aUS = a.acceptabilityMap[scope.dialects['en-us']];
+            var bUS = b.acceptabilityMap[scope.dialects['en-us']];
+            // console.debug('sorting on en-us', aUS, bUS);
+            if (aUS !== bUS) {
+
+              // specified value first
+              if (aUS && !bUS) {
+                return -1;
+              }
+              if (bUS && !aUS) {
+                return 1;
+              }
+
+              // if both defined, one must be PREFERRED
+              if (aUS === 'PREFERRED') {
+                return -1;
+              }
+              if (bUS === 'PREFERRED') {
+                return 1;
+              }
+            }
+
+            // sort on en-us value first
+            var aGB = a.acceptabilityMap[scope.dialects['en-gb']];
+            var bGB = b.acceptabilityMap[scope.dialects['en-gb']];
+            // console.debug('sorting on en-gb', aGB, bGB);
+            if (aGB !== bGB) {
+              // console.debug('not equal');
+
+              // specified value first
+              if (aGB && !bGB) {
+                return -1;
+              }
+              if (bGB && !aGB) {
+                return 1;
+              }
+
+              // if both defined, one must be PREFERRED
+              if (aGB === 'PREFERRED') {
+                // console.debug('a preferred');
+                return -1;
+              }
+              if (bGB === 'PREFERRED') {
+                // console.debug('b preferred');
+                return 1;
+              }
+            }
+            // all else being equal, sort on term
+            // console.debug('sorting on term', a.term, b.term);
             return a.term < b.term ? -1 : 1;
           });
 
@@ -302,7 +384,7 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          //console.debug('new array', newArray);
+          //// console.debug('new array', newArray);
 
           // replace descriptions
           scope.concept.descriptions = newArray;
@@ -312,20 +394,6 @@ angular.module('singleConceptAuthoringApp')
 
         // on load, sort descriptions
         sortDescriptions();
-
-        // languages available
-        scope.languages = [
-          'en'
-        ];
-
-        // Define definition types
-        // NOTE:  PT is not a SNOMEDCT type, used to set acceptabilities
-        scope.descTypeIds = [
-          {id: '900000000000003001', abbr: 'FSN', name: 'FSN'},
-          {id: '', abbr: 'PT', name: 'PT'},
-          {id: '900000000000013009', abbr: 'SYN', name: 'SYNONYM'},
-          {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
-        ];
 
         scope.setCaseSignificance = function (description, caseSignificance) {
 
@@ -509,21 +577,16 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
         };
 
-        // the available dialects (NOTE: Currently boolean us/gb)
-        scope.dialects = {
-          'en-us': '900000000000509007',
-          'en-gb': '900000000000508004'
-        };
-
-        // define acceptability types (NOTE: Currently boolean P/A
-        scope.acceptabilityAbbrs = {
-          'PREFERRED': 'P',
-          'ACCEPTABLE': 'A'
-        };
+        // languages available
 
         // toggles the acceptability map entry based on dialect name
         // if no value, sets to PREFERRED
         scope.toggleAcceptability = function (description, dialectName) {
+
+          if (!description.acceptabilityMap) {
+            description.acceptabilityMap = {};
+          }
+
           description.acceptabilityMap[scope.dialects[dialectName]] =
             description.acceptabilityMap[scope.dialects[dialectName]] === 'PREFERRED' ?
               'ACCEPTABLE' : 'PREFERRED';
@@ -533,21 +596,31 @@ angular.module('singleConceptAuthoringApp')
 
         /*
 
-        conceptEdit.js:536
-        en-gb
-        900000000000509004
-        undefined
-        Object {900000000000509007: "ACCEPTABLE", 900000000000508004: "PREFERRED"}
-        undefined
-        undefined
-        undefined
+         conceptEdit.js:536
+         en-gb
+         900000000000509004
+         undefined
+         Object {900000000000509007: "ACCEPTABLE", 900000000000508004: "PREFERRED"}
+         undefined
+         undefined
+         undefined
 
-        /*
+         /*
 
-        // returns the display abbreviation for a specified dialect
+         // returns the display abbreviation for a specified dialect
          */
         scope.getAcceptabilityDisplayText = function (description, dialectName) {
+          if (!description || !dialectName) {
+            return null;
+          }
           var dialectId = scope.dialects[dialectName];
+
+          // if no acceptability map specified, return null
+          if (!description.acceptabilityMap) {
+            return null;
+          }
+
+          // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
           return scope.acceptabilityAbbrs[acceptability];
         };
@@ -806,6 +879,94 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
+        /**
+         * Function called when dropping a description on another description
+         * @param target the description dropped on
+         * @param source the dragged description
+         */
+        scope.dropDescription = function (concept, target, source) {
+
+          console.debug('dropDescription', concept, target, source);
+
+          // check arguments
+          if (!target || !source) {
+            console.error('Cannot drop description, either source or target not specified');
+            return;
+          }
+
+          // check if target is released (not valid target)
+          if (target.effectiveTime) {
+            console.error('Cannot drop description on previously released description');
+            return;
+          }
+
+          // check if target is static
+          if (scope.isStatic) {
+            console.error('Scope is static, cannot drop');
+            return;
+          }
+
+          // copy description object and replace target description
+          var copy = angular.copy(source);
+
+          // clear the effective time
+          copy.effectiveTime = null;
+
+          // find the matching description and replace
+          // NOTE: Direct reference to description was not working,
+          // hence the passing of concept and cycling here
+          for (var i = 0; i < concept.descriptions.length; i++) {
+            if (concept.descriptions[i] === target) {
+              concept.descriptions[i] = copy;
+              autoSave();
+            }
+          }
+        };
+
+        /**
+         * Function called when dropping a relationship on another relationship
+         * @param target the relationship dropped on
+         * @param source the dragged relationship
+         */
+        scope.dropRelationship = function (concept, target, source) {
+
+          console.debug('dropRelationship', concept, target, source);
+
+          // check arguments
+          if (!target || !source) {
+            console.error('Cannot drop relationship, either source or target not specified');
+            return;
+          }
+
+          // check if target is released (not valid target)
+          if (target.effectiveTime) {
+            console.error('Cannot drop relationship on previously released relationship');
+            return;
+          }
+
+          // check if target is static
+          if (scope.isStatic) {
+            console.error('Scope is static, cannot drop');
+            return;
+          }
+
+          // copy relationship object and replace target relationship
+          var copy = angular.copy(source);
+
+          // clear the effective time
+          copy.effectiveTime = null;
+
+          // find the matching relationship and replace
+          // NOTE: Direct reference to relationship was not working,
+          // hence the passing of concept and cycling here
+          for (var i = 0; i < concept.relationships.length; i++) {
+            if (concept.relationships[i] === target) {
+              concept.relationships[i] = copy;
+              autoSave();
+            }
+          }
+        };
+
         // dummy function added for now to prevent default behavior
         // of dropping into untagged input boxes.  Issue has been raised
         // with the repository developers, but not up to forking and fixing
@@ -964,6 +1125,8 @@ angular.module('singleConceptAuthoringApp')
           if (!description) {
             return;
           }
+
+
           if (scope.isDescriptionValid(description)) {
             autoSave();
             sortDescriptions();

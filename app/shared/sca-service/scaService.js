@@ -299,8 +299,8 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendMessage('Task ' + taskKey + ' marked ' + response.data.status, 5000, null, null);
           return response;
         }, function (error) {
-          console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
-          notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+          console.error('Error changing task status to ' + object.status + ' for ' + taskKey + ' in project ' + projectKey);
+          notificationService.sendError('Error changing task status to ' + object.status + ' for ' + taskKey + ' in project ' + projectKey);
           return false;
         });
       },
@@ -387,7 +387,7 @@ angular.module('singleConceptAuthoringApp')
       // GET /projects/{projectKey}/rebase 
       // Generate the conflicts report between the Project and MAIN
       getConflictReportForProject: function (projectKey) {
-        return $http.get(apiEndpoint + '/projects/' + projectKey + '/rebase').then(function (response) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/rebase-conflicts', {}).then(function (response) {
           console.debug('Project ' + projectKey + ' conflict report obtained', response);
           return response.data;
         }, function (error) {
@@ -423,7 +423,7 @@ angular.module('singleConceptAuthoringApp')
       // GET /projects/{projectKey}/tasks/{taskKey}/rebase 
       // Generate the conflicts report between the Task and the Project
       getConflictReportForTask: function (projectKey, taskKey) {
-        return $http.get(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/rebase').then(function (response) {
+        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/rebase-conflicts', {}).then(function (response) {
           console.debug('Project ' + projectKey + ', task ' + taskKey + ' conflict report obtained', response);
           return response.data;
         }, function (error) {
@@ -449,6 +449,33 @@ angular.module('singleConceptAuthoringApp')
       // Notification Polling
       //////////////////////////////////////////
 
+      monitorTask: function(projectKey, taskKey) {
+        return $http.post(apiEndpoint + 'monitor', { 'projectId' : projectKey, 'taskId' : taskKey }).then(function(response) {
+          return response.data;
+        }, function(error) {
+          console.error('Error monitoring project/task ' + projectKey + '/' + taskKey);
+          notificationService.sendError('Error monitoring project ' + projectKey + ', task ' + taskKey);
+          return null;
+        });
+      },
+
+      monitorProject: function(projectKey) {
+        return $http.post(apiEndpoint + 'monitor', { 'projectId' : projectKey}).then(function(response) {
+          return response.data;
+        }, function(error) {
+          console.error('Error monitoring project' + projectKey);
+          notificationService.sendError('Error monitoring project ' + projectKey);
+          return null;
+        });
+      },
+
+      // directly retrieve notification
+      // TODO Decide if we want to instantiate this, will duplicate notification handling
+      // which should be moved to a non-exposed function
+      getNotifications: function() {
+        return null;
+      },
+
       // start polling
       startPolling: function (intervalInMs) {
         console.debug('Starting notification polling with interval ' + intervalInMs + 'ms');
@@ -472,6 +499,19 @@ angular.module('singleConceptAuthoringApp')
 
                 // construct message and url based on entity type
                 switch (newNotification.entityType) {
+
+                  /*
+                  BranchState monitoring object structure sample
+                   entityType: "BranchState"
+                   event: "FORWARD"
+                   project: "WRPAS"
+                   task: "WRPAS-98"
+                   */
+                  case 'BranchState':
+
+                    // branch state notification only requires a $broadcast
+                    $rootScope.$broadcast('notification.branchState', newNotification);
+                    break;
 
                   /*
                    Feedback completion object structure
@@ -534,8 +574,10 @@ angular.module('singleConceptAuthoringApp')
                     return;
                 }
 
-                // send the notification and url
-                notificationService.sendMessage(msg, 0, url);
+                // send the notification (if message supplied) with optional url
+                if (msg) {
+                  notificationService.sendMessage(msg, 0, url);
+                }
               } else {
                 console.error('Unknown notification type received', newNotification);
                 notificationService.sendError('Unknown notification received', 10000, null);

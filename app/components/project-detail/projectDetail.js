@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('singleConceptAuthoringApp.edit', [
+angular.module('singleConceptAuthoringApp.projectDetail', [
   //insert dependencies here
   'ngRoute'
 ])
@@ -14,6 +14,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('ProjectConflictsCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
   });
