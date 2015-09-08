@@ -45,6 +45,22 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
+        
+      getReviewTasks: function () {
+        return $http.get(apiEndpoint + 'projects/review-tasks').then(
+          function (response) {
+            if ($rootScope.loggedIn === null) {
+              $rootScope.loggedIn = true;
+            }
+
+            return response.data;
+          }, function (error) {
+            if (error.status === 403) {
+              $location.path('/login');
+            }
+          }
+        );
+      },
 
       // get current user's tasks for a project
       getTasksForProject: function (projectKey) {
