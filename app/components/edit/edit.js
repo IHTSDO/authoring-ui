@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     // TODO: Update this when $scope.branching is enabled
     $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -704,6 +704,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         console.debug('rebase task completed', response);
         if (response !== null) {
           notificationService.sendMessage('Task successfully rebased', 5000);
+          $window.location.reload();
 
           // TODO: Chris Swires -- delete this once the monitorTask functionality
           // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
