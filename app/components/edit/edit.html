@@ -33,7 +33,7 @@
 
     <!-- Switch to Conflict View -->
     <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts"
-            ng-disabled = "!canConflict || conflictsContainer.conflicts.concepts.length === 0"
+            ng-disabled = "!canConflict"
             ng-class="[
             {'red' : conflictsContainer.conflicts.concepts.length > 0},
             {'grey' : !conflictsContainer.conflicts.concepts || conflictsContainer.conflicts.concepts.length === 0}]"
@@ -41,6 +41,15 @@
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="setView('conflicts')"><span
       class="md md-warning"></span></button>
+
+    <!-- Promote -- Project only -->
+    <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts"
+            ng-disabled = "canConflict || conflictsContainer.conflicts.concepts.length !== 0"
+            class = "blue"
+            title="Promote Project"
+            style="width: 50px; height: 50px; margin: 0; padding: 0;"
+            ng-click="promoteProject()"><span
+      class="md md-call-merge"></span></button>
 
     <!-- Edit View: Default -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
