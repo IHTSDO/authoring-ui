@@ -36,36 +36,47 @@ angular.module('singleConceptAuthoringApp')
               filterDelay: 50,
               total: scope.conflictsContainer && scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.conceptsToResolve ?
                 scope.conflictsContainer.conflicts.conceptsToResolve.length : 0,
-
               getData: function ($defer, params) {
 
                 if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsToResolve || scope.conflictsContainer.conflicts.conceptsToResolve.length === 0) {
-                  console.debug('in null if');
-                  scope.conceptsToResolveViewed = [];
+                  $defer.resolve([]);
                 } else {
 
-                  console.debug(scope.conflictsContainer.conflicts);
+                  var orderedData = scope.conflictsContainer.conflicts.conceptsToResolve;
 
-                  // filter
-                  var conceptsToResolveViewed = params.filter() ?
-                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsToResolve, params.filter()) :
-                    scope.conflictsContainer.conflicts.conceptsToResolve;
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
 
-                  console.debug(conceptsToResolveViewed);
-
-                  // hard set the new total
-                  params.total(conceptsToResolveViewed.length);
-
-                  // order
-                  conceptsToResolveViewed = params.sorting() ? $filter('orderBy')(conceptsToResolveViewed, params.orderBy()) : conceptsToResolveViewed;
-
-                  // extract the paged results
-                  scope.conceptsToResolveViewed = (conceptsToResolveViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-
-                  console.debug(scope.conceptsToResolveViewed);
-
+                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
+//              getData: function ($defer, params) {
+//
+//                if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsToResolve || scope.conflictsContainer.conflicts.conceptsToResolve.length === 0) {
+//                  console.debug('in null if');
+//                  scope.conceptsToResolveViewed = [];
+//                } else {
+//
+//                  console.debug(scope.conflictsContainer.conflicts);
+//
+//                  // filter
+//                  var conceptsToResolveViewed = params.filter() ?
+//                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsToResolve, params.filter()) :
+//                    scope.conflictsContainer.conflicts.conceptsToResolve;
+//
+//                  console.debug(conceptsToResolveViewed);
+//
+//                  // hard set the new total
+//                  params.total(conceptsToResolveViewed.length);
+//
+//                  // order
+//                  conceptsToResolveViewed = params.sorting() ? $filter('orderBy')(conceptsToResolveViewed, params.orderBy()) : conceptsToResolveViewed;
+//
+//                  // extract the paged results
+//                  scope.conceptsToResolveViewed = (conceptsToResolveViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+//
+//                }
+//              }
             }
           );
 
@@ -80,29 +91,42 @@ angular.module('singleConceptAuthoringApp')
               filterDelay: 50,
               total: scope.conflictsContainer && scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.conceptsResolved ?
                 scope.conflictsContainer.conflicts.conceptsResolved.length : 0,
-
               getData: function ($defer, params) {
 
                 if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsResolved || scope.conflictsContainer.conflicts.conceptsResolved.length === 0) {
-                  scope.conceptsResolvedViewed = [];
+                  $defer.resolve([]);
                 } else {
 
+                  var orderedData = scope.conflictsContainer.conflicts.conceptsResolved;
 
-                  // filter
-                  var conceptsResolvedViewed = params.filter() ?
-                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsResolved, params.filter()) :
-                    scope.conflictsContainer.conflicts.conceptsResolved;
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
 
-                  // hard set the new total
-                  params.total(conceptsResolvedViewed.length);
-
-                  // order
-                  conceptsResolvedViewed = params.sorting() ? $filter('orderBy')(conceptsResolvedViewed, params.orderBy()) : conceptsResolvedViewed;
-
-                  // extract the paged results
-                  scope.conceptsResolvedViewed = (conceptsResolvedViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
+//              getData: function ($defer, params) {
+//
+//                if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts || !scope.conflictsContainer.conflicts.conceptsResolved || scope.conflictsContainer.conflicts.conceptsResolved.length === 0) {
+//                  scope.conceptsResolvedViewed = [];
+//                } else {
+//
+//
+//                  // filter
+//                  var conceptsResolvedViewed = params.filter() ?
+//                    $filter('filter')(scope.conflictsContainer.conflicts.conceptsResolved, params.filter()) :
+//                    scope.conflictsContainer.conflicts.conceptsResolved;
+//
+//                  // hard set the new total
+//                  params.total(conceptsResolvedViewed.length);
+//
+//                  // order
+//                  conceptsResolvedViewed = params.sorting() ? $filter('orderBy')(conceptsResolvedViewed, params.orderBy()) : conceptsResolvedViewed;
+//
+//                  // extract the paged results
+//                  scope.conceptsResolvedViewed = (conceptsResolvedViewed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+//                }
+//              }
             }
           );
 
