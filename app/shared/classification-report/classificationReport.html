@@ -1,69 +1,77 @@
 <section class="tables-data">
   <div ng-if="type != 'equivalence'" class="table-responsive white">
-      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"   class="table table-full table-full-small">
+    <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
+           class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
-            <td data-title="'Differences'" sortable="'differences'">
-                <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
-                <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">Removed</span>
-            </td>
-            <td data-title="'Source'" sortable="'source'">
-                {{result.sourceName}}
-            </td>
-              <td data-title="'Type'" sortable="'type'">
-                {{result.typeName}}
-            </td>
-              <td data-title="'Destination'" sortable="'destination'">
-                {{result.destinationName}}
-            </td>
-              <td data-title="'Group'" sortable="'group'">
-                {{result.group}}
-            </td>
-               <td data-title="'Characteristic Type'" sortable="'charType'">
-                   {{parseCharacteristic(result.characteristicTypeId)}}
-            </td>
-              <td >
-               <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left m-r-5" tooltip=""
-                        title="View Model" ng-click="viewComparativeModel(result.sourceId)"><span class="md md-view-quilt "></span>
+        <td data-title="'Differences'" sortable="'changeNature'">
+          <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
+          <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">Removed</span>
+        </td>
+        <td data-title="'Source'" sortable="'sourceName'">
+          {{result.sourceName}}
+        </td>
+        <td data-title="'Type'" sortable="'typeName'">
+          {{result.typeName}}
+        </td>
+        <td data-title="'Destination'" sortable="'destinationName'">
+          {{result.destinationName}}
+        </td>
+        <td data-title="'Group'" sortable="'group'">
+          {{result.group}}
+        </td>
+        <td data-title="'Characteristic Type'" sortable="'characteristicTypeId'">
+          {{parseCharacteristic(result.characteristicTypeId)}}
+        </td>
+        <td>
+          <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left m-r-5" tooltip=""
+                  title="View Model" ng-click="viewComparativeModel(result.sourceId)"><span
+            class="md md-view-quilt "></span>
 
-                  <div class="ripple-wrapper"></div>
-                </button>
-                 <button ng-if="editable" ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
-                        title="Edit"><span class="md md-edit " ng-click="editDestinationConcept(result)"></span>
+            <div class="ripple-wrapper"></div>
+          </button>
+          <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
+                  class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
+                  title="Edit"><span class="md md-edit " ng-click="editDestinationConcept(result)"></span>
 
-                  <div class="ripple-wrapper"></div>
-                </button>
-            </td>
-        </tr>
-      </table>
+            <div class="ripple-wrapper"></div>
+          </button>
+        </td>
+      </tr>
+    </table>
 
   </div>
   <div ng-if="type === 'equivalence'" class="table-responsive white">
-      <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"   class="table table-full table-full-small">
+    <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
+           class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
 
-          
-            <td data-title="'Concept'" sortable="'source'">
-                {{result.equivalentConcepts[0].label}}
-            </td>
-            <td >
-                 <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
-                        title="Edit"><span class="md md-edit " ng-click="editEquivalentConcept(result.equivalentConcepts[0].id)"></span>
 
-                  <div class="ripple-wrapper"></div>
-                </button>
-            </td>
-            <td data-title="'Equivalence'" sortable="'source'">
-                {{result.equivalentConcepts[1].label}}
-            </td>
-            <td >
-                 <button ng-if="editable" ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
-                        title="Edit"><span class="md md-edit " ng-click="editEquivalentConcept(result.equivalentConcepts[1].id)"></span>
+        <td data-title="'Concept'" sortable="'equivalentConcepts[0].label'">
+          {{result.equivalentConcepts[0].label}}
+        </td>
+        <td>
+          <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left"
+                  tooltip=""
+                  title="Edit"><span class="md md-edit "
+                                     ng-click="editEquivalentConcept(result.equivalentConcepts[0].id)"></span>
 
-                  <div class="ripple-wrapper"></div>
-                </button>
-            </td>
-        </tr>
-      </table>
+            <div class="ripple-wrapper"></div>
+          </button>
+        </td>
+        <td data-title="'Equivalence'" sortable="'equivalentConcepts[1].label'">
+          {{result.equivalentConcepts[1].label}}
+        </td>
+        <td>
+          <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
+                  class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
+                  title="Edit"><span class="md md-edit "
+                                     ng-click="editEquivalentConcept(result.equivalentConcepts[1].id)"></span>
+
+            <div class="ripple-wrapper"></div>
+          </button>
+        </td>
+      </tr>
+    </table>
 
   </div>
 </section>

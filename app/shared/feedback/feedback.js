@@ -188,6 +188,22 @@ angular.module('singleConceptAuthoringApp')
             }
           );
 
+          // cancel review
+          scope.cancelReview = function() {
+            var confirmation = window.confirm('Return this branch to In Progress?');
+
+            console.debug('confirmation', confirmation);
+            if (confirmation) {
+              var taskObj = {
+                'status' : 'IN_PROGRESS',
+                'reviewer' : null
+              }
+               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function(response) {
+                window.alert(response);
+              });
+            }
+          }
+
           // controls to allow author to view only concepts with feedeback
           scope.viewOnlyConceptsWithFeedback = false;
           scope.toggleViewOnlyConceptsWithFeedback = function () {
