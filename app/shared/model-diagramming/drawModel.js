@@ -26,6 +26,15 @@ angular.module('singleConceptAuthoringApp')
                   };
                   return size
               };
+              
+//              scope.checkProgressAndDraw = function() {
+//                if(scope.inProgress === true){
+//                    $timeout(function () {
+//                      scope.checkProgressAndDraw();
+//                    }, 1000);
+//                }
+//                else{ drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}); }
+//              }
               scope.size = scope.getSize();
               drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
               scope.$watch('concept', function(newVal, oldVal){
