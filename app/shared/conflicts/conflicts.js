@@ -437,6 +437,8 @@ angular.module('singleConceptAuthoringApp')
           ////////////////////////////////////////////////////////////////////
           // Watch freedback container -- used as Initialization Block
           ////////////////////////////////////////////////////////////////////
+          scope.conflictsInitialized = false;
+
           scope.$watch('conflictsContainer', function () {
 
             console.debug('conflictsContainer changed', scope.conflictsContainer);
@@ -455,7 +457,7 @@ angular.module('singleConceptAuthoringApp')
               scope.conflictsContainer.conflicts.conceptsToResolve = [];
               scope.conflictsContainer.conflicts.conceptsResolved = [];
 
-              // get ui state
+              // get the timestamp of the source review
               scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
 
                 console.debug('uistate', response);
@@ -474,12 +476,6 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(scope.conflictsContainer.conflicts.concepts, function (concept) {
                   console.debug(concept.id, conceptIdsResolved);
 
-                  // get the preferred term
-                  // TODO Replace once the FSNs are returned with the conflict report
-                  snowowlService.getConceptPreferredTerm(concept.id, scope.sourceBranch).then(function(response) {
-                    concept.term = response.term;
-                  });
-
                   if (conceptIdsResolved.indexOf(concept.id) !== -1) {
                     scope.conflictsContainer.conflicts.conceptsResolved.push(concept);
                   } else {
@@ -487,13 +483,13 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
 
+                scope.conflictsInitialized = true;
+
                 // on load, initialize tables -- all subsequent reloads manual
                 scope.conceptsToResolveTableParams.reload();
                 scope.conceptsResolvedTableParams.reload();
 
               });
-
-
             }
           }, true);
         }
