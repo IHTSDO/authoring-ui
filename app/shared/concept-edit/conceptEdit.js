@@ -315,7 +315,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // sort on acceptability map existence
-            // console.debug('sort on acceptability map', a.acceptabilityMap, b.acceptabilityMap);
+            console.debug('sort on acceptability map', a.acceptabilityMap, b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }
@@ -323,52 +323,55 @@ angular.module('singleConceptAuthoringApp')
               return 1;
             }
 
-            // sort on en-us value first
-            var aUS = a.acceptabilityMap[scope.dialects['en-us']];
-            var bUS = b.acceptabilityMap[scope.dialects['en-us']];
-            // console.debug('sorting on en-us', aUS, bUS);
-            if (aUS !== bUS) {
+            if (a.acceptabilityMap && b.acceptabilityMap) {
 
-              // specified value first
-              if (aUS && !bUS) {
-                return -1;
-              }
-              if (bUS && !aUS) {
-                return 1;
-              }
+              // sort on en-us value first
+              var aUS = a.acceptabilityMap[scope.dialects['en-us']];
+              var bUS = b.acceptabilityMap[scope.dialects['en-us']];
+              console.debug('sorting on en-us', aUS, bUS);
+              if (aUS !== bUS) {
 
-              // if both defined, one must be PREFERRED
-              if (aUS === 'PREFERRED') {
-                return -1;
-              }
-              if (bUS === 'PREFERRED') {
-                return 1;
-              }
-            }
+                // specified value first
+                if (aUS && !bUS) {
+                  return -1;
+                }
+                if (bUS && !aUS) {
+                  return 1;
+                }
 
-            // sort on en-us value first
-            var aGB = a.acceptabilityMap[scope.dialects['en-gb']];
-            var bGB = b.acceptabilityMap[scope.dialects['en-gb']];
-            // console.debug('sorting on en-gb', aGB, bGB);
-            if (aGB !== bGB) {
-              // console.debug('not equal');
-
-              // specified value first
-              if (aGB && !bGB) {
-                return -1;
-              }
-              if (bGB && !aGB) {
-                return 1;
+                // if both defined, one must be PREFERRED
+                if (aUS === 'PREFERRED') {
+                  return -1;
+                }
+                if (bUS === 'PREFERRED') {
+                  return 1;
+                }
               }
 
-              // if both defined, one must be PREFERRED
-              if (aGB === 'PREFERRED') {
-                // console.debug('a preferred');
-                return -1;
-              }
-              if (bGB === 'PREFERRED') {
-                // console.debug('b preferred');
-                return 1;
+              // sort on en-us value first
+              var aGB = a.acceptabilityMap[scope.dialects['en-gb']];
+              var bGB = b.acceptabilityMap[scope.dialects['en-gb']];
+              // console.debug('sorting on en-gb', aGB, bGB);
+              if (aGB !== bGB) {
+                // console.debug('not equal');
+
+                // specified value first
+                if (aGB && !bGB) {
+                  return -1;
+                }
+                if (bGB && !aGB) {
+                  return 1;
+                }
+
+                // if both defined, one must be PREFERRED
+                if (aGB === 'PREFERRED') {
+                  // console.debug('a preferred');
+                  return -1;
+                }
+                if (bGB === 'PREFERRED') {
+                  // console.debug('b preferred');
+                  return 1;
+                }
               }
             }
             // all else being equal, sort on term
@@ -976,6 +979,55 @@ angular.module('singleConceptAuthoringApp')
         };
 
         ///////////////////////////////////////////////
+        // Component property retrieval (Inactivation)
+        ///////////////////////////////////////////////
+
+        /**
+         * Sets needed concept properties as element attributes
+         * @param concept
+         */
+        scope.setConceptProperties = function (concept) {
+          if (!concept) {
+            return;
+          }
+
+          // retrieve inactivation reason if inactive
+          if (!concept.active) {
+            snowowlService.getConceptProperties(concept.conceptId, scope.branch).then(function (response) {
+              if (!response.inactivationIndicator) {
+                concept.inactivationIndicator = 'No reason specified';
+              } else {
+                concept.inactivationIndicator = response.inactivationIndicator;
+              }
+            });
+          }
+        };
+
+        /**
+         * Sets needed description properties as element attributes
+         * @param description
+         */
+        scope.setDescriptionProperties = function (description) {
+
+          if (!description) {
+            return;
+          }
+
+          // retrieve inactivation reason if inactive
+          if (!description.active) {
+            snowowlService.getDescriptionProperties(description.descriptionId, scope.branch).then(function (response) {
+              if (!response.descriptionInactivationIndicator) {
+                description.inactivationIndicator = 'No reason specified';
+              } else {
+                description.inactivationIndicator = response.descriptionInactivationIndicator;
+              }
+            });
+          }
+        };
+
+       // NOTE: No inactivation reasons currently for relationships
+
+        ///////////////////////////////////////////////
         // Concept Auto-Saving Validation Checks
         ///////////////////////////////////////////////
 
@@ -1125,7 +1177,6 @@ angular.module('singleConceptAuthoringApp')
           if (!description) {
             return;
           }
-
 
           if (scope.isDescriptionValid(description)) {
             autoSave();

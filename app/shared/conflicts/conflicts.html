@@ -96,8 +96,17 @@
 
   <div class="col-md-12 clearfix conflicts-header">
 
-    <div class="pull-left p-10">
-      Rebase Conflicts Report: {{conflictsContainer.concepts.length}} conflicts found - [INSERT DATE HERE]
+    <!-- Loading text:  displayed if initialization has not yet occurred -->
+    <div ng-if="!conflictsInitialized" class="pull-left p-10">
+      Rebase Conflicts Report: Retrieving...
+    </div>
+
+    <div ng-if="conflictsInitialized && conflictsContainer.conflicts.concepts.length > 0" class="pull-left p-10">
+      Rebase Conflicts Report: {{conflictsContainer.conflicts.concepts.length}} conflict<span ng-show="conflictsContainer.conflicts.concepts.length > 1">s</span> found
+    </div>
+
+    <div ng-if="conflictsInitialized && conflictsContainer.conflicts.concepts.length === 0" class="pull-left p-10">
+      Rebase Conflicts Report: No conflicts detected.
     </div>
   </div>
 
@@ -123,7 +132,7 @@
 
 
       <!-- Multiselect controls -->
-      <div class="pull-right p-10">
+      <div class="pull-right p-10" ng-if="editable">
         <button class="btn btn-round btn-default black" title="Group selected concepts"
                 ng-click="groupSelectedConcepts(actionTab)"><span class="md md-layers "></span>
         </button>
@@ -144,12 +153,11 @@
 
         <table show-filter="true" ng-table="conceptsToResolveTableParams"
                template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small clearfix">
-
-          <tr ng-repeat="concept in conceptsToResolveViewed">
+               class="table table-full table-full-small">
+          <tr ng-repeat="concept in $data">
 
             <!-- select control -->
-            <td class="col-checkbox" header="'ng-table/headers/checkboxToResolve.html'">
+            <td ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxToResolve.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
@@ -159,7 +167,7 @@
                 ui-draggable="true" drag="concept"
                 drag-channel="conflictsConcept" drop-channel="conflictsConcept"
                 ui-on-drop="dropConcept(concept, $data, actionTab)">
-              {{concept.term}} ({{concept.id}})
+              {{concept.fsn}}
             </td>
             <!--
             Commented out until project/task/author information included in conflicts report
@@ -179,7 +187,7 @@
                         </td>-->
 
             <!-- controls -->
-            <td class="col-controls">
+            <td ng-if="editable" class="col-controls">
 
               <button class="btn btn-round btn-default green lighten-2" title=""
                       ng-click="addToResolved(concept)"><span
@@ -206,12 +214,12 @@
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
         <table show-filter="true" ng-table="conceptsResolvedTableParams"
                template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small clearfix">
+               class="table table-full table-full-small">
 
-          <tr ng-repeat="concept in conceptsResolvedViewed">
+          <tr ng-repeat="concept in $data">
 
             <!-- select control -->
-            <td class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
+            <td  ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
@@ -225,7 +233,7 @@
                       title="New"><span
                 class="md md-grade"></span>
               </button>
-              {{concept.term}} ({{concept.id}})
+              {{concept.fsn}}
             </td>
 
             <!--
@@ -246,7 +254,7 @@
                       </td>
           -->
             <!-- controls -->
-            <td class="col-controls">
+            <td ng-if="editable"  class="col-controls">
 
               <button class="btn btn-round btn-default green lighten-2" title=""
                       ng-click="returnToResolve(concept)"><span

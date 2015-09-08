@@ -81,12 +81,6 @@ angular.module('singleConceptAuthoringApp.project', [
 
     });
 
-    // on load, retrieve latest conflict report
-    scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
-      console.debug($scope.conflictsContainer);
-      $scope.conflictsContainer.conflicts = response ? response : null;
-    });
-
     // validate the project
     $scope.validate = function () {
       console.debug('validating project');
@@ -108,7 +102,4 @@ angular.module('singleConceptAuthoringApp.project', [
         notificationService.sendMessage('Project promoting...', 10000, null);
       });
     };
-
-    // TODO Run conflicts generation here?
-
   }]);

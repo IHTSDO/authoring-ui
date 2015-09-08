@@ -1,6 +1,6 @@
 <nav class="navbar navbar-default navbar-fixed-top" ng-class="{scroll: (scroll>10)}">
   <div class="container-fluid">
-    <ul class="nav navbar-nav navbar-left navbar-left-no-collapse">
+    <ul class="nav navbar-nav navbar-left navbar-left-no-collapse col-md-6 no-padding pull-left">
       <li>
         <div class="brand-logo pull-left">
           <div id="logo">
@@ -18,24 +18,25 @@
     </ul>
 
 
-    <div class="pull-left" ng-include src="'layout/notification.html'"></div>
+    <div class="pull-left  col-md-4 pull-left" ng-include src="'layout/notification.html'"></div>
 
 
 
-    <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services" ng-if="!loggedIn">
-      <li>
+    <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services col-md-2" ng-if="!loggedIn">
+     <li class="pull-right">
         <a ng-href="#/login">Login</a>
       </li>
     </ul>
-    <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services" ng-if="loggedIn">
-      <li>
+    <ul class="nav navbar-nav navbar-right navbar-right-no-collapse  identity-services col-md-2 pull-right" ng-if="loggedIn">
+   
+       <li class="pull-right">
+        <a ng-href="#/logout">Logout</a>
+      </li>
+         <li class="pull-right">
         <a id="profile_not_active" title="display name will link to profile services in later updates">
           <span ng-if="accountDetails == null">Logged in as unknown user</span>
           <span ng-if="accountDetails != null">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
         </a>
-      </li>
-      <li>
-        <a ng-href="#/logout">Logout</a>
       </li>
     </ul>
   </div>

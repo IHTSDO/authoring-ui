@@ -1,0 +1,134 @@
+.feedback-report .checkbox input[type=checkbox]:after,
+.feedback-report .checkbox-inline input[type=checkbox]:after,
+.feedback-report input[type=checkbox]:after {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin-top: -2px;
+    margin-right: 5px;
+    border: 1px solid #DBDBDB;
+    border-radius: 2px;
+    transition: 240ms;
+}
+.checkbox input[type=checkbox],
+.checkbox-inline input[type=checkbox],
+label input[type=checkbox] {
+    margin-left: -33px;
+}
+.col-checkbox {
+    width: 10%;
+}
+.col-concept {
+    width: 80%;
+}
+.col-controls {
+    width: 10%;
+    padding-right: 0px;
+}
+.h-45 {
+    height: 45px;
+}
+.feedback table {
+    min-height: 300px;
+}
+.add-shadow {
+    box-shadow: inset 12px 0px 22px -14px #ABABAB;
+    -webkit-box-shadow: inset 12px 0px 22px -14px #ABABAB;
+    -moz-box-shadow: inset 12px 0px 22px -14px #ABABAB;
+    -o-box-shadow: inset 12px 0px 22px -14px #ABABAB;
+    background-color: #fff;
+    padding: 5px !important;
+    display: inline-block;
+    height: 100%;
+    min-height: 500px;
+}
+input.feedback-search {
+    margin: 0px 4%;
+    padding: 5px 0px;
+    width: 92%;
+}
+.feedback .btn-group,
+.feedback .btn-toolbar {
+    margin-left: 0px;
+}
+.feedback .ta-scroll-window {
+    margin-left: 0px;
+}
+.feedback-header {
+    background-color: #fbfbfb;
+    border-top: solid 1px #ececec;
+    border-bottom: solid 1px #ececec;
+}
+.feedback-tabs {
+    background-color: #fafafa;
+}
+.feedback-tabs .nav-tabs ul {
+    padding: 0px;
+    box-shadow: inset 0 -2px 0 #dcdcdc!important;
+    width: 100%;
+}
+.feedback-window {
+    background-color: #E7E7E7;
+    height: 100%;
+}
+section thead input {
+    background-color: #fff;
+}
+.feedback-view .nav-tabs a {
+    font-size: 12px!important;
+}
+.feedback-view .btn-round {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+    line-height: 23px;
+    position: relative;
+}
+.feedback-view input[type=checkbox]:after {
+    width: 16px!important;
+    height: 16px!important;
+    margin: 0px!important;
+    font-size: 14px!important;
+}
+.feedback-view .table > thead > tr > th,
+.feedback-view .table > thead > tr > td {
+    padding: 5px;
+    line-height: 12px;
+    vertical-align: middle;
+    border-top: 1px solid #F0F0F0;
+    vertical-align: middle !important;
+    border-bottom: 2px solid #F0F0F0;
+    margin: 5px;
+}
+.feedback-view .table > tbody > tr > td {
+    line-height: 12px;
+    vertical-align: middle;
+    line-height: 12px;
+    padding: 5px;
+}
+.feedback-view .table input {
+    height: auto!important;
+    margin: 0px;
+    font-size: 14px!important;
+}
+.ta-scroll-window > .ta-bind {
+    min-height: 250px;
+}
+.ta-editor.ta-html,
+.ta-scroll-window.form-control {
+    min-height: 250px;
+}
+.follow-up input[type=checkbox]:after {
+    width: 16px!important;
+    height: 16px!important;
+    margin: 0px!important;
+    font-size: 14px!important;
+}
+.follow-up {
+    font-size: 11px;
+}
+.follow-up-right .btn {
+    padding: 3px 8px;
+    font-size: 12px;
+}
