@@ -5,23 +5,36 @@ angular.module('singleConceptAuthoringApp.edit', [
   'ngRoute'
 ])
 
-  // TODO Seriously (SERIOUSLY) need to rethink this approach
+  // all task editing functionality
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/:mode/:projectKey/:taskKey', {
+      .when('/tasks/task/:projectKey/:taskKey/:mode', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {}
       });
+
+    $routeProvider
+      .when('/projects/project/:projectKey/:mode  ', {
+        controller: 'ProjectConflictsCtrl',
+        templateUrl: 'components/project-detail/projectDetail.html',
+        resolve: {}
+      });
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $q) {
 
-    // TODO: Update this when $scope.branching is enabled
-    $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-    $scope.projectBranch = 'MAIN/' + $routeParams.projectKey;
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
+
+    // TODO: Update the MAIN branching when appropriate
+    if ($routeParams.taskKey) {
+      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.sourceBranch = 'MAIN/' + $routeParams.projectKey;
+    } else {
+      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey;
+      $scope.sourceBranch = 'MAIN/';
+    }
 
     // displayed concept array
     $scope.concepts = [];
@@ -127,43 +140,45 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-    // get edit panel list
-    scaService.getUIState(
-      $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-      .then(function (uiState) {
+    // get edit panel list (task view only)
+    if ($scope.taskKey) {
+      scaService.getUIState(
+        $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
+        .then(function (uiState) {
 
-        if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-          $scope.editPanelUiState = [];
-        }
-        else {
-          $scope.editPanelUiState = uiState;
-          for (var i = 0; i < $scope.editPanelUiState.length; i++) {
-            $scope.addConceptToListFromId($scope.editPanelUiState[i]);
+          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+            $scope.editPanelUiState = [];
           }
+          else {
+            $scope.editPanelUiState = uiState;
+            for (var i = 0; i < $scope.editPanelUiState.length; i++) {
+              $scope.addConceptToListFromId($scope.editPanelUiState[i]);
+            }
+          }
+
+          // set editing flags
+          flagEditedItems();
+
         }
+      );
 
-        // set editing flags
-        flagEditedItems();
+      // get saved list
+      scaService.getUIState(
+        $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
+        .then(function (uiState) {
 
-      }
-    );
+          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+            $scope.savedList = {items: []};
+          }
+          else {
+            $scope.savedList = uiState;
+          }
 
-    // get saved list
-    scaService.getUIState(
-      $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
-      .then(function (uiState) {
-
-        if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-          $scope.savedList = {items: []};
+          // set editing flags
+          flagEditedItems();
         }
-        else {
-          $scope.savedList = uiState;
-        }
-
-        // set editing flags
-        flagEditedItems();
-      }
-    );
+      );
+    }
 
     $scope.addConceptToListFromId = function (conceptId) {
 
@@ -175,7 +190,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
       // get the concept and add it to the stack
-      snowowlService.getFullConcept(conceptId, $scope.branch).then(function (response) {
+      snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
 
         // console.debug('Response received for ' + conceptId, response);
         if (!response) {
@@ -222,7 +237,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       notificationService.sendMessage('Adding concept ' + conceptId + ' to edit panel', 10000, null);
 
-      snowowlService.getFullConcept(conceptId, $scope.branch).then(function (concept) {
+      snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (concept) {
 
         var conceptLoaded = false;
         angular.forEach($scope.concepts, function (existingConcept) {
@@ -239,9 +254,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     };
 
-// helper function to save current edit list
+// helper function to save current edit list (task view only)
     $scope.updateUiState = function () {
-      scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', $scope.editPanelUiState);
+      if ($scope.taskKey) {
+        scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', $scope.editPanelUiState);
+      }
     };
 
     // TODO Make the two-way binding handle this via a $watch
@@ -249,8 +266,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       if (data.response && data.response.conceptId) {
 
         // commented out in favor of notification service
-        //$scope.saveMessage = 'Concept with id: ' + data.response.conceptId +
-        // ' saved at: ' + $scope.formatDate(new Date());
+        //$scope.saveMessage = 'Concept with id: ' +
+        // data.response.conceptId + ' saved at: ' + $scope.formatDate(new
+        // Date());
 
         // ensure concept is in edit panel ui state
         if ($scope.editPanelUiState.indexOf(data.response.conceptId) === -1) {
@@ -304,10 +322,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      var concept = {'id': null, 'branch': $scope.branch};
+      var concept = {'id': null, 'branch': $scope.targetBranch};
 
       // get the concept and add it to the stack
-      snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (response) {
+      snowowlService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
 
         var conceptId = response.conceptId;
         var conceptEt = response.effectiveTime;
@@ -332,7 +350,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           flagEditedItems();
         }
 
-        // deep copy the object -- note: does not work in IE8, but screw that!
+        // deep copy the object -- note: does not work in IE8, but screw
+        // that!
         var clonedConcept = JSON.parse(JSON.stringify(response));
         // add a cloned tag to differentiate the clonedConcept
         clonedConcept.fsn += ' [Cloned]';
@@ -402,7 +421,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.createConcept = function () {
 
       // console.debug('createConcept', $scope.concepts);
-      var concept = objectService.getNewConcept($scope.branch);
+      var concept = objectService.getNewConcept($scope.targetBranch);
 
       $scope.concepts.unshift(concept);
 
@@ -421,7 +440,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Classification functions           //
     ////////////////////////////////////////
 
-    // get the various elements of a classification once it has been retrieved
+    // get the various elements of a classification once it has been
+    // retrieved
     $scope.setClassificationComponents = function () {
 
       // console.debug('Retrieving classification components for',
@@ -433,14 +453,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // get relationship changes
-      snowowlService.getRelationshipChanges($scope.classificationContainer.id, $scope.branch).then(function (relationshipChanges) {
+      snowowlService.getRelationshipChanges($scope.classificationContainer.id, $scope.targetBranch).then(function (relationshipChanges) {
         $scope.classificationContainer.relationshipChanges = relationshipChanges ? relationshipChanges : {};
       });
 
       // get equivalent concepts if detected
       if ($scope.classificationContainer.equivalentConceptsFound) {
         snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
-          $routeParams.taskKey, $scope.branch).then(function (equivalentConcepts) {
+          $routeParams.taskKey, $scope.targetBranch).then(function (equivalentConcepts) {
             $scope.classificationContainer.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
           });
       } else {
@@ -452,16 +472,30 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
-      snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
-        if (!response || response.length === 0) {
-          $scope.classificationContainer = {status: 'No classification found'};
-        } else {
-          // assign results to the classification container (note,
-          // chronological order, use last value)
-          $scope.classificationContainer = response[response.length - 1];
-          $scope.setClassificationComponents();
-        }
-      });
+      if (!$scope.taskKey) {
+        snowowlService.getClassificationsForProject($routeParams.projectKey, $scope.targetBranch).then(function (response) {
+          if (!response || response.length === 0) {
+            $scope.classificationContainer = {status: 'No classification found'};
+          } else {
+            // assign results to the classification container (note,
+            // chronological order, use last value)
+            $scope.classificationContainer = response[response.length - 1];
+            $scope.setClassificationComponents();
+          }
+        });
+
+      } else {
+        snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.targetBranch).then(function (response) {
+          if (!response || response.length === 0) {
+            $scope.classificationContainer = {status: 'No classification found'};
+          } else {
+            // assign results to the classification container (note,
+            // chronological order, use last value)
+            $scope.classificationContainer = response[response.length - 1];
+            $scope.setClassificationComponents();
+          }
+        });
+      }
     };
 
     //////////////////////////////////////////
@@ -470,13 +504,26 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // function to get the latest validation result
     $scope.getLatestValidation = function () {
-      scaService.getValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.branch).then(function (response) {
-        if (!response) {
-          $scope.validationContainer = {executionStatus: 'No validation found'};
-        } else {
-          $scope.validationContainer = response;
-        }
-      });
+
+      // if no task specified, retrieve for project
+      if (!$scope.taskKey) {
+        scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
+          if (!response) {
+            $scope.validationContainer = {executionStatus: 'No validation found'};
+          } else {
+            $scope.validationContainer = response;
+          }
+        });
+      } else {
+
+        scaService.getValidationForTask($routeParams.projectKey, $routeParams.taskKey, $scope.targetBranch).then(function (response) {
+          if (!response) {
+            $scope.validationContainer = {executionStatus: 'No validation found'};
+          } else {
+            $scope.validationContainer = response;
+          }
+        });
+      }
     };
 
     //////////////////////////////////////////
@@ -485,9 +532,15 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // get latest review
     $scope.getLatestReview = function () {
-      scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-        $scope.feedbackContainer.review = response ? response : {};
-      });
+      // if no task specified, retrieve for project
+      if (!$scope.taskKey) {
+        scaService.getReviewForProject()
+      } else {
+
+        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.feedbackContainer.review = response ? response : {};
+        });
+      }
     };
 
     //////////////////////////////////////////
@@ -555,14 +608,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       // cycle over base conflict concepts
       angular.forEach($scope.conflictConceptsBase, function (conflictConceptBase) {
 
-        var conflictConceptPair = {baseConcept: conflictConceptBase};
+        var conflictConceptPair = {sourceConcept: conflictConceptBase};
 
         console.debug('Finding match for ', conflictConceptBase.conceptId);
         // cycle over the branch conflict concepts for a match
         angular.forEach($scope.conflictConceptsBranch, function (conflictConceptBranch) {
           if (conflictConceptBranch.conceptId === conflictConceptBase.conceptId) {
             console.debug('Found match for ', conflictConceptBase.conceptId);
-            conflictConceptPair.branchConcept = conflictConceptBranch;
+            conflictConceptPair.targetConcept = conflictConceptBranch;
           }
         });
         conflictConceptPairs.push(conflictConceptPair);
@@ -602,7 +655,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       angular.forEach(conceptIds, function (conceptId) {
 
         // get the task branch concept
-        snowowlService.getFullConcept(conceptId, $scope.branch).then(function (response) {
+        snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
 
             // push to branch list
             $scope.conflictConceptsBranch.push(response);
@@ -617,12 +670,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           },
           function (error) {
-            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.branch, 0);
+            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.targetBranch, 0);
           }
         );
 
         // get the project base concept
-        snowowlService.getFullConcept(conceptId, $scope.projectBranch).then(function (response) {
+        snowowlService.getFullConcept(conceptId, $scope.sourceBranch).then(function (response) {
 
             // push to base list
             $scope.conflictConceptsBase.push(response);
@@ -636,14 +689,14 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.setConflictConceptPairs();
           },
           function (error) {
-            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.projectBranch, 0);
+            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.sourceBranch, 0);
           }
         );
       });
     });
 
-    // helper function to apply results of branch state change
-    // NOTE: Rather clumsy flag setting, but meh
+// helper function to apply results of branch state change
+// NOTE: Rather clumsy flag setting, but meh
     function updateBranchState(branchState) {
 
       if (branchState === 'FORWARD') {
@@ -667,11 +720,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-    // watch for task updates
-    // NOTE This is duplicated in taskDetail.js, propagate any changes
-    // TODO: Chris Swires -- no changes should be needed here, but this is
-    // the trigger for branch state changes, data is the entirely of the
-    // notification object processed in scaService.js
+// watch for task updates
+// NOTE This is duplicated in taskDetail.js, propagate any changes
+// TODO: Chris Swires -- no changes should be needed here, but this is
+// the trigger for branch state changes, data is the entirely of the
+// notification object processed in scaService.js
     $scope.$on('notification.branchState', function (event, data) {
 
       // check if notification matches this branch
@@ -680,10 +733,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     });
 
-
-    ////////////////////////////////////
-    // Rebase
-    /////////////////////////////////////
+////////////////////////////////////
+// Rebase
+/////////////////////////////////////
 
     $scope.rebase = function () {
 
@@ -705,29 +757,30 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (response !== null) {
           notificationService.sendMessage('Task successfully rebased', 5000);
 
-          // TODO: Chris Swires -- delete this once the monitorTask functionality
-          // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
-          snowowlService.getBranch($scope.branch).then(function (response) {
+          // TODO: Chris Swires -- delete this once the monitorTask
+          // functionality complete INAPPROPRIATE CALL TO GET BRANCH
+          // INFORMATION
+          snowowlService.getBranch($scope.targetBranch).then(function (response) {
             updateBranchState(response.state);
           });
         }
       });
     };
 
-    //////////////////////////////////////////
-    // Initialization
-    //////////////////////////////////////////
+//////////////////////////////////////////
+// Initialization
+//////////////////////////////////////////
 
-    // start monitoring of task
+// start monitoring of task
     scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
-    // TODO: Chris Swires -- delete this once the monitorTask functionality
-    // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
-    snowowlService.getBranch($scope.branch).then(function (response) {
+// TODO: Chris Swires -- delete this once the monitorTask functionality
+// complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
+    snowowlService.getBranch($scope.targetBranch).then(function (response) {
       updateBranchState(response.state);
     });
 
-    // initialize the container objects
+// initialize the container objects
     $scope.classificationContainer = {
       id: null,
       status: 'Loading...',  // NOTE: Overwritten by validation field
@@ -744,8 +797,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       feedback: null
     };
 
-    // initialize with empty concepts list
-    // but do not initialize conflictsToResolve, conflictsResolved
+// initialize with empty concepts list
+// but do not initialize conflictsToResolve, conflictsResolved
     $scope.conflictsContainer = {
       conflicts: null
     };
@@ -757,4 +810,5 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.getLatestConflictsReport();
 
   }
-);
+)
+;

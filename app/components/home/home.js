@@ -188,12 +188,12 @@ angular.module('singleConceptAuthoringApp.home', [
         };
 
         scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
-          $location.url('feedback/' + task.projectKey + '/' + task.key);
+          $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
         });
 
         // otherwise, simply go to feedback view
       } else {
-        $location.url('feedback/' + task.projectKey + '/' + task.key);
+        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
       }
     };
     $scope.isReviewer = function () {

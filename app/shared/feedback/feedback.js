@@ -617,7 +617,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // mark read if unread is indicated
                 if (!concept.read) {
-                  scaService.markConceptFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
+                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
                     concept.read = true;
 
                   });
@@ -704,7 +704,7 @@ angular.module('singleConceptAuthoringApp')
               subjectConceptIds.push(subjectConcept.id);
             });
 
-            scaService.addFeedbackToReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds, requestFollowup).then(function (response) {
+            scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds, requestFollowup).then(function (response) {
 
               notificationService.sendMessage('Feedback submitted', 5000, null);
               // clear the htmlVariable and requestFolllowUp flag
