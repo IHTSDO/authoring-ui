@@ -678,24 +678,35 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     function setBranchFunctionality(branchState) {
 
-      if (branchState === 'FORWARD') {
-        $scope.canRebase = false;
-        $scope.canPromote = true;
-        $scope.canConflict =   true;
-      } else if (branchState === 'UP_TO_DATE') {
-        $scope.canRebase = false;
-        $scope.canPromote = false;
-        $scope.canConflict = true;
-      } else if (branchState === 'BEHIND') {
-        $scope.canRebase = true;
-        $scope.canPromote = false;
-        $scope.canConflict = true;
-      } else if (branchState === 'STALE') {
-        // TODO
-      } else if (branchState === 'DIVERGED') {
-        $scope.canRebase = true;
-        $scope.canPromote = false;
-        $scope.canConflict = true;
+      switch(branchState) {
+        case 'FORWARD':
+          $scope.canRebase = false;
+          $scope.canPromote = true;
+          $scope.canConflict = true;
+          break;
+        case 'UP_TO_DATE':
+          $scope.canRebase = false;
+          $scope.canPromote = false;
+          $scope.canConflict = true;
+          break;
+        case 'BEHIND':
+          $scope.canRebase = true;
+          $scope.canPromote = false;
+          $scope.canConflict = true;
+          break;
+        case 'STALE':
+          // TODO
+          break;
+        case 'DIVERGED':
+          $scope.canRebase = true;
+          $scope.canPromote = false;
+          $scope.canConflict = true;
+          break;
+        default:
+          notificationService.sendError('Error:  Cannot determine branch state. Conflict, rebase, and promote functions disabled');
+          $scope.canRebase = false;
+          $scope.canPromote = false;
+          $scope.canConflict = false;
       }
     }
 
@@ -708,14 +719,17 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // check if notification matches this branch
       if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
-        setBranchFunctionality(data.event);
+        setBranchFunctionality(data ? data.event : null);
       }
     });
 
 ////////////////////////////////////
-// Rebase
+// Rebase & Promote
 /////////////////////////////////////
 
+    /**
+     * Rebase the current project or task
+     */
     $scope.rebase = function () {
 
       console.debug($scope.conflictsContainer);
@@ -729,22 +743,34 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
-      // rebase the task
-      notificationService.sendMessage('Rebasing task...', 0);
-      scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
-        console.debug('rebase task completed', response);
-        if (response !== null) {
-          notificationService.sendMessage('Task successfully rebased', 5000);
-          $window.location.reload();
+      // rebase the project or task, and reload the page on success
+      // to trigger all necessary state updates
+      if (!$scope.taskKey) {
 
-          // TODO: Chris Swires -- delete this once the monitorTask
-          // functionality complete INAPPROPRIATE CALL TO GET BRANCH
-          // INFORMATION
-          snowowlService.getBranch($scope.targetBranch).then(function (response) {
-            setBranchFunctionality(response.state);
-          });
-        }
-      });
+        notificationService.sendMessage('Rebasing project...', 0);
+        scaService.rebaseProject($scope.projectKey).then(function(response) {
+          console.debug('rebase project completed', response);
+          if (response !== null) {
+            notificationService.sendMessage('Project successfully rebased', 5000);
+
+            // TODO This is clunky, short-term fix
+            // should regenerate conflicts, update task state, etc. manually
+            $window.location.reload();
+          }
+        });
+      } else {
+
+        notificationService.sendMessage('Rebasing task...', 0);
+        scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+          console.debug('rebase task completed', response);
+          if (response !== null) {
+            notificationService.sendMessage('Task successfully rebased', 5000);
+
+            // should regenerate conflicts, update task state, etc. manually
+            $window.location.reload();
+          }
+        });
+      }
     };
 
 //////////////////////////////////////////
@@ -757,7 +783,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 // TODO: Chris Swires -- delete this once the monitorTask functionality
 // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
     snowowlService.getBranch($scope.targetBranch).then(function (response) {
-      setBranchFunctionality(response.state);
+      setBranchFunctionality(response ? response.state : null);
     });
 
 // initialize the container objects
