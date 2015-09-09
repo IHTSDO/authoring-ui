@@ -50,6 +50,16 @@ angular.module('singleConceptAuthoringApp.search', [])
       }
     };
     
+    $scope.$on('savedListRemove', function (event, data) {
+      if (!data || !data.conceptId) {
+        return;
+      }
+    else{
+        $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").attr("disabled", false);
+        $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");   
+    }
+
+    });
     $scope.$watch($scope.savedList, function(newValue, oldValue)
     {
         console.log('triggered');
@@ -57,8 +67,7 @@ angular.module('singleConceptAuthoringApp.search', [])
         {
             if ($scope.findItemInSavedList(oldValue[i].concept.conceptId) === false)
             {
-                $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + oldValue[i].concept.conceptId + "'].addButton").attr("disabled", false);
-                $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + oldValue[i].concept.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");
+                
             }
         }
     });
