@@ -49,6 +49,19 @@ angular.module('singleConceptAuthoringApp.search', [])
         $scope.saveUIState($routeParams.projectKey, $routeParams.taskKey, "saved-list", $scope.savedList);
       }
     };
+    
+    $scope.$watch($scope.savedList, function(newValue, oldValue)
+    {
+        console.log('triggered');
+        for(var i = 0; i < oldValue.length; i++)
+        {
+            if ($scope.findItemInSavedList(oldValue[i].concept.conceptId) === false)
+            {
+                $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + oldValue[i].concept.conceptId + "'].addButton").attr("disabled", false);
+                $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + oldValue[i].concept.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");
+            }
+        }
+    });
 
     $scope.findItem = function (id) {
       if (!$scope.results) {
