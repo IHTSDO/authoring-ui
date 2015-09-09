@@ -11,6 +11,7 @@ angular.module('singleConceptAuthoringApp')
     // TODO Temporary function to retrieve projects for picklist, should be
     // cached values
     function initialize() {
+      $scope.disabled = false;
       scaService.getProjects().then(function (response) {
         $scope.projects = response;
 
@@ -56,12 +57,14 @@ angular.module('singleConceptAuthoringApp')
       };
 
       $scope.msgSuccess = 'Creating task...';
+      $scope.disabled = true;
       scaService.createTaskForProject(taskProject.key, authoringTaskCreateRequest).then(
         function (response) {
 
           // close modal
           $modalInstance.close(response);
       }, function (error) {
+          $scope.disabled = false;
           $scope.msgSuccess = '';
           $scope.msgError = 'Error occurred when trying to create task: ' + error;
       });
