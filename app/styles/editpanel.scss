@@ -613,6 +613,15 @@ select.form-control {
     background-color: #c2185b;
     color: #fff;
 }
+.review.btn-default[disabled]{
+    background-color: rgb(233, 30, 99);
+}
+.Classify.btn-default[disabled]{
+    background-color: rgb(76, 175, 80);
+}
+.validate.btn-default[disabled]{
+    background-color: rgb(103, 58, 183);
+}
 .validate.btn-default:hover {
     background-color: #512da8;
     color: #fff;
