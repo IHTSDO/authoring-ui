@@ -107,7 +107,16 @@ angular.module('singleConceptAuthoringApp.edit', [
     } else if ($routeParams.mode === 'validate') {
       $scope.setView('validation');
     } else if ($routeParams.mode === 'feedback') {
-      $scope.getLatestReview();
+      if (!$scope.taskKey) {
+        scaService.getReviewForProject($routeParams.projectKey).then(function (response) {
+          $scope.feedbackContainer.review = response ? response : {};
+        });
+      } else {
+
+        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.feedbackContainer.review = response ? response : {};
+        });
+      }
       $scope.setView('feedback');
     } else if ($routeParams.mode === 'conflicts') {
       $scope.setView('conflicts');
