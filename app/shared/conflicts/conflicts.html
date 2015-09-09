@@ -92,25 +92,15 @@
     }
   </style>
 
-  <!-- Conflicts Report -->
-
+  <!-- Conflicts Report: Title -->
   <div class="col-md-12 clearfix conflicts-header">
-
-    <!-- Loading text:  displayed if initialization has not yet occurred -->
-    <div ng-if="!conflictsInitialized" class="pull-left p-10">
-      Rebase Conflicts Report: Retrieving...
-    </div>
-
-    <div ng-if="conflictsInitialized && conflictsContainer.conflicts.concepts.length > 0" class="pull-left p-10">
-      Rebase Conflicts Report: {{conflictsContainer.conflicts.concepts.length}} conflict<span ng-show="conflictsContainer.conflicts.concepts.length > 1">s</span> found
-    </div>
-
-    <div ng-if="conflictsInitialized && conflictsContainer.conflicts.concepts.length === 0" class="pull-left p-10">
-      Rebase Conflicts Report: No conflicts detected.
+    <div class="p-10">
+      Rebase Conflicts Report: {{conflictsReportStatus}}
     </div>
   </div>
 
-  <div class="col-12 no-padding">
+  <!-- COnflicts Report: Conflicts -->
+  <div ng-if="conflictsInitialized" class="col-12 no-padding">
 
     <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs conflicts-tabs" role="tablist"
         ng-init="actionTab=1">
@@ -169,22 +159,15 @@
                 ui-on-drop="dropConcept(concept, $data, actionTab)">
               {{concept.fsn}}
             </td>
-            <!--
-            Commented out until project/task/author information included in conflicts report
-                        &lt;!&ndash; project &ndash;&gt;
-                        <td class="col-concept" data-title="'Project'" sortable="''">
-                          Some Project
-                        </td>
+<!--
+            &lt;!&ndash; source update time &ndash;&gt;
+            <td class="col-concept" data-title="'Source Changed'" sortable="'sourceLastUpdate'">
+              {{concept.sourceLastUpdate}}
+            </td>
 
-                        &lt;!&ndash; task name &ndash;&gt;
-                        <td class="col-concept" data-title="'Task Name'" sortable="''">
-                          Some Task
-                        </td>
-
-                        &lt;!&ndash; author &ndash;&gt;
-                        <td class="col-concept" data-title="'Author'" sortable="''">
-                          Some Author
-                        </td>-->
+            <td class="col-concept" data-title="'Target Changed'" sortable="'targetLastUpdate'">
+              {{concept.targetLastUpdate}}
+            </td>-->
 
             <!-- controls -->
             <td ng-if="editable" class="col-controls">
@@ -202,6 +185,7 @@
             </td>
           </tr>
         </table>
+
         <script type="text/ng-template" id="ng-table/headers/checkboxToResolve.html">
           <input type="checkbox" ng-model="checkedToResolve" ng-change="selectAll(actionTab, checkedToResolve)"
                  id="select_all_to_review"
@@ -219,7 +203,7 @@
           <tr ng-repeat="concept in $data">
 
             <!-- select control -->
-            <td  ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
+            <td ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
               <input type="checkbox" ng-model="concept.selected">
             </td>
 
@@ -254,7 +238,7 @@
                       </td>
           -->
             <!-- controls -->
-            <td ng-if="editable"  class="col-controls">
+            <td ng-if="editable" class="col-controls">
 
               <button class="btn btn-round btn-default green lighten-2" title=""
                       ng-click="returnToResolve(concept)"><span

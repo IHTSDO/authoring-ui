@@ -73,6 +73,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     };
     $scope.promote = function(){
 
+      notificationService.sendMessage('Promoting task...', 0);
+
       // force refresh of task status
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
         if (response) {
@@ -88,7 +90,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
 
           scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
-            notificationService.sendMessage('Task submitted for promotion', 10000, null);
           });
         } else {
           notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion', 0);
@@ -129,6 +130,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     // re-initialize if branch state changes
     $scope.$on('notification.branchState', function(event, data) {
       initialize();
+    });
+
+    // re-initialize if concept edit triggers change from New status
+    $scope.$on('conceptEdit.saveSuccess', function(event, data) {
+      if ($scope.task.status === 'New') {
+        initialize();
+      }
     });
 
     initialize();

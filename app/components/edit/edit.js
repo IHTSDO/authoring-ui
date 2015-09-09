@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'conflicts':
-          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
           break;
         case 'edit-default':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -572,9 +572,16 @@ angular.module('singleConceptAuthoringApp.edit', [
     // NOTE:  This happens in parallel with notification.branchState, may
     // want to revisit/fold together in future
     $rootScope.$on('branchDiverged', function (event) {
-      scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-        $scope.conflictsContainer.conflicts = response ? response : {};
-      });
+
+      if ($routeParams.taskKey) {
+        scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.conflictsContainer.conflicts = response ? response : {};
+        });
+      } else {
+        scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
+          $scope.conflictsContainer.conflicts = response ? response : {};
+        });
+      }
     });
 
     // Get latest conflict report -- retrieve for project only
@@ -749,9 +756,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     });
 
-////////////////////////////////////
-// Rebase & Promote
-/////////////////////////////////////
+    ////////////////////////////////////
+    // Rebase & Promote
+    /////////////////////////////////////
 
     /**
      * Rebase the current project or task
@@ -799,11 +806,22 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-//////////////////////////////////////////
-// Initialization
-//////////////////////////////////////////
+    $scope.promoteProject = function () {
+      notificationService.sendMessage('Promoting project....', 0);
+      scaService.promoteProject($routeParams.projectKey).then(function (response) {
+        if (response !== null) {
+          notificationService.sendMessage('Project successfully promoted', 10000);
+        } else {
+          notificationService.sendError('Error promoting project', 10000);
+        }
+      });
+    };
 
-// start monitoring of task
+    //////////////////////////////////////////
+    // Initialization
+    //////////////////////////////////////////
+
+    // start monitoring of task
     scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
 // TODO: Chris Swires -- delete this once the monitorTask functionality
