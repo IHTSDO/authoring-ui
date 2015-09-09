@@ -144,6 +144,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     function initialize() {
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
+        if($scope.task.branchState === 'DIVERGED'){
+            $rootScope.$broadcast('branchDiverged');
+        }
       });
 
       // initialize classification display with ready status

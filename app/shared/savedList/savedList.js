@@ -28,6 +28,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         var index = $scope.savedList.items.indexOf(item);
         if (index !== -1) {
           $scope.savedList.items.splice(index, 1);
+          $rootScope.$broadcast('savedListRemove', {conceptId: item.concept.conceptId});
 
           scaService.saveUIState(
             $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
