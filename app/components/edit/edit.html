@@ -33,7 +33,7 @@
 
     <!-- Switch to Conflict View -->
     <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts"
-            ng-disabled = "!canConflict"
+            ng-disabled="!canConflict"
             ng-class="[
             {'red' : conflictsContainer.conflicts.concepts.length > 0},
             {'grey' : !conflictsContainer.conflicts.concepts || conflictsContainer.conflicts.concepts.length === 0}]"
@@ -44,8 +44,8 @@
 
     <!-- Promote -- Project only -->
     <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts"
-            ng-disabled = "canConflict || conflictsContainer.conflicts.concepts.length !== 0"
-            class = "blue"
+            ng-disabled="canConflict || conflictsContainer.conflicts.concepts.length !== 0"
+            class="blue"
             title="Promote Project"
             style="width: 50px; height: 50px; margin: 0; padding: 0;"
             ng-click="promoteProject()"><span
@@ -72,15 +72,14 @@
             ng-click="setView('edit-no-model')"> <span
       class="md md-grid-off"></span></button>
 
-    <!-- Rebase Task -->
-    <button type="button" 
+    <!-- Rebase Task: Disabled IF canRebase flag is false OR conflicted concepts not resolved exist -->
+    <button type="button"
             class="btn btn-default widget-toolbar yellow darken-2" title="Rebase"
-            ng-disabled="!canRebase"
+            ng-disabled="!canRebase || (conflictsContainer.conflicts.conceptsToResolve.length > 0"
             style="width: 50px; height: 50px; margin: 0; padding: 0; position:fixed; bottom:38px; left:0px"
             ng-click="rebase()"> <span
       class="md md-autorenew"></span></button>
   </div>
-
 
   <!-- Main page content -->
   <div class="row no-gutter" style="padding-left: 50px;">
@@ -91,7 +90,6 @@
       <!-- sidebar -->
       <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 no-padding"
            ng-include src="'layout/sidebar-edit.html'"></div>
-
 
       <!-- models & concepts-->
       <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 no-padding">
@@ -117,13 +115,13 @@
 
         <!-- model & concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts">
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;" ng-repeat="concept in concepts">
 
           <!-- model -->
           <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="height: 100%">
-              <div draw-model class="modelScrollBox" concept="concept"></div>
+            <div draw-model class="modelScrollBox" concept="concept"></div>
           </div>
 
           <!-- concept -->
@@ -278,7 +276,8 @@
 
       <!-- classification report -->
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-        <div classification classification-container="classificationContainer" branch="targetBranch" editable="true"></div>
+        <div classification classification-container="classificationContainer" branch="targetBranch"
+             editable="true"></div>
       </div>
 
       <!-- concept edit : non-static, can create -->
