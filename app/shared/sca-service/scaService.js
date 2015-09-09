@@ -573,20 +573,6 @@ angular.module('singleConceptAuthoringApp')
 
                 // construct message and url based on entity type
                 switch (newNotification.entityType) {
-
-                  /*
-                  BranchState monitoring object structure sample
-                   entityType: "BranchState"
-                   event: "FORWARD"
-                   project: "WRPAS"
-                   task: "WRPAS-98"
-                   */
-                  case 'BranchState':
-
-                    // branch state notification only requires a $broadcast
-                    $rootScope.$broadcast('notification.branchState', newNotification);
-                    break;
-
                   /*
                    Feedback completion object structure
                    {
@@ -620,6 +606,18 @@ angular.module('singleConceptAuthoringApp')
                       url = '#/classify/' + newNotification.project + '/' + newNotification.task;
                     } else {
                       url = '#/project/' + newNotification.project;
+                    }
+                    break;
+                  
+                  /*
+                   Branch status change completion object structure
+                   entityType: "BranchState"
+                   event: "New Status" (listening for DIVERGED to handle the list refresh on the concepts page)
+                   */
+                  case 'BranchState':
+                    if(newNotification.event === 'DIVERGED'){
+                        $rootScope.$broadcast('branchDiverged');
+                        $rootScope.$broadcast('notification.branchState', newNotification);
                     }
                     break;
 

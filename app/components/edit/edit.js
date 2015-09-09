@@ -568,16 +568,16 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     var conflictsPoll = null;
 
+    //Listen for Branch Divergence in order to trigger a conflicts rpoert refresh, triggered by either the task state on the initial task call or from the notification of the branch becoming out of date. 
+    $rootScope.$on('branchDiverged', function (event) {
+            scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              $scope.conflictsContainer.conflicts = response ? response : {};
+            });
+          });
+    
     $scope.getLatestConflictsReport = function () {
-
-      console.debug('getting latest conflicts report');
-
       if (!$scope.taskKey) {
         scaService.getConflictReportForProject($routeParams.projectKey).then(function(response) {
-          $scope.conflictsContainer.conflicts = response ? response : {};
-        });
-      } else {
-        scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.conflictsContainer.conflicts = response ? response : {};
         });
       }
