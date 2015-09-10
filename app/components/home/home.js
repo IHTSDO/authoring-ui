@@ -82,7 +82,8 @@ angular.module('singleConceptAuthoringApp.home', [
               mydata = $scope.reviewTasks.filter(function (item) {
                 return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.assignee.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.reviewTasks;
