@@ -46,6 +46,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.classification = data;
     });
 
+    // TODO Check if this is necessary
     // watch for updates to edit panel from conceptEdit.js
     $rootScope.$on('conceptEdit.saveSuccess', function enableClassification(event, data) {
       console.debug('task.js received saveSuccess notification');

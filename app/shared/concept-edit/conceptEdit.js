@@ -49,7 +49,7 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
-        console.debug(scope.concept, scope.branch, scope.parentBranch, scope.static);
+        // console.debug(scope.concept, scope.branch, scope.parentBranch, scope.static);
 
         // concept history for undoing changes
         scope.conceptSessionHistory = [];
@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp')
               var saveMessage = 'Concept saved:' + concept.fsn;
               notificationService.sendMessage(saveMessage, 5000, null);
 
-              console.debug('update response', response);
+              // console.debug('update response', response);
               if (response && response.conceptId) {
                 scope.concept = response;
 
@@ -307,7 +307,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // sort on acceptability map existence
-            console.debug('sort on acceptability map', a.acceptabilityMap, b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
+            // console.debug('sort on acceptability map', a.acceptabilityMap, b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }
@@ -320,7 +320,7 @@ angular.module('singleConceptAuthoringApp')
               // sort on en-us value first
               var aUS = a.acceptabilityMap[scope.dialects['en-us']];
               var bUS = b.acceptabilityMap[scope.dialects['en-us']];
-              console.debug('sorting on en-us', aUS, bUS);
+              // console.debug('sorting on en-us', aUS, bUS);
               if (aUS !== bUS) {
 
                 // specified value first
@@ -780,7 +780,7 @@ angular.module('singleConceptAuthoringApp')
 
         // construct an id-name pair json object from relationship target
         scope.getConceptIdNamePairFromRelationshipTarget = function (relationship) {
-          console.debug('getConceptIdNamePair');
+          // console.debug('getConceptIdNamePair');
           return {
             id: relationship.target.conceptId,
             name: relationship.target.fsn
@@ -789,7 +789,7 @@ angular.module('singleConceptAuthoringApp')
 
         // construct an id-name pair json object from attribute type
         scope.getConceptIdNamePairFromAttributeType = function (relationship) {
-          console.debug('getConceptIdNamePair');
+          // console.debug('getConceptIdNamePair');
           return {
             id: relationship.type.conceptId,
             name: relationship.type.fsn
@@ -802,7 +802,7 @@ angular.module('singleConceptAuthoringApp')
           if (scope.isStatic) {
             return;
           }
-          console.debug('Drag-n-drop: Relationship Target');
+          // console.debug('Drag-n-drop: Relationship Target');
 
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
@@ -842,7 +842,7 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
-          console.debug('Drag-n-drop:  Relationship Type');
+          // console.debug('Drag-n-drop:  Relationship Type');
 
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
@@ -862,12 +862,12 @@ angular.module('singleConceptAuthoringApp')
           // if name supplied, use it, otherwise retrieve it
           if (data.name) {
             relationship.type.fsn = data.name;
-            console.debug(relationship);
+            // console.debug(relationship);
             scope.updateRelationship(relationship);
           } else {
             snowowlService.getConceptPreferredTerm(data.id, scope.branch).then(function (response) {
               relationship.type.fsn = response.term;
-              console.debug(relationship);
+              // console.debug(relationship);
               scope.updateRelationship(relationship);
             });
           }
@@ -881,7 +881,7 @@ angular.module('singleConceptAuthoringApp')
          */
         scope.dropDescription = function (concept, target, source) {
 
-          console.debug('dropDescription', concept, target, source);
+          // console.debug('dropDescription', concept, target, source);
 
           // check arguments
           if (!target || !source) {
@@ -925,7 +925,7 @@ angular.module('singleConceptAuthoringApp')
          */
         scope.dropRelationship = function (concept, target, source) {
 
-          console.debug('dropRelationship', concept, target, source);
+          // console.debug('dropRelationship', concept, target, source);
 
           // check arguments
           if (!target || !source) {
@@ -1066,7 +1066,7 @@ angular.module('singleConceptAuthoringApp')
         // method to check single relationship for validity
         scope.isRelationshipValid = function (relationship) {
 
-          console.debug(relationship, scope.concept);
+          // console.debug(relationship, scope.concept);
 
           // check relationship fields
           if (!relationship.modifier) {
