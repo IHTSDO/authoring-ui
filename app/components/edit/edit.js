@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
         case 'conflicts':
-          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
           break;
         case 'edit-default':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -559,32 +559,45 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Conflict Report & Controls
     //////////////////////////////////////////
 
-    // initialize concept edit arrays
+    // Initialize concept edit arrays, one for each branch
+    // These are used for the side-by-side concept-edit panels
     $scope.conflictConceptsBase = [];
     $scope.conflictConceptsBranch = [];
 
-    $scope.conflictsSourceBranch = null;
-    $scope.conflictsTargetBranch = null;
-
-    var conflictsPoll = null;
-
-    //Listen for Branch Divergence in order to trigger a conflicts rpoert refresh, triggered by either the task state on the initial task call or from the notification of the branch becoming out of date. 
+    // Listen for Branch Divergence in order to trigger a conflicts rpoert
+    // refresh,  triggered from taskDetail.js on either (a) initialization
+    // where a task is in DIVERGED state, or (b) notification of task state
+    // change to DIVERGED
+    //
+    // NOTE:  This happens in parallel with notification.branchState, may
+    // want to revisit/fold together in future
     $rootScope.$on('branchDiverged', function (event) {
-            scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-              $scope.conflictsContainer.conflicts = response ? response : {};
-            });
-          });
-    
+
+      if ($routeParams.taskKey) {
+        scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.conflictsContainer.conflicts = response ? response : {};
+        });
+      } else {
+        scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
+          $scope.conflictsContainer.conflicts = response ? response : {};
+        });
+      }
+    });
+
+    // Get latest conflict report -- retrieve for project only
+    // Tasks are retrieved on detection of diverged state only
+    // using the rootScope.branchDiverged notification
     $scope.getLatestConflictsReport = function () {
+
       if (!$scope.taskKey) {
-        scaService.getConflictReportForProject($routeParams.projectKey).then(function(response) {
+        scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
           $scope.conflictsContainer.conflicts = response ? response : {};
         });
       }
     };
 
     /**
-     * 
+     * Create conflict concept pairs to display for side-by-side conflict view
      */
     $scope.setConflictConceptPairs = function () {
 
@@ -596,7 +609,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         var conflictConceptPair = {sourceConcept: conflictConceptBase};
 
-        console.debug('Finding match for ', conflictConceptBase.conceptId);
         // cycle over the branch conflict concepts for a match
         angular.forEach($scope.conflictConceptsBranch, function (conflictConceptBranch) {
           if (conflictConceptBranch.conceptId === conflictConceptBase.conceptId) {
@@ -607,7 +619,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         conflictConceptPairs.push(conflictConceptPair);
       });
 
-      console.debug('conflict concept pairs', conflictConceptPairs);
       $scope.conflictConceptPairs = conflictConceptPairs;
     };
 
@@ -687,7 +698,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     function setBranchFunctionality(branchState) {
 
-      switch(branchState) {
+      switch (branchState) {
         case 'FORWARD':
           $scope.canRebase = false;
           $scope.canPromote = true;
@@ -701,12 +712,28 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'BEHIND':
           $scope.canRebase = true;
           $scope.canPromote = false;
-          $scope.canConflict = true;
+          $scope.canConflict = false;
           break;
         case 'STALE':
           // TODO
+          $scope.canRebase = true;
+          $scope.canPromote = false;
+          $scope.canConflict = true;
           break;
         case 'DIVERGED':
+          /**
+           * Notes on DIVERGED special handling
+           *
+           * Conflicts are re-generated through branchDiverged
+           * notification sent from taskDetail.js
+           *
+           * Ability to rebase is dependent on state of resolved conflicts,
+           * test is made in ng-disabled attribute of rebase button.  The
+           * conflicts container must have been initialized in conflicts.js,
+           * and the conceptsToResolve list must be empty (i.e. all conflicts
+           * moved to conceptsResolved)
+           *
+           */
           $scope.canRebase = true;
           $scope.canPromote = false;
           $scope.canConflict = true;
@@ -732,9 +759,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     });
 
-////////////////////////////////////
-// Rebase & Promote
-/////////////////////////////////////
+    ////////////////////////////////////
+    // Rebase & Promote
+    /////////////////////////////////////
 
     /**
      * Rebase the current project or task
@@ -757,7 +784,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       if (!$scope.taskKey) {
 
         notificationService.sendMessage('Rebasing project...', 0);
-        scaService.rebaseProject($scope.projectKey).then(function(response) {
+        scaService.rebaseProject($scope.projectKey).then(function (response) {
           console.debug('rebase project completed', response);
           if (response !== null) {
             notificationService.sendMessage('Project successfully rebased', 5000);
@@ -782,11 +809,22 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-//////////////////////////////////////////
-// Initialization
-//////////////////////////////////////////
+    $scope.promoteProject = function () {
+      notificationService.sendMessage('Promoting project....', 0);
+      scaService.promoteProject($routeParams.projectKey).then(function (response) {
+        if (response !== null) {
+          notificationService.sendMessage('Project successfully promoted', 10000);
+        } else {
+          notificationService.sendError('Error promoting project', 10000);
+        }
+      });
+    };
 
-// start monitoring of task
+    //////////////////////////////////////////
+    // Initialization
+    //////////////////////////////////////////
+
+    // start monitoring of task
     scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
 // TODO: Chris Swires -- delete this once the monitorTask functionality
@@ -817,10 +855,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conflictsContainer = {
       conflicts: null
     };
-    
-    $scope.viewReview = function() {
-        $scope.getLatestReview();
-        $scope.setView('feedback');
+
+    $scope.viewReview = function () {
+      $scope.getLatestReview();
+      $scope.setView('feedback');
     };
 
 // populate the container objects

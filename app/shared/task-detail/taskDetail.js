@@ -14,33 +14,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     // rebase and promotion variables
     $scope.canPromote = false;
 
-    // watch for task updates
-    // NOTE this is duplicated in edit.js, propagate any changes
-    $scope.$on('notification.branchState', function(event, data) {
-
-      // check if notification matches this branch
-      if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
-
-        if (data.event === 'FORWARD') {
-          $scope.canRebase = false;
-          $scope.canPromote = true;
-          $scope.canConflict = true;
-        } else if (data.event === 'UP_TO_DATE') {
-          $scope.canRebase = false;
-          $scope.canPromote = false;
-          $scope.canConflict = true;
-        } else if (data.event === 'BEHIND') {
-          $scope.canRebase = true;
-          $scope.canPromote = false;
-          $scope.canConflict = false;
-        } else if (data.event === 'STALE') {
-          // TODO
-        } else if (data.event === 'DIVERGED') {
-          // TODO
-        }
-      }
-    });
-
     function setClassifyDisplay(status) {
       $scope.classificationStatus = status;
       switch ($scope.classificationStatus) {
@@ -100,6 +73,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     };
     $scope.promote = function(){
 
+      notificationService.sendMessage('Promoting task...', 0);
+
       // force refresh of task status
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
         if (response) {
@@ -115,7 +90,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
 
           scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
-            notificationService.sendMessage('Task submitted for promotion', 10000, null);
           });
         } else {
           notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion', 0);
@@ -152,6 +126,18 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // initialize classification display with ready status
       setClassifyDisplay('READY');
     }
+
+    // re-initialize if branch state changes
+    $scope.$on('notification.branchState', function(event, data) {
+      initialize();
+    });
+
+    // re-initialize if concept edit triggers change from New status
+    $scope.$on('conceptEdit.saveSuccess', function(event, data) {
+      if ($scope.task.status === 'New') {
+        initialize();
+      }
+    });
 
     initialize();
 

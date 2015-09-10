@@ -448,7 +448,7 @@ angular.module('singleConceptAuthoringApp')
       // POST /projects/{projectKey}/promote 
       // Promote the project to MAIN
       promoteProject: function (projectKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/promote', {}).then(function (response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {
           notificationService.sendMessage('Project Promoted Successfully', 10000);
           return response.data;
         }, function (error) {
@@ -461,7 +461,7 @@ angular.module('singleConceptAuthoringApp')
       // GET /projects/{projectKey}/rebase 
       // Generate the conflicts report between the Project and MAIN
       getConflictReportForProject: function (projectKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/rebase-conflicts', {}).then(function (response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase-conflicts', {}).then(function (response) {
           console.debug('Project ' + projectKey + ' conflict report obtained', response);
           return response.data;
         }, function (error) {
@@ -474,7 +474,7 @@ angular.module('singleConceptAuthoringApp')
       // POST /projects/{projectKey}/rebase 
       // Rebase the project from MAIN
       rebaseProject: function (projectKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/rebase', {}).then(function (response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {
           notificationService.sendMessage('Project Rebased Successfully', 10000);
           return response.data;
         }, function (error) {
@@ -486,10 +486,11 @@ angular.module('singleConceptAuthoringApp')
       // POST /projects/{projectKey}/tasks/{taskKey}/promote 
       // Promote the task to the Project
       promoteTask: function (projectKey, taskKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
           notificationService.sendMessage('Task Promoted Successfully', 10000);
           return response.data;
         }, function (error) {
+          console.debug(error);
           notificationService.sendError('Error promoting task', 10000);
           return null;
         });
@@ -497,7 +498,7 @@ angular.module('singleConceptAuthoringApp')
       // GET /projects/{projectKey}/tasks/{taskKey}/rebase 
       // Generate the conflicts report between the Task and the Project
       getConflictReportForTask: function (projectKey, taskKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/rebase-conflicts', {}).then(function (response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase-conflicts', {}).then(function (response) {
           console.debug('Project ' + projectKey + ', task ' + taskKey + ' conflict report obtained', response);
           return response.data;
         }, function (error) {
@@ -510,7 +511,7 @@ angular.module('singleConceptAuthoringApp')
       // POST /projects/{projectKey}/tasks/{taskKey}/rebase 
       // Rebase the task from the project
       rebaseTask: function (projectKey, taskKey) {
-        return $http.post(apiEndpoint + '/projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
           return response.data;
         }, function (error) {
           console.error('Error rebasing project ' + projectKey + ', task ' + taskKey);
@@ -569,10 +570,29 @@ angular.module('singleConceptAuthoringApp')
               var msg = null;
               var url = null;
 
+              /**
+               * Current supported notification entity types:
+               *  Validation, Feedback, Classification, Rebase, Promotion, ConflictReport, BranchState
+               */
+
               if (newNotification.entityType) {
 
                 // construct message and url based on entity type
                 switch (newNotification.entityType) {
+
+
+                  case 'Rebase':
+                    // TODO Handle rebase notifications
+                    break;
+
+                  case 'ConflictReport':
+                    // TODO Handle conflict report notifications
+                    break;
+
+                  case 'Promotion':
+                    // TODO Handle promotion notifications
+                    break;
+
                   /*
                    Feedback completion object structure
                    {
