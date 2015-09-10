@@ -45,6 +45,7 @@
 
       <button
         ng-class="classificationDisplayColor" class="btn btn-default {{classificationDisplayText}}"
+        ng-click="classify()"
         ng-disabled="task.status === 'New'">
         <span class="md md-notifications green darken-1 iconbase"></span>
         <span class="button-link">{{classificationDisplayText}}</span>
