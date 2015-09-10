@@ -222,7 +222,7 @@
 
           <!-- relationship group -->
           <div class="pull-left rolegroup">
-          <textarea style="" class="msd-elastic" ng-model="relationship.groupId" ng-disabled="isStatic"
+          <textarea style="" class="msd-elastic" ng-model="relationship.groupId" ng-disabled="relationship.relationshipId !== undefined"
                     ng-change="updateRelationship(relationship)"
                     class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
@@ -297,7 +297,7 @@
                   title="Active/Inactive"></button>
           <!-- relationship group -->
           <div class="pull-left rolegroup">
-          <textarea style="" ng-disabled="isStatic" ng-model="relationship.groupId"
+          <textarea style="" ng-disabled="relationship.relationshipId !== undefined" ng-model="relationship.groupId"
                     ng-change="updateRelationship(relationship)"
                     class="msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ui-on-drop="dropNullOp()">
