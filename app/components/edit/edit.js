@@ -716,6 +716,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         case 'STALE':
           // TODO
+          $scope.canRebase = true;
+          $scope.canPromote = false;
+          $scope.canConflict = true;
           break;
         case 'DIVERGED':
           /**
