@@ -22,16 +22,8 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl) {
 
-        if (!scope.concept) {
-          console.error('conceptEdit directive requires concept to be specified');
-          return;
-        }
 
-        if (!scope.branch) {
-          console.error('conceptEdit directive requires branch to be specified');
-        }
-
-        console.debug('before check', scope.static, scope.static === false, scope.static === 'false');
+        console.debug('conceptEdit', scope.branch, scope.parentBranch, scope.static);
 
         // convert static flag from string to boolean
         if (scope.static === 'true') {

@@ -426,12 +426,14 @@ angular.module('singleConceptAuthoringApp')
 
           // flag for information displayed to user on load
           scope.conflictsInitialized = false;
+          scope.conflictsReportStatus = 'Initializing...';
 
           scope.$watch('conflictsContainer', function () {
 
             console.debug('conflictsContainer changed', scope.conflictsContainer);
 
-            if (!scope.conflictsContainer) {
+            if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts) {
+              scope.conflictsReportStatus = 'Conflicts report not available';
               return;
             }
 
@@ -441,14 +443,19 @@ angular.module('singleConceptAuthoringApp')
             // yet exist
             if (scope.conflictsContainer.conflicts && scope.conflictsContainer.conflicts.sourceReviewId && !scope.conflictsContainer.conflicts.conceptsToResolve && !scope.conflictsContainer.conflicts.conceptsResolved) {
 
-              // if no concepts (indicating no conflict), add empty array
-              if (!scope.conflictsContainer.conflicts.concepts) {
-                scope.conflictsContainer.conflicts.concepts = [];
-              }
 
               // initialize the lists
               scope.conflictsContainer.conflicts.conceptsToResolve = [];
               scope.conflictsContainer.conflicts.conceptsResolved = [];
+
+              // if no concepts (indicating no conflict), add empty array
+              if (!scope.conflictsContainer.conflicts.concepts) {
+                scope.conflictsReportStatus = 'No conflicts';
+                scope.conflictsContainer.conflicts.concepts = [];
+                return;
+              }
+
+              scope.conflictsReportStatus = scope.conflictsContainer.conflicts.concepts.length + ' conflict' + (scope.conflictsContainer.conflicts.concepts.length === 0 ? '' : 's') + ' detected';
 
               // PROJECT VIEW: no ui state retrieval yet
               if (!$routeParams.taskKey) {
