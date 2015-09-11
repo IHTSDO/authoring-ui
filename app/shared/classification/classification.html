@@ -4,8 +4,8 @@
       <div class="pull-left p-5"><strong>Classification Report: </strong> {{getStatusText()}}</div>
 
       <div class="pull-right ">
-        <button disabled class="btn btn-default green classify-buttons accept-classification" style="text-transform: none" ng-click="saveClassification()">Accept Classification Results</button>
-        <button class="btn btn-default green classify-buttons download-classification" ng-click="downloadClassification()" style="text-transform: none">Download</button>
+        <button ng-disabled="relationshipChanges.length === 0" class="btn btn-default green classify-buttons accept-classification" style="text-transform: none" ng-click="saveClassification()">Accept Classification Results</button>
+        <button ng-disabled="relationshipChanges.length === 0" class="btn btn-default green classify-buttons download-classification" ng-click="downloadClassification()" style="text-transform: none">Download</button>
 
         <!-- if not editable, do not display validate and submit buttons. NOTE: Editable is a string, not a boolean -->
         <button ng-if="editable !== 'false'" class="btn btn-default green classify-buttons submit-validation" ng-click="startValidation()" style="text-transform: none">Validate</button>
