@@ -100,21 +100,26 @@ angular.module('singleConceptAuthoringApp.home', [
 
     // TODO Workaround to capture full review functionality
     // Replace with loadAllTasks when endpoints are complete
-    function loadWRPASTasks() {
+    function loadTasks() {
 
       notificationService.sendMessage('Loading tasks...', 0);
 
-      $scope.tasks = [];
-      $scope.reviewTasks = [];
-        scaService.getTasks().then(function (response) {
-            $scope.tasks = response;
-        });
-        
-        scaService.getReviewTasks().then(function (response) {
-            $scope.reviewTasks = response;
-        });
+      $scope.tasks = null;
+      $scope.reviewTasks = null;
+      scaService.getTasks().then(function (response) {
+        $scope.tasks = response;
+        if ($scope.tasks && $scope.reviewTasks) {
+          notificationService.sendMessage('All tasks loaded', 5000);
+        }
+      });
 
-        notificationService.sendMessage('All tasks loaded', 5000);
+      scaService.getReviewTasks().then(function (response) {
+        $scope.reviewTasks = response;
+        if ($scope.tasks && $scope.reviewTasks) {
+          notificationService.sendMessage('All tasks loaded', 5000);
+        }
+      });
+
     };
 
     // on successful set, reload table parameters
@@ -137,9 +142,7 @@ angular.module('singleConceptAuthoringApp.home', [
       modalInstance.result.then(function (response) {
         console.debug('modal closed with response', response);
         if (response) {
-
-          // TODO CHange to loadAllTasks once endpoints are complete
-          loadWRPASTasks();
+          loadTasks();
         }
       }, function () {
       });
@@ -188,7 +191,7 @@ angular.module('singleConceptAuthoringApp.home', [
 
       // temporary workaround, restricting to WRPAS tasks
       // and getting
-      loadWRPASTasks();
+      loadTasks();
 
       /*
        // TODO Commented out until endpoints are fleshed out for review tasks

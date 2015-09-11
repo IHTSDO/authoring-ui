@@ -58,7 +58,7 @@
         <span class="button-link">Validate</span>
       </button>
 
-      <button ng-disabled="task.status != 'New' && task.status != 'In Progress'"
+      <button ng-disabled="task.status !== 'In Progress'"
               class="btn btn-default pink1 review" style="text-transform: none"
               ng-click="submitForReview()">
         <span class="md md-forum pink darken-2 iconbase"></span>
