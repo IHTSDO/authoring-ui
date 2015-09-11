@@ -69,7 +69,7 @@
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
               <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
-                <a ng-href="#/tasks/task{{task.projectKey}}/{{task.key}}/classify">
+                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                   <button ng-show="task.latestClassificationJson != null"
                           title="{{task.latestClassificationJson.status}}" type="button"
                           ng-class="[{gray : task.latestClassificationJson.status === 'RUNNING'},
@@ -100,23 +100,18 @@
                 </a>
               </td>
 
-              <td data-title="'Feedback'" sortable="'unreadFeedbackMessages'">
+              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
-                  <button ng-if="task.status == 'IN_REVIEW' && task.feedbackMessagesStatus === 'none'" type="button"
-                          class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback"><span class="md md-email"></span>
 
-                    <div class="ripple-wrapper"></div>
-                  </button>
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback"><span class="md md-drafts"></span>
+                          title="View Feedback (All read)"><span class="md md-drafts"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback"><span class="md md-forum"></span>
+                          title="View Feedback (Unread)"><span class="md md-email"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
@@ -217,19 +212,18 @@
                 </a>
               </td>
 
-              <td data-title="'Feedback'" sortable="''">
+              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
-                  </button>-->
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback"><span class="md md-drafts"></span>
+                          title="View Feedback (All read)"><span class="md md-drafts"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
                           class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback"><span class="md md-forum"></span>
+                          title="View Feedback (Unread)"><span class="md md-email"></span>
 
                     <div class="ripple-wrapper"></div>
                   </button>
