@@ -610,7 +610,7 @@ angular.module('singleConceptAuthoringApp')
                       });
                     }
                     msg = newNotification.event + ' feedback for project ' + newNotification.project + ' and task ' + newNotification.task;
-                    url = '#/feedback/' + newNotification.project + '/' + newNotification.task;
+                    url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
                     break;
 
                   /*
@@ -623,9 +623,9 @@ angular.module('singleConceptAuthoringApp')
                   case 'Classification':
                     msg = newNotification.event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
                     if (newNotification.task) {
-                      url = '#/classify/' + newNotification.project + '/' + newNotification.task;
+                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                     } else {
-                      url = '#/project/' + newNotification.project;
+                      url = '#/projects/project/' + newNotification.project + '/classify';
                     }
                     break;
                   
@@ -656,9 +656,9 @@ angular.module('singleConceptAuthoringApp')
                     });
                     msg = 'Validation ' + event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
                     if (newNotification.task) {
-                      url = '#/validate/' + newNotification.project + '/' + newNotification.task;
+                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
                     } else {
-                      url = '#/project/' + newNotification.project;
+                      url = '#/projects/project/' + newNotification.project + '/validate';
                     }
                     break;
                   default:
