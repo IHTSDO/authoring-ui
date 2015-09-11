@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', 'scaService', 'snowowlService', 'notificationService', function taskDetailCtrl($rootScope, $scope, $routeParams, $location, scaService, snowowlService, notificationService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'scaService', 'snowowlService', 'notificationService', function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, scaService, snowowlService, notificationService) {
 
     var panelId = 'task-detail';
     $scope.task = null;
@@ -37,7 +37,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       }
     }
 
-
     // watch for classification information from edit.js
     $rootScope.$on('setClassification', function setClassification(event, data) {
       console.debug('task.js received setClassification event', data);
@@ -46,6 +45,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.classification = data;
     });
 
+    // TODO Check if this is necessary
     // watch for updates to edit panel from conceptEdit.js
     $rootScope.$on('conceptEdit.saveSuccess', function enableClassification(event, data) {
       console.debug('task.js received saveSuccess notification');
@@ -54,8 +54,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.classificationDisplayColor = 'green';
     });
 
-    $scope.classify = function() {
-      scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+    $scope.classify = function () {
+      scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
         console.debug('Classification start response', response);
 
@@ -71,12 +71,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }
       });
     };
-    $scope.promote = function(){
+    $scope.promote = function () {
 
       notificationService.sendMessage('Promoting task...', 0);
 
       // force refresh of task status
-      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         if (response) {
           $scope.task = response;
 
@@ -89,25 +89,24 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             notificationService.sendWarning('Cannot promote task -- already up to date');
           }
 
-          scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+          scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           });
         } else {
           notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion', 0);
         }
       });
 
-
     };
 
-    $scope.startValidation = function() {
+    $scope.startValidation = function () {
       notificationService.sendMessage('Submitting task for validation...');
-      scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+      scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         notificationService.sendMessage('Task successfully submitted for validation', 10000, null);
-      }, function() {
+      }, function () {
         notificationService.sendMessage('Error submitting task for validation', 5000, null);
       });
     };
-    $scope.submitForReview = function() {
+    $scope.submitForReview = function () {
       scaService.updateTask(
         $routeParams.projectKey, $routeParams.taskKey,
         {
@@ -118,24 +117,31 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     function initialize() {
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
-        if($scope.task.branchState === 'DIVERGED'){
-            $rootScope.$broadcast('branchDiverged');
+        if ($scope.task.branchState === 'DIVERGED') {
+          $rootScope.$broadcast('branchDiverged');
         }
       });
 
       // initialize classification display with ready status
+      // TODO Revisit all the buttons here and tie to status
       setClassifyDisplay('READY');
     }
 
     // re-initialize if branch state changes
-    $scope.$on('notification.branchState', function(event, data) {
+    $scope.$on('notification.branchState', function (event, data) {
       initialize();
     });
 
     // re-initialize if concept edit triggers change from New status
-    $scope.$on('conceptEdit.saveSuccess', function(event, data) {
+    // purpose:  get new task details to trigger button and other behavior
+    $scope.$on('conceptEdit.saveSuccess', function (event, data) {
       if ($scope.task.status === 'New') {
-        initialize();
+
+         // retrieve new task status after delay to allow BE propagation
+        // expected result is In Progress
+        $timeout(function () {
+          initialize();
+        }, 2000);
       }
     });
 
