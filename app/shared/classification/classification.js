@@ -250,7 +250,7 @@ angular.module('singleConceptAuthoringApp')
             // get task to check if it's eligible for update
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               if (!response) {
-                notificationService.sendError("Error submitting task for review:  Could not retrieve task", 0);
+                notificationService.sendError('Error submitting task for review:  Could not retrieve task', 0);
               } else {
                 if (response.status === 'New') {
                   notificationService.sendWarning('No work exists for this task, cannot submit for review', 10000);
