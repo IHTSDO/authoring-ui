@@ -543,7 +543,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                     if (result.active == false) {
                     }
                     else{
-                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div  class='result-item' data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</td><td class='col-md-1'><button data-concept-id='" + result.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr></td></tr>"
+                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div style='word-break: break-all' class='result-item' data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item' style='word-break: break-all' data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</td><td class='col-md-1'><button data-concept-id='" + result.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr></td></tr>"
                     }
                     }
                   });
@@ -574,7 +574,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                     if (field.concept.active == false) {
                     }
                     else{
-                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'><i class='glyphicon glyphicon-pencil'</button></td></tr>"
+                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' style='word-break: break-all' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item' style='word-break: break-all' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'><i class='glyphicon glyphicon-pencil'</button></td></tr>"
                     }
                   });
                   $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
@@ -680,7 +680,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                     }
                     else{
 
-                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' data-concept-id='" + field.concept.conceptId + "' data-term='" + "OHAI3 " +  field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr>"
+                      resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' style='word-break: break-all' data-concept-id='" + field.concept.conceptId + "' data-term='" + "OHAI3 " +  field.term + "'>" + field.term + "</div></td><td style='word-break: break-all' class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr>"
                     }
                   });
 //                                    var remaining = result.length() - (skipTo

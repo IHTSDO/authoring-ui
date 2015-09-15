@@ -41,6 +41,7 @@ aside.editpanel ul a {
 .editing-form {
     font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-text-size-adjust: 100%;
+    padding-bottom: 5px;
 }
 .editing-form a {
     text-decoration: none;
@@ -71,6 +72,9 @@ aside.editpanel ul a {
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
     box-shadow: none !important;
+}
+.editing-form .concept-headers select {
+  color: #fff !important;
 }
 .editing-form input:focus,
 .editing-form textarea:focus,
