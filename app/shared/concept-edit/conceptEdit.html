@@ -198,7 +198,7 @@
     <div ng-repeat="relationship in getIsARelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
          ui-on-drop="dropRelationship(relationship, $data)">
-      <div class="row darken-3 p-t-5 grey">
+      <div class="row darken-3 p-t-5 grey ">
         <!-- Button controls -->
         <div class="col-md-12 no-padding color_{{relationship.groupId}}"
              ui-draggable="isStatic" drag="relationship"
@@ -274,7 +274,7 @@
     <div ng-repeat="relationship in getAttributeRelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
          ui-on-drop="dropRelationship(relationship, $data)">
-      <div class="row darken-3 p-t-5 grey clearfix ">
+      <div class="row darken-3 p-t-5 grey">
 
         <div class=" clearfix col-md-12 no-padding form-control color_{{relationship.groupId}}"
              ui-draggable="isStatic" drag="relationship"
@@ -316,7 +316,7 @@
                ng-disabled="isStatic"
                ui-on-drop="dropRelationshipType(relationship, $data)">
           <textarea style="" disabled ng-model="relationship.type.fsn"
-                    class="msd-elastic form-control color_{{relationship.groupId}}"
+                    class="msd-elastic color_{{relationship.groupId}}"
                     type="text"
                     placeholder="#">
           </textarea>
@@ -328,7 +328,7 @@
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipTarget(relationship, $data)">
           <textarea style="" disabled ng-model="relationship.target.fsn"
-                    class="msd-elastic color_{{relationship.groupId}}"
+                    class="msd-elastic form_control color_{{relationship.groupId}}"
                     type="text"
                     placeholder="#">
           </textarea>
