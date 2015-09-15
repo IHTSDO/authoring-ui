@@ -637,6 +637,10 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
+          rels.sort(function(a, b) {
+            return a.groupId > b.groupId;
+          });
+
           return rels;
         };
 
@@ -651,6 +655,11 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           }
+
+          rels.sort(function(a, b) {
+            return a.groupId > b.groupId;
+          });
+
           return rels;
         };
 

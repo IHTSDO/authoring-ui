@@ -253,7 +253,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             var selectedId = $(event.target).attr('data-concept-id');
             var selectedLabel = $(event.target).attr('data-term');
             if (typeof selectedId != "undefined") {
-              $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + selectedId + "/parents?form=" + panel.options.selectedView, function (result) {
+              $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + selectedId + "/parents?form=" + panel.options.selectedView, function (result) {
                 // done
               }).done(function (result) {
                 panel.setupParents(result, {
@@ -324,7 +324,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           $("#" + panel.divElement.id + "-txViewLabel").html("<span class='i18n' data-i18n-id='i18n_stated_view'>Stated view</span>");
         }
 
-        $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + conceptId + "/children?form=" + panel.options.selectedView, function (result) {
+        $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + conceptId + "/children?form=" + panel.options.selectedView, function (result) {
         }).done(function (result) {
           var nodeHtml = "<ul style='list-style-type: none; padding-left: 15px;'>";
           result.sort(function (a, b) {
@@ -380,7 +380,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
 
       this.wrapInParents = function (conceptId, liItem) {
         var topUl = $("#" + panel.divElement.id + "-panelBody").find('ul:first');
-        $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + conceptId + "/parents?form=" + panel.options.selectedView, function (parents) {
+        $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + conceptId + "/parents?form=" + panel.options.selectedView, function (parents) {
           // done
         }).done(function (parents) {
           if (parents.length > 0) {
@@ -444,7 +444,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
 
       this.setToConcept = function (conceptId, term, definitionStatus) {
         $("#" + panel.divElement.id + "-panelBody").html("<i class='glyphicon glyphicon-refresh icon-spin'></i>");
-        $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + conceptId + "/parents?form=inferred", function (result) {
+        $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + conceptId + "/parents?form=inferred", function (result) {
           // done
         }).done(function (result) {
           if (definitionStatus != "PRIMITIVE" && definitionStatus != "Fully defined") {
@@ -571,7 +571,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           xhr.abort();
           console.log("aborting call...");
         }
-        xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + conceptId, function (result) {
+        xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + conceptId, function (result) {
 
         }).done(function (result) {
           panel.setToConcept(conceptId, result.defaultTerm);
