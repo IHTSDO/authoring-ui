@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
       return {
         'active': true,
         'moduleId': '900000000000207008',
-        'type': null,
+        'type': 'SYNONYM',
         'term': null,
         'lang': 'en',
         'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
