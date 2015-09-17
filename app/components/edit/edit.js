@@ -363,16 +363,20 @@ angular.module('singleConceptAuthoringApp.edit', [
         // deep copy the object -- note: does not work in IE8, but screw
         // that!
         var clonedConcept = JSON.parse(JSON.stringify(response));
+
         // add a cloned tag to differentiate the clonedConcept
+        clonedConcept.conceptId = null;
         clonedConcept.fsn += ' [Cloned]';
 
         // clear the id and effectiveTime of the descriptions and
         // relationships
         angular.forEach(clonedConcept.descriptions, function (description) {
+          description.effectiveTime = null;
           description.descriptionId = null;
         });
 
         angular.forEach(clonedConcept.relationship, function (relationship) {
+          relationship.effectiveTime = null;
           relationship.relationshipId = null;
         });
 

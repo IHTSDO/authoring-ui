@@ -127,7 +127,14 @@ angular.module('singleConceptAuthoringApp')
           }());
 
           scope.saveClassification = function () {
-            window.alert('Not yet implemented');
+            notificationService.sendMessage('Saving classification....', 0);
+            snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function(data) {
+              if (!data) {
+                notificationService.sendError('Saving classification unexpectedly failed', 0);
+              } else {
+                notificationService.sendMessage('Classification saved', 5000);
+              }
+            });
           };
 
           scope.downloadClassification = function () {
