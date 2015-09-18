@@ -52,9 +52,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                 elem.animate({ scrollTop: '0' });
             });
             handler = function() {
-              var container, elementBottom, remaining, shouldScroll, containerBottom;
-                console.log(($(document).height() - $(window).height()) - $(window).scrollTop());
-              //shouldScroll = remaining <= elem.height() * scrollDistance;
+              var shouldScroll;
               shouldScroll = ($(document).height() - $(window).height()) - $(window).scrollTop() < 400;
               if (shouldScroll && scrollEnabled) {
                 if ($rootScope.$$phase) {
@@ -96,7 +94,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
-    $scope.conceptsDisplayed = 3;
+    $scope.conceptsDisplayed = 5;
     $scope.conceptsRendering = false;
     $scope.addMoreItems = function() {
         if($scope.conceptsDisplayed < $scope.concepts.length)
