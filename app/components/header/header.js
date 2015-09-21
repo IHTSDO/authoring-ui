@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', function ($rootScope, $timeout, $modal) {
     return {
       restrict: '',
       transclude: false,
@@ -69,6 +69,25 @@ angular.module('singleConceptAuthoringApp')
           });
 
         });
+
+        //////////////////////////
+        // User Settings
+        //////////////////////////
+        scope.openSettingsModal = function () {
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/user-preferences/userPreferences.html',
+            controller: 'userPreferencesCtrl'
+          });
+
+          modalInstance.result.then(function (response) {
+            console.debug('user preferences modal closed with response', response);
+            if (response) {
+              // do nothing -- user preferences ctrl should make appropriate changes on completion
+            }
+          }, function () {
+          });
+        };
+
       }
     };
   }]);
