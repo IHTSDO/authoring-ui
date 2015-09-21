@@ -3,8 +3,8 @@ angular.module('singleConceptAuthoringApp.search', [])
 
   .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$compile', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, $compile, scaService) {
 
-    console.debug('entered searchCtrl');
     $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
+
     var options = {
       serverUrl: "/snowowl",
       edition: "snomed-ct/v2/browser",
@@ -59,16 +59,6 @@ angular.module('singleConceptAuthoringApp.search', [])
         $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");   
     }
 
-    });
-    $scope.$watch($scope.savedList, function(newValue, oldValue)
-    {
-        for(var i = 0; i < oldValue.length; i++)
-        {
-            if ($scope.findItemInSavedList(oldValue[i].concept.conceptId) === false)
-            {
-                
-            }
-        }
     });
 
     $scope.findItem = function (id) {

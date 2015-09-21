@@ -1,9 +1,11 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'scaService', 'snowowlService', 'notificationService', function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, scaService, snowowlService, notificationService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'scaService', 'snowowlService', 'notificationService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, scaService, snowowlService, notificationService) {
 
-    var panelId = 'task-detail';
+      console.debug('in task detail ctrl');
+
     $scope.task = null;
 
     // State of classification and display variables
@@ -55,6 +57,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     });
 
     $scope.classify = function () {
+
+      console.debug("umm");
       scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
         console.debug('Classification start response', response);

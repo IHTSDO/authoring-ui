@@ -1,4 +1,4 @@
-<div id="task-detail" ng-controller="taskDetailCtrl">
+<div id="task-detail">
 
   <!-- Timeline formatter and concept ids.extension input -->
   <div class="row">
@@ -43,12 +43,13 @@
 
     <div style="padding: 15px; width: 100%" class="classification-btn">
 
+      {{classificationDisplayText}}
       <button
-        ng-class="classificationDisplayColor" class="btn btn-default {{classificationDisplayText}}"
+        class="btn btn-default green classify"
         ng-click="classify()"
         ng-disabled="task.status === 'New'">
         <span class="md md-notifications green darken-1 iconbase"></span>
-        <span class="button-link">{{classificationDisplayText}}</span>
+        <span class="button-link">Classify</span>
       </button>
       <button ng-if="editable !== 'false'"
               class="btn btn-default deep-purple validate"

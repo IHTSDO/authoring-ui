@@ -19,6 +19,8 @@ angular.module('singleConceptAuthoringApp')
         return $http.get('/ims-api/account', {withCredentials: true}).
           success(function (data, status) {
 
+            console.log('Account details retrieved');
+
             // leave rootscope assignment for header
             // TODO Refactor this at a later date, all account details
             // should be handled via this service
@@ -27,6 +29,7 @@ angular.module('singleConceptAuthoringApp')
             accountDetails = data;
           }).
           error(function (data, status) {
+            console.error('Could not retrieve account details');
             $rootScope.accountDetails = [];
             $rootScope.loggedIn = false;
           });
@@ -75,8 +78,6 @@ angular.module('singleConceptAuthoringApp')
      * @returns the user's preferences after checking for default values
      */
     function setUserPreferences(preferences) {
-      
-      console.debug('setting user preferences', preferences);
 
       // handle as promise for now, in case later preferences require processing
       // (not currently needed, but meh)
@@ -100,7 +101,7 @@ angular.module('singleConceptAuthoringApp')
       // Application View
       /////////////////////////////////////////////////////
       if (!preferences.appView) {
-        preferences.appView = 'sca-default'
+        preferences.appView = 'sca-default';
       }
       globalStyleClasses.push(preferences.appView);
 
@@ -112,7 +113,6 @@ angular.module('singleConceptAuthoringApp')
       /////////////////////////////////////////////////////
       // Resolve and Return
       /////////////////////////////////////////////////////
-      console.debug('preferences (new)', preferences);
 
       // set the service variable
       userPreferences = preferences;
