@@ -22,11 +22,90 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
+  .directive('infiniteScroll', [
+  '$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
+        return {
+          link: function(scope, elem, attrs) {
+            var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
+            $window = angular.element($window);
+            elem.css('overflow-y', 'scroll');
+            elem.css('overflow-x', 'hidden');
+            elem.css('height', 'inherit');
+            scrollDistance = 0;
+            if (attrs.infiniteScrollDistance !== null) {
+              scope.$watch(attrs.infiniteScrollDistance, function(value) {
+                return scrollDistance = parseInt(value, 10);
+              });
+            }
+            scrollEnabled = true;
+            checkWhenEnabled = false;
+            if (attrs.infiniteScrollDisabled !== null) {
+              scope.$watch(attrs.infiniteScrollDisabled, function(value) {
+                scrollEnabled = !value;
+                if (scrollEnabled && checkWhenEnabled) {
+                  checkWhenEnabled = false;
+                  return handler();
+                }
+              });
+            }
+            $rootScope.$on('refreshStart', function(event, parameters){
+                elem.animate({ scrollTop: '0' });
+            });
+            handler = function() {
+              var shouldScroll;
+              shouldScroll = ($(document).height() - $(window).height()) - $(window).scrollTop() < 400;
+              if (shouldScroll && scrollEnabled) {
+                if ($rootScope.$$phase) {
+                  return scope.$eval(attrs.infiniteScroll);
+                } else {
+                  return scope.$apply(attrs.infiniteScroll);
+                }
+              } else if (shouldScroll) {
+                return checkWhenEnabled = true;
+              }
+            };
+            $(window).on('scroll', handler);
+            scope.$on('$destroy', function() {
+              return $window.off('scroll', handler);
+            });
+            return $timeout(function() {
+              if (attrs.infiniteScrollImmediateCheck) {
+                if (scope.$eval(attrs.infiniteScrollImmediateCheck)) {
+                  return handler();
+                }
+              } else {
+                return handler();
+              }
+            }, 0);
+          }
+        };
+      }
+    ])
+    //Directive to trigger a function on the rendering of an entire ng-repeat, will make global once infinite scroll functionality is complete
+    .directive('repeatComplete', function() {
+      return function(scope, element, attrs) {
+        if (scope.$last){
+            scope.$eval(attrs.repeatComplete);
+        }
+      };
+    })
+
   .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
-
+    $scope.conceptsDisplayed = 5;
+    $scope.conceptsRendering = false;
+    $scope.addMoreItems = function() {
+        if($scope.conceptsDisplayed < $scope.concepts.length)
+        {
+            $scope.conceptsDisplayed += 2;
+            $scope.conceptsRendering = true;
+        }
+    };
+    $scope.renderingComplete = function() {
+        $scope.conceptsRendering = false;
+    };
     // TODO: Update the MAIN branching when appropriate
     if ($routeParams.taskKey) {
       $scope.targetBranch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -363,18 +442,24 @@ angular.module('singleConceptAuthoringApp.edit', [
         // deep copy the object -- note: does not work in IE8, but screw
         // that!
         var clonedConcept = JSON.parse(JSON.stringify(response));
+
         // add a cloned tag to differentiate the clonedConcept
+        clonedConcept.conceptId = null;
         clonedConcept.fsn += ' [Cloned]';
 
         // clear the id and effectiveTime of the descriptions and
         // relationships
         angular.forEach(clonedConcept.descriptions, function (description) {
+          description.effectiveTime = null;
           description.descriptionId = null;
         });
+        console.log(clonedConcept);
 
-        angular.forEach(clonedConcept.relationship, function (relationship) {
+        angular.forEach(clonedConcept.relationships, function (relationship) {
+          relationship.effectiveTime = null;
           relationship.relationshipId = null;
         });
+        
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
