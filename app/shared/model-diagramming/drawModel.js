@@ -12,51 +12,19 @@ angular.module('singleConceptAuthoringApp')
       templateUrl: 'shared/model-diagramming/model.html',
 
       link: function (scope, element, attrs, linkCtrl, snowowlService) {
-        scope.view = true;
+        //scope.view = true;
         var idSequence = 0;
-
-        console.debug(element);
-
-        scope.getSize = function () {
-          // NOTE:  -43 offset required to account for height of header/switch
-          // elements TODO:  For long names this will almost certainly cause a
-          // wrap/overlay problem
-          var size = {
-            width: element.width(),
-            height: element.parent().parent().children().eq(1).height()
-          };
-          return size
-        };
-
-//              scope.checkProgressAndDraw = function() {
-//                if(scope.inProgress === true){
-//                    $timeout(function () {
-//                      scope.checkProgressAndDraw();
-//                    }, 1000);
-//                }
-//                else{ drawConceptDiagram(scope.concept,
-// element.find('.modelContainer'), {}); } }
-        scope.size = scope.getSize();
+        element.append($("<div></div>").addClass('modelContainer'));
+          
         drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
         scope.$watch('concept', function (newVal, oldVal) {
-          if (document.getElementById('canvas-' + scope.concept.conceptId) !== null) {
-            document.getElementById('canvas-' + scope.concept.conceptId).remove();
-            document.getElementById('image-' + scope.concept.conceptId).remove();
+            element.append($("<div></div>").addClass('modelContainer'));
             drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-          }
         }, true);
-//              scope.$watch('view', function(newVal, oldVal){
-//                  document.getElementById('canvas-' +
-// scope.concept.conceptId).remove(); document.getElementById('image-' +
-// scope.concept.conceptId).remove(); drawConceptDiagram(scope.concept,
-// element.find('.modelContainer'), {}); }, true); scope.$on('editModelDraw',
-// function() { //document.getElementById('canvas-' +
-// scope.concept.conceptId).remove(); //document.getElementById('image-' +
-// scope.concept.conceptId).remove(); drawConceptDiagram(scope.concept,
-// element.find('.modelContainer'), {}); }, true);
-// scope.$on('comparativeModelDraw', function() {
-// drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}); },
-// true);
+        scope.$watch('view', function(newVal, oldVal){
+            element.append($("<div></div>").addClass('modelContainer'));
+            drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+        }, true);
         function drawConceptDiagram(concept, div, options) {
           var svgIsaModel = [];
           var svgAttrModel = [];
@@ -84,7 +52,6 @@ angular.module('singleConceptAuthoringApp')
             }
           }
           var parentDiv = div;
-          //parentDiv.svg('destroy');
 
           parentDiv.svg({
             settings: {
@@ -104,8 +71,6 @@ angular.module('singleConceptAuthoringApp')
           } else {
             sctClass = "sct-defined-concept";
           }
-          //console.log("In draw: " + concept.fsn + " " + concept.conceptId + "
-          // " + sctClass);
           var rect1 = drawSctBox(svg, x, y, concept.fsn, concept.conceptId, sctClass);
           x = x + 90;
           y = y + rect1.getBBox().height + 40;
@@ -124,7 +89,6 @@ angular.module('singleConceptAuthoringApp')
           maxX = ((maxX < x) ? x : maxX);
           // load stated parents
           sctClass = "sct-defined-concept";
-          //console.log(svgIsaModel);
           $.each(svgIsaModel, function (i, relationship) {
 //                if (relationship.target.definitionStatus == "Primitive") {
 //                    sctClass = "sct-primitive-concept";
@@ -389,7 +353,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         function loadDefs(svg) {
-          var defs = svg.defs('SctDiagramsDefs');
+          var defs = svg.defs();
           var blackTriangle = svg.marker(defs, 'BlackTriangle', 0, 0, 20, 20, {
             viewBox: '0 0 22 20',
             refX: '0',
@@ -520,6 +484,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         function convertToPng(svg, id) {
+          element.find('*').not('.keep').remove();
           var canvas = document.createElement('canvas');
           canvas.id = "canvas-" + id;
           canvas.width = 2000;
