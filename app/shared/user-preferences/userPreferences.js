@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService', function taskDetailCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService) {
+  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService', function userPreferencesCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService) {
 
     // retrieve the user preferences
     $scope.userPreferences = accountService.getUserPreferences();
@@ -28,12 +28,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       }, function (error) {
         $scope.errorMsg = 'Unexpected error applying settings';
-      })
+      });
 
     };
 
     $scope.cancel = function () {
       $modalInstance.cancel();
-    }
+    };
 
   }]);

@@ -22,15 +22,12 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl) {
 
-        console.debug('conceptEdit', scope.branch, scope.parentBranch, scope.static);
-
         // convert static flag from string to boolean
         if (scope.static === 'true') {
           scope.isStatic = true;
         } else {
           scope.isStatic = false;
         }
-        console.debug('after check', scope.isStatic, !scope.isStatic);
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
@@ -152,9 +149,6 @@ angular.module('singleConceptAuthoringApp')
 
                 // set the local error
                 scope.concept.error = response.message;
-                $timeout(function () {
-                  $rootScope.$broadcast('editModelDraw');
-                }, 300);
               }
             });
           }
@@ -177,16 +171,13 @@ angular.module('singleConceptAuthoringApp')
 
                 // TODO Remove this once two-way binding is successfully
                 // implemented
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                //$rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
               else {
                 // TODO Remove this once two-way binding is successfully
                 // implemented
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
+                //$rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 scope.concept.error = response.message;
-                $timeout(function () {
-                  $rootScope.$broadcast('editModelDraw');
-                }, 300);
               }
             });
 
@@ -642,7 +633,7 @@ angular.module('singleConceptAuthoringApp')
             if (a.groupId !== b.groupId) {
               return a.groupId > b.groupId;
             }
-            if (a.type.conceptId != b.type.conceptId) {
+            if (a.type.conceptId !== b.type.conceptId) {
               return a.type.conceptId > b.type.conceptId;
             }
             return a.target.conceptId > b.target.conceptName;

@@ -132,8 +132,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canConflict = false;
 
     $scope.setView = function (name) {
-      console.debug('setting view (requested, this, last)', name,
-        $scope.thisView, $scope.lastView);
 
       // do nothing if no name supplied
       if (!name) {

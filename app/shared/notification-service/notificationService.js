@@ -15,7 +15,6 @@ angular.module('singleConceptAuthoringApp')
     // force a notification to be sent from elsewhere in the app
     // simple broadcast, but ensures event text is uniform
     function sendMessage(message, durationInMs, url) {
-      console.debug('Sending app-wide notification', message);
 
       if (!message || message.length === 0) {
         console.error('Cannot send empty application notification');
@@ -31,7 +30,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function sendWarning(message, durationInMs, url) {
-      console.debug('Sending app-wide warning', message);
 
       if (!message || message.length === 0) {
         console.error('Cannot send empty application notification');
@@ -47,7 +45,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function sendError(message, durationInMs, url, time) {
-      console.debug('Sending app-wide error', message);
 
       if (!message || message.length === 0) {
         console.error('Cannot send empty application notification');
@@ -63,7 +60,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function clear() {
-      console.debug('Clearing notifications');
       $rootScope.$broadcast('clearNotifications');
     }
 
@@ -76,6 +72,6 @@ angular.module('singleConceptAuthoringApp')
       sendMessage: sendMessage,
       sendWarning: sendWarning,
       sendError: sendError,
-      clear : clear
+      clear: clear
     };
   }]);
