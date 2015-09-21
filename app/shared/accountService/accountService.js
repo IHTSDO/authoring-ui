@@ -1,9 +1,14 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .factory('accountService', function ($http, $rootScope) {
+/**
+ * Handles IMS authentication, user roles, and user settings
+ */
+  .factory('accountService', function ($http, $rootScope, $q, scaService) {
 
     var accountDetails = null;
+
+    var userPreferences = null;
 
     function getAccount(imsUrl) {
 
@@ -56,11 +61,76 @@ angular.module('singleConceptAuthoringApp')
         else{return false;}
     }
 
+    function getUserPreferences() {
+      if (!userPreferences) {
+        console.error('User preferences are not set, check for initialization and retrieval');
+      }
+
+      return userPreferences;
+    }
+
+    /**
+     * Sets and returns application-wide user preferences
+     * @param userPreferences The JSON object containing { settingName : settingValue } pairs. If any setting is not specified, default value will be assigned
+     * @returns the user's preferences after checking for default values
+     */
+    function setUserPreferences(preferences) {
+      
+      console.debug('setting user preferences', preferences);
+
+      // handle as promise for now, in case later preferences require processing
+      // (not currently needed, but meh)
+      var deferred = $q.defer();
+
+      // create blank JSON object if not supplied
+      if (!preferences) {
+        preferences = {};
+      }
+      var globalStyleClasses = [];
+
+      /////////////////////////////////////////////////////
+      // Color Scheme
+      /////////////////////////////////////////////////////
+      if (!preferences.colourScheme) {
+        preferences.colourScheme = 'sca-colours';
+      }
+      globalStyleClasses.push(preferences.colourScheme);
+
+      /////////////////////////////////////////////////////
+      // Application View
+      /////////////////////////////////////////////////////
+      if (!preferences.appView) {
+        preferences.appView = 'sca-default'
+      }
+      globalStyleClasses.push(preferences.appView);
+
+      /////////////////////////////////////////////////////
+      // Apply global styling
+      /////////////////////////////////////////////////////
+      $rootScope.globalStyleClasses = globalStyleClasses;
+
+      /////////////////////////////////////////////////////
+      // Resolve and Return
+      /////////////////////////////////////////////////////
+      console.debug('preferences (new)', preferences);
+
+      // set the service variable
+      userPreferences = preferences;
+
+      // resolve the promise
+      deferred.resolve(preferences);
+
+      // return the (possibly modified) object
+      return deferred.promise;
+    }
+
     return {
       getAccount: getAccount,
       getRoleForTask: getRoleForTask,
       getRoleForProject: getRoleForProject,
-      isReviewer: isReviewer
+      isReviewer: isReviewer,
+      getUserPreferences : getUserPreferences,
+      setUserPreferences : setUserPreferences
     };
 
   })

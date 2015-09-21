@@ -73,6 +73,7 @@ angular
       redirectTo: '/home'
     });
 
+
     // begin polling the sca endpoint at 10s intervals
     scaService.startPolling(10000);
 
@@ -86,7 +87,12 @@ angular
       // don't want either true or false here please!
       $rootScope.loggedIn = null;
 
-      accountService.getAccount(accountUrl);
+      accountService.getAccount(accountUrl).then(function(account) {
+        // set the user preferences
+        // TODO Replace 'null' with UI State retrieval (see WRP-1121)
+        console.log('Setting user preferences');
+        accountService.setUserPreferences(null);
+      });
 
       // add required endpoints to route provider
       $routeProvider

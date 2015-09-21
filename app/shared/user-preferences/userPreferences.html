@@ -1,0 +1,64 @@
+<div id="userPreferencesModal">
+
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h4 class="modal-title">Settings and Preferences</h4>
+  </div>
+
+
+  <div class="modal-body">
+
+    <div class="col-md-12">
+
+      <form class="form-floating">
+
+        <div class="form-group">
+          <label for="colourSchemeSelect">Colour Scheme:</label>
+          <select id="colourSchemeSelect" name="select-colour-scheme" class="form-control"
+                  ng-model="userPreferences.colourScheme"
+                  ng-change="clearMessages()">
+            <option value="sca-colours">Colours</option>
+            <option value="sca-light">Light</option>
+            <option value="sca-dark">Dark</option>
+          </select>
+
+          <br>
+          <label for="appViewSelect">Application View:</label>
+          <select id="appViewSelect" name="select-app-view" class="form-control"
+                  ng-model="userPreferences.appView"
+                  ng-change="clearMessages()">
+            <option value="sca-default">Default</option>
+            <option value="sca-comfy">Comfy</option>
+            <option value="sca-compact">Compact</option>
+          </select>
+          <br>
+        </div>
+      </form>
+
+
+      <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
+      <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="col-md-4">
+        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin "
+                ng-click="save()">Save
+        </button>
+      </div>
+      <div class="col-md-4">
+        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-warning no-margin"
+                ng-click="revert()">Revert
+        </button>
+      </div>
+      <div class="col-md-4">
+        <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-danger no-margin "
+                ng-click="close()">Cancel
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>

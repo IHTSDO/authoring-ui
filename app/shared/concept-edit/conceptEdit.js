@@ -1,4 +1,4 @@
-s'use strict';
+'use strict';
 angular.module('singleConceptAuthoringApp')
   .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, snowowlService, objectService, notificationService, $routeParams) {
     return {
