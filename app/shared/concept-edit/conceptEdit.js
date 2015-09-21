@@ -516,7 +516,7 @@ angular.module('singleConceptAuthoringApp')
         scope.getCaseSignificanceDisplayText = function (description) {
           switch (description.caseSignificance) {
             case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
-              return 'Ci';
+              return 'Cs';
             case 'CASE_INSENSITIVE':
               return 'ci';
             default:
