@@ -453,11 +453,13 @@ angular.module('singleConceptAuthoringApp.edit', [
           description.effectiveTime = null;
           description.descriptionId = null;
         });
+        console.log(clonedConcept);
 
-        angular.forEach(clonedConcept.relationship, function (relationship) {
+        angular.forEach(clonedConcept.relationships, function (relationship) {
           relationship.effectiveTime = null;
           relationship.relationshipId = null;
         });
+        
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
