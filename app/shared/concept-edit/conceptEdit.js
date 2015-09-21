@@ -1,4 +1,4 @@
-'use strict';
+s'use strict';
 angular.module('singleConceptAuthoringApp')
   .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, snowowlService, objectService, notificationService, $routeParams) {
     return {
@@ -21,7 +21,6 @@ angular.module('singleConceptAuthoringApp')
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
       link: function (scope, element, attrs, linkCtrl) {
-
 
         console.debug('conceptEdit', scope.branch, scope.parentBranch, scope.static);
 
@@ -49,7 +48,8 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
-        // console.debug(scope.concept, scope.branch, scope.parentBranch, scope.static);
+        // console.debug(scope.concept, scope.branch, scope.parentBranch,
+        // scope.static);
 
         // concept history for undoing changes
         scope.conceptSessionHistory = [];
@@ -307,7 +307,8 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // sort on acceptability map existence
-            // console.debug('sort on acceptability map', a.acceptabilityMap, b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
+            // console.debug('sort on acceptability map', a.acceptabilityMap,
+            // b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }
@@ -637,8 +638,14 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          rels.sort(function(a, b) {
-            return a.groupId > b.groupId;
+          rels.sort(function (a, b) {
+            if (a.groupId !== b.groupId) {
+              return a.groupId > b.groupId;
+            }
+            if (a.type.conceptId != b.type.conceptId) {
+              return a.type.conceptId > b.type.conceptId;
+            }
+            return a.target.conceptId > b.target.conceptName;
           });
 
           return rels;
@@ -656,8 +663,14 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          rels.sort(function(a, b) {
-            return a.groupId > b.groupId;
+          rels.sort(function (a, b) {
+            if (a.groupId !== b.groupId) {
+              return a.groupId > b.groupId;
+            }
+            if (a.type.conceptId !== b.type.conceptId) {
+              return a.type.conceptId > b.type.conceptId;
+            }
+            return a.target.conceptId > b.target.conceptName;
           });
 
           return rels;
@@ -702,11 +715,16 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
-        scope.addAttributeRelationship = function (afterIndex) {
+        scope.addAttributeRelationship = function (afterIndex, relGroup) {
 
           //  console.debug('adding attribute relationship', afterIndex);
 
           var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
+
+          // set role group if specified
+          if (relGroup) {
+            relationship.groupId = relGroup;
+          }
 
           // if afterIndex not supplied or invalid, simply add
           if (afterIndex === null || afterIndex === undefined) {
@@ -1026,7 +1044,7 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
-       // NOTE: No inactivation reasons currently for relationships
+        // NOTE: No inactivation reasons currently for relationships
 
         ///////////////////////////////////////////////
         // Concept Auto-Saving Validation Checks
@@ -1090,10 +1108,6 @@ angular.module('singleConceptAuthoringApp')
             relationship.error = 'Relationship moduleId must be set';
             return false;
           }
-          if (!relationship.target || !relationship.target.conceptId) {
-            relationship.error = 'Relationship target conceptId must be set';
-            return false;
-          }
           if (relationship.active === null) {
             relationship.error = 'Relationship active flag must be set';
             return false;
@@ -1102,8 +1116,12 @@ angular.module('singleConceptAuthoringApp')
             relationship.error = 'Relationship characteristic type must be set';
             return false;
           }
-          if (!relationship.type) {
+          if (!relationship.type || !relationship.type.conceptId) {
             relationship.error = 'Relationship type must be set';
+            return false;
+          }
+          if (!relationship.target || !relationship.target.conceptId) {
+            relationship.error = 'Relationship target must be set';
             return false;
           }
 
