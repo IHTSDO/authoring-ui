@@ -250,6 +250,8 @@ angular.module('singleConceptAuthoringApp.search', [])
         searchHtml = searchHtml + "</div>";
         searchHtml = searchHtml + "</div>";
         $(divElement).html(searchHtml);
+        //added to re-enable automatic triggering of the search after three chars have been entered. Swap with the below to 
+        //change back to triggering only on the pressing of return.
         $('#' + panel.divElement.id + '-searchBox').keyup(function () {
             clearTimeout(thread);
             var $this = $(this);
@@ -257,6 +259,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                 panel.search($this.val(),0,100,false);
             }, 500);
         });
+        //code to trigger search only if the last pressed key was enter
 //        $('#' + panel.divElement.id + '-searchBox').keyup(function (e) {
 //          //search only on pressing the enter key (key 13)
 //          if(e.which == 13) {
