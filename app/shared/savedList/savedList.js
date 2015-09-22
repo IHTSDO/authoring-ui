@@ -37,21 +37,6 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     };
 
-    /*// listen for removal of concepts from editing panel
-    scope.$on('stopEditing', function(event, data) {
-      if (!data || !data.concept) {
-        console.error("Cannot handle stop editing event: concept must be supplied");
-      } else {
-
-        // check all current data items for edit re-enable
-        angular.forEach(scope.data, function(item) {
-          if (item.destinationId === data.concept.id) {
-            item.isLoaded = false;
-          }
-        })
-      }
-    });
-*/
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.term};
     };

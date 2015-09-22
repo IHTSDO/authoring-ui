@@ -210,16 +210,17 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         var treeHtml = "<div>";
         treeHtml = treeHtml + "<ul>";
         var lastParent;
+          console.log(parents);
         $.each(parents, function (i, parent) {
           lastParent = parent;
-          treeHtml = treeHtml + "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.defaultTerm + "' class='treeLabel'>";
+          treeHtml = treeHtml + "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.fsn + "' class='treeLabel'>";
           treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
           if (parent.definitionStatus == "PRIMITIVE") {
             treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
           } else {
             treeHtml = treeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
           }
-          treeHtml = treeHtml + '<a href="javascript:void(0);" style="color: inherit;text-decoration: inherit;"><span data-concept-id="' + parent.conceptId + '" data-term="' + parent.defaultTerm + '" class="treeLabel selectable-row" id="' + panel.divElement.id + '-treenode-' + parent.conceptId + '">' + parent.defaultTerm + '</span></a>';
+          treeHtml = treeHtml + '<a href="javascript:void(0);" style="color: inherit;text-decoration: inherit;"><span data-concept-id="' + parent.conceptId + '" data-term="' + parent.fsn + '" class="treeLabel selectable-row" id="' + panel.divElement.id + '-treenode-' + parent.conceptId + '">' + parent.fsn + '</span></a>';
           treeHtml = treeHtml + "</li>";
         });
         if (parents.length > 0) {
@@ -253,6 +254,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             var selectedId = $(event.target).attr('data-concept-id');
             var selectedLabel = $(event.target).attr('data-term');
             if (typeof selectedId != "undefined") {
+                
               $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + selectedId + "/parents?form=" + panel.options.selectedView, function (result) {
                 // done
               }).done(function (result) {
