@@ -34,7 +34,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           scrollDistance = 0;
           if (attrs.infiniteScrollDistance !== null) {
             scope.$watch(attrs.infiniteScrollDistance, function (value) {
-              return scrollDistance = parseInt(value, 10);
+                var result;
+                result = scrollDistance = parseInt(value, 10);
+              return result;
             });
           }
           scrollEnabled = true;
@@ -61,7 +63,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                 return scope.$apply(attrs.infiniteScroll);
               }
             } else if (shouldScroll) {
-              return checkWhenEnabled = true;
+                checkWhenEnabled = true;
+              return checkWhenEnabled;
             }
           };
           $(window).on('scroll', handler);
@@ -346,9 +349,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // helper function to save current edit list (task view only)
     $scope.updateEditListUiState = function () {
-
-      console.debug('updating edit list', $scope.concepts);
-      ;
       if ($scope.taskKey) {
 
         var conceptIds = [];
@@ -378,7 +378,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           return;
         }
       }
-      ;
 
       $scope.addConceptToListFromId(data.conceptId);
       $scope.editPanelUiState.push(data.conceptId);
@@ -510,7 +509,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // check if an unsaved concept already exists
       for (var i = 0; i < $scope.concepts.length; i++) {
         if (!$scope.concepts[i].conceptId) {
-          notificationService.sendWarning("A new, unsaved concept already exists.", 5000);
+          notificationService.sendWarning('A new, unsaved concept already exists.', 5000);
           return;
         }
       }
