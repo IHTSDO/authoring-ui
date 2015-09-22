@@ -398,53 +398,70 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var concept = {'id': null, 'branch': $scope.targetBranch};
 
+      notificationService.sendMessage('Cloning concept...');
+
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
 
-        var conceptId = response.conceptId;
-        var conceptEt = response.effectiveTime;
-
         // check if original concept already exists, if not add it
         var conceptExists = false;
-        angular.forEach($scope.concepts, function (concept) {
-          if (concept.conceptId === conceptId) {
+        for (var i = 0; i < $scope.concepts.length; i++) {
+
+          // cancel if unsaved work exists (track-by id problems)
+          if (!$scope.concepts[i].conceptId) {
+            notificationService.sendWarning('A new, unsaved concept exists; please save before cloning', 10000);
+            return;
+          }
+
+          if (concept.conceptId === data.conceptId) {
             conceptExists = true;
           }
-        });
+        }
         if (!conceptExists) {
           $scope.concepts.push(response);
 
-          $scope.editPanelUiState.push(conceptId);
-          $scope.updateEditListUiState();
+          $timeout(function () {
+            $scope.updateEditListUiState();
 
-          // set editing flags
-          flagEditedItems();
+            // set editing flags
+            flagEditedItems();
+          }, 1000);
+
+
         }
 
         // deep copy the object -- note: does not work in IE8, but screw
         // that!
         var clonedConcept = JSON.parse(JSON.stringify(response));
 
-        // add a cloned tag to differentiate the clonedConcept
-        clonedConcept.conceptId = null;
-        clonedConcept.fsn += ' [Cloned]';
-
-        // clear the id and effectiveTime of the descriptions and
-        // relationships
+        // clear relevant fields to force creation of new components
         angular.forEach(clonedConcept.descriptions, function (description) {
           description.effectiveTime = null;
           description.descriptionId = null;
+          description.conceptId = null;
         });
-        console.log(clonedConcept);
 
         angular.forEach(clonedConcept.relationships, function (relationship) {
+          relationship.sourceId = null;
           relationship.effectiveTime = null;
           relationship.relationshipId = null;
         });
 
+        clonedConcept.conceptId = null;
+        clonedConcept.effectiveTime = null;
+
+        var successMsg = 'Concept ' + clonedConcept.fsn + ' successfully cloned';
+
+        // add a cloned tag to differentiate the clonedConcept
+        clonedConcept.fsn = '[CLONED] ' + clonedConcept.fsn;
+
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
 
+        notificationService.sendMessage(successMsg, 5000);
+
+      }, function (error) {
+        notificationService.sendError('Cloning failed; could not retrieve concept');
       });
     });
 
@@ -690,7 +707,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var conceptIds = data.conceptIds;
 
-       if (!conceptIds || !Array.isArray(conceptIds)) {
+      if (!conceptIds || !Array.isArray(conceptIds)) {
         return;
       }
 
