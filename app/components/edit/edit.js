@@ -172,10 +172,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Invalid View Requested';
           break;
       }
-
-      $timeout(function () {
-        $rootScope.$broadcast('editModelDraw');
-      }, 500);
     };
 
     // on load, set the initial view based on classify/validate parameters
@@ -298,9 +294,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         $scope.concepts.push(response);
 
-        $timeout(function () {
-          $rootScope.$broadcast('editModelDraw');
-        }, 800);
       }, function (error) {
 
         // console.debug('Error loading concept ' + conceptId, error);
@@ -309,7 +302,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         var index = $scope.editPanelUiState.indexOf(conceptId);
         if (index !== -1) {
           $scope.editPanelUiState.splice(index, 1);
-          $scope.updateUiState(); // update the ui state
+          $scope.updateEditListUiState(); // update the ui state
           flagEditedItems();        // update edited item flagging
         }
       }).finally(function () {
@@ -335,6 +328,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       for (var i = 0; i < $scope.concepts.length; i++) {
         if ($scope.concepts[i].conceptId === conceptId) {
           notificationService.sendWarning('Concept ' + $scope.concepts[i].fsn + ' already in list', 5000);
+
+          // update the stale flags
+          flagEditedItems();
           return;
         }
       }
@@ -349,60 +345,44 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 // helper function to save current edit list (task view only)
-    $scope.updateUiState = function () {
+    $scope.updateEditListUiState = function () {
+
+      console.debug('updating edit list', $scope.concepts);
+      ;
       if ($scope.taskKey) {
-        scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', $scope.editPanelUiState);
+
+        var conceptIds = [];
+        angular.forEach($scope.concepts, function (concept) {
+          if (concept.conceptId) {
+            conceptIds.push(concept.conceptId);
+          }
+        });
+
+        scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', conceptIds);
       }
     };
 
-    // TODO Make the two-way binding handle this via a $watch
-    $scope.$on('conceptEdit.saveSuccess', function (event, data) {
-      if (data.response && data.response.conceptId) {
-
-        // commented out in favor of notification service
-        //$scope.saveMessage = 'Concept with id: ' +
-        // data.response.conceptId + ' saved at: ' + $scope.formatDate(new
-        // Date());
-
-        // ensure concept is in edit panel ui state
-        if ($scope.editPanelUiState.indexOf(data.response.conceptId) === -1) {
-          $scope.editPanelUiState.push(data.response.conceptId);
-          $scope.updateUiState();
-        }
-
-        // replace the concept in the array
-        for (var i = 0; i < $scope.concepts.length; i++) {
-          // if matching concept OR saveConceptId was blank (newly saved)
-          // replace the concept in list and break
-          if ($scope.concepts[i].conceptId === data.response.conceptId || (!$scope.saveConceptId && !$scope.concepts[i].conceptId)) {
-            $scope.concepts.splice(i, 1, data.response);
-            break;
-          }
-        }
-        $timeout(function () {
-          $rootScope.$broadcast('editModelDraw');
-        }, 300);
-        // console.debug('after save success', $scope.concepts);
-      }
-      else {
-        $scope.saveMessage = 'Error saving concept, please make an additional change.';
-      }
-      $timeout(function () {
-        $scope.saveIndicator = false;
-      }, 4000);
-    });
-
-// watch for concept selection from the edit sidebar
+    // watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
-      $scope.conceptLoaded = false;
-      if (!data || !data.conceptId) {
-        $scope.conceptLoaded = false;
-        return;
+
+      console.debug('editConcept', data);
+      var conceptId = data.conceptId;
+
+      // verify that this SCTID does not exist in the edit list
+      for (var i = 0; i < $scope.concepts.length; i++) {
+        console.debug('comparing', $scope.concepts[i].conceptId, conceptId, $scope.concepts[i].conceptId === conceptId);
+        if ($scope.concepts[i].conceptId === conceptId) {
+
+          notificationService.sendWarning('Concept already added', 5000);
+          flagEditedItems();
+          return;
+        }
       }
+      ;
 
       $scope.addConceptToListFromId(data.conceptId);
       $scope.editPanelUiState.push(data.conceptId);
-      $scope.updateUiState();
+      $scope.updateEditListUiState();
 
       // set editing flags
       flagEditedItems();
@@ -433,12 +413,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         if (!conceptExists) {
           $scope.concepts.push(response);
-          $timeout(function () {
-            $rootScope.$broadcast('editModelDraw');
-          }, 800);
 
           $scope.editPanelUiState.push(conceptId);
-          $scope.updateUiState();
+          $scope.updateEditListUiState();
 
           // set editing flags
           flagEditedItems();
@@ -478,23 +455,17 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      console.debug('Received stopEditing request', data);
-
       // if in conflicts view, remove from conflict lists
       if ($scope.thisView === 'conflicts') {
 
-        console.debug('conflict mode, remove pair');
         for (var i = 0; i < $scope.conflictConceptsBase.length; i++) {
-          console.debug('checking', $scope.conflictConceptsBase[i].conceptId, data.concept.conceptId);
           if ($scope.conflictConceptsBase[i].conceptId === data.concept.conceptId) {
-            console.debug('removing base concept');
             $scope.conflictConceptsBase.splice(i, 1);
             break;
           }
         }
         for (i = 0; i < $scope.conflictConceptsBranch.length; i++) {
           if ($scope.conflictConceptsBranch[i].conceptId === data.concept.conceptId) {
-            console.debug('removing branch concept');
             $scope.conflictConceptsBranch.splice(i, 1);
             break;
           }
@@ -509,7 +480,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         var index = $scope.concepts.indexOf(data.concept);
         $scope.concepts.splice(index, 1);
         $scope.editPanelUiState.splice($scope.editPanelUiState.indexOf(data.concept.conceptId), 1);
-        $scope.updateUiState();
+        $scope.updateEditListUiState();
 
         // set editing flags
         flagEditedItems();
@@ -519,12 +490,17 @@ angular.module('singleConceptAuthoringApp.edit', [
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
 
-      // console.debug('createConcept', $scope.concepts);
+      // check if an unsaved concept already exists
+      for (var i = 0; i < $scope.concepts.length; i++) {
+        if (!$scope.concepts[i].conceptId) {
+          notificationService.sendWarning("A new, unsaved concept already exists.", 5000);
+          return;
+        }
+      }
+
       var concept = objectService.getNewConcept($scope.targetBranch);
 
       $scope.concepts.unshift(concept);
-
-      // console.debug('after', $scope.concepts);
 
     };
 
@@ -542,9 +518,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     // get the various elements of a classification once it has been
     // retrieved
     $scope.setClassificationComponents = function () {
-
-      // console.debug('Retrieving classification components for',
-      // $scope.classificationContainer);
 
       if (!$scope.classificationContainer || !$scope.classificationContainer.id) {
         console.error('Cannot set classification components, classification or its id not set');
@@ -689,8 +662,6 @@ angular.module('singleConceptAuthoringApp.edit', [
      * Create conflict concept pairs to display for side-by-side conflict view
      */
     $scope.setConflictConceptPairs = function () {
-
-      console.debug('getting conflict concept pairs', $scope.conflictConceptsBase, $scope.conflictConceptsBranch);
       var conflictConceptPairs = [];
 
       // cycle over base conflict concepts
@@ -701,7 +672,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         // cycle over the branch conflict concepts for a match
         angular.forEach($scope.conflictConceptsBranch, function (conflictConceptBranch) {
           if (conflictConceptBranch.conceptId === conflictConceptBase.conceptId) {
-            console.debug('Found match for ', conflictConceptBase.conceptId);
             conflictConceptPair.targetConcept = conflictConceptBranch;
           }
         });
@@ -720,8 +690,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var conceptIds = data.conceptIds;
 
-      console.debug('adding concept to edit list for ids', conceptIds);
-      if (!conceptIds || !Array.isArray(conceptIds)) {
+       if (!conceptIds || !Array.isArray(conceptIds)) {
         return;
       }
 

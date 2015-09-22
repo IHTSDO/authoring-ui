@@ -6,21 +6,26 @@ angular.module('singleConceptAuthoringApp')
       transclude: false,
       replace: true,
       scope: {
-        // the concept being displayed
+        // the concept being displayed (required)
         concept: '=',
 
-        // the branch of the concept
+        // the branch of the concept (required)
         branch: '=',
 
         // the parent branch of the concept (not required)
-        parentBranch: '=',
+        parentBranch: '=?',
 
-        // whether to display as static list for conflicts
-        static: '@?'
+        // whether to display as static list for conflicts (not required)
+        static: '@?',
+
+        // parent function to invoke updating the ui state for this concept's
+        // list (not required)
+        uiStateUpdateFn: '&?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
       link: function (scope, element, attrs, linkCtrl) {
+
 
         // convert static flag from string to boolean
         if (scope.static === 'true') {
@@ -64,7 +69,6 @@ angular.module('singleConceptAuthoringApp')
         scope.toggleHideInactive = function () {
           scope.hideInactive = !scope.hideInactive;
         };
-
 
         ////////////////////////////////
         // Concept Elements
@@ -130,13 +134,21 @@ angular.module('singleConceptAuthoringApp')
                 // send notification of success with timeout
                 var saveMessage = 'Concept saved: ' + response.fsn;
                 notificationService.sendMessage(saveMessage, 5000, null);
+
+                // if ui state update function specified, call it (after a
+                // moment to let binding update)
+                console.debug('updating ui state', scope.concept);
+                $timeout(function () {
+
+                  if (scope.uiStateUpdateFn) {
+                    console.debug('ui state update fn specified');
+                    scope.uiStateUpdateFn();
+                  }
+                }, 3000);
               }
 
               // handle error
               else {
-
-                scope.concept.error = response.message;
-
                 // set the local error
                 scope.concept.error = response.message;
               }
@@ -239,6 +251,10 @@ angular.module('singleConceptAuthoringApp')
         // Reorder descriptions based on type and acceptability
         // Must preserve position of untyped/new descriptions
         function sortDescriptions() {
+
+          if (!scope.concept.descriptions) {
+            return;
+          }
 
           var newArray = [];
 
@@ -467,6 +483,11 @@ angular.module('singleConceptAuthoringApp')
         // get viewed descriptions
         scope.getDescriptions = function (checkForActive) {
           var descs = [];
+
+          if (!scope.concept.descriptions) {
+            return descs;
+          }
+
           for (var i = 0; i < scope.concept.descriptions.length; i++) {
 
             // check hideInactive
@@ -587,6 +608,10 @@ angular.module('singleConceptAuthoringApp')
         // Relationship Elements
         ////////////////////////////////
         scope.getIsARelationships = function (checkForActive) {
+
+          if (!scope.concept.relationships) {
+            return [];
+          }
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
 
@@ -614,6 +639,10 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.getAttributeRelationships = function (checkForActive) {
+
+          if (!scope.concept.relationships) {
+            return [];
+          }
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
             if (scope.concept.relationships[i].type.conceptId !== '116680003') {
