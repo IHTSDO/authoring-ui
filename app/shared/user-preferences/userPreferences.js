@@ -1,7 +1,7 @@
 'use strict';
-angular.module('singleConceptAuthoringApp.taskDetail', [])
-
-  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService', function userPreferencesCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService) {
+angular.module('singleConceptAuthoringApp')
+  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService',
+    function userPreferencesCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService) {
 
     // retrieve the user preferences
     $scope.userPreferences = accountService.getUserPreferences();
