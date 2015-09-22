@@ -192,8 +192,8 @@
 
           <!-- concept -->
           <div class="no-gutter col-sm-6 col-md-6 col-lg-6 grey darken-3" style="margin-right:0px;">
-            <div concept-edit concept="concept" id="height-{{concept.conceptId}}'"
-                 branch="targetBranch" static="false"
+            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
+                 branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
               >
             </div>
           </div>
@@ -241,7 +241,7 @@
 
           <!-- concept -->
           <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3" style="margin-right:0px;">
-            <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
+            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false"
               >
             </div>
@@ -284,7 +284,7 @@
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 " style="margin-right:0px;">
-            <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
+            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false"
               >
             </div>
@@ -327,7 +327,7 @@
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
-            <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
+            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false"
               >
             </div>
@@ -370,7 +370,7 @@
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
-            <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
+            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false"
               >
             </div>
@@ -412,7 +412,7 @@
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
-            <div concept-edit concept="concept" id="height-{{concept.conceptId}}"
+            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false"
               >
             </div>
@@ -439,14 +439,14 @@
 
           <!-- base concept -->
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 no-gutter">
-            <div ng-if="conflictConceptPair.sourceConcept" concept-edit concept="conflictConceptPair.sourceConcept"
+            <div ng-if="conflictConceptPair.sourceConcept" concept-edit concept="conflictConceptPairs[$index].sourceConcept"
                  branch="sourceBranch" static="true">
             </div>
           </div>
 
           <!-- branch concept -->
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 no-gutter">
-            <div ng-if="conflictConceptPair.targetConcept" concept-edit concept="conflictConceptPair.targetConcept"
+            <div ng-if="conflictConceptPair.targetConcept" concept-edit concept="conflictConceptPairs[$index].targetConcept"
                  branch="targetBranch" parent-branch="sourceBranch" static="false">
             </div>
           </div>
