@@ -6,24 +6,26 @@ angular.module('singleConceptAuthoringApp')
       transclude: false,
       replace: true,
       scope: {
-        // the concept being displayed
+        // the concept being displayed (required)
         concept: '=',
 
-        // the branch of the concept
+        // the branch of the concept (required)
         branch: '=',
 
         // the parent branch of the concept (not required)
-        parentBranch: '=',
+        parentBranch: '=?',
 
-        // whether to display as static list for conflicts
-        static: '@?'
+        // whether to display as static list for conflicts (not required)
+        static: '@?',
+
+        // parent function to invoke updating the ui state for this concept's
+        // list (not required)
+        uiStateUpdateFn: '&?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
       link: function (scope, element, attrs, linkCtrl) {
 
-
-        console.debug('conceptEdit', scope.branch, scope.parentBranch, scope.static);
 
         // convert static flag from string to boolean
         if (scope.static === 'true') {
@@ -31,7 +33,6 @@ angular.module('singleConceptAuthoringApp')
         } else {
           scope.isStatic = false;
         }
-        console.debug('after check', scope.isStatic, !scope.isStatic);
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
@@ -49,7 +50,8 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
-        // console.debug(scope.concept, scope.branch, scope.parentBranch, scope.static);
+        // console.debug(scope.concept, scope.branch, scope.parentBranch,
+        // scope.static);
 
         // concept history for undoing changes
         scope.conceptSessionHistory = [];
@@ -66,9 +68,6 @@ angular.module('singleConceptAuthoringApp')
 
         scope.toggleHideInactive = function () {
           scope.hideInactive = !scope.hideInactive;
-          $timeout(function () {
-            $rootScope.$broadcast('editModelDraw');
-          }, 300);
         };
 
         ////////////////////////////////
@@ -132,29 +131,26 @@ angular.module('singleConceptAuthoringApp')
                 // ensure descriptions are sorted
                 sortDescriptions();
 
-                // broadcast new concept to add to ui state edit-panel
-                // TODO Make the two-way binding do this
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
-
                 // send notification of success with timeout
                 var saveMessage = 'Concept saved: ' + response.fsn;
                 notificationService.sendMessage(saveMessage, 5000, null);
+
+                // if ui state update function specified, call it (after a
+                // moment to let binding update)
+                console.debug('updating ui state', scope.concept);
+                $timeout(function () {
+
+                  if (scope.uiStateUpdateFn) {
+                    console.debug('ui state update fn specified');
+                    scope.uiStateUpdateFn();
+                  }
+                }, 3000);
               }
 
               // handle error
               else {
-
-                // TODO Remove this once two-way binding is successfully
-                // implemented
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
-
-                scope.concept.error = response.message;
-
                 // set the local error
                 scope.concept.error = response.message;
-                $timeout(function () {
-                  $rootScope.$broadcast('editModelDraw');
-                }, 300);
               }
             });
           }
@@ -174,19 +170,9 @@ angular.module('singleConceptAuthoringApp')
 
                 // ensure descriptions are sorted
                 sortDescriptions();
-
-                // TODO Remove this once two-way binding is successfully
-                // implemented
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
               }
               else {
-                // TODO Remove this once two-way binding is successfully
-                // implemented
-                $rootScope.$broadcast('conceptEdit.saveSuccess', {response: response});
                 scope.concept.error = response.message;
-                $timeout(function () {
-                  $rootScope.$broadcast('editModelDraw');
-                }, 300);
               }
             });
 
@@ -266,6 +252,10 @@ angular.module('singleConceptAuthoringApp')
         // Must preserve position of untyped/new descriptions
         function sortDescriptions() {
 
+          if (!scope.concept.descriptions) {
+            return;
+          }
+
           var newArray = [];
 
           // get all typed descriptions
@@ -307,7 +297,8 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // sort on acceptability map existence
-            // console.debug('sort on acceptability map', a.acceptabilityMap, b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
+            // console.debug('sort on acceptability map', a.acceptabilityMap,
+            // b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }
@@ -492,6 +483,11 @@ angular.module('singleConceptAuthoringApp')
         // get viewed descriptions
         scope.getDescriptions = function (checkForActive) {
           var descs = [];
+
+          if (!scope.concept.descriptions) {
+            return descs;
+          }
+
           for (var i = 0; i < scope.concept.descriptions.length; i++) {
 
             // check hideInactive
@@ -512,16 +508,10 @@ angular.module('singleConceptAuthoringApp')
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
             scope.concept.descriptions.push(description);
-            $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-            }, 300);
           }
           // if in range, add after the specified afterIndex
           else {
             scope.concept.descriptions.splice(afterIndex + 1, 0, description);
-            $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-            }, 300);
           }
 
         };
@@ -531,9 +521,6 @@ angular.module('singleConceptAuthoringApp')
           if (!description.active) {
             description.active = true;
             autoSave();
-            $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-            }, 300);
           }
 
           // otherwise, open a select reason modal
@@ -542,9 +529,6 @@ angular.module('singleConceptAuthoringApp')
             selectInactivationReason(description, 'Description', inactivateDescriptionReasons, inactivateDescriptionHistoricalReasons).then(function (reason) {
               description.active = false;
               autoSave();
-              $timeout(function () {
-                $rootScope.$broadcast('editModelDraw');
-              }, 300);
             });
           }
         };
@@ -553,7 +537,7 @@ angular.module('singleConceptAuthoringApp')
         scope.getCaseSignificanceDisplayText = function (description) {
           switch (description.caseSignificance) {
             case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
-              return 'Ci';
+              return 'Cs';
             case 'CASE_INSENSITIVE':
               return 'ci';
             default:
@@ -624,6 +608,10 @@ angular.module('singleConceptAuthoringApp')
         // Relationship Elements
         ////////////////////////////////
         scope.getIsARelationships = function (checkForActive) {
+
+          if (!scope.concept.relationships) {
+            return [];
+          }
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
 
@@ -637,14 +625,24 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          rels.sort(function(a, b) {
-            return a.groupId > b.groupId;
+          rels.sort(function (a, b) {
+            if (a.groupId !== b.groupId) {
+              return a.groupId > b.groupId;
+            }
+            if (a.type.conceptId !== b.type.conceptId) {
+              return a.type.conceptId > b.type.conceptId;
+            }
+            return a.target.conceptId > b.target.conceptName;
           });
 
           return rels;
         };
 
         scope.getAttributeRelationships = function (checkForActive) {
+
+          if (!scope.concept.relationships) {
+            return [];
+          }
           var rels = [];
           for (var i = 0; i < scope.concept.relationships.length; i++) {
             if (scope.concept.relationships[i].type.conceptId !== '116680003') {
@@ -656,8 +654,14 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          rels.sort(function(a, b) {
-            return a.groupId > b.groupId;
+          rels.sort(function (a, b) {
+            if (a.groupId !== b.groupId) {
+              return a.groupId > b.groupId;
+            }
+            if (a.type.conceptId !== b.type.conceptId) {
+              return a.type.conceptId > b.type.conceptId;
+            }
+            return a.target.conceptId > b.target.conceptName;
           });
 
           return rels;
@@ -681,9 +685,6 @@ angular.module('singleConceptAuthoringApp')
           // if afterIndex not supplied or invalid, simply add
           if (afterIndex === null || afterIndex === undefined) {
             scope.concept.relationships.push(relationship);
-            $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-            }, 300);
           }
 
           // otherwise, add at the index specified
@@ -696,24 +697,23 @@ angular.module('singleConceptAuthoringApp')
 
             // add the relationship
             scope.concept.relationships.splice(relIndex + 1, 0, relationship);
-            $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-            }, 300);
           }
         };
 
-        scope.addAttributeRelationship = function (afterIndex) {
+        scope.addAttributeRelationship = function (afterIndex, relGroup) {
 
           //  console.debug('adding attribute relationship', afterIndex);
 
           var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
 
+          // set role group if specified
+          if (relGroup) {
+            relationship.groupId = relGroup;
+          }
+
           // if afterIndex not supplied or invalid, simply add
           if (afterIndex === null || afterIndex === undefined) {
             scope.concept.relationships.push(relationship);
-            $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-            }, 300);
           }
 
           // otherwise, add at the index specified
@@ -726,18 +726,12 @@ angular.module('singleConceptAuthoringApp')
 
             // add the relationship
             scope.concept.relationships.splice(relIndex + 1, 0, relationship);
-            $timeout(function () {
-              $rootScope.$broadcast('editModelDraw');
-            }, 300);
           }
         };
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
-          $timeout(function () {
-            $rootScope.$broadcast('editModelDraw');
-          }, 300);
           autoSave();
         };
 
@@ -1026,7 +1020,7 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
-       // NOTE: No inactivation reasons currently for relationships
+        // NOTE: No inactivation reasons currently for relationships
 
         ///////////////////////////////////////////////
         // Concept Auto-Saving Validation Checks
@@ -1090,10 +1084,6 @@ angular.module('singleConceptAuthoringApp')
             relationship.error = 'Relationship moduleId must be set';
             return false;
           }
-          if (!relationship.target || !relationship.target.conceptId) {
-            relationship.error = 'Relationship target conceptId must be set';
-            return false;
-          }
           if (relationship.active === null) {
             relationship.error = 'Relationship active flag must be set';
             return false;
@@ -1102,8 +1092,12 @@ angular.module('singleConceptAuthoringApp')
             relationship.error = 'Relationship characteristic type must be set';
             return false;
           }
-          if (!relationship.type) {
+          if (!relationship.type || !relationship.type.conceptId) {
             relationship.error = 'Relationship type must be set';
+            return false;
+          }
+          if (!relationship.target || !relationship.target.conceptId) {
+            relationship.error = 'Relationship target must be set';
             return false;
           }
 

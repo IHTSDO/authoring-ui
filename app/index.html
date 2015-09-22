@@ -48,7 +48,7 @@
 
 <main style="height:100%;">
 
-  <div class="main-container" style="height:100%;">
+  <div class="main-container" ng-class="globalStyleClasses" style="height:100%;">
     <div sca-header></div>
     <div ng-cloak ng-view bs-affix-target style="height:100%;"></div>
     <div ng-include="'layout/footer.html'"></div>
@@ -145,6 +145,7 @@
 <script src="shared/inactivate-component-modal/inactivateComponentModal.js"></script>
 <script src="shared/model-diagramming/drawModel.js"></script>
 <script src="shared/task/task.js"></script>
+<script src="shared/user-preferences/userPreferences.js"></script>
 
 
 <!-- SCA Utilities -->

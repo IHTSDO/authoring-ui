@@ -242,6 +242,7 @@
                ui-on-drop="dropRelationshipType(relationship, $data)">
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
                     class="form-control color_{{relationship.groupId}}"
+                    ng-change="updateRelationship(relationship)"
                     type="text"
                     placeholder="#">
           </textarea>
@@ -256,6 +257,7 @@
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
                     class="form-control color_{{relationship.groupId}}"
                     type="text"
+                    ng-change="updateRelationship(relationship)"
                     placeholder="#">
           </textarea>
           </div>
@@ -307,6 +309,7 @@
           <textarea style="" ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
                     ng-change="updateRelationship(relationship)"
                     class="msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
+                    ng-change="updateRelationship(relationship)"
                     ui-on-drop="dropNullOp()">
           </textarea>
           </div>
@@ -318,6 +321,7 @@
           <textarea style="" disabled ng-model="relationship.type.fsn"
                     class="msd-elastic color_{{relationship.groupId}}"
                     type="text"
+                    ng-change="updateRelationship(relationship)"
                     placeholder="#">
           </textarea>
           </div>
@@ -330,11 +334,12 @@
           <textarea style="" disabled ng-model="relationship.target.fsn"
                     class="msd-elastic form_control color_{{relationship.groupId}}"
                     type="text"
+                    ng-change="updateRelationship(relationship)"
                     placeholder="#">
           </textarea>
           </div>
           <div ng-if="!isStatic" class="pull-right button-width">
-            <button type="button" ng-click="addAttributeRelationship($index)"
+            <button type="button" ng-click="addAttributeRelationship($index, relationship.groupId)"
                     class="btn-default add-buttons grey  md md-add-circle"
                     title="Add New Attribute"></button>
           </div>

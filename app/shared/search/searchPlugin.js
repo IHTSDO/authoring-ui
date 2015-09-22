@@ -3,7 +3,6 @@ angular.module('singleConceptAuthoringApp.search', [])
 
   .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$compile', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, $compile, scaService) {
 
-    console.debug('entered searchCtrl');
     $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
     var options = {
       serverUrl: "/snowowl",
@@ -60,17 +59,6 @@ angular.module('singleConceptAuthoringApp.search', [])
     }
 
     });
-    $scope.$watch($scope.savedList, function(newValue, oldValue)
-    {
-        console.log('triggered');
-        for(var i = 0; i < oldValue.length; i++)
-        {
-            if ($scope.findItemInSavedList(oldValue[i].concept.conceptId) === false)
-            {
-                
-            }
-        }
-    });
 
     $scope.findItem = function (id) {
       if (!$scope.results) {
@@ -115,7 +103,6 @@ angular.module('singleConceptAuthoringApp.search', [])
     var componentsRegistry = [];
     var spa = new searchPanel(document.getElementById("bp-search_canvas"), options);
 
-    console.debug(spa);
     function searchPanel(divElement, options) {
       var thread = null;
       var panel = this;
@@ -252,17 +239,28 @@ angular.module('singleConceptAuthoringApp.search', [])
         searchHtml = searchHtml + "</div>";
         searchHtml = searchHtml + "</div>";
         $(divElement).html(searchHtml);
-        $('#' + panel.divElement.id + '-searchBox').keyup(function (e) {
-          //search only on pressing the enter key (key 13)
-          if(e.which == 13) {
+        //added to re-enable automatic triggering of the search after three chars have been entered. Swap with the below to 
+        //change back to triggering only on the pressing of return.
+        $('#' + panel.divElement.id + '-searchBox').keyup(function () {
             clearTimeout(thread);
             var $this = $(this);
             thread = setTimeout(function () {
-              panel.search($this.val(),0,100,false);
+                panel.search($this.val(),0,100,false);
             }, 500);
-          }
-
         });
+        //code to trigger search only if the last pressed key was enter
+//        $('#' + panel.divElement.id + '-searchBox').keyup(function (e) {
+//          //search only on pressing the enter key (key 13)
+//          if(e.which == 13) {
+//            clearTimeout(thread);
+//            var $this = $(this);
+//            thread = setTimeout(function () {
+//              panel.search($this.val(),0,100,false);
+//            }, 500);
+//          }
+//
+//        });
+        
         $("#" + panel.divElement.id + "-expandButton").hide();
         $("#" + panel.divElement.id + "-subscribersMarker").hide();
 

@@ -353,8 +353,7 @@ angular.module('singleConceptAuthoringApp')
       // add feedback to a review
       addFeedbackToTaskReview: function (projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
 
-        console.debug('adding feedback', projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup);
-        var feedbackContainer = {
+         var feedbackContainer = {
           subjectConceptIds: subjectConceptIds,
           messageHtml: messageHtml,
           feedbackRequested: requestFollowup
@@ -372,7 +371,6 @@ angular.module('singleConceptAuthoringApp')
       //POST
       // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
       markTaskFeedbackRead: function (projectKey, taskKey, conceptId) {
-        console.debug('marking concept feedback as read', projectKey, taskKey, conceptId);
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
           return response;
@@ -411,7 +409,6 @@ angular.module('singleConceptAuthoringApp')
       // add feedback to a review
       addFeedbackToProjectReview: function (projectKey, messageHtml, subjectConceptIds, requestFollowup) {
 
-        console.debug('adding feedback', projectKey,messageHtml, subjectConceptIds, requestFollowup);
         var feedbackContainer = {
           subjectConceptIds: subjectConceptIds,
           messageHtml: messageHtml,
@@ -430,7 +427,6 @@ angular.module('singleConceptAuthoringApp')
       //POST
       // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
       markProjectFeedbackRead: function (projectKey,conceptId) {
-        console.debug('marking concept feedback as read', projectKey, conceptId);
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
           return response;
@@ -462,8 +458,7 @@ angular.module('singleConceptAuthoringApp')
       // Generate the conflicts report between the Project and MAIN
       getConflictReportForProject: function (projectKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase-conflicts', {}).then(function (response) {
-          console.debug('Project ' + projectKey + ' conflict report obtained', response);
-          return response.data;
+           return response.data;
         }, function (error) {
           console.error('Error getting conflict report for project ' + projectKey);
           notificationService.sendError('Error getting conflict report for project', 10000);
@@ -490,7 +485,6 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendMessage('Task Promoted Successfully', 10000);
           return response.data;
         }, function (error) {
-          console.debug(error);
           notificationService.sendError('Error promoting task', 10000);
           return null;
         });
@@ -499,7 +493,6 @@ angular.module('singleConceptAuthoringApp')
       // Generate the conflicts report between the Task and the Project
       getConflictReportForTask: function (projectKey, taskKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase-conflicts', {}).then(function (response) {
-          console.debug('Project ' + projectKey + ', task ' + taskKey + ' conflict report obtained', response);
           return response.data;
         }, function (error) {
           console.error('Error retrieving conflict report for project ' + projectKey + ', task ' + taskKey);
@@ -553,7 +546,8 @@ angular.module('singleConceptAuthoringApp')
 
       // start polling
       startPolling: function (intervalInMs) {
-        console.debug('Starting notification polling with interval ' + intervalInMs + 'ms');
+
+        console.log('Starting application notification polling with interval ' + intervalInMs + 'ms');
 
         // instantiate poll (every 10s)
         var scaPoll = $interval(function () {
