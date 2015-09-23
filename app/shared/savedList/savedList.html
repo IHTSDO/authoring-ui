@@ -19,17 +19,17 @@
       <div class="col-lg-5 col-md-4 col-sm-12 col-xs-8" style="word-wrap: break-word">{{item.concept.fsn}}</div>
       <div class="col-lg-2 col-md-3 col-sm-12 col-xs-4">
         <div class="savedlist-buttons">
-          <button type="button" class="btn btn-default saved-list-buttons pull-left" title="Edit"
+          <button type="button" class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case" title="Edit"
                   ng-click="selectItem(item)"
-                  ng-disabled="item.editing"><i class="md md-add-circle"></i>
+                  ng-disabled="item.editing"><i class="md md-add-circle"></i><span>Load into edit panel </span>
           </button>
-          <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left"
-                  title="Clone"
-                  ng-click="clone(item)"><i class="md md-content-copy"></i>
+          <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                  
+                  ng-click="clone(item)" ><i class="md md-content-copy"></i> <span> Clone this concept </span>
           </button>
-          <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left"
+          <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
                   title="Remove"
-                  ng-click="removeItem(item)"><i class="md md-delete"></i>
+                  ng-click="removeItem(item)"><i class="md md-delete"></i><span> Remove from saved list </span>
           </button>
           </span>
         </div>
