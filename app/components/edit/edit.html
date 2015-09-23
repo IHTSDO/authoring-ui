@@ -78,74 +78,55 @@
   <div class="button-nav">
 
     <!-- Switch to Classify View -->
-    <button type="button" class="btn btn-default widget-toolbar green darken-1" title="Switch to Classify View"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="setView('classification')"><span
-      class="md md-notifications"></span></button>
+    <button type="button" class="btn btn-default widget-toolbar green darken-1 tooltips-right tooltips-light normal-case" 
+            ng-click="setView('classification')"><div class="md md-notifications"></div><span>Switch to Classify View</span></button>
 
     <!-- Switch to Feedback/Review View -- Task View Only -->
     <button ng-if="taskKey"
-            type="button" class="btn btn-default widget-toolbar review pink1 " title="Switch to Feedback View"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="viewReview()"><span
-      class="md md-email"></span></button>
+            type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case" title="Switch to Feedback View"
+            ng-click="viewReview()"><div class="md md-email"></div><span>View feedback</span></button>
 
     <!-- Switch to Validate View -->
-    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1 validate"
-            title="Switch to Validation View"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="setView('validation')"><span
-      class="md md-school"></span></button>
+    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1 validate tooltips-right tooltips-light normal-case"
+            ng-click="setView('validation')"><div class="md md-school"></div><span>View the most recent Validation Report</span></button>
 
     <!-- Switch to Conflict View -->
-    <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts"
+    <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts tooltips-right tooltips-light normal-case"
             ng-disabled="!canConflict || !conflictsContainer.conflicts"
             ng-class="[
             {'red' : conflictsContainer.conflicts.concepts.length > 0},
-            {'grey' : !conflictsContainer.conflicts.concepts || conflictsContainer.conflicts.concepts.length === 0}]"
+            {'grey lighten-3' : !conflictsContainer.conflicts.concepts || conflictsContainer.conflicts.concepts.length === 0}]"
             title="Switch to Resolve Conflicts View"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="setView('conflicts')"><span
-      class="md md-warning"></span></button>
+            ng-click="setView('conflicts')"><div class="md md-warning"></div><span>View Conflicts Report</span></button>
 
     <!-- Promote -- Project only -->
-    <button type="button" class="btn btn-default widget-toolbar blue lighten-1 conflicts"
+    <button type="button" class="btn btn-default widget-toolbar blue lighten-1 conflicts tooltips-right tooltips-light normal-case"
             ng-if="!taskKey"
             ng-disabled="conflictsContainer.conflicts.concepts.length !== 0"
             class="blue"
-            title="Promote Project"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="promoteProject()"><span
-      class="md md-call-merge"></span></button>
+           
+            ng-click="promoteProject()"><div class="md md-call-merge"></div><span>Promote this Project</span></button>
 
     <!-- Edit View: Default -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
-            class="btn btn-default widget-toolbar blue darken-4" title="Restore Default View"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="setView('edit-default')"> <span
-      class="md md-dvr"></span></button>
+            class="btn btn-default widget-toolbar blue darken-4 tooltips-right tooltips-light normal-case" 
+            ng-click="setView('edit-default')"> <div class="md md-dvr"></div><span>Restore the default editing view</span></button>
 
     <!-- Edit View:  No sidebar -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
-            class="btn btn-default widget-toolbar blue darken-3" title="Hide Sidebar"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="setView('edit-no-sidebar')"> <span
-      class="md md-web "></span></button>
+            class="btn btn-default widget-toolbar blue darken-3 tooltips-right tooltips-light normal-case" 
+            ng-click="setView('edit-no-sidebar')"> <div class="md md-web "></div><span>Hide the left sidebar</span></button>
 
     <!-- Edit View: No model -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
-            class="btn btn-default widget-toolbar blue darken-2" title="Hide Model"
-            style="width: 50px; height: 50px; margin: 0; padding: 0;"
-            ng-click="setView('edit-no-model')"> <span
-      class="md md-grid-off"></span></button>
+            class="btn btn-default widget-toolbar blue darken-2 tooltips-right tooltips-light normal-case" 
+            ng-click="setView('edit-no-model')"> <div class="md md-grid-off"></div><span>Hide all concept models</span></button>
 
     <!-- Rebase Task: Disabled IF canRebase flag is false OR conflicted concepts not resolved exist -->
     <button type="button"
-            class="btn btn-default widget-toolbar yellow darken-2" title="Rebase"
+            class="btn btn-default widget-toolbar yellow darken-2 tooltips-right tooltips-light normal-case" 
             ng-disabled="!canRebase || conflictsContainer.conflicts.conceptsToResolve.length > 0"
-            style="width: 50px; height: 50px; margin: 0; padding: 0; position:fixed; bottom:38px; left:0px"
-            ng-click="rebase()"> <span
-      class="md md-autorenew"></span></button>
+            ng-click="rebase()"> <div class="md md-autorenew"></div><span>Rebase this task</span></button>
   </div>
 
   <!-- Main page content -->
