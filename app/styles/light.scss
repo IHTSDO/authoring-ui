@@ -160,4 +160,58 @@ background-color:#474747;
     margin: 0px;
     line-height: 13px;
   }
-  
+  /* Edit View */
+ .sca-light .button-nav {
+ border-right:1px #e6e6e6 solid!important;
+    background-color: #fff;
+   
+}
+.sca-light .button-nav .blue.darken-2, .sca-light .button-nav .yellow.darken-2 {border-bottom:1px #e6e6e6 solid!important; border-top:1px #e6e6e6 solid!important; border-right:1px #e6e6e6 solid!important}
+
+.sca-light .button-nav .blue.darken-3, .sca-light .button-nav .blue.darken-4, .sca-light .button-nav .pink1, .sca-light .button-nav .deep-purple.lighten-1, .sca-light .button-nav .green.darken-1 {border-top:1px #e6e6e6 solid!important; border-right:1px #e6e6e6 solid!important}
+ .sca-light .blue.darken-2 {
+    color: #1976D2;
+    background-color: #fff;
+}
+
+ .sca-light .blue.darken-3 {
+    color: #1565C0;
+    background-color: #fff;
+}
+ .sca-light .blue.darken-4 {
+    color: #0D47A1;
+    background-color: #fff;
+}
+ .sca-light .yellow.darken-2 { color: #ffcc00;
+    background-color: #fff;}
+	.sca-light .deep-purple.lighten-1 {
+    color: #7e57c2;
+    background-color: #fff;
+}
+.sca-light .pink1 {
+    color: #e91e63;
+    background-color: #fff;
+}
+.sca-light .green.darken-1 {
+    color: #43A047;
+    background-color: #fff;
+}
+.sca-light .editpanel {background-color:#eee}
+.sca-light .green {
+    color: #4CAF50;
+    background-color: #fff;
+}
+.sca-light .deep-purple {
+    color: #673ab7;
+    background-color: #fff;
+}
+.sca-light .blue.darken-1 {
+    color: #009cd7;
+    background-color: #fff;
+}
+.sca-light .navbar-default .btn-link {
+    color: #737373;
+}
+.sca-light .navbar-default .btn-link:hover {
+    background-color: #eee;
+}
