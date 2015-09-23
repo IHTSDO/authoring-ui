@@ -1,0 +1,163 @@
+.dashboard-sidebar{
+background-color:#474747;
+}
+
+ .dashboard-sidebar button {width: 100%; padding:15px; font-size:15px; text-transform: none;  color:#fff;text-align:left}
+.sca-light .dashboard-sidebar {
+    background: #fff;
+	border-right: 1px rgba(0,0,0,.07)solid;
+	
+}
+
+.sca-light .dashboard-sidebar button {    margin: 0;
+    padding: 15px;
+    color: #737373;
+   width: 100%; 
+   background:#fff;
+  
+}
+.sca-light .dashboard-sidebar button a {    margin: 0;
+ 
+    color: #737373;
+  
+}
+.sca-light .dashboard-sidebar button:hover, .sca-light .dashboard-sidebar button:active, {    background: #e6e6e6!important;
+  
+}
+.sca-light .sidebar .brand-logo,
+.sca-light .sidebar ul a {
+    color: #797979
+}/* Scss Document */
+
+.sca-light .navbar-default {
+    background: #fff;
+    color: #737373;
+}
+.sca-light .navbar-default .navbar-nav li a { color: #00a6e5;}
+/*tooltips*/
+.sca-light span.green{background-color: #e6e6e6!important; color:#737373}
+.sca-light span.red{background-color: #e6e6e6!important;color:#737373}
+.sca-light a.tooltips-left span:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -8px;
+  width: 0; height: 0;
+  border-left: 8px solid #e6e6e6;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+.sca-light .tooltips-left span.green:after {
+
+  border-left: 8px solid #e6e6e6!important;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+.sca-light .tooltips-left span.red:after {
+
+  border-left: 8px solid #e6e6e6!important;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+.sca-light a:hover.tooltips-left span {
+  visibility: visible;
+  opacity: 1.0;
+  right: 100%;
+  top: 50%;
+  margin-top: -15px;
+  margin-right: 15px;
+  z-index: 999;
+}
+
+.sca-light a.tooltips-right {
+  position: relative;
+  display: inline;
+}
+.sca-light a.tooltips-right span {
+  position: absolute;
+  min-width:160px;
+  color: #737373;
+  background: #e6e6e6;
+  padding:10px;
+  font-size:12px;
+  line-height: 12px;
+  text-align: center;
+  visibility: hidden;
+  border-radius: 6px;
+}
+.sca-light a.tooltips-right span:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -8px;
+  width: 0; height: 0;
+  border-right: 8px solid #e6e6e6;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+.sca-light a:hover.tooltips-right span {
+  visibility: visible;
+  opacity: 1;
+  left: 100%;
+  top: 50%;
+  margin-top: -15px;
+  margin-left: 15px;
+  z-index: 999;
+}
+
+/*button colors */
+.sca-light .green.lighten-2{
+    background-color: #f0f0f0;
+    color: #81C784;
+	
+}
+.sca-light .pink.darken-1{background-color: #f0f0f0; color:#d81b60}
+.sca-light .pink.darken-1{background-color: #f0f0f0; color:#d81b60}
+.sca-light .red.lighten-2{background-color: #f0f0f0; color:#d01c3e}
+.sca-light .grey{background-color: #f0f0f0; color:#313131}
+
+ .Review.Completed.badge {
+    background-color: #fff;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+	color:#01A2E1
+}
+.sca-light .In.Progress.badge {
+    background-color: #fff;
+    font-size: 13px;
+	color:#db207e;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+}
+.sca-light .In.Review.badge {
+    background-color: #fff;
+	color:#32ae1a;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+}
+
+ .sca-light .Available.badge {
+    background-color: #fff;
+	color:#00b0ff;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+
+.sca-light  .Claimed.badge {
+    background-color: white;
+	color:gray;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+  
