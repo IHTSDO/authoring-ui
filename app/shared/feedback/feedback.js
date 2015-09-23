@@ -239,7 +239,7 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // update the ui state
-              updateReviewedListUiState;
+              updateReviewedListUiState();
             }
           });
 
