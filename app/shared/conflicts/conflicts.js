@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // update the ui state
-              updateResolvedListUiState;
+              updateResolvedListUiState();
             }
           });
 

@@ -35,6 +35,7 @@ angular
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomy',
     'singleConceptAuthoringApp.search',
+    'singleConceptAuthoringApp.searchPanel',
     'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail'

@@ -1,1 +1,51 @@
-<div id="bp-search_canvas" ng-controller="searchCtrl"></div>
+<div id="bp-search_canvas" ng-controller="searchPanelCtrl">
+
+  <div class="row no-padding">
+    <div class="col-xs-11 col-sm-11 col-md-11 no-padding">
+      <input type="search" class="form-control m-5" placeholder="Enter at last three characters" ng-model="searchStr"
+             ng-change="search(searchStr)" ng-model-options="{ debounce: 500 }"/>
+
+    </div>
+    <div class="pull-right no-padding">
+      <span ng-click="clearSearch()" class="md md-close"></span>
+    </div>
+
+
+
+  </div>
+
+
+  <div class="col-12" ng-if="searchStatus">{{searchStatus}}</div>
+
+  <table class="m-20 p-20" ng-if="results.length > 0">
+    <thead>
+    <th class="m-10 p-5" >Term</th>
+    <th class="m-10 p-5" >FSN</th>
+    <th class="m-10 p-5" ></th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="result in results">
+      <td class="m-10 p-5" style="word-break: break-all">{{result.term}}</td>
+      <td class="m-10 p-5" style="word-break: break-all">{{result.concept.fsn}}</td>
+      <td class="m-10 p-5">
+        <button
+          class='addButton btn btn-round btn-default widget-button grey lighten-5'
+          ng-click="addItemToSavedList(result)"
+          ng-disabled="findItemInSavedList(result.concept.conceptId)">
+          <span class='md md-playlist-add'></span>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+
+  <button
+    class="btn btn-default classify"
+    ng-click="loadMore()"
+    ng-disabled="!loadMoreEnabled">
+    <span ng-if="results.length > 0 && loadMoreEnabled" class="button-link">Load Next {{resultsSize}}</span>
+    <span ng-if="results.length > 0 && !loadMoreEnabled">End of Results</span>
+  </button>
+</div>
+
