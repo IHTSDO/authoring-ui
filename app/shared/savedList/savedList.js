@@ -30,7 +30,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
           $scope.savedList.items.splice(index, 1);
           $rootScope.$broadcast('savedListRemove', {conceptId: item.concept.conceptId});
 
-          scaService.saveUIState(
+          scaService.saveUiStateForTask(
             $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
           );
         }

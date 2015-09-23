@@ -24,8 +24,8 @@ angular.module('singleConceptAuthoringApp.search', [])
       taskKey: null
     };
     
-    $scope.saveUIState = function (projectKey, taskKey, panelId, uiState) {
-      scaService.saveUIState(
+    $scope.saveUiStateForTask = function (projectKey, taskKey, panelId, uiState) {
+      scaService.saveUiStateForTask(
         projectKey, taskKey, panelId, uiState)
         .then(function (uiState) {
         });
@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       if ($scope.findItemInSavedList(item) === false) {
         // push component on list and update ui state
         $scope.savedList.items.push(component);
-        $scope.saveUIState($routeParams.projectKey, $routeParams.taskKey, "saved-list", $scope.savedList);
+        $scope.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, "saved-list", $scope.savedList);
       }
     };
     

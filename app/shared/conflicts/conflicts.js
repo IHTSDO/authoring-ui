@@ -130,7 +130,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.conflictsContainer.conflicts.conceptsResolved, function (concept) {
               ids.push(concept.id);
             });
-            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved',
+            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved',
               {
                 timestamp: scope.conflictsTimestamp,
                 resolvedIds: ids
@@ -482,7 +482,7 @@ angular.module('singleConceptAuthoringApp')
                 console.debug('initializing for task');
 
                 // get ui state
-                scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
+                scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
 
                   console.debug('uistate', response);
                   var conceptIdsResolved = response.hasOwnProperty('resolvedIds') ? response.resolvedIds : [];
