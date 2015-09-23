@@ -228,7 +228,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // get edit panel list (task view only)
     if ($scope.taskKey) {
-      scaService.getUIState(
+      scaService.getUiStateForTask(
         $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
         .then(function (uiState) {
 
@@ -249,7 +249,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       );
 
       // get saved list
-      scaService.getUIState(
+      scaService.getUiStateForTask(
         $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
         .then(function (uiState) {
 
@@ -358,7 +358,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
         });
 
-        scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', conceptIds);
+        scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', conceptIds);
       }
     };
 
