@@ -2,7 +2,7 @@ a.tooltips-left, button.tooltips-left {
   position: relative;
   display: inline;
 }
- button.tooltips-left.normal-case span{text-transform:none!important}
+ button.tooltips-left.normal-case span, button.tooltips-right.normal-case span{text-transform:none!important}
 
 a.tooltips-left span, button.tooltips-left span {
   position: absolute;
@@ -55,7 +55,7 @@ a:hover.tooltips-left span, button:hover.tooltips-left span {
   z-index: 999;
 }
 
-a.tooltips-right, button.tooltips-right  {
+a.tooltips-right, button.tooltips-right{
   position: relative;
   display: inline;
 }
@@ -71,7 +71,7 @@ a.tooltips-right span, button.tooltips-right span {
   visibility: hidden;
   border-radius: 6px;
 }
-a.tooltips-right span:after {
+a.tooltips-right span:after, button.tooltips-right span:after {
   content: '';
   position: absolute;
   top: 50%;
@@ -81,34 +81,14 @@ a.tooltips-right span:after {
   border-right: 8px solid #474747;
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
-}
-button.tooltips-right span:after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  margin-top: -8px;
-  width: 0; height: 0;
-  border-right: 8px solid #474747;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-}
-a:hover.tooltips-right span {
-  visibility: visible;
-  opacity: 1;
-  left: 100%;
-  top: 50%;
-  margin-top: -15px;
-  margin-left: 15px;
-  z-index: 999;
-}
-button:hover.tooltips-right span {
-  visibility: visible;
-  opacity: 1;
-  left: 100%;
-  top: 50%;
-  margin-top: -15px;
-  margin-left: 15px;
-  z-index: 999;
 }
 
+a:hover.tooltips-right span, button:hover.tooltips-right span  {
+  visibility: visible;
+  opacity: 1;
+  left: 100%;
+  top: 50%;
+  margin-top: -15px;
+  margin-left: 15px;
+  z-index: 999;
+}

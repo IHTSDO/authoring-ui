@@ -1,188 +1,211 @@
-.dashboard-sidebar{
-background-color:#474747;
+.dashboard-sidebar {
+    background-color: #474747;
 }
-
- .dashboard-sidebar button {width: 100%; padding:15px; font-size:15px; text-transform: none;  color:#fff;text-align:left}
+.dashboard-sidebar button {
+    width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    text-transform: none;
+    color: #fff;
+    text-align: left
+}
 .sca-light .dashboard-sidebar {
     background: #fff;
-	border-right: 1px rgba(0,0,0,.07)solid;
-	
+    border-right: 1px rgba(0, 0, 0, .07)solid;
 }
-
-.sca-light .dashboard-sidebar button {    margin: 0;
+.sca-light .dashboard-sidebar button {
+    margin: 0;
     padding: 15px;
     color: #737373;
-   width: 100%; 
-   background:#fff;
-  
+    width: 100%;
+    background: #fff;
 }
-.sca-light .dashboard-sidebar button a {    margin: 0;
- 
+.sca-light .dashboard-sidebar button a {
+    margin: 0;
     color: #737373;
-  
 }
-.sca-light .dashboard-sidebar button:hover, .sca-light .dashboard-sidebar button:active, {    background: #e6e6e6!important;
-  
+.sca-light .dashboard-sidebar button:hover,
+.sca-light .dashboard-sidebar button:active,
+{
+    background: #e6e6e6!important;
 }
 
-.sca-light .sidebar .brand-logo,
-.sca-light .sidebar ul a {
-    color: #797979
-}/* Scss Document */
+/*navbar*/
 
 .sca-light .navbar-default {
     background: #fff;
     color: #737373;
 }
-.sca-light .navbar-default .navbar-nav li a { color: #00a6e5;}
+.sca-light .navbar-default .navbar-nav li a {
+    color: #00a6e5;
+}
 /*tooltips*/
 
-.sca-light .tooltips-left span.green{background-color: #e6e6e6!important; color:#737373}
-.sca-light .tooltips-left span.red{background-color: #e6e6e6!important;color:#737373}
-.sca-light a.tooltips-left span:after, .sca-light button.tooltips-left span:after  {
- 
-  border-left: 8px solid #e6e6e6;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+.sca-light .tooltips-left span.green {
+    background-color: #e6e6e6!important;
+    color: #737373
 }
-.sca-light a.tooltips-light.tooltips-left span:after, .sca-light button.tooltips-light.tooltips-left span:after  {
- 
-  border-left: 8px solid #ffffff;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+.sca-light .tooltips-left span.red {
+    background-color: #e6e6e6!important;
+    color: #737373
 }
-.sca-light a.tooltips-left span, .sca-light button.tooltips-left span {
+.sca-light a.tooltips-left span:after,
+.sca-light button.tooltips-left span:after {
+    border-left: 8px solid #e6e6e6;
+  
+}
+.sca-light a.tooltips-light.tooltips-left span:after,
+.sca-light button.tooltips-light.tooltips-left span:after {
+    border-left: 8px solid #ffffff;
 
-  color: #737373;
-  background: #e6e6e6;
+}
+.sca-light a.tooltips-left span,
+.sca-light button.tooltips-right span {
+    color: #737373;
+    background: #e6e6e6;
+}
 
-} 
-.sca-light a.tooltips-light.tooltips-left span, .sca-light button.tooltips-light.tooltips-left span {
-
-  color: #737373;
-  background: #ffffff;
-
-} 
+.sca-light a.tooltips-light.tooltips-left span,
+.sca-light button.tooltips-light.tooltips-right span {
+   color: #737373;
+    background: #ffffff;
+}
+.sca-light a.tooltips-light.tooltips-left span,
+.sca-light button.tooltips-light.tooltips-left span {
+    color: #737373;
+    background: #ffffff;
+}
 .sca-light .tooltips-left span.green:after {
-
-  border-left: 8px solid #e6e6e6!important;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+    border-left: 8px solid #e6e6e6!important;
 }
 .sca-light .tooltips-left span.red:after {
-
-  border-left: 8px solid #e6e6e6!important;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+    border-left: 8px solid #e6e6e6!important;
 }
-
-
 .sca-light a.tooltips-right span {
-
-  color: #737373;
-  background: #e6e6e6;
-
+    color: #737373;
+    background: #e6e6e6;
 }
 .sca-light a.tooltips-right span:after {
-
-  border-right: 8px solid #e6e6e6;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+    border-right: 8px solid #e6e6e6;
 }
-
-
+.sca-light a.tooltips-right.tooltips-light span:after,
+.sca-light button.tooltips-right.tooltips-light span:after,
+ {
+    border-right: 8px solid #ffffff;
+}
 /*button colors */
-.sca-light .green.lighten-2{
+
+.sca-light .green.lighten-2 {
     background-color: #f0f0f0;
     color: #81C784;
-	
 }
-.sca-light .pink.darken-1{background-color: #f0f0f0; color:#d81b60}
-.sca-light .pink.darken-1{background-color: #f0f0f0; color:#d81b60}
-.sca-light .red.lighten-2{background-color: #f0f0f0; color:#d01c3e}
-.sca-light .grey{background-color: #f0f0f0; color:#313131}
-
- .Review.Completed.badge {
+.sca-light .pink.darken-1 {
+    background-color: #f0f0f0;
+    color: #d81b60
+}
+.sca-light .pink.darken-1 {
+    background-color: #f0f0f0;
+    color: #d81b60
+}
+.sca-light .red.lighten-2 {
+    background-color: #f0f0f0;
+    color: #d01c3e
+}
+.sca-light .grey {
+    background-color: #f0f0f0;
+    color: #313131
+}
+.Review.Completed.badge {
     background-color: transparent;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
-	color:#01A2E1
+    color: #01A2E1
 }
 .sca-light .In.Progress.badge {
     background-color: transparent;
     font-size: 13px;
-	color:#db207e;
+    color: #db207e;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
 }
 .sca-light .In.Review.badge {
     background-color: transparent;
-	color:#32ae1a;
+    color: #32ae1a;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
 }
-
- .sca-light .Available.badge {
+.sca-light .Available.badge {
     background-color: transparent;
-	color:#00b0ff;
+    color: #00b0ff;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
-  }
-
-.sca-light  .Claimed.badge {
+}
+.sca-light .Claimed.badge {
     background-color: white;
-	color:gray;
+    color: gray;
     font-size: 13px;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
-  }
-  /* Edit View */
- .sca-light .button-nav {
- border-right:1px #e6e6e6 solid!important;
-    background-color: transparent;
-   
 }
-.sca-light .button-nav .blue.darken-2, .sca-light .button-nav .yellow.darken-2 {border-bottom:1px #e6e6e6 solid!important; border-top:1px #e6e6e6 solid!important; border-right:1px #e6e6e6 solid!important}
+/* Edit View */
 
-.sca-light .button-nav .blue.darken-3, .sca-light .button-nav .blue.darken-4, .sca-light .button-nav .pink1, .sca-light .button-nav .deep-purple.lighten-1, .sca-light .button-nav .green.darken-1 {border-top:1px #e6e6e6 solid!important; border-right:1px #e6e6e6 solid!important}
- .sca-light .blue.darken-2 {
+.sca-light .button-nav {
+    border-right: 1px #e6e6e6 solid!important;
+    background-color: transparent;
+}
+.sca-light .button-nav .blue.darken-2,
+.sca-light .button-nav .yellow.darken-2 {
+    border-bottom: 1px #e6e6e6 solid!important;
+    border-top: 1px #e6e6e6 solid!important;
+    border-right: 1px #e6e6e6 solid!important
+}
+.sca-light .button-nav .blue.darken-3,
+.sca-light .button-nav .blue.darken-4,
+.sca-light .button-nav .pink1,
+.sca-light .button-nav .deep-purple.lighten-1,
+.sca-light .button-nav .green.darken-1 {
+    border-top: 1px #e6e6e6 solid!important;
+    border-right: 1px #e6e6e6 solid!important
+}
+.sca-light .blue.darken-2 {
     color: #1976D2;
     background-color: transparent;
 }
-
 /*colors */
+
 .sca-light .blue {
     color: #00a6e5;
-     background-color: transparent;
+    background-color: transparent;
 }
 .sca-light .orange.darken-3 {
-   color: #ef6c00;
-     background-color: transparent;
+    color: #ef6c00;
+    background-color: transparent;
 }
 .sca-light .light-blue {
-   color: #03a9f4;
-     background-color: transparent;
+    color: #03a9f4;
+    background-color: transparent;
 }
-
- .sca-light .blue.darken-3 {
+.sca-light .blue.darken-3 {
     color: #1565C0;
     background-color: transparent;
 }
- .sca-light .blue.darken-4 {
+.sca-light .blue.darken-4 {
     color: #0D47A1;
     background-color: transparent;
 }
- .sca-light .yellow.darken-2 { color: #ffcc00;
-    background-color: transparent;}
-	.sca-light .deep-purple.lighten-1 {
+.sca-light .yellow.darken-2 {
+    color: #ffcc00;
+    background-color: transparent;
+}
+.sca-light .deep-purple.lighten-1 {
     color: #7e57c2;
     background-color: transparent;
 }
@@ -194,7 +217,9 @@ background-color:#474747;
     color: #43A047;
     background-color: transparent;
 }
-.sca-light .editpanel {background-color:#eee}
+.sca-light .editpanel {
+    background-color: #eee
+}
 .sca-light .green {
     color: #4CAF50;
     background-color: transparent;
@@ -218,25 +243,32 @@ background-color:#474747;
     background-color: #eee;
 }
 .sca-light .model-header h4 {
-  color:#3F3F3F
+    color: #3F3F3F
 }
 .sca-light .editing-form .concept-headers select {
-   color:#3F3F3F !important;
+    color: #3F3F3F !important;
 }
-
-.sca-light .task-details .green{background-color: transparent;}
-.sca-light .classification-btn .btn-default{border:1px #fff solid!important;}
+.sca-light .task-details .green {
+    background-color: transparent;
+}
+.sca-light .classification-btn .btn-default {
+    border: 1px transparent solid!important;
+}
 .sca-light .classification-btn .btn-default:hover {
     color: #737373;
     background-color: transparent;
-	border:1px #e6e6e6 solid!important;
+    border: 1px #e6e6e6 solid!important;
 }
 .sca-light .pink.darken-2 {
     color: #c2185b;
     background-color: transparent;
 }
-.sca-light .task-details button{background-color: #fff!important;}
-.sca-light .task-details button:hover{background-color: #f8f8f8!important;}
+.sca-light .task-details button {
+    background-color: #fff!important;
+}
+.sca-light .task-details button:hover {
+    background-color: #f8f8f8!important;
+}
 .sca-light .add-buttons {
     background-color: transparent !important;
     padding: 1px 3px !important;
@@ -245,8 +277,18 @@ background-color:#474747;
 .sca-light .toggle-buttons {
     background-color: transparent !important;
 }
+/*widget buttons */
 
+.sca-light .widget-toolbar:hover {
+    background-color: #fff!important;
+    color: #474747!important
+}
+.sca-light .classification-btn .btn-default:hover,
+.sca-light .classification-btn .btn-default span:hover {
+    color: #474747!important
+}
 /*edit buttons */
+
 .sca-light .small-buttons {
     padding: 0px 1% !important;
     font-size: 16px !important;
@@ -255,4 +297,7 @@ background-color:#474747;
     color: #474747 !important;
     background-color: transparent !important;
 }
-.sca-light .morebuttons{color:#00a6e5;background:transparent}
+.sca-light .morebuttons {
+    color: #00a6e5;
+    background: transparent
+}

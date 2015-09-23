@@ -1,8 +1,16 @@
 .dashboard-links a {
     color: #fff;
 }
+.navbar-default {
+   color:#EDEDED
+}
 /*model bg */
-
+button.widget-toolbar{width: 50px; height: 50px; margin: 0; padding: 0;}
+/*disabled buttons*/
+.classification-btn .btn-default[disabled] {background-color:#d8d8d8!important; border-color:#d8d8d8!important; color:#737373!important}
+.classification-btn .btn-default[disabled] span{color:#737373!important; background-color:#d8d8d8!important}
+.widget-toolbar .green.darken-1{}
+/* widget buttons*/
 .modelScrollBox {
     background-color: #fff;
 }
