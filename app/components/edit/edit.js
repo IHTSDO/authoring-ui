@@ -893,6 +893,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       });
     };
+    $scope.isLast = function(check) {
+        var cssClass = check ? 'last' : null;
+        return cssClass;
+    };
 
     //////////////////////////////////////////
     // Initialization
