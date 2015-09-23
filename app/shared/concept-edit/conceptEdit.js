@@ -91,6 +91,8 @@ angular.module('singleConceptAuthoringApp')
           {id: '', text: 'No reason'}
         ];
 
+        // TODO Put in the inactivateConcept Historical Associations
+
         scope.removeConcept = function (concept) {
           $rootScope.$broadcast('stopEditing', {concept: concept});
         };
