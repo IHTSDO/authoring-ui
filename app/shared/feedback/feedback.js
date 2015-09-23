@@ -215,7 +215,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {
               conceptIds.push(concept.id);
             });
-            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
+            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
           }
 
           // move item from ToReview to Reviewed
@@ -505,7 +505,7 @@ angular.module('singleConceptAuthoringApp')
 
               // get the ui state
               var reviewedListIds = null;
-              scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+              scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
                 reviewedListIds = response;
 
                 // ensure response is in form of array for indexOf checking later

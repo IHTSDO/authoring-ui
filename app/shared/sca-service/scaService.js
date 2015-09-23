@@ -129,7 +129,41 @@ angular.module('singleConceptAuthoringApp')
       /////////////////////////////////////
 
       // get the UI state for a project, task, and panel triplet
-      getUIState: function (projectKey, taskKey, panelId) {
+      getUiStateForUser: function (panelId) {
+        if (!panelId) {
+          console.error('Must specify panelId to get UI state');
+          return {};
+        }
+        return $http.get(apiEndpoint + 'ui-state/' + panelId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return {};
+          }
+        );
+      },
+
+      // save the UI state for a project, task, and panel triplet
+      saveUiStateForUser: function (panelId, uiState) {
+        if (!panelId) {
+          console.error('Must specify panelId to save UI state');
+          return {};
+        }
+        if (!uiState) {
+          console.error('Must supply ui state in order to save it');
+          return {};
+        }
+        return $http.post(apiEndpoint + 'ui-state/' + panelId, uiState).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
+
+      // get the UI state for a project, task, and panel triplet
+      getUiStateForTask: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
           console.error('Must specify projectKey to get UI state');
           return {};
@@ -152,7 +186,7 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // save the UI state for a project, task, and panel triplet
-      saveUIState: function (projectKey, taskKey, panelId, uiState) {
+      saveUiStateForTask: function (projectKey, taskKey, panelId, uiState) {
         if (!projectKey) {
           console.error('Must specify projectKey to save UI state');
           return {};
@@ -173,10 +207,16 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response;
           }, function (error) {
-            // TODO Handle errors
+            return null;
           }
         );
       },
+
+
+
+      /////////////////////////////////////
+      // ui-state calls (user only)
+      /////////////////////////////////////
 
       ///////////////////////////////////////////////
       // Classification
