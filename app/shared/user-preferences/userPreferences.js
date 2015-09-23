@@ -21,9 +21,9 @@ angular.module('singleConceptAuthoringApp')
 
         accountService.saveUserPreferences(userPreferences).then(function(response) {
           if (!response) {
-            notificationService.sendError('Unexpected error saving settings. Your changes may not persist across sessions');
+            notificationService.sendError('Unexpected error saving settings. Your changes may not persist across sessions', 0);
           } else {
-            notificationService.sendMessage('Application preferences updated');
+            notificationService.sendMessage('Application preferences updated', 5000);
           }
         });
         $modalInstance.close(userPreferences);
