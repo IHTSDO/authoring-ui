@@ -137,6 +137,10 @@ angular.module('singleConceptAuthoringApp')
                 var saveMessage = 'Concept saved: ' + response.fsn;
                 notificationService.sendMessage(saveMessage, 5000, null);
 
+                // broadcast event to any listeners (currently task detail, conflict/feedback resolved lists)
+                $rootScope.$broadcast('conceptEdit.conceptChange', { branch : scope.branch, conceptId : scope.concept.conceptId });
+
+
                 // if ui state update function specified, call it (after a
                 // moment to let binding update)
                 console.debug('updating ui state', scope.concept);
@@ -169,6 +173,9 @@ angular.module('singleConceptAuthoringApp')
               // console.debug('update response', response);
               if (response && response.conceptId) {
                 scope.concept = response;
+
+                // broadcast event to any listeners (currently task detail, conflict/feedback resolved lists)
+                $rootScope.$broadcast('conceptEdit.conceptChange', { branch : scope.branch, conceptId : scope.concept.conceptId });
 
                 // ensure descriptions are sorted
                 sortDescriptions();

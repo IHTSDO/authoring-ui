@@ -11,9 +11,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.classify = function () {
 
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
+        
         scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
-          if (!response.data || !response.data.id) {
+          if (!response || !response.data || !response.data.id) {
             notificationService.sendError('Error starting classification');
             return;
           }
@@ -88,6 +89,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // re-initialize if branch state changes
       $scope.$on('notification.branchState', function (event, data) {
         initialize();
+      });
+
+      // re-initialize if concept change occurs and task is new
+      $scope.$on('conceptEdit.conceptChange', function(event, data) {
+        if ($scope.task.status === 'NEW') {
+          initialize();
+        }
       });
 
       initialize();

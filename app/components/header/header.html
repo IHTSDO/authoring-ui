@@ -18,8 +18,25 @@
     </ul>
 
 
-    <div class="pull-left  col-md-4 pull-left" ng-include src="'layout/notification.html'"></div>
+    <div  ng-show="notification" class="pull-left  col-md-4 pull-left">
 
+      <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
+
+        <div class="alert saved" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" style="padding-right: 8px;">
+
+          <!-- NOTE: currently ::before 'x' icon is included on this button -->
+          <button type="button" class="pull-right" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" ng-click="clearNotification()">×</button>
+
+          <!-- if a link is provided, show it -->
+          <a ng-if="notification.url" ng-click="gotoNotificationLink()" class="pull-right">
+            <button type="button" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]"><span class="md md-link"></span></button>
+          </a>
+
+          <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}}</strong>
+          </p>
+        </div>
+      </div>
+    </div>
 
 
     <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services col-md-2" ng-if="!loggedIn">
