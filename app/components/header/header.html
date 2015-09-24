@@ -25,7 +25,7 @@
         <div class="alert saved" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" style="padding-right: 8px;">
 
           <!-- NOTE: currently ::before 'x' icon is included on this button -->
-          <button type="button" class="pull-right" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" ng-click="clearNotification()">×</button>
+          <button type="button" class="pull-right fa fa-close" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" ng-click="clearNotification()"></button>
 
           <!-- if a link is provided, show it -->
           <a ng-if="notification.url" ng-click="gotoNotificationLink()" class="pull-right">

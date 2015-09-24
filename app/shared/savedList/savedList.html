@@ -1,27 +1,27 @@
-<div style="padding: 0px 15px 0px 15px" ng-controller="savedListCtrl">
+<div ng-controller="savedListCtrl">
 
   <div ng-show="savedList.items.length > 0">
 
-    <div class="row no-gutter" style="margin-bottom: 15px;">
+    <div class="col-md-12 no-padding " style="margin-top: 10px;margin-bottom: 10px;">
 
       <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
-      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"><strong>Term</strong></div>
-      <div class="col-lg-5 col-md-4 col-sm-12 col-xs-8"><strong>FSN</strong></div>
-      <div class="col-lg-2 col-md-3 col-sm-12 col-xs-4"></div>
+      <div class="no-padding col-lg-4 col-md-4 col-sm-12 col-xs-12"><strong>Term</strong></div>
+      <div class="no-padding col-lg-5 col-md-3 col-sm-12 col-xs-8"><strong>FSN</strong></div>
+      <div class="no-padding col-lg-2 col-md-4 col-sm-12 col-xs-4"> </div>
     </div>
 
-    <div class="row no-gutter" ng-repeat="item in savedList.items" style="margin-bottom: 15px;">
-      <div class="col-lg-1 col-md-1 hidden-sm hidden-xs">{{$index +1}}</div>
-      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 saved-list-title no-padding" ui-draggable="true"
+    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items" style="margin-bottom: 15px;">
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>
+      <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12 saved-list-title no-padding " ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""
            style="word-wrap: break-word"> {{item.term}}
       </div>
-      <div class="col-lg-5 col-md-4 col-sm-12 col-xs-8" style="word-wrap: break-word">{{item.concept.fsn}}</div>
-      <div class="col-lg-2 col-md-3 col-sm-12 col-xs-4">
-        <div class="savedlist-buttons">
+      <div class="col-lg-5 col-md-3 col-sm-12 col-xs-8 no-padding" style="word-wrap: break-word">{{item.concept.fsn}}</div>
+      <div class="no-padding col-lg-2 col-md-4 col-sm-12 col-xs-4">
+        
           <button type="button" class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case" title="Edit"
                   ng-click="selectItem(item)"
-                  ng-disabled="item.editing"><i class="md md-add-circle"></i><span>Load into edit panel </span>
+                  ng-disabled="item.editing"><i class="md fa fa-pencil"></i><span>Load into edit panel </span>
           </button>
           <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
                   
@@ -29,9 +29,9 @@
           </button>
           <button type="button" class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
                   title="Remove"
-                  ng-click="removeItem(item)"><i class="md md-delete"></i><span> Remove from saved list </span>
+                  ng-click="removeItem(item)"><i class="md fa fa-remove"></i><span> Remove from saved list </span>
           </button>
-          </span>
+        
         </div>
       </div>
     </div>
