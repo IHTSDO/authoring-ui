@@ -5,6 +5,14 @@
 .editpanel {
     color: #737373 !important;
 }
+.addButton.btn-round {
+    width: 25px;
+    height: 25px;
+    font-size: 16px!important;
+    line-height: 25px;
+    position: relative;
+}
+.saved-list {font-size:12px;}
 .editpanel a {
     color: #666;
 }
@@ -63,7 +71,7 @@ aside.editpanel ul a {
     -o-box-sizing: border-box;
     box-sizing: border-box;
     color: #474747 !important;
-    margin-bottom: 1rem;
+    margin-bottom: 5px;
     padding: 2px 4px !important;
     background-color: #e0f7fa;
     border: none;

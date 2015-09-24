@@ -18,7 +18,9 @@ text-transform:lowercase;
   visibility: hidden;
   border-radius: 6px;
       font-family: 'Roboto', sans-serif;
+	  
 }
+
 .lowercase{text-transform:lowercase; float:left;}
 .tooltips-left span.green{background-color: #81C784!important;}
 .tooltips-left span.red{background-color: #E57373!important;}
@@ -89,6 +91,41 @@ a:hover.tooltips-right span, button:hover.tooltips-right span  {
   left: 100%;
   top: 50%;
   margin-top: -15px;
-  margin-left: 15px;
+  margin-left: 40px;
   z-index: 999;
 }
+/* bottom */
+a.tooltips-btm {
+  position: relative;
+  display: inline;
+}
+a.tooltips-btm span {
+  position: absolute;
+ font-size:12px;
+  color: #FFFFFF;
+  background: #000000;
+ 
+  text-align: center;
+  visibility: hidden;
+  border-radius: 6px;
+}
+a.tooltips-btm span:after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -8px;
+  width: 0; height: 0;
+  border-bottom: 8px solid #000000;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+}
+a:hover.tooltips-btm span {
+  visibility: visible;
+  opacity: 0.8;
+  top: 30px;
+  left: 70%;
+  margin-left: -56px;
+  z-index: 999;
+}/* Scss Document */
+
