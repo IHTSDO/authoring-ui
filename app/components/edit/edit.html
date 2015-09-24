@@ -76,7 +76,11 @@
 
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
-
+  <!-- Create new concept -->
+  <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+                    type="button" ng-click="createConcept()"
+                    class="btn-default btn-block create-new-concept tooltips-right tooltips-light normal-case"
+                    title="Active"><div class="md fa fa-edit"></div><span>Create New Concept</span></button>
     <!-- Switch to Classify View -->
     <button type="button" class="btn btn-default widget-toolbar green darken-1 tooltips-right tooltips-light normal-case" 
             ng-click="setView('classification')"><div class="md md-notifications"></div><span>Switch to Classify View</span></button>
@@ -142,16 +146,14 @@
 
       <!-- models & concepts-->
       <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-
-        <!-- headers -->
-        <div class="row no-gutter">
-
-          <!-- model header (blank) -->
+  <!-- concept header (old create new concept button) 
+       
+        
           <div class="no-gutter col-sm-6 col-md-6 col-lg-6 no-padding" style="height: 100%">
             &nbsp;
           </div>
 
-          <!-- concept header (create new concept button) -->
+        
           <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="margin-right:0px;">
             <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
                     type="button" ng-click="createConcept()"

@@ -15,7 +15,7 @@
 
 
   <div class="col-12" ng-if="searchStatus">{{searchStatus}}</div>
-
+<div class="col-12" >
     <table ng-if="results.length > 0">
       <thead>
       <th class="col-md-5" >Term</th>
@@ -49,5 +49,6 @@
     <span ng-if="results.length > 0 && loadMoreEnabled === true" class="button-link">Load Next {{resultsSize}}</span>
     <span ng-if="results.length > 0 && loadMoreEnabled === false">End of Results</span>
   </button>
+</div>
 </div>
 

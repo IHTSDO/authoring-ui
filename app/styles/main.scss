@@ -9,6 +9,7 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "ihtsdo.scss";
 @import "fonts.scss";
 @import "edit.scss";
+@import "compact.scss";
 @import "editpanel.scss";
 @import "light.scss";
 @import "dark.scss";
@@ -146,7 +147,7 @@ body {
 /* Added by PWG to work around fixed sidebar */
 .sca-container {
   position:absolute;
-  top:66px;
+  top:64px;
   bottom:0px;
   width:100%;
   height:100%;
@@ -156,7 +157,7 @@ body {
   position: relative;
   height:100%;
   overflow-y:scroll;
-  margin-bottom:38px;
+  margin-bottom:32px;
 }
 
 .navbar-fixed-bottom {
