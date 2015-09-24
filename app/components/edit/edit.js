@@ -234,6 +234,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         snowowlService.cleanConcept(response);
 
         $scope.concepts.push(response);
+        $scope.updateEditListUiState();
 
       }, function (error) {
 
@@ -289,7 +290,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 // helper function to save current edit list (task view only)
     $scope.updateEditListUiState = function () {
       if ($scope.taskKey) {
-
+          console.log('Updating edit list');
         var conceptIds = [];
         angular.forEach($scope.concepts, function (concept) {
           if (concept.conceptId) {
