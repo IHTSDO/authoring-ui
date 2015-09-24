@@ -101,7 +101,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
 
       }, function (error) {
-        $scope.searchStatus = 'ERROR: ' + error;
+        console.debug('error', error);
+        $scope.searchStatus = 'Unexpected error performing search';
+        if (error.statusText) {
+          $scope.searchStatus += ': ' + error.statusText;
+        }
+        if (error.data && error.data.message) {
+          $scope.searchStatus += ': ' + error.data.message;
+        }
       });
 
     }
@@ -174,10 +181,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     /**
      * Clears results, resets query and page
      */
-    $scope.clear = function () {
+    $scope.clearSearch = function () {
       $scope.searchStr = '';
       $scope.resultsPage = 1;
       $scope.results = [];
+      $scope.searchStatus = null;
     };
 
     /**

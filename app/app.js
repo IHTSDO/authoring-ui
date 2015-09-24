@@ -26,6 +26,7 @@ angular
     'ang-drag-drop',
     'monospaced.elastic',
     'textAngular',
+    'ui-tree',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
