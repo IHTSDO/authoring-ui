@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               fsn: response.data.fsn,
               moduleId: response.data.moduleId
             }
-          }
+          };
 
           console.debug($scope.results, item);
 
