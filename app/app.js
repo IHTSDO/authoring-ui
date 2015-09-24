@@ -26,7 +26,7 @@ angular
     'ang-drag-drop',
     'monospaced.elastic',
     'textAngular',
-    'ui-tree',
+    'ui.tree',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
@@ -34,8 +34,7 @@ angular
     'singleConceptAuthoringApp.projects',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
-    'singleConceptAuthoringApp.taxonomy',
-    'singleConceptAuthoringApp.search',
+    'singleConceptAuthoringApp.taxonomyPanel',
     'singleConceptAuthoringApp.searchPanel',
     'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
