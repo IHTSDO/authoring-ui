@@ -322,11 +322,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.dropConcept = function (conceptIdNamePair) {
 
-      // console.debug('Dropping concept', conceptIdNamePair);
+      console.debug('Dropping concept', conceptIdNamePair);
 
       var conceptId = conceptIdNamePair.id;
+      var name= conceptIdNamePair.name;
 
-      notificationService.sendMessage('Adding concept ' + conceptId + ' to edit panel', 10000, null);
+      notificationService.sendMessage('Adding concept ' + (name? name: conceptId) + ' to edit panel', 10000, null);
 
       for (var i = 0; i < $scope.concepts.length; i++) {
         if ($scope.concepts[i].conceptId === conceptId) {
