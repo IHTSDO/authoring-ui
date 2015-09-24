@@ -1,0 +1,11 @@
+/* Scss Document */
+
+ @media (max-width: 1440px){
+        /* styles for browsers larger than 1440px; */
+		nav > li > a {
+    position: relative;
+    display: block;
+    font-size: 10px!important;
+    padding: 10px 5px;
+		}
+ }
