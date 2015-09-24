@@ -1,7 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$location', 'scaService', 'snowowlService', '$routeParams', function savedListCtrl($scope, $rootScope, $location, scaService, snowowlService, $routeParams) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$q', '$http', 'notificationService',
+    function searchPanelCtrl($scope, $rootScope, $location, $routeParams, $q, $http, notificationService) {
 
     // controller $scope.options
     $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -12,6 +13,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     $scope.searchStr = '';
 
     // $scope.options from searchPlugin.js ( not all used)
+    // TODO Make these enabled
     $scope.options = {
       serverUrl: '/snowowl',
       edition: 'snomed-ct/v2/browser',
@@ -32,7 +34,84 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       taskKey: null
     };
 
-    $scope.search = function () {
+    // TODO Move this $http call into snowowl service later
+    function searchHelper(url, appendResults) {
+      
+      console.debug('searchHelper', url, appendResults);
+
+      // initialize or clear the results list
+      if (!$scope.results || !appendResults) {
+        $scope.results = [];
+      }
+
+      // check url specified
+      if (!url) {
+        return;
+      }
+
+      // make the call
+      // TODO Convert to snowowl service call at some point
+      $http.get(url).then(function (response) {
+
+        if (!response) {
+          notificationService.sendError('Unexpected error searching for concepts', 10000);
+        }
+
+        
+        // either a list or single object, switch based on 'data'
+        if (response.data.length) {
+          console.debug('appending list');
+          $scope.results = $scope.results.concat(response.data);
+
+          // check if more results may be available
+          $scope.loadMoreEnabled = (response.data.length === $scope.resultsSize);
+
+        } else {
+          console.debug('appending single item');
+
+
+          // convert full concept into browser list item form
+          var item = {
+            active: response.data.active,
+            term: response.data.preferredSynonym,
+            concept: {
+              active: response.data.active,
+              conceptId: response.data.conceptId,
+              definitionStatus: response.data.definitionStatus,
+              fsn: response.data.fsn,
+              moduleId: response.data.moduleId
+            }
+          }
+
+          console.debug($scope.results, item);
+
+          $scope.results = $scope.results.concat( item );
+
+          // single result does not have load more question (not true or false)
+          $scope.loadMoreEnabled = null;
+        }
+
+        console.debug('results', response.data, $scope.results);
+
+        // user cue for status
+        if ($scope.results.length === 0) {
+          $scope.searchStatus = 'No results';
+        } else {
+          $scope.searchStatus = null;
+        }
+
+      }, function (error) {
+        $scope.searchStatus = 'ERROR: ' + error;
+      });
+
+    }
+
+    /**
+     * Executes a search based on current scope variable searchStr
+     * @param appendResults if true, append to existing results; if false, replace
+     *   results
+     */
+    $scope.search = function (appendResults) {
 
       if (!$scope.searchStr || $scope.searchStr.length < 3) {
         return;
@@ -40,57 +119,71 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.searchStatus = 'Searching...';
 
-      // partial matching search
-      if ($scope.options.searchMode === 'partialMatching') {
-        $scope.searchStr = $scope.searchStr.toLowerCase();
-      }
-      var startTime = Date.now();
-      var searchUrl = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions?query=' + $scope.searchStr + '&limit=' + $scope.resultsSize + '&searchMode=' + $scope.options.searchMode + '&lang=' + $scope.options.searchLang + '&statusFilter=' + $scope.options.statusSearchFilter + '&skipTo=' + ($scope.resultsPage - 1) * $scope.resultsSize + '&returnLimit=' + $scope.resultsSize;
-      if ($scope.options.semTagFilter !== 'none') {
-        searchUrl = searchUrl + '&semanticFilter=' + $scope.options.semTagFilter;
-      }
-      if ($scope.options.langFilter !== 'none') {
-        searchUrl = searchUrl + '&langFilter=' + $scope.options.langFilter;
-      }
-      var xhr = $.getJSON(searchUrl, function (results) {
+      // trim the swearch string
+      $scope.searchStr = $scope.searchStr.trim();
 
-        // if results not an array, re-initialize
-        if (!$scope.results) {
-          $scope.results = [];
-        }
-        $scope.results = $scope.results.concat(results);
+      // the url to be passed to the helper
+      var url = null;
 
-        // user cue for status
-        if ($scope.results.length === 0) {
-          $scope.searchStatus = 'No results'
-        } else {
-          $scope.searchStatus = null;
+      /* Construct the url based on search query */
+
+      // if a numeric value
+      if (!isNaN(parseFloat($scope.searchStr)) && isFinite($scope.searchStr)) {
+
+        // if concept id
+        if ($scope.searchStr.substr(-2, 1) === '0') {
+          url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/concepts/' + $scope.searchStr;
         }
 
-        // check if more results may be available
-        $scope.loadMoreEnabled = (results.length === $scope.resultsSize);
-      });
+        // if description id
+        else if ($scope.searchStr.substr(-2, 1) === '1') {
+          url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions/' + $scope.searchStr;
+        }
+
+        // cannot be determined
+        else {
+          $scope.searchStatus = 'Numeric value must correspond to a concept or description id';
+          return;
+        }
+      }
+
+      // otherwise, a text value
+      else {
+
+        // partial matching search
+        if ($scope.options.searchMode === 'partialMatching') {
+          $scope.searchStr = $scope.searchStr.toLowerCase();
+        }
+
+        url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions?query=' + $scope.searchStr + '&limit=' + $scope.resultsSize + '&searchMode=' + $scope.options.searchMode + '&lang=' + $scope.options.searchLang + '&statusFilter=' + $scope.options.statusSearchFilter + '&skipTo=' + ($scope.resultsPage - 1) * $scope.resultsSize;
+      }
+
+      // Execute the search and set results via helper
+      searchHelper(url, appendResults);
 
     };
 
-    $scope.loadMore = function() {
+    /**
+     * Function to load another page of results
+     */
+    $scope.loadMore = function () {
       $scope.resultsPage++;
-      $scope.search();
+      $scope.search(true); // search in append mode
     };
 
-    $scope.clear = function() {
+    /**
+     * Clears results, resets query and page
+     */
+    $scope.clear = function () {
       $scope.searchStr = '';
       $scope.resultsPage = 1;
       $scope.results = [];
     };
 
-    $scope.saveUiStateForTask = function (projectKey, taskKey, panelId, uiState) {
-      scaService.saveUiStateForTask(
-        projectKey, taskKey, panelId, uiState)
-        .then(function (uiState) {
-        });
-    };
-
+    /**
+     * Add item to save list
+     * @param item The full item in browser format: {term, active, concept: {}}
+     */
     $scope.addItemToSavedList = function (item) {
 
       if (!item) {
@@ -105,6 +198,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       }
     };
 
+    /**
+     * Determine if an item is in the saved list
+     * @param id the SCTID of the concept checked
+     * @returns {boolean} true: exists, false: does not exist
+     */
     $scope.findItemInSavedList = function (id) {
       if (!$scope.savedList || !$scope.savedList.items) {
         return false;
@@ -117,12 +215,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       return false;
     };
 
-// drag and drop object
-// NOTE: Search plugin returns weird names it seems
-// so leave retrieval to the drop target function
-    $scope.getConceptPropertiesObj = function (conceptId) {
-      console.debug('Getting concept properties obj', conceptId);
-      return {id: conceptId, name: null};
+    /**
+     * Constructs drag/drop concept object for a concept
+     * @param concept the concept in browser format: {term, active, concept: {}}
+     * @returns {{id: conceptId, name: fsn}}
+     */
+    $scope.getConceptPropertiesObj = function (concept) {
+      console.debug('Getting concept properties obj', concept);
+      return {id: concept.conceptId, name: concept.fsn};
     };
 
   }]);
