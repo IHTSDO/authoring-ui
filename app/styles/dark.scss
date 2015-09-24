@@ -1,0 +1,52 @@
+.sca-dark{background-color: #444444;}
+
+.sca-dark .card {
+    position: relative;
+    background-color: #333333;
+    box-sizing: border-box;
+    border-radius: 2px;
+    margin-bottom: 30px;
+	color:#fff;
+	border-color:#4F4F4F
+}
+/*tables */
+.sca-dark .table-full thead {
+    background: #4b4a4a;
+	color:#eee;
+}
+.sca-dark .white {
+    color: #FFF !important;
+    background: #666!important;
+}
+.sca-dark table {
+    border-color:#6e6e6e
+}
+.sca-dark .navbar-default{background: #212121;}
+.sca-dark .dashboard-sidebar button {
+    width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    text-transform: none;
+    color: #fff;
+    text-align: left
+}
+.sca-dark .dashboard-sidebar {
+    background: #282828;
+    border-right: 1px rgba(0, 0, 0, .07)solid;
+}
+.sca-dark .dashboard-sidebar button {
+    margin: 0;
+    padding: 15px;
+    color: #eeeeee;
+    width: 100%;
+    background: #282828;
+}
+.sca-dark .dashboard-sidebar button a {
+    margin: 0;
+    color: #737373;
+}
+.sca-dark .dashboard-sidebar button:hover,
+.sca-dark .dashboard-sidebar button:active,
+{
+    background: #080808!important;
+}
