@@ -610,6 +610,14 @@ angular.module('singleConceptAuthoringApp')
 
           // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
+          //If the desciption is an FSN then set to PREFERRED and continue.Simplest place in execution to catch the creation of new FSN's and update acceptability
+          if(description.type === 'FSN')
+          {
+            if(acceptability !== 'PREFERRED')
+            {
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
+            }  
+          }
           return scope.acceptabilityAbbrs[acceptability];
         };
 
