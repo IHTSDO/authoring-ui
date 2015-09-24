@@ -4,10 +4,10 @@
   }
 </style>
 
-<div class="m-10" ng-controller="taxonomyPanelCtrl">
+<div class=" col-md-12 no-padding "  ng-controller="taxonomyPanelCtrl">
 
 
-  <!-- Nested node template -->
+<!-- Nested node template -->
   <script type="text/ng-template" id="nodes_renderer.html">
     <div>
 
@@ -31,7 +31,7 @@
   </script>
 
   <!-- instantiate the tree -->
-  <div ui-tree>
+  <div ui-tree class="m-20">
     <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
       <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
           ui-tree-node collapsed="false" data-nodrag ng-include="'nodes_renderer.html'"></li>
