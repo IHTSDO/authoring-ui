@@ -45,7 +45,6 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
        */
       $scope.getAndSetChildren = function (node) {
 
-        console.debug('taxonomy: getting children for ', node);
 
         var conceptId = node.conceptId;
 
@@ -56,17 +55,8 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
             return;
           }
 
-          var children = response.data;
-       // sort by fsn
-          children.sort(function (a, b) {
-            console.debug('comparing', a.fsn, b.fsn);
-            return (a.fsn.toLowerCase() > b.fsn.toLowerCase());
-          });
+          node.children = response.data;
 
-          // add t  o node
-          node.children = children;
-
-          console.debug('taxonomy: expanded node', node);
 
         }, function () {
           console.error('Could not retrieve children for node', node);
@@ -75,7 +65,6 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
 
       $scope.toggleNode = function (node, nodeScope) {
 
-        console.debug('toggleNode', node, nodeScope);
 
         // check that node has children
         if (!node.hasChild) {
@@ -111,7 +100,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
           fsn: 'SNOMED CT Concept',
           definitionStatus: 'PRIMITIVE',
           hasChild: true,
-          moduleId: "900000000000207008"
+          moduleId: '900000000000207008'
         };
 
         // get the children

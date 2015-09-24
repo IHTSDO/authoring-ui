@@ -119,7 +119,6 @@ angular.module('singleConceptAuthoringApp')
     // wrapper functions for convenience
     function getUserPreferences() {
       return scaService.getUiStateForUser('user-preferences').then(function(response) {
-        console.debug(response);
         return response;
       });
     }

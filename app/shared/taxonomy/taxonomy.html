@@ -1,11 +1,6 @@
 <style>
-  .taxonomy-node {
-    font-size
-  }
-
   .taxonomy-chevron {
     color: #428bca;
-    background-color: white;
   }
 </style>
 
@@ -28,7 +23,7 @@
         {{node.fsn}}
       </span>
     </div>
-    <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled>
+    <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled  ng-class="{hidden: collapsed}">
       <li ng-repeat="node in node.children | orderBy: 'fsn'"
           ui-tree-node collapsed="true" data-nodrag ng-include="'nodes_renderer.html'">
       </li>

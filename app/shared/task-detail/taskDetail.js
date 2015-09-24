@@ -4,8 +4,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
   .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'scaService', 'snowowlService', 'notificationService',
     function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, scaService, snowowlService, notificationService) {
 
-      console.debug('in task detail ctrl');
-
       $scope.task = null;
 
       $scope.classify = function () {

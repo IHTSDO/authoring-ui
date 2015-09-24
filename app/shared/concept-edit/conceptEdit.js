@@ -143,11 +143,11 @@ angular.module('singleConceptAuthoringApp')
 
                 // if ui state update function specified, call it (after a
                 // moment to let binding update)
-                console.debug('updating ui state', scope.concept);
+                //console.debug('updating ui state', scope.concept);
                 $timeout(function () {
 
                   if (scope.uiStateUpdateFn) {
-                    console.debug('ui state update fn specified');
+                    // console.debug('ui state update fn specified');
                     scope.uiStateUpdateFn();
                   }
                 }, 3000);
@@ -1153,7 +1153,7 @@ angular.module('singleConceptAuthoringApp')
           }
           var activeFsn = [];
           for (var i = 0; i < concept.descriptions.length; i++) {
-            console.log(concept.descriptions[i]);
+            // console.log(concept.descriptions[i]);
             if (concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true) {
               activeFsn.push(concept.descriptions[i]);
             }

@@ -52,8 +52,6 @@ angular.module('singleConceptAuthoringApp')
         // {message: ..., url: ..., durationInMs: ...}
         scope.$on('notification', function (event, notification) {
 
-          console.debug('Received notification', notification.url, $location.url());
-
           if (notification) {
 
             // cancel any existing timeout

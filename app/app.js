@@ -93,13 +93,9 @@ angular
         // get the user preferences (once logged in status confirmed)
         accountService.getUserPreferences().then(function (preferences) {
 
-          console.debug('retrieved preferences', preferences);
-
           // apply the user preferences
           // NOTE: Missing values or not logged in leads to defaults
           accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
-
-            console.debug('applied preferences', appliedPreferences, preferences);
 
             // check for modification by application routine
             if (appliedPreferences !== preferences) {
@@ -109,7 +105,6 @@ angular
         });
 
       }, function (error) {
-        console.debug('could not retrieve preferences, applying defaults');
         // apply default preferences
         accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
 
