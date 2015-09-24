@@ -22,68 +22,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  .directive('infiniteScroll', [
-    '$rootScope', '$window', '$timeout', function ($rootScope, $window, $timeout) {
-      return {
-        link: function (scope, elem, attrs) {
-          var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
-          $window = angular.element($window);
-          elem.css('overflow-y', 'scroll');
-          elem.css('overflow-x', 'hidden');
-          elem.css('height', 'inherit');
-          scrollDistance = 0;
-          if (attrs.infiniteScrollDistance !== null) {
-            scope.$watch(attrs.infiniteScrollDistance, function (value) {
-                var result;
-                result = scrollDistance = parseInt(value, 10);
-              return result;
-            });
-          }
-          scrollEnabled = true;
-          checkWhenEnabled = false;
-          if (attrs.infiniteScrollDisabled !== null) {
-            scope.$watch(attrs.infiniteScrollDisabled, function (value) {
-              scrollEnabled = !value;
-              if (scrollEnabled && checkWhenEnabled) {
-                checkWhenEnabled = false;
-                return handler();
-              }
-            });
-          }
-          $rootScope.$on('refreshStart', function (event, parameters) {
-            elem.animate({scrollTop: '0'});
-          });
-          handler = function () {
-            var shouldScroll;
-            shouldScroll = ($(document).height() - $(window).height()) - $(window).scrollTop() < 400;
-            if (shouldScroll && scrollEnabled) {
-              if ($rootScope.$$phase) {
-                return scope.$eval(attrs.infiniteScroll);
-              } else {
-                return scope.$apply(attrs.infiniteScroll);
-              }
-            } else if (shouldScroll) {
-                checkWhenEnabled = true;
-              return checkWhenEnabled;
-            }
-          };
-          $(window).on('scroll', handler);
-          scope.$on('$destroy', function () {
-            return $window.off('scroll', handler);
-          });
-          return $timeout(function () {
-            if (attrs.infiniteScrollImmediateCheck) {
-              if (scope.$eval(attrs.infiniteScrollImmediateCheck)) {
-                return handler();
-              }
-            } else {
-              return handler();
-            }
-          }, 0);
-        }
-      };
-    }
-  ])
   //Directive to trigger a function on the rendering of an entire ng-repeat,
   // will make global once infinite scroll functionality is complete
   .directive('repeatComplete', function () {
