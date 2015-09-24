@@ -57,10 +57,9 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
           }
 
           var children = response.data;
-
-          console.debug('taxonomy: children retrieved', children);
-          // sort by fsn
+       // sort by fsn
           children.sort(function (a, b) {
+            console.debug('comparing', a.fsn, b.fsn);
             return (a.fsn.toLowerCase() > b.fsn.toLowerCase());
           });
 

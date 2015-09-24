@@ -2,6 +2,7 @@
   .taxonomy-node {
     font-size
   }
+
   .taxonomy-chevron {
     color: #428bca;
     background-color: white;
@@ -13,10 +14,11 @@
 
   <!-- Nested node template -->
   <script type="text/ng-template" id="nodes_renderer.html">
-    <div ng-init="collapsed = true">
+    <div>
 
       <!-- collapsible control -->
-      <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed)" ng-click="toggleNode(node, this)"></span>
+      <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed)"
+            ng-click="toggleNode(node, this)"></span>
 
       <!-- primitive alert -->
       <span class="badge alert-warning">{{node.definitionStatus === 'PRIMITIVE' ? ' ' : '='}}&nbsp</span>
@@ -27,7 +29,8 @@
       </span>
     </div>
     <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled>
-      <li ng-repeat="node in node.children" ui-tree-node data-nodrag ng-include="'nodes_renderer.html'">
+      <li ng-repeat="node in node.children | orderBy: 'fsn'"
+          ui-tree-node collapsed="true" data-nodrag ng-include="'nodes_renderer.html'">
       </li>
     </ol>
   </script>
@@ -35,7 +38,8 @@
   <!-- instantiate the tree -->
   <div ui-tree>
     <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
-      <li ng-repeat="node in terminologyTree" ui-tree-node data-nodrag ng-include="'nodes_renderer.html'"></li>
+      <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
+          ui-tree-node collapsed="false" data-nodrag ng-include="'nodes_renderer.html'"></li>
     </ol>
   </div>
 </div>
