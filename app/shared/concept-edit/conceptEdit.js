@@ -76,8 +76,8 @@ angular.module('singleConceptAuthoringApp')
 
         // define characteristic types
         scope.definitionStatuses = [
-          {id: 'PRIMITIVE', name: 'Primitive'},
-          {id: 'FULLY_DEFINED', name: 'Fully Defined'}
+          {id: 'PRIMITIVE', name: 'P'},
+          {id: 'FULLY_DEFINED', name: 'FD'}
         ];
 
         var inactivateConceptReasons = [
