@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$q', '$http', 'notificationService',
-    function searchPanelCtrl($scope, $rootScope, $location, $routeParams, $q, $http, notificationService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService',
+    function searchPanelCtrl($scope, $rootScope, $location, $routeParams, $q, $http, notificationService, scaService) {
 
     // controller $scope.options
     $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       if ($scope.findItemInSavedList(item) === false) {
         // push component on list and update ui state
         $scope.savedList.items.push(item);
-        $scope.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList);
+        scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList);
       }
     };
 
