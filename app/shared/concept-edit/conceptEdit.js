@@ -80,18 +80,60 @@ angular.module('singleConceptAuthoringApp')
           {id: 'FULLY_DEFINED', name: 'FD'}
         ];
 
+        /**
+         * Front end enums:
+         * [RETIRED, AMBIGUOUS, DUPLICATE, ERRONEOUS, MOVED_ELSEWHERE]
+         */
         var inactivateConceptReasons = [
-          {id: '', text: 'Ambiguous concept (inactive concept)'},
-          {id: '', text: 'Duplicate concept (inactive concept)'},
-          {id: '', text: 'Erroneous concept (inactive concept)'},
-          {id: '', text: 'Limited status concept (inactive concept)'},
-          {id: '', text: 'Moved elsewhere (inactive concept'},
-          {id: '', text: 'Outdated concept (inactive concept)'},
-          {id: '', text: 'Reason not stated concept (inactive concept)'},
-          {id: '', text: 'No reason'}
+          {id: 'AMBIGUOUS', text: 'Ambiguous concept (inactive concept)'},
+          {id: 'DUPLICATE', text: 'Duplicate concept (inactive concept)'},
+          {id: 'ERRONEOUS', text: 'Erroneous concept (inactive concept)'},
+          {id: 'MOVED_ELSEWHERE', text: 'Moved elsewhere (inactive concept'},
+          {id: 'RETIRED', text: 'Reason not stated concept (inactive concept)'}
+          /*
+           TODO These values in requirement, but not in enum
+           {id: '', text: 'Outdated concept (inactive concept)'},
+           {id: '', text: 'Limited status concept (inactive concept)'},*/
         ];
 
-        // TODO Put in the inactivateConcept Historical Associations
+        var inactivateConceptAssociationTargets = [
+          {
+            id: '',
+            text: 'ALTERNATIVE association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'MOVED FROM association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'MOVED TO association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
+          },
+          {
+            id: '',
+            text: 'REFERS TO concept association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'REPLACED BY association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'SAME AS association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'SIMILAR TO association reference set (foundation metadata concept)'
+          },
+          {
+            id: '',
+            text: 'WAS A association reference set (foundation metadata concept)'
+          }
+        ];
 
         scope.removeConcept = function (concept) {
           $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -137,9 +179,12 @@ angular.module('singleConceptAuthoringApp')
                 var saveMessage = 'Concept saved: ' + response.fsn;
                 notificationService.sendMessage(saveMessage, 5000, null);
 
-                // broadcast event to any listeners (currently task detail, conflict/feedback resolved lists)
-                $rootScope.$broadcast('conceptEdit.conceptChange', { branch : scope.branch, conceptId : scope.concept.conceptId });
-
+                // broadcast event to any listeners (currently task detail,
+                // conflict/feedback resolved lists)
+                $rootScope.$broadcast('conceptEdit.conceptChange', {
+                  branch: scope.branch,
+                  conceptId: scope.concept.conceptId
+                });
 
                 // if ui state update function specified, call it (after a
                 // moment to let binding update)
@@ -174,8 +219,12 @@ angular.module('singleConceptAuthoringApp')
               if (response && response.conceptId) {
                 scope.concept = response;
 
-                // broadcast event to any listeners (currently task detail, conflict/feedback resolved lists)
-                $rootScope.$broadcast('conceptEdit.conceptChange', { branch : scope.branch, conceptId : scope.concept.conceptId });
+                // broadcast event to any listeners (currently task detail,
+                // conflict/feedback resolved lists)
+                $rootScope.$broadcast('conceptEdit.conceptChange', {
+                  branch: scope.branch,
+                  conceptId: scope.concept.conceptId
+                });
 
                 // ensure descriptions are sorted
                 sortDescriptions();
@@ -191,6 +240,12 @@ angular.module('singleConceptAuthoringApp')
         // function to toggle active status of concept
         // cascades to children components
         scope.toggleConceptActive = function (concept) {
+
+          // ensure inactive components can be seen (confusing otherwise?)
+          // NOTE: Intended to make sure people are aware relationships are inactivated
+          // TODO Confirm this is desired behavior
+          scope.hideInactive = false;
+
           // if inactive, simply set active and autoSave
           if (!concept.active) {
             concept.active = true;
@@ -200,20 +255,33 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason(concept, 'Concept', inactivateConceptReasons, null).then(function (reason) {
+            selectInactivationReason(scope.branch, concept.conceptId, inactivateConceptReasons, inactivateConceptAssociationTargets).then(function (reason, associationTarget) {
 
-              scope.concept.active = false;
+              notificationService.sendMessage('Inactivating concept (' + reason.text + ')', 10000);
+              console.debug(scope.branch, concept.conceptId, reason, associationTarget);
 
-              // if reason is selected, deactivate all descriptions and
-              // relationships
-              if (reason) {
-                angular.forEach(scope.concept.relationships, function (relationship) {
-                  relationship.active = false;
-                });
+              snowowlService.inactivateConcept(scope.branch, concept.conceptId, reason.id, associationTarget).then(function () {
 
-                // autoSave
-                autoSave();
-              }
+                scope.concept.active = false;
+
+                // if reason is selected, deactivate all descriptions and
+                // relationships
+                if (reason) {
+
+                  // NOTE: Descriptions stay active so a FSN can still be found
+
+                  // straightforward inactivation of relationships
+                  angular.forEach(scope.concept.relationships, function (relationship) {
+                    relationship.active = false;
+                  });
+
+                  // autoSave -- note: will overwrite notification abovfe
+                  autoSave();
+                }
+              }, function () {
+                notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+              });
+
             });
           }
         };
@@ -532,6 +600,7 @@ angular.module('singleConceptAuthoringApp')
             autoSave();
           }
 
+
           // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
@@ -539,6 +608,7 @@ angular.module('singleConceptAuthoringApp')
               description.active = false;
               autoSave();
             });
+
           }
         };
 
@@ -610,13 +680,13 @@ angular.module('singleConceptAuthoringApp')
 
           // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
-          //If the desciption is an FSN then set to PREFERRED and continue.Simplest place in execution to catch the creation of new FSN's and update acceptability
-          if(description.type === 'FSN')
-          {
-            if(acceptability !== 'PREFERRED')
-            {
-                description.acceptabilityMap[dialectId] = 'PREFERRED';
-            }  
+          //If the desciption is an FSN then set to PREFERRED and
+          // continue.Simplest place in execution to catch the creation of new
+          // FSN's and update acceptability
+          if (description.type === 'FSN') {
+            if (acceptability !== 'PREFERRED') {
+              description.acceptabilityMap[dialectId] = 'PREFERRED';
+            }
           }
           return scope.acceptabilityAbbrs[acceptability];
         };
@@ -757,7 +827,7 @@ angular.module('singleConceptAuthoringApp')
         ////////////////////////////////
 
         // deactivation modal for reason s elect
-        var selectInactivationReason = function (component, componentType, reasons, historicalReasons) {
+        var selectInactivationReason = function (component, componentType, reasons, associationTargets) {
 
           var deferred = $q.defer();
 
@@ -771,8 +841,8 @@ angular.module('singleConceptAuthoringApp')
               reasons: function () {
                 return reasons;
               },
-              historicalReasons: function () {
-                return historicalReasons ? historicalReasons : [];
+              associationTargets: function () {
+                return associationTargets ? associationTargets : [];
               }
             }
           });
