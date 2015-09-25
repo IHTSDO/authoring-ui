@@ -25,9 +25,6 @@
     <tbody>
     <tr ng-repeat="result in results">
       <td class="col-md-4 no-padding text-muted" style="word-break: normal"><div class="p-5">{{result.term}}</div></td>
-      <td class="col-md-5 no-padding" style="word-break: normal" ui-draggable='true'
-          drag='getConceptPropertiesObj(result.concept)' drag-channel='conceptPropertiesObj'>
-      <td class="col-md-5 text-muted" style="word-break: normal">{{result.term}}</td>
       <td class="col-md-6" style="word-break: normal" ui-draggable="true"
           drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">
        <div class="p-5"> {{result.concept.fsn}}</div>

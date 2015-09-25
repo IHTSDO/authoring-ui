@@ -14,13 +14,13 @@
       <option value='' disabled>- Select a reason (required) -</option>
     </select>
 
-    <div ng-show="historicalReasons.length > 0">
+    <div ng-show="associationTargets.length > 0">
       <hr>
 
-      <select id="historicalReason" name="historical-reason" class="form-control"
-              ng-options="historicalReason as historicalReason.text for historicalReason in historicalReasons"
-              ng-model="historicalReasonSelected">
-        <option value='' disabled>- Select a historical reason (optional) -</option>
+      <select id="associationTarget" name="historical-reason" class="form-control"
+              ng-options="associationTarget as associationTarget.text for associationTarget in associationTargets"
+              ng-model="associationTargetSelected">
+        <option value='' disabled>- Select an association reference (optional) -</option>
       </select>
     </div>
   </div>
@@ -28,7 +28,7 @@
   <div class="modal-footer">
 
     <button type="button" class="btn btn-success"
-            ng-click="selectReason(reasonSelected, historicalReason)">Select
+            ng-click="selectReason(reasonSelected, associationTarget)">Select
     </button>
   </div>
 

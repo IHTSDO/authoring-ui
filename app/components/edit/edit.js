@@ -281,6 +281,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (concept) {
         $scope.concepts.push(concept);
         notificationService.sendMessage('Concept ' + concept.fsn + ' successfully added to edit list', 5000, null);
+
+        // update the edit list
+        $scope.updateEditListUiState();
       }, function (error) {
         notificationService.sendError('Unexpected error loading concept ' + conceptId, 0);
       });
