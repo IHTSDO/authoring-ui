@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, snowowlService, objectService, notificationService, $routeParams) {
+  .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, scaService, snowowlService, objectService, notificationService, $routeParams) {
     return {
       restrict: 'A',
       transclude: false,
@@ -26,6 +26,15 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl) {
 
+        if (!scope.concept) {
+          console.error('Concept not specified for concept-edit');
+          return;
+        }
+
+        if (!scope.branch) {
+          console.error('Branch not specified for concept-edit');
+          return;
+        }
 
         // convert static flag from string to boolean
         if (scope.static === 'true') {
@@ -33,6 +42,27 @@ angular.module('singleConceptAuthoringApp')
         } else {
           scope.isStatic = false;
         }
+
+        // the last saved (to snowowl) version of this concept
+        scope.lastSavedVersion = null;
+
+        // on load, check if a modified, unsaved version of this concept exists
+        scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
+
+
+          // if not an empty JSON object, process the modified version
+          if (modifiedConcept) {
+
+            console.debug('modified concept', modifiedConcept);
+
+            // save the passed version as the last saved version
+            scope.lastSavedVersion = JSON.parse(JSON.stringify(scope.concept));
+
+            // replace the displayed content with the modified concept
+            scope.concept = modifiedConcept;
+
+          }
+        });
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
@@ -139,15 +169,11 @@ angular.module('singleConceptAuthoringApp')
           $rootScope.$broadcast('stopEditing', {concept: concept});
         };
 
+
         scope.saveConcept = function () {
 
-          // delete any existing error before passing to services
-          delete scope.concept.error;
-          delete scope.concept.warning;
-
-          // deep copy the concept for subsequent modification
-          // (1) relationship display names
-          // (1) disallowed keys
+          // deep-copy object for modification before submission
+          // i.e. strip local values without modifying the current object
           var concept = JSON.parse(JSON.stringify(scope.concept));
 
           // check if concept valid
@@ -155,8 +181,11 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
-          // removed in favor of notificaiton service
-          // $rootScope.$broadcast('conceptEdit.saving', {concept: concept});
+          // clean concept of any locally added information
+          snowowlService.cleanConcept(concept);
+
+          // TODO Consider preventing save if this concept is equivalent to the
+          // last saved version
 
           var saveMessage = concept.conceptId ? 'Saving concept: ' + concept.fsn : 'Saving new concept';
           notificationService.sendMessage(saveMessage, 10000, null);
@@ -196,6 +225,11 @@ angular.module('singleConceptAuthoringApp')
                     scope.uiStateUpdateFn();
                   }
                 }, 3000);
+
+                // clear any stored modified versions of this unsaved concept
+                // but only AFTER successful save -- duplicated in updateConcept below
+                scope.lastSavedVersion = null;
+                scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
               }
 
               // handle error
@@ -228,6 +262,11 @@ angular.module('singleConceptAuthoringApp')
 
                 // ensure descriptions are sorted
                 sortDescriptions();
+
+                // clear any stored modified versions of this unsaved concept
+                // but only AFTER successful save -- duplicated in updateConcept below
+                scope.lastSavedVersion = null;
+                scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
               }
               else {
                 scope.concept.error = response.message;
@@ -242,8 +281,8 @@ angular.module('singleConceptAuthoringApp')
         scope.toggleConceptActive = function (concept) {
 
           // ensure inactive components can be seen (confusing otherwise?)
-          // NOTE: Intended to make sure people are aware relationships are inactivated
-          // TODO Confirm this is desired behavior
+          // NOTE: Intended to make sure people are aware relationships are
+          // inactivated TODO Confirm this is desired behavior
           scope.hideInactive = false;
 
           // if inactive, simply set active and autoSave
@@ -1260,13 +1299,7 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
-          if (scope.isDescriptionValid(description)) {
-            autoSave();
-            sortDescriptions();
-          } else {
-            console.error('  Error: ', description.error);
-          }
-
+          autoSave();
         };
 
         // function to update relationship and autoSave if indicated
@@ -1274,21 +1307,27 @@ angular.module('singleConceptAuthoringApp')
           if (!relationship) {
             return;
           }
-          relationship.sourceId = scope.concept.conceptId;
-          if (scope.isRelationshipValid(relationship)) {
-            autoSave();
-          } else {
-            console.error('  Error: ', relationship.error);
-          }
+
+          autoSave(relationship);
+
         };
 
+        /**
+         * Stores modifications in SCA Ui-State until formal save event
+         */
         function autoSave() {
+
+          console.debug('autosaving', scope.concept);
 
           // add revision to session history
           scope.conceptSessionHistory.push(scope.concept);
 
-          // save the concept
-          scope.saveConcept();
+          scope.lastSavedVersion = JSON.parse(JSON.stringify(scope.concept));
+
+          // store the modified concept in ui-state
+          scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function () {
+            // do nothing
+          });
         }
 
         scope.revertConcept = function () {
@@ -1312,6 +1351,7 @@ angular.module('singleConceptAuthoringApp')
           $rootScope.$broadcast('conceptEdit.showModel');
         };
       }
-    };
+    }
+      ;
   })
 ;

@@ -9,7 +9,6 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: true,
       templateUrl: 'components/header/header.html',
-
       link: function (scope, element, attrs) {
 
         // timeout variable for current notification

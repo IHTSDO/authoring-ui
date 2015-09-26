@@ -145,7 +145,7 @@ angular
 
     var baseLanguages = ['en'];
 
-    var baseDialects = ['EN-US', 'EN-GB', 'EN-GB and EN-US'];
+    var baseDialects = ['en-us', 'en-gb'];
 
     // TODO Leave MAIN here?
     snowowlService.addModules(baseModules, 'MAIN');
