@@ -41,19 +41,18 @@
               class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v tooltips-left tooltips-light normal-case"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="left"
               popover-trigger="click: click"><span>More details</span></button>
-      <script type="text/ng-template" id="myPopoverTemplate.html">
-        <div>{{dynamicPopover.content}}</div>
-        <div class="form-group">
-          <label>Popup Title:</label>
-          <input type="text" ng-model="dynamicPopover.title" class="form-control">
-        </div>
-      </script>
+
+      <button ng-click="saveConcept()" type="button"
+              class="btn-default editbuttons small-buttons purple darken-1 md fa fa-save tooltips-left tooltips-light normal-case m-l-15"
+              ng-click="saveConcept()"
+              ng-if="lastSavedVersion"><span> Save Concept </span></button>
+
     </div>
 
     <!-- draggable element -- concept name -->
     <div class="pull-left col-md-6 no-padding title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
-      <button type="button" class="btn-default  grey darken-4 title-text fsn-title-button"><span class="fsn">{{concept.fsn}}</span><span
+      <button type="button" class="btn-default grey darken-4 title-text fsn-title-button"><span class="fsn">{{concept.fsn}}</span><span
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
     </div>
 

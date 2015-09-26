@@ -30,10 +30,9 @@ angular.module('singleConceptAuthoringApp')
       }, function (error) {
         $scope.errorMsg = 'Unexpected error applying settings';
       });
-
     };
 
-    $scope.cancel = function () {
+    $scope.close = function () {
       $modalInstance.cancel();
     };
 
