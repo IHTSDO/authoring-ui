@@ -58,7 +58,8 @@ angular.module('singleConceptAuthoringApp')
             // save the passed version as the last saved version
             scope.lastSavedVersion = JSON.parse(JSON.stringify(scope.concept));
 
-            // reset the concept history (previously published otherwise shows as first)
+            // reset the concept history (previously published otherwise shows
+            // as first)
             resetConceptHistory();
 
             // replace the displayed content with the modified concept
@@ -1349,11 +1350,12 @@ angular.module('singleConceptAuthoringApp')
         // concept history pointer (currently active state)
         scope.conceptHistoryPtr = -1;
 
-        scope.$watch('concept', function() {
+        scope.$watch('concept', function () {
 
           console.debug('concept changed', scope.concept === scope.conceptHistory[scope.conceptHistoryPtr], scope.concept, scope.conceptHistory[scope.conceptHistoryPtr]);
 
-          // if the concept at the current pointer does not match the current concept, update
+          // if the concept at the current pointer does not match the current
+          // concept, update
           if (scope.concept !== scope.conceptHistory[scope.conceptHistoryPtr]) {
             scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
             scope.conceptHistoryPtr++;
@@ -1398,7 +1400,7 @@ angular.module('singleConceptAuthoringApp')
           if (scope.lastSavedVersion) {
             scope.concept = scope.lastSavedVersion;
           } else {
-            objectService.getNewConcept().then(function(response) {
+            objectService.getNewConcept().then(function (response) {
               scope.concept = response;
             });
           }
@@ -1419,8 +1421,17 @@ angular.module('singleConceptAuthoringApp')
           });
         }
 
-        scope.showModel = function () {
-          $rootScope.$broadcast('conceptEdit.showModel');
+        /**
+         * Hides or displays model for a given concept (edit view only)
+         * @param concept
+         */
+       scope.showModel = function (concept) {
+          if ($('#image-' + concept.conceptId).css('display') === 'none') {
+            $('#image-' + concept.conceptId).css('display', 'inline-block');
+          }
+          else {
+            $('#image-' + concept.conceptId).css('display', 'none');
+          }
         };
       }
     }
