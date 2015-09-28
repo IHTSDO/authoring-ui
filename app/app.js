@@ -40,10 +40,22 @@ angular
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail'
   ])
-  .config(function ($provide, $routeProvider, $modalProvider) {
+  .factory('httpRequestInterceptor', function () {
+      return {
+        request: function (config) {
+          config.headers['Authorization'] = 'Basic c25vd293bDpzbm93b3ds ';
+          return config;
+        }
+      };
+    })
+
+  
+  .config(function ($provide, $routeProvider, $modalProvider, $httpProvider) {
     $provide.factory('$routeProvider', function () {
       return $routeProvider;
     });
+    //intercept requests to add hardcoded authorization header to work around the spring security popup
+    $httpProvider.interceptors.push('httpRequestInterceptor');
 
     // modal providers MUST not use animation
     // due to current angular-ui bug where the
