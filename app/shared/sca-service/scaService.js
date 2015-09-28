@@ -230,7 +230,8 @@ angular.module('singleConceptAuthoringApp')
 
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
           function (response) {
-            return response.data;
+            // if content has current flag of true', return null, indicates concept previously changed, then saved
+            return response.data.current === true ? null : response.data;
           }, function (error) {
             // NOTE: if doesn't exist, 404s, return null
             return null;
@@ -238,7 +239,7 @@ angular.module('singleConceptAuthoringApp')
         );
       },
 
-      saveModifiedConceptForTask: function (projectKey, taskKey, concept) {
+      saveModifiedConceptForTask: function (projectKey, taskKey, conceptId, concept) {
         if (!projectKey) {
           console.error('Must specify projectKey to save concept in UI state');
           return {};
@@ -247,14 +248,19 @@ angular.module('singleConceptAuthoringApp')
           console.error('Must specify taskKey to save concept in UI state');
           return {};
         }
+        if (!conceptId) {
+          console.warn('No concept id specified for saving concept to UI state, using "unsaved"');
+          conceptId = 'unsaved';
+        }
         if (!concept) {
-          console.error('Must specify concept to save concept in UI state. Use {} for empty concept');
+          console.warn('No concept specified for saving concept to UI state, using text string "unmodified"');
+          concept = { current : true};
         }
 
         console.debug('autosaving modified concept', projectKey, taskKey, concept);
 
         // TODO Refine this when support for multiple unsaved concepts goes in
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + ( concept.conceptId ? concept.conceptId : 'unsaved' ), concept).then(
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId, concept).then(
           function (response) {
             return response.data;
           }, function (error) {

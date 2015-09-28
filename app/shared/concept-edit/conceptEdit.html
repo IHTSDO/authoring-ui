@@ -56,7 +56,7 @@
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
     </div>
 
-    <div class="pull-right m-l-5 m-r-5 col-md-1 no-padding ">
+    <div class="pull-right m-l-4 m-r-5 col-md-1 no-padding ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               ng-disabled="isStatic"
               ng-model="concept.definitionStatus"
@@ -69,7 +69,7 @@
       <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-down' : isCollapsed, ' fa fa-caret-up' : !isCollapsed}]"></button>
     </div></div>
-    <div class="pull-right no-margin edits concept-title col-md-3 no-padding">
+    <div class="pull-right no-margin edits concept-title col-md-4 no-padding">
 
       <!-- Revert button only appears if parent is specified -->
       <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
@@ -89,14 +89,23 @@
               ng-class="[{'red fa fa-level-down' : !hideInactive}, {'fa fa-level-up green' : hideInactive}]"
                ng-click="toggleHideInactive()"><span> Show/hide inactive components </span></button>
 
-      <!-- Commented out until functional
+
+
     <button type="button" class="btn-default editbuttons small-buttons amber md md-undo "
               title="Undo Changes"
+              ng-click="undo()"
+              ng-disabled="conceptHistoryPtr === 0"
               ng-if="!isStatic"></button>
+      <button type="button" class="btn-default editbuttons small-buttons amber md md-redo "
+              title="Redo Changes"
+              ng-click="redo()"
+              ng-if="!isStatic"
+              ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ></button>
       <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-1 md md-history"
-              title="History"
-              ng-if="!isStatic"></button>-->
-
+              title="Undo All Changes"
+              ng-click="undoAll()"
+              ng-if="!isStatic"
+              ng-disabled="conceptHistoryPtr === 0"></button>
       <button type="button" class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap" title="Show Model"
               ng-click="showModel()"
               ng-if="!isStatic"><span> Show model </span></button>
