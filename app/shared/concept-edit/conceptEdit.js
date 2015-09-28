@@ -69,13 +69,13 @@ angular.module('singleConceptAuthoringApp')
             scope.isCollapsed = false;
 
             // id required, used in drawModel.js
-            $('#model' + concept.conceptId).css('display', 'inline-block');
+            $('#image-' + concept.conceptId).css('display', 'inline-block');
           }
           else {
             scope.isCollapsed = true;
 
             // id required, used in drawModel.js
-            $('#model' + concept.conceptId).css('display', 'none');
+            $('#image-' + concept.conceptId).css('display', 'none');
           }
 
         };
