@@ -222,6 +222,11 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       console.debug('adding concept', conceptId);
 
+      if (conceptId === 'unsaved') {
+        console.debug('unsaved concept, not retrieving');
+        return;
+      }
+
       // verify that this SCTID does not exist in the edit list
       angular.forEach($scope.concepts, function (concept) {
         console.debug('comparing', concept.conceptId, conceptId);

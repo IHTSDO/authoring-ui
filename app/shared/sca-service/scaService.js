@@ -225,10 +225,9 @@ angular.module('singleConceptAuthoringApp')
           console.error('Must specify taskKey to get UI state');
           return {};
         }
-        if (!conceptId) {
-          console.error('Must specify panelId to get UI state');
-          return {};
-        }
+
+        console.debug('getModifiedConceptForTask', projectKey, taskKey, conceptId);
+
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
           function (response) {
             return response.data;
