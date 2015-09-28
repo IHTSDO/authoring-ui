@@ -1352,8 +1352,13 @@ angular.module('singleConceptAuthoringApp')
 
         };
 
-        scope.showModel = function () {
-          $rootScope.$broadcast('conceptEdit.showModel');
+        scope.showModel = function (concept) {
+          if ($('#image-' + concept.conceptId).css('display') === 'none') {
+            $('#image-' + concept.conceptId).css('display', 'inline-block');
+          }
+          else {
+            $('#image-' + concept.conceptId).css('display', 'none');
+          }
         };
       }
     }
