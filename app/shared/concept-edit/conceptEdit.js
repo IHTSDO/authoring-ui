@@ -1227,6 +1227,11 @@ angular.module('singleConceptAuthoringApp')
             return false;
           }
 
+          // verify that source id exists
+          if (scope.concept.conceptId && !relationship.sourceId) {
+            relationship.sourceId = scope.concept.conceptId;
+          }
+
           delete relationship.error;
           // pass all checks -> return true
           return true;
