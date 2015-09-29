@@ -36,38 +36,40 @@
   <!-- end validation error -->
   <div class="row p-5 grey darken-4 concept-headers " style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
-      <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
-              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'md-keyboard-arrow-right' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+      
       <button ng-click="setConceptProperties(concept)" type="button"
-              class="btn btn-default morebuttons grey darken-4 md md-more"
+              class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v tooltips-left tooltips-light normal-case"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="left"
-              popover-trigger="click: click"></button>
-      <script type="text/ng-template" id="myPopoverTemplate.html">
-        <div>{{dynamicPopover.content}}</div>
-        <div class="form-group">
-          <label>Popup Title:</label>
-          <input type="text" ng-model="dynamicPopover.title" class="form-control">
-        </div>
-      </script>
+              popover-trigger="click: click"><span>More details</span></button>
+
+      <button ng-click="saveConcept()" type="button"
+              class="btn-default editbuttons small-buttons purple darken-1 md fa fa-save tooltips-left tooltips-light normal-case m-l-15"
+              ng-click="saveConcept()"
+              ng-if="lastSavedVersion"><span> Save Concept </span></button>
+
     </div>
 
     <!-- draggable element -- concept name -->
     <div class="pull-left col-md-6 no-padding title-text"
          ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj" drop-channel="NA">
-      <button type="button" class="btn-default  grey darken-4 title-text fsn-title-button"><span class="fsn">{{concept.fsn}}</span><span
+      <button type="button" class="btn-default grey darken-4 title-text fsn-title-button"><span class="fsn">{{concept.fsn}}</span><span
         ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
     </div>
 
-    <div class="pull-right m-l-5 m-r-5 col-md-2 no-padding ">
+    <div class="pull-right m-l-4 m-r-5 col-md-1 no-padding ">
       <select name="select-primitive-choice" id="select-primitive-choice"
               ng-disabled="isStatic"
               ng-model="concept.definitionStatus"
               ng-change="saveConcept(concept)"
-              class="form-control  grey darken-4 primitive"
+              class="form-control  grey darken-4 primitive pull-left"
+              style="width:30px;"
               ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
-    </div>
-    <div class="pull-right no-margin edits concept-title col-md-3 no-padding">
+      <div class="pull-right">
+      <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-down' : isCollapsed, ' fa fa-caret-up' : !isCollapsed}]"></button>
+    </div></div>
+    <div class="pull-right no-margin edits concept-title col-md-4 no-padding">
 
       <!-- Revert button only appears if parent is specified -->
       <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
@@ -75,31 +77,41 @@
       </button>
 
       <!-- control buttons -->
-      <button ng-if="!isStatic" type="button"
-              class="btn-default editbuttons small-buttons orange darken-3 md md-backspace"
-              title="Remove Concept" ng-click="removeConcept(concept)"></button>
+      
       <button ng-if="!isStatic"
               type="button"
               style="vertical-align: bottom"
-              ng-class="[btn-default, editbuttons, 'md-settings-power', {green : concept.active}, {red: !concept.active}]"
-              title="Active/Inactive" ng-click="toggleConceptActive(concept)" class="small-buttons"></button>
+              ng-class="[btn-default, editbuttons, ' fa fa-power-off', {green : concept.active}, {red: !concept.active}]"
+              ng-click="toggleConceptActive(concept)" class="small-buttons tooltips-left tooltips-light normal-case"><span> Activate/ inactivate concept </span></button>
       <button type="button"
               style="vertical-align: bottom"
-              class="btn-default editbuttons light-blue small-buttons color_{{relationship.groupId}}"
-              ng-class="[{'md-flash-on' : !hideInactive}, {'md-flash-off' : hideInactive}]"
-              title="Show/Hide Inactive Components" ng-click="toggleHideInactive()"></button>
+              class="btn-default editbuttons small-buttons color_{{relationship.groupId}} tooltips-left tooltips-light normal-case"
+              ng-class="[{'red fa fa-level-down' : !hideInactive}, {'fa fa-level-up green' : hideInactive}]"
+               ng-click="toggleHideInactive()"><span> Show/hide inactive components </span></button>
 
-      <!-- Commented out until functional
+
+
     <button type="button" class="btn-default editbuttons small-buttons amber md md-undo "
               title="Undo Changes"
+              ng-click="undo()"
+              ng-disabled="conceptHistoryPtr === 0"
               ng-if="!isStatic"></button>
+      <button type="button" class="btn-default editbuttons small-buttons amber md md-redo "
+              title="Redo Changes"
+              ng-click="redo()"
+              ng-if="!isStatic"
+              ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ></button>
       <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-1 md md-history"
-              title="History"
-              ng-if="!isStatic"></button>-->
-
-      <button type="button" class="btn-default editbuttons small-buttons blue md md-keyboard-return" title="Show Model"
-              ng-click="showModel()"
-              ng-if="!isStatic"></button>
+              title="Undo All Changes"
+              ng-click="undoAll()"
+              ng-if="!isStatic"
+              ng-disabled="conceptHistoryPtr === 0"></button>
+      <button type="button" class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap" title="Show Model"
+              ng-click="showModel(concept)"
+              ng-if="!isStatic"><span> Show model </span></button>
+              <button ng-if="!isStatic" type="button"
+              class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-left tooltips-light normal-case"
+              ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span></button>
     </div>
   </div>
 
@@ -114,7 +126,7 @@
              drag-channel="conceptEditDescription"
              drop-channel="conceptEditDescription"
              ui-on-drop="dropDescription(concept, description, $data)">
-          <button ng-click="setDescriptionProperties(description)" class="grey darken-3 md md-more button-width"
+          <button ng-click="setDescriptionProperties(description)" class=" darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"
                   ng-click="populateDescriptionMore(description)"></button>
           <!-- Commented out until functional
@@ -129,7 +141,7 @@
                   style="vertical-align: bottom"
                   ng-disabled="isStatic"
                   ng-click="toggleDescriptionActive(description)"
-                  ng-class="[btn-default, md, 'md-settings-power button-width', {green : description.active}, {red: !description.active}]"
+                  ng-class="[btn-default, md, 'fa fa-power-off button-width', {green : description.active}, {red: !description.active}]"
                   title="Active/Inactive"></button>
 
           <!-- Case Significance -->
@@ -187,8 +199,8 @@
           </div>
 
           <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
-                  class="btn-default add-buttons md md-add-circle button-width pull-right"
-                  title="Add New Description"></button>
+                  class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case"
+                  ><span>Add New Description</span></button>
 
         </div>
       </div>
@@ -207,7 +219,7 @@
              ui-on-drop="dropRelationship(concept, relationship, $data)">
 
 
-          <button class="btn-default grey darken-3 md md-more button-width"
+          <button class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
                   title="Some title here"></button>
@@ -222,7 +234,7 @@
                   style="vertical-align: bottom"
                   ng-disabled="isStatic"
                   ng-click="toggleRelationshipActive(relationship)"
-                  ng-class="[btn, btn-default, editbuttons, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
+                  ng-class="[btn, btn-default, editbuttons, md, 'fa fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]"
                   title="Active/Inactive"></button>
 
           <!-- relationship group -->
@@ -263,7 +275,7 @@
           </div>
           <div ng-if="!isStatic" class="pull-right button-width">
             <button type="button" ng-click="addIsaRelationship($index)"
-                    class="btn-default add-buttons grey  md md-add-circle"
+                    class="btn-default add-buttons grey  md fa fa-plus"
                     title="Add New Is A Relationship"></button>
           </div>
         </div>
@@ -340,7 +352,7 @@
           </div>
           <div ng-if="!isStatic" class="pull-right button-width">
             <button type="button" ng-click="addAttributeRelationship($index, relationship.groupId)"
-                    class="btn-default add-buttons grey  md md-add-circle"
+                    class="btn-default add-buttons grey  md fa fa-plus"
                     title="Add New Attribute"></button>
           </div>
         </div>

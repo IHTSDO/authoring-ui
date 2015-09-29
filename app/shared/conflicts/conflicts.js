@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'snowowlService', 'accountService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, snowowlService, accountService, notificationService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -25,7 +25,7 @@ angular.module('singleConceptAuthoringApp')
         },
         templateUrl: 'shared/conflicts/conflicts.html',
 
-        link: function (scope, element, attrs, linkCtrl) {
+        link: function (scope) {
 
           // declare To Resolve table parameters
           scope.conceptsToResolveTableParams = new NgTableParams({
@@ -52,25 +52,6 @@ angular.module('singleConceptAuthoringApp')
                   $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
-//              getData: function ($defer, params) {
-//
-//                if (!scope.conflictsContainer ||
-// !scope.conflictsContainer.conflicts ||
-// !scope.conflictsContainer.conflicts.conceptsToResolve ||
-// scope.conflictsContainer.conflicts.conceptsToResolve.length === 0) {
-// console.debug('in null if'); scope.conceptsToResolveViewed = []; } else {
-// console.debug(scope.conflictsContainer.conflicts);  // filter var
-// conceptsToResolveViewed = params.filter() ?
-// $filter('filter')(scope.conflictsContainer.conflicts.conceptsToResolve,
-// params.filter()) : scope.conflictsContainer.conflicts.conceptsToResolve;
-// console.debug(conceptsToResolveViewed);  // hard set the new total
-// params.total(conceptsToResolveViewed.length);  // order
-// conceptsToResolveViewed = params.sorting() ?
-// $filter('orderBy')(conceptsToResolveViewed, params.orderBy()) :
-// conceptsToResolveViewed;  // extract the paged results
-// scope.conceptsToResolveViewed =
-// (conceptsToResolveViewed.slice((params.page() - 1) * params.count(),
-// params.page() * params.count()));  } }
             }
           );
 
@@ -99,22 +80,6 @@ angular.module('singleConceptAuthoringApp')
                   $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
-//              getData: function ($defer, params) {
-//
-//                if (!scope.conflictsContainer ||
-// !scope.conflictsContainer.conflicts ||
-// !scope.conflictsContainer.conflicts.conceptsResolved ||
-// scope.conflictsContainer.conflicts.conceptsResolved.length === 0) {
-// scope.conceptsResolvedViewed = []; } else {   // filter var
-// conceptsResolvedViewed = params.filter() ?
-// $filter('filter')(scope.conflictsContainer.conflicts.conceptsResolved,
-// params.filter()) : scope.conflictsContainer.conflicts.conceptsResolved;  //
-// hard set the new total params.total(conceptsResolvedViewed.length);  //
-// order conceptsResolvedViewed = params.sorting() ?
-// $filter('orderBy')(conceptsResolvedViewed, params.orderBy()) :
-// conceptsResolvedViewed;  // extract the paged results
-// scope.conceptsResolvedViewed = (conceptsResolvedViewed.slice((params.page()
-// - 1) * params.count(), params.page() * params.count())); } }
             }
           );
 
@@ -125,14 +90,12 @@ angular.module('singleConceptAuthoringApp')
           // update the resolved list
           function updateResolvedListUiState() {
             console.debug('updateReswolvedListUiState');
-            var uiState = {};
             var ids = [];
             angular.forEach(scope.conflictsContainer.conflicts.conceptsResolved, function (concept) {
               ids.push(concept.id);
             });
-            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved',
+            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved',
               {
-                timestamp: scope.conflictsTimestamp,
                 resolvedIds: ids
               });
           }
@@ -225,6 +188,29 @@ angular.module('singleConceptAuthoringApp')
             // update the ui state
             updateResolvedListUiState();
           };
+
+          // watch for notification of updated concepts from conceptEdit directive
+          scope.$on('conceptEdit.conceptChanged', function (event, data) {
+
+            // ignore if concepts arrays are not declared (not initialized)
+            if (!scope.conflictsContainer || !scope.conflictsContainer.conceptsResolved || !scope.conflictsContainer.conceptsToResolve) {
+              return;
+            }
+
+            // cycle over resolved list
+            for (var i = 0; i < scope.conflictsContainer.conflicts.conceptsResolved.length; i++) {
+              var concept = scope.conflictsContainer.conflicts.conceptsResolved[i];
+
+              // if this concept is present, move it from Resolved to To Resolve
+              if (concept.id === data.conceptId) {
+                scope.conflictsContainer.conflicts.conceptsResolved.splice(i);
+                scope.conflictsContainer.conflicts.conceptsToResolve.push(concept);
+              }
+
+              // update the ui state
+              updateResolvedListUiState();
+            }
+          });
 
           //////////////////////////////////
           // Add To Edit List functions
@@ -482,12 +468,13 @@ angular.module('singleConceptAuthoringApp')
                 console.debug('initializing for task');
 
                 // get ui state
-                scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
+                scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'conflicts-resolved').then(function (response) {
 
                   console.debug('uistate', response);
                   var conceptIdsResolved = response.hasOwnProperty('resolvedIds') ? response.resolvedIds : [];
 
-                  // sort the concepts into Resolved and ToResolve based on ui state
+                  // sort the concepts into Resolved and ToResolve based on ui
+                  // state
                   angular.forEach(scope.conflictsContainer.conflicts.concepts, function (concept) {
                     console.debug(concept.id, conceptIdsResolved);
 

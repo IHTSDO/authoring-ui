@@ -65,7 +65,8 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
-    // get a specific classification result for project id, classifier id, and branch
+    // get a specific classification result for project id, classifier id, and
+    // branch
     function getClassificationForProject(projectKey, classifierId, branch) {
       return $http.get(apiEndpoint + branch + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
@@ -133,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
         headers: {'Content-Type': 'application/json; charset=UTF-8'}
       }).then(function (response) {
         return response;
-      }, function(error) {
+      }, function (error) {
         console.error('Saving classification failed', error);
         return null;
       });
@@ -160,7 +161,7 @@ angular.module('singleConceptAuthoringApp')
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/pt').then(function (response) {
         return response.data;
       }, function (error) {
-         return { term : 'Could not determine preferred term'};
+        return {term: 'Could not determine preferred term'};
       });
 
     }
@@ -187,14 +188,56 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
+    /**
+     * Inactivate a concept
+     * @param conceptId the SCTID of the concept
+     * @param branch the branch of the concept, e.g. MAIN/WRPAS/WRPAS-1
+     * @param inactivationIndicator the inactivation reason, e.g. 'Ambiguous
+     *   concept (inactive concept'
+     * @param associationTargets association refset references, currently
+     *   unused (optional) TODO Implement association targets on support from
+     *   back-end
+     */
+    function inactivateConcept(branch, conceptId, inactivationIndicator, associationTargets) {
+
+      console.debug('deactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
+
+      var deferred = $q.defer();
+
+      if (!conceptId) {
+        deferred.reject('No conceptId specified');
+      }
+      if (!branch) {
+        deferred.reject('Branch not specified');
+      }
+      if (!inactivationIndicator) {
+        deferred.reject('Inactivation indicator not specified');
+      }
+      // construct the properties object
+      var propertiesObj = {
+        'commitComment': 'Inactivation',
+        'inactivationIndicator': inactivationIndicator,
+        'active': false,
+      };
+
+      $http.post(apiEndpoint + branch + '/concepts/' + conceptId + '/updates', propertiesObj).then(function (response) {
+        deferred.resolve(true);
+      }, function (error) {
+        deferred.reject(error.statusMessage);
+      });
+
+      return deferred.promise;
+
+    }
+
     ////////////////////////////////////////////////////
     // Description functions
     ////////////////////////////////////////////////////
 
     function getDescriptionProperties(descriptionId, branch) {
-      return $http.get(apiEndpoint + branch + '/descriptions/' + descriptionId).then(function(response) {
+      return $http.get(apiEndpoint + branch + '/descriptions/' + descriptionId).then(function (response) {
         return response.data;
-      }, function(error) {
+      }, function (error) {
         return null;
       });
     }
@@ -242,9 +285,9 @@ angular.module('singleConceptAuthoringApp')
      * @returns the relationship properties object
      */
     function getRelationshipProperties(relationshipId, branch) {
-      return $http.get(apiEndpoint + branch + 'relationships/' + relationshipId).then(function(response) {
+      return $http.get(apiEndpoint + branch + 'relationships/' + relationshipId).then(function (response) {
         return response.data;
-      }, function(error) {
+      }, function (error) {
         return null;
       });
     }
@@ -401,7 +444,7 @@ angular.module('singleConceptAuthoringApp')
     // Update Existing Concept
     // PUT /browser/{path}/concepts/{conceptId}
     function getDescriptionsForQuery(project, task, searchStr) {
-      return $http.get(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/descriptions?query=' + searchStr + '&limit=50&searchMode=partialMatching&lang=english&statusFilter=activeOnly&skipTo=0&returnLimit=100').then(function(response) {
+      return $http.get(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/descriptions?query=' + searchStr + '&limit=50&searchMode=partialMatching&lang=english&statusFilter=activeOnly&skipTo=0&returnLimit=100').then(function (response) {
         return response.data;
       }, function (error) {
         return error.data;
@@ -415,9 +458,9 @@ angular.module('singleConceptAuthoringApp')
     // Get a single review (for conflict purposes)
     // GET /reviews/{id}
     function getReview(id) {
-      return $http.get(apiEndpoint + '/reviews/' + id).then(function(response) {
+      return $http.get(apiEndpoint + '/reviews/' + id).then(function (response) {
         return response.data;
-      }, function(error) {
+      }, function (error) {
         return null;
       });
     }
@@ -431,12 +474,13 @@ angular.module('singleConceptAuthoringApp')
 
 //    https://dev-term.ihtsdotools.org/snowowl/snomed-ct/v2/branches/MAIN/WRPAS/WRPAS-72/
     function getBranch(branch) {
-      return $http.get(apiEndpoint + '/branches/' + branch).then(function(response) {
+      return $http.get(apiEndpoint + '/branches/' + branch).then(function (response) {
         return response.data;
-      }, function(error) {
+      }, function (error) {
         return null;
       });
     }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -449,6 +493,7 @@ angular.module('singleConceptAuthoringApp')
       getConceptPreferredTerm: getConceptPreferredTerm,
       updateConcept: updateConcept,
       createConcept: createConcept,
+      inactivateConcept : inactivateConcept,
       getConceptAncestors: getConceptAncestors,
       getConceptDescendants: getConceptDescendants,
       getConceptDescriptions: getConceptDescriptions,
@@ -459,7 +504,7 @@ angular.module('singleConceptAuthoringApp')
       updateDescription: updateDescription,
       startClassificationForTask: startClassificationForTask,
       getClassificationForTask: getClassificationForTask,
-      getClassificationForProject : getClassificationForProject,
+      getClassificationForProject: getClassificationForProject,
       getClassificationsForTask: getClassificationsForTask,
       getClassificationsForProject: getClassificationsForProject,
       getEquivalentConcepts: getEquivalentConcepts,
@@ -475,8 +520,8 @@ angular.module('singleConceptAuthoringApp')
       getDialects: getDialects,
       downloadClassification: downloadClassification,
       getDescriptionsForQuery: getDescriptionsForQuery,
-      getReview : getReview,
-      getBranch : getBranch
+      getReview: getReview,
+      getBranch: getBranch
 
     };
   }

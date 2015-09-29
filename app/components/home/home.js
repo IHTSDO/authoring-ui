@@ -150,21 +150,37 @@ angular.module('singleConceptAuthoringApp.home', [
 
     $scope.viewReviewTask = function (task) {
 
-      // if no reviewer, assign current user and go to feedback view
+      // if no reviewer, attempt to assign
       if (task && !task.reviewer) {
-        var updateObj = {
-          "reviewer": {
-            "email": $rootScope.accountDetails.email,
-            "avatarUrl": "",
-            "username": $rootScope.accountDetails.login,
-            "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+
+        // re-retrieve task to doublecheck availability for assignment
+        scaService.getTaskForProject(task.projectKey, task.key).then(function (response) {
+
+          // if a reviewer specified, has been claimed since last task refresh
+          // send warning and reload tasks
+          if (response.reviewer) {
+            notificationService.sendWarning('Review task ' + task.key + ' has been claimed by another user', 1000);
+            loadTasks();
           }
-        };
 
-        scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
-          $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+          // otherwise assign the current user
+          else {
+
+            // TODO Think we only need username here, doublecheck required fields (BE supplies others)
+            var updateObj = {
+              "reviewer": {
+                "email": $rootScope.accountDetails.email,
+                "avatarUrl": "",
+                "username": $rootScope.accountDetails.login,
+                "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+              }
+            };
+
+            scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+            });
+          }
         });
-
         // otherwise, simply go to feedback view
       } else {
         $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');

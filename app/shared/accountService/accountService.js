@@ -64,46 +64,41 @@ angular.module('singleConceptAuthoringApp')
         else{return false;}
     }
 
-    function getUserPreferences() {
-      if (!userPreferences) {
-        console.error('User preferences are not set, check for initialization and retrieval');
-      }
-
-      return userPreferences;
-    }
-
     /**
      * Sets and returns application-wide user preferences
      * @param userPreferences The JSON object containing { settingName : settingValue } pairs. If any setting is not specified, default value will be assigned
      * @returns the user's preferences after checking for default values
      */
-    function setUserPreferences(preferences) {
+    function applyUserPreferences(preferences) {
+
+      // create local copy for modification and return (don't modify original object)
+      var localPreferences = JSON.parse(JSON.stringify(preferences));
 
       // handle as promise for now, in case later preferences require processing
       // (not currently needed, but meh)
       var deferred = $q.defer();
 
       // create blank JSON object if not supplied
-      if (!preferences) {
-        preferences = {};
+      if (!localPreferences) {
+        localPreferences = {};
       }
       var globalStyleClasses = [];
 
       /////////////////////////////////////////////////////
       // Color Scheme
       /////////////////////////////////////////////////////
-      if (!preferences.colourScheme) {
-        preferences.colourScheme = 'sca-colours';
+      if (!localPreferences.colourScheme) {
+        localPreferences.colourScheme = 'sca-colours';
       }
-      globalStyleClasses.push(preferences.colourScheme);
+      globalStyleClasses.push(localPreferences.colourScheme);
 
       /////////////////////////////////////////////////////
       // Application View
       /////////////////////////////////////////////////////
-      if (!preferences.appView) {
-        preferences.appView = 'sca-default';
+      if (!localPreferences.appView) {
+        localPreferences.appView = 'sca-default';
       }
-      globalStyleClasses.push(preferences.appView);
+      globalStyleClasses.push(localPreferences.appView);
 
       /////////////////////////////////////////////////////
       // Apply global styling
@@ -114,14 +109,23 @@ angular.module('singleConceptAuthoringApp')
       // Resolve and Return
       /////////////////////////////////////////////////////
 
-      // set the service variable
-      userPreferences = preferences;
-
       // resolve the promise
-      deferred.resolve(preferences);
+      deferred.resolve(localPreferences);
 
       // return the (possibly modified) object
       return deferred.promise;
+    }
+
+    // wrapper functions for convenience
+    function getUserPreferences() {
+      return scaService.getUiStateForUser('user-preferences').then(function(response) {
+        return response;
+      });
+    }
+    function saveUserPreferences(preferences) {
+      return scaService.saveUiStateForUser('user-preferences', preferences).then(function(response) {
+        return response;
+      });
     }
 
     return {
@@ -129,8 +133,9 @@ angular.module('singleConceptAuthoringApp')
       getRoleForTask: getRoleForTask,
       getRoleForProject: getRoleForProject,
       isReviewer: isReviewer,
-      getUserPreferences : getUserPreferences,
-      setUserPreferences : setUserPreferences
+      applyUserPreferences : applyUserPreferences,
+      getUserPreferences: getUserPreferences,
+      saveUserPreferences: saveUserPreferences
     };
 
   })

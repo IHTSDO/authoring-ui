@@ -19,7 +19,6 @@
   <meta name="msapplication-TileImage" content="mstile-144x144.png"/>
   <!-- build:css(.) styles/vendor.css -->
   <!-- bower:css -->
-  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
   <link rel="stylesheet" href="bower_components/textAngular/dist/textAngular.css" />
   <link rel="stylesheet" href="bower_components/roboto-fontface/css/roboto-fontface.css" />
   <link rel="stylesheet" href="bower_components/angular-motion/dist/angular-motion.css" />
@@ -27,6 +26,7 @@
   <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
   <link rel="stylesheet" href="bower_components/c3/c3.css" />
   <link rel="stylesheet" href="bower_components/bootstrap-additions/dist/bootstrap-additions.css" />
+  <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css" />
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
@@ -36,7 +36,7 @@
 
 </head>
 <body ng-app="singleConceptAuthoringApp" scroll-spy id="top"
-      class="theme-template-dark theme-blue" style="height:100%;" resize>
+      class="theme-template-dark theme-blue" style="height:100%;">
 <!--[if lt IE 7]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
                                                                                                                     your
@@ -78,7 +78,6 @@
 <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
 <script src="bower_components/angular-aria/angular-aria.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 <script src="bower_components/angular-messages/angular-messages.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
@@ -108,6 +107,8 @@
 <script src="bower_components/angular-ui-sortable/sortable.js"></script>
 <script src="bower_components/angular-native-dragdrop/draganddrop.js"></script>
 <script src="bower_components/angular-elastic/elastic.js"></script>
+<script src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -132,7 +133,9 @@
 
 <!-- SCA Shared Elements -->
 <script src="shared/taxonomy/taxonomyPlugin.js"></script>
+<script src="shared/taxonomy/taxonomy.js"></script>
 <script src="shared/search/searchPlugin.js"></script>
+<script src="shared/search/search.js"></script>
 <script src="shared/search-modal/searchModal.js"></script>
 <script src="shared/savedList/savedList.js"></script>
 <script src="shared/task-detail/taskDetail.js"></script>
@@ -164,6 +167,8 @@
 <script src="utilities/noui-slider.js"></script>
 <script src="utilities/scroll-spy.js"></script>
 <script src="vendors/jquery.svg.js"></script>
+<script src="utilities/scaAutoExpand.js"></script>
+<script src="utilities/scaInfiniteScroll.js"></script>
 
 <!-- endbuild -->
 <script type="text/javascript" src="https://gabelerner.github.io/canvg/rgbcolor.js"></script> 
