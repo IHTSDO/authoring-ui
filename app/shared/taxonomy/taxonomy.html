@@ -1,47 +1,44 @@
-<!--
-<link rel="stylesheet" href="shared/taxonomy/taxonomy.css" />
--->
-<div id="bp-taxonomy_canvas">
-    <div class='panel panel-default' id='bp-taxonomy_canvas-mainPanel' ng-controller="taxonomyCtrl">
-        <div ondrop="dropT(event, 'bp-taxonomy_canvas')" ondragleave="removeHighlight();" ondragover="allowDrop(event)" class='panel-heading' id='bp-taxonomy_canvas-panelHeading'>
- 
-            <div class='row'>
-                <div class='col-md-6' id='bp-taxonomy_canvas-panelTitle'><strong><span>Taxonomy</span></strong></div>
-                <div class='col-md-6 text-right'>
-                    <button id='bp-taxonomy_canvas-historyButton' class='btn btn-link history-button'><i class='glyphicon glyphicon-time'></i></button>
-                    <button id='bp-taxonomy_canvas-resetButton' class='btn btn-link' data-panel='bp-taxonomy_canvas'><i class='glyphicon glyphicon-repeat'></i></button>
-                    <button id='bp-taxonomy_canvas-configButton' class='btn btn-link' data-toggle='modal' data-target='#bp-taxonomy_canvas-configModal'><i class='glyphicon glyphicon-cog'></i></button>
-                    <button id='bp-taxonomy_canvas-collapseButton' class='btn btn-link'><i class='glyphicon glyphicon-resize-small'></i></button>
-                    <button id='bp-taxonomy_canvas-expandButton' class='btn btn-link'><i class='glyphicon glyphicon-resize-full'></i></button>
-                    <button id='bp-taxonomy_canvas-closeButton' class='btn btn-link'><i class='glyphicon glyphicon-remove'></i></button>
-                </div>
-            </div>
-        </div>
-        <div id='bp-taxonomy_canvas-taxonomyConfigBar'><nav class='navbar navbar-default' role='navigation'>
-            <ul class='nav navbar-nav navbar-left'>
-                <li class='dropdown'>
-                    <span id='bp-taxonomy_canvas-txViewLabel'></span>
-                </li>
-            </ul>
-        </nav></div>
-        <div ondrop="dropT(event, 'bp-taxonomy_canvas')" ondragleave="removeHighlight();" ondragover="allowDrop(event)" class='panel-body' id='bp-taxonomy_canvas-panelBody'>
-        </div>
+<style>
+  .taxonomy-chevron {
+    color: #428bca;
+  }
+</style>
+
+<div class=" col-md-12 no-padding "  ng-controller="taxonomyPanelCtrl">
+
+
+<!-- Nested node template -->
+  <script type="text/ng-template" id="nodes_renderer.html">
+    <div>
+
+      <!-- collapsible control -->
+      <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed)"
+            ng-click="toggleNode(node, this)"></span>
+
+      <!-- primitive alert -->
+      <span class="badge alert-warning">{{node.definitionStatus === 'PRIMITIVE' ? ' ' : '='}}&nbsp</span>
+
+      <!-- fsn (draggable) -->
+      <span ui-draggable="true" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj">
+        {{node.fsn}}
+      </span>
     </div>
-    <div class='modal fade' id='bp-taxonomy_canvas-configModal'>
-        <div class='modal-dialog'>
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
-                    <h4 class='modal-title'><span>Options</span> (bp-taxonomy_canvas)</h4>
-                </div>
-                <div class='modal-body' id='bp-taxonomy_canvas-modal-body'>
-                    <p></p>
-                </div>
-                <div class='modal-footer'>
-                    <button type='button' class='btn btn-danger' data-dismiss='modal'><span>Cancel</span></button>
-                    <button id='bp-taxonomy_canvas-apply-button' type='button' class='btn btn-success' data-dismiss='modal'><span>Apply changes</span></button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled  ng-class="{hidden: collapsed}">
+      <li ng-repeat="node in node.children | orderBy: 'fsn'"
+          ui-tree-node collapsed="true" data-nodrag ng-include="'nodes_renderer.html'">
+      </li>
+    </ol>
+  </script>
+
+  <!-- instantiate the tree -->
+  <div ui-tree class="col-md-12 no-padding">
+    <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
+      <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
+          ui-tree-node collapsed="false" data-nodrag ng-include="'nodes_renderer.html'"></li>
+    </ol>
+  </div>
 </div>
+
+<hr>
+
+{{terminologyTree}}

@@ -7850,7 +7850,7 @@ textarea:focus {
   color: #666;
 }
 .theme-secondary-text-lighten-3,
-.theme-template-dark .sidebar .user-logged-in a {
+.sca-default .sidebar .user-logged-in a {
   color: #90CAF9;
 }
 a:focus,
@@ -8194,7 +8194,7 @@ fieldset[disabled] .btn-info:focus,
 fieldset[disabled] .btn-info:hover {
   background-color: #00a4e4;
 }
-.theme-template-dark .navbar-default {
+.sca-default .navbar-default {
   background: #474747;
   color: #FFF;
 }
@@ -12112,7 +12112,7 @@ fieldset[disabled] .btn-info:hover {
 .theme-picker .theme-template-default .theme-sidenav {
   background: #E8E8E8;
 }
-.theme-picker .theme-template-dark .theme-sidenav {
+.theme-picker .sca-default .theme-sidenav {
   background: #474747;
 }
 .theme-picker .theme-template-light .theme-sidenav {
@@ -12127,12 +12127,12 @@ fieldset[disabled] .btn-info:hover {
 .theme-template-default .sidebar {
   background: #E8E8E8;
 }
-.theme-template-dark .sidebar {
+.sca-default .sidebar {
   background: #474747;
   color: #FFF;
 }
-.theme-template-dark .sidebar .brand-logo,
-.theme-template-dark .sidebar ul a {
+.sca-default .sidebar .brand-logo,
+.sca-default .sidebar ul a {
   color: #E7E7E7;
 }
 .theme-template-light .sidebar {

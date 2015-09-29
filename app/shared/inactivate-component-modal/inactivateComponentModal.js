@@ -1,18 +1,18 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, componentType, reasons, historicalReasons) {
+  .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, componentType, reasons, associationTargets) {
 
     $scope.componentType = componentType;
     $scope.reasons = reasons;
-    $scope.historicalReasons = historicalReasons;
+    $scope.associationTargets = associationTargets;
 
-    $scope.selectReason = function(reason, historicalReason) {
+    $scope.selectReason = function(reason, associationTarget) {
 
       if (!reason) {
-        //alert('You must specify a reason');
+        window.alert('You must specify a reason for inactivation');
       } else {
-        $modalInstance.close(reason, historicalReason);
+        $modalInstance.close(reason, associationTarget);
       }
     };
 

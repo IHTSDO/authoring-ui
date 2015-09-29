@@ -10,7 +10,7 @@
  */
 angular
   .module('singleConceptAuthoringApp', [
-/*    'ngAnimate',*/
+    /*    'ngAnimate',*/
     'ngAria',
     'ngCookies',
     'ngMessages',
@@ -26,6 +26,7 @@ angular
     'ang-drag-drop',
     'monospaced.elastic',
     'textAngular',
+    'ui.tree',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
@@ -33,28 +34,40 @@ angular
     'singleConceptAuthoringApp.projects',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
-    'singleConceptAuthoringApp.taxonomy',
-    'singleConceptAuthoringApp.search',
+    'singleConceptAuthoringApp.taxonomyPanel',
+    'singleConceptAuthoringApp.searchPanel',
     'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail'
   ])
-  .config(function ($provide, $routeProvider, $modalProvider) {
+  .factory('httpRequestInterceptor', function () {
+      return {
+        request: function (config) {
+          config.headers['Authorization'] = 'Basic c25vd293bDpzbm93b3ds ';
+          return config;
+        }
+      };
+    })
+
+  
+  .config(function ($provide, $routeProvider, $modalProvider, $httpProvider) {
     $provide.factory('$routeProvider', function () {
       return $routeProvider;
     });
+    //intercept requests to add hardcoded authorization header to work around the spring security popup
+    $httpProvider.interceptors.push('httpRequestInterceptor');
 
     // modal providers MUST not use animation
     // due to current angular-ui bug where the
     // animation prevents removal of grey backdrop on close
     $modalProvider.options.animation = false;
 
-    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions){
+    $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function (taRegisterTool, taOptions) {
       // $delegate is the taOptions we are decorating
       // register the tool with textAngular
       taRegisterTool('taxonomy', {
         iconclass: "fa fa-link",
-        action: function(scope){
+        action: function (scope) {
           window.alert('Not yet functional.  Use input box to access search widget');
           // DOes not work, too easy but had to try :D  scope.openSearchModal();
         }
@@ -73,7 +86,6 @@ angular
       redirectTo: '/home'
     });
 
-
     // begin polling the sca endpoint at 10s intervals
     scaService.startPolling(10000);
 
@@ -87,11 +99,28 @@ angular
       // don't want either true or false here please!
       $rootScope.loggedIn = null;
 
-      accountService.getAccount(accountUrl).then(function(account) {
-        // set the user preferences
-        // TODO Replace 'null' with UI State retrieval (see WRP-1121)
-        console.log('Setting user preferences');
-        accountService.setUserPreferences(null);
+      // get the account details
+      accountService.getAccount(accountUrl).then(function (account) {
+
+        // get the user preferences (once logged in status confirmed)
+        accountService.getUserPreferences().then(function (preferences) {
+
+          // apply the user preferences
+          // NOTE: Missing values or not logged in leads to defaults
+          accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+
+            // check for modification by application routine
+            if (appliedPreferences !== preferences) {
+              accountService.saveUserPreferences(appliedPreferences);
+            }
+          })
+        });
+
+      }, function (error) {
+        // apply default preferences
+        accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+
+        })
       });
 
       // add required endpoints to route provider
@@ -126,9 +155,9 @@ angular
       '900000000000207008', '900000000000012004'
     ];
 
-    var baseLanguages = [ 'en' ];
+    var baseLanguages = ['en'];
 
-    var baseDialects = [ 'EN-US', 'EN-GB', 'EN-GB and EN-US'];
+    var baseDialects = ['en-us', 'en-gb'];
 
     // TODO Leave MAIN here?
     snowowlService.addModules(baseModules, 'MAIN');

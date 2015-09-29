@@ -12,14 +12,14 @@ angular.module('singleConceptAuthoringApp')
     },
     templateUrl: 'shared/menu-toggle/menu-toggle.html',
     link: function(scope, element, attrs) {
-      icon = attrs.icon;
+      var icon = attrs.icon;
       if ( icon ) {
         element.children().first().prepend('<i class="' + icon + '"></i>&nbsp;');
       }
 
       element.children().first().on('click', function(e) {
         e.preventDefault();
-        link = angular.element(e.currentTarget);
+        var link = angular.element(e.currentTarget);
 
         if( link.hasClass('active') ) {
           link.removeClass('active');
@@ -29,7 +29,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       scope.isOpen = function() {
-        folder = '/' + $location.path().split('/')[1];
+        var folder = '/' + $location.path().split('/')[1];
         return folder === attrs.path;
       };
     }

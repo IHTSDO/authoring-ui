@@ -215,8 +215,33 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {
               conceptIds.push(concept.id);
             });
-            scaService.saveUIState($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
+            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
           }
+
+          // watch for notification of updated concepts from conceptEdit directive
+          scope.$on('conceptEdit.conceptChanged', function (event, data) {
+
+            // ignore if concepts arrays are not declared (not initialized)
+            if (!scope.feedbackContainer || !scope.feedbackContainer.review.conceptsResolved || !scope.feedbackContainer.review.conceptsToResolve) {
+              return;
+            }
+
+            // cycle over resolved list
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsResolved.length; i++) {
+
+              // declaration for convenience
+              var concept = scope.feedbackContainer.review.conceptsResolved[i];
+
+              // if this concept is present, move it from Resolved to To Resolve
+              if (concept.id === data.conceptId) {
+                scope.feedbackContainer.review.conceptsResolved.splice(i);
+                scope.feedbackContainer.review.conceptsToResolve.push(concept);
+              }
+
+              // update the ui state
+              updateReviewedListUiState();
+            }
+          });
 
           // move item from ToReview to Reviewed
           scope.addToReviewed = function (item, stopUiStateUpdate) {
@@ -505,7 +530,7 @@ angular.module('singleConceptAuthoringApp')
 
               // get the ui state
               var reviewedListIds = null;
-              scaService.getUIState($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
+              scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
                 reviewedListIds = response;
 
                 // ensure response is in form of array for indexOf checking later

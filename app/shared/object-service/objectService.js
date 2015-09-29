@@ -32,6 +32,7 @@ angular.module('singleConceptAuthoringApp')
         'groupId': 0,
         'modifier': 'EXISTENTIAL',
         'moduleId': '900000000000207008',
+        'sourceId': conceptId,
         'target': {
           'conceptId': null
         },
@@ -52,6 +53,7 @@ angular.module('singleConceptAuthoringApp')
         'groupId': 0,
         'modifier': 'EXISTENTIAL',
         'moduleId': '900000000000207008',
+        'sourceId': conceptId,
         'target': {
           'conceptId': null
         },

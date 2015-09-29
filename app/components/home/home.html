@@ -14,11 +14,12 @@
     margin: 0px;
     line-height: 13px;
   }
+  
 
 </style>
 
 <div class="row no-gutter sca-container">
-  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
+  <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
        ng-include src="'layout/sidebar.html'"></div>
 
   <div class="sca-column col-lg-9 col-md-9 col-sm-9">
@@ -28,7 +29,7 @@
       <div class="card">
 
         <div class="row" style="margin-right:0px;">
-          <div class="col-md-4">
+          <div class="col-md-4 no-padding">
             <h3 class="table-title p-20">My Tasks</h3>
           </div>
           <div class="col-md-6">
@@ -59,8 +60,8 @@
                  class="table table-full table-full-small">
             <tr ng-repeat="task in $data">
 
-              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
-                ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/edit">{{task.summary}}</a>
+              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a class="tooltips-right"
+                ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/edit"> {{task.summary}}<span> Click to open editing view</span></a>
               </td>
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
@@ -87,16 +88,20 @@
               </td>
 
               <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
-                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
+                <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus != null"
-                          title="{{task.latestValidationStatus}}" type="button"
+                        type="button"
                           ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {gray : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2" tooltip="">
-                    <span class="md md-school "></span>
+                    <div class="md md-school "></div>  <span ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                          {red : task.latestValidationStatus === 'FAILED'},
+                          {gray : task.latestValidationStatus === 'BUILDING'},
+                          {green : task.latestValidationStatus === 'COMPLETED'}]">Validation {{task.latestValidationStatus}}</span>
                   </button>
+                   
                 </a>
               </td>
 
@@ -136,7 +141,7 @@
       <div class="card">
 
         <div class="row" style="margin-right:0px;">
-          <div class="col-md-4">
+          <div class="col-md-4 no-padding">
             <h3 class="table-title p-20">Review Tasks</h3>
           </div>
           <div class="col-md-6">
@@ -163,8 +168,9 @@
                  class="table table-full table-full-small">
             <tr ng-repeat="task in $data">
 
-              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a
-                ng-click="viewReviewTask(task)">{{task.summary}}</a>
+              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
+                <a class="tooltips-right"
+                ng-click="viewReviewTask(task)"> {{task.summary}}<span> Click to open reviewer view</span></a>
               </td>
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
@@ -199,16 +205,20 @@
               </td>
 
               <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
-                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
+               <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus != null"
-                          title="{{task.latestValidationStatus}}" type="button"
+                        type="button"
                           ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {gray : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2" tooltip="">
-                    <span class="md md-school "></span>
+                    <div class="md md-school "></div>  <span ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                          {red : task.latestValidationStatus === 'FAILED'},
+                          {gray : task.latestValidationStatus === 'BUILDING'},
+                          {green : task.latestValidationStatus === 'COMPLETED'}]">Validation {{task.latestValidationStatus}}</span>
                   </button>
+                   
                 </a>
               </td>
 

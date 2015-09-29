@@ -2,14 +2,13 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', function ($rootScope, $timeout, $modal) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', function ($rootScope, $timeout, $modal, $location, $route) {
     return {
       restrict: '',
       transclude: false,
       replace: true,
       scope: true,
       templateUrl: 'components/header/header.html',
-
       link: function (scope, element, attrs) {
 
         // timeout variable for current notification
@@ -33,17 +32,43 @@ angular.module('singleConceptAuthoringApp')
           scope.notification = null;
         };
 
+        scope.gotoNotificationLink = function () {
+
+          // if on current page, reload to force any required refresh
+          // NOTE Want to handle cases where # is supplied or not supplied
+          // (really shouldn't be, but is in many cases)
+
+          console.debug(scope.notification.url, $location.url, scope.notification.url.indexOf($location.url), $location.url().indexOf(scope.notification.url));
+
+          if (scope.notification.url.indexOf($location.url()) !== -1 || $location.url().indexOf(scope.notification.url) !== -1) {
+            $route.reload();
+          } else {
+            $location.path(scope.notification.url);
+          }
+        };
+
         // Expected format from notificationService.js
         // {message: ..., url: ..., durationInMs: ...}
         scope.$on('notification', function (event, notification) {
-
-          // console.debug('Received notification', notification);
 
           if (notification) {
 
             // cancel any existing timeout
             if (timeout) {
               $timeout.cancel(timeout);
+            }
+
+            // validation checking of notification url
+            if (notification.url) {
+              // strip any leading #
+              if (notification.url.indexOf('#') === 0) {
+                notification.url = notification.url.substring(1);
+              }
+
+              // ensure path starts with /
+              if (notification.url.indexOf('/') !== 0) {
+                notification.url = '/' + notification.url;
+              }
             }
 
             // set the notification
@@ -56,18 +81,17 @@ angular.module('singleConceptAuthoringApp')
               }, notification.durationInMs);
             }
           }
+        });
 
-          scope.$on('clearNotifications', function (event, data) {
-            scope.clearNotification();
-          });
+        scope.$on('clearNotifications', function (event, data) {
+          scope.clearNotification();
+        });
 
-          // watch for changes in page title to format breadcrumbs
-          scope.$watch('pageTitle', function () {
-            if ($rootScope.pageTitle) {
-              scope.titleSections = $rootScope.pageTitle.split('/');
-            }
-          });
-
+        // watch for changes in page title to format breadcrumbs
+        scope.$watch('pageTitle', function () {
+          if ($rootScope.pageTitle) {
+            scope.titleSections = $rootScope.pageTitle.split('/');
+          }
         });
 
         //////////////////////////
@@ -82,12 +106,12 @@ angular.module('singleConceptAuthoringApp')
           modalInstance.result.then(function (response) {
             console.debug('user preferences modal closed with response', response);
             if (response) {
-              // do nothing -- user preferences ctrl should make appropriate changes on completion
+              // do nothing -- user preferences ctrl should make appropriate
+              // changes on completion
             }
           }, function () {
           });
         };
-
       }
     };
   }]);

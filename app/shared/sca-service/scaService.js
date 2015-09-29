@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
-        
+
       getReviewTasks: function () {
         return $http.get(apiEndpoint + 'projects/review-tasks').then(
           function (response) {
@@ -129,7 +129,41 @@ angular.module('singleConceptAuthoringApp')
       /////////////////////////////////////
 
       // get the UI state for a project, task, and panel triplet
-      getUIState: function (projectKey, taskKey, panelId) {
+      getUiStateForUser: function (panelId) {
+        if (!panelId) {
+          console.error('Must specify panelId to get UI state');
+          return {};
+        }
+        return $http.get(apiEndpoint + 'ui-state/' + panelId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return {};
+          }
+        );
+      },
+
+      // save the UI state for a project, task, and panel triplet
+      saveUiStateForUser: function (panelId, uiState) {
+        if (!panelId) {
+          console.error('Must specify panelId to save UI state');
+          return {};
+        }
+        if (!uiState) {
+          console.error('Must supply ui state in order to save it');
+          return {};
+        }
+        return $http.post(apiEndpoint + 'ui-state/' + panelId, uiState).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
+
+      // get the UI state for a project, task, and panel triplet
+      getUiStateForTask: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
           console.error('Must specify projectKey to get UI state');
           return {};
@@ -152,7 +186,7 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // save the UI state for a project, task, and panel triplet
-      saveUIState: function (projectKey, taskKey, panelId, uiState) {
+      saveUiStateForTask: function (projectKey, taskKey, panelId, uiState) {
         if (!projectKey) {
           console.error('Must specify projectKey to save UI state');
           return {};
@@ -173,7 +207,64 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response;
           }, function (error) {
-            // TODO Handle errors
+            return null;
+          }
+        );
+      },
+
+      ////////////////////////////////////////////////
+      // ui-state calls (specific use wrappers)
+      ////////////////////////////////////////////////
+
+      getModifiedConceptForTask: function (projectKey, taskKey, conceptId) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to get UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to get UI state');
+          return {};
+        }
+
+        console.debug('getModifiedConceptForTask', projectKey, taskKey, conceptId);
+
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
+          function (response) {
+            // if content has current flag of true', return null, indicates concept previously changed, then saved
+            return response.data.current === true ? null : response.data;
+          }, function (error) {
+            // NOTE: if doesn't exist, 404s, return null
+            return null;
+          }
+        );
+      },
+
+      saveModifiedConceptForTask: function (projectKey, taskKey, conceptId, concept) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to save concept in UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to save concept in UI state');
+          return {};
+        }
+        if (!conceptId) {
+          console.warn('No concept id specified for saving concept to UI state, using "unsaved"');
+          conceptId = 'unsaved';
+        }
+        if (!concept) {
+          console.warn('No concept specified for saving concept to UI state, using text string "unmodified"');
+          concept = { current : true};
+        }
+
+        console.debug('autosaving modified concept', projectKey, taskKey, concept);
+
+        // TODO Refine this when support for multiple unsaved concepts goes in
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId, concept).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return null;
           }
         );
       },
@@ -353,7 +444,7 @@ angular.module('singleConceptAuthoringApp')
       // add feedback to a review
       addFeedbackToTaskReview: function (projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
 
-         var feedbackContainer = {
+        var feedbackContainer = {
           subjectConceptIds: subjectConceptIds,
           messageHtml: messageHtml,
           feedbackRequested: requestFollowup
@@ -426,7 +517,7 @@ angular.module('singleConceptAuthoringApp')
 
       //POST
       // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
-      markProjectFeedbackRead: function (projectKey,conceptId) {
+      markProjectFeedbackRead: function (projectKey, conceptId) {
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
           return response;
@@ -458,7 +549,7 @@ angular.module('singleConceptAuthoringApp')
       // Generate the conflicts report between the Project and MAIN
       getConflictReportForProject: function (projectKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase-conflicts', {}).then(function (response) {
-           return response.data;
+          return response.data;
         }, function (error) {
           console.error('Error getting conflict report for project ' + projectKey);
           notificationService.sendError('Error getting conflict report for project', 10000);
@@ -517,20 +608,23 @@ angular.module('singleConceptAuthoringApp')
       // Notification Polling
       //////////////////////////////////////////
 
-      monitorTask: function(projectKey, taskKey) {
-        return $http.post(apiEndpoint + 'monitor', { 'projectId' : projectKey, 'taskId' : taskKey }).then(function(response) {
+      monitorTask: function (projectKey, taskKey) {
+        return $http.post(apiEndpoint + 'monitor', {
+          'projectId': projectKey,
+          'taskId': taskKey
+        }).then(function (response) {
           return response.data;
-        }, function(error) {
+        }, function (error) {
           console.error('Error monitoring project/task ' + projectKey + '/' + taskKey);
           notificationService.sendError('Error monitoring project ' + projectKey + ', task ' + taskKey);
           return null;
         });
       },
 
-      monitorProject: function(projectKey) {
-        return $http.post(apiEndpoint + 'monitor', { 'projectId' : projectKey}).then(function(response) {
+      monitorProject: function (projectKey) {
+        return $http.post(apiEndpoint + 'monitor', {'projectId': projectKey}).then(function (response) {
           return response.data;
-        }, function(error) {
+        }, function (error) {
           console.error('Error monitoring project' + projectKey);
           notificationService.sendError('Error monitoring project ' + projectKey);
           return null;
@@ -538,9 +632,9 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // directly retrieve notification
-      // TODO Decide if we want to instantiate this, will duplicate notification handling
-      // which should be moved to a non-exposed function
-      getNotifications: function() {
+      // TODO Decide if we want to instantiate this, will duplicate
+      // notification handling which should be moved to a non-exposed function
+      getNotifications: function () {
         return null;
       },
 
@@ -566,14 +660,14 @@ angular.module('singleConceptAuthoringApp')
 
               /**
                * Current supported notification entity types:
-               *  Validation, Feedback, Classification, Rebase, Promotion, ConflictReport, BranchState
+               *  Validation, Feedback, Classification, Rebase, Promotion,
+               * ConflictReport, BranchState
                */
 
               if (newNotification.entityType) {
 
                 // construct message and url based on entity type
                 switch (newNotification.entityType) {
-
 
                   case 'Rebase':
                     // TODO Handle rebase notifications
@@ -622,16 +716,16 @@ angular.module('singleConceptAuthoringApp')
                       url = '#/projects/project/' + newNotification.project + '/classify';
                     }
                     break;
-                  
+
                   /*
                    Branch status change completion object structure
                    entityType: "BranchState"
                    event: "New Status" (listening for DIVERGED to handle the list refresh on the concepts page)
                    */
                   case 'BranchState':
-                    if(newNotification.event === 'DIVERGED'){
-                        $rootScope.$broadcast('branchDiverged');
-                        $rootScope.$broadcast('notification.branchState', newNotification);
+                    if (newNotification.event === 'DIVERGED') {
+                      $rootScope.$broadcast('branchDiverged');
+                      $rootScope.$broadcast('notification.branchState', newNotification);
                     }
                     break;
 

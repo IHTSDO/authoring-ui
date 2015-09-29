@@ -1,6 +1,18 @@
+.table {
+    width: 100%;
+    margin-bottom: 0px;
+}
 .editpanel {
     color: #737373 !important;
 }
+.addButton.btn-round {
+    width: 25px;
+    height: 25px;
+    font-size: 16px!important;
+    line-height: 25px;
+    position: relative;
+}
+.saved-list {font-size:12px;}
 .editpanel a {
     color: #666;
 }
@@ -59,7 +71,7 @@ aside.editpanel ul a {
     -o-box-sizing: border-box;
     box-sizing: border-box;
     color: #474747 !important;
-    margin-bottom: 1rem;
+    margin-bottom: 5px;
     padding: 2px 4px !important;
     background-color: #e0f7fa;
     border: none;
@@ -406,7 +418,7 @@ input {
         font-size: 14px !important;
     }
     .concept-headers {
-        padding-bottom: 5px;
+        padding-bottom: 0px;
     }
 }
 @media (min-width: 1701px) {
@@ -468,8 +480,10 @@ input {
 select.form-control {
     background-size: 10px;
 }
-.fsn-title-button {
-    padding: 0px;
+button.fsn-title-button {
+    padding: 0px!important;
+	color:#eee;
+    font-size: 11.5px;
 }
 /* Colours */
 /* colors */
@@ -587,10 +601,11 @@ select.form-control {
 
 .button-nav {
     position: fixed;
-    top: 66px;
+    top: 64px;
     bottom: 0px;
     background-color: grey;
     width: 50px;
+	z-index:101;
 }
 .button-nav .md {
     font-size: 22px;
