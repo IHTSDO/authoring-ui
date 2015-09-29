@@ -31,7 +31,7 @@
   </script>
 
   <!-- instantiate the tree -->
-  <div ui-tree class="m-20">
+  <div ui-tree class="col-md-12 no-padding">
     <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
       <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
           ui-tree-node collapsed="false" data-nodrag ng-include="'nodes_renderer.html'"></li>

@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.close = function () {
-      $modalInstance.cancel();
+      $modalInstance.close();
     };
 
   }]);

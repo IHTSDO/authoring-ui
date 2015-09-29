@@ -1,4 +1,9 @@
-.sca-dark{background-color: #383d40;text-shadow:none!important}
+.sca-dark{background-color: #383d40;text-shadow:none!important; border-color:#414548}
+.sca-dark .saved-list, .sca-dark .saved-list .btn-default, .sca-dark, .sca-dark .model-header h4 {color:#eee}
+.sca-dark .btn-default[disabled]{color:#bdbdbd;    border-top: 1px #262a2d solid !important;}
+
+.sca-dark .create-new-concept{background-color: #2d3134!important; color:#00a6e5!important;}
+.sca-dark .create-new-concept:hover{color:#eee!important;}
 
 .sca-dark .card {
     position: relative;
@@ -82,26 +87,30 @@
     background-color: transparent;
 }
 .sca-dark .green.lighten-2 {
-    background-color: #transparent;
+    background-color: transparent;
     color: #81C784;
 }
-.sca-dark .pink.darken-1 {
-    background-color: #transparent;
+.sca-dark .pink.darken-2 {
+    background-color: transparent;
     color: #d81b60
 }
+.sca-dark .deep-purple {
+    color: #8b72b7;
+    background-color: transparent;
+}
 .sca-dark .pink.darken-1 {
-    background-color: #transparent;
+    background-color: transparent;
     color: #d81b60
 }
 .sca-dark .red.lighten-2 {
-    background-color: #transparent;
+    background-color: transparent;
     color: #d01c3e
 }
 .sca-dark .grey {
     background-color: #2d3134;
-    color: #313131
+    color: #eee
 }
-.Review.Completed.badge {
+.sca-dark .Review.Completed.badge {
     background-color: transparent;
     font-size: 13px;
     padding: 6px 10px;
@@ -170,11 +179,11 @@
 
 .sca-dark .widget-toolbar:hover {
     background-color: transparent!important;
-    color: #474747!important
+    color: #eee!important
 }
 .sca-dark .classification-btn .btn-default:hover,
 .sca-dark .classification-btn .btn-default span:hover {
-    color: #474747!important
+    color: #eee!important
 }
 .sca-dark .task-details .green {
     background-color: #383d40;
@@ -183,7 +192,7 @@
    border: 1px #2d3134 solid !important;
 }
 .sca-dark .classification-btn .btn-default:hover {
-    color: #737373;
+    color: #eee;
     background-color: transparent;
     border: 1px #262a2d solid!important;
 }
@@ -247,10 +256,7 @@
     color: #4CAF50;
     background-color: transparent;
 }
-.sca-dark .deep-purple {
-    color: #7e6ecd;
-    background-color: #383d40;
-}
+
 .sca-dark .blue.darken-1 {
     color: #009cd7;
     background-color: #383d40;
@@ -265,15 +271,33 @@
 .sca-dark .navbar-default .btn-link:hover {
     background-color: #eee;
 }
-
+.sca-dark .task-details button {
+    background-color: #383d40!important;
+}
+.sca-dark .task-details button:hover {
+    background-color: #262a2d!important;
+}
 /*nav Tabs*/
+.sca-dark .sidebar-bg {
+    background-color: #32373a;
+}
 .sca-dark .nav-tabs > li > a {
     margin-right: 0;
-    background-color: transparent;
+    background-color: #383d40!important;
     border: none;
-    color: #a2a5a7;
+    color: #eee;
     box-shadow: inset 0 -1px 0 #414548;
     transition: all .2s;
+}
+.sca-dark .sidebar-tabs.nav > li.active > a, .sca-dark .sidebar-tabs.nav > li > a:hover {
+    width: 100%;
+    padding: 0px;
+    text-align: center;
+    font-size: 18px;
+    background-color: #32373a!important;
+    color: #bebebe;
+    box-shadow: none;
+    color: #00a6e5;
 }
 .sca-dark .control-label {
     font-weight: 400;
@@ -290,5 +314,18 @@
     font-weight: 400;
     color: #a2a5a7;
 }
+.sca-dark .classification-report, .sca-dark .feedback-header {
+   
+    background-color: #383d40;;
+    margin-top: 5px;
+    border-top: 1px solid #2d3134;
+}
 /*model box*/
 .sca-dark .modelScrollBox {background-color:#3e4142}
+.sca-dark .saved, .sca-dark .fa-close {color:#fff;}
+
+.sca-dark .feedback-view .table > thead > tr > th, .sca-dark .feedback-view .table > thead > tr > td {
+ 
+    border-color:#414548;
+ 
+}
