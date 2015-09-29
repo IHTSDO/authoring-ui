@@ -106,7 +106,7 @@
               ng-click="undoAll()"
               ng-if="!isStatic"
               ng-disabled="conceptHistoryPtr === 0"></button>
-      <button type="button" class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap" title="Show Model"
+      <button type="button" class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap" title="Show/Hide Model"
               ng-click="showModel(concept)"
               ng-if="!isStatic"><span> Show model </span></button>
               <button ng-if="!isStatic" type="button"
@@ -126,7 +126,7 @@
              drag-channel="conceptEditDescription"
              drop-channel="conceptEditDescription"
              ui-on-drop="dropDescription(concept, description, $data)">
-          <button ng-click="setDescriptionProperties(description)" class="grey darken-3 md md-more button-width"
+          <button ng-click="setDescriptionProperties(description)" class=" darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"
                   ng-click="populateDescriptionMore(description)"></button>
           <!-- Commented out until functional
@@ -219,7 +219,7 @@
              ui-on-drop="dropRelationship(concept, relationship, $data)">
 
 
-          <button class="btn-default grey darken-3 md md-more button-width"
+          <button class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
                   title="Some title here"></button>
