@@ -141,28 +141,16 @@
     <div ng-if="thisView === 'edit-default'">
 
       <!-- sidebar -->
-      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 no-padding"
+      <div class="editpanel sca-column no-padding"
+           ng-class="['col-lg-{{layout.editDefault.sidebar.width}}', 'col-md-{{layout.editDefault.sidebar.width}} col-sm-{{layout.editDefault.sidebar.width}}']"
            ng-include src="'layout/sidebar-edit.html'"></div>
 
       <!-- models & concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-  <!-- concept header (old create new concept button) 
-       
-        
-          <div class="no-gutter col-sm-6 col-md-6 col-lg-6 no-padding" style="height: 100%">
-            &nbsp;
-          </div>
+      <div ng-class="['col-lg-{{layout.editDefault.modelsAndConcepts.width}}', 'col-md-{{layout.editDefault.modelsAndConcepts.width}} col-sm-{{layout.editDefault.modelsAndConcepts.width}}']"
+           class="no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
-        
-          <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="margin-right:0px;">
-            <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
-                    type="button" ng-click="createConcept()"
-                    class="btn-default btn-block create-new-concept"
-                    title="Active"><i
-              class="md md-add-circle pull-right"></i> Create New Concept
-            </button>
-          </div>
-        </div>
+
+        <div class="row" style="color: red">Layout: {{layout}}</div>
 
         <!-- model & concept data-->
         <div class="row no-gutter" style="display: -webkit-box;

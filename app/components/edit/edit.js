@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
@@ -71,6 +71,112 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canRebase = false;
     $scope.canPromote = false;
     $scope.canConflict = false;
+
+    $scope.layout = null;
+
+    /**
+     * Helper function called by setView
+     */
+    function applyLayout() {
+
+      if (!$scope.layout) {
+        $scope.layout = {};
+      }
+
+      // check for defaults
+      switch ($scope.thisView) {
+        case 'edit-default':
+
+          console.debug('view: edit-default detected');
+
+          // default settings
+          if (!$scope.layout.editDefault) {
+            $scope.layout.editDefault = {
+              'sidebar': {
+                'width': 3
+              },
+              'modelsAndConcepts': {
+                'width': 9,
+                'children': {
+                  'models': {
+                    'width': 6
+                  },
+                  'concepts': {
+                    'width': 6
+                  }
+                }
+
+              }
+            };
+          }
+
+          break;
+        case 'feedback':
+          // default settings
+          if (!$scope.layout.feedback) {
+            $scope.layout.feedback = {
+              'report': {
+                'width': 8,
+                'children': {
+                  'conceptList': 4,
+                  'feedbackList': 4,
+                  'feedbackEditor': 4
+                }
+              },
+              'concepts': {
+                'width': 4
+              }
+            };
+          }
+
+          break;
+        case 'classification':
+          // default settings
+          if (!$scope.layout.report) {
+            $scope.layout.report = {
+              'report': {
+                'width': 8
+              },
+              'concepts': {
+                'width': 4
+              }
+            };
+          }
+          break;
+        case 'conflicts':
+          // default settings
+          if (!$scope.layout.report) {
+            $scope.layout.report = {
+              'report': {
+                'width': 8
+              },
+              'concepts': {
+                'width': 4
+              }
+            };
+          }
+          break;
+        case 'validation':
+          // default settings
+          if (!$scope.layout.validation) {
+            $scope.layout.validation = {
+              'report': {
+                'width': 8
+              },
+              'concepts': {
+                'width': 4
+              }
+            };
+          }
+
+          break;
+        default:
+          // TODO Implement other cases once satisfied with approach
+          break;
+      }
+
+      console.debug('new layout object', $scope.layout);
+    }
 
     $scope.setView = function (name) {
 
@@ -112,6 +218,19 @@ angular.module('singleConceptAuthoringApp.edit', [
         default:
           $rootScope.pageTitle = 'Invalid View Requested';
           break;
+      }
+
+      // if first view set, retrieve persisted layout state and apply
+      if (!$scope.layout) {
+        scaService.getUiStateForUser('page-layouts').then(function (response) {
+          $scope.layout = response;
+          applyLayout();
+        });
+      }
+
+      // otherwise simply apply layout settings
+      else {
+        applyLayout();
       }
     };
 
@@ -184,7 +303,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               // This currently supports one unsaved concept only
               // which mirrors the current functionality, but is easily broken
               if ($scope.editList[i] === 'unsaved') {
-                $scope.concepts.push({});
+                $scope.concepts.push({conceptId : 'unsaved'});
               }
               $scope.addConceptToListFromId($scope.editList[i]);
             }
