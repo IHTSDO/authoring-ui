@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response.data;
           }, function (error) {
-            return {};
+            return null;
           }
         );
       },
@@ -219,11 +219,15 @@ angular.module('singleConceptAuthoringApp')
       getModifiedConceptForTask: function (projectKey, taskKey, conceptId) {
         if (!projectKey) {
           console.error('Must specify projectKey to get UI state');
-          return {};
+          return null;
         }
         if (!taskKey) {
           console.error('Must specify taskKey to get UI state');
-          return {};
+          return null;
+        }
+        if (!conceptId) {
+          console.warn('No concept id specified for saving concept to UI state, using "unsaved"');
+          conceptId = 'unsaved';
         }
 
         console.debug('getModifiedConceptForTask', projectKey, taskKey, conceptId);
@@ -253,7 +257,7 @@ angular.module('singleConceptAuthoringApp')
           conceptId = 'unsaved';
         }
         if (!concept) {
-          console.warn('No concept specified for saving concept to UI state, using text string "unmodified"');
+          console.warn('No concept specified for saving concept to UI state, using dummy JSON object');
           concept = { current : true};
         }
 

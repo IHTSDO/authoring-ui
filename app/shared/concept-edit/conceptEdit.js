@@ -53,6 +53,7 @@ angular.module('singleConceptAuthoringApp')
           // if not an empty JSON object, process the modified version
           if (modifiedConcept) {
 
+            console.debug('passed concept', scope.concept);
             console.debug('modified concept', modifiedConcept);
 
             // save the passed version as the last saved version
@@ -1397,23 +1398,21 @@ angular.module('singleConceptAuthoringApp')
         scope.undoAll = function () {
 
           // if no previously published state, get a new (blank) concept
-          if (scope.lastSavedVersion) {
-            scope.concept = scope.lastSavedVersion;
+          if (scope.concept.conceptId === 'unsaved') {
+
+            scope.concept = objectService.getNewConcept(scope.branch);
+            console.debug('no last saved version', scope.concept, objectService.getNewConcept(scope.branch));
           } else {
-            objectService.getNewConcept().then(function (response) {
-              scope.concept = response;
-            });
+            scope.concept = scope.lastSavedVersion;
+            console.debug('last saved version', scope.concept);
           }
+
         };
 
         /**
          * Stores modifications in SCA Ui-State until formal save event
          */
         function autoSave() {
-
-          console.debug('autosaving', scope.concept);
-
-          scope.lastSavedVersion = JSON.parse(JSON.stringify(scope.concept));
 
           // store the modified concept in ui-state
           scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
@@ -1425,7 +1424,7 @@ angular.module('singleConceptAuthoringApp')
          * Hides or displays model for a given concept (edit view only)
          * @param concept
          */
-       scope.showModel = function (concept) {
+        scope.showModel = function (concept) {
           if ($('#image-' + concept.conceptId).css('display') === 'none') {
             $('#image-' + concept.conceptId).css('display', 'inline-block');
           }

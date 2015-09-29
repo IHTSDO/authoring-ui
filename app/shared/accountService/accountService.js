@@ -120,6 +120,8 @@ angular.module('singleConceptAuthoringApp')
     function getUserPreferences() {
       return scaService.getUiStateForUser('user-preferences').then(function(response) {
         return response;
+      }, function(error) {
+        return null;
       });
     }
     function saveUserPreferences(preferences) {
