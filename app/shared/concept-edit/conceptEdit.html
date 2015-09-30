@@ -158,18 +158,18 @@
           <div class="pull-left description no-padding">
 
 
-            <textarea ng-if="description.type !== 'TEXT_DEFINITION'" style="" class="msd-elastic resizable-text" ng-change="updateDescription(description)"
+            <textarea ng-if="description.type !== 'TEXT_DEFINITION'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
                       maxlength="255"
-                      ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
+                      ng-model="description.term" class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
                       placeholder="Description">
             </textarea>
-            <textarea ng-if="description.type === 'TEXT_DEFINITION'" style="" class="msd-elastic resizable-text" ng-change="updateDescription(description)"
+            <textarea ng-if="description.type === 'TEXT_DEFINITION'" style="" class="msd-elastic resizable-text form-control color_{{relationship.groupId}}" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
                       maxlength="4096"
-                      ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
+                      ng-model="description.term" type="text"
                       placeholder="Description">
             </textarea>
           </div>
@@ -305,7 +305,7 @@
              ui-on-drop="dropRelationship(concept, relationship, $data)">
 
           <!-- Button controls -->
-          <button class="btn-default grey darken-3 md md-more button-width"
+          <button class="btn-default darken-3 darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
 
@@ -322,7 +322,7 @@
                   style="vertical-align: bottom"
                   ng-disabled="isStatic"
                   ng-click="toggleRelationshipActive(relationship)"
-                  ng-class="[btn, btn-default, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
+                  ng-class="[btn, btn-default, editbuttons, md, 'fa fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]"
                   title="Active/Inactive"></button>
           <!-- relationship group -->
           <div class="pull-left rolegroup">
