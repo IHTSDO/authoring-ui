@@ -295,6 +295,10 @@ button,
     background-color: transparent;
     color: #424242;
 }
+/* taxonomy */
+ .taxonomy-chevron {
+    color: #428bca;
+  }
 #bp-taxonomy_canvas-panelBody {
     height: 100%;
 }
@@ -546,6 +550,33 @@ select.primitive {
     border-top: 0px solid transparent;
     border-bottom: 0px solid transparent;
 }
+.sidebar-tabs.nav > li > a {
+    width:100%;
+	    padding: 0px;
+		text-align:center;
+		font-size:18px;
+		background-color:#d1d1d1;
+		color:#737373;
+}
+.sidebar-tabs.nav > li.active > a, .sidebar-tabs.nav > li > a:hover{
+    width:100%;
+	    padding: 0px;
+		text-align:center;
+		font-size:18px;
+		background-color:#ececec;
+		color:#bebebe;
+		box-shadow:none;
+		color:#00a6e5;
+		
+}
+.sidebar-tabs.nav > li  {
+    width:25%;
+	
+	  
+}
+.sidebar-bg{background-color:#ececec; }
+.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
+.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
 .hasSVG {
     background-color: #fff;
 }
