@@ -16,25 +16,25 @@
 
   <div class="col-md-12 no-padding" ng-if="searchStatus">{{searchStatus}}</div>
 
-    <table ng-if="results.length > 0">
+    <table class="col-md-12 no-padding" ng-if="results.length > 0">
       <thead>
       <th class="col-md-4 no-padding" ><div class="p-5">Term</div></th>
-      <th class="col-md-5 no-padding" ><div class="p-5">FSN</div></th>
+      <th class="col-md-4 no-padding" ><div class="p-5">FSN</div></th>
       <th class="col-md-1 no-padding" ></th>
       </thead>
     <tbody>
-    <tr ng-repeat="result in results">
+    <tr class="col-md-12 no-padding" ng-repeat="result in results">
       <td class="col-md-4 no-padding text-muted" style="word-break: normal"><div class="p-5">{{result.term}}</div></td>
-      <td class="col-md-6" style="word-break: normal" ui-draggable="true"
+      <td class="col-md-5 no-padding" style="word-break: normal" ui-draggable="true"
           drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">
        <div class="p-5"> {{result.concept.fsn}}</div>
       </td>
       <td class="col-md-1 no-padding">
         <button
-          class='addButton btn btn-round btn-default widget-button grey lighten-5'
+          class="addButton btn btn-round btn-default widget-button grey lighten-5"
           ng-click="addItemToSavedList(result)"
           ng-disabled="findItemInSavedList(result.concept.conceptId)">
-          <span class='md md-playlist-add'></span>
+          <span class="md md-playlist-add"></span>
         </button>
       </td>
     </tr>
