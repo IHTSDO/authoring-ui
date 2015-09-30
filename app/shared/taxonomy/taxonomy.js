@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
 
         var conceptId = node.conceptId;
 
-        $http.get($scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.branch + '/concepts/' + conceptId + '/children?form=' + $scope.options.selectedView).then(function (response) {
+        $http.get($scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.branch + '/concepts/' + conceptId + '/children').then(function (response) {
 
           if (!response || !response.data) {
             console.error('Could not retrieve children for node', node);
@@ -67,7 +67,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
 
 
         // check that node has children
-        if (!node.hasChild) {
+        if (node.isLeafInferred) {
           return;
         }
 
@@ -75,14 +75,14 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
         nodeScope.toggle();
 
         // if node open, has children, but no children loaded
-        if (!nodeScope.collapsed && node.hasChild && (!node.children || node.children.length === 0)) {
+        if (!nodeScope.collapsed && !node.isLeafInferred && (!node.children || node.children.length === 0)) {
          $scope.getAndSetChildren(node);
         }
 
       };
 
       $scope.getTreeNodeIcon = function (node, collapsed) {
-        if (!node.hasChild) {
+        if (node.isLeafInferred) {
           return 'glyphicon glyphicon-minus';
         } else if (collapsed) {
           return 'glyphicon glyphicon-chevron-right';
@@ -97,9 +97,10 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
         var parent = {
           active: true,
           conceptId: 138875005,
-          fsn: 'SNOMED CT Concept',
           definitionStatus: 'PRIMITIVE',
-          hasChild: true,
+          fsn: 'SNOMED CT Concept',
+          isLeafInferred: false,
+          isLeafStated: false,
           moduleId: '900000000000207008'
         };
 
