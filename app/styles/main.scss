@@ -149,16 +149,17 @@ html{ height: 100%;}
 /* Added by PWG to work around fixed sidebar */
 .sca-container {
   position:absolute;
-  top:64px;
+  padding-top: 64px;
   bottom:0px;
   width:100%;
   height:100%;
+ 
 }
 
 .sca-column {
   position: relative;
   height:100%;
-  overflow-y:scroll;
+  /*overflow-y:scroll;*/
   margin-bottom:32px;
 }
 
