@@ -1,73 +1,42 @@
-<aside class="sidebar-bg col-md-12 no-padding" >
- 
-<style>
-.sidebar-tabs.nav > li > a {
-    width:100%;
-	    padding: 0px;
-		text-align:center;
-		font-size:18px;
-		background-color:#d1d1d1;
-		color:#737373;
-}
-.sidebar-tabs.nav > li.active > a, .sidebar-tabs.nav > li > a:hover{
-    width:100%;
-	    padding: 0px;
-		text-align:center;
-		font-size:18px;
-		background-color:#ececec;
-		color:#bebebe;
-		box-shadow:none;
-		color:#00a6e5;
-		
-}
-.sidebar-tabs.nav > li  {
-    width:25%;
-	
-	  
-}
-.sidebar-bg{background-color:#ececec; }
-.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
-.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
-</style>
-    <!-- show if sidebar not hidden -->
-    <div role="tabpanel sidebar-tabs ">
-
-      <!-- Nav tabs -->
-      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs sidebar-tabs col-md-12 no-padding" role="tablist" ng-init="actionTab=4"
-          >
-      
-        <li role="presentation" ><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home"
+<aside class="sidebar-bg col-md-12 no-padding" > 
+  
+  <!-- show if sidebar not hidden -->
+  <div role="tabpanel sidebar-tabs "> 
+    
+    <!-- Nav tabs -->
+    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs sidebar-tabs col-md-12 no-padding" role="tablist" ng-init="actionTab=4">
+      <li role="presentation" ><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home"
                                                   role="tab"
-                                                  data-toggle="tab" class="tooltips-btm tooltips-light normal-case"> <div class="fa fa-book"></div><span>Taxonomy</span></a></li>
-        <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-btm tooltips-light normal-case"><div class="fa fa-search"></div><span>Search</span></a>
-        </li>
-        <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-btm tooltips-btm normal-case"><div class="fa fa-list-ol"></div><span>Saved List</span></a>
-        </li>
-        <li role="presentation" class="active"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-btm tooltips-light normal-case"><div class="fa fa-info-circle"></div><span>Task Details</span></a>
-        </li>
-       
-      </ul>
-      <!-- Tab panes -->
-      <div class="tab-content ">
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}">
-          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-        </div>
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
-          <div ng-include="'shared/search/search.html'"></div>
-        </div>
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
-          <div ng-include="'shared/savedList/savedList.html'"></div>
-        </div>
-        <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}">
-          <div ng-include="'shared/task-detail/taskDetail.html'"></div>
-        </div>
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===5}">
-          <div ng-include="'shared/feedback/feedback.html'"></div>
-        </div>
-
+                                                  data-toggle="tab" class="tooltips-btm tooltips-light normal-case">
+        <div class="fa fa-book"></div>
+        <span>Taxonomy</span></a></li>
+      <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-btm tooltips-light normal-case">
+        <div class="fa fa-search"></div>
+        <span>Search</span></a> </li>
+      <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-btm tooltips-btm normal-case">
+        <div class="fa fa-list-ol"></div>
+        <span>Saved List</span></a> </li>
+      <li role="presentation" class="active"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab" class="tooltips-btm tooltips-light normal-case">
+        <div class="fa fa-info-circle"></div>
+        <span>Task Details</span></a> </li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content col-md-12 no-padding ">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}">
+        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
+        <div ng-include="'shared/search/search.html'"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
+        <div ng-include="'shared/savedList/savedList.html'"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}">
+        <div ng-include="'shared/task-detail/taskDetail.html'"></div>
+      </div>
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===5}">
+        <div ng-include="'shared/feedback/feedback.html'"></div>
       </div>
     </div>
-
-
- 
+  </div>
 </aside>

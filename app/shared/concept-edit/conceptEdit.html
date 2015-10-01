@@ -106,7 +106,7 @@
               ng-click="undoAll()"
               ng-if="!isStatic"
               ng-disabled="conceptHistoryPtr === 0"></button>
-      <button type="button" class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap" title="Show Model"
+      <button type="button" class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap" title="Show/Hide Model"
               ng-click="showModel(concept)"
               ng-if="!isStatic"><span> Show model </span></button>
               <button ng-if="!isStatic" type="button"
@@ -158,10 +158,18 @@
           <div class="pull-left description no-padding">
 
 
-            <textarea style="" class="msd-elastic resizable-text" ng-change="updateDescription(description)"
+            <textarea ng-if="description.type !== 'TEXT_DEFINITION'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
-                      ng-model="description.term" class="form-control color_{{relationship.groupId}}" type="text"
+                      maxlength="255"
+                      ng-model="description.term" class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
+                      placeholder="Description">
+            </textarea>
+            <textarea ng-if="description.type === 'TEXT_DEFINITION'" style="" class="msd-elastic resizable-text form-control color_{{relationship.groupId}}" ng-change="updateDescription(description)"
+                      ng-model-options="{updateOn: 'blur'}"
+                      ng-disabled="description.effectiveTime"
+                      maxlength="4096"
+                      ng-model="description.term" type="text"
                       placeholder="Description">
             </textarea>
           </div>
@@ -209,7 +217,7 @@
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getIsARelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
-         ui-on-drop="dropRelationship(relationship, $data)">
+         ui-on-drop="dropRelationship(relationship, $data)" ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
       <div class="row darken-3 p-t-5 grey ">
         <!-- Button controls -->
         <div class="col-md-12 no-padding color_{{relationship.groupId}}"
@@ -287,7 +295,7 @@
     <!-- rows: Concept Attributes (in relationships) -->
     <div ng-repeat="relationship in getAttributeRelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
-         ui-on-drop="dropRelationship(relationship, $data)">
+         ui-on-drop="dropRelationship(relationship, $data)" ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
       <div class="row darken-3 p-t-5 grey">
 
         <div class=" clearfix col-md-12 no-padding form-control color_{{relationship.groupId}}"
@@ -297,7 +305,7 @@
              ui-on-drop="dropRelationship(concept, relationship, $data)">
 
           <!-- Button controls -->
-          <button class="btn-default grey darken-3 md md-more button-width"
+          <button class="btn-default darken-3 darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
 
@@ -314,7 +322,7 @@
                   style="vertical-align: bottom"
                   ng-disabled="isStatic"
                   ng-click="toggleRelationshipActive(relationship)"
-                  ng-class="[btn, btn-default, md, 'md-settings-power button-width', {green : relationship.active}, {red: !relationship.active}]"
+                  ng-class="[btn, btn-default, editbuttons, md, 'fa fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]"
                   title="Active/Inactive"></button>
           <!-- relationship group -->
           <div class="pull-left rolegroup">
@@ -361,4 +369,5 @@
       </div>
     </div>
   </div>
+  <div class="clearfix"></div>
 </div>
