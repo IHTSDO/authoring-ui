@@ -217,7 +217,7 @@
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getIsARelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
-         ui-on-drop="dropRelationship(relationship, $data)">
+         ui-on-drop="dropRelationship(relationship, $data)" ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
       <div class="row darken-3 p-t-5 grey ">
         <!-- Button controls -->
         <div class="col-md-12 no-padding color_{{relationship.groupId}}"
@@ -295,7 +295,7 @@
     <!-- rows: Concept Attributes (in relationships) -->
     <div ng-repeat="relationship in getAttributeRelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
-         ui-on-drop="dropRelationship(relationship, $data)">
+         ui-on-drop="dropRelationship(relationship, $data)" ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
       <div class="row darken-3 p-t-5 grey">
 
         <div class=" clearfix col-md-12 no-padding form-control color_{{relationship.groupId}}"
