@@ -73,109 +73,76 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canConflict = false;
 
     $scope.layout = null;
+    $scope.customLayouts = [];
+    $scope.layoutWidths = {};
+
+    function updateLayoutUiState() {
+
+    }
 
     /**
      * Helper function called by setView
      */
-    function applyLayout() {
+    function applyLayout(useDefault) {
+      /*
 
-      if (!$scope.layout) {
-        $scope.layout = {};
-      }
+       // check for custom layout
+       for (var i = 0; i < $scope.customLayouts.length; i++) {
+       if ($scope.customLayouts[i].name === $scope.thisView) {
 
-      // check for defaults
+       // if default requested, remove custom layout
+       if (useDefault) {
+       $scope.customLayouts.splice(i, 0);
+       }
+
+       // otherwise, set layout and stop
+       else {
+       $scope.layout = $scope.customLayouts[i];
+       return;
+       }
+       }
+       };
+       */
+
+      // set the default layout
       switch ($scope.thisView) {
+
         case 'edit-default':
+          $scope.layout = {
 
-          console.debug('view: edit-default detected');
-
-          // default settings
-          if (!$scope.layout.editDefault) {
-            $scope.layout.editDefault = {
-              'sidebar': {
-                'width': 3
+            'name': 'editDefault',
+            'width': 12,
+            'children': [
+              {
+                'name': 'sidebar',
+                'width': 3,
               },
-              'modelsAndConcepts': {
+              {
+                'name': 'modelsAndConcepts',
                 'width': 9,
-                'children': {
-                  'models': {
-                    'width': 6
+                'children': [
+                  {
+                    'name': 'models',
+                    'width': 6,
                   },
-                  'concepts': {
+                  {
+                    'name': 'concepts',
                     'width': 6
                   }
-                }
-
+                ]
               }
-            };
-          }
-
-          break;
-        case 'feedback':
-          // default settings
-          if (!$scope.layout.feedback) {
-            $scope.layout.feedback = {
-              'report': {
-                'width': 8,
-                'children': {
-                  'conceptList': 4,
-                  'feedbackList': 4,
-                  'feedbackEditor': 4
-                }
-              },
-              'concepts': {
-                'width': 4
-              }
-            };
-          }
+            ]
+          };
 
           break;
-        case 'classification':
-          // default settings
-          if (!$scope.layout.report) {
-            $scope.layout.report = {
-              'report': {
-                'width': 8
-              },
-              'concepts': {
-                'width': 4
-              }
-            };
-          }
-          break;
-        case 'conflicts':
-          // default settings
-          if (!$scope.layout.report) {
-            $scope.layout.report = {
-              'report': {
-                'width': 8
-              },
-              'concepts': {
-                'width': 4
-              }
-            };
-          }
-          break;
-        case 'validation':
-          // default settings
-          if (!$scope.layout.validation) {
-            $scope.layout.validation = {
-              'report': {
-                'width': 8
-              },
-              'concepts': {
-                'width': 4
-              }
-            };
-          }
 
-          break;
         default:
-          // TODO Implement other cases once satisfied with approach
           break;
       }
 
       console.debug('new layout object', $scope.layout);
+
+      $scope.setLayoutWidths();
     }
 
     $scope.setView = function (name) {
@@ -189,11 +156,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      // set this and last view
-      $scope.lastView = $scope.thisView;
-      $scope.thisView = name;
-
-      switch ($scope.thisView) {
+      switch (name) {
         case 'validation':
           $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
@@ -220,21 +183,165 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
       }
 
-      // if first view set, retrieve persisted layout state and apply
-      if (!$scope.layout) {
-        scaService.getUiStateForUser('page-layouts').then(function (response) {
-          $scope.layout = response;
-          applyLayout();
-        });
+      /*  // if first view set, retrieve persisted layout state and apply
+       if (!$scope.layout) {
+       scaService.getUiStateForUser('page-layouts').then(function (response) {
+       $scope.layout = response;
+       applyLayout();
+       });
+       }
+       */
+      // otherwise simply apply layout settings
+
+      // set this and last views
+      $scope.lastView = $scope.thisView;
+      $scope.thisView = name;
+
+      applyLayout();
+
+    };
+
+    /**
+     * Helper function to return full boostrap col names
+     * @param name the layout name
+     * @returns (*) an array of col-X-Y class names
+     */
+    $scope.getLayoutWidths = function (name) {
+
+      if (!$scope.layoutWidths || !$scope.layoutWidths[name]) {
+        return;
       }
 
-      // otherwise simply apply layout settings
-      else {
-        applyLayout();
+      var width = $scope.layoutWidths[name];
+      var colClasses = [
+        'col-xs-12',
+        'col-sm-12',
+        'col-md-' + width,
+        'col-lg-' + width,
+        'col-xl-' + width
+      ];
+      return colClasses;
+    };
+
+    /**
+     * Flattens layout widths to a single
+     * @param name
+     */
+    $scope.setLayoutWidths = function (node) {
+
+      // if node not specified, start at top
+      if (!node) {
+        node = $scope.layout;
+      }
+      if (node === $scope.layout) {
+        $scope.layoutWidths = {};
+      }
+
+      angular.forEach(node.children, function (child) {
+
+        if ($scope.layoutWidths.hasOwnProperty(child.name)) {
+          console.error('Duplicate node names detected:', child.name);
+          return;
+        }
+
+        $scope.layoutWidths[child.name] = child.width;
+        $scope.setLayoutWidths(child);
+      });
+
+      if (node === $scope.layout) {
+        console.debug('layout widths', $scope.layoutWidths);
       }
     };
 
-    // on load, set the initial view based on classify/validate parameters
+    /**
+     * Recursive helper function to start at a layout level and check
+     * children for matching element name
+     * @param name
+     * @param node the node to check
+     * @param parentNode the node's parent node, for returning siblings and position
+     * @returns {*} object containing the element and the element + its
+     *   siblings
+     */
+    function getLayoutHelper(name, node, parentNode) {
+
+      console.debug('getLayoutHelper', name, node, parentNode);
+
+      if (!node) {
+        node = $scope.layout;
+      }
+      
+      // check if this node matches -- do not set other variables, if this
+      // object is finally returned, indicates
+      if (node.name === name) {
+        return {
+          'element' : node,
+          'levelElements': parentNode ? parentNode.children : null,
+          'levelPosition': parentNode ? parentNode.children.indexOf(node) : -1
+        }
+      }
+
+      // cycle over children
+      if (node.children && node.children.length) {
+        for (var i = 0; i < node.children.length; i++) {
+          var childResult = getLayoutHelper(name, node.children[i], node);
+          if (childResult) {
+            return childResult;
+          }
+        }
+      }
+      return null;
+    }
+
+// decrement the size of an element
+    $scope.resizeLayoutElement = function (name, increment) {
+
+      if (!name || !increment) {
+        console.error('resizeLayoutElement requires both name and increment specified');
+      }
+
+      // get the element, level, and position information
+      var layoutObj = getLayoutHelper(name, $scope.layout);
+
+      if (!layoutObj) {// || !layoutObj.element || !layoutObj.levelElements || !layoutObj.levelPosition) {
+        console.error('Could not retrieve required layout object information, got instead:', layoutObj);
+      }
+
+      // check that at least two elements exist
+      if (layoutObj.levelElements.length < 2) {
+        console.warn('Less than 2 elements, aborting resizing');
+      }
+
+      // if the element is the last element on the level, pick element to the
+      // left
+      if (layoutObj.levelPosition === layoutObj.levelElements.length - 1) {
+        console.warn('Cannot use resize controls on last element of level, aborting resizing');
+        return;
+      }
+
+      // extract the element and its neighbor right for convenience
+      var elem = layoutObj.element;
+      var pairedElement = layoutObj.levelElements[layoutObj.levelPosition + 1];
+
+      // check width requirements for both elements
+      if (elem.width + increment < 2) {
+        console.warn('Cannot resize selected element below width 2, aborting resizing');
+        return;
+      }
+      if (pairedElement.width - increment < 2) {
+        console.warn('Resizing selected element reduces another element below width 2, aborting resizing');
+        return;
+      }
+
+      // if all checks pass, resize
+      elem.width += increment;
+      pairedElement.width -= increment;
+
+      // apply the layout
+      $scope.setLayoutWidths($scope.layout);
+
+    };
+
+// on load, set the initial view based on classify/validate parameters
     if ($routeParams.mode === 'classify') {
       $scope.setView('classification');
     } else if ($routeParams.mode === 'validate') {
@@ -257,13 +364,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('edit-default');
     }
 
-    // if improper route, send error and halt
+// if improper route, send error and halt
     else {
       notificationService.sendError('Bad URL request for task view detected (' + $routeParams.mode + ').  Acceptable values are: edit, classify, conflicts, feedback, and validate');
       return;
     }
 
-    // function to flag items in saved list if they exist in edit panel
+// function to flag items in saved list if they exist in edit panel
     function flagEditedItems() {
 
       if ($scope.editList && $scope.savedList) {
@@ -283,7 +390,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-    // get edit panel list (task view only)
+// get edit panel list (task view only)
     if ($scope.taskKey) {
 
       console.debug('edit.js: task detected', $scope.taskKey);
@@ -303,7 +410,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               // This currently supports one unsaved concept only
               // which mirrors the current functionality, but is easily broken
               if ($scope.editList[i] === 'unsaved') {
-                $scope.concepts.push({conceptId : 'unsaved'});
+                $scope.concepts.push({conceptId: 'unsaved'});
               }
               $scope.addConceptToListFromId($scope.editList[i]);
             }
