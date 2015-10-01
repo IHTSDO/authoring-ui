@@ -322,6 +322,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       var elem = layoutObj.element;
       var pairedElement = layoutObj.levelElements[layoutObj.levelPosition + 1];
 
+      // TODO REMOVE THIS ONCE COMPLETE -- FOR TESTING ONLY
+      // change increment if the minimum bound is hit
+      if (elem.width === 2) {
+        increment = 1;
+      }
+
       // check width requirements for both elements
       if (elem.width + increment < 2) {
         console.warn('Cannot resize selected element below width 2, aborting resizing');

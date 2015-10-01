@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', 'scaService', 'snowowlService', 'notificationService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, scaService, snowowlService, notificationService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'scaService', 'snowowlService', 'notificationService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, scaService, snowowlService, notificationService) {
 
       $scope.task = null;
 
@@ -74,6 +74,28 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             'status': 'IN_REVIEW'
           });
       };
+
+      $scope.updateTask = function() {
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/task/task.html',
+          controller: 'taskCtrl',
+          resolve: {
+            task: function() {
+              console.debug('resolved task', $scope.task);
+              return $scope.task;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (response) {
+          console.debug('modal closed with response', response);
+          if (response) {
+            $scope.task = response;
+          }
+        }, function () {
+        });
+      };
+
 
       function initialize() {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {

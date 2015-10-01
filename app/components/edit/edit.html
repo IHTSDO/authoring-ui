@@ -70,6 +70,19 @@
     padding-bottom:40px;
 }
 
+  .sca-resizable {
+    margin-right: 10px;
+    display: inline-block;
+  }
+  .sca-resize {
+    position: relative;
+    left: -50px;
+    height: 100vh;
+    width: 5px;
+    background-color: red;
+  }
+
+
 </style>
 
 <!-- Hide container until view is selected -->
@@ -143,15 +156,13 @@
 
       <!-- sidebar -->
       <div class="editpanel sca-column no-padding"
-           ng-class="['col-lg-{{layout.editDefault.sidebar.width}}', 'col-md-{{layout.editDefault.sidebar.width}} col-sm-{{layout.editDefault.sidebar.width}}']"
+           ng-class="getLayoutWidths('sidebar')"
            ng-include src="'layout/sidebar-edit.html'"></div>
 
       <!-- models & concepts-->
-      <div ng-class="['col-lg-{{layout.editDefault.modelsAndConcepts.width}}', 'col-md-{{layout.editDefault.modelsAndConcepts.width}} col-sm-{{layout.editDefault.modelsAndConcepts.width}}']"
+      <div ng-class="getLayoutWidths('modelsAndConcepts')"
            class="no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
-
-        <div class="row" style="color: red">Layout: {{layout}}</div>
 
         <!-- model & concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
@@ -162,12 +173,12 @@
           repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
           <!-- model -->
-          <div class="no-gutter col-sm-6 col-md-6 col-lg-6" style="height: 100%">
+          <div class="no-gutter" style="height: 100%" ng-class="getLayoutWidths('models')">
             <div draw-model class="modelScrollBox" concept="concept"></div>
           </div>
 
           <!-- concept -->
-          <div class="no-gutter col-sm-6 col-md-6 col-lg-6 grey darken-3" style="margin-right:0px;">
+          <div class="no-gutter grey darken-3" ng-class="getLayoutWidths('concepts')" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
                  branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
               >
