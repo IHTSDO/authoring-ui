@@ -1,42 +1,9 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .directive('ngAutoExpand', function() {
-        return {
-            restrict: 'A',
-            link: function( $scope, elem, attrs) {
-                elem.bind('keyup', function($event) {
-                    var element = $event.target;
-
-                    $(element).height(0);
-                    var height = $(element)[0].scrollHeight;
-
-                    // 8 is for the padding
-                    if (height < 40) {
-                        height = 48;
-                    }
-                    $(element).attr('style', 'height: ' + height +'px !important');
-                });
-
-                // Expand the textarea as soon as it is added to the DOM
-                setTimeout( function() {
-                    var element = elem;
-
-                    $(element).height(0);
-                    var height = $(element)[0].scrollHeight;
-
-                    // 8 is for the padding
-                    if (height < 40) {
-                        height = 48;
-                    }
-                    $(element).attr('style', 'height: ' + height +'px !important');
-                }, 0);
-            }
-        };
-    })
   .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, task) {
 
-    console.debug('task.js with task', task)
+    console.debug('task.js with task', task);
     // scope variables
     $scope.projects = null;
     $scope.task = task;

@@ -64,7 +64,12 @@ angular.module('singleConceptAuthoringApp.projects', [
     $scope.openCreateTaskModal = function () {
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
-        controller: 'taskCtrl'
+        controller: 'taskCtrl',
+          resolve: {
+            task: function() {
+              return null;
+            }
+          }
       });
 
       modalInstance.result.then(function () {
@@ -86,7 +91,11 @@ angular.module('singleConceptAuthoringApp.projects', [
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
         controller: 'taskCtrl',
-        resolve: {}
+        resolve: {
+            task: function() {
+              return null;
+            }
+          }
       });
 
       modalInstance.result.then(function () {
