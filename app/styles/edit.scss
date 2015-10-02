@@ -1,3 +1,4 @@
+.concept-headers:first-child{padding-top:15px;}
 .dashboard-links a {
     color: #fff;
 }
@@ -576,7 +577,7 @@ select.primitive {
 }
 .sidebar-bg{background-color:#ececec; }
 .sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
-.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
+.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}sca-column
 .hasSVG {
     background-color: #fff;
 }
@@ -736,4 +737,12 @@ select.primitive {
 .project-main-buttons .project-icon .md {
     line-height: 30px;
     font-size: 16px;
+}
+.popover {
+    color: #353535;
+	line-height:1;
+}
+.popover-content {
+    padding: 3px 7px!important;
+	    max-height: 40px;
 }
