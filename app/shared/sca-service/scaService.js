@@ -268,6 +268,7 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response.data;
           }, function (error) {
+            notificationService.sendError('Unexpected error autosaving modified work; please ensure you save your work before leaving this page.', 0, null);
             return null;
           }
         );
