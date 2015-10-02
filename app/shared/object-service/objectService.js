@@ -16,6 +16,7 @@ angular.module('singleConceptAuthoringApp')
         'term': null,
         'lang': 'en',
         'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
+        'conceptId' : conceptId,
         'acceptabilityMap': {
           '900000000000509007': 'ACCEPTABLE',
           '900000000000508004': 'ACCEPTABLE'
@@ -67,7 +68,7 @@ angular.module('singleConceptAuthoringApp')
     // description, relationship, attribute
     function getNewConcept(branch) {
       var concept = {
-        'id': null,
+        'conceptId': null,
         'descriptions': [],
         'relationships': [],
         'fsn': null,
