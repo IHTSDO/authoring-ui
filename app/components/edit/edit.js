@@ -277,7 +277,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           'element' : node,
           'levelElements': parentNode ? parentNode.children : null,
           'levelPosition': parentNode ? parentNode.children.indexOf(node) : -1
-        }
+        };
       }
 
       // cycle over children

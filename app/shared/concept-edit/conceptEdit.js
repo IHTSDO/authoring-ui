@@ -272,7 +272,7 @@ angular.module('singleConceptAuthoringApp')
                 // clear any stored modified versions of this unsaved concept
                 // but only AFTER successful save -- duplicated in
                 // updateConcept below
-                scope.lastSavedVersion = scope.concept
+                scope.lastSavedVersion = scope.concept;
                 scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
               }
               else {
