@@ -90,7 +90,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         modalInstance.result.then(function (response) {
           console.debug('modal closed with response', response);
           if (response) {
-            $scope.task = response;
+            $scope.task = response.data;
           }
         }, function () {
         });

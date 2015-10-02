@@ -77,13 +77,13 @@ angular.module('singleConceptAuthoringApp')
         window.alert('You must specify a title');
         return;
       }
-      if (!$scope.task.assignee) {
-        window.alert('You must specify an assigned user');
-      }
+      var taskUpdate = {};
+      taskUpdate.summary = $scope.task.summary;
+      taskUpdate.description = $scope.task.description;
 
       $scope.msgSuccess = 'Updating task...';
       $scope.disabled = true;
-      scaService.updateTask($scope.task.projectKey, $scope.task.key, $scope.task).then(function (response) {
+      scaService.updateTask($scope.task.projectKey, $scope.task.key, taskUpdate).then(function (response) {
         $modalInstance.close(response);
       }, function (error) {
         $scope.disabled = false;

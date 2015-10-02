@@ -407,11 +407,10 @@ angular.module('singleConceptAuthoringApp')
 
       updateTask: function (projectKey, taskKey, object) {
         return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-          notificationService.sendMessage('Task ' + taskKey + ' marked ' + response.data.status, 5000, null, null);
+          notificationService.sendMessage('Task ' + taskKey + ' Sucessfully Updated.', 5000, null, null);
           return response;
         }, function (error) {
-          console.error('Error changing task status to ' + object.status + ' for ' + taskKey + ' in project ' + projectKey);
-          notificationService.sendError('Error changing task status to ' + object.status + ' for ' + taskKey + ' in project ' + projectKey);
+          notificationService.sendError('Error Updating Task ' + taskKey + ' in project ' + projectKey);
           return false;
         });
       },
