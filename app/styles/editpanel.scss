@@ -85,7 +85,7 @@ aside.editpanel ul a {
     -webkit-box-shadow: none;
     box-shadow: none !important;
 }
-.editing-form .concept-headers select {
+select.primitive  {
   color: #fff !important;
 }
 .editing-form input:focus,
@@ -366,7 +366,7 @@ input {
 @media (max-width: 1380px) {
     .title-text {
         font-size: 11px !important;
-        max-width: 270px !important;
+   
     }
     .small-buttons {
         padding: 2px 4.5% !important;
@@ -761,15 +761,16 @@ button.fsn-title-button {
     margin-right: 10px;
 }
 .popover {
-    min-width: 500px !important;
+    min-width: 450px !important;
 }
 .pop-edit {
-    font-size: 12px;
+    font-size: 11px;
     margin: 0px !important;
 }
 .popover select {
     margin-bottom: 0px!important;
     padding: 0px!important;
+	color:#474747!important;
 }
 .popover .control-label {
     font-weight: 400;
@@ -790,26 +791,26 @@ button.fsn-title-button {
     margin-right: 3%
 }
 .concept-more .time {
-    width: 15%;
-    margin-right: 3%
+    width: 13%;
+    margin-right: 1%
 }
 .concept-more .module {
-    width: 65%;
+    width: 69%;
 }
 /* description level */
 
 .description-more .sct-id {
-    width: 12%;
-    margin-right: 3%
+    width: 14%;
+    margin-right: 1%
 }
 .description-more .time {
     width: 13%;
-    margin-right: 3%
+    margin-right: 1%
 }
 .description-more .lang-id {
-    width: 10%;
-    margin-right: 3%
+    width: 7%;
+    margin-right: 1%
 }
 .description-more .module-id {
-    width: 56%;
+    width: 63%;
 }
