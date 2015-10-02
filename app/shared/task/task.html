@@ -19,8 +19,6 @@
 
   <div class="modal-body">
 
-    <div ng-if="task.key">Task: {{task}}</div>
-
     <div class="col-md-12">
 
       <form class="form-floating">
@@ -32,14 +30,20 @@
                  placeholder="Enter task title">
 
           <br>
-          <label for="taskProject">Select Project:</label>
-          <select id="taskProject" name="select-choice" class="form-control"
-                  ng-options="project.key as project.title for project in projects | orderBy: 'title'"
-                  ng-model="task.projectKey"
-                  ng-disabled="task.key"
-                  ng-class="[{'task-color-black': task.key}] "
-                  ng-change="clearMessages()">
-          </select>
+          <div ng-if="!task.key">
+            <label for="taskProject">Select Project:</label>
+              <select id="taskProject" name="select-choice" class="form-control"
+                      ng-options="project.key as project.title for project in projects | orderBy: 'title'"
+                      ng-model="task.projectKey"
+                      ng-class="[{'task-color-black': task.key}] "
+                      ng-change="clearMessages()"
+                      >
+              </select>
+          </div>
+          <div ng-if="task.key">
+            <label for="taskProject">Project:</label>
+            <div class="">{{task.projectKey}}</div>
+          </div>
           <br>
           <label for="textArea">Task Details</label>
           <textarea ng-change="clearMessages()" sca-auto-expand="" class="form-control vertical auto-grow-textarea"
@@ -48,12 +52,14 @@
 
           <br>
 
+<!--
           <div ng-if="task.key">
             <label for="taskAssignee">Assigned User</label>
             <input id="taskAssignee" ng-model="task.assignee.username" ng-change="clearMessages()" type="text"
                    class="form-control"
                    placeholder="Enter assignee's user name">
           </div>
+-->
 
         </div>
 
@@ -66,9 +72,14 @@
     </div>
 
     <div class="modal-footer">
-      <div class="col-md-6 no-padding-left">
+      <div ng-if="!task.key" class="col-md-6 no-padding-left">
         <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin no-padding-left"
                 ng-click="createTask() == true ? $hide() : ''">Create Task
+        </button>
+      </div>
+      <div ng-if="task.key" class="col-md-6 no-padding-left">
+        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin no-padding-left"
+                ng-click="updateTask() == true ? $hide() : ''">Update Task
         </button>
       </div>
       <div class="col-md-6 no-padding-right">
