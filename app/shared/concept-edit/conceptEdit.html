@@ -19,7 +19,35 @@
       min-height: 30px;
       font-size: 14px !important;
     }
-
+	
+	.small-buttons:hover{background:transparent!important; color:#eee!important;}
+.small-buttons.green{    color: #4CAF50;
+    background-color: transparent;}
+	.small-buttons.orange.darken-3 {
+    color: #ef6c00;
+    background-color: transparent;
+}
+.small-buttons.blue {
+   color: #00a6e5;
+   background-color: transparent;
+}
+.small-buttons.red {
+   color: #e92848;
+     background-color: transparent;
+}
+.small-buttons.purple.darken-1 {
+    color: #8e24aa;
+    background-color: transparent;
+}
+.small-buttons.lighten-2 {
+    color: #9575cd;
+    background-color: transparent;
+}
+.small-buttons.save-button{height:20px;    font-size: 17px!important;}
+.small-buttons.amber {
+    color: #ffc107;
+     background-color: transparent;
+}
   </style>
 
   <!-- begin validation error -->
@@ -43,7 +71,7 @@
               popover-trigger="click: click"><span>More details</span></button>
 
       <button ng-click="saveConcept()" type="button"
-              class="btn-default editbuttons small-buttons purple darken-1 md fa fa-save tooltips-left tooltips-light normal-case m-l-15"
+              class="btn-default save-button small-buttons deep-purple lighten-2 md md-save tooltips-left tooltips-light normal-case "
               ng-click="saveConcept()"
               ng-if="lastSavedVersion"><span> Save Concept </span></button>
 
@@ -61,7 +89,7 @@
               ng-disabled="isStatic"
               ng-model="concept.definitionStatus"
               ng-change="saveConcept(concept)"
-              class="form-control  grey darken-4 primitive pull-left"
+              class="form-control grey darken-4 primitive pull-left"
               style="width:30px;"
               ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
@@ -101,7 +129,7 @@
               ng-click="redo()"
               ng-if="!isStatic"
               ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ></button>
-      <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-1 md md-history"
+      <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history"
               title="Undo All Changes"
               ng-click="undoAll()"
               ng-if="!isStatic"
@@ -126,7 +154,7 @@
              drag-channel="conceptEditDescription"
              drop-channel="conceptEditDescription"
              ui-on-drop="dropDescription(concept, description, $data)">
-          <button ng-click="setDescriptionProperties(description)" class=" darken-3 md morebuttons fa fa-ellipsis-v button-width"
+          <button ng-click="setDescriptionProperties(description)" class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"
                   ng-click="populateDescriptionMore(description)"></button>
           <!-- Commented out until functional

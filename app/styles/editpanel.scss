@@ -121,7 +121,8 @@ select.primitive  {
     border-color: transparent;
 }
 .editing-form button:active {
-    background-color: #66bbfd;
+    color: #66bbfd;
+	 background-color: transparent;
     border-color: transparent;
 }
 .editing-form input[type=submit] {
@@ -369,8 +370,8 @@ input {
    
     }
     .small-buttons {
-        padding: 2px 4.5% !important;
-        font-size: 14px !important;
+        padding: 1% !important;
+        font-size: 15px !important;
     }
     .snomed-clear {
         margin-top: 5px;
@@ -414,8 +415,8 @@ input {
         padding: 10px 5px;
     }
     .small-buttons {
-        padding: 2px 4.2% !important;
-        font-size: 14px !important;
+        padding: 1% !important;
+        font-size: 16px !important;
     }
     .concept-headers {
         padding-bottom: 0px;

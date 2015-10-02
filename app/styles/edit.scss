@@ -9,6 +9,7 @@
 /*model bg */
 button.widget-toolbar{width: 50px; height: 50px; margin: 0; padding: 0;}
 /*disabled buttons*/
+
 .classification-btn .btn-default[disabled] {background-color:#d8d8d8!important; border-color:#d8d8d8!important; color:#737373!important}
 .classification-btn .btn-default[disabled] span{color:#737373!important; background-color:#d8d8d8!important}
 .widget-toolbar .green.darken-1{}
@@ -161,26 +162,6 @@ button,
     font-size: 12px;
     float: left;
 }
-.editbuttons.orange.darken-3:hover {
-    background-color: #e65100 !important;
-    color: #fff !important;
-}
-.editbuttons.amber:hover {
-    background-color: #ff8f00 !important;
-    color: #fff !important;
-}
-.editbuttons.deep-purple.lighten-1:hover {
-    background-color: #5e35b1 !important;
-    color: #fff !important;
-}
-.editbuttons.blue:hover {
-    background-color: #1976D2 !important;
-    color: #fff !important;
-}
-.editbuttons.teal:hover {
-    background-color: #00796b !important;
-    color: #fff !important;
-}
 .saved-list-title {
     font-size: 12px !important;
     text-transform: none !important;
@@ -268,10 +249,7 @@ button,
         text-align: left;
     }
 }
-.popover {
-    max-width: 400px;
-    min-width: 350px;
-}
+
 .popover select.form-control {
     background-color: #fff;
     padding: 5px 20px 5px 15px;
