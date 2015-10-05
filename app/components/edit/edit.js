@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
@@ -72,77 +72,69 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canPromote = false;
     $scope.canConflict = false;
 
-    $scope.layout = null;
-    $scope.customLayouts = [];
-    $scope.layoutWidths = {};
-
-    function updateLayoutUiState() {
-
-    }
-
     /**
      * Helper function called by setView
+     * NOTE: Currently only used to set layout for edit-default
      */
-    function applyLayout(useDefault) {
-      /*
+    function setLayout(useDefault) {
 
-       // check for custom layout
-       for (var i = 0; i < $scope.customLayouts.length; i++) {
-       if ($scope.customLayouts[i].name === $scope.thisView) {
-
-       // if default requested, remove custom layout
-       if (useDefault) {
-       $scope.customLayouts.splice(i, 0);
-       }
-
-       // otherwise, set layout and stop
-       else {
-       $scope.layout = $scope.customLayouts[i];
-       return;
-       }
-       }
-       };
-       */
+      var layout = {};
 
       // set the default layout
       switch ($scope.thisView) {
 
         case 'edit-default':
-          $scope.layout = {
 
-            'name': 'editDefault',
-            'width': 12,
-            'children': [
-              {
-                'name': 'sidebar',
-                'width': 3,
-              },
-              {
-                'name': 'modelsAndConcepts',
-                'width': 9,
+          accountService.getUserPreferences().then(function (preferences) {
+
+            console.debug('preferences', preferences);
+
+            if (preferences && preferences.layout && preferences.layout['editDefault']) {
+              layout = preferences.layout['editDefault'];
+            } else {
+
+
+              // check if user preferences have
+              layout = {
+
+                'name': 'editDefault',
+                'width': 12,
                 'children': [
                   {
-                    'name': 'models',
-                    'width': 6,
+                    'name': 'sidebar',
+                    'width': 3,
                   },
                   {
-                    'name': 'concepts',
-                    'width': 6
+                    'name': 'modelsAndConcepts',
+                    'width': 9,
+                    'children': [
+                      {
+                        'name': 'models',
+                        'width': 6,
+                      },
+                      {
+                        'name': 'concepts',
+                        'width': 6
+                      }
+                    ]
                   }
                 ]
               }
-            ]
-          };
+            }
+            ;
 
+            console.debug('new layout object', layout)
+
+            // set the widths for easy access
+            layoutHandler.setLayout(layout);
+
+          });
           break;
-
         default:
+          layout = {};
           break;
       }
 
-      console.debug('new layout object', $scope.layout);
-
-      $scope.setLayoutWidths();
     }
 
     $scope.setView = function (name) {
@@ -184,10 +176,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       /*  // if first view set, retrieve persisted layout state and apply
-       if (!$scope.layout) {
+       if (!$rootScope.layout) {
        scaService.getUiStateForUser('page-layouts').then(function (response) {
-       $scope.layout = response;
-       applyLayout();
+       $rootScope.layout = response;
+       setLayout();
        });
        }
        */
@@ -197,22 +189,24 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.lastView = $scope.thisView;
       $scope.thisView = name;
 
-      applyLayout();
+      // set layout based on view
+      setLayout();
 
     };
 
     /**
-     * Helper function to return full boostrap col names
-     * @param name the layout name
-     * @returns (*) an array of col-X-Y class names
+     * edit.js-specific helper function to return full boostrap col names
+     * May need to change depending on responsive needs
+     * @param name the unique column name
+     * @returns (*) an array of col-(size)-(width) class names
      */
     $scope.getLayoutWidths = function (name) {
 
-      if (!$scope.layoutWidths || !$scope.layoutWidths[name]) {
+      if (!$rootScope.layoutWidths || !$rootScope.layoutWidths[name]) {
         return;
       }
 
-      var width = $scope.layoutWidths[name];
+      var width = $rootScope.layoutWidths[name];
       var colClasses = [
         'col-xs-12',
         'col-sm-12',
@@ -221,130 +215,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         'col-xl-' + width
       ];
       return colClasses;
-    };
-
-    /**
-     * Flattens layout widths to a single
-     * @param name
-     */
-    $scope.setLayoutWidths = function (node) {
-
-      // if node not specified, start at top
-      if (!node) {
-        node = $scope.layout;
-      }
-      if (node === $scope.layout) {
-        $scope.layoutWidths = {};
-      }
-
-      angular.forEach(node.children, function (child) {
-
-        if ($scope.layoutWidths.hasOwnProperty(child.name)) {
-          console.error('Duplicate node names detected:', child.name);
-          return;
-        }
-
-        $scope.layoutWidths[child.name] = child.width;
-        $scope.setLayoutWidths(child);
-      });
-
-      if (node === $scope.layout) {
-        console.debug('layout widths', $scope.layoutWidths);
-      }
-    };
-
-    /**
-     * Recursive helper function to start at a layout level and check
-     * children for matching element name
-     * @param name
-     * @param node the node to check
-     * @param parentNode the node's parent node, for returning siblings and position
-     * @returns {*} object containing the element and the element + its
-     *   siblings
-     */
-    function getLayoutHelper(name, node, parentNode) {
-
-      console.debug('getLayoutHelper', name, node, parentNode);
-
-      if (!node) {
-        node = $scope.layout;
-      }
-      
-      // check if this node matches -- do not set other variables, if this
-      // object is finally returned, indicates
-      if (node.name === name) {
-        return {
-          'element' : node,
-          'levelElements': parentNode ? parentNode.children : null,
-          'levelPosition': parentNode ? parentNode.children.indexOf(node) : -1
-        };
-      }
-
-      // cycle over children
-      if (node.children && node.children.length) {
-        for (var i = 0; i < node.children.length; i++) {
-          var childResult = getLayoutHelper(name, node.children[i], node);
-          if (childResult) {
-            return childResult;
-          }
-        }
-      }
-      return null;
-    }
-
-// decrement the size of an element
-    $scope.resizeLayoutElement = function (name, increment) {
-
-      if (!name || !increment) {
-        console.error('resizeLayoutElement requires both name and increment specified');
-      }
-
-      // get the element, level, and position information
-      var layoutObj = getLayoutHelper(name, $scope.layout);
-
-      if (!layoutObj) {// || !layoutObj.element || !layoutObj.levelElements || !layoutObj.levelPosition) {
-        console.error('Could not retrieve required layout object information, got instead:', layoutObj);
-      }
-
-      // check that at least two elements exist
-      if (layoutObj.levelElements.length < 2) {
-        console.warn('Less than 2 elements, aborting resizing');
-      }
-
-      // if the element is the last element on the level, pick element to the
-      // left
-      if (layoutObj.levelPosition === layoutObj.levelElements.length - 1) {
-        console.warn('Cannot use resize controls on last element of level, aborting resizing');
-        return;
-      }
-
-      // extract the element and its neighbor right for convenience
-      var elem = layoutObj.element;
-      var pairedElement = layoutObj.levelElements[layoutObj.levelPosition + 1];
-
-      // TODO REMOVE THIS ONCE COMPLETE -- FOR TESTING ONLY
-      // change increment if the minimum bound is hit
-      if (elem.width === 2) {
-        increment = 1;
-      }
-
-      // check width requirements for both elements
-      if (elem.width + increment < 2) {
-        console.warn('Cannot resize selected element below width 2, aborting resizing');
-        return;
-      }
-      if (pairedElement.width - increment < 2) {
-        console.warn('Resizing selected element reduces another element below width 2, aborting resizing');
-        return;
-      }
-
-      // if all checks pass, resize
-      elem.width += increment;
-      pairedElement.width -= increment;
-
-      // apply the layout
-      $scope.setLayoutWidths($scope.layout);
-
     };
 
 // on load, set the initial view based on classify/validate parameters
@@ -414,7 +284,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
               // TODO Need a more elegant way to handle unsaved work
               // This currently supports one unsaved concept only
-              // which mirrors the current functionality, but is easily broken
+              // which mirrors the current functionality, but is easily
+              // broken
               if ($scope.editList[i] === 'unsaved') {
                 $scope.concepts.push({conceptId: 'unsaved'});
               }
@@ -875,7 +746,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     /**
-     * Create conflict concept pairs to display for side-by-side conflict view
+     * Create conflict concept pairs to display for side-by-side conflict
+     * view
      */
     $scope.setConflictConceptPairs = function () {
       var conflictConceptPairs = [];
@@ -1003,9 +875,10 @@ angular.module('singleConceptAuthoringApp.edit', [
            *
            * Ability to rebase is dependent on state of resolved conflicts,
            * test is made in ng-disabled attribute of rebase button.  The
-           * conflicts container must have been initialized in conflicts.js,
-           * and the conceptsToResolve list must be empty (i.e. all conflicts
-           * moved to conceptsResolved)
+           * conflicts container must have been initialized in
+           * conflicts.js,
+           * and the conceptsToResolve list must be empty (i.e. all
+           * conflicts moved to conceptsResolved)
            *
            */
           $scope.canRebase = true;
@@ -1044,7 +917,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       console.debug($scope.conflictsContainer);
 
-      // if unresolved conflicts exist, confirm with user before continuing
+      // if unresolved conflicts exist, confirm with user before
+      // continuing
       if ($scope.conflictsContainer && $scope.conflictsContainer.conflicts && $scope.conflictsContainer.conflicts.conflictsToResolve && $scope.conflictsContainer.conflictsToResolve.length > 0) {
         var response = window.confirm('Unresolved conflicts detected.  Rebasing may cause your changes to be lost.  Continue?');
 
@@ -1064,7 +938,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             notificationService.sendMessage('Project successfully rebased', 5000);
 
             // TODO This is clunky, short-term fix
-            // should regenerate conflicts, update task state, etc. manually
+            // should regenerate conflicts, update task state, etc.
+            // manually
             $window.location.reload();
           }
         });
@@ -1076,7 +951,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (response !== null) {
             notificationService.sendMessage('Task successfully rebased', 5000);
 
-            // should regenerate conflicts, update task state, etc. manually
+            // should regenerate conflicts, update task state, etc.
+            // manually
             $window.location.reload();
           }
         });
