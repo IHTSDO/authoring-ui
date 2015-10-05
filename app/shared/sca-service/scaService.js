@@ -162,6 +162,21 @@ angular.module('singleConceptAuthoringApp')
         );
       },
 
+      deleteUiStateForUser: function(panelId) {
+        if (!panelId) {
+          console.error('Must specify panelId to delete UI state');
+          return {};
+        }
+
+        return $http.delete(apiEndpoint + 'ui-state/' + panelId, uiState).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
+
       // get the UI state for a project, task, and panel triplet
       getUiStateForTask: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
@@ -208,6 +223,29 @@ angular.module('singleConceptAuthoringApp')
             return response;
           }, function (error) {
             return null;
+          }
+        );
+      },
+
+      // get the UI state for a project, task, and panel triplet
+      deleteUiStateForTask: function (projectKey, taskKey, panelId) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to delete UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to delete UI state');
+          return {};
+        }
+        if (!panelId) {
+          console.error('Must specify panelId to delete UI state');
+          return {};
+        }
+        return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return {};
           }
         );
       },
@@ -273,6 +311,35 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
+
+      deleteModifiedConceptForTask: function (projectKey, taskKey, conceptId) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to save concept in UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to save concept in UI state');
+          return {};
+        }
+        if (!conceptId) {
+          console.warn('No concept id specified for saving concept to UI state, using "unsaved"');
+          conceptId = 'unsaved';
+        }
+
+
+        console.debug('deleting modified concept', projectKey, taskKey);
+
+        // TODO Refine this when support for multiple unsaved concepts goes in
+        return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            notificationService.sendError('Unexpected error autosaving modified work; please ensure you save your work before leaving this page.', 0, null);
+            return null;
+          }
+        );
+      },
+
 
       ///////////////////////////////////////////////
       // Classification
