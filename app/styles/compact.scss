@@ -1,6 +1,23 @@
-  .sca-compact{font-size: 12px;}
+  .sca-compact{font-size: 11px;}
 .sca-compact .table > tbody > tr > td, .sca-compact .table > tbody > tr > th {
     padding: 3px;
 
 }
 .sca-compact .table-full-small tbody > tr > td:first-child, .sca-compact .table-full-small thead tr > th:first-child {padding-left:10px;}
+
+.sca-compact .editing-form input, .sca-compact .editing-form textarea, sca-compact .editing-form textarea, sca-compact .editing-form select, .sca-compact .form-control, .sca-compact .button-width-acceptability, .sca-compact .button-width{padding: 2px 2px !important; font-size: 10px !important;    height: 25px !important; min-height: 25px;line-height:11px!important; vertical-align:middle;} 
+.sca-compact .text-center, .sca-compact .edits button, .sca-compact .model-header h4, .sca-compact .table-full thead tr > th {font-size:10px;}
+
+
+/*padding*/
+.sca-compact .p-20 {
+    padding-top: 10px;
+	 padding-left: 10px;
+	 padding-bottom: 0px;
+}
+.sca-compact .badge, .sca-compact .alert > p, .sca-compact .alert > ul, .sca-compact .btn-round{font-size:10px;}
+.sca-compact .table-title{font-size:14px;}
+.sca-compact .table-search{padding: 5px 20px;}
+.sca-compact .p-t-20 {
+    padding-top: 5px;
+}
