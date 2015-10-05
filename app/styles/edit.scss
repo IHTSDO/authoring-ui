@@ -480,48 +480,29 @@ select.primitive {
 .badge {
     font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: normal;
+	    font-size: 13px;
+    padding: 6px 10px;
+	  margin: 0px;
+    line-height: 13px;
+
 }
 .In.Progress.badge {
     background-color: #E68FBB;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .Promoted.badge {
     background-color: #F3CB67;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .New.badge {
     background-color: #F3CB67;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .In.Review.badge {
     background-color: #8bc34a;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .Review.Completed.badge {
     background-color: #01A2E1;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .Promoted.badge {
     background-color: cyan;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .dashboard-sidebar::-webkit-scrollbar {
     width: 0px;
