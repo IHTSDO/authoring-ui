@@ -47,11 +47,10 @@
 
         <br>
 
-        {{layout}}
         <hr>
         <label for="layoutGrid">Page Layout</label>
         <div id="layoutGrid" class="row no-gutter no-padding">
-          <div ng-repeat="col1 in layout.children" class="sca-layout-elem" ng-class="['col-md-' + {{col1.width}}]">
+          <div ng-repeat="col1 in layout.children" class="sca-layout-elem" ng-class="getLayoutWidths(col1.name)">
             {{col1.name}}
 
             <div ng-if="$index !== layout.children.length -1" class="pull-right">
@@ -59,7 +58,7 @@
               <button class="btn btn-round" ng-click="resizeLayoutElement(col1.name, 1)">+</button>
             </div>
             <div class="row no-gutter no-padding">
-              <div ng-repeat="col2 in col1.children" class="sca-layout-elem" ng-class="['col-md-' + {{col2.width}}]">
+              <div ng-repeat="col2 in col1.children" class="sca-layout-elem" ng-class="getLayoutWidths(col2.name)">
                 {{col2.name}}
 
                 <div ng-if="$index !== col1.children.length -1" class="pull-right">
