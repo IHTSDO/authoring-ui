@@ -61,7 +61,12 @@ angular.module('singleConceptAuthoringApp')
             // reset the concept history to reflect modified change
             resetConceptHistory();
 
+            // set scope flag
+            scope.isModified = true;
 
+
+          } else {
+            scope.isModified = false;
           }
         });
 
@@ -203,6 +208,7 @@ angular.module('singleConceptAuthoringApp')
                 // set concept and unmodified state
                 scope.concept = response;
                 scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+                scope.isModified = false;
 
                 // clear the saved modified state
                 scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
@@ -257,6 +263,7 @@ angular.module('singleConceptAuthoringApp')
                 // set concept and unmodified state
                 scope.concept = response;
                 scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+                scope.isModified = false;
 
                 // clear the saved modified state
                 scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
@@ -1394,10 +1401,14 @@ angular.module('singleConceptAuthoringApp')
           // if changed
           if (scope.concept !== scope.unmodifiedConcept) {
 
+            scope.isModified = true;
+
             // store the modified concept in ui-state
             scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
               // do nothing
             });
+          } else {
+            scope.isModified = false;
           }
         }
 
@@ -1409,10 +1420,10 @@ angular.module('singleConceptAuthoringApp')
 
           // console.debug('conceptEdit: autosave called', scope.concept === scope.lastModifiedConcept, scope.concept);
 
-
-
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
+
+
 
           console.debug('autosave', scope.conceptHistory);
 
