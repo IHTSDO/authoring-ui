@@ -136,7 +136,12 @@ angular.module('singleConceptAuthoringApp.home', [
     $scope.openCreateTaskModal = function () {
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
-        controller: 'taskCtrl'
+        controller: 'taskCtrl',
+          resolve: {
+            task: function() {
+              return null;
+            }
+          }
       });
 
       modalInstance.result.then(function (response) {

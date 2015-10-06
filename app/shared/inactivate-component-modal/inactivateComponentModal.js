@@ -9,6 +9,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.selectReason = function(reason, associationTarget) {
 
+      // NOTE: associationTarget is optional
       if (!reason) {
         window.alert('You must specify a reason for inactivation');
       } else {

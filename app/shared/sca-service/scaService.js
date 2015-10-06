@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response.data;
           }, function (error) {
-            return {};
+            return null;
           }
         );
       },
@@ -154,6 +154,21 @@ angular.module('singleConceptAuthoringApp')
           return {};
         }
         return $http.post(apiEndpoint + 'ui-state/' + panelId, uiState).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
+
+      deleteUiStateForUser: function(panelId) {
+        if (!panelId) {
+          console.error('Must specify panelId to delete UI state');
+          return {};
+        }
+
+        return $http.delete(apiEndpoint + 'ui-state/' + panelId).then(
           function (response) {
             return response;
           }, function (error) {
@@ -212,6 +227,29 @@ angular.module('singleConceptAuthoringApp')
         );
       },
 
+      // get the UI state for a project, task, and panel triplet
+      deleteUiStateForTask: function (projectKey, taskKey, panelId) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to delete UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to delete UI state');
+          return {};
+        }
+        if (!panelId) {
+          console.error('Must specify panelId to delete UI state');
+          return {};
+        }
+        return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return {};
+          }
+        );
+      },
+
       ////////////////////////////////////////////////
       // ui-state calls (specific use wrappers)
       ////////////////////////////////////////////////
@@ -219,11 +257,15 @@ angular.module('singleConceptAuthoringApp')
       getModifiedConceptForTask: function (projectKey, taskKey, conceptId) {
         if (!projectKey) {
           console.error('Must specify projectKey to get UI state');
-          return {};
+          return null;
         }
         if (!taskKey) {
           console.error('Must specify taskKey to get UI state');
-          return {};
+          return null;
+        }
+        if (!conceptId) {
+          console.warn('No concept id specified for saving concept to UI state, using "unsaved"');
+          conceptId = 'unsaved';
         }
 
         console.debug('getModifiedConceptForTask', projectKey, taskKey, conceptId);
@@ -253,7 +295,7 @@ angular.module('singleConceptAuthoringApp')
           conceptId = 'unsaved';
         }
         if (!concept) {
-          console.warn('No concept specified for saving concept to UI state, using text string "unmodified"');
+          console.warn('No concept specified for saving concept to UI state, using dummy JSON object');
           concept = { current : true};
         }
 
@@ -264,10 +306,40 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response.data;
           }, function (error) {
+            notificationService.sendError('Unexpected error autosaving modified work; please ensure you save your work before leaving this page.', 0, null);
             return null;
           }
         );
       },
+
+      deleteModifiedConceptForTask: function (projectKey, taskKey, conceptId) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to save concept in UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to save concept in UI state');
+          return {};
+        }
+        if (!conceptId) {
+          console.warn('No concept id specified for saving concept to UI state, using "unsaved"');
+          conceptId = 'unsaved';
+        }
+
+
+        console.debug('deleting modified concept', projectKey, taskKey);
+
+        // TODO Refine this when support for multiple unsaved concepts goes in
+        return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            notificationService.sendError('Unexpected error autosaving modified work; please ensure you save your work before leaving this page.', 0, null);
+            return null;
+          }
+        );
+      },
+
 
       ///////////////////////////////////////////////
       // Classification
@@ -403,11 +475,10 @@ angular.module('singleConceptAuthoringApp')
 
       updateTask: function (projectKey, taskKey, object) {
         return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-          notificationService.sendMessage('Task ' + taskKey + ' marked ' + response.data.status, 5000, null, null);
+          notificationService.sendMessage('Task ' + taskKey + ' sucessfully updated.', 5000, null, null);
           return response;
         }, function (error) {
-          console.error('Error changing task status to ' + object.status + ' for ' + taskKey + ' in project ' + projectKey);
-          notificationService.sendError('Error changing task status to ' + object.status + ' for ' + taskKey + ' in project ' + projectKey);
+          notificationService.sendError('Error Updating Task ' + taskKey + ' in project ' + projectKey);
           return false;
         });
       },

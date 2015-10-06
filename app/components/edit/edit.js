@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
@@ -72,6 +72,70 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canPromote = false;
     $scope.canConflict = false;
 
+    /**
+     * Helper function called by setView
+     * NOTE: Currently only used to set layout for edit-default
+     */
+    function setLayout(useDefault) {
+
+      var layout = {};
+
+      // set the default layout
+      switch ($scope.thisView) {
+
+        case 'edit-default':
+
+          accountService.getUserPreferences().then(function (preferences) {
+
+            console.debug('preferences', preferences);
+
+            if (preferences && preferences.layout && preferences.layout['editDefault']) {
+              layout = preferences.layout['editDefault'];
+            } else {
+
+
+              // check if user preferences have
+              layout = {
+
+                'name': 'editDefault',
+                'width': 12,
+                'children': [
+                  {
+                    'name': 'sidebar',
+                    'width': 3,
+                  },
+                  {
+                    'name': 'modelsAndConcepts',
+                    'width': 9,
+                    'children': [
+                      {
+                        'name': 'models',
+                        'width': 6,
+                      },
+                      {
+                        'name': 'concepts',
+                        'width': 6
+                      }
+                    ]
+                  }
+                ]
+              };
+            }
+
+            console.debug('new layout object', layout);
+
+            // set the widths for easy access
+            layoutHandler.setLayout(layout);
+
+          });
+          break;
+        default:
+          layout = {};
+          break;
+      }
+
+    }
+
     $scope.setView = function (name) {
 
       // do nothing if no name supplied
@@ -83,11 +147,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      // set this and last view
-      $scope.lastView = $scope.thisView;
-      $scope.thisView = name;
-
-      switch ($scope.thisView) {
+      switch (name) {
         case 'validation':
           $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           break;
@@ -113,9 +173,50 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Invalid View Requested';
           break;
       }
+
+      /*  // if first view set, retrieve persisted layout state and apply
+       if (!$rootScope.layout) {
+       scaService.getUiStateForUser('page-layouts').then(function (response) {
+       $rootScope.layout = response;
+       setLayout();
+       });
+       }
+       */
+      // otherwise simply apply layout settings
+
+      // set this and last views
+      $scope.lastView = $scope.thisView;
+      $scope.thisView = name;
+
+      // set layout based on view
+      setLayout();
+
     };
 
-    // on load, set the initial view based on classify/validate parameters
+    /**
+     * edit.js-specific helper function to return full boostrap col names
+     * May need to change depending on responsive needs
+     * @param name the unique column name
+     * @returns (*) an array of col-(size)-(width) class names
+     */
+    $scope.getLayoutWidths = function (name) {
+
+      if (!$rootScope.layoutWidths || !$rootScope.layoutWidths[name]) {
+        return;
+      }
+
+      var width = $rootScope.layoutWidths[name];
+      var colClasses = [
+        'col-xs-12',
+        'col-sm-12',
+        'col-md-' + width,
+        'col-lg-' + width,
+        'col-xl-' + width
+      ];
+      return colClasses;
+    };
+
+// on load, set the initial view based on classify/validate parameters
     if ($routeParams.mode === 'classify') {
       $scope.setView('classification');
     } else if ($routeParams.mode === 'validate') {
@@ -138,13 +239,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('edit-default');
     }
 
-    // if improper route, send error and halt
+// if improper route, send error and halt
     else {
       notificationService.sendError('Bad URL request for task view detected (' + $routeParams.mode + ').  Acceptable values are: edit, classify, conflicts, feedback, and validate');
       return;
     }
 
-    // function to flag items in saved list if they exist in edit panel
+// function to flag items in saved list if they exist in edit panel
     function flagEditedItems() {
 
       if ($scope.editList && $scope.savedList) {
@@ -164,7 +265,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-    // get edit panel list (task view only)
+// get edit panel list (task view only)
     if ($scope.taskKey) {
 
       console.debug('edit.js: task detected', $scope.taskKey);
@@ -182,9 +283,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
               // TODO Need a more elegant way to handle unsaved work
               // This currently supports one unsaved concept only
-              // which mirrors the current functionality, but is easily broken
+              // which mirrors the current functionality, but is easily
+              // broken
               if ($scope.editList[i] === 'unsaved') {
-                $scope.concepts.push({});
+                $scope.concepts.push({conceptId: 'unsaved'});
               }
               $scope.addConceptToListFromId($scope.editList[i]);
             }
@@ -275,6 +377,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
           notificationService.sendMessage('All concepts loaded', 10000, null);
+          $scope.updateEditListUiState();
         } else {
           // send loading notification for user display
           notificationService.sendMessage('Loading concepts...', 10000, null);
@@ -461,6 +564,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       // otherwise, editing view, remove from edit list
       else {
 
+        if (!data.concept.conceptId && data.concept !== objectService.getNewConcept()) {
+          if (window.confirm('This concept is unsaved; removing it will destroy your work.  Continue?')) {
+            scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
+          }
+        }
+
         // remove the concept
         var index = $scope.concepts.indexOf(data.concept);
         $scope.concepts.splice(index, 1);
@@ -643,7 +752,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     /**
-     * Create conflict concept pairs to display for side-by-side conflict view
+     * Create conflict concept pairs to display for side-by-side conflict
+     * view
      */
     $scope.setConflictConceptPairs = function () {
       var conflictConceptPairs = [];
@@ -771,9 +881,10 @@ angular.module('singleConceptAuthoringApp.edit', [
            *
            * Ability to rebase is dependent on state of resolved conflicts,
            * test is made in ng-disabled attribute of rebase button.  The
-           * conflicts container must have been initialized in conflicts.js,
-           * and the conceptsToResolve list must be empty (i.e. all conflicts
-           * moved to conceptsResolved)
+           * conflicts container must have been initialized in
+           * conflicts.js,
+           * and the conceptsToResolve list must be empty (i.e. all
+           * conflicts moved to conceptsResolved)
            *
            */
           $scope.canRebase = true;
@@ -812,7 +923,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       console.debug($scope.conflictsContainer);
 
-      // if unresolved conflicts exist, confirm with user before continuing
+      // if unresolved conflicts exist, confirm with user before
+      // continuing
       if ($scope.conflictsContainer && $scope.conflictsContainer.conflicts && $scope.conflictsContainer.conflicts.conflictsToResolve && $scope.conflictsContainer.conflictsToResolve.length > 0) {
         var response = window.confirm('Unresolved conflicts detected.  Rebasing may cause your changes to be lost.  Continue?');
 
@@ -832,7 +944,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             notificationService.sendMessage('Project successfully rebased', 5000);
 
             // TODO This is clunky, short-term fix
-            // should regenerate conflicts, update task state, etc. manually
+            // should regenerate conflicts, update task state, etc.
+            // manually
             $window.location.reload();
           }
         });
@@ -844,7 +957,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (response !== null) {
             notificationService.sendMessage('Task successfully rebased', 5000);
 
-            // should regenerate conflicts, update task state, etc. manually
+            // should regenerate conflicts, update task state, etc.
+            // manually
             $window.location.reload();
           }
         });

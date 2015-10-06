@@ -1,15 +1,19 @@
 <style>
-    .auto-grow-textarea {
-        overflow: hidden;
-        padding: 4px;
-    }
+  .auto-grow-textarea {
+    overflow: hidden;
+    padding: 4px;
+  }
+  .task-color-black {
+    color: black;
+  }
 </style>
 
 <div id="taskModal">
 
   <div class="modal-header">
     <button type="button" class="close" ng-click="close()">&times;</button>
-    <h4 class="modal-title">Create New Task</h4>
+    <h4 class="modal-title" ng-if="!task.key">Create New Task</h4>
+    <h4 class="modal-title" ng-if="task.key">Update Task</h4>
   </div>
 
 
@@ -22,20 +26,40 @@
         <!-- TODO Fix formatting on control-label, causing absolute positioning and overlap -->
         <div class="form-group">
           <label for="taskTitle">Task title</label>
-          <input id="taskTitle" ng-model="taskTitle" ng-change="clearMessages()" type="text" class="form-control"
+          <input id="taskTitle" ng-model="task.summary" ng-change="clearMessages()" type="text" class="form-control"
                  placeholder="Enter task title">
 
           <br>
-          <label for="taskProject">Select Project:</label>
-          <select id="taskProject" name="select-choice" class="form-control"
-                  ng-options="project as project.title for project in projects | orderBy: 'title'"
-                  ng-model="taskProject"
-                  ng-change="clearMessages()">
-          </select>
+          <div ng-if="!task.key">
+            <label for="taskProject">Select Project:</label>
+              <select id="taskProject" name="select-choice" class="form-control"
+                      ng-options="project.key as project.title for project in projects | orderBy: 'title'"
+                      ng-model="task.projectKey"
+                      ng-class="[{'task-color-black': task.key}] "
+                      ng-change="clearMessages()"
+                      >
+              </select>
+          </div>
+          <div ng-if="task.key">
+            <label for="taskProject">Project:</label>
+            <div class="">{{task.projectKey}}</div>
+          </div>
           <br>
           <label for="textArea">Task Details</label>
-          <textarea ng-change="clearMessages()" sca-auto-expand="" class="form-control vertical auto-grow-textarea" rows="3" id="textArea"
-                    ng-model="taskDetails" placeholder="Enter task details"></textarea>
+          <textarea ng-change="clearMessages()" sca-auto-expand="" class="form-control vertical auto-grow-textarea"
+                    rows="3" id="textArea"
+                    ng-model="task.description" placeholder="Enter task details"></textarea>
+
+          <br>
+
+<!--
+          <div ng-if="task.key">
+            <label for="taskAssignee">Assigned User</label>
+            <input id="taskAssignee" ng-model="task.assignee.username" ng-change="clearMessages()" type="text"
+                   class="form-control"
+                   placeholder="Enter assignee's user name">
+          </div>
+-->
 
         </div>
 
@@ -48,13 +72,22 @@
     </div>
 
     <div class="modal-footer">
-       <div class="col-md-6 no-padding-left">
-      <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin no-padding-left"
-              ng-click="createTask(taskTitle, taskProject, taskDetails) == true ? $hide() : ''">Create Task
-      </button>
-      </div>  <div class="col-md-6 no-padding-right">
-      <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-danger no-margin no-padding-right" ng-click="close()">Cancel</button>
-    </div></div>
+      <div ng-if="!task.key" class="col-md-6 no-padding-left">
+        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin no-padding-left"
+                ng-click="createTask() == true ? $hide() : ''">Create Task
+        </button>
+      </div>
+      <div ng-if="task.key" class="col-md-6 no-padding-left">
+        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin no-padding-left"
+                ng-click="updateTask() == true ? $hide() : ''">Update Task
+        </button>
+      </div>
+      <div class="col-md-6 no-padding-right">
+        <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-danger no-margin no-padding-right"
+                ng-click="close()">Cancel
+        </button>
+      </div>
+    </div>
 
   </div>
 
