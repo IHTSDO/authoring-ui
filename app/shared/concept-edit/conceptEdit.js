@@ -302,7 +302,7 @@ angular.module('singleConceptAuthoringApp')
 
           // if active, ensure concept is fully saved prior to inactivation
           // don't want to persist the inactivation reason without a forced save
-          if (scope.unmodifiedConcept !== scope.concept) {
+          if (scope.isModified) {
             window.alert('You must save your changes to the concept before ' + (scope.concept.active ? 'inactivation.' : 'reactivation.'));
             return;
           }
