@@ -1,17 +1,5 @@
 <div id="userPreferencesModal">
 
-  <style>
-    .sca-layout-elem {
-      background-color: darkgray;
-      border-style: solid;
-      border-color: black;
-      border-width: 1px;
-      text-align: center;
-      color: white;
-      height: 45px;
-    }
-
-  </style>
 
   <div class="modal-header">
     <button type="button" class="close" ng-click="close()">&times;</button>
@@ -49,21 +37,26 @@
 
         <hr>
         <label for="layoutGrid">Page Layout</label>
+       
         <div id="layoutGrid" class="row no-gutter no-padding">
+     
           <div ng-repeat="col1 in layout.children" class="sca-layout-elem" ng-class="getLayoutWidths(col1.name)">
-            {{col1.name}}
+           
 
-            <div ng-if="$index !== layout.children.length -1" class="pull-right">
-              <button class="btn btn-round" ng-click="resizeLayoutElement(col1.name, -1)">-</button>
-              <button class="btn btn-round" ng-click="resizeLayoutElement(col1.name, 1)">+</button>
+            <div ng-if="$index !== layout.children.length -1" class="pull-right sca-layout-elem layout-slider {{col1.name}}">
+              <span class="pull-left slider-title">{{col1.name}}</span>
+                <button class="btn btn-default plus" ng-click="resizeLayoutElement(col1.name, 1)">+</button>
+              <button class="btn btn-default minus" ng-click="resizeLayoutElement(col1.name, -1)">-</button>
+            
             </div>
             <div class="row no-gutter no-padding">
-              <div ng-repeat="col2 in col1.children" class="sca-layout-elem" ng-class="getLayoutWidths(col2.name)">
-                {{col2.name}}
+              <div ng-repeat="col2 in col1.children" class="sca-layout-elem {{col2.name}} pull-left" ng-class="getLayoutWidths(col2.name)">
+                <span class="pull-left slider-title">{{col2.name}}</span>
 
                 <div ng-if="$index !== col1.children.length -1" class="pull-right">
-                  <button class="btn btn-round" ng-click="resizeLayoutElement(col2.name, -1)">-</button>
-                  <button class="btn btn-round" ng-click="resizeLayoutElement(col2.name, 1)">+</button>
+                   <button class="btn btn-default plus" ng-click="resizeLayoutElement(col2.name, 1)">+</button>
+                  <button class="btn btn-default minus" ng-click="resizeLayoutElement(col2.name, -1)">-</button>
+               
                 </div>
               </div>
             </div>

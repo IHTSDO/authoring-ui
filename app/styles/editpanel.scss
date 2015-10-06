@@ -815,3 +815,21 @@ button.fsn-title-button {
 .description-more .module-id {
     width: 63%;
 }
+/* slider*/
+    .sca-layout-elem {
+      background-color: #c9cccd;
+    
+      text-align: center;
+      color: white;
+      height: 20px;
+    }
+
+.layout-slider.sidebar, .sca-layout-elem.concepts {background-color:#7a7c7c}
+
+.btn-default.minus, .btn-default.plus{background-color:#505252;margin-top:-4px;  margin-right:0px;  padding: 0px; width:20px; float:right;
+    font-size: 16px;
+    line-height: 28px; color:#fff;}
+	.btn-default.minus:hover, .btn-default.plus:hover{background-color:#676a6a}
+	.layout-slider{width:100%; text-align:center}
+	.slider-title{    padding: 1px 8px; font-size:10px; text-transform:uppercase}
+#layoutGrid{margin-bottom:15px;}
