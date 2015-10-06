@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       if (!item) {
         return;
       }
-
+      console.log(item.concept.conceptId);
       $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
 
     };

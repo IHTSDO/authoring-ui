@@ -377,6 +377,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
           notificationService.sendMessage('All concepts loaded', 10000, null);
+          $scope.updateEditListUiState();
         } else {
           // send loading notification for user display
           notificationService.sendMessage('Loading concepts...', 10000, null);
