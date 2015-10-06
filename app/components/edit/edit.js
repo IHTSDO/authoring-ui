@@ -119,11 +119,10 @@ angular.module('singleConceptAuthoringApp.edit', [
                     ]
                   }
                 ]
-              }
+              };
             }
-            ;
 
-            console.debug('new layout object', layout)
+            console.debug('new layout object', layout);
 
             // set the widths for easy access
             layoutHandler.setLayout(layout);

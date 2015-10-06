@@ -1388,7 +1388,7 @@ angular.module('singleConceptAuthoringApp')
 
         scope.$watch('conceptHistory', function() {
           // console.debug('history', scope.conceptHistory);
-        })
+        });
 
         /**
          * Saves the current concept state for later retrieval
