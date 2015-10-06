@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp')
           return {};
         }
 
-        return $http.delete(apiEndpoint + 'ui-state/' + panelId, uiState).then(
+        return $http.delete(apiEndpoint + 'ui-state/' + panelId).then(
           function (response) {
             return response;
           }, function (error) {
