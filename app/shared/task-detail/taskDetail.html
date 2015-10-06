@@ -4,6 +4,7 @@
   <div class="row">
 
     <div class="col col-md-12">
+
       <ul class="timeline">
         <li>
           <div class="timeline-badge">
@@ -26,10 +27,33 @@
               <label class="control-label">Task Details:</label>
               <h4 class="timeline-title">{{task.description}}</h4>
             </div>
+
+
           </div>
+
+
+        </li>
+
+        <li>
+          <div class="timeline-badge">
+            <i class="icon-circle theme-border"></i>
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <h4 class="timeline-title">
+                <button class="btn btn-default blue validate"
+                        ng-click="updateTask()" style="text-transform: none">
+                  <span class="button-link">Edit Task</span>
+                </button></h4>
+            </div>
+
+          </div>
+
+
         </li>
       </ul>
     </div>
+
 
 
   </div>

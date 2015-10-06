@@ -85,7 +85,7 @@ aside.editpanel ul a {
     -webkit-box-shadow: none;
     box-shadow: none !important;
 }
-.editing-form .concept-headers select {
+select.primitive  {
   color: #fff !important;
 }
 .editing-form input:focus,
@@ -121,7 +121,8 @@ aside.editpanel ul a {
     border-color: transparent;
 }
 .editing-form button:active {
-    background-color: #66bbfd;
+    color: #66bbfd;
+	 background-color: transparent;
     border-color: transparent;
 }
 .editing-form input[type=submit] {
@@ -366,11 +367,11 @@ input {
 @media (max-width: 1380px) {
     .title-text {
         font-size: 11px !important;
-        max-width: 270px !important;
+   
     }
     .small-buttons {
-        padding: 2px 4.5% !important;
-        font-size: 14px !important;
+        padding: 1% !important;
+        font-size: 15px !important;
     }
     .snomed-clear {
         margin-top: 5px;
@@ -414,8 +415,8 @@ input {
         padding: 10px 5px;
     }
     .small-buttons {
-        padding: 2px 4.2% !important;
-        font-size: 14px !important;
+        padding: 1% !important;
+        font-size: 16px !important;
     }
     .concept-headers {
         padding-bottom: 0px;
@@ -731,9 +732,7 @@ button.fsn-title-button {
 }
 /* popover */
 
-.popover {
-    color: #353535
-}
+
 .popover.left > .arrow:after {} .alert-danger.validation {
     margin: 0px;
     border-radius: 0px;
@@ -763,19 +762,21 @@ button.fsn-title-button {
     margin-right: 10px;
 }
 .popover {
-    min-width: 500px !important;
+    min-width: 450px !important;
 }
 .pop-edit {
-    font-size: 12px;
+    font-size: 11px;
     margin: 0px !important;
 }
 .popover select {
     margin-bottom: 0px!important;
     padding: 0px!important;
+	color:#474747!important;
 }
-.control-label {
+.popover .control-label {
     font-weight: 400;
     width: 100%;
+	font-size:11px;
     padding-bottom: 3px;
     margin-bottom: 3px;
     color: rgba(0, 0, 0, .4);
@@ -791,26 +792,26 @@ button.fsn-title-button {
     margin-right: 3%
 }
 .concept-more .time {
-    width: 15%;
-    margin-right: 3%
+    width: 13%;
+    margin-right: 1%
 }
 .concept-more .module {
-    width: 65%;
+    width: 69%;
 }
 /* description level */
 
 .description-more .sct-id {
-    width: 12%;
-    margin-right: 3%
+    width: 14%;
+    margin-right: 1%
 }
 .description-more .time {
     width: 13%;
-    margin-right: 3%
+    margin-right: 1%
 }
 .description-more .lang-id {
-    width: 10%;
-    margin-right: 3%
+    width: 7%;
+    margin-right: 1%
 }
 .description-more .module-id {
-    width: 56%;
+    width: 63%;
 }

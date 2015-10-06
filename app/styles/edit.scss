@@ -1,3 +1,4 @@
+.concept-headers:first-child{padding-top:15px;}
 .dashboard-links a {
     color: #fff;
 }
@@ -8,6 +9,7 @@
 /*model bg */
 button.widget-toolbar{width: 50px; height: 50px; margin: 0; padding: 0;}
 /*disabled buttons*/
+
 .classification-btn .btn-default[disabled] {background-color:#d8d8d8!important; border-color:#d8d8d8!important; color:#737373!important}
 .classification-btn .btn-default[disabled] span{color:#737373!important; background-color:#d8d8d8!important}
 .widget-toolbar .green.darken-1{}
@@ -160,26 +162,6 @@ button,
     font-size: 12px;
     float: left;
 }
-.editbuttons.orange.darken-3:hover {
-    background-color: #e65100 !important;
-    color: #fff !important;
-}
-.editbuttons.amber:hover {
-    background-color: #ff8f00 !important;
-    color: #fff !important;
-}
-.editbuttons.deep-purple.lighten-1:hover {
-    background-color: #5e35b1 !important;
-    color: #fff !important;
-}
-.editbuttons.blue:hover {
-    background-color: #1976D2 !important;
-    color: #fff !important;
-}
-.editbuttons.teal:hover {
-    background-color: #00796b !important;
-    color: #fff !important;
-}
 .saved-list-title {
     font-size: 12px !important;
     text-transform: none !important;
@@ -267,10 +249,7 @@ button,
         text-align: left;
     }
 }
-.popover {
-    max-width: 400px;
-    min-width: 350px;
-}
+
 .popover select.form-control {
     background-color: #fff;
     padding: 5px 20px 5px 15px;
@@ -501,48 +480,29 @@ select.primitive {
 .badge {
     font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: normal;
+	    font-size: 13px;
+    padding: 6px 10px;
+	  margin: 0px;
+    line-height: 13px;
+
 }
 .In.Progress.badge {
     background-color: #E68FBB;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .Promoted.badge {
     background-color: #F3CB67;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .New.badge {
     background-color: #F3CB67;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .In.Review.badge {
     background-color: #8bc34a;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .Review.Completed.badge {
     background-color: #01A2E1;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .Promoted.badge {
     background-color: cyan;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .dashboard-sidebar::-webkit-scrollbar {
     width: 0px;
@@ -576,7 +536,7 @@ select.primitive {
 }
 .sidebar-bg{background-color:#ececec; }
 .sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
-.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}
+.sidebar-tabs a.tooltips-btm span, .sidebar-tabs button.tooltips-btm span {min-width:80px;}sca-column
 .hasSVG {
     background-color: #fff;
 }
@@ -736,4 +696,12 @@ select.primitive {
 .project-main-buttons .project-icon .md {
     line-height: 30px;
     font-size: 16px;
+}
+.popover {
+    color: #353535;
+	line-height:1;
+}
+.popover-content {
+    padding: 3px 7px!important;
+	    max-height: 40px;
 }

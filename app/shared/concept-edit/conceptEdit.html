@@ -20,34 +20,79 @@
       font-size: 14px !important;
     }
 
+    .small-buttons:hover {
+      background: transparent !important;
+      color: #eee !important;
+    }
+
+    .small-buttons.green {
+      color: #4CAF50;
+      background-color: transparent;
+    }
+
+    .small-buttons.orange.darken-3 {
+      color: #ef6c00;
+      background-color: transparent;
+    }
+
+    .small-buttons.blue {
+      color: #00a6e5;
+      background-color: transparent;
+    }
+
+    .small-buttons.red {
+      color: #e92848;
+      background-color: transparent;
+    }
+
+    .small-buttons.purple.darken-1 {
+      color: #8e24aa;
+      background-color: transparent;
+    }
+
+    .small-buttons.lighten-2 {
+      color: #9575cd;
+      background-color: transparent;
+    }
+
+    .small-buttons.save-button {
+      height: 20px;
+      font-size: 17px !important;
+    }
+
+    .small-buttons.amber {
+      color: #ffc107;
+      background-color: transparent;
+    }
   </style>
 
   <!-- begin validation error -->
-  <div class="alert alert-dismissible alert-danger validation" ng-show="concept.error">
+  <div class="alert alert-dismissible alert-danger validation" ng-show="error">
     <button type="button" class="close" data-dismiss="alert">×</button>
     <h4>Validation Error!</h4>
-    {{concept.error}}
+    {{error}}
   </div>
-  <div class="alert alert-dismissible alert-warning validation" ng-show="concept.warning">
+  <div class="alert alert-dismissible alert-warning validation" ng-show="warning">
     <button type="button" class="close" data-dismiss="alert">×</button>
     <h4>Warning</h4>
-    {{concept.warning}}
+    {{warning}}
   </div>
   <!-- end validation error -->
-  <div class="row p-5 grey darken-4 concept-headers " style=" margin-right:0px;">
+  <div class="row p-10 grey darken-4 concept-headers " style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
-      
+
       <button ng-click="setConceptProperties(concept)" type="button"
               class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v tooltips-left tooltips-light normal-case"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="left"
               popover-trigger="click: click"><span>More details</span></button>
 
       <button ng-click="saveConcept()" type="button"
-              class="btn-default editbuttons small-buttons purple darken-1 md fa fa-save tooltips-left tooltips-light normal-case m-l-15"
+              class="btn-default save-button small-buttons deep-purple lighten-2 md md-save tooltips-left tooltips-light normal-case "
               ng-click="saveConcept()"
-              ng-if="lastSavedVersion"><span> Save Concept </span></button>
+              ng-if="isModified"><span> Save Concept </span></button>
 
     </div>
+
 
     <!-- draggable element -- concept name -->
     <div class="pull-left col-md-6 no-padding title-text"
@@ -61,14 +106,16 @@
               ng-disabled="isStatic"
               ng-model="concept.definitionStatus"
               ng-change="saveConcept(concept)"
-              class="form-control  grey darken-4 primitive pull-left"
+              class="form-control grey darken-4 primitive pull-left"
               style="width:30px;"
               ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
+
       <div class="pull-right">
-      <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
-              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-down' : isCollapsed, ' fa fa-caret-up' : !isCollapsed}]"></button>
-    </div></div>
+        <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
+                ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-down' : isCollapsed, ' fa fa-caret-up' : !isCollapsed}]"></button>
+      </div>
+    </div>
     <div class="pull-right no-margin edits concept-title col-md-4 no-padding">
 
       <!-- Revert button only appears if parent is specified -->
@@ -77,39 +124,41 @@
       </button>
 
       <!-- control buttons -->
-      
+
       <button ng-if="!isStatic"
               type="button"
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, ' fa fa-power-off', {green : concept.active}, {red: !concept.active}]"
-              ng-click="toggleConceptActive(concept)" class="small-buttons tooltips-left tooltips-light normal-case"><span> Activate/ inactivate concept </span></button>
+              ng-click="toggleConceptActive(concept)" class="small-buttons tooltips-left tooltips-light normal-case">
+        <span> Activate/ inactivate concept </span></button>
       <button type="button"
               style="vertical-align: bottom"
               class="btn-default editbuttons small-buttons color_{{relationship.groupId}} tooltips-left tooltips-light normal-case"
               ng-class="[{'red fa fa-level-down' : !hideInactive}, {'fa fa-level-up green' : hideInactive}]"
-               ng-click="toggleHideInactive()"><span> Show/hide inactive components </span></button>
+              ng-click="toggleHideInactive()"><span> Show/hide inactive components </span></button>
 
 
-
-    <button type="button" class="btn-default editbuttons small-buttons amber md md-undo "
+      <button type="button" class="btn-default editbuttons small-buttons amber md md-undo "
               title="Undo Changes"
               ng-click="undo()"
-              ng-disabled="conceptHistoryPtr === 0"
+              ng-disabled="conceptHistoryPtr < 1"
               ng-if="!isStatic"></button>
       <button type="button" class="btn-default editbuttons small-buttons amber md md-redo "
               title="Redo Changes"
               ng-click="redo()"
               ng-if="!isStatic"
-              ng-disabled="conceptHistoryPtr === conceptHistory.length - 1" ></button>
-      <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-1 md md-history"
-              title="Undo All Changes"
+              ng-disabled="conceptHistoryPtr === conceptHistory.length - 1"></button>
+      <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history"
+              title="Revert to Saved"
               ng-click="undoAll()"
               ng-if="!isStatic"
-              ng-disabled="conceptHistoryPtr === 0"></button>
-      <button type="button" class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap" title="Show/Hide Model"
+              ng-disabled="unmodifiedConcept !== concept"></button>
+      <button type="button"
+              class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap"
+              title="Show/Hide Model"
               ng-click="showModel(concept)"
               ng-if="!isStatic"><span> Show model </span></button>
-              <button ng-if="!isStatic" type="button"
+      <button ng-if="!isStatic" type="button"
               class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-left tooltips-light normal-case"
               ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span></button>
     </div>
@@ -126,7 +175,8 @@
              drag-channel="conceptEditDescription"
              drop-channel="conceptEditDescription"
              ui-on-drop="dropDescription(concept, description, $data)">
-          <button ng-click="setDescriptionProperties(description)" class=" darken-3 md morebuttons fa fa-ellipsis-v button-width"
+          <button ng-click="setDescriptionProperties(description)"
+                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"
                   ng-click="populateDescriptionMore(description)"></button>
           <!-- Commented out until functional
@@ -162,10 +212,13 @@
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
                       maxlength="255"
-                      ng-model="description.term" class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
+                      ng-model="description.term"
+                      class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
                       placeholder="Description">
             </textarea>
-            <textarea ng-if="description.type === 'TEXT_DEFINITION'" style="" class="msd-elastic resizable-text form-control color_{{relationship.groupId}}" ng-change="updateDescription(description)"
+            <textarea ng-if="description.type === 'TEXT_DEFINITION'" style=""
+                      class="msd-elastic resizable-text form-control color_{{relationship.groupId}}"
+                      ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="description.effectiveTime"
                       maxlength="4096"
@@ -208,7 +261,7 @@
 
           <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
                   class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case"
-                  ><span>Add New Description</span></button>
+            ><span>Add New Description</span></button>
 
         </div>
       </div>
@@ -217,7 +270,8 @@
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getIsARelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
-         ui-on-drop="dropRelationship(relationship, $data)" ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
+         ui-on-drop="dropRelationship(relationship, $data)"
+         ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
       <div class="row darken-3 p-t-5 grey ">
         <!-- Button controls -->
         <div class="col-md-12 no-padding color_{{relationship.groupId}}"
@@ -248,6 +302,7 @@
           <!-- relationship group -->
           <div class="pull-left rolegroup">
           <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
+                    ng-model-options="{updateOn: 'blur'}"
                     ng-disabled="relationship.effectiveTime"
                     ng-change="updateRelationship(relationship)"
                     class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
@@ -262,6 +317,7 @@
                ui-on-drop="dropRelationshipType(relationship, $data)">
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
                     class="form-control color_{{relationship.groupId}}"
+                    ng-model-options="{updateOn: 'blur'}"
                     ng-change="updateRelationship(relationship)"
                     type="text"
                     placeholder="#">
@@ -277,6 +333,7 @@
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
                     class="form-control color_{{relationship.groupId}}"
                     type="text"
+                    ng-model-options="{updateOn: 'blur'}"
                     ng-change="updateRelationship(relationship)"
                     placeholder="#">
           </textarea>
@@ -295,7 +352,8 @@
     <!-- rows: Concept Attributes (in relationships) -->
     <div ng-repeat="relationship in getAttributeRelationships(true)"
          ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
-         ui-on-drop="dropRelationship(relationship, $data)" ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
+         ui-on-drop="dropRelationship(relationship, $data)"
+         ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
       <div class="row darken-3 p-t-5 grey">
 
         <div class=" clearfix col-md-12 no-padding form-control color_{{relationship.groupId}}"
@@ -328,6 +386,7 @@
           <div class="pull-left rolegroup">
           <textarea style="" ng-disabled="relationship.effectiveTime" ng-model="relationship.groupId"
                     ng-change="updateRelationship(relationship)"
+                    ng-model-options="{updateOn: 'blur'}"
                     class="msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                     ng-change="updateRelationship(relationship)"
                     ui-on-drop="dropNullOp()">
@@ -342,6 +401,7 @@
                     class="msd-elastic color_{{relationship.groupId}}"
                     type="text"
                     ng-change="updateRelationship(relationship)"
+                    ng-model-options="{updateOn: 'blur'}"
                     placeholder="#">
           </textarea>
           </div>
@@ -354,6 +414,7 @@
           <textarea style="" disabled ng-model="relationship.target.fsn"
                     class="msd-elastic form_control color_{{relationship.groupId}}"
                     type="text"
+                    ng-model-options="{updateOn: 'blur'}"
                     ng-change="updateRelationship(relationship)"
                     placeholder="#">
           </textarea>
@@ -365,9 +426,10 @@
           </div>
         </div>
 
-
       </div>
     </div>
+
   </div>
   <div class="clearfix"></div>
+
 </div>
