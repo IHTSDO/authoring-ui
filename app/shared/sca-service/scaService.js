@@ -795,7 +795,7 @@ angular.module('singleConceptAuthoringApp')
                    */
                   case 'BranchState':
                     if (newNotification.event === 'DIVERGED') {
-                      $rootScope.$broadcast('branchDiverged');
+                      //$rootScope.$broadcast('branchDiverged');
                       $rootScope.$broadcast('notification.branchState', newNotification);
                     }
                     break;
