@@ -1482,6 +1482,30 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
 
         };
+        
+        //////////////////////////////////////////////
+        // Attribute Removal functions
+        //////////////////////////////////////////////
+
+        /**
+         * Deletes a given description by index from the descriptions array and then updates the ui-state for the concept
+         * @param description
+         */
+        scope.deleteDescription = function (description){
+            var index = scope.concept.descriptions.indexOf(description);
+            scope.concept.descriptions.splice(index, 1);
+            autoSave();
+        };
+        
+        /**
+         * Deletes a given relationship by index from the relationships array and then updates the ui-state for the concept
+         * @param relationship
+         */
+        scope.deleteRelationship = function (relationship){
+            var index = scope.concept.relationships.indexOf(relationship);
+            scope.concept.relationships.splice(index, 1);
+            autoSave();
+        };
 
         //////////////////////////////////////////////
         // Model functions
