@@ -259,9 +259,12 @@
             </button>
           </div>
 
-          <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
+          <button ng-if="!isStatic && description.effectiveTime" type="button" ng-click="addDescription($index)"
                   class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case"
             ><span>Add New Description</span></button>
+          <button ng-if="!isStatic && !description.effectiveTime" type="button" ng-click="deleteDescription(description)"
+                  class="btn-default add-buttons md fa fa-close orange darken-3 button-width pull-right tooltips-left tooltips-light normal-case"
+            ><span>Delete Description</span></button>
 
         </div>
       </div>
@@ -338,10 +341,15 @@
                     placeholder="#">
           </textarea>
           </div>
-          <div ng-if="!isStatic" class="pull-right button-width">
+          <div ng-if="!isStatic && relationship.effectiveTime" class="pull-right button-width">
             <button type="button" ng-click="addIsaRelationship($index)"
                     class="btn-default add-buttons grey  md fa fa-plus"
                     title="Add New Is A Relationship"></button>
+          </div>
+          <div ng-if="!isStatic && !relationship.effectiveTime" class="pull-right button-width">
+            <button type="button" ng-click="deleteRelationship(relationship)"
+                    class="btn-default add-buttons grey  md fa fa-close"
+                    title="Remove Relationship"></button>
           </div>
         </div>
 
@@ -419,10 +427,15 @@
                     placeholder="#">
           </textarea>
           </div>
-          <div ng-if="!isStatic" class="pull-right button-width">
+          <div ng-if="!isStatic && relationship.effectiveTime" class="pull-right button-width">
             <button type="button" ng-click="addAttributeRelationship($index, relationship.groupId)"
                     class="btn-default add-buttons grey  md fa fa-plus"
                     title="Add New Attribute"></button>
+          </div>
+          <div ng-if="!isStatic && !relationship.effectiveTime" class="pull-right button-width">
+            <button type="button" ng-click="deleteRelationship(relationship)"
+                    class="btn-default add-buttons grey  md fa fa-close"
+                    title="Remove Relationship"></button>
           </div>
         </div>
 
