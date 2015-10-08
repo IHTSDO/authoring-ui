@@ -1491,7 +1491,9 @@ angular.module('singleConceptAuthoringApp')
          * Hides or displays model for a given concept (edit view only)
          * @param concept
          */
+        scope.modelVisible = true;
         scope.showModel = function (concept) {
+          scope.modelVisible = !scope.modelVisible;
           if ($('#image-' + concept.conceptId).css('display') === 'none') {
             $('#image-' + concept.conceptId).css('display', 'inline-block');
           }
