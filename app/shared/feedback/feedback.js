@@ -591,6 +591,14 @@ angular.module('singleConceptAuthoringApp')
                 // set the scope variables
                 scope.feedbackContainer.review.conceptsToReview = conceptsToReview;
                 scope.feedbackContainer.review.conceptsReviewed = conceptsReviewed;
+                  
+                //Loops through all items in the reviewed list. If they have been changed since 
+                //the review was created they are moved back to 'To Review'
+                angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (item) {
+                  if(item.modifiedSinceReview === true){
+                      scope.returnToReview(item);
+                  }
+                });
 
                 // on load, initialize tables -- all subsequent reloads are
                 // manual
