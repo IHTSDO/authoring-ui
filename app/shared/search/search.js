@@ -9,6 +9,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     $scope.resultsPage = 1;
     $scope.resultsSize = 20;
     $scope.results = null;
+      $scope.loadPerformed = false;
     $scope.loadMoreEnabled = false;
     $scope.searchStr = '';
 
@@ -56,6 +57,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if (!response) {
           notificationService.sendError('Unexpected error searching for concepts', 10000);
         }
+
+        $scope.loadPerformed = true;
 
         
         // either a list or single object, switch based on 'data'
