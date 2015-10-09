@@ -75,8 +75,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
             console.debug('preferences', preferences);
 
-            if (preferences && preferences.layout && preferences.layout['editDefault']) {
-              layout = preferences.layout['editDefault'];
+            if (preferences && preferences.layout && preferences.layout.editDefault) {
+              layout = preferences.layout.editDefault;
             } else {
 
 

@@ -1,13 +1,20 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('objectService', ['$http', '$rootScope', function ($http, $rootScope) {
+  .service('objectService', function () {
 
     /////////////////////////////////////
     // calls to return JSON objects
     /////////////////////////////////////
 
-    // creates a blank description linked to specified concept
+    /**
+     * Get a default blank description (acceptable Synonym)
+     * @param conceptId
+     * @returns {{active: boolean, moduleId: string, type: string, term: null,
+     *   lang: string, caseSignificance: string, conceptId: *,
+     *   acceptabilityMap: {900000000000509007: string, 900000000000508004:
+     *   string}}}
+     */
     function getNewDescription(conceptId) {
       return {
         'active': true,
@@ -23,6 +30,45 @@ angular.module('singleConceptAuthoringApp')
         }
       };
     }
+
+    /**
+     * Get a blank Fully Specified Name description
+     * @param conceptId
+     * @returns {{active, moduleId, type, term, lang, caseSignificance,
+     *   conceptId, acceptabilityMap}|*}
+     */
+    function getNewFsn(conceptId) {
+      // add FSN acceptability and type
+      var desc = getNewDescription(conceptId);
+      desc.type = 'FSN';
+      desc.acceptabilityMap = {
+        '900000000000509007': 'PREFERRED',
+        '900000000000508004': 'PREFERRED'
+      };
+
+      return desc;
+    }
+
+    /**
+     * Get a blank Preferred Term description
+     * @param conceptId
+     * @returns {{active, moduleId, type, term, lang, caseSignificance,
+     *   conceptId, acceptabilityMap}|*}
+     */
+    function getNewPt(conceptId) {
+      // add PT acceptability and type
+      var desc = getNewDescription(conceptId);
+      desc.type = 'SYNONYM';
+      desc.acceptabilityMap = {
+        '900000000000509007': 'PREFERRED',
+        '900000000000508004': 'PREFERRED'
+      };
+
+      return desc;
+    }
+
+
+
 
     // creates a blank relationship linked to specified source concept
     function getNewIsaRelationship(conceptId) {
@@ -66,7 +112,7 @@ angular.module('singleConceptAuthoringApp')
 
     // creats a blank concept with one each of a blank
     // description, relationship, attribute
-    function getNewConcept(branch) {
+    function getNewConcept() {
       var concept = {
         'conceptId': null,
         'descriptions': [],
@@ -78,22 +124,10 @@ angular.module('singleConceptAuthoringApp')
       };
 
       // add FSN description
-      var desc = getNewDescription(null);
-      desc.type = 'FSN';
-      desc.acceptabilityMap = {
-        '900000000000509007': 'PREFERRED',
-          '900000000000508004': 'PREFERRED'
-      };
-      concept.descriptions.push(desc);
+      concept.descriptions.push(getNewFsn(null));
 
-      // add Preferred Term SYNONYM description
-      desc = getNewDescription(null);
-      desc.type = 'SYNONYM';
-      desc.acceptabilityMap = {
-        '900000000000509007': 'PREFERRED',
-        '900000000000508004': 'PREFERRED'
-      };
-      concept.descriptions.push(desc);
+      // add a Preferred Term
+      concept.descriptions.push(getNewPt(null));
 
       // add IsA relationship
       concept.relationships.push(getNewIsaRelationship(null));
@@ -101,11 +135,121 @@ angular.module('singleConceptAuthoringApp')
       return concept;
     }
 
+
+    /**
+     * Checks if concept has basic fields required and adds them if not
+     * Specifically checks one FSN, one SYNONYM, one IsA relationship
+     * @param concept
+     * @returns {*}
+     */
+    function applyMinimumFields(concept) {
+
+      console.debug('Checking minimum fields', concept);
+
+      var elementFound;
+
+      // check one FSN exists
+      elementFound = false;
+      angular.forEach(concept.descriptions, function(description) {
+        if (description.type === 'FSN' && description.active) {
+          elementFound = true;
+        }
+      });
+      if (!elementFound) {
+        console.debug('Concept does not have FSN');
+        concept.descriptions.push(getNewFsn());
+      }
+
+      // check one SYNONYM exists
+      // TODO Consider whether to check acceptability map
+      // currently left out because user can modify, and seems undesirable
+      // to force a check for dialect
+      elementFound = false;
+      angular.forEach(concept.descriptions, function(description) {
+        if (description.type === 'SYNONYM' && description.active) {
+          elementFound = true;
+        }
+      });
+      if (!elementFound) {
+        console.debug('Concept does not have SYNONYM');
+        concept.descriptions.push(getNewPt());
+      }
+
+      // check one IsA relationship exists
+      elementFound = false;
+      angular.forEach(concept.relationships, function(relationship) {
+        if (relationship.type.conceptId === '116680003' && relationship.active) {
+          elementFound = true;
+        }
+      });
+      if (!elementFound) {
+        console.debug('Concept does not have IsA relationship');
+        concept.relationships.push(getNewIsaRelationship());
+      }
+
+      return concept;
+
+    }
+
+    /**
+     * Function to check if a concept has minimum fields
+     * @param concept
+     * @returns string specifying missing field, or null if none
+     */
+    function hasMinimumFields(concept) {
+
+      var elementFound;
+
+      // check one FSN exists
+      elementFound = false;
+      angular.forEach(concept.descriptions, function(description) {
+        if (description.type === 'FSN' && description.active) {
+          elementFound = true;
+        }
+      });
+      if (!elementFound) {
+        return 'Concept does not have an active FSN';
+      }
+
+      // check one SYNONYM exists
+      // TODO Consider whether to check acceptability map
+      // currently left out because user can modify, and seems undesirable
+      // to force a check for dialect
+      elementFound = false;
+      angular.forEach(concept.descriptions, function(description) {
+        if (description.type === 'SYNONYM' && description.active) {
+          elementFound = true;
+        }
+      });
+      if (!elementFound) {
+        return 'Concept does not have an active Synonym';
+      }
+
+      // check one IsA relationship exists
+      elementFound = false;
+      angular.forEach(concept.relationships, function(relationship) {
+        if (relationship.type.conceptId === '116680003' && relationship.active) {
+          elementFound = true;
+        }
+      });
+      if (!elementFound) {
+        return 'Concept does not have an active IsA relationship';
+      }
+
+      return concept;
+
+    }
+
+
     return {
       getNewConcept: getNewConcept,
       getNewDescription: getNewDescription,
+      getNewFsn: getNewFsn,
+      getNewPt: getNewPt,
       getNewIsaRelationship: getNewIsaRelationship,
-      getNewAttributeRelationship: getNewAttributeRelationship
+      getNewAttributeRelationship: getNewAttributeRelationship,
+      applyMinimumFields: applyMinimumFields,
+      hasMinimumFields: hasMinimumFields
     };
 
-  }]);
+  });
