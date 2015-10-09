@@ -507,7 +507,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // watch for concept cloning from the edit sidebar
     $scope.$on('cloneConcept', function (event, data) {
-
+      scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       if (!data || !data.conceptId) {
         return;
       }
@@ -643,7 +643,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
-
+      scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       // check if an unsaved concept already exists
       for (var i = 0; i < $scope.concepts.length; i++) {
         if (!$scope.concepts[i].conceptId) {
