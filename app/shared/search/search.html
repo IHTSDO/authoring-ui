@@ -1,4 +1,8 @@
-<div class=" col-md-12 no-padding "  ng-controller="searchPanelCtrl">
+<div class=" col-md-12 no-padding " ng-controller="searchPanelCtrl">
+
+  <style>
+
+  </style>
 
   <div class="row no-padding">
     <div class="col-xs-11 col-sm-11 col-md-11 no-padding">
@@ -16,30 +20,102 @@
 
   <div class="col-md-12 no-padding" ng-if="searchStatus">{{searchStatus}}</div>
 
+  <div ng-show="results.length > 0">
+
+    <!-- headers -->
+    <div class="row no-padding">
+
+      <div class="col-md-4 no-padding">
+        <div class="p-5"><strong>Term</strong></div>
+      </div>
+      <div class="col-md-6 no-padding">
+        <div class="p-5"><strong>FSN</strong></div>
+      </div>
+
+
+      <div class="col-md-1 no-padding">
+        <!-- No content -->
+      </div>
+      <div class="col-md-1 no-padding">
+        <!-- No content -->
+      </div>
+
+    </div>
+
+    <!-- results -->
+    <div class="row no-padding" ng-repeat="result in results">
+
+
+
+      <div class="col-md-4 no-padding text-muted">
+        <div class="p-5 wordbreak">{{result.term}}</div>
+      </div>
+      <div class="col-md-6 no-padding">
+        <div class="p-5 wordbreak" ui-draggable="true"
+             drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">{{result.concept.fsn}}
+        </div>
+      </div>
+      <div class="col-md-1 no-padding">
+        <button ng-if="!result.concept.active"
+                type="button"
+                class="p-5 transparent md md-dnd-forwardslash tooltips-right tooltips-light normal-case"><span>Inactive Concept</span>
+        </button>
+      </div>
+      <div class="col-md-1 no-padding">
+        <button type="button"
+                ng-click="addItemToSavedList(result)"
+                ng-disabled="findItemInSavedList(result.concept.conceptId)"
+                class="addButton btn btn-round btn-default widget-button grey lighten-5 md md-playlist-add  tooltips-right tooltips-light normal-case">
+          <span>Add to Saved List</span></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!--
+
     <table class="col-md-12 no-padding" ng-if="results.length > 0">
       <thead>
-      <th class="col-md-4 no-padding" ><div class="p-5">Term</div></th>
-      <th class="col-md-4 no-padding" ><div class="p-5">FSN</div></th>
-      <th class="col-md-1 no-padding" ></th>
-      </thead>
-    <tbody>
-    <tr class="col-md-12 no-padding" ng-repeat="result in results">
-      <td class="col-md-4 no-padding text-muted" style="word-break: normal"><div class="p-5">{{result.term}}</div></td>
-      <td class="col-md-5 no-padding" style="word-break: normal" ui-draggable="true"
-          drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">
-       <div class="p-5"> {{result.concept.fsn}}</div>
-      </td>
-      <td class="col-md-1 no-padding">
+      <th class="col-md-1 no-padding">
         <button
           class="addButton btn btn-round btn-default widget-button grey lighten-5"
           ng-click="addItemToSavedList(result)"
           ng-disabled="findItemInSavedList(result.concept.conceptId)">
           <span class="md md-playlist-add"></span>
         </button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+      </th>
+      <th class="col-md-5 no-padding">
+        <div class="p-5">Term</div>
+      </th>
+      <th class="col-md-5 no-padding">
+        <div class="p-5">FSN</div>
+      </th>
+      <th class="col-md-1 no-padding"></th>
+      </thead>
+      <tbody>
+      <tr class="col-md-12 no-padding" ng-repeat="result in results">
+        <td class="col-md-1 no-padding">
+          <span ng-if="!result.concept.active" class="md  md-dnd-forwardslash"></span>
+        </td>
+        <td class="col-md-5 no-padding text-muted" style="word-break: normal">
+          <div class="p-5">{{result.term}}</div>
+        </td>
+        <td class="col-md-5 no-padding" style="word-break: normal" ui-draggable="true"
+            drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">
+          <div class="p-5"> {{result.concept.fsn}}</div>
+        </td>
+        <td class="col-md-1 no-padding">
+          <button
+            class="addButton btn btn-round btn-default widget-button grey lighten-5"
+            ng-click="addItemToSavedList(result)"
+            ng-disabled="findItemInSavedList(result.concept.conceptId)">
+            <span class="md md-playlist-add tooltips-right tooltips-light normal-case>Inactive Concept</span>"></span>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  -->
 
 
   <button
