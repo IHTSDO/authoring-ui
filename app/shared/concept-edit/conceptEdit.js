@@ -1100,22 +1100,22 @@ angular.module('singleConceptAuthoringApp')
 
         /**
          * Function called when dropping a relationship on another relationship
+         * Appends (clones) dropped relationship after the target
          * @param target the relationship dropped on
          * @param source the dragged relationship
          */
-        scope.dropRelationship = function (concept, target, source) {
+        scope.dropRelationship = function (concept, target, dropped) {
 
-          // console.debug('dropRelationship', concept, target, source);
+          console.debug('dropRelationship', concept, target, dropped);
 
           // check arguments
-          if (!target || !source) {
-            console.error('Cannot drop relationship, either source or target not specified');
+          if (!concept || !concept.relationships) {
+            console.debug('Cannot drop relationship, concept not properly specified');
             return;
-          }
 
-          // check if target is released (not valid target)
-          if (target.effectiveTime) {
-            console.error('Cannot drop relationship on previously released relationship');
+          }
+          if (!target || !dropped) {
+            console.error('Cannot drop relationship, either dropped or target not specified');
             return;
           }
 
@@ -1126,20 +1126,25 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // copy relationship object and replace target relationship
-          var copy = angular.copy(source);
+          var copy = angular.copy(dropped);
 
-          // clear the effective time
+          // clear the effective time and source information
+          copy.sourceId = null;
           copy.effectiveTime = null;
+          delete copy.relationshipId;
+          delete copy.target.effectiveTime;
+          delete copy.target.moduleId;
+          delete copy.target.active;
+          delete copy.target.definitionStatus;
+          delete copy.target.characteristicType;
 
-          // find the matching relationship and replace
-          // NOTE: Direct reference to relationship was not working,
-          // hence the passing of concept and cycling here
-          for (var i = 0; i < concept.relationships.length; i++) {
-            if (concept.relationships[i] === target) {
-              concept.relationships[i] = copy;
-              autoSave();
-            }
-          }
+          // get index of target relationship
+          var index = concept.relationships.indexOf(target);
+
+          // insert after dropped relationship
+          concept.relationships.splice(index, 0, copy);
+
+          autoSave();
         };
 
         // dummy function added for now to prevent default behavior
