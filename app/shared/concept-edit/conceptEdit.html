@@ -64,6 +64,7 @@
       color: #ffc107;
       background-color: transparent;
     }
+
   </style>
 
   <!-- begin validation error -->
@@ -124,7 +125,6 @@
       </button>
 
       <!-- control buttons -->
-
       <button ng-if="!isStatic"
               type="button"
               style="vertical-align: bottom"
@@ -272,7 +272,11 @@
 
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getIsARelationships(true)"
-         ng-drag="relationship" drag-channel="conceptEditRelationship" drop-channel="conceptEditRelationship"
+         ng-drag="relationship"
+         drag-channel="conceptEditRelationship"
+         drop-channel="conceptEditRelationship"
+         drag-enter-class="sca-drag-target"
+         drag-hover-class="sca-drag-hover"
          ui-on-drop="dropRelationship(relationship, $data)"
          ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
       <div class="row darken-3 p-t-5 grey ">
@@ -313,11 +317,14 @@
           </textarea>
           </div>
 
-          <!-- attribute type -->
+          <!-- attribute type: TODO Reinsert class 'is_a' -->
           <div class="pull-left is_a" ui-draggable="true"
+               drag-enter-class="sca-drag-target"
+               drag-hover-class="sca-drag-hover"
                drag="getConceptIdNamePairFromAttributeType(relationship)"
                drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
-               ui-on-drop="dropRelationshipType(relationship, $data)">
+               ui-on-drop="dropRelationshipType(relationship, $data)"
+               drop-channel="conceptPropertiesObj" >
           <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
                     class="form-control color_{{relationship.groupId}}"
                     ng-model-options="{updateOn: 'blur'}"
@@ -329,6 +336,8 @@
 
           <!-- linked concept -->
           <div class="pull-left sourcename" ui-draggable="true"
+               drag-enter-class="sca-drag-target"
+               drag-hover-class="sca-drag-hover"
                drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                drag-channel="conceptPropertiesObj"
                drop-channel="conceptPropertiesObj"
@@ -402,7 +411,10 @@
           </div>
           <!-- attribute type -->
           <div class="pull-left attr " ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)"
-               drag-channel="conceptPropertiesObj" drop-channel="conceptPropertiesObj"
+               drag-enter-class="sca-drag-target"
+               drag-hover-class="sca-drag-hover"
+               drag-channel="conceptPropertiesObj"
+               drop-channel="conceptPropertiesObj"
                ng-disabled="isStatic"
                ui-on-drop="dropRelationshipType(relationship, $data)">
           <textarea style="" disabled ng-model="relationship.type.fsn"
@@ -416,7 +428,10 @@
 
           <!-- linked concept -->
           <div class="pull-left relations " ui-draggable="true"
-               drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj"
+               drag-enter-class="sca-drag-target"
+               drag-hover-class="sca-drag-hover"
+               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
+               drag-channel="conceptPropertiesObj"
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipTarget(relationship, $data)">
           <textarea style="" disabled ng-model="relationship.target.fsn"

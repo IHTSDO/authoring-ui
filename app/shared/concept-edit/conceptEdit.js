@@ -43,11 +43,15 @@ angular.module('singleConceptAuthoringApp')
           scope.isStatic = false;
         }
 
+        console.debug('entered conceptEdit.js');
+
         // initialize the last saved version of this concept
         scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
 
         // on load, check if a modified, unsaved version of this concept exists
         scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
+
+          console.debug('getting modified concept for task');
 
           // if not an empty JSON object, process the modified version
           if (modifiedConcept) {
@@ -63,9 +67,14 @@ angular.module('singleConceptAuthoringApp')
 
             // set scope flag
             scope.isModified = true;
+          }
 
-
-          } else {
+          // special case for unsaved concepts to catch possible bugs
+          else {
+            // if unsaved, and no modified data found, simply replace with blank concept
+            if (scope.concept.conceptId === 'unsaved') {
+              scope.concept = objectService.getNewConcept(scope.branch)
+            }
             scope.isModified = false;
           }
         });
@@ -318,7 +327,8 @@ angular.module('singleConceptAuthoringApp')
             selectInactivationReason('Concept', inactivateConceptReasons, inactivateConceptAssociationTargets).then(function (reason, associationTarget) {
 
               notificationService.sendMessage('Inactivating concept (' + reason.text + (associationTarget ? ', ' + associationTarget : '') + ')', 10000);
-              // console.debug(scope.branch, scope.concept.conceptId, reason, associationTarget);
+              // console.debug(scope.branch, scope.concept.conceptId, reason,
+              // associationTarget);
 
               snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, reason.id, associationTarget).then(function () {
 
@@ -1386,17 +1396,14 @@ angular.module('singleConceptAuthoringApp')
         // concept history pointer (currently active state)
         scope.conceptHistoryPtr = 0;
 
-        scope.$watch('conceptHistory', function() {
-          // console.debug('history', scope.conceptHistory);
-        });
-
         /**
          * Saves the current concept state for later retrieval
          * Called by autoSave(), undo(), redo()
          */
         function saveModifiedConcept() {
 
-          // console.debug('saveModifiedConcept', scope.concept, scope.unmodifiedConcept);
+          // console.debug('saveModifiedConcept', scope.concept,
+          // scope.unmodifiedConcept);
 
           // if changed
           if (scope.concept !== scope.unmodifiedConcept) {
@@ -1418,12 +1425,11 @@ angular.module('singleConceptAuthoringApp')
          */
         function autoSave() {
 
-          // console.debug('conceptEdit: autosave called', scope.concept === scope.lastModifiedConcept, scope.concept);
+          // console.debug('conceptEdit: autosave called', scope.concept ===
+          // scope.lastModifiedConcept, scope.concept);
 
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
-
-
 
           console.debug('autosave', scope.conceptHistory);
 
@@ -1474,7 +1480,8 @@ angular.module('singleConceptAuthoringApp')
           if (scope.concept.conceptId === 'unsaved') {
 
             scope.concept = objectService.getNewConcept(scope.branch);
-            // console.debug('no last saved version', scope.concept, objectService.getNewConcept(scope.branch));
+            // console.debug('no last saved version', scope.concept,
+            // objectService.getNewConcept(scope.branch));
           } else {
             scope.concept = scope.unmodifiedConcept;
           }
@@ -1482,29 +1489,31 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
 
         };
-        
+
         //////////////////////////////////////////////
         // Attribute Removal functions
         //////////////////////////////////////////////
 
         /**
-         * Deletes a given description by index from the descriptions array and then updates the ui-state for the concept
+         * Deletes a given description by index from the descriptions array and
+         * then updates the ui-state for the concept
          * @param description
          */
-        scope.deleteDescription = function (description){
-            var index = scope.concept.descriptions.indexOf(description);
-            scope.concept.descriptions.splice(index, 1);
-            autoSave();
+        scope.deleteDescription = function (description) {
+          var index = scope.concept.descriptions.indexOf(description);
+          scope.concept.descriptions.splice(index, 1);
+          autoSave();
         };
-        
+
         /**
-         * Deletes a given relationship by index from the relationships array and then updates the ui-state for the concept
+         * Deletes a given relationship by index from the relationships array
+         * and then updates the ui-state for the concept
          * @param relationship
          */
-        scope.deleteRelationship = function (relationship){
-            var index = scope.concept.relationships.indexOf(relationship);
-            scope.concept.relationships.splice(index, 1);
-            autoSave();
+        scope.deleteRelationship = function (relationship) {
+          var index = scope.concept.relationships.indexOf(relationship);
+          scope.concept.relationships.splice(index, 1);
+          autoSave();
         };
 
         //////////////////////////////////////////////

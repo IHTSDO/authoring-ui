@@ -82,6 +82,14 @@
     background-color: red;
   }
 
+  .sca-drag-target {
+    border: 3px solid yellow;
+  }
+
+  .sca-drag-hover {
+    border: 3px solid green;
+  }
+
 
 </style>
 
@@ -91,7 +99,7 @@
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
   <!-- Create new concept -->
-  <button ui-on-drop="dropConcept($data)" drop-channel='conceptPropertiesObj'
+  <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
                     type="button" ng-click="createConcept()"
                     class="btn-default btn-block create-new-concept tooltips-right tooltips-light normal-case"
                     title="Active"><div class="md fa fa-edit"></div><span>Create New Concept</span></button>
@@ -196,23 +204,14 @@
       <!-- models & concepts-->
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
 
-        <!-- headers -->
-        <div class="row no-gutter">
-
-          <!-- model header (blank) -->
-          <div class="no-gutter col-sm-7 col-md-7 col-lg-7" style="height: 100%">
-            &nbsp;
-          </div>
-
-          <!-- concept header (create new concept button) -->
-         
-        </div>
 
         <!-- model & concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)">
+  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)"
+             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+
 
           <!-- model -->
           <div class="no-gutter col-sm-7 col-md-7 col-lg-7" style="height: 100%">
@@ -241,12 +240,9 @@
            ng-include src="'layout/sidebar-edit.html'"></div>
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9"
+           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
-        <!-- headers -->
-        <div class="row no-gutter">
-         
-        </div>
 
         <!-- model & concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
@@ -278,14 +274,12 @@
       <!-- concept edit : non-static, can create -->
       <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding">
 
-        <!-- headers -->
-       
-
-        <!-- model & concept data-->
+        <!-- concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)">
+  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)"
+             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -309,15 +303,15 @@
       </div>
 
       <!-- concept edit : non-static, can create -->
-      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding">
-
-       
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding"
+           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
         <!-- concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)">
+  display:         flex;" ng-repeat="concept in concepts"
+             repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -341,9 +335,8 @@
       </div>
 
       <!-- concept edit : author -> non-static, can create, reviewer -> static, cannot create -->
-      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding">
-
-       
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding"
+           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
         <!-- concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
@@ -376,9 +369,9 @@
       <!-- base and branch concept pairs -->
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
 
-        <div class="row no-gutter darken-3 grey" ng-repeat="conflictConceptPair in conflictConceptPairs" ng-class="isLast($last)">
-
-          <!-- base concept -->
+        <div class="row no-gutter darken-3 grey" ng-repeat="conflictConceptPair in conflictConceptPairs" ng-class="isLast($last)"
+             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+                                                                                                                                                                               <!-- base concept -->
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 no-gutter">
             <div ng-if="conflictConceptPair.sourceConcept" concept-edit concept="conflictConceptPairs[$index].sourceConcept"
                  branch="sourceBranch" static="true">
