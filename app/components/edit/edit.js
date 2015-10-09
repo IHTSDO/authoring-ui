@@ -506,25 +506,46 @@ angular.module('singleConceptAuthoringApp.edit', [
         var clonedConcept = JSON.parse(JSON.stringify(response));
 
         // clear relevant fields to force creation of new components
-        angular.forEach(clonedConcept.descriptions, function (description) {
-          description.effectiveTime = null;
-          description.descriptionId = null;
-          description.conceptId = null;
-        });
-
-        angular.forEach(clonedConcept.relationships, function (relationship) {
-          relationship.sourceId = null;
-          relationship.effectiveTime = null;
-          relationship.relationshipId = null;
-        });
+        for(var k = clonedConcept.descriptions.length -1; k >= 0; k--)
+        {
+            var description = clonedConcept.descriptions[k];
+            description.effectiveTime = null;
+            description.descriptionId = null;
+            delete description.conceptId;
+            if(description.active === false)
+            {
+                clonedConcept.descriptions.splice(k, 1);
+            }
+        }
+        
+        for(var j = clonedConcept.relationships.length -1; j >= 0; j--)
+        {
+            var relationship = clonedConcept.relationships[j];
+            relationship.sourceId = null;
+            relationship.effectiveTime  = null;
+            delete relationship.relationshipId;
+            delete relationship.target.effectiveTime;
+            delete relationship.target.moduleId;
+            delete relationship.target.active;
+            delete relationship.target.definitionStatus;
+            delete relationship.target.characteristicType;
+            
+            if(relationship.active === false)
+            {
+                clonedConcept.relationships.splice(j, 1);
+            }
+        }
 
         clonedConcept.conceptId = null;
-        clonedConcept.effectiveTime = null;
+        clonedConcept.fsn = null;
 
         var successMsg = 'Concept ' + clonedConcept.fsn + ' successfully cloned';
 
         // add a cloned tag to differentiate the clonedConcept
-        clonedConcept.fsn = '[CLONED] ' + clonedConcept.fsn;
+        
+        delete clonedConcept.isLeafInferred;
+        delete clonedConcept.effectiveTime;
+        delete clonedConcept.preferredSynonym ;
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
