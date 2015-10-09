@@ -71,9 +71,10 @@ angular.module('singleConceptAuthoringApp')
 
           // special case for unsaved concepts to catch possible bugs
           else {
-            // if unsaved, and no modified data found, simply replace with blank concept
+            // if unsaved, and no modified data found, simply replace with
+            // blank concept
             if (scope.concept.conceptId === 'unsaved') {
-              scope.concept = objectService.getNewConcept(scope.branch)
+              scope.concept = objectService.getNewConcept(scope.branch);
             }
             scope.isModified = false;
           }
@@ -103,10 +104,8 @@ angular.module('singleConceptAuthoringApp')
         scope.languages = snowowlService.getLanguages();
         scope.dialects = snowowlService.getDialects();
 
-        // flag for viewing active components only. Defaults:
-        // FALSE if new concept (no fsn)
-        // TRUE otherwise
-        scope.hideInactive = scope.concept.fsn;
+        // flag for viewing active components only. Defaults to true.
+        scope.hideInactive = true;
 
         scope.toggleHideInactive = function () {
           scope.hideInactive = !scope.hideInactive;
@@ -199,6 +198,22 @@ angular.module('singleConceptAuthoringApp')
 
           // clean concept of any locally added information
           snowowlService.cleanConcept(concept);
+
+          // cycle over descriptions and relationships and remove any inactive,
+          // unpublished content i.e. this is user added content that is later
+          // removed via inactivation
+          for (var i = 0; i < concept.descriptions.length; i++) {
+            if (!concept.descriptions[i].effectiveTime && !concept.descriptions[i].active) {
+              concept.descriptions.splice(i, 1);
+              i--; // decrement counter to check next available description
+            }
+          }
+          for (i = 0; i < concept.relationships.length; i++) {
+            if (!concept.relationships[i].effectiveTime && !concept.relationships[i].active) {
+              concept.relationships.splice(i, 1);
+              i--; // decrement counter to check next available relationship
+            }
+          }
 
           var saveMessage = concept.conceptId ? 'Saving concept: ' + concept.fsn : 'Saving new concept';
           notificationService.sendMessage(saveMessage, 10000, null);
@@ -672,12 +687,20 @@ angular.module('singleConceptAuthoringApp')
          */
         scope.toggleDescriptionActive = function (description) {
 
-          // TODO Check if out of sync
-
           // if inactive, simply set active
           if (!description.active) {
             description.active = true;
-            scope.saveConcept();
+            autoSave();
+          }
+
+          // if an unpublished description, no reason required
+          else if (!description.effectiveTIme) {
+            description.active = false;
+
+            // ensure all minimum fields are present
+            objectService.applyMinimumFields(scope.concept);
+
+            autoSave();
           }
 
           // otherwise, open a select reason modal
@@ -685,10 +708,9 @@ angular.module('singleConceptAuthoringApp')
             // TODO Decide what the heck to do with result
             selectInactivationReason('Description', inactivateDescriptionReasons, inactivateDescriptionHistoricalReasons).then(function (reason) {
 
-              // TODO Persist description inactivation reason
-
               description.active = false;
               scope.saveConcept();
+
             });
 
           }
@@ -909,6 +931,7 @@ angular.module('singleConceptAuthoringApp')
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
+          objectService.applyMinimumFields(scope.concept);
           autoSave();
         };
 
@@ -1210,6 +1233,12 @@ angular.module('singleConceptAuthoringApp')
 
         // method to check single description for validity
         scope.isDescriptionValid = function (description) {
+
+          // if not published and inactive, consider valid (removed by saveConcept)
+          if (!description.active && !description.effectiveTime) {
+            return true;
+          }
+
           if (!description.moduleId) {
             //description.error = 'description must have moduleId specified';
             return false;
@@ -1251,7 +1280,10 @@ angular.module('singleConceptAuthoringApp')
         // method to check single relationship for validity
         scope.isRelationshipValid = function (relationship) {
 
-          // console.debug(relationship, scope.concept);
+          // if not active and no effective time, consider valid (removed by saveConcept)
+          if (!relationship.active && !relationship.effectiveTime) {
+            return true;
+          }
 
           // check relationship fields
           if (!relationship.modifier) {

@@ -1,0 +1,71 @@
+<div>
+  <strong>NOTE: Located here for demo purposes only</strong>
+
+  <div ng-show="!loadComplete">Loading...</div>
+  <div ng-if="loadComplete">
+    <div class="row">
+
+
+      SCTID: {{fullConcept.conceptId}}, {{fullConcept.definitionStatus}},
+      {{fullConcept.active
+      ? 'Active' : 'Inactive'}}
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-3">Parents ({{parents.length}})</div>
+      <div class="col-md-9">
+        <div class="row" ng-repeat="parent in parents">
+          {{parent.fsn}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">Children ({{children.length}})</div>
+      <div class="col-md-9">
+        <div class="row" ng-repeat="child in children">
+          {{child.fsn}}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <table class="table">
+        <thead>
+        <th>Type</th>
+        <th>Term</th>
+        <th>Acceptability (US)</th>
+        </thead>
+        <tbody>
+        <!-- TODO sorting on acceptability map second not working -->
+        <tr
+          ng-repeat="description in fullConcept.descriptions | orderBy: ['-active', 'type', '-description.acceptabilityMap[900000000000509007]']"
+          ng-class="[{'text-muted': !description.active}]">
+          <td>{{description.type}}</td>
+          <td>{{description.term}}</td>
+          <td>{{description.acceptabilityMap['900000000000509007']}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <hr>
+      <table class="table">
+        <thead>
+        <th>Group</th>
+        <th>Type</th>
+        <th>Target</th>
+        <th>CharType</th>
+        </thead>
+        <tbody>
+        <tr
+          ng-repeat="relationship in fullConcept.relationships | orderBy: ['-active', 'groupId', '-characteristicType', 'type.fsn']"
+          ng-class="[{'text-muted': !relationship.active}]">
+          <td style="text-align: center">{{relationship.groupId}}</td>
+          <td>{{relationship.type.fsn}}</td>
+          <td>{{relationship.target.fsn}}</td>
+          <td>{{relationship.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}</td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

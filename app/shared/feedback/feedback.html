@@ -247,6 +247,7 @@
 
     <div class="col-md-12 no-padding concept-filter">
       <input type='text' class="feedback-search " placeholder='Search concepts...'
+             ui-on-drop=""
              ng-model='conceptFilter'
              ng-model-options='{ debounce: 1000 }'
              ng-change='openSearchModal(conceptFilter)'>

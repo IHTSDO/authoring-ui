@@ -1,8 +1,5 @@
 <div class=" col-md-12 no-padding " ng-controller="searchPanelCtrl">
 
-  <style>
-
-  </style>
 
   <div class="row no-padding">
     <div class="col-xs-11 col-sm-11 col-md-11 no-padding">
@@ -43,44 +40,56 @@
     </div>
 
     <!-- results -->
-    <div class="row no-padding" ng-repeat="result in results">
+    <div ng-repeat="result in results">
 
+      <div class="row no-padding">
+        <div class="col-md-4 no-padding text-muted">
+          <div class="p-5 wordbreak">{{result.term}}</div>
+        </div>
+        <div class="col-md-5 no-padding">
+          <button  ng-click="toggleCollapse(result)" type="button"
+                  style="display:inline"
+                  ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-right' : !result.showData, ' fa fa-caret-down' : result.showData}]"></button>
 
-
-      <div class="col-md-4 no-padding text-muted">
-        <div class="p-5 wordbreak">{{result.term}}</div>
-      </div>
-      <div class="col-md-6 no-padding">
-        <div class="p-5 wordbreak" ui-draggable="true"
-             drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">{{result.concept.fsn}}
+          <div class="p-5 wordbreak" ui-draggable="true" style="display:inline"
+               drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">{{result.concept.fsn}}
+          </div>
+        </div>
+        <div class="col-md-1 no-padding">
+          <button ng-if="!result.concept.active"
+                  type="button"
+                  class="p-5 transparent md md-dnd-forwardslash tooltips-right tooltips-light normal-case"><span>Inactive Concept</span>
+          </button>
+        </div>
+        <div class="col-md-1 no-padding">
+          <button type="button"
+                  ng-click="addItemToSavedList(result)"
+                  ng-disabled="findItemInSavedList(result.concept.conceptId)"
+                  class="addButton btn btn-round btn-default widget-button grey lighten-5 md md-playlist-add  tooltips-right tooltips-light normal-case">
+            <span>Add to Saved List</span></button>
         </div>
       </div>
-      <div class="col-md-1 no-padding">
-        <button ng-if="!result.concept.active"
-                type="button"
-                class="p-5 transparent md md-dnd-forwardslash tooltips-right tooltips-light normal-case"><span>Inactive Concept</span>
-        </button>
-      </div>
-      <div class="col-md-1 no-padding">
-        <button type="button"
-                ng-click="addItemToSavedList(result)"
-                ng-disabled="findItemInSavedList(result.concept.conceptId)"
-                class="addButton btn btn-round btn-default widget-button grey lighten-5 md md-playlist-add  tooltips-right tooltips-light normal-case">
-          <span>Add to Saved List</span></button>
+
+
+      <div class="row well" ng-init="result.showData = false;" ng-show="result.showData" >
+        <div ng-if="result.showData" concept-information concept-id="result.concept.conceptId" branch="branch"></div>
       </div>
     </div>
 
   </div>
+</div>
 
-  <!-- load more button -->
-  <button
-    ng-show="loadPerformed"
-    class="btn btn-default classify"
-    ng-click="loadMore()"
-    ng-disabled="!loadMoreEnabled">
-    <span ng-if="loadMoreEnabled" class="button-link">Load Next {{resultsSize}}</span>
-    <span ng-if="!loadMoreEnabled">End of Results</span>
-  </button>
+</div>
+
+<!-- load more button -->
+<button
+  ng-show="loadPerformed"
+  class="btn btn-default classify"
+  ng-click="loadMore()"
+  ng-disabled="!loadMoreEnabled">
+  <span ng-if="loadMoreEnabled" class="button-link">Load Next {{resultsSize}}</span>
+  <span ng-if="!loadMoreEnabled">End of Results</span>
+</button>
 
 </div>
 

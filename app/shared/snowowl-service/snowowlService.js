@@ -166,22 +166,22 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
-    // Retrieve ancestors of a concept
-    // GET /{path}/concepts/{conceptId}/ancestors
-    function getConceptAncestors(conceptId, branch) {
+    // Retrieve parents of a concept
+    // GET /{path}/concepts/{conceptId}/parents
+    function getConceptParents(conceptId, branch) {
       // TODO Test call
-      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/ancestors').then(function (response) {
-        return response.data.ancestors;
+      return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/parents').then(function (response) {
+        return response.data;
       }, function (error) {
         // TODO Handle error
       });
     }
 
-    // Retrieve descendants of a concept
-    // GET /{path}/concepts/{conceptId}/descendants
-    function getConceptDescendants(conceptId, branch) {
-      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants').then(function (response) {
-        return response.data.descendants;
+    // Retrieve children of a concept
+    // GET /{path}/concepts/{conceptId}/children
+    function getConceptChildren(conceptId, branch) {
+      return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/children').then(function (response) {
+        return response.data;
       }, function (error) {
         // TODO Handle error
       });
@@ -493,9 +493,9 @@ angular.module('singleConceptAuthoringApp')
       getConceptPreferredTerm: getConceptPreferredTerm,
       updateConcept: updateConcept,
       createConcept: createConcept,
-      inactivateConcept : inactivateConcept,
-      getConceptAncestors: getConceptAncestors,
-      getConceptDescendants: getConceptDescendants,
+      inactivateConcept: inactivateConcept,
+      getConceptParents: getConceptParents,
+      getConceptChildren: getConceptChildren,
       getConceptDescriptions: getConceptDescriptions,
       getConceptRelationshipsInbound: getConceptRelationshipsInbound,
       getConceptRelationshipsOutbound: getConceptRelationshipsOutbound,
