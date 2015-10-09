@@ -36,6 +36,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
+
+    //////////////////////////////
+    // Infinite Scroll
+    //////////////////////////////
     $scope.conceptsDisplayed = 5;
     $scope.conceptsRendering = false;
     $scope.addMoreItems = function () {
@@ -47,30 +51,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.renderingComplete = function () {
       $scope.conceptsRendering = false;
     };
-    // TODO: Update the MAIN branching when appropriate
-    if ($routeParams.taskKey) {
-      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-      $scope.sourceBranch = 'MAIN/' + $routeParams.projectKey;
-    } else {
-      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey;
-      $scope.sourceBranch = 'MAIN/';
-    }
 
-    // displayed concept array
-    $scope.concepts = [];
 
-    // ui states
-    $scope.editList = null;
-    $scope.savedList = null;
 
-    // view saving
-    $scope.thisView = null;
-    $scope.lastView = null;
-
-    // control variables
-    $scope.canRebase = false;
-    $scope.canPromote = false;
-    $scope.canConflict = false;
+    /////////////////////////////////
+    // View & Layout
+    /////////////////////////////////
 
     /**
      * Helper function called by setView
@@ -136,137 +122,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     }
 
-    $scope.setView = function (name) {
 
-      // do nothing if no name supplied
-      if (!name) {
-        return;
-      }
-      // if same state requested, do nothing
-      if (name === $scope.thisView) {
-        return;
-      }
-
-      switch (name) {
-        case 'validation':
-          $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          break;
-        case 'feedback':
-          $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          break;
-        case 'classification':
-          $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          break;
-        case 'conflicts':
-          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
-          break;
-        case 'edit-default':
-          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          break;
-        case 'edit-no-sidebar':
-          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          break;
-        case 'edit-no-model':
-          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          break;
-        default:
-          $rootScope.pageTitle = 'Invalid View Requested';
-          break;
-      }
-
-      /*  // if first view set, retrieve persisted layout state and apply
-       if (!$rootScope.layout) {
-       scaService.getUiStateForUser('page-layouts').then(function (response) {
-       $rootScope.layout = response;
-       setLayout();
-       });
-       }
-       */
-      // otherwise simply apply layout settings
-
-      // set this and last views
-      $scope.lastView = $scope.thisView;
-      $scope.thisView = name;
-
-      // set layout based on view
-      setLayout();
-
-    };
-
-    /**
-     * edit.js-specific helper function to return full boostrap col names
-     * May need to change depending on responsive needs
-     * @param name the unique column name
-     * @returns (*) an array of col-(size)-(width) class names
-     */
-    $scope.getLayoutWidths = function (name) {
-
-      if (!$rootScope.layoutWidths || !$rootScope.layoutWidths[name]) {
-        return;
-      }
-
-      var width = $rootScope.layoutWidths[name];
-      var colClasses = [
-        'col-xs-12',
-        'col-sm-12',
-        'col-md-' + width,
-        'col-lg-' + width,
-        'col-xl-' + width
-      ];
-      return colClasses;
-    };
-
-// on load, set the initial view based on classify/validate parameters
-    if ($routeParams.mode === 'classify') {
-      $scope.setView('classification');
-    } else if ($routeParams.mode === 'validate') {
-      $scope.setView('validation');
-    } else if ($routeParams.mode === 'feedback') {
-      if (!$scope.taskKey) {
-        scaService.getReviewForProject($routeParams.projectKey).then(function (response) {
-          $scope.feedbackContainer.review = response ? response : {};
-        });
-      } else {
-
-        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.feedbackContainer.review = response ? response : {};
-        });
-      }
-      $scope.setView('feedback');
-    } else if ($routeParams.mode === 'conflicts') {
-      $scope.setView('conflicts');
-    } else if ($routeParams.mode === 'edit') {
-      $scope.setView('edit-default');
-    }
-
-// if improper route, send error and halt
-    else {
-      notificationService.sendError('Bad URL request for task view detected (' + $routeParams.mode + ').  Acceptable values are: edit, classify, conflicts, feedback, and validate');
-      return;
-    }
-
-// function to flag items in saved list if they exist in edit panel
-    function flagEditedItems() {
-
-      if ($scope.editList && $scope.savedList) {
-        // check if this item is in saved list, flag it as editing if so
-        angular.forEach($scope.savedList.items, function (item) {
-          // set false initially
-          item.editing = false;
-
-          // for each item in the edit list
-          angular.forEach($scope.editList, function (conceptId) {
-            // check if being edited
-            if (item.concept.conceptId === conceptId) {
-              item.editing = true;
-            }
-          });
-        });
-      }
-    }
-
-// get edit panel list (task view only)
-    if ($scope.taskKey) {
+    $scope.loadEditPanelConcepts = function() {
 
       console.debug('edit.js: task detected', $scope.taskKey);
 
@@ -280,14 +137,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           else {
             $scope.editList = uiState;
             for (var i = 0; i < $scope.editList.length; i++) {
-
-              // TODO Need a more elegant way to handle unsaved work
-              // This currently supports one unsaved concept only
-              // which mirrors the current functionality, but is easily
-              // broken
-              if ($scope.editList[i] === 'unsaved') {
-                $scope.concepts.push({conceptId: 'unsaved'});
-              }
               $scope.addConceptToListFromId($scope.editList[i]);
             }
           }
@@ -314,6 +163,191 @@ angular.module('singleConceptAuthoringApp.edit', [
           flagEditedItems();
         }
       );
+    };
+
+
+    $scope.setView = function (name) {
+
+      // do nothing if no name supplied
+      if (!name) {
+        return;
+      }
+      // if same state requested, do nothing
+      if (name === $scope.thisView) {
+        return;
+      }
+
+      switch (name) {
+        case 'validation':
+          $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+
+          //  view starts with no concepts
+          $scope.concepts = [];
+          break;
+        case 'feedback':
+          $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+
+          //  view starts with no concepts
+          $scope.concepts = [];
+          break;
+        case 'classification':
+          $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+
+          //  view starts with no concepts
+          $scope.concepts = [];
+          break;
+        case 'conflicts':
+          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+
+          //  view starts with no concepts
+          $scope.concepts = [];
+          break;
+        case 'edit-default':
+          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+
+          // if a task, load edit panel concepts
+          if ($scope.taskKey) {
+            $scope.loadEditPanelConcepts();
+          }
+          break;
+        case 'edit-no-sidebar':
+          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+
+          // if a task, load edit panel concepts
+          if ($scope.taskKey) {
+            $scope.loadEditPanelConcepts();
+          }
+          break;
+        case 'edit-no-model':
+          $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+
+          // if a task, load edit panel concepts
+          if ($scope.taskKey) {
+            $scope.loadEditPanelConcepts();
+          }
+          break;
+        default:
+          $rootScope.pageTitle = 'Invalid View Requested';
+          break;
+      }
+
+      /*  // if first view set, retrieve persisted layout state and apply
+       if (!$rootScope.layout) {
+       scaService.getUiStateForUser('page-layouts').then(function (response) {
+       $rootScope.layout = response;
+       setLayout();
+       });
+       }
+       */
+      // otherwise simply apply layout settings
+
+      // set this and last views
+      $scope.lastView = $scope.thisView;
+      $scope.thisView = name;
+
+      // set layout based on view
+      setLayout();
+
+    };
+
+    //////////////////////////////
+    // Initialization
+    //////////////////////////////
+    if ($routeParams.taskKey) {
+      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.sourceBranch = 'MAIN/' + $routeParams.projectKey;
+    } else {
+      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey;
+      $scope.sourceBranch = 'MAIN/';
+    }
+
+    // displayed concept array
+    $scope.concepts = [];
+
+    // ui states
+    $scope.editList = null;
+    $scope.savedList = null;
+
+    // view saving
+    $scope.thisView = null;
+    $scope.lastView = null;
+
+    // control variables
+    $scope.canRebase = false;
+    $scope.canPromote = false;
+    $scope.canConflict = false;
+
+    // on load, set the initial view based on classify/validate parameters
+    if ($routeParams.mode === 'classify') {
+      $scope.setView('classification');
+    } else if ($routeParams.mode === 'validate') {
+      $scope.setView('validation');
+    } else if ($routeParams.mode === 'feedback') {
+      if (!$scope.taskKey) {
+        scaService.getReviewForProject($routeParams.projectKey).then(function (response) {
+          $scope.feedbackContainer.review = response ? response : {};
+        });
+      } else {
+
+        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.feedbackContainer.review = response ? response : {};
+        });
+      }
+      $scope.setView('feedback');
+    } else if ($routeParams.mode === 'conflicts') {
+      $scope.setView('conflicts');
+    } else if ($routeParams.mode === 'edit') {
+      $scope.setView('edit-default');
+    }
+
+    // if improper route, send error and halt
+    else {
+      notificationService.sendError('Bad URL request for task view detected (' + $routeParams.mode + ').  Acceptable values are: edit, classify, conflicts, feedback, and validate');
+      return;
+    }
+
+
+    /**
+     * edit.js-specific helper function to return full boostrap col names
+     * May need to change depending on responsive needs
+     * @param name the unique column name
+     * @returns (*) an array of col-(size)-(width) class names
+     */
+    $scope.getLayoutWidths = function (name) {
+
+      if (!$rootScope.layoutWidths || !$rootScope.layoutWidths[name]) {
+        return;
+      }
+
+      var width = $rootScope.layoutWidths[name];
+      var colClasses = [
+        'col-xs-12',
+        'col-sm-12',
+        'col-md-' + width,
+        'col-lg-' + width,
+        'col-xl-' + width
+      ];
+      return colClasses;
+    };
+
+// function to flag items in saved list if they exist in edit panel
+    function flagEditedItems() {
+
+      if ($scope.editList && $scope.savedList) {
+        // check if this item is in saved list, flag it as editing if so
+        angular.forEach($scope.savedList.items, function (item) {
+          // set false initially
+          item.editing = false;
+
+          // for each item in the edit list
+          angular.forEach($scope.editList, function (conceptId) {
+            // check if being edited
+            if (item.concept.conceptId === conceptId) {
+              item.editing = true;
+            }
+          });
+        });
+      }
     }
 
     /**
@@ -322,12 +356,12 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     $scope.addConceptToListFromId = function (conceptId) {
 
-      console.debug('adding concept', conceptId);
-
-      if (conceptId === 'unsaved') {
-        console.debug('unsaved concept, not retrieving');
+      if (!conceptId) {
+        console.error('Could not add concept to edit list, id required');
         return;
       }
+
+      console.debug('adding concept', conceptId);
 
       // verify that this SCTID does not exist in the edit list
       angular.forEach($scope.concepts, function (concept) {
@@ -339,41 +373,13 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       });
 
-      // console.debug('adding concept to edit list from id', conceptId);
-      if (!conceptId) {
-        return;
-      }
-
       // send loading notification for user display
       notificationService.sendMessage('Loading concepts...', 10000, null);
 
-      // get the concept and add it to the stack
-      snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
+      // if unsaved concept, push
+      if (conceptId === 'unsaved') {
+        $scope.concepts.push({conceptId: 'unsaved'});
 
-        // console.debug('Response received for ' + conceptId, response);
-        if (!response) {
-          return;
-        }
-
-        $scope.concepts.push(response);
-
-        console.debug('checking edit list', $scope.editList, conceptId, $scope.editList.indexOf(conceptId));
-
-        if ($scope.editList.indexOf(conceptId) === -1) {
-          console.debug('updating');
-          $scope.updateEditListUiState();
-          flagEditedItems();        // update edited item flagging
-        }
-      }, function (error) {
-
-        // if an error, remove from edit list (if exists)
-        if ($scope.editList.indexOf(conceptId) !== -1) {
-          console.debug('updating');
-          $scope.updateEditListUiState(); // force update the ui state
-          flagEditedItems();
-        }
-
-      }).finally(function () {
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
           notificationService.sendMessage('All concepts loaded', 10000, null);
@@ -382,8 +388,46 @@ angular.module('singleConceptAuthoringApp.edit', [
           // send loading notification for user display
           notificationService.sendMessage('Loading concepts...', 10000, null);
         }
+      } else {
 
-      });
+        // get the concept and add it to the stack
+        snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
+
+          // console.debug('Response received for ' + conceptId, response);
+          if (!response) {
+            return;
+          }
+
+          $scope.concepts.push(response);
+
+          console.debug('checking edit list', $scope.editList, conceptId, $scope.editList.indexOf(conceptId));
+
+          if ($scope.editList.indexOf(conceptId) === -1) {
+            console.debug('updating');
+            $scope.updateEditListUiState();
+            flagEditedItems();        // update edited item flagging
+          }
+        }, function (error) {
+
+          // if an error, remove from edit list (if exists)
+          if ($scope.editList.indexOf(conceptId) !== -1) {
+            console.debug('updating');
+            $scope.updateEditListUiState(); // force update the ui state
+            flagEditedItems();
+          }
+
+        }).finally(function () {
+          // send loading notification
+          if ($scope.concepts.length === $scope.editList.length) {
+            notificationService.sendMessage('All concepts loaded', 10000, null);
+            $scope.updateEditListUiState();
+          } else {
+            // send loading notification for user display
+            notificationService.sendMessage('Loading concepts...', 10000, null);
+          }
+
+        });
+      }
 
     };
 
@@ -506,34 +550,30 @@ angular.module('singleConceptAuthoringApp.edit', [
         var clonedConcept = JSON.parse(JSON.stringify(response));
 
         // clear relevant fields to force creation of new components
-        for(var k = clonedConcept.descriptions.length -1; k >= 0; k--)
-        {
-            var description = clonedConcept.descriptions[k];
-            description.effectiveTime = null;
-            description.descriptionId = null;
-            delete description.conceptId;
-            if(description.active === false)
-            {
-                clonedConcept.descriptions.splice(k, 1);
-            }
+        for (var k = clonedConcept.descriptions.length - 1; k >= 0; k--) {
+          var description = clonedConcept.descriptions[k];
+          description.effectiveTime = null;
+          description.descriptionId = null;
+          delete description.conceptId;
+          if (description.active === false) {
+            clonedConcept.descriptions.splice(k, 1);
+          }
         }
-        
-        for(var j = clonedConcept.relationships.length -1; j >= 0; j--)
-        {
-            var relationship = clonedConcept.relationships[j];
-            relationship.sourceId = null;
-            relationship.effectiveTime  = null;
-            delete relationship.relationshipId;
-            delete relationship.target.effectiveTime;
-            delete relationship.target.moduleId;
-            delete relationship.target.active;
-            delete relationship.target.definitionStatus;
-            delete relationship.target.characteristicType;
-            
-            if(relationship.active === false)
-            {
-                clonedConcept.relationships.splice(j, 1);
-            }
+
+        for (var j = clonedConcept.relationships.length - 1; j >= 0; j--) {
+          var relationship = clonedConcept.relationships[j];
+          relationship.sourceId = null;
+          relationship.effectiveTime = null;
+          delete relationship.relationshipId;
+          delete relationship.target.effectiveTime;
+          delete relationship.target.moduleId;
+          delete relationship.target.active;
+          delete relationship.target.definitionStatus;
+          delete relationship.target.characteristicType;
+
+          if (relationship.active === false) {
+            clonedConcept.relationships.splice(j, 1);
+          }
         }
 
         clonedConcept.conceptId = null;
@@ -542,10 +582,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         var successMsg = 'Concept ' + clonedConcept.fsn + ' successfully cloned';
 
         // add a cloned tag to differentiate the clonedConcept
-        
+
         delete clonedConcept.isLeafInferred;
         delete clonedConcept.effectiveTime;
-        delete clonedConcept.preferredSynonym ;
+        delete clonedConcept.preferredSynonym;
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
