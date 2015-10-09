@@ -72,58 +72,14 @@
 
   </div>
 
-  <!--
-
-    <table class="col-md-12 no-padding" ng-if="results.length > 0">
-      <thead>
-      <th class="col-md-1 no-padding">
-        <button
-          class="addButton btn btn-round btn-default widget-button grey lighten-5"
-          ng-click="addItemToSavedList(result)"
-          ng-disabled="findItemInSavedList(result.concept.conceptId)">
-          <span class="md md-playlist-add"></span>
-        </button>
-      </th>
-      <th class="col-md-5 no-padding">
-        <div class="p-5">Term</div>
-      </th>
-      <th class="col-md-5 no-padding">
-        <div class="p-5">FSN</div>
-      </th>
-      <th class="col-md-1 no-padding"></th>
-      </thead>
-      <tbody>
-      <tr class="col-md-12 no-padding" ng-repeat="result in results">
-        <td class="col-md-1 no-padding">
-          <span ng-if="!result.concept.active" class="md  md-dnd-forwardslash"></span>
-        </td>
-        <td class="col-md-5 no-padding text-muted" style="word-break: normal">
-          <div class="p-5">{{result.term}}</div>
-        </td>
-        <td class="col-md-5 no-padding" style="word-break: normal" ui-draggable="true"
-            drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj">
-          <div class="p-5"> {{result.concept.fsn}}</div>
-        </td>
-        <td class="col-md-1 no-padding">
-          <button
-            class="addButton btn btn-round btn-default widget-button grey lighten-5"
-            ng-click="addItemToSavedList(result)"
-            ng-disabled="findItemInSavedList(result.concept.conceptId)">
-            <span class="md md-playlist-add tooltips-right tooltips-light normal-case>Inactive Concept</span>"></span>
-          </button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  -->
-
-
+  <!-- load more button -->
   <button
+    ng-show="loadPerformed"
     class="btn btn-default classify"
     ng-click="loadMore()"
-    ng-disabled="loadMoreEnabled !== null">
-    <span ng-if="results.length > 0 && loadMoreEnabled === true" class="button-link">Load Next {{resultsSize}}</span>
-    <span ng-if="results.length > 0 && loadMoreEnabled === false">End of Results</span>
+    ng-disabled="!loadMoreEnabled">
+    <span ng-if="loadMoreEnabled" class="button-link">Load Next {{resultsSize}}</span>
+    <span ng-if="!loadMoreEnabled">End of Results</span>
   </button>
 
 </div>
