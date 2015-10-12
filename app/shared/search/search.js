@@ -38,8 +38,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // TODO Move this $http call into snowowl service later
       function searchHelper(url, appendResults) {
 
-        console.debug('searchHelper', url, appendResults);
-
         // initialize or clear the results list
         if (!$scope.results || !appendResults) {
           $scope.results = [];
@@ -60,16 +58,20 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
           $scope.loadPerformed = true;
 
+          // temporary array for sorting/grouping/filtering
+          var resultsArray;
+
           // either a list or single object, switch based on 'data'
           if (response.data.length) {
-            console.debug('appending list');
-            $scope.results = $scope.results.concat(response.data);
+
+            resultsArray = $scope.results.concat(response.data);
 
             // check if more results may be available
             $scope.loadMoreEnabled = (response.data.length === $scope.resultsSize);
 
+            console.debug(response.data.length, $scope.resultSize);
+
           } else {
-            console.debug('appending single item');
 
             // convert full concept into browser list item form
             var item = {
@@ -84,16 +86,36 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               }
             };
 
-            console.debug($scope.results, item);
-
-            $scope.results = $scope.results.concat(item);
+            resultsArray = $scope.results.concat(item);
 
             // single result does not have load more question (not true or
             // false)
             $scope.loadMoreEnabled = null;
           }
+          // group concepts by SCTID
+          var newResults = [];
 
-          console.debug('results', response.data, $scope.results);
+          // cycle over all results
+          for (var i = 0; i < resultsArray.length; i++) {
+
+            // push the item
+            newResults.push(resultsArray[i]);
+
+            // cycle over items remaining in list
+            for (var j = i+1; j < resultsArray.length; j++) {
+
+              // if second item matches, push it to new results and remove from list
+              if (resultsArray[i].concept.conceptId === resultsArray[j].concept.conceptId) {
+
+                newResults.push(resultsArray[j]);
+                resultsArray.splice(j, 1);
+                j--;  // decrement to check same position
+              }
+            }
+          }
+
+          $scope.results = newResults;
+
 
           // user cue for status
           if ($scope.results.length === 0) {
@@ -164,7 +186,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.searchStr = $scope.searchStr.toLowerCase();
           }
 
-          url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions?query=' + $scope.searchStr + '&limit=' + $scope.resultsSize + '&searchMode=' + $scope.options.searchMode + '&lang=' + $scope.options.searchLang + '&statusFilter=' + $scope.options.statusSearchFilter + '&skipTo=' + ($scope.resultsPage - 1) * $scope.resultsSize;
+          // sample call: /MAIN/descriptions?query=heart&offset=0&limit=50
+          url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions?query=' + $scope.searchStr + '&limit=' + $scope.resultsSize + '&offset=' + ($scope.resultsPage - 1) * $scope.resultsSize;
         }
 
         // Execute the search and set results via helper
