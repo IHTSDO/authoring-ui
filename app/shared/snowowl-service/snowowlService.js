@@ -463,7 +463,25 @@ angular.module('singleConceptAuthoringApp')
 
           // use browser/{path}/concepts/{id} call
           $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
-            deferred.resolve([ response.data ]);
+
+            // convert to browser search form
+            var item = {
+              active: response.data.active,
+              term: response.data.preferredSynonym,
+              concept: {
+                active: response.data.active,
+                conceptId: response.data.conceptId,
+                definitionStatus: response.data.definitionStatus,
+                fsn: response.data.fsn,
+                moduleId: response.data.moduleId
+              }
+            };
+            
+            
+            
+            
+            
+            deferred.resolve([ item ]);
           }, function (error) {
             deferred.reject(error);
           });
@@ -477,7 +495,21 @@ angular.module('singleConceptAuthoringApp')
 
             // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
             $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function(response2) {
-              deferred.resolve([ response2.data ])
+
+              // convert to browser search form
+              var item = {
+                active: response2.data.active,
+                term: response2.data.preferredSynonym,
+                concept: {
+                  active: response2.data.active,
+                  conceptId: response2.data.conceptId,
+                  definitionStatus: response2.data.definitionStatus,
+                  fsn: response2.data.fsn,
+                  moduleId: response2.data.moduleId
+                }
+              };
+
+              deferred.resolve([ item ])
             }, function(error) {
               deferred.reject('Secondary call to retrieve concept failed: ', error);
             });
@@ -503,6 +535,22 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
+
+      /**
+       *
+       // convert full concept into browser list item form
+       var item = {
+              active: concepts.active,
+              term: concepts.preferredSynonym,
+              concept: {
+                active: concepts.active,
+                conceptId: concepts.conceptId,
+                definitionStatus: concepts.definitionStatus,
+                fsn: concepts.fsn,
+                moduleId: concepts.moduleId
+              }
+            };
+       */
 
       return deferred.promise;
       /*

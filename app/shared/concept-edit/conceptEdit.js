@@ -1398,11 +1398,11 @@ angular.module('singleConceptAuthoringApp')
             return false;
           }
           if (!relationship.type || !relationship.type.conceptId) {
-            //relationship.error = 'Relationship type must be set';
+            console.error( 'Relationship type must be set');
             return false;
           }
           if (!relationship.target || !relationship.target.conceptId) {
-            //relationship.error = 'Relationship target must be set';
+            console.error('Relationship target must be set');
             return false;
           }
 
@@ -1425,28 +1425,27 @@ angular.module('singleConceptAuthoringApp')
            return false;
            }*/
           if (!concept.descriptions || concept.descriptions.length === 0) {
-            //console.error('Concept must have at least one description');
+            console.error('Concept must have at least one description');
             return false;
           }
           if (!concept.relationships || concept.relationships.length === 0) {
-            //console.error('Concept must have at lalst one relationship');
+            console.error('Concept must have at lalst one relationship');
             return false;
           }
           if (!concept.definitionStatus) {
-            //console.error('Concept definitionStatus must be set');
+            console.error('Concept definitionStatus must be set');
             return false;
           }
           if (concept.active === null) {
-            //console.error('Concept active flag must be set');
+            console.error('Concept active flag must be set');
             return false;
           }
           if (!concept.moduleId) {
-            //console.error('Concept moduleId must be set');
+            console.error('Concept moduleId must be set');
             return false;
           }
           var activeFsn = [];
           for (var i = 0; i < concept.descriptions.length; i++) {
-            // console.log(concept.descriptions[i]);
             if (concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true) {
               activeFsn.push(concept.descriptions[i]);
             }
