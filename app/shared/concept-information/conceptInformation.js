@@ -44,7 +44,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
-    }
+    };
   }
 )
 ;
