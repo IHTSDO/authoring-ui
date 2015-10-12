@@ -205,7 +205,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.toggleCollapse = function (result) {
         result.showData = !result.showData;
-        result.retrieve = true;
       };
 
       /**
