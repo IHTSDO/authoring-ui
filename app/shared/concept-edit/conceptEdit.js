@@ -935,6 +935,77 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
         };
 
+        scope.getConceptsForTypeahead = function (searchStr) {
+          console.debug('entered getConceptsForTypeAhead', searchStr);
+          return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+            return response;
+          });
+        };
+
+        /**
+         * Sets relationship type concept based on typeahead selection
+         * @param relationshipField the type or target JSON object
+         * @param conceptId the concept id
+         * @param fsn the fsn
+         */
+        scope.setRelationshipTypeConcept = function (relationship, item) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+
+          console.debug('setting relationship type concept', relationship, item);
+
+          relationship.type.conceptId = item.concept.conceptId;
+          relationship.type.fsn = item.concept.fsn;
+
+          scope.updateRelationship(relationship);
+        };
+
+        /**
+         * Sets relationship target concept based on typeahead selection
+         * @param relationshipField the type or target JSON object
+         * @param conceptId the concept id
+         * @param fsn the fsn
+         */
+        scope.setRelationshipTargetConcept = function (relationship, item) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+
+          console.debug('setting relationship target concept', relationship, item);
+
+          relationship.target.conceptId = item.concept.conceptId;
+          relationship.target.fsn = item.concept.fsn;
+
+          scope.updateRelationship(relationship);
+        };
+
+        /**
+         * Function to return display name of relationship concept type/target,
+         * called on field blur
+         * @param relationshipField the type or target JSON object
+         * @returns {*}
+         */
+        scope.getConceptNameForRelationshipField = function (relationshipField) {
+          return relationshipField.fsn
+        };
+
+        /**
+         * Function to validate a relationship field
+         * @param relationshipField
+         */
+        scope.validateRelationshipField = function (relationshipField) {
+          // get the concept from its id
+          snowowlService.getFullConcept(relationshipField.conceptId, scope.branch).then(function (response) {
+
+            // if name does not match, change fsn and alert user
+            if (relationshipField.fsn !== response.fsn) {
+              relationshipField.fsn = response.fsn;
+              scope.warning = 'The concept name "' + relationshipField.fsn + '" does not match the id specified by the relationship, and has been changed. Please select concepts for relationships using drag/drop or the typeahead list only.';
+            }
+          })
+        };
+
         ////////////////////////////////
         // Shared Elements
         ////////////////////////////////
@@ -1001,6 +1072,8 @@ angular.module('singleConceptAuthoringApp')
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          console.debug('dropped target', data);
+
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -1039,6 +1112,8 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.dropRelationshipType = function (relationship, data) {
+
+          console.debug('dropped type', data);
 
           // cancel if static
           if (scope.isStatic) {
@@ -1234,7 +1309,8 @@ angular.module('singleConceptAuthoringApp')
         // method to check single description for validity
         scope.isDescriptionValid = function (description) {
 
-          // if not published and inactive, consider valid (removed by saveConcept)
+          // if not published and inactive, consider valid (removed by
+          // saveConcept)
           if (!description.active && !description.effectiveTime) {
             return true;
           }
@@ -1280,7 +1356,8 @@ angular.module('singleConceptAuthoringApp')
         // method to check single relationship for validity
         scope.isRelationshipValid = function (relationship) {
 
-          // if not active and no effective time, consider valid (removed by saveConcept)
+          // if not active and no effective time, consider valid (removed by
+          // saveConcept)
           if (!relationship.active && !relationship.effectiveTime) {
             return true;
           }
