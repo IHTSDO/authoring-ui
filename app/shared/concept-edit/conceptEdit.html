@@ -308,7 +308,6 @@
           <div class="pull-left rolegroup">
             <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="relationship.effectiveTime"
                       ng-change="updateRelationship(relationship)"
                       class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                       ui-on-drop="dropNullOp()">
@@ -328,7 +327,7 @@
 
             <textarea type="text"
                       ng-model="relationship.type.fsn"
-                      placeholder="Enter search terms"
+                      ng-disabled="relationship.effectiveTime"
                       typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="500"
@@ -350,7 +349,7 @@
             
             <textarea type="text"
                       ng-model="relationship.target.fsn"
-                      placeholder="Enter search terms"
+                      ng-disabled="relationship.effectiveTime"
                       typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="500"
@@ -409,7 +408,6 @@
           <div class="pull-left rolegroup">
             <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="relationship.effectiveTime"
                       ng-change="updateRelationship(relationship)"
                       class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                       ui-on-drop="dropNullOp()">
@@ -428,7 +426,7 @@
                drop-validate="!relationship.effectiveTime || isStatic">
               <textarea type="text"
                         ng-model="relationship.type.fsn"
-                        placeholder="Enter search terms"
+                        ng-disabled="relationship.effectiveTime"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-wait-ms="500"
@@ -448,7 +446,7 @@
                drop-validate="!relationship.effectiveTime || isStatic">
              <textarea type="text"
                        ng-model="relationship.target.fsn"
-                       placeholder="Enter search terms"
+                       ng-disabled="relationship.effectiveTime"
                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                        typeahead-focus-first="false"
                        typeahead-wait-ms="500"
