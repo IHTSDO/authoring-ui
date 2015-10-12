@@ -938,6 +938,19 @@ angular.module('singleConceptAuthoringApp')
         scope.getConceptsForTypeahead = function (searchStr) {
           console.debug('entered getConceptsForTypeAhead', searchStr);
           return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+
+            // remove duplicates
+            for (var i = 0; i < response.length; i++) {
+              console.debug('checking for duplicates', i, response[i]);
+              for (var j = response.length - 1; j > i; j--) {
+                if (response[j].concept.conceptId === response[i].concept.conceptId) {
+                  console.debug(' duplicate ', j, response[j]);
+                  response.splice(j, 1);
+                  j--;
+                }
+              }
+            }
+
             return response;
           });
         };

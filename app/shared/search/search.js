@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           var resultsArray;
 
           // either a list or single object, switch based on 'data'
-          if (concepts.length) {
+          if (concepts.length > 1) {
 
             resultsArray = $scope.results.concat(concepts);
 

@@ -463,7 +463,7 @@ angular.module('singleConceptAuthoringApp')
 
           // use browser/{path}/concepts/{id} call
           $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
-            deferred.resolve(response.data);
+            deferred.resolve([ response.data ]);
           }, function (error) {
             deferred.reject(error);
           });
@@ -477,7 +477,7 @@ angular.module('singleConceptAuthoringApp')
 
             // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
             $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function(response2) {
-              deferred.resolve(response2.data)
+              deferred.resolve([ response2.data ])
             }, function(error) {
               deferred.reject('Secondary call to retrieve concept failed: ', error);
             });
