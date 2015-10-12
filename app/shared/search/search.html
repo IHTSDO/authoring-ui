@@ -47,7 +47,7 @@
           <div class="p-5 wordbreak">{{result.term}}</div>
         </div>
         <div class="col-md-5 no-padding">
-          <button  ng-click="toggleCollapse(result)" type="button"
+          <button ng-click="toggleCollapse(result)" type="button"
                   style="display:inline"
                   ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-right' : !result.showData, ' fa fa-caret-down' : result.showData}]"></button>
 
@@ -71,25 +71,23 @@
       </div>
 
 
-      <div class="row well" ng-init="result.showData = false;" ng-show="result.showData" >
+      <div class="row well" ng-init="result.showData = false;" ng-show="result.showData">
         <div ng-if="result.showData" concept-information concept-id="result.concept.conceptId" branch="branch"></div>
       </div>
     </div>
 
   </div>
-</div>
 
-</div>
 
-<!-- load more button -->
-<button
-  ng-show="loadPerformed"
-  class="btn btn-default classify"
-  ng-click="loadMore()"
-  ng-disabled="!loadMoreEnabled">
-  <span ng-if="loadMoreEnabled" class="button-link">Load Next {{resultsSize}}</span>
-  <span ng-if="!loadMoreEnabled">End of Results</span>
-</button>
+  <!-- load more button -->
+  <button
+    ng-show="loadPerformed"
+    class="btn btn-default classify m-5"
+    ng-click="loadMore()"
+    ng-disabled="!loadMoreEnabled">
+    <span ng-if="loadMoreEnabled" class="button-link">Load Next {{resultsSize}}</span>
+    <span ng-if="!loadMoreEnabled">End of Results</span>
+  </button>
 
 </div>
 

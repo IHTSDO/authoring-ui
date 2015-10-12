@@ -98,12 +98,23 @@
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
         <table show-filter="true" ng-table="conceptsToReviewTableParams"
                template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small">
+               class="table table-full table-full-small" drop-channel="feedbackConcept">
+
+
+          <!-- filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings
+
+          Disabled until 504 errors allow testing with results... (PWG 10/12/2015)
+          <tr>
+            <td></td>
+            <td><input class=" input-filter form-control ng-scope ng-valid ng-touched" ng-model="conceptsToReviewTableParams.params.filter.name" ng-model-options="{debounce: 500}" ui-on-drop=""></td>
+            <td></td>
+          </tr>
+          -->
 
           <tr ng-repeat="concept in conceptsToReviewViewed">
 
             <td class="col-checkbox" header="'ng-table/headers/checkboxToReview.html'">
-              <input type="checkbox" ng-model="concept.selected">
+              <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
             </td>
 
             <td class="col-concept" data-title="'Concept'" sortable="'term'"
@@ -165,6 +176,18 @@
         <table show-filter="true" ng-table="conceptsReviewedTableParams"
                template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
+
+
+          <!-- filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings
+
+          Disabled until 504 errors allow testing with results... (PWG 10/12/2015)
+          <tr>
+            <td></td>
+            <td><input class=" input-filter form-control ng-scope ng-valid ng-touched" ng-model="conceptsReviewedTableParams.params.filter.name" ng-model-options="{debounce: 500}" ui-on-drop=""></td>
+            <td></td>
+          </tr>
+          -->
+
           <tr ng-repeat="concept in conceptsReviewedViewed">
 
             <td class="col-checkbox" header="'ng-table/headers/checkboxReviewed.html'">
