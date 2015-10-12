@@ -38,21 +38,34 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // TODO Move this $http call into snowowl service later
       function searchHelper(url, appendResults) {
 
+
+
+      }
+
+      /**
+       * Executes a search based on current scope variable searchStr
+       * @param appendResults if true, append to existing results; if false,
+       *   replace results
+       */
+      $scope.search = function (appendResults) {
+
+        if (!$scope.searchStr || $scope.searchStr.length < 3) {
+          return;
+        }
+
+        $scope.searchStatus = 'Searching...';
+
+        // trim and lower-case the swearch string
+        $scope.searchStr = $scope.searchStr.trim();
+
         // initialize or clear the results list
         if (!$scope.results || !appendResults) {
           $scope.results = [];
         }
 
-        // check url specified
-        if (!url) {
-          return;
-        }
+       snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length + 1, $scope.resultsSize).then(function(concepts) {
 
-        // make the call
-        // TODO Convert to snowowl service call at some point
-        $http.get(url).then(function (response) {
-
-          if (!response) {
+          if (!concepts) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
           }
 
@@ -62,27 +75,27 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           var resultsArray;
 
           // either a list or single object, switch based on 'data'
-          if (response.data.length) {
+          if (concepts.length) {
 
-            resultsArray = $scope.results.concat(response.data);
+            resultsArray = $scope.results.concat(concepts);
 
             // check if more results may be available
-            $scope.loadMoreEnabled = (response.data.length === $scope.resultsSize);
+            $scope.loadMoreEnabled = (concepts.length === $scope.resultsSize);
 
-            console.debug(response.data.length, $scope.resultSize);
+            console.debug(concepts.length, $scope.resultSize);
 
           } else {
 
             // convert full concept into browser list item form
             var item = {
-              active: response.data.active,
-              term: response.data.preferredSynonym,
+              active: concepts.active,
+              term: concepts.preferredSynonym,
               concept: {
-                active: response.data.active,
-                conceptId: response.data.conceptId,
-                definitionStatus: response.data.definitionStatus,
-                fsn: response.data.fsn,
-                moduleId: response.data.moduleId
+                active: concepts.active,
+                conceptId: concepts.conceptId,
+                definitionStatus: concepts.definitionStatus,
+                fsn: concepts.fsn,
+                moduleId: concepts.moduleId
               }
             };
 
@@ -135,71 +148,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
         });
 
-      }
-
-      /**
-       * Executes a search based on current scope variable searchStr
-       * @param appendResults if true, append to existing results; if false,
-       *   replace results
-       */
-      $scope.search = function (appendResults) {
-
-        if (!$scope.searchStr || $scope.searchStr.length < 3) {
-          return;
-        }
-
-        $scope.searchStatus = 'Searching...';
-
-        // trim the swearch string
-        $scope.searchStr = $scope.searchStr.trim();
-
-        // the url to be passed to the helper
-        var url = null;
-
-        /* Construct the url based on search query */
-
-        // if a numeric value
-        if (!isNaN(parseFloat($scope.searchStr)) && isFinite($scope.searchStr)) {
-
-          // if concept id
-          if ($scope.searchStr.substr(-2, 1) === '0') {
-            url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/concepts/' + $scope.searchStr;
-          }
-
-          // if description id
-          else if ($scope.searchStr.substr(-2, 1) === '1') {
-            url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions/' + $scope.searchStr;
-          }
-
-          // cannot be determined
-          else {
-            $scope.searchStatus = 'Numeric value must correspond to a concept or description id';
-            return;
-          }
-        }
-
-        // otherwise, a text value
-        else {
-
-          // partial matching search
-          if ($scope.options.searchMode === 'partialMatching') {
-            $scope.searchStr = $scope.searchStr.toLowerCase();
-          }
-
-          // sample call: /MAIN/descriptions?query=heart&offset=0&limit=50
-          url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions?query=' + $scope.searchStr + '&limit=' + $scope.resultsSize + '&offset=' + ($scope.resultsPage - 1) * $scope.resultsSize;
-        }
-
-        // Execute the search and set results via helper
-        searchHelper(url, appendResults);
-
       };
 
       /**
        * Function to load another page of results
        */
       $scope.loadMore = function () {
-        $scope.resultsPage++;
         $scope.search(true); // search in append mode
       };
 

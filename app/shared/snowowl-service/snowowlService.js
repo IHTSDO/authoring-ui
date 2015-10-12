@@ -437,18 +437,81 @@ angular.module('singleConceptAuthoringApp')
     //////////////////////////
     // Browser Functions
     //////////////////////////
-    //http://local.ihtsdotools.org:8081/snowowl/snomed-ct/v2/browser
-    // /MAIN/WRPAS/WRPAS-22/descriptions?query=test&limit=50
-    // &searchMode=partialMatching&lang=english&statusFilter=activeOnly
-    // &skipTo=0&returnLimit=100
-    // Update Existing Concept
-    // PUT /browser/{path}/concepts/{conceptId}
-    function getDescriptionsForQuery(project, task, searchStr) {
-      return $http.get(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/descriptions?query=' + searchStr + '&limit=50&searchMode=partialMatching&lang=english&statusFilter=activeOnly&skipTo=0&returnLimit=100').then(function (response) {
-        return response.data;
-      }, function (error) {
-        return error.data;
-      });
+
+    /**
+     * Search for concepts by id or description term query
+     * @param projectKey the project key
+     * @param taskKey the task key
+     * @param searchStr the component id or query text
+     * @param offset the start index
+     * @param maxResults the number of results to return
+     * @param options other options (currently unused)
+     * @returns {*|promise} a single result or list of results
+     */
+    function findConceptsForQuery(projectKey, taskKey, searchStr, offset, maxResults, options) {
+
+      var deferred = $q.defer();
+
+      // url to be called
+      var url;
+
+      // if a numeric value, search by component id
+      if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
+
+        // if concept id
+        if (searchStr.substr(-2, 1) === '0') {
+
+          // use browser/{path}/concepts/{id} call
+          $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
+            deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject(error);
+          });
+        }
+
+        // if description id
+        else if (searchStr.substr(-2, 1) === '1') {
+
+          // use {path}/descriptions/id call
+          $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
+
+            // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
+            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function(response2) {
+              deferred.resolve(response2.data)
+            }, function(error) {
+              deferred.reject('Secondary call to retrieve concept failed: ', error);
+            });
+
+          }, function (error) {
+            deferred.reject(error);
+          });
+        }
+
+        else {
+          $q.reject('Could not parse numeric value (not a concept id)');
+        }
+      }
+
+      // otherwise, a text value, search by query
+      else {
+
+        // use browser/{path}/descriptions?{options} call
+        $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+      }
+
+      return deferred.promise;
+      /*
+
+       return $http.get(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/descriptions?query=' + searchStr + '&limit=50&searchMode=partialMatching&lang=english&statusFilter=activeOnly&skipTo=0&returnLimit=100').then(function (response) {
+       return response.data;
+       }, function (error) {
+       return error.data;
+       });*/
     }
 
     ////////////////////////////////
@@ -519,7 +582,7 @@ angular.module('singleConceptAuthoringApp')
       addDialects: addDialects,
       getDialects: getDialects,
       downloadClassification: downloadClassification,
-      getDescriptionsForQuery: getDescriptionsForQuery,
+      findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
       getBranch: getBranch
 
