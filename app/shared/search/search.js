@@ -38,8 +38,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // TODO Move this $http call into snowowl service later
       function searchHelper(url, appendResults) {
 
-
-
       }
 
       /**
@@ -63,7 +61,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.results = [];
         }
 
-       snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length + 1, $scope.resultsSize).then(function(concepts) {
+        snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length + 1, $scope.resultsSize).then(function (concepts) {
 
           if (!concepts) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -74,37 +72,15 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           // temporary array for sorting/grouping/filtering
           var resultsArray;
 
-          // either a list or single object, switch based on 'data'
-          if (concepts.length > 1) {
+          console.debug('results found: ', concepts.length, concepts);
 
-            resultsArray = $scope.results.concat(concepts);
+          resultsArray = $scope.results.concat(concepts);
 
-            // check if more results may be available
-            $scope.loadMoreEnabled = (concepts.length === $scope.resultsSize);
+          // check if more results may be available
+          $scope.loadMoreEnabled = (concepts.length === $scope.resultsSize);
 
-            console.debug(concepts.length, $scope.resultSize);
+          console.debug(concepts.length, $scope.resultsSize);
 
-          } else {
-
-            // convert full concept into browser list item form
-            var item = {
-              active: concepts.active,
-              term: concepts.preferredSynonym,
-              concept: {
-                active: concepts.active,
-                conceptId: concepts.conceptId,
-                definitionStatus: concepts.definitionStatus,
-                fsn: concepts.fsn,
-                moduleId: concepts.moduleId
-              }
-            };
-
-            resultsArray = $scope.results.concat(item);
-
-            // single result does not have load more question (not true or
-            // false)
-            $scope.loadMoreEnabled = null;
-          }
           // group concepts by SCTID
           var newResults = [];
 
@@ -115,9 +91,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             newResults.push(resultsArray[i]);
 
             // cycle over items remaining in list
-            for (var j = i+1; j < resultsArray.length; j++) {
+            for (var j = i + 1; j < resultsArray.length; j++) {
 
-              // if second item matches, push it to new results and remove from list
+              // if second item matches, push it to new results and remove from
+              // list
               if (resultsArray[i].concept.conceptId === resultsArray[j].concept.conceptId) {
 
                 newResults.push(resultsArray[j]);
@@ -128,7 +105,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
 
           $scope.results = newResults;
-
 
           // user cue for status
           if ($scope.results.length === 0) {
