@@ -219,7 +219,7 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendMessage(saveMessage, 10000, null);
 
           // if new, use create
-          if (!concept.conceptId) {
+          if (concept.fsn === null) {
 
             snowowlService.createConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
