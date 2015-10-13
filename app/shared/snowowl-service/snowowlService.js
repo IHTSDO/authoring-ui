@@ -509,7 +509,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               };
 
-              deferred.resolve([ item ])
+              deferred.resolve([ item ]);
             }, function(error) {
               deferred.reject('Secondary call to retrieve concept failed: ', error);
             });

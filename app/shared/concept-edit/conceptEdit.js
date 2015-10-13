@@ -1000,7 +1000,7 @@ angular.module('singleConceptAuthoringApp')
          * @returns {*}
          */
         scope.getConceptNameForRelationshipField = function (relationshipField) {
-          return relationshipField.fsn
+          return relationshipField.fsn;
         };
 
         /**
@@ -1016,7 +1016,7 @@ angular.module('singleConceptAuthoringApp')
               relationshipField.fsn = response.fsn;
               scope.warning = 'The concept name "' + relationshipField.fsn + '" does not match the id specified by the relationship, and has been changed. Please select concepts for relationships using drag/drop or the typeahead list only.';
             }
-          })
+          });
         };
 
         ////////////////////////////////
