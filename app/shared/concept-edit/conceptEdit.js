@@ -664,7 +664,7 @@ angular.module('singleConceptAuthoringApp')
         // arg: afterIndex, integer, the index at which to add description after
         scope.addDescription = function (afterIndex) {
 
-          var description = objectService.getNewDescription(scope.concept.id);
+          var description = objectService.getNewDescription(null);
 
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
@@ -885,7 +885,7 @@ angular.module('singleConceptAuthoringApp')
 
           //// console.debug('adding attribute relationship', afterIndex);
 
-          var relationship = objectService.getNewIsaRelationship(scope.concept.id);
+          var relationship = objectService.getNewIsaRelationship(null);
 
           // if afterIndex not supplied or invalid, simply add
           if (afterIndex === null || afterIndex === undefined) {
@@ -913,7 +913,7 @@ angular.module('singleConceptAuthoringApp')
 
           //  // console.debug('adding attribute relationship', afterIndex);
 
-          var relationship = objectService.getNewAttributeRelationship(scope.concept.id);
+          var relationship = objectService.getNewAttributeRelationship(null);
 
           // set role group if specified
           if (relGroup) {
@@ -942,7 +942,7 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
-        scope.removeRelationship = function(relationship) {
+        scope.removeRelationship = function (relationship) {
           var index = scope.concept.relationships.indexOf(relationship);
           if (index !== -1) {
             scope.concept.relationships.splice(index, 1);
@@ -1195,25 +1195,13 @@ angular.module('singleConceptAuthoringApp')
          * @param target the description dropped on
          * @param source the dragged description
          */
-        scope.dropDescription = function (concept, target, source) {
+        scope.dropDescription = function (target, source) {
 
-          // console.debug('dropDescription', concept, target, source);
+          console.debug('dropDescription', target, source);
 
           // check arguments
           if (!target || !source) {
             console.error('Cannot drop description, either source or target not specified');
-            return;
-          }
-
-          // check if target is released (not valid target)
-          if (target.effectiveTime) {
-            console.error('Cannot drop description on previously released description');
-            return;
-          }
-
-          // check if target is static
-          if (scope.isStatic) {
-            console.error('Scope is static, cannot drop');
             return;
           }
 
@@ -1222,15 +1210,25 @@ angular.module('singleConceptAuthoringApp')
 
           // clear the effective time
           copy.effectiveTime = null;
+          copy.descriptionId = null;
+          copy.conceptId = null; // re-added by snowowl
 
-          // find the matching description and replace
-          // NOTE: Direct reference to description was not working,
-          // hence the passing of concept and cycling here
-          for (var i = 0; i < concept.descriptions.length; i++) {
-            if (concept.descriptions[i] === target) {
-              concept.descriptions[i] = copy;
-              autoSave();
-            }
+          var targetIndex = scope.concept.descriptions.indexOf(target);
+          if (targetIndex === -1) {
+            console.error('Unexpected error dropping description; cannot find target');
+            return;
+          }
+
+          console.debug(target, objectService.getNewDescription(scope.concept.conceptId));
+
+          // if target not blank, add afterward
+          if (target.term) {
+            scope.concept.descriptions.splice(targetIndex + 1, 0, copy);
+          }
+
+          // otherwise find the matching description and replace
+          else {
+            scope.concept.descriptions[targetIndex] = copy;
           }
         };
 
@@ -1636,13 +1634,13 @@ angular.module('singleConceptAuthoringApp')
             // objectService.getNewConcept(scope.branch));
           } else {
             notificationService.sendMessage('Reverting concept...');
-            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
-              notificationService.sendMessage('Concept succcessfully reverted to saved version');
+            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+              notificationService.sendMessage('Concept successfully reverted to saved version', 5000);
               scope.concept = response;
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
               scope.isModified = false;
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
-            }, function(error) {
+            }, function (error) {
               notificationService.sendMessage('Error reverting concept');
             })
           }
