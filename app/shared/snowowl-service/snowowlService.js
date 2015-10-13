@@ -44,6 +44,24 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    // function to remove disallowed elements from a concept
+    function getConceptDescendants(conceptId, branch, offset, limit) {
+      var deferred = $q.defer();
+      // default values
+      if (!offset) {
+        offset = 0;
+      }
+      if (!limit) {
+        limit = 50;
+      }
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?offset=' + offset + '&limit=' + limit + '&direct=false').then(function(response) {
+        deferred.resolve(response.data);
+      }).then(function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+
     //////////////////////////////////////////////
     // Classification functions
     //////////////////////////////////////////////
@@ -295,26 +313,46 @@ angular.module('singleConceptAuthoringApp')
     // Retrieve inbound relationships of a concept
     // GET /{path}/concepts/{conceptId}/inbound-relationships
     function getConceptRelationshipsInbound(conceptId, branch) {
-      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships').then(function (response) {
+      
+      var deferred = $q.defer();
+      
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships').then(function (response) {
+
+        console.debug('inbound', response);
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
-          return [];
-        }
+          console.debug('returning []');
+          deferred.resolve([]);
+        } else {
 
-        // otherwise, return the passed array
-        return response.data.inboundRelationships;
+          console.debug('returning', response.data.inboundRelationships);
+          // otherwise, return the passed array
+          deferred.resolve( response.data.inboundRelationships);
+        }
       }, function (error) {
-        // TODO Handle error
+        deferred.reject(error);
       });
+
+      return deferred.promise;
     }
 
     // Retrieve outbound relationships of a concept
     // GET /{path}/concepts/{conceptId}/outbound-relationships
     // UNUSED
     function getConceptRelationshipsOutbound(conceptId, branch) {
+      var deferred = $q.defer();
+
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/outbound-relationships').then(function (response) {
-        return response.data.outboundRelationships;
+
+        // if zero-count, return empty array (no blank array returned)
+        if (response.data.total === 0) {
+          deferred.resolve([]);
+        } else {
+
+          // otherwise, return the passed array
+          deferred.resolve( response.data.outboundRelationships);
+        }
       }, function (error) {
         // TODO Handle error
       });
@@ -675,6 +713,7 @@ angular.module('singleConceptAuthoringApp')
       getConceptDescriptions: getConceptDescriptions,
       getConceptRelationshipsInbound: getConceptRelationshipsInbound,
       getConceptRelationshipsOutbound: getConceptRelationshipsOutbound,
+      getConceptDescendants: getConceptDescendants,
       getRelationshipDisplayNames: getRelationshipDisplayNames,
       getFullConcept: getFullConcept,
       updateDescription: updateDescription,
