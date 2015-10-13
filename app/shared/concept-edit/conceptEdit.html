@@ -308,7 +308,6 @@
           <div class="pull-left rolegroup">
             <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="relationship.effectiveTime"
                       ng-change="updateRelationship(relationship)"
                       class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                       ui-on-drop="dropNullOp()">
@@ -325,13 +324,16 @@
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipType(relationship, $data)"
                drop-validate="!relationship.effectiveTime || isStatic">
-            <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
-                      class="form-control color_{{relationship.groupId}}"
-                      ng-model-options="{updateOn: 'blur'}"
-                      ng-change="updateRelationship(relationship)"
-                      type="text"
-                      placeholder="#">
-            </textarea>
+
+            <textarea type="text"
+                      ng-model="relationship.type.fsn"
+                      ng-disabled="relationship.effectiveTime"
+                      typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                      typeahead-focus-first="false"
+                      typeahead-wait-ms="500"
+                      typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
+                      typeahead-editable="false" typeahead-min-length="3"></textarea>
+    
           </div>
 
           <!-- linked concept -->
@@ -344,13 +346,15 @@
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipTarget(relationship, $data)"
                drop-validate="!relationship.effectiveTime || isStatic">
-          <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
-                    class="form-control color_{{relationship.groupId}}"
-                    type="text"
-                    ng-model-options="{updateOn: 'blur'}"
-                    ng-change="updateRelationship(relationship)"
-                    placeholder="#">
-          </textarea>
+            
+            <textarea type="text"
+                      ng-model="relationship.target.fsn"
+                      ng-disabled="relationship.effectiveTime"
+                      typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                      typeahead-focus-first="false"
+                      typeahead-wait-ms="500"
+                      typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
+                      typeahead-editable="false" typeahead-min-length="3"></textarea>
           </div>
           <div ng-if="!isStatic">
             <button type="button" ng-click="addIsaRelationship($index)"
@@ -404,7 +408,6 @@
           <div class="pull-left rolegroup">
             <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="relationship.effectiveTime"
                       ng-change="updateRelationship(relationship)"
                       class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                       ui-on-drop="dropNullOp()">
@@ -421,13 +424,14 @@
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipType(relationship, $data)"
                drop-validate="!relationship.effectiveTime || isStatic">
-            <textarea style="" class="msd-elastic" disabled ng-model="relationship.type.fsn"
-                      class="form-control color_{{relationship.groupId}}"
-                      ng-model-options="{updateOn: 'blur'}"
-                      ng-change="updateRelationship(relationship)"
-                      type="text"
-                      placeholder="#">
-            </textarea>
+              <textarea type="text"
+                        ng-model="relationship.type.fsn"
+                        ng-disabled="relationship.effectiveTime"
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-wait-ms="500"
+                        typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
+                        typeahead-editable="false" typeahead-min-length="3"></textarea>
           </div>
 
           <!-- linked concept -->
@@ -440,13 +444,14 @@
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipTarget(relationship, $data)"
                drop-validate="!relationship.effectiveTime || isStatic">
-          <textarea style="" class="msd-elastic" disabled ng-model="relationship.target.fsn"
-                    class="form-control color_{{relationship.groupId}}"
-                    type="text"
-                    ng-model-options="{updateOn: 'blur'}"
-                    ng-change="updateRelationship(relationship)"
-                    placeholder="#">
-          </textarea>
+             <textarea type="text"
+                       ng-model="relationship.target.fsn"
+                       ng-disabled="relationship.effectiveTime"
+                       typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                       typeahead-focus-first="false"
+                       typeahead-wait-ms="500"
+                       typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
+                       typeahead-editable="false" typeahead-min-length="3"></textarea>
           </div>
           <div ng-if="!isStatic">
             <button type="button" ng-click="addIsaRelationship($index)"

@@ -38,62 +38,73 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // TODO Move this $http call into snowowl service later
       function searchHelper(url, appendResults) {
 
-        console.debug('searchHelper', url, appendResults);
+      }
+
+      /**
+       * Executes a search based on current scope variable searchStr
+       * @param appendResults if true, append to existing results; if false,
+       *   replace results
+       */
+      $scope.search = function (appendResults) {
+
+        if (!$scope.searchStr || $scope.searchStr.length < 3) {
+          return;
+        }
+
+        $scope.searchStatus = 'Searching...';
+
+        // trim and lower-case the swearch string
+        $scope.searchStr = $scope.searchStr.trim();
 
         // initialize or clear the results list
         if (!$scope.results || !appendResults) {
           $scope.results = [];
         }
 
-        // check url specified
-        if (!url) {
-          return;
-        }
+        snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length + 1, $scope.resultsSize).then(function (concepts) {
 
-        // make the call
-        // TODO Convert to snowowl service call at some point
-        $http.get(url).then(function (response) {
-
-          if (!response) {
+          if (!concepts) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
           }
 
           $scope.loadPerformed = true;
 
-          // either a list or single object, switch based on 'data'
-          if (response.data.length) {
-            console.debug('appending list');
-            $scope.results = $scope.results.concat(response.data);
+          // temporary array for sorting/grouping/filtering
+          var resultsArray;
 
-            // check if more results may be available
-            $scope.loadMoreEnabled = (response.data.length === $scope.resultsSize);
+          console.debug('results found: ', concepts.length, concepts);
 
-          } else {
-            console.debug('appending single item');
+          resultsArray = $scope.results.concat(concepts);
 
-            // convert full concept into browser list item form
-            var item = {
-              active: response.data.active,
-              term: response.data.preferredSynonym,
-              concept: {
-                active: response.data.active,
-                conceptId: response.data.conceptId,
-                definitionStatus: response.data.definitionStatus,
-                fsn: response.data.fsn,
-                moduleId: response.data.moduleId
+          // check if more results may be available
+          $scope.loadMoreEnabled = (concepts.length === $scope.resultsSize);
+
+          console.debug(concepts.length, $scope.resultsSize);
+
+          // group concepts by SCTID
+          var newResults = [];
+
+          // cycle over all results
+          for (var i = 0; i < resultsArray.length; i++) {
+
+            // push the item
+            newResults.push(resultsArray[i]);
+
+            // cycle over items remaining in list
+            for (var j = i + 1; j < resultsArray.length; j++) {
+
+              // if second item matches, push it to new results and remove from
+              // list
+              if (resultsArray[i].concept.conceptId === resultsArray[j].concept.conceptId) {
+
+                newResults.push(resultsArray[j]);
+                resultsArray.splice(j, 1);
+                j--;  // decrement to check same position
               }
-            };
-
-            console.debug($scope.results, item);
-
-            $scope.results = $scope.results.concat(item);
-
-            // single result does not have load more question (not true or
-            // false)
-            $scope.loadMoreEnabled = null;
+            }
           }
 
-          console.debug('results', response.data, $scope.results);
+          $scope.results = newResults;
 
           // user cue for status
           if ($scope.results.length === 0) {
@@ -113,70 +124,12 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
         });
 
-      }
-
-      /**
-       * Executes a search based on current scope variable searchStr
-       * @param appendResults if true, append to existing results; if false,
-       *   replace results
-       */
-      $scope.search = function (appendResults) {
-
-        if (!$scope.searchStr || $scope.searchStr.length < 3) {
-          return;
-        }
-
-        $scope.searchStatus = 'Searching...';
-
-        // trim the swearch string
-        $scope.searchStr = $scope.searchStr.trim();
-
-        // the url to be passed to the helper
-        var url = null;
-
-        /* Construct the url based on search query */
-
-        // if a numeric value
-        if (!isNaN(parseFloat($scope.searchStr)) && isFinite($scope.searchStr)) {
-
-          // if concept id
-          if ($scope.searchStr.substr(-2, 1) === '0') {
-            url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/concepts/' + $scope.searchStr;
-          }
-
-          // if description id
-          else if ($scope.searchStr.substr(-2, 1) === '1') {
-            url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions/' + $scope.searchStr;
-          }
-
-          // cannot be determined
-          else {
-            $scope.searchStatus = 'Numeric value must correspond to a concept or description id';
-            return;
-          }
-        }
-
-        // otherwise, a text value
-        else {
-
-          // partial matching search
-          if ($scope.options.searchMode === 'partialMatching') {
-            $scope.searchStr = $scope.searchStr.toLowerCase();
-          }
-
-          url = $scope.options.serverUrl + '/' + $scope.options.edition + '/' + $scope.options.release + '/descriptions?query=' + $scope.searchStr + '&limit=' + $scope.resultsSize + '&searchMode=' + $scope.options.searchMode + '&lang=' + $scope.options.searchLang + '&statusFilter=' + $scope.options.statusSearchFilter + '&skipTo=' + ($scope.resultsPage - 1) * $scope.resultsSize;
-        }
-
-        // Execute the search and set results via helper
-        searchHelper(url, appendResults);
-
       };
 
       /**
        * Function to load another page of results
        */
       $scope.loadMore = function () {
-        $scope.resultsPage++;
         $scope.search(true); // search in append mode
       };
 
@@ -228,7 +181,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       $scope.toggleCollapse = function (result) {
         result.showData = !result.showData;
-        result.retrieve = true;
       };
 
       /**

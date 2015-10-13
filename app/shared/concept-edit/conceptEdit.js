@@ -219,7 +219,7 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendMessage(saveMessage, 10000, null);
 
           // if new, use create
-          if (!concept.conceptId) {
+          if (concept.fsn === null) {
 
             snowowlService.createConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
@@ -935,6 +935,90 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
         };
 
+        scope.getConceptsForTypeahead = function (searchStr) {
+          console.debug('entered getConceptsForTypeAhead', searchStr);
+          return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+
+            // remove duplicates
+            for (var i = 0; i < response.length; i++) {
+              console.debug('checking for duplicates', i, response[i]);
+              for (var j = response.length - 1; j > i; j--) {
+                if (response[j].concept.conceptId === response[i].concept.conceptId) {
+                  console.debug(' duplicate ', j, response[j]);
+                  response.splice(j, 1);
+                  j--;
+                }
+              }
+            }
+
+            return response;
+          });
+        };
+
+        /**
+         * Sets relationship type concept based on typeahead selection
+         * @param relationshipField the type or target JSON object
+         * @param conceptId the concept id
+         * @param fsn the fsn
+         */
+        scope.setRelationshipTypeConcept = function (relationship, item) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+
+          console.debug('setting relationship type concept', relationship, item);
+
+          relationship.type.conceptId = item.concept.conceptId;
+          relationship.type.fsn = item.concept.fsn;
+
+          scope.updateRelationship(relationship);
+        };
+
+        /**
+         * Sets relationship target concept based on typeahead selection
+         * @param relationshipField the type or target JSON object
+         * @param conceptId the concept id
+         * @param fsn the fsn
+         */
+        scope.setRelationshipTargetConcept = function (relationship, item) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+
+          console.debug('setting relationship target concept', relationship, item);
+
+          relationship.target.conceptId = item.concept.conceptId;
+          relationship.target.fsn = item.concept.fsn;
+
+          scope.updateRelationship(relationship);
+        };
+
+        /**
+         * Function to return display name of relationship concept type/target,
+         * called on field blur
+         * @param relationshipField the type or target JSON object
+         * @returns {*}
+         */
+        scope.getConceptNameForRelationshipField = function (relationshipField) {
+          return relationshipField.fsn;
+        };
+
+        /**
+         * Function to validate a relationship field
+         * @param relationshipField
+         */
+        scope.validateRelationshipField = function (relationshipField) {
+          // get the concept from its id
+          snowowlService.getFullConcept(relationshipField.conceptId, scope.branch).then(function (response) {
+
+            // if name does not match, change fsn and alert user
+            if (relationshipField.fsn !== response.fsn) {
+              relationshipField.fsn = response.fsn;
+              scope.warning = 'The concept name "' + relationshipField.fsn + '" does not match the id specified by the relationship, and has been changed. Please select concepts for relationships using drag/drop or the typeahead list only.';
+            }
+          });
+        };
+
         ////////////////////////////////
         // Shared Elements
         ////////////////////////////////
@@ -1001,6 +1085,8 @@ angular.module('singleConceptAuthoringApp')
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          console.debug('dropped target', data);
+
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -1039,6 +1125,8 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.dropRelationshipType = function (relationship, data) {
+
+          console.debug('dropped type', data);
 
           // cancel if static
           if (scope.isStatic) {
@@ -1234,7 +1322,8 @@ angular.module('singleConceptAuthoringApp')
         // method to check single description for validity
         scope.isDescriptionValid = function (description) {
 
-          // if not published and inactive, consider valid (removed by saveConcept)
+          // if not published and inactive, consider valid (removed by
+          // saveConcept)
           if (!description.active && !description.effectiveTime) {
             return true;
           }
@@ -1280,7 +1369,8 @@ angular.module('singleConceptAuthoringApp')
         // method to check single relationship for validity
         scope.isRelationshipValid = function (relationship) {
 
-          // if not active and no effective time, consider valid (removed by saveConcept)
+          // if not active and no effective time, consider valid (removed by
+          // saveConcept)
           if (!relationship.active && !relationship.effectiveTime) {
             return true;
           }
@@ -1308,11 +1398,11 @@ angular.module('singleConceptAuthoringApp')
             return false;
           }
           if (!relationship.type || !relationship.type.conceptId) {
-            //relationship.error = 'Relationship type must be set';
+            console.error( 'Relationship type must be set');
             return false;
           }
           if (!relationship.target || !relationship.target.conceptId) {
-            //relationship.error = 'Relationship target must be set';
+            console.error('Relationship target must be set');
             return false;
           }
 
@@ -1335,28 +1425,27 @@ angular.module('singleConceptAuthoringApp')
            return false;
            }*/
           if (!concept.descriptions || concept.descriptions.length === 0) {
-            //console.error('Concept must have at least one description');
+            console.error('Concept must have at least one description');
             return false;
           }
           if (!concept.relationships || concept.relationships.length === 0) {
-            //console.error('Concept must have at lalst one relationship');
+            console.error('Concept must have at lalst one relationship');
             return false;
           }
           if (!concept.definitionStatus) {
-            //console.error('Concept definitionStatus must be set');
+            console.error('Concept definitionStatus must be set');
             return false;
           }
           if (concept.active === null) {
-            //console.error('Concept active flag must be set');
+            console.error('Concept active flag must be set');
             return false;
           }
           if (!concept.moduleId) {
-            //console.error('Concept moduleId must be set');
+            console.error('Concept moduleId must be set');
             return false;
           }
           var activeFsn = [];
           for (var i = 0; i < concept.descriptions.length; i++) {
-            // console.log(concept.descriptions[i]);
             if (concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true) {
               activeFsn.push(concept.descriptions[i]);
             }
