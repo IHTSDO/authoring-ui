@@ -8,28 +8,80 @@
 
   <div class="modal-body">
 
-    <select id="taskProject" name="select-reason" class="form-control"
-            ng-options="reason as reason.text for reason in reasons"
-            ng-model="reasonSelected">
-      <option value='' disabled>- Select a reason (required) -</option>
-    </select>
+    <div class="row classification-report ">
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
-    <div ng-show="associationTargets.length > 0">
-      <hr>
+        <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
+                                                  aria-controls="home" role="tab"
+                                                  data-toggle="tab"> Inactivation Reason</a></li>
+        <li role="presentation" ng-if="conceptId" class=""><a ng-click="actionTab=2" aria-controls="home"
+                                                                    role="tab"
+                                                                    data-toggle="tab">Children ({{!childrenLoading ?
+                                                                                      children.length : 'Loading'}})</a>
+        </li>
 
-      <select id="associationTarget" name="historical-reason" class="form-control"
-              ng-options="associationTarget as associationTarget.text for associationTarget in associationTargets"
-              ng-model="associationTargetSelected">
-        <option value='' disabled>- Select an association reference (optional) -</option>
-      </select>
+        <li role="presentation" ng-if="conceptId" class=""><a ng-click="actionTab=3" aria-controls="home"
+                                                                    role="tab"
+                                                                    data-toggle="tab">Descendants ({{!descendantsLoading
+                                                                                      ? descendants.total :
+                                                                                      'Loading'}})</a>
+        </li>
+      </ul>
     </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content row m-t-10 col-sm-12 no-padding">
+
+      <!-- reasons select -->
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
+        <select id="taskProject" name="select-reason" class="form-control m-t-20"
+                ng-options="reason as reason.text for reason in reasons"
+                ng-model="reasonSelected">
+          <option value='' disabled>- Select a reason (required) -</option>
+        </select>
+
+        <div ng-show="associationTargets.length > 0">
+
+          <select id="associationTarget" name="historical-reason" class="form-control m-t-20"
+                  ng-options="associationTarget as associationTarget.text for associationTarget in associationTargets"
+                  ng-model="associationTargetSelected">
+            <option value='' disabled>- Select an association reference (not yet implemented)-</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-success pull-right m-t-20"
+                ng-click="selectReason(reasonSelected, associationTarget)">Select
+        </button>
+      </div>
+
+      <!-- itemren -->
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+        <table ng-table="tableParamsChildren" template-pagination="utilities/data-table-pager.html"
+               class="table table-full table-full-small">
+          <tr ng-repeat="item in $data">
+            <td data-title="'SCTID'" sortable="'conceptId'">{{item.conceptId}}</td>
+            <td data-title="'FSN'" sortable="'fsn'">{{item.fsn}}</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- descendants -->
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+        <table ng-table="tableParamsDescendants" template-pagination="utilities/data-table-pager.html"
+               class="table table-full table-full-small">
+          <tr ng-repeat="item in $data">
+            <td data-title="'SCTID'" sortable="'conceptId'">{{item.id}}</td>
+            <td data-title="'FSN'" sortable="'fsn'">{{item.fsn}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <div class="modal-footer">
 
-    <button type="button" class="btn btn-success"
-            ng-click="selectReason(reasonSelected, associationTarget)">Select
-    </button>
+
   </div>
 
 </div>

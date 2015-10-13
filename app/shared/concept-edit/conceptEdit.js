@@ -339,7 +339,7 @@ angular.module('singleConceptAuthoringApp')
 
           // otherwise, open a select reason modal
           else {
-            selectInactivationReason('Concept', inactivateConceptReasons, inactivateConceptAssociationTargets).then(function (reason, associationTarget) {
+            selectInactivationReason('Concept', inactivateConceptReasons, inactivateConceptAssociationTargets, scope.concept.conceptId, scope.branch).then(function (reason, associationTarget) {
 
               notificationService.sendMessage('Inactivating concept (' + reason.text + (associationTarget ? ', ' + associationTarget : '') + ')', 10000);
               // console.debug(scope.branch, scope.concept.conceptId, reason,
@@ -700,6 +700,7 @@ angular.module('singleConceptAuthoringApp')
          * @param description
          */
         scope.toggleDescriptionActive = function (description) {
+          console.debug('toggling description active', description);
 
           // if inactive, simply set active
           if (!description.active) {
@@ -708,7 +709,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // if an unpublished description, no reason required
-          else if (!description.effectiveTIme) {
+          else if (!description.effectiveTime) {
             description.active = false;
 
             // ensure all minimum fields are present
@@ -720,7 +721,7 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason('Description', inactivateDescriptionReasons, inactivateDescriptionHistoricalReasons).then(function (reason) {
+            selectInactivationReason('Description', inactivateDescriptionReasons, inactivateDescriptionHistoricalReasons, null, null).then(function (reason) {
 
               description.active = false;
               scope.saveConcept();
@@ -1049,7 +1050,9 @@ angular.module('singleConceptAuthoringApp')
         ////////////////////////////////
 
         // deactivation modal for reason s elect
-        var selectInactivationReason = function (componentType, reasons, associationTargets) {
+        var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, branch) {
+
+          console.debug('selectInactivationReason', componentType, reasons, associationTargets, conceptId, branch);
 
           var deferred = $q.defer();
 
@@ -1065,7 +1068,14 @@ angular.module('singleConceptAuthoringApp')
               },
               associationTargets: function () {
                 return associationTargets ? associationTargets : [];
+              },
+              conceptId: function () {
+                return conceptId;
+              },
+              branch: function () {
+                return branch;
               }
+
             }
           });
 
