@@ -417,10 +417,15 @@
     <!-- rows: Concept Attribute Relationships -->
     <div ng-repeat="relationship in getAttributeRelationships(true)">
 
-      <div class="row darken-3 p-t-5 grey ">
+      <div class="row darken-3 p-t-5 grey "
+        >
 
         <div class="col-md-12 no-padding color_{{relationship.groupId}}"
-             ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
+             ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'"
+             drop-channel="relationshipObj"
+             ui-on-drop="dropRelationship(relationship, $data)"
+             drag-enter-class="sca-drag-target"
+             drag-hover-class="sca-drag-hover">
 
 
           <button class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
@@ -432,8 +437,7 @@
 
           <button
             class="btn-default grey darken-3 md morebuttons md-open-with button-width"
-            ui-draggable="true" drag="relationship" drag-channel="relationshipObj" drop-channel="relationshipObj"
-            ui-on-drop="dropRelationship($data)"></button>
+            ui-draggable="true" drag="relationship" drag-channel="relationshipObj"></button>
 
 
           <!-- ui-draggable="true"
