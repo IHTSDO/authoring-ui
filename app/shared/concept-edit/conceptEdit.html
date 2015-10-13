@@ -152,7 +152,7 @@
               title="Revert to Saved"
               ng-click="undoAll()"
               ng-if="!isStatic"
-              ng-disabled="unmodifiedConcept !== concept"></button>
+              ng-disabled="!isModified"></button>
       <button type="button"
               class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap"
               title="Show/Hide Model"
@@ -259,9 +259,18 @@
             </button>
           </div>
 
-          <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
-                  class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case">
-            <span>Add New Description</span></button>
+          <div ng-show="!isStatic">
+
+            <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
+                    class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case">
+              <span>Add New Description</span></button>
+
+            <button type="button" ng-click="removeDescription(description)"
+                    ng-if="!description.effectiveTime"
+                    class="btn-default add-buttons md fa fa-minus button-width pull-right tooltips-left tooltips-light normal-case">
+              <span>Remove Description</span></button>
+
+          </div>
 
 
         </div>
@@ -333,7 +342,7 @@
                       typeahead-wait-ms="500"
                       typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
-    
+
           </div>
 
           <!-- linked concept -->
@@ -360,70 +369,77 @@
             <button type="button" ng-click="addIsaRelationship($index)"
                     class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case"
                     title="Add New Is A Relationship"></button>
-          </div>
 
+            <button type="button" ng-click="removeRelationship(relationship)"
+                    ng-if="!relationship.effectiveTime"
+                    class="btn-default add-buttons md fa fa-minus button-width pull-right tooltips-left tooltips-light normal-case">
+              <span>Remove Relationship</span></button>
+
+          </div>
         </div>
 
-
       </div>
+
+
     </div>
+  </div>
 
-    <!-- rows: Concept Attribute Relationships -->
-    <div ng-repeat="relationship in getAttributeRelationships(true)">
+  <!-- rows: Concept Attribute Relationships -->
+  <div ng-repeat="relationship in getAttributeRelationships(true)">
 
-      <div class="row darken-3 p-t-5 grey ">
+    <div class="row darken-3 p-t-5 grey ">
 
-        <div class="col-md-12 no-padding color_{{relationship.groupId}}"
-             ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
+      <div class="col-md-12 no-padding color_{{relationship.groupId}}"
+           ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'">
 
 
-          <button class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
-                  ng-click="setRelationshipProperties(relationship)"
-                  popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
-                  title="Some title here"
-            ></button>
+        <button class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
+                ng-click="setRelationshipProperties(relationship)"
+                popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
+                title="Some title here"
+          ></button>
 
-          <!-- ui-draggable="true"
-           drag="relationship"
-           drag-channel="conceptEditRelationship"
-           drop-channel="conceptEditRelationship"
-           drag-enter-class="sca-drag-target"
-           drag-hover-class="sca-drag-hover"
-           ui-on-drop="dropRelationship(concept, relationship, $data)"-->
+        <!-- ui-draggable="true"
+         drag="relationship"
+         drag-channel="conceptEditRelationship"
+         drop-channel="conceptEditRelationship"
+         drag-enter-class="sca-drag-target"
+         drag-hover-class="sca-drag-hover"
+         ui-on-drop="dropRelationship(concept, relationship, $data)"-->
 
-          <!-- Commented out until functional
-          <button ng-if="!isStatic" type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
-          <button ng-if="!isStatic" type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
+        <!-- Commented out until functional
+        <button ng-if="!isStatic" type="button" class="btn-default amber md md-undo button-width" title="Undo Changes"></button>
+        <button ng-if="!isStatic" type="button" class="btn-default blue accent-2 md md-history button-width" title="History"></button>
 -->
 
-          <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
-          <button type="button"
-                  style="vertical-align: bottom"
-                  ng-disabled="isStatic"
-                  ng-click="toggleRelationshipActive(relationship)"
-                  ng-class="[btn, btn-default, editbuttons, md, 'fa fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]"
-                  title="Active/Inactive"></button>
+        <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+        <button type="button"
+                style="vertical-align: bottom"
+                ng-disabled="isStatic"
+                ng-click="toggleRelationshipActive(relationship)"
+                ng-class="[btn, btn-default, editbuttons, md, 'fa fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]"
+                title="Active/Inactive"></button>
 
-          <!-- relationship group -->
-          <div class="pull-left rolegroup">
+        <!-- relationship group -->
+        <div class="pull-left rolegroup">
             <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-change="updateRelationship(relationship)"
                       class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                       ui-on-drop="dropNullOp()">
             </textarea>
-          </div>
+        </div>
 
-          <!-- attribute type' -->
-          <div class="pull-left is_a"
-               ui-draggable="true"
-               drag-enter-class="sca-drag-target"
-               drag-hover-class="sca-drag-hover"
-               drag="getConceptIdNamePairFromAttributeType(relationship)"
-               drag-channel="conceptPropertiesObj"
-               drop-channel="conceptPropertiesObj"
-               ui-on-drop="dropRelationshipType(relationship, $data)"
-               drop-validate="!relationship.effectiveTime || isStatic">
+        <!-- attribute type' -->
+        <div class="pull-left is_a"
+             ui-draggable="true"
+             drag-enter-class="sca-drag-target"
+             drag-hover-class="sca-drag-hover"
+             drag="getConceptIdNamePairFromAttributeType(relationship)"
+             drag-channel="conceptPropertiesObj"
+             drop-channel="conceptPropertiesObj"
+             ui-on-drop="dropRelationshipType(relationship, $data)"
+             drop-validate="!relationship.effectiveTime || isStatic">
               <textarea type="text"
                         ng-model="relationship.type.fsn"
                         ng-disabled="relationship.effectiveTime"
@@ -432,18 +448,18 @@
                         typeahead-wait-ms="500"
                         typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
                         typeahead-editable="false" typeahead-min-length="3"></textarea>
-          </div>
+        </div>
 
-          <!-- linked concept -->
-          <div class="pull-left sourcename"
-               ui-draggable="true"
-               drag-enter-class="sca-drag-target"
-               drag-hover-class="sca-drag-hover"
-               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
-               drag-channel="conceptPropertiesObj"
-               drop-channel="conceptPropertiesObj"
-               ui-on-drop="dropRelationshipTarget(relationship, $data)"
-               drop-validate="!relationship.effectiveTime || isStatic">
+        <!-- linked concept -->
+        <div class="pull-left sourcename"
+             ui-draggable="true"
+             drag-enter-class="sca-drag-target"
+             drag-hover-class="sca-drag-hover"
+             drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
+             drag-channel="conceptPropertiesObj"
+             drop-channel="conceptPropertiesObj"
+             ui-on-drop="dropRelationshipTarget(relationship, $data)"
+             drop-validate="!relationship.effectiveTime || isStatic">
              <textarea type="text"
                        ng-model="relationship.target.fsn"
                        ng-disabled="relationship.effectiveTime"
@@ -452,20 +468,27 @@
                        typeahead-wait-ms="500"
                        typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
                        typeahead-editable="false" typeahead-min-length="3"></textarea>
-          </div>
-          <div ng-if="!isStatic">
-            <button type="button" ng-click="addIsaRelationship($index)"
-                    class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case"
-                    title="Add New Is A Relationship"></button>
-          </div>
+        </div>
+        <div ng-if="!isStatic">
+          <button type="button" ng-click="addIsaRelationship($index)"
+                  class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case"
+                  title="Add New Is A Relationship"></button>
+
+          <button type="button" ng-click="removeRelationship(relationship)"
+                  ng-if="!relationship.effectiveTime"
+                  class="btn-default add-buttons md fa fa-minus button-width pull-right tooltips-left tooltips-light normal-case">
+            <span>Remove Relationship</span></button>
 
         </div>
 
-
       </div>
-    </div>
 
+
+    </div>
   </div>
+
   <div class="clearfix"></div>
 
+
 </div>
+

@@ -680,6 +680,20 @@ angular.module('singleConceptAuthoringApp')
         };
 
         /**
+         * Function to remove description
+         * @param description the description to remove
+         */
+        scope.removeDescription = function (description) {
+          var index = scope.concept.descriptions.indexOf(description);
+          if (index !== -1) {
+            scope.concept.descriptions.splice(index, 1);
+            autoSave();
+          } else {
+            console.error('Error removing description; description not found');
+          }
+        }
+
+        /**
          * Inactivates or reactivates a description
          * NOTE: Uses hard-save to prevent sync errors between inactivation
          * reason persistence and concept state
@@ -927,6 +941,17 @@ angular.module('singleConceptAuthoringApp')
             autoSave();
           }
         };
+
+        scope.removeRelationship = function(relationship) {
+          var index = scope.concept.relationships.indexOf(relationship);
+          if (index !== -1) {
+            scope.concept.relationships.splice(index, 1);
+            autoSave();
+          } else {
+            console.error('Error removing relationship; relationship not found');
+          }
+
+        }
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
@@ -1398,7 +1423,7 @@ angular.module('singleConceptAuthoringApp')
             return false;
           }
           if (!relationship.type || !relationship.type.conceptId) {
-            console.error( 'Relationship type must be set');
+            console.error('Relationship type must be set');
             return false;
           }
           if (!relationship.target || !relationship.target.conceptId) {
@@ -1505,7 +1530,8 @@ angular.module('singleConceptAuthoringApp')
           snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response) {
             scope.concept = response;
             notificationService.clear();
-            autoSave();
+            resetConceptHistory();
+            scope.isModified = false;
           }, function (error) {
             notificationService.sendError('Error reverting: Could not retrieve concept ' + scope.concept.conceptId + ' from parent branch ' + scope.parentBranch);
           });
@@ -1609,11 +1635,17 @@ angular.module('singleConceptAuthoringApp')
             // console.debug('no last saved version', scope.concept,
             // objectService.getNewConcept(scope.branch));
           } else {
-            scope.concept = scope.unmodifiedConcept;
+            notificationService.sendMessage('Reverting concept...');
+            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
+              notificationService.sendMessage('Concept succcessfully reverted to saved version');
+              scope.concept = response;
+              scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+              scope.isModified = false;
+              scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
+            }, function(error) {
+              notificationService.sendMessage('Error reverting concept');
+            })
           }
-
-          autoSave();
-
         };
 
         //////////////////////////////////////////////
