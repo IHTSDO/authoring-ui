@@ -691,7 +691,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
             console.error('Error removing description; description not found');
           }
-        }
+        };
 
         /**
          * Inactivates or reactivates a description
@@ -951,7 +951,7 @@ angular.module('singleConceptAuthoringApp')
             console.error('Error removing relationship; relationship not found');
           }
 
-        }
+        };
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
@@ -1649,7 +1649,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
             }, function (error) {
               notificationService.sendMessage('Error reverting concept');
-            })
+            });
           }
         };
 
