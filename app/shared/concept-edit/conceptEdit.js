@@ -1238,18 +1238,16 @@ angular.module('singleConceptAuthoringApp')
          * @param target the relationship dropped on
          * @param source the dragged relationship
          */
-        scope.dropRelationship = function (concept, target, dropped) {
+        scope.dropRelationship = function (target, source) {
 
-          console.debug('dropRelationship', concept, target, dropped);
+          console.debug('dropRelationship', target, source);
 
-          // check arguments
-          if (!concept || !concept.relationships) {
-            console.debug('Cannot drop relationship, concept not properly specified');
+          if (!target || !source) {
+            console.error('Cannot drop relationship, either source or target not specified');
             return;
-
           }
-          if (!target || !dropped) {
-            console.error('Cannot drop relationship, either dropped or target not specified');
+
+          if (source.relationshipId === target.relationshipId && source.type.conceptId === target.type.conceptId && source.target.conceptId === target.target.conceptId) {
             return;
           }
 
@@ -1260,23 +1258,32 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // copy relationship object and replace target relationship
-          var copy = angular.copy(dropped);
+          var copy = angular.copy(source);
 
           // clear the effective time and source information
           copy.sourceId = null;
           copy.effectiveTime = null;
           delete copy.relationshipId;
           delete copy.target.effectiveTime;
-          delete copy.target.moduleId;
           delete copy.target.active;
           delete copy.target.definitionStatus;
           delete copy.target.characteristicType;
 
-          // get index of target relationship
-          var index = concept.relationships.indexOf(target);
+          // set the group based on target
+          copy.groupId = target.groupId;
 
-          // insert after dropped relationship
-          concept.relationships.splice(index, 0, copy);
+          // get index of target relationship
+          var targetIndex = scope.concept.relationships.indexOf(target);
+
+          // if existing relationship, insert source relationship afterwards
+          if (target.target.conceptId) {
+            scope.concept.relationships.splice(targetIndex + 1, 0, copy);
+          }
+
+          // otherwise replace the relationship
+          else {
+            scope.concept.relationships[targetIndex] = copy;
+          }
 
           autoSave();
         };
