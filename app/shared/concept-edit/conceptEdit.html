@@ -1,6 +1,10 @@
 <div class="edits editing-form ">
 
   <style>
+
+    .sca-top {
+      z-index: 999;
+    }
     .revert-button {
       color: white;
       background-color: red;
@@ -358,6 +362,7 @@
             <textarea type="text"
                       ng-model="relationship.type.fsn"
                       ng-disabled="relationship.effectiveTime"
+                      class="sca-top"
                       typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="500"
@@ -384,6 +389,7 @@
             <textarea type="text"
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime"
+                      class="sca-top"
                       typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="500"
@@ -478,7 +484,7 @@
                drop-channel="conceptPropertiesObj"
                ui-on-drop="dropRelationshipType(relationship, $data)"
                drop-validate="!relationship.effectiveTime && !isStatic">
-              <textarea type="text"
+              <textarea class="sca-top" type="text"
                         ng-model="relationship.type.fsn"
                         ng-disabled="relationship.effectiveTime"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
@@ -503,6 +509,7 @@
              <textarea type="text"
                        ng-model="relationship.target.fsn"
                        ng-disabled="relationship.effectiveTime"
+                       class="sca-top"
                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                        typeahead-focus-first="false"
                        typeahead-wait-ms="500"
