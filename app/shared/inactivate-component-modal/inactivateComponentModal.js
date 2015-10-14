@@ -47,7 +47,7 @@ angular.module('singleConceptAuthoringApp')
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
       }, function (error) {
-        $scope.descendantsError = 'Error retrieving descendants'
+        $scope.descendantsError = 'Error retrieving descendants';
       });
 
       snowowlService.getConceptChildren($scope.conceptId, $scope.branch).then(function (response) {
@@ -55,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
         $scope.childrenLoading = false;
         $scope.tableParamsChildren.reload();
       }, function (error) {
-        $scope.childrenError = 'Error retrieving children'
+        $scope.childrenError = 'Error retrieving children';
       });
 
       snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch).then(function (response) {
@@ -64,10 +64,9 @@ angular.module('singleConceptAuthoringApp')
         $scope.inboundRelationshipsLoading = false;
         $scope.tableParamsInboundRelationships.reload();
       }, function (error) {
-        $scope.inboundRelationshipsError = 'Error retrieving children'
+        $scope.inboundRelationshipsError = 'Error retrieving children';
       });
     }
-    ;
 
     // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
@@ -79,7 +78,7 @@ angular.module('singleConceptAuthoringApp')
         total: $scope.children ? $scope.children.length : 0, // length of data
         getData: function ($defer, params) {
 
-          if (!$scope.children || $scope.children.length == 0) {
+          if (!$scope.children || $scope.children.length === 0) {
             $defer.resolve([]);
           } else {
 
@@ -104,7 +103,7 @@ angular.module('singleConceptAuthoringApp')
                                                                    // data
         getData: function ($defer, params) {
 
-          if (!$scope.descendants || $scope.descendants.total == 0) {
+          if (!$scope.descendants || $scope.descendants.total === 0) {
             $defer.resolve([]);
           }
 
@@ -156,7 +155,7 @@ angular.module('singleConceptAuthoringApp')
                                                                    // data
         getData: function ($defer, params) {
 
-          if (!$scope.inboundRelationships || $scope.inboundRelationships.total == 0) {
+          if (!$scope.inboundRelationships || $scope.inboundRelationships.total === 0) {
             $defer.resolve([]);
           }
 
