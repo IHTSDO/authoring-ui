@@ -44,6 +44,24 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    // function to remove disallowed elements from a concept
+    function getConceptDescendants(conceptId, branch, offset, limit) {
+      var deferred = $q.defer();
+      // default values
+      if (!offset) {
+        offset = 0;
+      }
+      if (!limit) {
+        limit = 50;
+      }
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?offset=' + offset + '&limit=' + limit + '&direct=false').then(function(response) {
+        deferred.resolve(response.data);
+      }).then(function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+
     //////////////////////////////////////////////
     // Classification functions
     //////////////////////////////////////////////
@@ -294,27 +312,54 @@ angular.module('singleConceptAuthoringApp')
 
     // Retrieve inbound relationships of a concept
     // GET /{path}/concepts/{conceptId}/inbound-relationships
-    function getConceptRelationshipsInbound(conceptId, branch) {
-      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships').then(function (response) {
+    function getConceptRelationshipsInbound(conceptId, branch, offset, limit) {
+      
+      var deferred = $q.defer();
+
+      if (!offset) {
+        offset = 0;
+      }
+
+      if (!limit) {
+        limit = 50;
+      }
+      
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?offset=' + offset + '&limit=' + limit).then(function (response) {
+
+        console.debug('inbound', response);
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
-          return [];
-        }
+          console.debug('returning []');
+          deferred.resolve({total: 0, inboundRelationships: []});
+        } else {
 
-        // otherwise, return the passed array
-        return response.data.inboundRelationships;
+          // otherwise, return the passed array
+          deferred.resolve( response.data);
+        }
       }, function (error) {
-        // TODO Handle error
+        deferred.reject(error);
       });
+
+      return deferred.promise;
     }
 
     // Retrieve outbound relationships of a concept
     // GET /{path}/concepts/{conceptId}/outbound-relationships
     // UNUSED
     function getConceptRelationshipsOutbound(conceptId, branch) {
+      var deferred = $q.defer();
+
       return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/outbound-relationships').then(function (response) {
-        return response.data.outboundRelationships;
+
+        // if zero-count, return empty array (no blank array returned)
+        if (response.data.total === 0) {
+          deferred.resolve([]);
+        } else {
+
+          // otherwise, return the passed array
+          deferred.resolve( response.data.outboundRelationships);
+        }
       }, function (error) {
         // TODO Handle error
       });
@@ -519,6 +564,71 @@ angular.module('singleConceptAuthoringApp')
           });
         }
 
+        // if relationship id
+        else if (searchStr.substr(-2, 1) === '2') {
+          // use {path}/descriptions/id call
+          $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
+
+            var source = null;
+            var target = null;
+
+            // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
+            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function(sourceResponse) {
+
+              // convert to browser search form
+              source = {
+                active: sourceResponse.data.active,
+                term: sourceResponse.data.preferredSynonym,
+                concept: {
+                  active: sourceResponse.data.active,
+                  conceptId: sourceResponse.data.conceptId,
+                  definitionStatus: sourceResponse.data.definitionStatus,
+                  fsn: sourceResponse.data.fsn,
+                  moduleId: sourceResponse.data.moduleId
+                }
+              };
+
+              console.debug('source', source);
+
+              if (source && target) {
+                deferred.resolve([source, target]);
+              }
+            }, function(error) {
+              deferred.reject('Secondary call to retrieve concept failed: ', error);
+            });
+
+            // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
+            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.destinationId).then(function(targetResponse) {
+
+              // convert to browser search form
+              target = {
+                active: targetResponse.data.active,
+                term: targetResponse.data.preferredSynonym,
+                concept: {
+                  active: targetResponse.data.active,
+                  conceptId: targetResponse.data.conceptId,
+                  definitionStatus: targetResponse.data.definitionStatus,
+                  fsn: targetResponse.data.fsn,
+                  moduleId: targetResponse.data.moduleId
+                }
+              };
+
+              console.debug('target', target);
+
+              if (source && target) {
+                deferred.resolve([source, target]);
+              }
+            }, function(error) {
+              deferred.reject('Secondary call to retrieve concept failed: ', error);
+            });
+
+          }, function (error) {
+            deferred.reject(error);
+          });
+
+        }
+
+        // otherwise, unsupported component type
         else {
           $q.reject('Could not parse numeric value (not a concept id)');
         }
@@ -610,6 +720,7 @@ angular.module('singleConceptAuthoringApp')
       getConceptDescriptions: getConceptDescriptions,
       getConceptRelationshipsInbound: getConceptRelationshipsInbound,
       getConceptRelationshipsOutbound: getConceptRelationshipsOutbound,
+      getConceptDescendants: getConceptDescendants,
       getRelationshipDisplayNames: getRelationshipDisplayNames,
       getFullConcept: getFullConcept,
       updateDescription: updateDescription,
