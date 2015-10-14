@@ -126,26 +126,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.loadEditPanelConcepts = function() {
 
       console.debug('edit.js: task detected', $scope.taskKey);
-
-      scaService.getUiStateForTask(
-        $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-        .then(function (uiState) {
-
-          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-            $scope.editList = [];
-          }
-          else {
-            $scope.editList = uiState;
-            for (var i = 0; i < $scope.editList.length; i++) {
-              $scope.addConceptToListFromId($scope.editList[i]);
-            }
-          }
-
-          // set editing flags
-          flagEditedItems();
-
-        }
-      );
+      $scope.getEditPanel();
 
       // get saved list
       scaService.getUiStateForTask(
@@ -164,6 +145,50 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       );
     };
+    
+    $scope.getEditPanel = function() {
+        scaService.getUiStateForTask(
+            $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
+            .then(function (uiState) {
+              $scope.concepts = [];
+              if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+                $scope.editList = [];
+              }
+              else {
+                $scope.editList = uiState;
+                for (var i = 0; i < $scope.editList.length; i++) {
+                  $scope.addConceptToListFromId($scope.editList[i]);
+                }
+              }
+
+              // set editing flags
+              flagEditedItems();
+
+            }
+          );
+    };
+    
+    $scope.getClassificationEditPanel = function(){
+        scaService.getUiStateForTask(
+            $routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel')
+            .then(function (uiState) {
+              $scope.concepts = [];
+              if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+                $scope.classificationEditList = [];
+              }
+              else {
+                $scope.classificationEditList = uiState;
+                for (var i = 0; i < $scope.classificationEditList.length; i++) {
+                  $scope.addConceptToListFromId($scope.classificationEditList[i]);
+                }
+              }
+
+              // set editing flags
+              flagEditedItems();
+
+            }
+          );   
+    };
 
 
     $scope.setView = function (name) {
@@ -180,30 +205,32 @@ angular.module('singleConceptAuthoringApp.edit', [
       switch (name) {
         case 'validation':
           $rootScope.pageTitle = 'Validation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-
+          $routeParams.mode = 'validation';
           //  view starts with no concepts
           $scope.concepts = [];
           break;
         case 'feedback':
           $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $routeParams.mode = 'feedback';
 
           //  view starts with no concepts
           $scope.concepts = [];
           break;
         case 'classification':
           $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-
-          //  view starts with no concepts
-          $scope.concepts = [];
+          $routeParams.mode = 'classification';
+          $scope.getClassificationEditPanel();
           break;
         case 'conflicts':
           $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+          $routeParams.mode = 'conflicts';
 
           //  view starts with no concepts
           $scope.concepts = [];
           break;
         case 'edit-default':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $routeParams.mode = 'edit';
 
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
@@ -212,7 +239,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         case 'edit-no-sidebar':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-
+          $routeParams.mode = 'edit';
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
@@ -220,7 +247,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         case 'edit-no-model':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-
+          $routeParams.mode = 'edit';
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
@@ -267,6 +294,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // ui states
     $scope.editList = null;
     $scope.savedList = null;
+    $scope.classificationEditList = null;
 
     // view saving
     $scope.thisView = null;
@@ -399,10 +427,16 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           $scope.concepts.push(response);
+        console.log($routeParams);
+          if ($routeParams.mode === 'classification')
+          {
+              if($scope.classificationEditList.indexOf(conceptId) === -1)
+              {
+                $scope.updateClassificationEditListUiState();
+              }
+          }
 
-          console.debug('checking edit list', $scope.editList, conceptId, $scope.editList.indexOf(conceptId));
-
-          if ($scope.editList.indexOf(conceptId) === -1) {
+          else if ($scope.editList.indexOf(conceptId) === -1) {
             console.debug('updating');
             $scope.updateEditListUiState();
             flagEditedItems();        // update edited item flagging
@@ -418,7 +452,17 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         }).finally(function () {
           // send loading notification
-          if ($scope.concepts.length === $scope.editList.length) {
+          if ($routeParams.mode === 'classification')
+          {
+              if ($scope.concepts.length === $scope.classificationEditList.length) {
+                notificationService.sendMessage('All concepts loaded', 10000, null);
+                $scope.updateClassificationEditListUiState();
+              } else {
+                // send loading notification for user display
+                notificationService.sendMessage('Loading concepts...', 10000, null);
+              }
+          }
+          else if ($scope.concepts.length === $scope.editList.length) {
             notificationService.sendMessage('All concepts loaded', 10000, null);
             $scope.updateEditListUiState();
           } else {
@@ -478,6 +522,22 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', conceptIds);
       }
     };
+    
+    // helper function to save current edit list (classification view only)
+    $scope.updateClassificationEditListUiState = function () {
+      if ($scope.taskKey) {
+        console.log('Updating classification edit list');
+        var conceptIds = [];
+        angular.forEach($scope.concepts, function (concept) {
+          if (concept.conceptId) {
+            conceptIds.push(concept.conceptId);
+          }
+        });
+
+        scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel', conceptIds);
+      }
+    };
+    
 
 // watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
@@ -623,6 +683,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // otherwise, editing view, remove from edit list
+      else if($scope.thisView === 'classification'){
+        // remove the concept
+        var index = $scope.concepts.indexOf(data.concept);
+        $scope.concepts.splice(index, 1);
+        $scope.updateClassificationEditListUiState();
+
+        // set editing flags
+        flagEditedItems();
+      }
       else {
 
         if (!data.concept.conceptId && data.concept !== objectService.getNewConcept()) {
