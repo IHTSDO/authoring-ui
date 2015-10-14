@@ -16,6 +16,7 @@ angular.module('singleConceptAuthoringApp')
     // loading flags
     $scope.descendantsLoading = true;
     $scope.childrenLoading = true;
+    $scope.inboundRelationshipsLoading = true;
 
     // check requirements
     if ($scope.conceptId && !$scope.branch) {
@@ -55,6 +56,15 @@ angular.module('singleConceptAuthoringApp')
         $scope.tableParamsChildren.reload();
       }, function (error) {
         $scope.childrenError = 'Error retrieving children'
+      });
+
+      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch).then(function (response) {
+        console.debug('inbound', response);
+        $scope.inboundRelationships = response;
+        $scope.inboundRelationshipsLoading = false;
+        $scope.tableParamsInboundRelationships.reload();
+      }, function (error) {
+        $scope.inboundRelationshipsError = 'Error retrieving children'
       });
     }
     ;
@@ -129,6 +139,58 @@ angular.module('singleConceptAuthoringApp')
             var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
 
             $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          }
+
+        }
+      }
+    );
+
+    // declare table parameters
+    $scope.tableParamsInboundRelationships = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {fsn: 'asc'}
+      },
+      {
+        total: $scope.inboundRelationships ? $scope.inboundRelationships.length : 0, // length of
+                                                                   // data
+        getData: function ($defer, params) {
+
+          if (!$scope.inboundRelationships || $scope.inboundRelationships.total == 0) {
+            $defer.resolve([]);
+          }
+
+          // check if more need to be loaded
+          else if ($scope.inboundRelationships.inboundRelationships.length < (params.page() * params.count())) {
+
+            console.debug('getting next set of results');
+
+            $scope.inboundRelationshipsLoading = true;
+
+            // NOTE: offset is set to current length, limit is set to end of requested page + 40 more (minimum 5 page load, always loads to current requested page
+            snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, $scope.inboundRelationships.inboundRelationships.length, (params.page() * params.count() + 40 - $scope.inboundRelationships.inboundRelationships.length)).then(function (response) {
+
+              $scope.inboundRelationshipsLoading = false;
+
+              $scope.inboundRelationships.inboundRelationships = $scope.inboundRelationships.inboundRelationships.concat(response.inboundRelationships.inboundRelationships);
+
+              params.total($scope.inboundRelationships.total);
+              var inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships.inboundRelationships, params.orderBy()) : $scope.inboundRelationships.inboundRelationships;
+
+              $defer.resolve(inboundRelationshipsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+            }, function (error) {
+              $scope.inboundRelationshipsError = 'Error retrieving inboundRelationships' + error;
+            });
+
+          }
+
+          // otherwise simply get the page
+          else {
+
+            params.total($scope.inboundRelationships.total);
+            var inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships.inboundRelationships, params.orderBy()) : $scope.inboundRelationships.inboundRelationships;
+
+            $defer.resolve(inboundRelationshipsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
 
         }

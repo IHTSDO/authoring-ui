@@ -312,23 +312,30 @@ angular.module('singleConceptAuthoringApp')
 
     // Retrieve inbound relationships of a concept
     // GET /{path}/concepts/{conceptId}/inbound-relationships
-    function getConceptRelationshipsInbound(conceptId, branch) {
+    function getConceptRelationshipsInbound(conceptId, branch, offset, limit) {
       
       var deferred = $q.defer();
+
+      if (!offset) {
+        offset = 0;
+      }
+
+      if (!limit) {
+        limit = 50;
+      }
       
-      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships').then(function (response) {
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?offset=' + offset + '&limit=' + limit).then(function (response) {
 
         console.debug('inbound', response);
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
           console.debug('returning []');
-          deferred.resolve([]);
+          deferred.resolve({total: 0, inboundRelationships: []});
         } else {
 
-          console.debug('returning', response.data.inboundRelationships);
           // otherwise, return the passed array
-          deferred.resolve( response.data.inboundRelationships);
+          deferred.resolve( response.data);
         }
       }, function (error) {
         deferred.reject(error);
