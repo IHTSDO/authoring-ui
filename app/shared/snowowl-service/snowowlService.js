@@ -500,11 +500,19 @@ angular.module('singleConceptAuthoringApp')
       // url to be called
       var url;
 
+      // ensure & not present in search string, to prevent bad requests
+      // TODO Decide how we want to handle validation of user search requests
+      if (searchStr.indexOf('&') !== -1) {
+        deferred.reject('Character "&" cannot appear in search terms; please remove and try again.');
+      }
+
       // if a numeric value, search by component id
-      if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
+      else if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
 
         // if concept id
         if (searchStr.substr(-2, 1) === '0') {
+
+          console.debug('concept id detected');
 
           // use browser/{path}/concepts/{id} call
           $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
@@ -534,6 +542,8 @@ angular.module('singleConceptAuthoringApp')
 
         // if description id
         else if (searchStr.substr(-2, 1) === '1') {
+
+          console.debug('description id detected');
 
           // use {path}/descriptions/id call
           $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
@@ -566,6 +576,9 @@ angular.module('singleConceptAuthoringApp')
 
         // if relationship id
         else if (searchStr.substr(-2, 1) === '2') {
+
+          console.debug('relationship id detected');
+
           // use {path}/descriptions/id call
           $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
 
@@ -630,7 +643,8 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, unsupported component type
         else {
-          $q.reject('Could not parse numeric value (not a concept id)');
+          console.debug('Numeric value could not be determined, rejecting');
+          deferred.reject('Could not parse numeric value (not a concept, description, or relationship SCTID)');
         }
       }
 
@@ -641,35 +655,18 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          deferred.reject(error);
+          console.debug(error);
+          if (error.status === 500) {
+            deferred.reject('Unexpected server error.  Please check your search terms and try again.');
+          } else {
+            deferred.reject(error.data.message + ' (Status ' + error.status + ')');
+          }
         });
 
       }
 
-      /**
-       *
-       // convert full concept into browser list item form
-       var item = {
-              active: concepts.active,
-              term: concepts.preferredSynonym,
-              concept: {
-                active: concepts.active,
-                conceptId: concepts.conceptId,
-                definitionStatus: concepts.definitionStatus,
-                fsn: concepts.fsn,
-                moduleId: concepts.moduleId
-              }
-            };
-       */
-
       return deferred.promise;
-      /*
 
-       return $http.get(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/descriptions?query=' + searchStr + '&limit=50&searchMode=partialMatching&lang=english&statusFilter=activeOnly&skipTo=0&returnLimit=100').then(function (response) {
-       return response.data;
-       }, function (error) {
-       return error.data;
-       });*/
     }
 
     ////////////////////////////////
