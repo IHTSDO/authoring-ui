@@ -68,7 +68,44 @@
       color: #ffc107;
       background-color: transparent;
     }
+	.more-button-width {
+    width: 22px;
+  margin:0px!important;
+    padding: 0px 3px !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 13px !important;
+}
+.drag-button-width {
+    width: 19px;
+  
+    padding: 0% !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 14px !important;
+}
+.button-width-plus{  width: 21px;
+  
+    padding: 5px 5px !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 14px !important;}
+	.button-width-minus{}
+.editing-form .is_a textarea{width:80%!important;float:left;}
+.editing-form .sourcename textarea{
+ width:80%!important;float:left;
+}
 
+.is_a  .drag-button-width{background-color: #fffde7 !important;color:#474747; width:18%!important;float:left; padding: 0% 1% !important; margin:0%!important; text-align:center;}
+.editing-form .sourcename  .drag-button-width {    background-color: #dedeff !important;
+    color: #474747 !important; width:8.75%!important;float:left; padding: 0% 0.25% !important; margin:0%!important; text-align:center;}
+	.editing-form .sourcename textarea {
+    width: 90.5%!important;
+    float: left;
+}
   </style>
 
   <!-- begin validation error -->
@@ -83,16 +120,16 @@
     {{warning}}
   </div>
   <!-- end validation error -->
-  <div class="row p-10 grey darken-4 concept-headers " style=" margin-right:0px;">
+  <div class="row p-t-10 grey darken-4 concept-headers " style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
 
       <button ng-click="setConceptProperties(concept)" type="button"
-              class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v tooltips-left tooltips-light normal-case"
+              class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="left"
               popover-trigger="click: click"><span>More details</span></button>
 
       <button
-        class="btn btn-default morebuttons grey darken-4 md md-open-with normal-case"
+        class="btn btn-default morebuttons grey darken-4 md md-open-with normal-case drag-button-width "
         ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj"
         drop-channel="NA"></button>
 
@@ -191,12 +228,12 @@
              drag-hover-class="sca-drag-hover">
 
           <button ng-click="setDescriptionProperties(description)"
-                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
+                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"
                   ng-click="populateDescriptionMore(description)"></button>
 
           <button
-            class="btn-default grey darken-3 md morebuttons md-open-with button-width"
+            class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
             ui-draggable="true" drag="description" drag-channel="descriptionObj"></button>
 
           <!-- Commented out until functional
@@ -281,12 +318,12 @@
           <div ng-show="!isStatic">
 
             <button ng-if="!isStatic" type="button" ng-click="addDescription($index)"
-                    class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case">
+                    class="btn-default add-buttons md fa fa-plus plus-button-width  pull-right tooltips-left tooltips-light normal-case">
               <span>Add New Description</span></button>
 
             <button type="button" ng-click="removeDescription(description)"
                     ng-if="!description.effectiveTime"
-                    class="btn-default add-buttons md fa fa-minus button-width pull-right tooltips-left tooltips-light normal-case">
+                    class="btn-default add-buttons md fa fa-minus plus-button-width  pull-right tooltips-left tooltips-light normal-case">
               <span>Remove Description</span></button>
 
           </div>
@@ -309,14 +346,14 @@
              drag-hover-class="sca-drag-hover">
 
 
-          <button class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v button-width"
+          <button class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width"
                   ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
                   title="Some title here"
             ></button>
 
           <button
-            class="btn-default grey darken-3 md morebuttons md-open-with button-width"
+            class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width "
             ui-draggable="true" drag="relationship" drag-channel="relationshipObj" ></button>
 
 
@@ -371,7 +408,7 @@
 
 
             </textarea>
-            <span class="pull-right md md-open-with"
+            <span class="pull-right md md-open-with drag-button-width "
                   ui-draggable="true"
                   drag="getConceptIdNamePairFromAttributeType(relationship)"
                   drag-channel="conceptPropertiesObj"></span>
@@ -396,19 +433,19 @@
                       typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
 
-                        <span class="pull-right md md-open-with"
+                        <span class="pull-right md md-open-with drag-button-width "
                               ui-draggable="true"
                               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                               drag-channel="conceptPropertiesObj"></span>
           </div>
           <div ng-if="!isStatic">
             <button type="button" ng-click="addIsaRelationship($index)"
-                    class="btn-default add-buttons md fa fa-plus button-width pull-right tooltips-left tooltips-light normal-case"
+                    class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-left tooltips-light normal-case"
                     title="Add New Is A Relationship"></button>
 
             <button type="button" ng-click="removeRelationship(relationship)"
                     ng-if="!relationship.effectiveTime"
-                    class="btn-default add-buttons md fa fa-minus button-width pull-right tooltips-left tooltips-light normal-case">
+                    class="btn-default add-buttons md fa fa-minus button-width-minus pull-right tooltips-left tooltips-light normal-case">
               <span>Remove Relationship</span></button>
 
           </div>
