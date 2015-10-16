@@ -620,7 +620,7 @@ angular.module('singleConceptAuthoringApp')
            return a.type.conceptName > b.type.conceptName;
            }
            });*/
-        };
+        }
 
         // on load, sort descriptions && relationships
         sortDescriptions();

@@ -52,8 +52,8 @@ angular.module('singleConceptAuthoringApp')
 
               node.children = children;
 
-            }
-            ,
+            },
+            
             function () {
               console.error('Could not retrieve children for node', node);
             }
@@ -77,7 +77,7 @@ angular.module('singleConceptAuthoringApp')
             //console.debug('parents', parents);
 
             // if root, return node
-            if (parents.length == 0) {
+            if (parents.length === 0) {
               ////console.debug('root node');
               return node;
             }
@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
               return scope.constructRootTree(parents[0]).then(function (tree) {
                // //console.debug('new tree', tree);
                 return tree;
-              })
+              });
             }
           });
 
@@ -116,7 +116,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(paths[node.conceptId], function (path) {
               //console.debug('  adding path ', node.conceptId + '->' + path);
               node.children.push(nodes[path]);
-            })
+            });
           });
 
           //console.debug('final result', nodes['138875005']);
@@ -142,7 +142,7 @@ angular.module('singleConceptAuthoringApp')
           var deferred = $q.defer();
 
           if (parentsCache[node.conceptId]) {
-            deferred.resolve(parentsCache[node.conceptId])
+            deferred.resolve(parentsCache[node.conceptId]);
           } else {
             // get all parents
             snowowlService.getConceptParents(node.conceptId, scope.branch).then(function (parents) {
@@ -254,7 +254,7 @@ angular.module('singleConceptAuthoringApp')
               node.isCollapsed = true;
 
               scope.constructRootTrees(node);
-            })
+            });
           }
 
           // if concept id not specified, use root
@@ -282,6 +282,6 @@ angular.module('singleConceptAuthoringApp')
         // call initialization
         initialize();
       }
-    }
+    };
   })
 ;
