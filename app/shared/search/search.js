@@ -115,7 +115,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         }, function (error) {
           console.debug('error', error);
-          $scope.searchStatus = 'Unexpected error performing search';
+          $scope.searchStatus = 'Error performing search: ' + error;
           if (error.statusText) {
             $scope.searchStatus += ': ' + error.statusText;
           }

@@ -237,8 +237,9 @@ angular.module('singleConceptAuthoringApp')
                 // clear the saved modified state
                 scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
 
-                // ensure descriptions are sorted
+                // ensure descriptions & relationships are sorted
                 sortDescriptions();
+                sortRelationships();
 
                 // send notification of success with timeout
                 var saveMessage = 'Concept saved: ' + response.fsn;
@@ -299,8 +300,9 @@ angular.module('singleConceptAuthoringApp')
                   conceptId: scope.concept.conceptId
                 });
 
-                // ensure descriptions are sorted
+                // ensure descriptions & relationships are sorted
                 sortDescriptions();
+                sortRelationships();
 
                 // clear any stored modified versions of this unsaved concept
                 // but only AFTER successful save -- duplicated in
@@ -370,6 +372,17 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+        /**
+         * Function to toggle the definition status of the displayed concept,
+         * with autosave
+         */
+        scope.toggleConceptDefinitionStatus = function () {
+          console.debug(scope.concept.definitionStatus);
+          // only action required is autosave, value is changed via select
+          // (unlike toggle buttons)
+          autoSave();
+        };
+
         // function to apply cascade changes when concept module id changes
         scope.setConceptModule = function (concept) {
           angular.forEach(scope.concept.descriptions, function (description) {
@@ -378,6 +391,8 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(scope.concept.relationships, function (relationship) {
             relationship.moduleId = concept.moduleId;
           });
+
+          autoSave();
         };
 
         ////////////////////////////////
@@ -539,8 +554,77 @@ angular.module('singleConceptAuthoringApp')
           //
         }
 
-        // on load, sort descriptions
+        function sortRelationships() {
+
+
+          console.debug('sorting relationships');
+
+          var isaRels = scope.concept.relationships.filter(function (rel) {
+            return rel.type.conceptId === '116680003';
+          });
+
+          var attrRels = scope.concept.relationships.filter(function (rel) {
+            return rel.type.conceptId !== '116680003';
+          });
+
+          console.debug(isaRels, attrRels);
+
+          // NOTE: All isaRels should be group 0, but sort by group anyway
+          isaRels.sort(function (a, b) {
+            if (a.groupId === b.groupId) {
+              return a.target.fsn > b.target.fsn;
+            } else {
+              return a.groupId > b.groupId;
+            }
+          });
+
+          attrRels.sort(function(a, b) {
+            if (a.groupId === b.groupId) {
+              return a.target.fsn > b.target.fsn;
+            } else {
+              return a.groupId > b.groupId;
+            }
+          });
+
+          scope.concept.relationships = isaRels.concat(attrRels);
+
+          /*   scope.concept.relationships.sort(function (a, b) {
+
+
+           // if types are the same
+           if (a.type.conceptId === b.type.conceptId) {
+           // sort by group
+           if (a.type.groupId !== b.type.groupId) {
+           return a.type.groupId > b.type.groupId;
+           }
+
+           // sort by name
+           return a.type.conceptName > b.type.conceptName;
+
+           } else {
+
+           // isa relationships always come first
+           if (a.type.conceptId === '116680003') {
+           return -1;
+           }
+           if (b.type.conceptId === '116680003') {
+           return 1;
+           }
+
+           // sort by group
+           if (a.type.groupId !== b.type.groupId) {
+           return a.type.groupId > b.type.groupId;
+           }
+
+           // sort by name
+           return a.type.conceptName > b.type.conceptName;
+           }
+           });*/
+        }
+
+        // on load, sort descriptions && relationships
         sortDescriptions();
+        sortRelationships();
 
         scope.setCaseSignificance = function (description, caseSignificance) {
 
@@ -738,13 +822,16 @@ angular.module('singleConceptAuthoringApp')
               return 'Cs';
             case 'CASE_INSENSITIVE':
               return 'ci';
+            case 'ENTIRE_TERM_CASE_SENSITIVE':
+              return 'CS';
             default:
               return '??';
           }
         };
 
-        // Authors report only two vaqlues used, switch between them on toggle
+        // Three possible values, cycle through them on toggle
         scope.toggleCaseSignificance = function (description) {
+
           if (description.caseSignificance === 'CASE_INSENSITIVE') {
             description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
           } else {
@@ -813,6 +900,19 @@ angular.module('singleConceptAuthoringApp')
         ////////////////////////////////
         // Relationship Elements
         ////////////////////////////////
+        scope.getRelationships = function (checkForActive) {
+
+          if (!scope.concept.relationships) {
+            return [];
+          }
+
+          var rels = scope.concept.relationships.filter(function (rel) {
+            return (!checkForActive || !scope.hideInactive || (scope.hideInactive && rel.active === true));
+          });
+
+          return rels;
+        };
+
         scope.getIsARelationships = function (checkForActive) {
 
           if (!scope.concept.relationships) {
