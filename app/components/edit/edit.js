@@ -701,8 +701,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
         // remove the concept
-        var index = $scope.concepts.indexOf(data.concept);
-        $scope.concepts.splice(index, 1);
+        var editIndex = $scope.concepts.indexOf(data.concept);
+        $scope.concepts.splice(editIndex, 1);
         $scope.updateEditListUiState();
 
         // set editing flags

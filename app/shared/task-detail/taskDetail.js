@@ -5,6 +5,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, scaService, snowowlService, notificationService) {
 
       $scope.task = null;
+      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
 
       $scope.classify = function () {
 
