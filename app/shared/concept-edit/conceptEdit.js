@@ -139,39 +139,39 @@ angular.module('singleConceptAuthoringApp')
 
         var inactivateConceptAssociationTargets = [
           {
-            id: '',
+            id: 'ALTERNATIVE ',
             text: 'ALTERNATIVE association reference set (foundation metadata concept)'
           },
           {
-            id: '',
+            id: 'MOVED_FROM',
             text: 'MOVED FROM association reference set (foundation metadata concept)'
           },
           {
-            id: '',
+            id: 'MOVED_TO',
             text: 'MOVED TO association reference set (foundation metadata concept)'
           },
           {
-            id: '',
+            id: 'POSSIBLY_EQUIVALENT_TO',
             text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
           },
           {
-            id: '',
+            id: 'REFERS_TO',
             text: 'REFERS TO concept association reference set (foundation metadata concept)'
           },
           {
-            id: '',
+            id: 'REPLACED_BY',
             text: 'REPLACED BY association reference set (foundation metadata concept)'
           },
           {
-            id: '',
+            id: 'SAME_AS',
             text: 'SAME AS association reference set (foundation metadata concept)'
           },
           {
-            id: '',
+            id: 'SIMILAR_TO',
             text: 'SIMILAR TO association reference set (foundation metadata concept)'
           },
           {
-            id: '',
+            id: 'WAS_A',
             text: 'WAS A association reference set (foundation metadata concept)'
           }
         ];
@@ -341,13 +341,13 @@ angular.module('singleConceptAuthoringApp')
 
           // otherwise, open a select reason modal
           else {
-            selectInactivationReason('Concept', inactivateConceptReasons, inactivateConceptAssociationTargets, scope.concept.conceptId, scope.branch).then(function (reason, associationTarget) {
+            selectInactivationReason('Concept', inactivateConceptReasons, inactivateConceptAssociationTargets, scope.concept.conceptId, scope.branch).then(function (results) {
 
-              notificationService.sendMessage('Inactivating concept (' + reason.text + (associationTarget ? ', ' + associationTarget : '') + ')', 10000);
+              notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')', 10000);
               // console.debug(scope.branch, scope.concept.conceptId, reason,
               // associationTarget);
 
-              snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, reason.id, associationTarget).then(function () {
+              snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
                 scope.concept.active = false;
 
@@ -1179,8 +1179,9 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          modalInstance.result.then(function (reason) {
-            deferred.resolve(reason);
+          modalInstance.result.then(function (results) {
+              console.log(results);
+            deferred.resolve(results);
           }, function () {
             deferred.reject();
           });
