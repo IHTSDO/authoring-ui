@@ -46,14 +46,20 @@
                 ng-model="reasonSelected">
           <option value='' disabled>- Select a reason (required) -</option>
         </select>
+        <select id="associationType" name="associationType" class="form-control m-t-20"
+                ng-options="type as type.text for type in associationTargets"
+                ng-model="associationType">
+          <option value=''>- Select an Association Type (optional) -</option>
+        </select>
 
-        <div ng-show="associationTargets.length > 0">
-
-          <select id="associationTarget" name="historical-reason" class="form-control m-t-20"
-                  ng-options="associationTarget as associationTarget.text for associationTarget in associationTargets"
-                  ng-model="associationTargetSelected">
-            <option value='' disabled>- Select an association reference (not yet implemented)-</option>
-          </select>
+        <div ng-show="associationType">
+          <input type="text" id="associationTarget" name="historical-reason" class="form-control m-t-20"
+                  ng-model="associationTargetSelected" typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue)"
+                      typeahead-focus-first="false"
+                      typeahead-wait-ms="500"
+                      typeahead-on-select="setInactivationTargetConcept($item)"
+                      typeahead-editable="false" typeahead-min-length="3">Type to select an associated concept...
+          </input>
         </div>
 
         <button type="button" class="btn btn-success pull-right m-t-20"

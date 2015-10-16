@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch) {
+  .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch, $routeParams) {
 
     // required arguments
     $scope.componentType = componentType;
@@ -12,6 +12,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.conceptId = conceptId;
     $scope.branch = branch;
     $scope.associationTargets = associationTargets;
+    $scope.associationTargetObject = {};
 
     // loading flags
     $scope.descendantsLoading = true;
@@ -28,6 +29,26 @@ angular.module('singleConceptAuthoringApp')
     if (!$scope.reasons) {
       $scope.error = 'List of inactivation reasons was not specified';
     }
+    $scope.getConceptsForTypeahead = function (searchStr) {
+          return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+            for (var i = 0; i < response.length; i++) {
+              console.debug('checking for duplicates', i, response[i]);
+              for (var j = response.length - 1; j > i; j--) {
+                if (response[j].concept.conceptId === response[i].concept.conceptId) {
+                  console.debug(' duplicate ', j, response[j]);
+                  response.splice(j, 1);
+                  j--;
+                }
+              }
+            }
+            return response;
+          });
+        };
+    
+    $scope.setInactivationTargetConcept = function () {
+          $scope.associationTargetObject[$scope.associationType.id] = [$scope.associationTargetSelected.concept.conceptId];
+          console.log($scope.associationTargetObject);
+        };
 
     $scope.selectReason = function (reason, associationTarget) {
 
@@ -35,7 +56,11 @@ angular.module('singleConceptAuthoringApp')
       if (!reason) {
         window.alert('You must specify a reason for inactivation');
       } else {
-        $modalInstance.close(reason, associationTarget);
+        console.log($scope.associationTargetObject);
+          var results = {};
+          results.reason = reason;
+          results.associationTarget = $scope.associationTargetObject
+        $modalInstance.close(results);
       }
     };
 
