@@ -123,9 +123,13 @@ angular.module('singleConceptAuthoringApp')
               //console.debug('  adding path ', node.conceptId + '->' + path);
               node.children.push(nodes[path]);
             });
+            if (node.conceptId === scope.concept.conceptId) {
+              node.isCollapsed = true;
+            }
           });
 
-          //console.debug('final result', nodes['138875005']);
+
+          console.debug('final result', nodes['138875005']);
 
           scope.terminologyTree.push(nodes['138875005']);
 
@@ -244,24 +248,10 @@ angular.module('singleConceptAuthoringApp')
 
         function initialize() {
 
+          // if a concept is supplied
+          // TODO: Improve this such that ng-ifs not required on parent div (i.e. no concept renders  taxonomy)
           if (scope.concept) {
-
-            //console.debug('concept specified', scope.concept);
-
-            var node = {
-              active: concept.active,
-              conceptId: concept.conceptId,
-              definitionStatus: concept.definitionStatus,
-              fsn: concept.fsn,
-              isLeafInferred: concept.isLeafInferred,
-              isLeafStated: concept.isLeafStated,
-              moduleId: concept.moduleId
-            };
-
-            node.isCollapsed = false;
-
-            scope.constructRootTrees(node);
-
+            scope.constructRootTrees(scope.concept);
           }
 
           // if concept id not specified, use root
@@ -275,12 +265,13 @@ angular.module('singleConceptAuthoringApp')
               fsn: 'SNOMED CT Concept',
               isLeafInferred: false,
               isLeafStated: false,
-              moduleId: '900000000000207008'
             };
 
             // get the children
             scope.getAndSetChildren(parent);
 
+
+            console.debug(parent);
             // add as root tree
             scope.terminologyTree.push(parent);
           }
