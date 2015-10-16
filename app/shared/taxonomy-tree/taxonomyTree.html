@@ -1,0 +1,55 @@
+
+<div>
+
+  <style>
+    .highlight {
+      background-color: yellow;
+    }
+  </style>
+
+
+  <!-- Nested node template -->
+  <script type="text/ng-template" id="nodes_renderer.html">
+
+    <div class="clearfix"> </div>
+    <div>
+
+      <!-- collapsible control -->
+      <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed)"
+            ng-click="toggleNode(node, this)"></span>
+
+      <!-- primitive alert -->
+      <span class="badge alert-warning">{{node.definitionStatus === 'PRIMITIVE' ? ' ' : '='}}&nbsp; </span>
+
+      <!-- fsn (draggable) -->
+      <span ui-draggable="true" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === conceptId}]">
+        {{node.fsn}}
+      </span>
+    </div>
+    <div>
+      <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled  ng-class="{hidden: collapsed}">
+        <li ng-repeat="node in node.children | orderBy: 'fsn'"
+            ui-tree-node collapsed="isCollapsed" data-nodrag ng-include="'nodes_renderer.html'">
+        </li>
+      </ol>
+    </div>
+
+  </script>
+
+  <!-- Loading progress bar -->
+  <div ng-if="terminologyTree.length === 0">
+    Loading...
+    <div progressbar value="getProgress()" type="success">
+    </div>
+  </div>
+
+
+  <!-- instantiate the tree -->
+  <div ui-tree class="col-md-12 p-10" ng-if="terminologyTree.length > 0">
+    <div class="clearfix"> </div>
+    <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
+      <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
+          ui-tree-node collapsed="false" data-nodrag ng-include="'nodes_renderer.html'"></li>
+    </ol>
+  </div>
+</div>
