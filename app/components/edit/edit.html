@@ -67,7 +67,8 @@
   }
 }
 .last{
-    padding-bottom:40px;
+/*    padding-bottom:40px;*/
+    height:auto;
 }
 
   .sca-resizable {
@@ -185,10 +186,10 @@
       <!-- models & concepts-->
       <div ng-class="getLayoutWidths('modelsAndConcepts')"
            class="no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-
+          <div>
 
         <!-- model & concept data-->
-        <div class="row no-gutter" style="display: -webkit-box;
+        <div class="row-fluid no-gutter" style="display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
@@ -209,6 +210,7 @@
           </div>
 
         </div>
+              </div>
       </div>
 
     </div>
