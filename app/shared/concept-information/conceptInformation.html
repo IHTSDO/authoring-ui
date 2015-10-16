@@ -11,60 +11,85 @@
       ? 'Active' : 'Inactive'}}
     </div>
 
+    <!-- Nav tabs -->
+    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs sidebar-tabs col-md-12 no-padding"
+        role="tablist" ng-init="actionTab=1">
+      <li role="presentation"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home"
+                                 role="tab"
+                                 data-toggle="tab" class="tooltips-btm tooltips-light normal-case">
+        <div class="fa fa-info"></div>
+        <span>Details</span></a></li>
+      <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+                                          class="tooltips-btm tooltips-light normal-case">
+        <div class="fa fa-book"></div>
+        <span>Taxonomy</span></a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content col-md-12 no-padding ">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}">
+        <div class="row">
+          <div class="col-md-3">Parents ({{parents.length}})</div>
+          <div class="col-md-9">
+            <div class="row" ng-repeat="parent in parents">
+              {{parent.fsn}}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">Children ({{children.length}})</div>
+          <div class="col-md-9">
+            <div class="row" ng-repeat="child in children">
+              {{child.fsn}}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <table class="table">
+            <thead>
+            <th>Type</th>
+            <th>Term</th>
+            <th>Acceptability (US)</th>
+            </thead>
+            <tbody>
+            <!-- TODO sorting on acceptability map second not working -->
+            <tr
+              ng-repeat="description in fullConcept.descriptions | orderBy: ['-active', 'type', '-description.acceptabilityMap[900000000000509007]']"
+              ng-class="[{'text-muted': !description.active}]">
+              <td>{{description.type}}</td>
+              <td>{{description.term}}</td>
+              <td>{{description.acceptabilityMap['900000000000509007']}}</td>
+            </tr>
+            </tbody>
+          </table>
+          <hr>
+          <table class="table">
+            <thead>
+            <th>Group</th>
+            <th>Type</th>
+            <th>Target</th>
+            <th>CharType</th>
+            </thead>
+            <tbody>
+            <tr
+              ng-repeat="relationship in fullConcept.relationships | orderBy: ['-active', 'groupId', '-characteristicType', 'type.fsn']"
+              ng-class="[{'text-muted': !relationship.active}]">
+              <td style="text-align: center">{{relationship.groupId}}</td>
+              <td>{{relationship.type.fsn}}</td>
+              <td>{{relationship.target.fsn}}</td>
+              <td>{{relationship.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}</td>
+            </tr>
+            </tbody>
+          </table>
 
-    <div class="row">
-      <div class="col-md-3">Parents ({{parents.length}})</div>
-      <div class="col-md-9">
-        <div class="row" ng-repeat="parent in parents">
-          {{parent.fsn}}
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">Children ({{children.length}})</div>
-      <div class="col-md-9">
-        <div class="row" ng-repeat="child in children">
-          {{child.fsn}}
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
+        <div class=" col-md-12 no-padding">
+          <div ng-if="fullConcept.conceptId" taxonomy-tree branch="branch" concept-id="fullConcept.conceptId"></div>
         </div>
+
+
       </div>
-    </div>
-    <div class="row">
-      <table class="table">
-        <thead>
-        <th>Type</th>
-        <th>Term</th>
-        <th>Acceptability (US)</th>
-        </thead>
-        <tbody>
-        <!-- TODO sorting on acceptability map second not working -->
-        <tr
-          ng-repeat="description in fullConcept.descriptions | orderBy: ['-active', 'type', '-description.acceptabilityMap[900000000000509007]']"
-          ng-class="[{'text-muted': !description.active}]">
-          <td>{{description.type}}</td>
-          <td>{{description.term}}</td>
-          <td>{{description.acceptabilityMap['900000000000509007']}}</td>
-        </tr>
-        </tbody>
-      </table>
-      <hr>
-      <table class="table">
-        <thead>
-        <th>Group</th>
-        <th>Type</th>
-        <th>Target</th>
-        <th>CharType</th>
-        </thead>
-        <tbody>
-        <tr
-          ng-repeat="relationship in fullConcept.relationships | orderBy: ['-active', 'groupId', '-characteristicType', 'type.fsn']"
-          ng-class="[{'text-muted': !relationship.active}]">
-          <td style="text-align: center">{{relationship.groupId}}</td>
-          <td>{{relationship.type.fsn}}</td>
-          <td>{{relationship.target.fsn}}</td>
-          <td>{{relationship.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}</td>
-        </tr>
-        </tbody>
-      </table>
 
     </div>
   </div>
