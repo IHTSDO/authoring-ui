@@ -834,6 +834,8 @@ angular.module('singleConceptAuthoringApp')
 
           if (description.caseSignificance === 'CASE_INSENSITIVE') {
             description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+          } else if (description.caseSignificance === 'INITIAL_CHARACTER_CASE_INSENSITIVE') {
+            description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           } else {
             description.caseSignificance = 'CASE_INSENSITIVE';
           }
