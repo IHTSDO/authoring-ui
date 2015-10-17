@@ -22,7 +22,7 @@
       <span class="badge alert-warning">{{node.definitionStatus === 'PRIMITIVE' ? ' ' : '='}}&nbsp; </span>
 
       <!-- fsn (draggable) -->
-      <span ui-draggable="true" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]">
+      <span ui-draggable="true" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]" drag-image="node.fsn">
         {{node.fsn}}
       </span>
     </div>
