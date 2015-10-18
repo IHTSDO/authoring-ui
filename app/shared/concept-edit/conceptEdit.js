@@ -1403,15 +1403,15 @@ angular.module('singleConceptAuthoringApp')
 
         scope.getDragImageForConcept = function(fsn) {
           return fsn;
-        }
+        };
 
         scope.getDragImageForRelationship = function(relationship) {
           return relationship.groupId + ', ' + relationship.type.fsn + ' -> ' + relationship.target.fsn;
-        }
+        };
 
         scope.getDragImageForDescription = function(description) {
           return description.term;
-        }
+        };
 
         // dummy function added for now to prevent default behavior
         // of dropping into untagged input boxes.  Issue has been raised

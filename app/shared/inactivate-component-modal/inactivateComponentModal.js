@@ -59,7 +59,7 @@ angular.module('singleConceptAuthoringApp')
         console.log($scope.associationTargetObject);
           var results = {};
           results.reason = reason;
-          results.associationTarget = $scope.associationTargetObject
+          results.associationTarget = $scope.associationTargetObject;
         $modalInstance.close(results);
       }
     };
