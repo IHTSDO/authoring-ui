@@ -43,7 +43,7 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
     $scope.loadConcept = function(conceptId) {
       $scope.loadComplete = false;
       initialize();
-    }
+    };
 
     initialize();
 

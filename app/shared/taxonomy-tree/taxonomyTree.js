@@ -53,7 +53,7 @@ angular.module('singleConceptAuthoringApp')
 
               angular.forEach(children, function (child) {
                 child.isCollapsed = true;
-              })
+              });
 
               node.children = children;
               node.isCollapsed = false;
