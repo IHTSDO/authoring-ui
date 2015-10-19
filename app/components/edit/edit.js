@@ -787,9 +787,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($scope.classificationContainer.equivalentConceptsFound) {
         snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
           $routeParams.taskKey, $scope.targetBranch).then(function (equivalentConcepts) {
-            var equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+            equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
             angular.forEach(equivalentConcepts, function(item){
-                if(item.length == 2)
+                if(item.length === 2)
                 {
                     $scope.classificationContainer.equivalentConcepts.push(item);
                 }
@@ -797,7 +797,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                 {
                     var key = item[0];
                     angular.forEach(item, function(equivalence){
-                        if(equivalence != key)
+                        if(equivalence !== key)
                         {
                             var newEq = [];
                             newEq.push(key);
