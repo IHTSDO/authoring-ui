@@ -233,7 +233,7 @@
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
-               ng-repeat="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
                repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
             <!-- model -->
@@ -250,7 +250,21 @@
             </div>
 
           </div>
+            <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+                <div class="no-gutter" fill-height ng-class="getLayoutWidths('models')">
+                  <div class="modelScrollBox"></div>
+                </div>
+
+                <!-- concept -->
+                <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')" style="margin-right:0px;">
+                </div>
+            </div>
+          
         </div>
+          
       </div>
 
     </div>
@@ -266,7 +280,7 @@
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)"
+  display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)"
              sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
              sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
@@ -285,6 +299,18 @@
           </div>
 
         </div>
+        <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+                <div class="no-gutter col-sm-7 col-md-7 col-lg-7" fill-height>
+                  <div class="modelScrollBox"></div>
+                </div>
+
+                <!-- concept -->
+                <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3" fill-height  style="margin-right:0px;">
+                </div>
+            </div>
       </div>
 
 
@@ -307,7 +333,7 @@
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)">
+  display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 " style="margin-right:0px;">
@@ -318,6 +344,14 @@
           </div>
 
         </div>
+        <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+                <!-- concept -->
+                <div class="no-gutter col-sm-12 col-md-12 col-lg-12 " fill-height  style="margin-right:0px;">
+                </div>
+            </div>
       </div>
 
     </div>
@@ -337,7 +371,7 @@
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)"
+  display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)"
              sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
              sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
@@ -350,6 +384,14 @@
           </div>
 
         </div>
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+                <!-- concept -->
+                <div class="no-gutter col-sm-12 col-md-12 col-lg-12" fill-height style="margin-right:0px;">
+                </div>
+            </div>
       </div>
     </div>
 
@@ -371,7 +413,7 @@
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts"
+  display:         flex;" ng-repeat-start="concept in concepts"
              repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
@@ -383,6 +425,14 @@
           </div>
 
         </div>
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+                <!-- concept -->
+                <div class="no-gutter col-sm-12 col-md-12 col-lg-12" fill-height style="margin-right:0px;">
+                </div>
+            </div>
       </div>
     </div>
 
@@ -404,7 +454,7 @@
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat="concept in concepts">
+  display:         flex;" ng-repeat-start="concept in concepts">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -415,6 +465,14 @@
           </div>
 
         </div>
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+                <!-- concept -->
+                <div class="no-gutter col-sm-12 col-md-12 col-lg-12" fill-height style="margin-right:0px;">
+                </div>
+            </div>
       </div>
 
     </div>
@@ -431,7 +489,7 @@
       <!-- base and branch concept pairs -->
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
 
-        <div class="row no-gutter darken-3 grey" ng-repeat="conflictConceptPair in conflictConceptPairs"
+        <div class="row no-gutter darken-3 grey" ng-repeat-start="conflictConceptPair in conflictConceptPairs"
              ng-class="isLast($last)"
              sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
              sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
@@ -451,6 +509,20 @@
             </div>
           </div>
         </div>
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+                <!-- concept -->
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 no-gutter">
+
+          </div>
+
+          <!-- branch concept -->
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 no-gutter" fill-height>
+
+          </div>
+            </div>
 
       </div>
 
