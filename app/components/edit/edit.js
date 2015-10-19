@@ -32,6 +32,36 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
+  .directive('fillHeight', function ($window) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, $rootScope) {
+            scope.first = true;
+            scope.initializeWindowSize = function () {
+                var header = document.getElementsByClassName('navbar-fixed-top');
+                var footer = document.getElementsByClassName('sca-footer');
+                var editPanels = document.getElementsByClassName('editing-form');
+                
+                var panelHeight = 0;
+                angular.forEach(editPanels, function (panel){
+                    panelHeight += panel.clientHeight;
+                });
+                var existingHeight = header[0].clientHeight + footer[0].clientHeight + panelHeight;
+                if(scope.first)
+                {
+                    existingHeight -= 84;
+                }
+                $(element).css('min-height', $window.innerHeight - existingHeight + 2);
+            };
+            scope.initializeWindowSize();
+            angular.element($window).bind('resize', function () {
+                scope.first = false;
+                scope.initializeWindowSize();
+            });
+        }
+    };
+  })
+
   .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     $scope.projectKey = $routeParams.projectKey;
@@ -49,6 +79,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
     $scope.renderingComplete = function () {
+        $rootScope.$broadcast('repeatComplete');
       $scope.conceptsRendering = false;
     };
 
