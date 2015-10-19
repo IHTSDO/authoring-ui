@@ -118,9 +118,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       }
 
-      $scope.$on('relaodTask', function(event, data) {
+      $scope.$on('reloadTask', function(event, data) {
         initialize();
-      })
+      });
 
       // re-initialize if branch state changes
       $scope.$on('notification.branchState', function (event, data) {
