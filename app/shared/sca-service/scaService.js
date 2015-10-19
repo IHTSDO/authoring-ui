@@ -786,6 +786,9 @@ angular.module('singleConceptAuthoringApp')
                     } else {
                       url = '#/projects/project/' + newNotification.project + '/classify';
                     }
+
+                    // broadcast classification complete to taskDetail
+                    $rootScope.$broadcast('reloadTask');
                     break;
 
                   /*
@@ -819,6 +822,9 @@ angular.module('singleConceptAuthoringApp')
                     } else {
                       url = '#/projects/project/' + newNotification.project + '/validate';
                     }
+
+                    // broadcast validation complete to taskDetail
+                    $rootScope.$broadcast('reloadTask');
                     break;
                   default:
                     console.error('Unknown entity type for notification, stopping', +newNotification);
