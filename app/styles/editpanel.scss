@@ -49,6 +49,7 @@ aside.editpanel ul a {
 .morebuttons {
     font-size: 20px;
     box-shadow: none !important;
+	margin-right:0px!important;
 }
 .editing-form {
     font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -71,7 +72,7 @@ aside.editpanel ul a {
     -o-box-sizing: border-box;
     box-sizing: border-box;
     color: #474747 !important;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
     padding: 2px 4px !important;
     background-color: #e0f7fa;
     border: none;
@@ -110,8 +111,8 @@ select.primitive  {
     background-color: #66bbfd;
     border-color: transparent;
 }
-.editing-form button:focus {
-    background-color: #66bbfd;
+.editing-form button:focus, .editing-form button:active {
+    background-color: transparent;
     border-color: transparent;
 }
 .editing-form input[type=button]:active,
@@ -357,20 +358,155 @@ input {
     padding-left: .5%;
 }
 .editing-form .sourcename {
-    width: 50.5%;
+    width: 49%;
     padding-left: .5%;
 }
 .editing-form .relations {
     width: 55%;
     padding-left: .5%;
 }
+  .sca-top {
+      z-index: 999;
+    }
+
+    .revert-button {
+      color: white;
+      background-color: red;
+      border-radius: 10px;
+      padding: 15px;
+      margin-right: 10px;
+      text-transform: none;
+    }
+
+    .button-width-acceptability {
+      width: 7%;
+      margin-left: 0.5%;
+      padding: 0% 0.5% !important;
+      float: left;
+      height: 100%;
+      min-height: 30px;
+      font-size: 14px !important;
+    }
+
+    .small-buttons:hover {
+      background: transparent !important;
+      color: #eee !important;
+    }
+
+    .small-buttons.green {
+      color: #4CAF50;
+      background-color: transparent;
+    }
+
+    .small-buttons.orange.darken-3 {
+      color: #ef6c00;
+      background-color: transparent;
+    }
+
+    .small-buttons.blue {
+      color: #00a6e5;
+      background-color: transparent;
+    }
+
+    .small-buttons.red {
+      color: #e92848;
+      background-color: transparent;
+    }
+
+    .small-buttons.purple.darken-1 {
+      color: #8e24aa;
+      background-color: transparent;
+    }
+
+    .small-buttons.lighten-2 {
+      color: #9575cd;
+      background-color: transparent;
+    }
+
+    .small-buttons.save-button {
+      height: 20px;
+      font-size: 15px !important;
+    }
+
+    .small-buttons.amber {
+      color: #ffc107;
+      background-color: transparent;
+    }
+
+    .more-button-width {
+      width: 22px;
+      margin: 0px !important;
+      padding: 0px 3px !important;
+      float: left;
+      height: 100%;
+      min-height: 30px;
+      font-size: 13px !important;
+    }
+
+    .drag-button-width {
+      width: 19px;
+
+      padding: 0% !important;
+      float: left;
+      height: 100%;
+      min-height: 30px;
+      font-size: 14px !important;
+    }
+
+    .button-width-plus {
+      width: 21px;
+
+      padding: 5px 5px !important;
+      float: left;
+      height: 100%;
+      min-height: 30px;
+      font-size: 14px !important;
+    }
+
+    .button-width-minus {min-height: 30px;
+    }
+
+    .editing-form .is_a textarea {
+      width: 80% !important;
+      float: left;
+    }
+
+    .editing-form .sourcename textarea {
+      width: 80% !important;
+      float: left;
+    }
+
+    .is_a .drag-button-width {
+      background-color: #fffde7 !important;
+      color: #474747;
+      width: 18% !important;
+      float: left;
+      padding: 0% 1% !important;
+      margin: 0% !important;
+      text-align: center;
+    }
+
+    .editing-form .sourcename .drag-button-width {
+      background-color: #dedeff !important;
+      color: #474747 !important;
+      width: 8.75% !important;
+      float: left;
+      padding: 0% 0.25% !important;
+      margin: 0% !important;
+      text-align: center;
+    }
+
+    .editing-form .sourcename textarea {
+      width: 90.5% !important;
+      float: left;
+    }
 @media (max-width: 1380px) {
     .title-text {
         font-size: 11px !important;
    
     }
     .small-buttons {
-        padding: 1% !important;
+        padding: .75% !important;
         font-size: 15px !important;
     }
     .snomed-clear {
@@ -403,7 +539,7 @@ input {
         padding-left: 1%;
     }
     .editing-form .description {
-        width: 52%;
+        width: 49%;
     }
     .editing-form .acceptability {
         width: 22%;
@@ -415,8 +551,8 @@ input {
         padding: 10px 5px;
     }
     .small-buttons {
-        padding: 1% !important;
-        font-size: 16px !important;
+        padding: .75% !important;
+        font-size: 15px !important;
     }
     .concept-headers {
         padding-bottom: 0px;

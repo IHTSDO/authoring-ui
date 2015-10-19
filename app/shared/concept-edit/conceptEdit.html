@@ -1,143 +1,6 @@
 <div class="edits editing-form ">
-
-  <style>
-
-    .sca-top {
-      z-index: 999;
-    }
-
-    .revert-button {
-      color: white;
-      background-color: red;
-      border-radius: 10px;
-      padding: 15px;
-      margin-right: 10px;
-      text-transform: none;
-    }
-
-    .button-width-acceptability {
-      width: 7%;
-      margin-left: 0.5%;
-      padding: 0% 0.5% !important;
-      float: left;
-      height: 100%;
-      min-height: 30px;
-      font-size: 14px !important;
-    }
-
-    .small-buttons:hover {
-      background: transparent !important;
-      color: #eee !important;
-    }
-
-    .small-buttons.green {
-      color: #4CAF50;
-      background-color: transparent;
-    }
-
-    .small-buttons.orange.darken-3 {
-      color: #ef6c00;
-      background-color: transparent;
-    }
-
-    .small-buttons.blue {
-      color: #00a6e5;
-      background-color: transparent;
-    }
-
-    .small-buttons.red {
-      color: #e92848;
-      background-color: transparent;
-    }
-
-    .small-buttons.purple.darken-1 {
-      color: #8e24aa;
-      background-color: transparent;
-    }
-
-    .small-buttons.lighten-2 {
-      color: #9575cd;
-      background-color: transparent;
-    }
-
-    .small-buttons.save-button {
-      height: 20px;
-      font-size: 17px !important;
-    }
-
-    .small-buttons.amber {
-      color: #ffc107;
-      background-color: transparent;
-    }
-
-    .more-button-width {
-      width: 22px;
-      margin: 0px !important;
-      padding: 0px 3px !important;
-      float: left;
-      height: 100%;
-      min-height: 30px;
-      font-size: 13px !important;
-    }
-
-    .drag-button-width {
-      width: 19px;
-
-      padding: 0% !important;
-      float: left;
-      height: 100%;
-      min-height: 30px;
-      font-size: 14px !important;
-    }
-
-    .button-width-plus {
-      width: 21px;
-
-      padding: 5px 5px !important;
-      float: left;
-      height: 100%;
-      min-height: 30px;
-      font-size: 14px !important;
-    }
-
-    .button-width-minus {
-    }
-
-    .editing-form .is_a textarea {
-      width: 80% !important;
-      float: left;
-    }
-
-    .editing-form .sourcename textarea {
-      width: 80% !important;
-      float: left;
-    }
-
-    .is_a .drag-button-width {
-      background-color: #fffde7 !important;
-      color: #474747;
-      width: 18% !important;
-      float: left;
-      padding: 0% 1% !important;
-      margin: 0% !important;
-      text-align: center;
-    }
-
-    .editing-form .sourcename .drag-button-width {
-      background-color: #dedeff !important;
-      color: #474747 !important;
-      width: 8.75% !important;
-      float: left;
-      padding: 0% 0.25% !important;
-      margin: 0% !important;
-      text-align: center;
-    }
-
-    .editing-form .sourcename textarea {
-      width: 90.5% !important;
-      float: left;
-    }
-  </style>
+<style>
+</style>
 
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="error">
@@ -151,7 +14,7 @@
     {{warning}}
   </div>
   <!-- end validation error -->
-  <div class="row p-t-10 grey darken-4 concept-headers " style=" margin-right:0px;">
+  <div class="row p-t-5 grey darken-4 concept-headers " style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
 
       <button ng-click="setConceptProperties(concept)" type="button"
@@ -165,10 +28,7 @@
         drop-channel="NA" drag-image="getDragImageForConcept(concept.fsn)"></button>
 
 
-      <button ng-click="saveConcept()" type="button"
-              class="btn-default save-button small-buttons deep-purple lighten-2 md md-save tooltips-left tooltips-light normal-case "
-              ng-click="saveConcept()"
-              ng-if="isModified"><span> Save Concept </span></button>
+     
 
     </div>
 
@@ -177,7 +37,7 @@
     <div class="pull-left col-md-6 no-padding title-text"
       >
       <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
-        <span class="fsn">{{concept.fsn}}</span>
+        <span class="fsn p-t-5">{{concept.fsn}}</span>
 
           <span
             ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
@@ -199,7 +59,10 @@
       </div>
     </div>
     <div class="pull-right no-margin edits concept-title col-md-4 no-padding">
-
+ <button ng-click="saveConcept()" type="button"
+              class="btn-default save-button small-buttons deep-purple lighten-2 md md-save tooltips-left tooltips-light normal-case "
+              ng-click="saveConcept()"
+              ng-if="isModified"><span> Save Concept </span></button>
       <!-- Revert button only appears if parent is specified -->
       <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
         Revert
@@ -367,16 +230,16 @@
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getRelationships(true)">
 
-      <div class="row darken-3 p-t-5 grey ">
+      <div class="row darken-3  grey ">
 
-        <div class="col-md-12 no-padding color_{{relationship.groupId}}"
+        <div class="col-md-12 no-padding p-t-5  color_{{relationship.groupId}}"
              ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'"
              drop-channel="relationshipObj"
              ui-on-drop="dropRelationship(relationship, $data)"
              drag-enter-class="sca-drag-target"
              drag-hover-class="sca-drag-hover">
 
-
+<div class="p-t-5 ">
           <button class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width"
                   ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
@@ -384,7 +247,7 @@
             ></button>
 
           <button
-            class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width "
+            class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width "
             ui-draggable="true" drag="relationship" drag-channel="relationshipObj" drag-image="getDragImageForRelationship(relationship)"></button>
 
           <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
@@ -425,7 +288,7 @@
 
 
             </textarea>
-            <span class="pull-right md md-open-with drag-button-width "
+            <span class="pull-left md md-open-with drag-button-width "
                   ui-draggable="true"
                   drag="getConceptIdNamePairFromAttributeType(relationship)"
                   drag-channel="conceptPropertiesObj"
@@ -451,7 +314,7 @@
                       typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
 
-                        <span class="pull-right md md-open-with drag-button-width "
+                        <span class="pull-left md md-open-with drag-button-width "
                               ui-draggable="true"
                               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                               drag-channel="conceptPropertiesObj"
@@ -467,6 +330,7 @@
                     class="btn-default add-buttons md fa fa-minus button-width-minus pull-right tooltips-left tooltips-light normal-case">
               <span>Remove Relationship</span></button>
 
+          </div>
           </div>
         </div>
 
