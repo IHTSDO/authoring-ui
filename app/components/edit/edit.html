@@ -365,15 +365,15 @@
       </div>
 
       <!-- concept edit : non-static, can create -->
-      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding">
+      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" repeat-complete="renderingComplete()"
+           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">>
 
         <!-- concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)"
-             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
-             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+  display:         flex;" ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+             repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -401,7 +401,7 @@
       <!-- classification report -->
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
         <div classification classification-container="classificationContainer" branch="targetBranch"
-             editable="false"></div>
+             editable="true"></div>
       </div>
 
       <!-- concept edit : non-static, can create -->
@@ -413,13 +413,13 @@
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat-start="concept in concepts"
+  display:         flex;" ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
              repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="true"
+                 branch="targetBranch" static="false"
               >
             </div>
           </div>
@@ -454,12 +454,13 @@
         <div class="row no-gutter" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-  display:         flex;" ng-repeat-start="concept in concepts">
+  display:         flex;" ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+             repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px; z-index:999">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="false"
+                 branch="targetBranch" static="true"
               >
             </div>
           </div>

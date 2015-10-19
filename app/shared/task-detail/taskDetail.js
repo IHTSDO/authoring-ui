@@ -75,7 +75,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $routeParams.projectKey, $routeParams.taskKey,
           {
             'status': 'IN_REVIEW'
-          });
+          }).then(function(response) {
+            $scope.task = response;
+          })
       };
 
       $scope.updateTask = function () {
@@ -114,7 +116,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $rootScope.$broadcast('branchDiverged');
           }
 
-          console.debug($scope.classificationDisabled, $scope.validationDisabled, $scope.task.latestClassificationJson.status, $scope.task.latestValidationStatus);
         });
       }
 
@@ -129,8 +130,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptChange', function (event, data) {
-        if ($scope.task.status === 'NEW') {
-          initialize();
+        if ($scope.task.status === 'NEW' ) {
+          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
+            $scope.task = response;
+          })
+        }
+      });
+
+      // re-initialize if concept change occurs and task is new
+      $scope.$on('conceptEdit.conceptModified', function (event, data) {
+        console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
+        if ($scope.task.status === 'Review Completed') {
+          console.debug('updating task');
+          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
+            $scope.task = response;
+          })
         }
       });
 
