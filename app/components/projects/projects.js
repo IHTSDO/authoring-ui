@@ -16,6 +16,10 @@ angular.module('singleConceptAuthoringApp.projects', [
 
   .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q) {
 
+    // clear task-related i nformation
+    $rootScope.validationRunning = false;
+    $rootScope.classificationRunning = false;
+
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Projects"
     $scope.projects = null;
