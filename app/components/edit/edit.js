@@ -32,6 +32,36 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
+  .directive('fillHeight', function ($window) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, $rootScope) {
+            scope.first = true;
+            scope.initializeWindowSize = function () {
+                var header = document.getElementsByClassName('navbar-fixed-top');
+                var footer = document.getElementsByClassName('sca-footer');
+                var editPanels = document.getElementsByClassName('editing-form');
+                
+                var panelHeight = 0;
+                angular.forEach(editPanels, function (panel){
+                    panelHeight += panel.clientHeight;
+                });
+                var existingHeight = header[0].clientHeight + footer[0].clientHeight + panelHeight;
+                if(scope.first)
+                {
+                    existingHeight -= 84;
+                }
+                $(element).css('min-height', $window.innerHeight - existingHeight + 2);
+            };
+            scope.initializeWindowSize();
+            angular.element($window).bind('resize', function () {
+                scope.first = false;
+                scope.initializeWindowSize();
+            });
+        }
+    };
+  })
+
   .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
     $scope.projectKey = $routeParams.projectKey;
@@ -49,6 +79,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
     $scope.renderingComplete = function () {
+        $rootScope.$broadcast('repeatComplete');
       $scope.conceptsRendering = false;
     };
 
@@ -756,7 +787,26 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($scope.classificationContainer.equivalentConceptsFound) {
         snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
           $routeParams.taskKey, $scope.targetBranch).then(function (equivalentConcepts) {
-            $scope.classificationContainer.equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+            var equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+            angular.forEach(equivalentConcepts, function(item){
+                if(item.length == 2)
+                {
+                    $scope.classificationContainer.equivalentConcepts.push(item);
+                }
+                else
+                {
+                    var key = item[0];
+                    angular.forEach(item, function(equivalence){
+                        if(equivalence != key)
+                        {
+                            var newEq = [];
+                            newEq.push(key);
+                            newEq.push(equivalence);
+                            $scope.classificationContainer.equivalentConcepts.push(item);
+                        }
+                    });
+                }
+            });
           });
       } else {
         $scope.classificationContainer.equivalentConcepts = [];
