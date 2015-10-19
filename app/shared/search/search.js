@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService',
-    function searchPanelCtrl($scope, $rootScope, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService) {
 
       // controller $scope.options
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -179,8 +179,25 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return false;
       };
 
-      $scope.toggleCollapse = function (result) {
-        result.showData = !result.showData;
+      $scope.openConceptInformationModal = function (result) {
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/concept-information/conceptInformationModal.html',
+          controller: 'conceptInformationModalCtrl',
+          resolve: {
+            conceptId: function() {
+              return result.concept.conceptId;
+            },
+            branch: function() {
+              return $scope.branch;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (response) {
+          // do nothing
+        }, function () {
+          // do nothing
+        });
       };
 
       /**

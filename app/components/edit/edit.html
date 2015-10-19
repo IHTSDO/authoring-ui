@@ -3,77 +3,85 @@
     padding-left: 0px;
     padding-right: 0px;
   }
+
   .loader {
-  font-size: 10px;
-  margin: 50px auto;
-  text-indent: -9999em;
-  width: 11em;
-  height: 11em;
-  border-radius: 50%;
-  background: #ffffff;
-  background: -moz-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
-  background: -webkit-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
-  background: -o-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
-  background: -ms-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
-  background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
-  position: relative;
-  -webkit-animation: load3 1.4s infinite linear;
-  animation: load3 1.4s infinite linear;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-}
-.loader:before {
-  width: 50%;
-  height: 50%;
-  background: #ffffff;
-  border-radius: 100% 0 0 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: '';
-}
-.loader:after {
-  background: #0dc5c1;
-  width: 75%;
-  height: 75%;
-  border-radius: 50%;
-  content: '';
-  margin: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-@-webkit-keyframes load3 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+    font-size: 10px;
+    margin: 50px auto;
+    text-indent: -9999em;
+    width: 11em;
+    height: 11em;
+    border-radius: 50%;
+    background: #ffffff;
+    background: -moz-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: -webkit-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: -o-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: -ms-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+    position: relative;
+    -webkit-animation: load3 1.4s infinite linear;
+    animation: load3 1.4s infinite linear;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
   }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+
+  .loader:before {
+    width: 50%;
+    height: 50%;
+    background: #ffffff;
+    border-radius: 100% 0 0 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
   }
-}
-@keyframes load3 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+
+  .loader:after {
+    background: #0dc5c1;
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    content: '';
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
   }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+
+  @-webkit-keyframes load3 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
   }
-}
-.last{
-    padding-bottom:40px;
-}
+
+  @keyframes load3 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  .last {
+    /*    padding-bottom:40px;*/
+    height: auto;
+  }
 
   .sca-resizable {
     margin-right: 10px;
     display: inline-block;
   }
+
   .sca-resize {
     position: relative;
     left: -50px;
@@ -81,21 +89,28 @@
     width: 5px;
     background-color: red;
   }
-  
-   .sca-drag-target, .sca-drag-hover{background-color:transparent!important; border:none!important;}
- .sca-drag-hover textarea{
-  
-  border: 1px dashed #fff!important;
-	background:#00a6e5!important;
-	color:#fff!important;
+
+  .sca-drag-target, .sca-drag-hover {
+    background-color: transparent !important;
+    border: none !important;
   }
+
+  .sca-drag-hover textarea {
+
+    border: 1px dashed #fff !important;
+    background: #00a6e5 !important;
+    color: #fff !important;
+  }
+
   .sca-drag-target textarea {
 
-	 border: 1px dashed #9f9f9f!important;
-	background:#dedede!important;
+    border: 1px dashed #9f9f9f !important;
+    background: #dedede !important;
   }
 
- 
+  .sca-drag-handle {
+    background-color: red;
+  }
 
   .transparent {
     background-color: transparent;
@@ -113,62 +128,87 @@
 
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
-  <!-- Create new concept -->
-  <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
-                    type="button" ng-click="createConcept()"
-                    class="btn-default btn-block create-new-concept tooltips-right tooltips-light normal-case"
-                    title="Active"><div class="md fa fa-edit"></div><span>Create New Concept</span></button>
+    <!-- Create new concept -->
+    <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+            type="button" ng-click="createConcept()"
+            class="btn-default btn-block create-new-concept tooltips-right tooltips-light normal-case"
+            title="Active">
+      <div class="md fa fa-edit"></div>
+      <span>Create New Concept</span></button>
     <!-- Switch to Classify View -->
-    <button type="button" class="btn btn-default widget-toolbar green darken-1 tooltips-right tooltips-light normal-case" 
-            ng-click="setView('classification')"><div class="md md-notifications"></div><span>Switch to Classify View</span></button>
+    <button type="button"
+            class="btn btn-default widget-toolbar green darken-1 tooltips-right tooltips-light normal-case"
+            ng-click="setView('classification')">
+      <div class="md md-notifications"></div>
+      <span>Switch to Classify View</span></button>
 
     <!-- Switch to Feedback/Review View -- Task View Only -->
     <button ng-if="taskKey"
-            type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case" title="Switch to Feedback View"
-            ng-click="viewReview()"><div class="md md-email"></div><span>View feedback</span></button>
+            type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
+            title="Switch to Feedback View"
+            ng-click="viewReview()">
+      <div class="md md-email"></div>
+      <span>View feedback</span></button>
 
     <!-- Switch to Validate View -->
-    <button type="button" class="btn btn-default widget-toolbar deep-purple lighten-1 validate tooltips-right tooltips-light normal-case"
-            ng-click="setView('validation')"><div class="md md-school"></div><span>View the most recent Validation Report</span></button>
+    <button type="button"
+            class="btn btn-default widget-toolbar deep-purple lighten-1 validate tooltips-right tooltips-light normal-case"
+            ng-click="setView('validation')">
+      <div class="md md-school"></div>
+      <span>View the most recent Validation Report</span></button>
 
     <!-- Switch to Conflict View -->
-    <button type="button" class="btn btn-default widget-toolbar lighten-1 conflicts tooltips-right tooltips-light normal-case"
+    <button type="button"
+            class="btn btn-default widget-toolbar lighten-1 conflicts tooltips-right tooltips-light normal-case"
             ng-disabled="!canConflict || !conflictsContainer.conflicts"
             ng-class="[
             {'red' : conflictsContainer.conflicts.concepts.length > 0},
             {'grey lighten-3' : !conflictsContainer.conflicts.concepts || conflictsContainer.conflicts.concepts.length === 0}]"
             title="Switch to Resolve Conflicts View"
-            ng-click="setView('conflicts')"><div class="md md-warning"></div><span>View Conflicts Report</span></button>
+            ng-click="setView('conflicts')">
+      <div class="md md-warning"></div>
+      <span>View Conflicts Report</span></button>
 
     <!-- Promote -- Project only -->
-    <button type="button" class="btn btn-default widget-toolbar blue lighten-1 conflicts tooltips-right tooltips-light normal-case"
+    <button type="button"
+            class="btn btn-default widget-toolbar blue lighten-1 conflicts tooltips-right tooltips-light normal-case"
             ng-if="!taskKey"
             ng-disabled="conflictsContainer.conflicts.concepts.length !== 0"
             class="blue"
-           
-            ng-click="promoteProject()"><div class="md md-call-merge"></div><span>Promote this Project</span></button>
+
+            ng-click="promoteProject()">
+      <div class="md md-call-merge"></div>
+      <span>Promote this Project</span></button>
 
     <!-- Edit View: Default -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-default'}"
-            class="btn btn-default widget-toolbar blue darken-4 tooltips-right tooltips-light normal-case" 
-            ng-click="setView('edit-default')"> <div class="md md-dvr"></div><span>Restore the default editing view</span></button>
+            class="btn btn-default widget-toolbar blue darken-4 tooltips-right tooltips-light normal-case"
+            ng-click="setView('edit-default')">
+      <div class="md md-dvr"></div>
+      <span>Restore the default editing view</span></button>
 
     <!-- Edit View:  No sidebar -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"
-            class="btn btn-default widget-toolbar blue darken-3 tooltips-right tooltips-light normal-case" 
-            ng-click="setView('edit-no-sidebar')"> <div class="md md-web "></div><span>Hide the left sidebar</span></button>
+            class="btn btn-default widget-toolbar blue darken-3 tooltips-right tooltips-light normal-case"
+            ng-click="setView('edit-no-sidebar')">
+      <div class="md md-web "></div>
+      <span>Hide the left sidebar</span></button>
 
     <!-- Edit View: No model -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-no-model'}"
-            class="btn btn-default widget-toolbar blue darken-2 tooltips-right tooltips-light normal-case" 
-            ng-click="setView('edit-no-model')"> <div class="md md-grid-off"></div><span>Hide all concept models</span></button>
+            class="btn btn-default widget-toolbar blue darken-2 tooltips-right tooltips-light normal-case"
+            ng-click="setView('edit-no-model')">
+      <div class="md md-grid-off"></div>
+      <span>Hide all concept models</span></button>
 
     <!-- Rebase Task: Disabled IF canRebase flag is false OR conflicted concepts not resolved exist -->
     <button type="button"
-            class="btn btn-default widget-toolbar yellow darken-2 tooltips-right tooltips-light normal-case" 
+            class="btn btn-default widget-toolbar yellow darken-2 tooltips-right tooltips-light normal-case"
             style="width: 50px; height: 50px; margin: 0; padding: 0; position:fixed; bottom:38px; left:0px"
             ng-disabled="!canRebase || conflictsContainer.conflicts.conceptsToResolve.length > 0"
-            ng-click="rebase()"> <div class="md md-autorenew"></div><span>Rebase this task</span></button>
+            ng-click="rebase()">
+      <div class="md md-autorenew"></div>
+      <span>Rebase this task</span></button>
   </div>
 
   <!-- Main page content -->
@@ -184,30 +224,32 @@
 
       <!-- models & concepts-->
       <div ng-class="getLayoutWidths('modelsAndConcepts')"
-           class="no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+           class="no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+        <div>
 
-
-        <!-- model & concept data-->
-        <div class="row no-gutter" style="display: -webkit-box;
+          <!-- model & concept data-->
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
-          ng-repeat="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
-          repeat-complete="renderingComplete()" ng-class="isLast($last)">
+               ng-repeat="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+               repeat-complete="renderingComplete()" ng-class="isLast($last)">
 
-          <!-- model -->
-          <div class="no-gutter" style="height: 100%" ng-class="getLayoutWidths('models')">
-            <div draw-model class="modelScrollBox" concept="concept"></div>
-          </div>
-
-          <!-- concept -->
-          <div class="no-gutter grey darken-3" ng-class="getLayoutWidths('concepts')" style="margin-right:0px;">
-            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                 branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
-              >
+            <!-- model -->
+            <div class="no-gutter" style="height: 100%" ng-class="getLayoutWidths('models')">
+              <div draw-model class="modelScrollBox" concept="concept"></div>
             </div>
-          </div>
 
+            <!-- concept -->
+            <div class="no-gutter grey darken-3" ng-class="getLayoutWidths('concepts')" style="margin-right:0px;">
+              <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
+                   branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
+                >
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 
@@ -225,7 +267,8 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)"
-             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
 
           <!-- model -->
@@ -256,7 +299,8 @@
 
       <!-- concepts-->
       <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9"
-           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
 
         <!-- model & concept data-->
@@ -294,7 +338,8 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display:         flex;" ng-repeat="concept in concepts" ng-class="isLast($last)"
-             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12" style="margin-right:0px;">
@@ -319,7 +364,8 @@
 
       <!-- concept edit : non-static, can create -->
       <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding"
-           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
         <!-- concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
@@ -351,7 +397,8 @@
 
       <!-- concept edit : author -> non-static, can create, reviewer -> static, cannot create -->
       <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding"
-           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
         <!-- concept data-->
         <div class="row no-gutter" style="display: -webkit-box;
@@ -384,18 +431,22 @@
       <!-- base and branch concept pairs -->
       <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
 
-        <div class="row no-gutter darken-3 grey" ng-repeat="conflictConceptPair in conflictConceptPairs" ng-class="isLast($last)"
-             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering" sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-                                                                                                                                                                               <!-- base concept -->
+        <div class="row no-gutter darken-3 grey" ng-repeat="conflictConceptPair in conflictConceptPairs"
+             ng-class="isLast($last)"
+             sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+          <!-- base concept -->
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 no-gutter">
-            <div ng-if="conflictConceptPair.sourceConcept" concept-edit concept="conflictConceptPairs[$index].sourceConcept"
+            <div ng-if="conflictConceptPair.sourceConcept" concept-edit
+                 concept="conflictConceptPairs[$index].sourceConcept"
                  branch="sourceBranch" static="true">
             </div>
           </div>
 
           <!-- branch concept -->
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 no-gutter">
-            <div ng-if="conflictConceptPair.targetConcept" concept-edit concept="conflictConceptPairs[$index].targetConcept"
+            <div ng-if="conflictConceptPair.targetConcept" concept-edit
+                 concept="conflictConceptPairs[$index].targetConcept"
                  branch="targetBranch" parent-branch="sourceBranch" static="false">
             </div>
           </div>
