@@ -38,7 +38,8 @@ angular
     'singleConceptAuthoringApp.searchPanel',
     'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
-    'singleConceptAuthoringApp.taskDetail'
+    'singleConceptAuthoringApp.taskDetail',
+    'singleConceptAuthoringApp.conceptInformationModal'
   ])
   .factory('httpRequestInterceptor', function () {
       return {
@@ -50,7 +51,12 @@ angular
     })
 
   
-  .config(function ($provide, $routeProvider, $modalProvider, $httpProvider) {
+  .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider) {
+
+    // up the digest limit to account for extremely long depth of SNOMEDCT trees leading to spurious errors
+    // this is not an ideal solution, but this is a known edge-case until Angular 2.0 (see https://github.com/angular/angular.js/issues/6440)
+    $rootScopeProvider.digestTtl(20);
+
     $provide.factory('$routeProvider', function () {
       return $routeProvider;
     });

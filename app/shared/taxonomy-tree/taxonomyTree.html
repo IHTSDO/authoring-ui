@@ -22,14 +22,14 @@
       <span class="badge alert-warning">{{node.definitionStatus === 'PRIMITIVE' ? ' ' : '='}}&nbsp; </span>
 
       <!-- fsn (draggable) -->
-      <span ui-draggable="true" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === conceptId}]">
+      <span ui-draggable="true" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]" drag-image="node.fsn">
         {{node.fsn}}
       </span>
     </div>
     <div>
       <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled  ng-class="{hidden: collapsed}">
         <li ng-repeat="node in node.children | orderBy: 'fsn'"
-            ui-tree-node collapsed="isCollapsed" data-nodrag ng-include="'nodes_renderer.html'">
+            ui-tree-node collapsed="{{node.isCollapsed}}" data-nodrag ng-include="'nodes_renderer.html'">
         </li>
       </ol>
     </div>

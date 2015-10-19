@@ -236,6 +236,7 @@ angular.module('singleConceptAuthoringApp')
         'commitComment': 'Inactivation',
         'inactivationIndicator': inactivationIndicator,
         'active': false,
+        'associationTargets' : associationTargets
       };
 
       $http.post(apiEndpoint + branch + '/concepts/' + conceptId + '/updates', propertiesObj).then(function (response) {
