@@ -24,38 +24,48 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   //Directive to trigger a function on the rendering of an entire ng-repeat,
   // will make global once infinite scroll functionality is complete
-  .directive('repeatComplete', function () {
-    return function (scope, element, attrs) {
-      if (scope.$last) {
-        scope.$eval(attrs.repeatComplete);
-      }
-    };
-  })
-
-  .directive('fillHeight', function ($window) {
+  .directive('repeatComplete', ['$timeout', function ($timeout) {
     return {
         restrict: 'A',
-        link: function (scope, element, $rootScope) {
+        scope: {
+            callback:'&'
+        },     
+        link: function(scope, elm, attrs) {
+            $timeout(scope.callback(), 0);
+        }
+    };
+  }])
+
+  .directive('fillHeight', function ($window, $rootScope) {
+    return {
+        restrict: 'A',
+        link: function (scope, element) {
             scope.first = true;
             scope.initializeWindowSize = function () {
                 var header = document.getElementsByClassName('navbar-fixed-top');
                 var footer = document.getElementsByClassName('sca-footer');
-                var editPanels = document.getElementsByClassName('editing-form');
+                var editPanels = document.getElementsByClassName('panel-height');
                 
                 var panelHeight = 0;
                 angular.forEach(editPanels, function (panel){
                     panelHeight += panel.clientHeight;
                 });
+                //console.log(header[0].clientHeight);
+                //console.log(footer[0].clientHeight);
                 var existingHeight = header[0].clientHeight + footer[0].clientHeight + panelHeight;
                 if(scope.first)
                 {
-                    existingHeight -= 84;
+                    //existingHeight -= 84;
                 }
-                $(element).css('min-height', $window.innerHeight - existingHeight + 2);
+                $(element).css('min-height', $window.innerHeight - existingHeight + 12);
             };
             scope.initializeWindowSize();
             angular.element($window).bind('resize', function () {
                 scope.first = false;
+                scope.initializeWindowSize();
+            });
+            scope.$on('repeatComplete', function (event, data) {
+                console.log('here');
                 scope.initializeWindowSize();
             });
         }
@@ -64,7 +74,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
-    // clear task-related i nformation
+    // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
 
@@ -83,8 +93,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
     $scope.renderingComplete = function () {
+        console.log('broadcasting');
         $rootScope.$broadcast('repeatComplete');
-      $scope.conceptsRendering = false;
+        $scope.conceptsRendering = false;
     };
 
 
