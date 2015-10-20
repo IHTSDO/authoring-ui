@@ -8,10 +8,20 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.resultsPage = 1;
       $scope.resultsSize = 20;
-      $scope.results = null;
       $scope.loadPerformed = false;
       $scope.loadMoreEnabled = false;
       $scope.searchStr = '';
+
+      // the displayed results
+      $scope.results = [];
+
+      // the stored results
+      $scope.storedResults = [];
+
+      // user controls
+      $scope.userOptions = {
+        groupByConcept: true
+      };
 
       // $scope.options from searchPlugin.js ( not all used)
       // TODO Make these enabled
@@ -35,10 +45,70 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         taskKey: null
       };
 
-      // TODO Move this $http call into snowowl service later
-      function searchHelper(url, appendResults) {
+      $scope.toggleGroupByConcept = function () {
+        $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
+        $scope.processResults();
 
-      }
+      };
+
+      /**
+       * Helper function to manipulate displayed concepts
+       */
+      $scope.processResults = function () {
+
+        console.debug('processing results', $scope.userOptions);
+
+        // group concepts by SCTID
+        var displayedResults = [];
+
+        // temp array for tracking duplicate ids
+        var tempIds = [];
+
+        // cycle over all results
+        for (var i = 0; i < $scope.storedResults.length; i++) {
+
+          console.debug('checking', i, $scope.storedResults[i].concept.fsn);
+
+          // if item already added skip
+          if (tempIds.indexOf($scope.storedResults[i].concept.conceptId) === -1) {
+
+            console.debug('not already in displayed results');
+
+            // push the item
+            displayedResults.push($scope.storedResults[i]);
+
+            // add id to the temp list
+            tempIds.push($scope.storedResults[i].concept.conceptId);
+
+            // cycle over items remaining in list
+            for (var j = i + 1; j < $scope.storedResults.length; j++) {
+
+              // if second item matches, push it to new results and remove from
+              // list
+              if ($scope.storedResults[i].concept.conceptId === $scope.storedResults[j].concept.conceptId) {
+
+                console.debug('duplicate concept found', $scope.storedResults[j].concept.fsn);
+
+                // add duplicate to list if (1) groupByConcept is off, and (2)
+                // displayed results do not already contain this item
+                if (!$scope.userOptions.groupByConcept) {
+                  console.debug('--> pushing (not group by concept');
+                  displayedResults.push($scope.storedResults[j]);
+                }
+              }
+            }
+          }
+        }
+
+        $scope.results = displayedResults;
+
+        // user cue for status
+        if ($scope.results.length === 0) {
+          $scope.searchStatus = 'No results';
+        } else {
+          $scope.searchStatus = null;
+        }
+      };
 
       /**
        * Executes a search based on current scope variable searchStr
@@ -63,55 +133,19 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length + 1, $scope.resultsSize).then(function (concepts) {
 
+
+
           if (!concepts) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
           }
 
+          // set load more parameters
           $scope.loadPerformed = true;
+          $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
 
-          // temporary array for sorting/grouping/filtering
-          var resultsArray;
+          $scope.storedResults = appendResults ? $scope.storedResults.concat(concepts) : concepts;
 
-          console.debug('results found: ', concepts.length, concepts);
-
-          resultsArray = $scope.results.concat(concepts);
-
-          // check if more results may be available
-          $scope.loadMoreEnabled = (concepts.length === $scope.resultsSize);
-
-          console.debug(concepts.length, $scope.resultsSize);
-
-          // group concepts by SCTID
-          var newResults = [];
-
-          // cycle over all results
-          for (var i = 0; i < resultsArray.length; i++) {
-
-            // push the item
-            newResults.push(resultsArray[i]);
-
-            // cycle over items remaining in list
-            for (var j = i + 1; j < resultsArray.length; j++) {
-
-              // if second item matches, push it to new results and remove from
-              // list
-              if (resultsArray[i].concept.conceptId === resultsArray[j].concept.conceptId) {
-
-                newResults.push(resultsArray[j]);
-                resultsArray.splice(j, 1);
-                j--;  // decrement to check same position
-              }
-            }
-          }
-
-          $scope.results = newResults;
-
-          // user cue for status
-          if ($scope.results.length === 0) {
-            $scope.searchStatus = 'No results';
-          } else {
-            $scope.searchStatus = null;
-          }
+          $scope.processResults();
 
         }, function (error) {
           console.debug('error', error);
@@ -123,7 +157,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.searchStatus += ': ' + error.data.message;
           }
         });
-
       };
 
       /**
@@ -184,10 +217,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           templateUrl: 'shared/concept-information/conceptInformationModal.html',
           controller: 'conceptInformationModalCtrl',
           resolve: {
-            conceptId: function() {
+            conceptId: function () {
               return result.concept.conceptId;
             },
-            branch: function() {
+            branch: function () {
               return $scope.branch;
             }
           }
@@ -211,4 +244,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         return {id: concept.conceptId, name: concept.fsn};
       };
 
-    }]);
+    }
+  ])
+;
