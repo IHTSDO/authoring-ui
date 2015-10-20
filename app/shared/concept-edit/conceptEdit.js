@@ -556,8 +556,11 @@ angular.module('singleConceptAuthoringApp')
 
         function sortRelationships() {
 
+          if (!scope.concept || !scope.concept.relationships) {
+            return;
+          }
 
-          console.debug('sorting relationships');
+          console.debug('sorting relationships')
 
           var isaRels = scope.concept.relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
@@ -587,39 +590,6 @@ angular.module('singleConceptAuthoringApp')
           });
 
           scope.concept.relationships = isaRels.concat(attrRels);
-
-          /*   scope.concept.relationships.sort(function (a, b) {
-
-
-           // if types are the same
-           if (a.type.conceptId === b.type.conceptId) {
-           // sort by group
-           if (a.type.groupId !== b.type.groupId) {
-           return a.type.groupId > b.type.groupId;
-           }
-
-           // sort by name
-           return a.type.conceptName > b.type.conceptName;
-
-           } else {
-
-           // isa relationships always come first
-           if (a.type.conceptId === '116680003') {
-           return -1;
-           }
-           if (b.type.conceptId === '116680003') {
-           return 1;
-           }
-
-           // sort by group
-           if (a.type.groupId !== b.type.groupId) {
-           return a.type.groupId > b.type.groupId;
-           }
-
-           // sort by name
-           return a.type.conceptName > b.type.conceptName;
-           }
-           });*/
         }
 
         // on load, sort descriptions && relationships
@@ -1689,6 +1659,12 @@ angular.module('singleConceptAuthoringApp')
 
           // if changed
           if (scope.concept !== scope.unmodifiedConcept) {
+
+            // broadcast event to any listeners (currently task detail)
+            $rootScope.$broadcast('conceptEdit.conceptModified', {
+              branch: scope.branch,
+              conceptId: scope.concept.conceptId
+            });
 
             scope.isModified = true;
 

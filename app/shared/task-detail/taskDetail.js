@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.classify = function () {
 
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
-        
+
         scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
           if (!response || !response.data || !response.data.id) {
@@ -26,6 +26,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // save the id for convenience
           $scope.classificationId = response.data.id;
+          $rootScope.classificationRunning = true;
 
           // if running, broadcast to edit.js for polling
           if ($scope.classificationStatus === 'RUNNING') {
@@ -63,6 +64,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $rootScope.validationRunning = true;
           notificationService.sendMessage('Task successfully submitted for validation', 10000, null);
         }, function () {
           notificationService.sendMessage('Error submitting task for validation', 5000, null);
@@ -73,15 +75,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $routeParams.projectKey, $routeParams.taskKey,
           {
             'status': 'IN_REVIEW'
-          });
+          }).then(function(response) {
+            $scope.task = response;
+          })
       };
 
-      $scope.updateTask = function() {
+      $scope.updateTask = function () {
         var modalInstance = $modal.open({
           templateUrl: 'shared/task/task.html',
           controller: 'taskCtrl',
           resolve: {
-            task: function() {
+            task: function () {
               console.debug('resolved task', $scope.task);
               return $scope.task;
             }
@@ -97,15 +101,27 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       };
 
-
       function initialize() {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+
+          // set button flags
+          if ($scope.task && $scope.task.latestClassificationJson) {
+            $rootScope.classificationRunning = $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
+          }
+          if ($scope.task) {
+            $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
+          }
           if ($scope.task.branchState === 'DIVERGED') {
             $rootScope.$broadcast('branchDiverged');
           }
+
         });
       }
+
+      $scope.$on('reloadTask', function(event, data) {
+        initialize();
+      });
 
       // re-initialize if branch state changes
       $scope.$on('notification.branchState', function (event, data) {
@@ -113,9 +129,22 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       });
 
       // re-initialize if concept change occurs and task is new
-      $scope.$on('conceptEdit.conceptChange', function(event, data) {
-        if ($scope.task.status === 'NEW') {
-          initialize();
+      $scope.$on('conceptEdit.conceptChange', function (event, data) {
+        if ($scope.task.status === 'NEW' ) {
+          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
+            $scope.task = response;
+          })
+        }
+      });
+
+      // re-initialize if concept change occurs and task is new
+      $scope.$on('conceptEdit.conceptModified', function (event, data) {
+        console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
+        if ($scope.task.status === 'Review Completed') {
+          console.debug('updating task');
+          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
+            $scope.task = response;
+          })
         }
       });
 

@@ -16,6 +16,10 @@ angular.module('singleConceptAuthoringApp.project', [
 
   .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', 'scaService', 'snowowlService', 'notificationService', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, scaService, snowowlService, notificationService) {
 
+    // clear task-related i nformation
+    $rootScope.validationRunning = false;
+    $rootScope.classificationRunning = false;
+
     $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
     $scope.project = null;
