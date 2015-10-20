@@ -104,7 +104,7 @@
           <!-- filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
           <tr>
             <td></td>
-            <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"  ng-model="conceptsTOReviewTableParams.params.filter.name" ng-change=conceptsToReviewTableParams.reload()" ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
+            <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"  ng-model="conceptsToReviewSearchStr" ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)" ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
             <td></td>
           </tr>
 
@@ -171,17 +171,19 @@
            ng-class="{active: actionTab==2}"
            ng-show="role === 'REVIEWER'">
 
-        <table show-filter="false" ng-table="conceptsReviewedTableParams"
-               template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small">
+        <!-- Concepts To Review -->
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
+          <table show-filter="false" ng-table="conceptsReviewedTableParams"
+                 template-pagination="utilities/data-table-pager.html"
+                 class="table table-full table-full-small" drop-channel="feedbackConcept">
 
 
-          <!-- filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
-          <tr>
-            <td></td>
-            <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"  ng-model="conceptsReviewedTableParams.params.filter.name" ng-change=conceptsReviewedTableParams.reload()" ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
-            <td></td>
-          </tr>
+            <!-- filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
+            <tr>
+              <td></td>
+              <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"  ng-model="conceptsReviewedSearchStr" ng-change="reloadConceptsReviewed(conceptsReviewedSearchStr)" ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
+              <td></td>
+            </tr>
 
 
           <tr ng-repeat="concept in conceptsReviewedViewed">

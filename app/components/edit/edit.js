@@ -64,6 +64,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
   .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
 
+    // clear task-related i nformation
+    $rootScope.validationRunning = false;
+    $rootScope.classificationRunning = false;
+
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 

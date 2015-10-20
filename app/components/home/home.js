@@ -16,6 +16,10 @@ angular.module('singleConceptAuthoringApp.home', [
 
   .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService) {
 
+    // clear task-related i nformation
+    $rootScope.validationRunning = false;
+    $rootScope.classificationRunning = false;
+
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Tasks";
     $scope.tasks = null;
