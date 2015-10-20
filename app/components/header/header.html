@@ -15,6 +15,21 @@
           <li ng-repeat = "titleSection in titleSections" ng-bind="titleSection"></li>
         </ul>
       </li>
+
+
+      <button type="button" ng-if="validationRunning"
+              style="vertical-align: bottom; color: #9c27b0; background-color: transparent"
+              class="btn-default small-buttons tooltips-right tooltips-light normal-case md md-school">
+        <span>Validation Running</span>
+      </button>
+
+      <button type="button" ng-if="classificationRunning"
+              style="vertical-align: bottom"
+              class="btn-default small-buttons green tooltips-right tooltips-light normal-case md md-notifications-on">
+        <span>Classification Running </span>
+      </button>
+
+
     </ul>
 
 

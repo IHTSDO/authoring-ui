@@ -100,23 +100,22 @@ angular.module('singleConceptAuthoringApp')
 
                 console.debug('getdata');
 
+                var myData = [];
+
                 if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsToReview || scope.feedbackContainer.review.conceptsToReview.length === 0) {
                   scope.conceptsToReviewViewed = [];
                 } else {
 
-                  /*var searchStr = params.filter().search;
-                   if (searchStr) {
-                   myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
-                   return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
-                   });
-                   } else {
-                   myData = scope.feedbackContainer.review.conceptsToReview;
-                   }*/
+                  var searchStr = scope.conceptsToReviewSearchStr;
+                  
+                  if (searchStr) {
+                    myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
+                      return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                    });
+                  } else {
+                    myData = scope.feedbackContainer.review.conceptsToReview;
+                  }
 
-                  console.debug(params.filter());
-                  var myData = params.filter() ?
-                    $filter('filter')(scope.feedbackContainer.review.conceptsToReview, params.filter()) :
-                    scope.feedbackContainer.review.conceptsToReview;
 
                   // filter based on presence of feedback if requested
                   if (scope.viewOnlyConceptsWithFeedback) {
@@ -136,7 +135,6 @@ angular.module('singleConceptAuthoringApp')
                     //  $scope.filteredItems = $filter('filter')($scope.items,
                     // { 'colours': '!!' });
                   }
-                  console.debug(myData);
 
                   // hard set the new total
                   params.total(myData.length);
@@ -167,9 +165,18 @@ angular.module('singleConceptAuthoringApp')
                   scope.conceptsReviewedViewed = [];
                 } else {
 
-                  var myData = params.filter() ?
-                    $filter('filter')(scope.feedbackContainer.review.conceptsReviewed, params.filter()) :
-                    scope.feedbackContainer.review.conceptsReviewed;
+                  var searchStr = scope.conceptsReviewedSearchStr;
+                  var myData;
+
+                  if (searchStr) {
+                    myData = scope.feedbackContainer.review.conceptsReviewed.filter(function (item) {
+                      return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                    });
+                  } else {
+                    myData = scope.feedbackContainer.review.conceptsReviewed;
+                  }
+
+                
 
                   // hard set the new total
                   params.total(myData.length);
@@ -188,17 +195,27 @@ angular.module('singleConceptAuthoringApp')
             }
           );
 
+          // functions to reload both tables
+          scope.reloadConceptsToReview = function (searchStr) {
+            scope.conceptsToReviewSearchStr = searchStr;
+            scope.conceptsToReviewTableParams.reload();
+          };
+          scope.reloadConceptsReviewed = function (searchStr) {
+            scope.conceptsReviewedSearchStr = searchStr;
+            scope.conceptsReviewedTableParams.reload();
+          }
+
           // cancel review
-          scope.cancelReview = function() {
+          scope.cancelReview = function () {
             var confirmation = window.confirm('Return this branch to In Progress?');
 
             console.debug('confirmation', confirmation);
             if (confirmation) {
               var taskObj = {
-                'status' : 'IN_PROGRESS',
-                'reviewer' : null
+                'status': 'IN_PROGRESS',
+                'reviewer': null
               };
-               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function(response) {
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
               });
             }
           };
@@ -218,7 +235,8 @@ angular.module('singleConceptAuthoringApp')
             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
           }
 
-          // watch for notification of updated concepts from conceptEdit directive
+          // watch for notification of updated concepts from conceptEdit
+          // directive
           scope.$on('conceptEdit.conceptChanged', function (event, data) {
 
             // ignore if concepts arrays are not declared (not initialized)
@@ -533,7 +551,8 @@ angular.module('singleConceptAuthoringApp')
               scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
                 reviewedListIds = response;
 
-                // ensure response is in form of array for indexOf checking later
+                // ensure response is in form of array for indexOf checking
+                // later
                 if (!reviewedListIds || !Array.isArray(reviewedListIds)) {
                   console.debug('reviewedListIds', reviewedListIds, reviewedListIds.length);
                   reviewedListIds = [];
@@ -591,12 +610,13 @@ angular.module('singleConceptAuthoringApp')
                 // set the scope variables
                 scope.feedbackContainer.review.conceptsToReview = conceptsToReview;
                 scope.feedbackContainer.review.conceptsReviewed = conceptsReviewed;
-                  
-                //Loops through all items in the reviewed list. If they have been changed since 
-                //the review was created they are moved back to 'To Review'
+
+                //Loops through all items in the reviewed list. If they have
+                // been changed since  the review was created they are moved
+                // back to 'To Review'
                 angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (item) {
-                  if(item.modifiedSinceReview === true){
-                      scope.returnToReview(item);
+                  if (item.modifiedSinceReview === true) {
+                    scope.returnToReview(item);
                   }
                 });
 

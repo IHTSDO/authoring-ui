@@ -162,7 +162,7 @@ angular.module('singleConceptAuthoringApp')
         );
       },
 
-      deleteUiStateForUser: function(panelId) {
+      deleteUiStateForUser: function (panelId) {
         if (!panelId) {
           console.error('Must specify panelId to delete UI state');
           return {};
@@ -272,7 +272,8 @@ angular.module('singleConceptAuthoringApp')
 
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
           function (response) {
-            // if content has current flag of true', return null, indicates concept previously changed, then saved
+            // if content has current flag of true', return null, indicates
+            // concept previously changed, then saved
             return response.data.current === true ? null : response.data;
           }, function (error) {
             // NOTE: if doesn't exist, 404s, return null
@@ -296,7 +297,7 @@ angular.module('singleConceptAuthoringApp')
         }
         if (!concept) {
           console.warn('No concept specified for saving concept to UI state, using dummy JSON object');
-          concept = { current : true};
+          concept = {current: true};
         }
 
         console.debug('autosaving modified concept', projectKey, taskKey, concept);
@@ -304,9 +305,45 @@ angular.module('singleConceptAuthoringApp')
         // TODO Refine this when support for multiple unsaved concepts goes in
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId, concept).then(
           function (response) {
+
+            /*
+              TODO Finish implementing this
+            console.debug('autosave response', response);
+
+            // update the modified list
+            $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (responseIds) {
+
+              var conceptIds = responseIds;
+              console.debug('modified list response', conceptIds);
+
+              if (!conceptIds || !Array.isArray(conceptIds)) {
+                console.debug('bad response');
+              }
+
+              var index = conceptIds.indexOf(concept.conceptId);
+              if (index === -1) {
+                $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds.concat(concept.conceptId)).then(function (response) {
+                  // do nothing
+                }, function (error) {
+                  // do nothing
+                })
+              }
+            }, function (error) {
+              console.debug(' modified list error', error);
+
+              // if a 404 error, do not throw error
+              if (error.status === 404) {
+                console.debug('creating new modified list');
+                $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', [ conceptId ]).then(function (response) {
+                  // do nothing
+                }, function (error) {
+                  // do nothing
+                })
+              }
+            });*/
+
             return response.data;
           }, function (error) {
-            notificationService.sendError('Unexpected error autosaving modified work; please ensure you save your work before leaving this page.', 0, null);
             return null;
           }
         );
@@ -326,12 +363,25 @@ angular.module('singleConceptAuthoringApp')
           conceptId = 'unsaved';
         }
 
-
         console.debug('deleting modified concept', projectKey, taskKey);
 
         // TODO Refine this when support for multiple unsaved concepts goes in
         return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
           function (response) {
+
+           /* // update the modified list
+            $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (conceptIds) {
+              var index = conceptIds.indexOf(conceptId);
+              if (index === -1) {
+                conceptIds.splice(index, 1);
+                $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds).then(function (response) {
+                  // do nothing
+                }, function (error) {
+                  notificationService.sendError('Unexpected error updating the list of modified concepts for this task');
+                })
+              }
+            });*/
+
             return response.data;
           }, function (error) {
             notificationService.sendError('Unexpected error autosaving modified work; please ensure you save your work before leaving this page.', 0, null);
@@ -340,6 +390,14 @@ angular.module('singleConceptAuthoringApp')
         );
       },
 
+      getModifiedConceptIdsForTask: function (projectKey, taskKey) {
+        // update the modified list
+        $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (conceptIds) {
+          return conceptIds;
+        }, function (error) {
+          notificationService.sendError('Unexpected error updating the list of modified concepts for this task');
+        });
+      },
 
       ///////////////////////////////////////////////
       // Classification
@@ -388,12 +446,12 @@ angular.module('singleConceptAuthoringApp')
 
       },
 
-      ///////////////////////////////////////////////
-      // Validation
-      ///////////////////////////////////////////////
+///////////////////////////////////////////////
+// Validation
+///////////////////////////////////////////////
 
-      // Get latest validation for a task
-      // GET /projects/{projectKey}/tasks/{taskKey}/validation
+// Get latest validation for a task
+// GET /projects/{projectKey}/tasks/{taskKey}/validation
       getValidationForTask: function (projectKey, taskKey) {
         if (!projectKey) {
           console.error('Must specify projectKey to get latest validation results');
@@ -412,8 +470,8 @@ angular.module('singleConceptAuthoringApp')
           });
       },
 
-      // Initiate validation for a task
-      // POST /projects/{projectKey}/tasks/{taskKey}/validation
+// Initiate validation for a task
+// POST /projects/{projectKey}/tasks/{taskKey}/validation
       startValidationForTask: function (projectKey, taskKey) {
         if (!projectKey) {
           console.error('Must specify projectKey to initiate validation');
@@ -434,8 +492,8 @@ angular.module('singleConceptAuthoringApp')
           });
       },
 
-      // Initiate validation for a project
-      // GET /projects/{projectKey}/validation
+// Initiate validation for a project
+// GET /projects/{projectKey}/validation
       getValidationForProject: function (projectKey) {
         if (!projectKey) {
           console.error('Must specify projectKey to get latest validation results');
@@ -451,8 +509,8 @@ angular.module('singleConceptAuthoringApp')
 
       },
 
-      // Get latest validation for a task
-      // GET /projects/{projectKey}/tasks/{taskKey}/validation
+// Get latest validation for a task
+// GET /projects/{projectKey}/tasks/{taskKey}/validation
       startValidationForProject: function (projectKey) {
         if (!projectKey) {
           console.error('Must specify projectKey to start validation');
@@ -469,25 +527,27 @@ angular.module('singleConceptAuthoringApp')
 
       },
 
-      //////////////////////////////////////////
-      // Update Status
-      //////////////////////////////////////////
+//////////////////////////////////////////
+// Update Status
+//////////////////////////////////////////
 
       updateTask: function (projectKey, taskKey, object) {
         return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-          notificationService.sendMessage('Task ' + taskKey + ' sucessfully updated.', 5000, null, null);
-          return response;
+          //notificationService.sendMessage('Task ' + taskKey + ' sucessfully
+          // updated.', 5000, null, null);
+          return response.data;
         }, function (error) {
-          notificationService.sendError('Error Updating Task ' + taskKey + ' in project ' + projectKey);
+          //notificationService.sendError('Error Updating Task ' + taskKey + '
+          // in project ' + projectKey);
           return false;
         });
       },
 
-      //////////////////////////////////////////
-      // Review & Feedback
-      //////////////////////////////////////////
+//////////////////////////////////////////
+// Review & Feedback
+//////////////////////////////////////////
 
-      // mark as ready for review -- no return value
+// mark as ready for review -- no return value
       markTaskForReview: function (projectKey, taskKey) {
         $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
           notificationService.sendMessage('Task ' + taskKey + ' marked for review');
@@ -497,7 +557,7 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // get latest review
+// get latest review
       getReviewForTask: function (projectKey, taskKey) {
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
           return response.data;
@@ -512,7 +572,7 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // add feedback to a review
+// add feedback to a review
       addFeedbackToTaskReview: function (projectKey, taskKey, messageHtml, subjectConceptIds, requestFollowup) {
 
         var feedbackContainer = {
@@ -530,8 +590,8 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      //POST
-      // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
+//POST
+// /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
       markTaskFeedbackRead: function (projectKey, taskKey, conceptId) {
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
@@ -543,7 +603,7 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // mark as ready for review -- no return value
+// mark as ready for review -- no return value
       markProjectForReview: function (projectKey) {
         $http.post(apiEndpoint + 'projects/' + projectKey + '/review').then(function (response) {
           notificationService.sendMessage('Project ' + projectKey + ' marked for review');
@@ -553,7 +613,7 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // get latest review
+// get latest review
       getReviewForProject: function (projectKey) {
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/review').then(function (response) {
           return response.data;
@@ -568,7 +628,7 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // add feedback to a review
+// add feedback to a review
       addFeedbackToProjectReview: function (projectKey, messageHtml, subjectConceptIds, requestFollowup) {
 
         var feedbackContainer = {
@@ -586,8 +646,8 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      //POST
-      // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
+//POST
+// /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
       markProjectFeedbackRead: function (projectKey, conceptId) {
 
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
@@ -599,12 +659,12 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      //////////////////////////////////////////
-      // Conflicts, Rebase, and Promotion
-      //////////////////////////////////////////
+//////////////////////////////////////////
+// Conflicts, Rebase, and Promotion
+//////////////////////////////////////////
 
-      // POST /projects/{projectKey}/promote 
-      // Promote the project to MAIN
+// POST /projects/{projectKey}/promote
+// Promote the project to MAIN
       promoteProject: function (projectKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/promote', {}).then(function (response) {
           notificationService.sendMessage('Project Promoted Successfully', 10000);
@@ -616,8 +676,8 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // GET /projects/{projectKey}/rebase 
-      // Generate the conflicts report between the Project and MAIN
+// GET /projects/{projectKey}/rebase
+// Generate the conflicts report between the Project and MAIN
       getConflictReportForProject: function (projectKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase-conflicts', {}).then(function (response) {
           return response.data;
@@ -628,8 +688,8 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // POST /projects/{projectKey}/rebase 
-      // Rebase the project from MAIN
+// POST /projects/{projectKey}/rebase
+// Rebase the project from MAIN
       rebaseProject: function (projectKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/rebase', {}).then(function (response) {
           notificationService.sendMessage('Project Rebased Successfully', 10000);
@@ -640,8 +700,8 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       },
-      // POST /projects/{projectKey}/tasks/{taskKey}/promote 
-      // Promote the task to the Project
+// POST /projects/{projectKey}/tasks/{taskKey}/promote
+// Promote the task to the Project
       promoteTask: function (projectKey, taskKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
           notificationService.sendMessage('Task Promoted Successfully', 10000);
@@ -651,8 +711,8 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       },
-      // GET /projects/{projectKey}/tasks/{taskKey}/rebase 
-      // Generate the conflicts report between the Task and the Project
+// GET /projects/{projectKey}/tasks/{taskKey}/rebase
+// Generate the conflicts report between the Task and the Project
       getConflictReportForTask: function (projectKey, taskKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase-conflicts', {}).then(function (response) {
           return response.data;
@@ -663,8 +723,8 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // POST /projects/{projectKey}/tasks/{taskKey}/rebase 
-      // Rebase the task from the project
+// POST /projects/{projectKey}/tasks/{taskKey}/rebase
+// Rebase the task from the project
       rebaseTask: function (projectKey, taskKey) {
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
           return response.data;
@@ -675,9 +735,9 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      //////////////////////////////////////////
-      // Notification Polling
-      //////////////////////////////////////////
+//////////////////////////////////////////
+// Notification Polling
+//////////////////////////////////////////
 
       monitorTask: function (projectKey, taskKey) {
         return $http.post(apiEndpoint + 'monitor', {
@@ -702,14 +762,14 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      // directly retrieve notification
-      // TODO Decide if we want to instantiate this, will duplicate
-      // notification handling which should be moved to a non-exposed function
+// directly retrieve notification
+// TODO Decide if we want to instantiate this, will duplicate
+// notification handling which should be moved to a non-exposed function
       getNotifications: function () {
         return null;
       },
 
-      // start polling
+// start polling
       startPolling: function (intervalInMs) {
 
         console.log('Starting application notification polling with interval ' + intervalInMs + 'ms');
@@ -786,6 +846,9 @@ angular.module('singleConceptAuthoringApp')
                     } else {
                       url = '#/projects/project/' + newNotification.project + '/classify';
                     }
+
+                    // broadcast classification complete to taskDetail
+                    $rootScope.$broadcast('reloadTask');
                     break;
 
                   /*
@@ -819,6 +882,9 @@ angular.module('singleConceptAuthoringApp')
                     } else {
                       url = '#/projects/project/' + newNotification.project + '/validate';
                     }
+
+                    // broadcast validation complete to taskDetail
+                    $rootScope.$broadcast('reloadTask');
                     break;
                   default:
                     console.error('Unknown entity type for notification, stopping', +newNotification);
