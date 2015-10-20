@@ -40,5 +40,16 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.concept.fsn};
     };
+    $scope.$on('stopEditing', function (event, data) {
+          if (!data || !data.concept) {
+            console.error('Cannot handle stop editing event: concept must be supplied');
+          } else {
+            angular.forEach($scope.savedList.items, function (item) {
+              if (item.concept.conceptId === data.concept.conceptId) {
+                item.editing = false;
+              }
+            });
+          }
+        });
 
   }]);
