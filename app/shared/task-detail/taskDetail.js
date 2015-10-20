@@ -77,7 +77,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             'status': 'IN_REVIEW'
           }).then(function(response) {
             $scope.task = response;
-          })
+          });
       };
 
       $scope.updateTask = function () {
@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         if ($scope.task.status === 'NEW' ) {
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
             $scope.task = response;
-          })
+          });
         }
       });
 
@@ -144,7 +144,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           console.debug('updating task');
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
             $scope.task = response;
-          })
+          });
         }
       });
 
