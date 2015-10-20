@@ -130,11 +130,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptChange', function (event, data) {
-        if ($scope.task.status === 'NEW' ) {
+        /*if ($scope.task.status === 'New' ) {
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
             $scope.task = response;
           });
-        }
+        }*/
+        initialize();
       });
 
       // re-initialize if concept change occurs and task is new
