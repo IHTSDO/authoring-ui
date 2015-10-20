@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptModified', function (event, data) {
         console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
-        if ($scope.task.status === 'Review Completed') {
+        if ($scope.task.status !== 'In Progress') {
           console.debug('updating task');
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
             $scope.task = response;
