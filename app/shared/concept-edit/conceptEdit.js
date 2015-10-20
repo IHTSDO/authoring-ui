@@ -353,7 +353,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // if reason is selected, deactivate all descriptions and
                 // relationships
-                if (reason) {
+                if (results.reason) {
 
                   // straightforward inactivation of relationships
                   // NOTE: Descriptions stay active so a FSN can still be found
@@ -560,7 +560,7 @@ angular.module('singleConceptAuthoringApp')
             return;
           }
 
-          console.debug('sorting relationships')
+          console.debug('sorting relationships');
 
           var isaRels = scope.concept.relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';

@@ -203,7 +203,7 @@ angular.module('singleConceptAuthoringApp')
           scope.reloadConceptsReviewed = function (searchStr) {
             scope.conceptsReviewedSearchStr = searchStr;
             scope.conceptsReviewedTableParams.reload();
-          }
+          };
 
           // cancel review
           scope.cancelReview = function () {
