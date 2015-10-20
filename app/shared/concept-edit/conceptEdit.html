@@ -20,7 +20,7 @@
       <button ng-click="setConceptProperties(concept)" type="button"
               class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="left"
-              popover-trigger="click: click"><span>More details</span></button>
+              popover-trigger="click: click" popover-append-to-body="true"><span>More details</span></button>
 
       <button
         class="btn btn-default morebuttons grey darken-4 md md-open-with normal-case drag-button-width "
@@ -124,7 +124,7 @@
           <button ng-click="setDescriptionProperties(description)"
                   class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width"
                   popover-template="'shared/component-more/descriptionMore.html'" popover-placement="left"
-                  ng-click="populateDescriptionMore(description)"></button>
+                  ng-click="populateDescriptionMore(description)" popover-append-to-body="true"></button>
 
           <button
             class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
@@ -243,7 +243,7 @@
           <button class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width"
                   ng-click="setRelationshipProperties(relationship)"
                   popover-template="'shared/component-more/relationshipMore.html'" popover-placement="left"
-                  title="Some title here"
+                  title="Some title here" popover-append-to-body="true"
             ></button>
 
           <button
