@@ -622,6 +622,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       notificationService.sendMessage('Cloning concept...');
 
+      console.debug('cloning concept with id ' + data.conceptId);
+
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
 
@@ -629,17 +631,21 @@ angular.module('singleConceptAuthoringApp.edit', [
         var conceptExists = false;
         for (var i = 0; i < $scope.concepts.length; i++) {
 
+          console.debug('checking for duplicate concept, id: ', $scope.concepts[i].conceptId);
+
           // cancel if unsaved work exists (track-by id problems)
           if (!$scope.concepts[i].conceptId) {
             notificationService.sendWarning('A new, unsaved concept exists; please save before cloning', 10000);
             return;
           }
 
-          if (concept.conceptId === data.conceptId) {
+          if ($scope.concepts[i].conceptId === data.conceptId) {
+            console.debug('duplicate concept found');
             conceptExists = true;
           }
         }
         if (!conceptExists) {
+          console.debug('concept with id ' + concept.conceptId + ' not present in list, adding');
           $scope.concepts.push(response);
 
           $timeout(function () {
