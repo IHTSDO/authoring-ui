@@ -76,7 +76,11 @@ angular.module('singleConceptAuthoringApp')
             if (scope.concept.conceptId === 'unsaved') {
               scope.concept = objectService.getNewConcept(scope.branch);
             }
-            scope.isModified = false;
+
+            // if an actual unsaved concept (no fsn assigned), mark as modified
+            if (!scope.concept.fsn) {
+              scope.isModified = true;
+            }
           }
         });
 
@@ -1313,6 +1317,8 @@ angular.module('singleConceptAuthoringApp')
           else {
             scope.concept.descriptions[targetIndex] = copy;
           }
+
+          autoSave();
         };
 
         /**
