@@ -52,12 +52,12 @@ angular.module('singleConceptAuthoringApp.edit', [
                 });
                 //console.log(header[0].clientHeight);
                 //console.log(footer[0].clientHeight);
-                var existingHeight = header[0].clientHeight + footer[0].clientHeight + panelHeight;
+                var existingHeight = header[0].clientHeight + panelHeight;
                 if(scope.first)
                 {
                     //existingHeight -= 84;
                 }
-                $(element).css('min-height', $window.innerHeight - existingHeight + 12);
+                $(element).css('min-height', $window.innerHeight - existingHeight + 15  );
             };
             scope.initializeWindowSize();
             angular.element($window).bind('resize', function () {
