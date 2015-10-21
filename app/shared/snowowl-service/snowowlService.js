@@ -325,7 +325,7 @@ angular.module('singleConceptAuthoringApp')
         limit = 50;
       }
       
-      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?offset=' + offset + '&limit=' + limit).then(function (response) {
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?expand=source.fsn&offset=' + offset + '&limit=' + limit).then(function (response) {
 
         console.debug('inbound', response);
 
