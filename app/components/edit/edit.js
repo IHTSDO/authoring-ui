@@ -415,8 +415,12 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           // for each item in the edit list
           angular.forEach($scope.editList, function (conceptId) {
+
+            console.debug('checking whether concept id ' + conceptId + ' is being edited');
+
             // check if being edited
             if (item.concept.conceptId === conceptId) {
+              console.debug('---> TRUE');
               item.editing = true;
             }
           });
@@ -564,6 +568,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             conceptIds.push('unsaved');
           }
         });
+
+        $scope.editList = conceptIds;
 
         scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', conceptIds);
       }
