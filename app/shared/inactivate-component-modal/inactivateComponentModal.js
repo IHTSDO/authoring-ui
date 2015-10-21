@@ -92,6 +92,18 @@ angular.module('singleConceptAuthoringApp')
         $scope.inboundRelationshipsError = 'Error retrieving children';
       });
     }
+    $scope.conceptFsns = {};
+    $scope.getConceptFsn = function(conceptId) {
+      if ($scope.conceptFsns.hasOwnProperty(conceptId)) {
+        return $scope.conceptFsns[conceptId];
+      } else {
+        $scope.conceptFsns[conceptId] = null;
+        snowowlService.getFullConcept(conceptId, $scope.branch).then(function(response) {
+          $scope.conceptFsns[conceptId] = response.fsn;
+          console.debug($scope.conceptFsns);
+        });
+      }
+    };
 
     // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
@@ -133,7 +145,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // check if more need to be loaded
-          else if ($scope.descendants.items.length < (params.page() * params.count())) {
+          else if (params.page() !== 1 && $scope.descendants.items.length < (params.page() * params.count())) {
 
             console.debug('getting next set of results');
 
@@ -173,7 +185,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.tableParamsInboundRelationships = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {fsn: 'asc'}
+        sorting: {characteristicType: 'desc', typeId: 'asc'}
       },
       {
         total: $scope.inboundRelationships ? $scope.inboundRelationships.length : 0, // length of
@@ -185,7 +197,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // check if more need to be loaded
-          else if ($scope.inboundRelationships.inboundRelationships.length < (params.page() * params.count())) {
+          else if (params.page() !== 1 && $scope.inboundRelationships.inboundRelationships.length < (params.page() * params.count())) {
 
             console.debug('getting next set of results');
 
@@ -196,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
 
               $scope.inboundRelationshipsLoading = false;
 
-              $scope.inboundRelationships.inboundRelationships = $scope.inboundRelationships.inboundRelationships.concat(response.inboundRelationships.inboundRelationships);
+              $scope.inboundRelationships.inboundRelationships = $scope.inboundRelationships.inboundRelationships.concat(response.inboundRelationships);
 
               params.total($scope.inboundRelationships.total);
               var inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships.inboundRelationships, params.orderBy()) : $scope.inboundRelationships.inboundRelationships;
