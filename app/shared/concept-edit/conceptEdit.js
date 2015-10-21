@@ -328,6 +328,10 @@ angular.module('singleConceptAuthoringApp')
         // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function () {
 
+          if (scope.isStatic) {
+            return;
+          }
+
           // console.debug(scope.concept, scope.unmodifiedConcept);
 
           // if active, ensure concept is fully saved prior to inactivation
@@ -759,6 +763,10 @@ angular.module('singleConceptAuthoringApp')
          */
         scope.toggleDescriptionActive = function (description) {
           console.debug('toggling description active', description);
+
+
+
+
 
           // if inactive, simply set active
           if (!description.active) {
