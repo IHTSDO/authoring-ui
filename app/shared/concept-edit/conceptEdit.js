@@ -76,7 +76,11 @@ angular.module('singleConceptAuthoringApp')
             if (scope.concept.conceptId === 'unsaved') {
               scope.concept = objectService.getNewConcept(scope.branch);
             }
-            scope.isModified = false;
+
+            // if an actual unsaved concept (no fsn assigned), mark as modified
+            if (!scope.concept.fsn) {
+              scope.isModified = true;
+            }
           }
         });
 
@@ -323,6 +327,10 @@ angular.module('singleConceptAuthoringApp')
         // NOTE: This function hard-saves the concept, to prevent sync errors
         // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function () {
+
+          if (scope.isStatic) {
+            return;
+          }
 
           // console.debug(scope.concept, scope.unmodifiedConcept);
 
@@ -755,6 +763,10 @@ angular.module('singleConceptAuthoringApp')
          */
         scope.toggleDescriptionActive = function (description) {
           console.debug('toggling description active', description);
+
+
+
+
 
           // if inactive, simply set active
           if (!description.active) {
@@ -1313,6 +1325,8 @@ angular.module('singleConceptAuthoringApp')
           else {
             scope.concept.descriptions[targetIndex] = copy;
           }
+
+          autoSave();
         };
 
         /**

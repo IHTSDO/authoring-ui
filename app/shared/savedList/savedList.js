@@ -37,6 +37,10 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     };
 
+    $scope.isEdited = function(item) {
+      return $scope.editList.indexOf(item.concept.conceptId) !== -1;
+    };
+
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.concept.fsn};
     };
