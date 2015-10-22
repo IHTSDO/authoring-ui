@@ -62,19 +62,19 @@
  <button ng-click="saveConcept()" type="button"
               class="btn-default save-button small-buttons deep-purple lighten-2 md md-save tooltips-left tooltips-light normal-case "
               ng-click="saveConcept()"
-              ng-if="isModified"><span> Save Concept </span></button>
+              ng-if="isModified && !isStatic"><span> Save Concept </span></button>
       <!-- Revert button only appears if parent is specified -->
       <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
         Revert
       </button>
 
       <!-- control buttons -->
-      <button ng-if="!isStatic"
-              type="button"
+      <button type="button"
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, ' fa fa-power-off', {green : concept.active}, {red: !concept.active}]"
               ng-click="toggleConceptActive(concept)" class="small-buttons tooltips-left tooltips-light normal-case">
-        <span> Activate/ inactivate concept </span></button>
+        <span ng-if="!isStatic"> Activate/ inactivate concept </span>
+        <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span</button>
       <button type="button"
               style="vertical-align: bottom"
               class="btn-default editbuttons small-buttons color_{{relationship.groupId}} tooltips-left tooltips-light normal-case"
@@ -100,10 +100,10 @@
       <button type="button"
               class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap"
               title="Show/Hide Model"
-              ng-click="showModel(concept)"
-              ng-if="!isStatic"><span ng-if="modelVisible"> Hide Model </span><span
+              ng-if="!isStatic"
+              ng-click="showModel(concept)"><span ng-if="modelVisible"> Hide Model </span><span
         ng-if="!modelVisible"> Show Model </span></button>
-      <button ng-if="!isStatic" type="button"
+      <button type="button"
               class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-left tooltips-light normal-case"
               ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span></button>
     </div>
@@ -160,7 +160,7 @@
 
             <textarea ng-if="description.type !== 'TEXT_DEFINITION'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="description.effectiveTime"
+                      ng-disabled="description.effectiveTime || isStatic"
                       maxlength="255"
                       ng-model="description.term"
                       class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
@@ -170,7 +170,7 @@
                       class="msd-elastic resizable-text form-control color_{{relationship.groupId}}"
                       ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="description.effectiveTime"
+                      ng-disabled="description.effectiveTime || isStatic"
                       maxlength="4096"
                       ng-model="description.term" type="text"
                       placeholder="Description">
@@ -260,7 +260,9 @@
 
           <!-- relationship group -->
           <div class="pull-left rolegroup">
-            <textarea style="" class="msd-elastic" ng-model="relationship.groupId"
+            <textarea style="" class="msd-elastic"
+                      ng-disabled="isStatic"
+                      ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-change="updateRelationship(relationship)"
                       class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
@@ -278,7 +280,7 @@
 
             <textarea type="text"
                       ng-model="relationship.type.fsn"
-                      ng-disabled="relationship.effectiveTime"
+                      ng-disabled="relationship.effectiveTime || isStatic"
                       class="sca-top"
                       typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                       typeahead-focus-first="false"
@@ -306,7 +308,7 @@
 
             <textarea type="text"
                       ng-model="relationship.target.fsn"
-                      ng-disabled="relationship.effectiveTime"
+                      ng-disabled="relationship.effectiveTime || isStatic"
                       class="sca-top"
                       typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
                       typeahead-focus-first="false"
