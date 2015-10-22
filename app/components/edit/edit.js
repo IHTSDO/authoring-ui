@@ -52,12 +52,12 @@ angular.module('singleConceptAuthoringApp.edit', [
                 });
                 //console.log(header[0].clientHeight);
                 //console.log(footer[0].clientHeight);
-                var existingHeight = header[0].clientHeight + footer[0].clientHeight + panelHeight;
+                var existingHeight = header[0].clientHeight + panelHeight;
                 if(scope.first)
                 {
                     //existingHeight -= 84;
                 }
-                $(element).css('min-height', $window.innerHeight - existingHeight + 12);
+                $(element).css('min-height', $window.innerHeight - existingHeight + 15  );
             };
             scope.initializeWindowSize();
             angular.element($window).bind('resize', function () {
@@ -187,7 +187,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           // set editing flags
-          flagEditedItems();
+          
         }
       );
     };
@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               }
 
               // set editing flags
-              flagEditedItems();
+              
 
             }
           );
@@ -230,7 +230,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               }
 
               // set editing flags
-              flagEditedItems();
+              
 
             }
           );   
@@ -404,26 +404,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       return colClasses;
     };
 
-// function to flag items in saved list if they exist in edit panel
-    function flagEditedItems() {
-
-      if ($scope.editList && $scope.savedList) {
-        // check if this item is in saved list, flag it as editing if so
-        angular.forEach($scope.savedList.items, function (item) {
-          // set false initially
-          item.editing = false;
-
-          // for each item in the edit list
-          angular.forEach($scope.editList, function (conceptId) {
-            // check if being edited
-            if (item.concept.conceptId === conceptId) {
-              item.editing = true;
-            }
-          });
-        });
-      }
-    }
-
     /**
      * Adds concept from this branch to the concepts array
      * @param conceptId the SCTID of the concept
@@ -485,7 +465,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           else if ($scope.editList.indexOf(conceptId) === -1) {
             console.debug('updating');
             $scope.updateEditListUiState();
-            flagEditedItems();        // update edited item flagging
+                    // update edited item flagging
           }
         }, function (error) {
 
@@ -493,7 +473,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           if ($scope.editList.indexOf(conceptId) !== -1) {
             console.debug('updating');
             $scope.updateEditListUiState(); // force update the ui state
-            flagEditedItems();
+            
           }
 
         }).finally(function () {
@@ -535,7 +515,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendWarning('Concept ' + $scope.concepts[i].fsn + ' already in list', 5000);
 
           // update the stale flags
-          flagEditedItems();
+          
           return;
         }
       }
@@ -564,6 +544,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             conceptIds.push('unsaved');
           }
         });
+
+        $scope.editList = conceptIds;
 
         scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', conceptIds);
       }
@@ -597,7 +579,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if ($scope.concepts[i].conceptId === conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
-          flagEditedItems();
+          
           return;
         }
       }
@@ -607,7 +589,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.updateEditListUiState();
 
       // set editing flags
-      flagEditedItems();
+      
 
     });
 
@@ -622,6 +604,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       notificationService.sendMessage('Cloning concept...');
 
+      console.debug('cloning concept with id ' + data.conceptId);
+
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
 
@@ -629,24 +613,28 @@ angular.module('singleConceptAuthoringApp.edit', [
         var conceptExists = false;
         for (var i = 0; i < $scope.concepts.length; i++) {
 
+          console.debug('checking for duplicate concept, id: ', $scope.concepts[i].conceptId);
+
           // cancel if unsaved work exists (track-by id problems)
           if (!$scope.concepts[i].conceptId) {
             notificationService.sendWarning('A new, unsaved concept exists; please save before cloning', 10000);
             return;
           }
 
-          if (concept.conceptId === data.conceptId) {
+          if ($scope.concepts[i].conceptId === data.conceptId) {
+            console.debug('duplicate concept found');
             conceptExists = true;
           }
         }
         if (!conceptExists) {
+          console.debug('concept with id ' + concept.conceptId + ' not present in list, adding');
           $scope.concepts.push(response);
 
           $timeout(function () {
             $scope.updateEditListUiState();
 
             // set editing flags
-            flagEditedItems();
+            
           }, 1000);
 
         }
@@ -736,7 +724,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.updateClassificationEditListUiState();
 
         // set editing flags
-        flagEditedItems();
+        
       }
       else {
 
@@ -752,7 +740,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.updateEditListUiState();
 
         // set editing flags
-        flagEditedItems();
+        
       }
     });
 
