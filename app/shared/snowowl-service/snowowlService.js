@@ -108,7 +108,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get equivalent concepts reported for a classifier id
     function getEquivalentConcepts(classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/equivalent-concepts').then(function (response) {
+      return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/equivalent-concepts').then(function (response) {
         return response.data.items;
       });
     }

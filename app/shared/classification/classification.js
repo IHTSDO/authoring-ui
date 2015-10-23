@@ -198,21 +198,37 @@ angular.module('singleConceptAuthoringApp')
             });
 
             // get equivalent concepts
-            if (scope.equivalentConceptsFound) {
-              snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
-                scope.equivalentConcepts = equivalentConcepts ? equivalentConcepts : [];
-                //console.debug('set equivalent concepts',
-                // scope.equivalentConcepts);
-
-                // get the relationship names
-                angular.forEach(scope.equivalentConcepts, function (item) {
-                  getRelationshipNames(item);
-                });
-              });
+            if (scope.classificationContainer.equivalentConceptsFound) {
+                scope.equivalentConcepts = scope.classificationContainer.equivalentConcepts;
+//              snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.targetBranch).then(function (equivalentConcepts) {
+//            equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+//            scope.equivalentConcepts = [];
+//            angular.forEach(equivalentConcepts, function(item){
+//                console.log(item.equivalentConcepts);
+//                if(item.equivalentConcepts.length === 2)
+//                {
+//                    scope.equivalentConcepts.push(item.equivalentConcepts);
+//                }
+//                else
+//                {
+//                    var key = item.equivalentConcepts[0];
+//                    angular.forEach(item.equivalentConcepts, function(equivalence){
+//                        console.log(item);
+//                        if(equivalence !== key)
+//                        {
+//                            var newEq = [];
+//                            newEq.push(key);
+//                            newEq.push(equivalence);
+//                            scope.equivalentConcepts.push(newEq);
+//                        }
+//                    });
+//                }
+//            });
+//          });
             } else {
               scope.equivalentConcepts = [];
-              //console.debug('set equivalent concepts',
-              // scope.equivalentConcepts);
+              console.debug('set equivalent concepts',
+               scope.equivalentConcepts);
             }
 
           }, true);
