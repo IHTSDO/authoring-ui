@@ -788,32 +788,36 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // get equivalent concepts if detected
       if ($scope.classificationContainer.equivalentConceptsFound) {
-        snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $routeParams.projectKey,
-          $routeParams.taskKey, $scope.targetBranch).then(function (equivalentConcepts) {
+        snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $scope.targetBranch).then(function (equivalentConcepts) {
             equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+            $scope.classificationContainer.equivalentConcepts = [];
             angular.forEach(equivalentConcepts, function(item){
-                if(item.length === 2)
+                console.log(item.equivalentConcepts);
+                if(item.equivalentConcepts.length === 2)
                 {
-                    $scope.classificationContainer.equivalentConcepts.push(item);
+                    $scope.classificationContainer.equivalentConcepts.push(item.equivalentConcepts);
                 }
                 else
                 {
-                    var key = item[0];
-                    angular.forEach(item, function(equivalence){
+                    var key = item.equivalentConcepts[0];
+                    angular.forEach(item.equivalentConcepts, function(equivalence){
+                        console.log(item);
                         if(equivalence !== key)
                         {
                             var newEq = [];
                             newEq.push(key);
                             newEq.push(equivalence);
-                            $scope.classificationContainer.equivalentConcepts.push(item);
+                            $scope.classificationContainer.equivalentConcepts.push(newEq);
                         }
                     });
                 }
             });
+            console.log($scope.classificationContainer.equivalentConcepts);
           });
       } else {
         $scope.classificationContainer.equivalentConcepts = [];
       }
+        
 
     };
 
