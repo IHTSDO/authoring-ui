@@ -1,6 +1,6 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, scaService, snowowlService, objectService, notificationService, $routeParams) {
+  .directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, scaService, snowowlService, objectService, notificationService, $routeParams, metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -129,17 +129,8 @@ angular.module('singleConceptAuthoringApp')
          * Front end enums:
          * [RETIRED, AMBIGUOUS, DUPLICATE, ERRONEOUS, MOVED_ELSEWHERE]
          */
-        var inactivateConceptReasons = [
-          {id: 'AMBIGUOUS', text: 'Ambiguous concept (inactive concept)'},
-          {id: 'DUPLICATE', text: 'Duplicate concept (inactive concept)'},
-          {id: 'ERRONEOUS', text: 'Erroneous concept (inactive concept)'},
-          {id: 'MOVED_ELSEWHERE', text: 'Moved elsewhere (inactive concept'},
-          {id: 'RETIRED', text: 'Reason not stated concept (inactive concept)'}
-          /*
-           TODO These values in requirement, but not in enum
-           {id: '', text: 'Outdated concept (inactive concept)'},
-           {id: '', text: 'Limited status concept (inactive concept)'},*/
-        ];
+        var inactivateConceptReasons =  metadataService.getConceptInactivationReasons();
+
 
         var inactivateConceptAssociationTargets = [
           {
