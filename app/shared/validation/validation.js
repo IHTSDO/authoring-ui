@@ -112,22 +112,20 @@ angular.module('singleConceptAuthoringApp')
               orderBy: 'concept'
             },
             {
-              filterDelay: 50,
-              total: failures.length,
+              total: failures ? failures.length : 0,
               getData: function ($defer, params) {
 
                 if (!failures || failures.length === 0) {
                   $defer.resolve([]);
                 } else {
-
-                  var orderedData = failures;
-
-                  params.total(orderedData.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-
-                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  var orderedData = params.sorting() ?
+                    $filter('orderBy')(failures, params.orderBy()) :
+                    failures;
+                    params.total(orderedData.length);
+                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                    console.log(failures);
+                    console.log(orderedData);
                 }
-
               }
             }
           );
