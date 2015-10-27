@@ -91,10 +91,11 @@
             <td ng-if="editable" data-header="'checkboxheader.html'"><input type="checkbox" ng-model="failure.selected"</td>
             <!-- other columns here -->
 
-            <td data-title="'Concept'" sortable="'failureText'"><span class="muted">Not yet implemented</span>
+            <td data-title="'Concept'" sortable="'failureText'">
+                {{failure.errorMessage.conceptId}}
             </td>
             <td data-title="'Error Message'" sortable="'failureCount'">
-              {{failure.errorMessage}}
+              {{failure.errorMessage.detail}}
             </td>
 
             <td ng-if="editable" data-header="'editheader.html'">
