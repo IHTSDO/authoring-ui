@@ -125,51 +125,11 @@ angular.module('singleConceptAuthoringApp')
           {id: 'FULLY_DEFINED', name: 'FD'}
         ];
 
-        /**
-         * Front end enums:
-         * [RETIRED, AMBIGUOUS, DUPLICATE, ERRONEOUS, MOVED_ELSEWHERE]
-         */
-        var inactivateConceptReasons =  metadataService.getConceptInactivationReasons();
+        // Retrieve inactivation reasons from metadata service
+        var inactivateComponentReasons =  metadataService.getComponentInactivationReasons();
+        var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
 
-
-        var inactivateConceptAssociationTargets = [
-          {
-            id: 'ALTERNATIVE ',
-            text: 'ALTERNATIVE association reference set (foundation metadata concept)'
-          },
-          {
-            id: 'MOVED_FROM',
-            text: 'MOVED FROM association reference set (foundation metadata concept)'
-          },
-          {
-            id: 'MOVED_TO',
-            text: 'MOVED TO association reference set (foundation metadata concept)'
-          },
-          {
-            id: 'POSSIBLY_EQUIVALENT_TO',
-            text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
-          },
-          {
-            id: 'REFERS_TO',
-            text: 'REFERS TO concept association reference set (foundation metadata concept)'
-          },
-          {
-            id: 'REPLACED_BY',
-            text: 'REPLACED BY association reference set (foundation metadata concept)'
-          },
-          {
-            id: 'SAME_AS',
-            text: 'SAME AS association reference set (foundation metadata concept)'
-          },
-          {
-            id: 'SIMILAR_TO',
-            text: 'SIMILAR TO association reference set (foundation metadata concept)'
-          },
-          {
-            id: 'WAS_A',
-            text: 'WAS A association reference set (foundation metadata concept)'
-          }
-        ];
+        console.debug('conceptEdit inactivateComponentReasons', inactivateComponentReasons, inactivateAssociationReasons);
 
         scope.removeConcept = function (concept) {
           $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -327,7 +287,7 @@ angular.module('singleConceptAuthoringApp')
 
           // if active, ensure concept is fully saved prior to inactivation
           // don't want to persist the inactivation reason without a forced save
-          if (scope.isModified) {
+          if (false && scope.isModified) {
             window.alert('You must save your changes to the concept before ' + (scope.concept.active ? 'inactivation.' : 'reactivation.'));
             return;
           }
@@ -340,7 +300,7 @@ angular.module('singleConceptAuthoringApp')
 
           // otherwise, open a select reason modal
           else {
-            selectInactivationReason('Concept', inactivateConceptReasons, inactivateConceptAssociationTargets, scope.concept.conceptId, scope.branch).then(function (results) {
+            selectInactivationReason('Concept', inactivateComponentReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
               notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')', 10000);
               // console.debug(scope.branch, scope.concept.conceptId, reason,
@@ -778,7 +738,7 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason('Description', inactivateDescriptionReasons, inactivateDescriptionHistoricalReasons, null, null).then(function (reason) {
+            selectInactivationReason('Description', inactivateComponentReasons, inactivateAssociationReasons, null, null).then(function (reason) {
 
               description.active = false;
               scope.saveConcept();
