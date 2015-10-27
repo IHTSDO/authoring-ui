@@ -320,11 +320,11 @@
     <div ng-if="thisView === 'edit-no-model'">
 
       <!-- sidebar -->
-      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3"
+      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 no-padding"
            ng-include src="'layout/sidebar-edit.html'"></div>
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 "
+      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9  no-padding"
            sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
@@ -336,7 +336,7 @@
   display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false"
               >
@@ -360,7 +360,7 @@
     <div ng-if="thisView === 'validation'">
 
       <!-- validation report -->
-      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 no-padding">
         <div validation validation-container="validationContainer" branch="targetBranch" editable="true"></div>
       </div>
 
@@ -369,14 +369,14 @@
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
         <!-- concept data-->
-        <div class="row no-gutter" style="display: -webkit-box;
+        <div class="row no-gutter no-padding" style="display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display:         flex;" ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
              repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="true">
             </div>
