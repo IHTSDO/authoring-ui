@@ -26,6 +26,14 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl) {
 
+        console.debug('conceptEdit element', element);
+
+        $timeout(function() {
+          scope.popoverDirection = document.getElementById('testId').getBoundingClientRect().left < 500 ? 'bottom' : 'left';
+          console.debug('popover direction detection', scope.popoverDirection, document.getElementById('testId').getBoundingClientRect().left);
+        }, 100);
+
+
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
           return;
@@ -1763,6 +1771,13 @@ angular.module('singleConceptAuthoringApp')
             $('#image-' + concept.conceptId).css('display', 'none');
           }
         };
+
+        //////////////////////////////////////////////////////////////////////////
+        // Toggle directionality of display based on current position of element
+        //////////////////////////////////////////////////////////////////////////
+
+
+
       }
     }
       ;
