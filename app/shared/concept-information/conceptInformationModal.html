@@ -13,7 +13,7 @@
     <div class="col-md-8">
 
     <h4 class="modal-title">{{fullConcept.fsn}}      <div ng-show="!loadComplete">Loading...</div></h4>
-    <p>SCTID: {{fullConcept.conceptId}}, {{fullConcept.definitionStatus === 'PRIMITIVE' ? 'Primitive' : 'Fully
+    <p ng-show="loadComplete">SCTID: {{fullConcept.conceptId}}, {{fullConcept.definitionStatus === 'PRIMITIVE' ? 'Primitive' : 'Fully
               Defined'}},
               {{fullConcept.active
               ? 'Active' : 'Inactive'}} </p>
@@ -70,7 +70,7 @@
               <div class="col-md-3 no-padding">Children ({{children.length}})</div>
               <div class="col-md-9">
                 <div class="row" ng-repeat="child in children">
-                 <p> <a ng-click="loadConcept(parent.conceptId)">{{child.fsn}}</a></p>
+                 <p> <a ng-click="loadConcept(child.conceptId)">{{child.fsn}}</a></p>
                 </div>
               </div>
             </div>
