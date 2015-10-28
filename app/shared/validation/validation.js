@@ -60,7 +60,7 @@ angular.module('singleConceptAuthoringApp')
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
 
-            if (scope.validationContainer['report']) {
+            if (scope.validationContainer.report) {
 
               // get the end time if specified
               if (scope.validationContainer.report.rvfValidationResult.endTime) {
