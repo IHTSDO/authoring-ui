@@ -92,174 +92,75 @@
     }
   </style>
 
-  <!-- Conflicts Report: Title -->
-  <div class="col-md-12 clearfix conflicts-header">
-    <div class="p-10">
-      Rebase Conflicts Report: {{conflictsReportStatus}}
-    </div>
-  </div>
 
-  <!-- COnflicts Report: Conflicts -->
-  <div ng-if="conflictsInitialized" class="col-12 no-padding">
+  <div class="row no-gutter no-padding">
 
-    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs conflicts-tabs" role="tablist"
-        ng-init="actionTab=1">
+    <div class="col-md-12 no-padding no-gutter">
 
-      <li role="presentation" class="active">
-        <a style="margin: 0"
-           ng-click="actionTab=1"
-           aria-controls="home"
-           role="tab"
-           data-toggle="tab">Conflicts ({{conflictsContainer.conflicts.conceptsToResolve.length}})</a>
-      </li>
-      <li role="presentation" class=""><a style="margin: 0"
-                                          ng-click="actionTab=2"
-                                          aria-controls="home"
-                                          role="tab"
-                                          data-toggle="tab">Conflicts Resolved
-                                                            ({{conflictsContainer.conflicts.conceptsResolved.length}})</a>
-      </li>
+      <!-- Conflicts Report: Sidebar -->
+      <div class="col-md-3 no-padding no-gutter">
 
-
-      <!-- Multiselect controls -->
-      <div class="pull-right p-10" ng-if="editable">
-        <button class="btn btn-round btn-default black" title="Group selected concepts"
-                ng-click="groupSelectedConcepts(actionTab)"><span class="md md-layers "></span>
-        </button>
-        <button class="btn btn-round btn-default green lighten-2" title="Move selected concepts to other list"
-                ng-click="moveMultipleToOtherList(actionTab)"><span
-          class="md md-playlist-add "></span></button>
-        <button class="btn btn-round btn-default grey lighten-2" title="Show in edit panel"
-                ng-click="addMultipleToEdit(actionTab)"><span class="md md-edit "></span>
-        </button>
-      </div>
-    </ul>
-
-    <!-- Tab panes -->
-    <div class="tab-content row m-t-10 no-padding">
-
-      <!-- Concepts To Resolve -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-
-        <table show-filter="true" ng-table="conceptsToResolveTableParams"
+        <table show-filter="false" ng-table="conceptsInConflictTableParams"
                template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small">
-          <tr ng-repeat="concept in $data">
+               class="table table-full table-full-small" drop-channel="feedbackConcept">
 
-            <!-- select control -->
-            <td ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxToResolve.html'">
-              <input type="checkbox" ng-model="concept.selected">
+
+          <tr ng-repeat="concept in conceptsInConflict">
+
+            <!-- Checkbox control -->
+            <td class="col-checkbox col-md-1" header="'ng-table/headers/checkboxToReview.html'">
+              <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
             </td>
 
-            <!-- concept term -->
-            <td class="col-concept" data-title="'Concept'" sortable="'term'"
-                filter="{}"
-                ui-draggable="true" drag="concept"
-                drag-channel="conflictsConcept" drop-channel="conflictsConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)">
-              {{concept.fsn}}
-            </td>
-<!--
-            &lt;!&ndash; source update time &ndash;&gt;
-            <td class="col-concept" data-title="'Source Changed'" sortable="'sourceLastUpdate'">
-              {{concept.sourceLastUpdate}}
-            </td>
-
-            <td class="col-concept" data-title="'Target Changed'" sortable="'targetLastUpdate'">
-              {{concept.targetLastUpdate}}
-            </td>-->
-
-            <!-- controls -->
-            <td ng-if="editable" class="col-controls">
-
-              <button class="btn btn-round btn-default green lighten-2" title=""
-                      ng-click="addToResolved(concept)"><span
-                class="md md-playlist-add "></span></button>
-              <button class="btn btn-round btn-default grey lighten-2" title="Show in edit panel"
-                      ng-click="addToEdit(concept)"><span
-                class="md md-edit "></span>
-              </button>
-              <button class="btn btn-round btn-default blue lighten-2" title="" ng-click="showModel(concept)"><span
-                class="md md-keyboard-return "></span>
-              </button>
-            </td>
-          </tr>
-        </table>
-
-        <script type="text/ng-template" id="ng-table/headers/checkboxToResolve.html">
-          <input type="checkbox" ng-model="checkedToResolve" ng-change="selectAll(actionTab, checkedToResolve)"
-                 id="select_all_to_review"
-                 name="filter-checkbox" value=""/>
-        </script>
-
-      </div>
-
-      <!-- Concepts Resolved -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
-        <table show-filter="true" ng-table="conceptsResolvedTableParams"
-               template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small">
-
-          <tr ng-repeat="concept in $data">
-
-            <!-- select control -->
-            <td ng-if="editable" class="col-checkbox" header="'ng-table/headers/checkboxResolved.html'">
-              <input type="checkbox" ng-model="concept.selected">
-            </td>
-
-            <!-- concept term -->
-            <td class="col-concept" data-title="'Concept'" sortable="'term'"
-                filter="{}"
-                ui-draggable="true" drag="concept"
-                drag-channel="conflictsConcept" drop-channel="conflictsConcept"
-                ui-on-drop="dropConcept(concept, $data, actionTab)">
-              <button ng-show="concept.modifiedSinceResolve" class="btn btn-round btn-default blue lighten-2"
-                      title="New"><span
-                class="md md-grade"></span>
-              </button>
+            <!-- Fsn -->
+            <td class="col-concept col-md-10" data-title="'Concept'" sortable="'fsn'">
               {{concept.fsn}}
             </td>
 
-            <!--
-          Commented out until project/task/author information included in conflicts report
-                      &lt;!&ndash; project &ndash;&gt;
-                      <td class="col-concept" data-title="'Project'" sortable="''">
-                        Some Project
-                      </td>
-
-                      &lt;!&ndash; task name &ndash;&gt;
-                      <td class="col-concept" data-title="'Task Name'" sortable="''">
-                        Some Task
-                      </td>
-
-                      &lt;!&ndash; author &ndash;&gt;
-                      <td class="col-concept" data-title="'Author'" sortable="''">
-                        Some Author
-                      </td>
-          -->
-            <!-- controls -->
-            <td ng-if="editable" class="col-controls">
-
-              <button class="btn btn-round btn-default green lighten-2" title=""
-                      ng-click="returnToResolve(concept)"><span
-                class="md md-playlist-add "></span></button>
-              <button class="btn btn-round btn-default black" title="" ng-click="addToEdit(concept)"><span
+            <!-- Controls -->
+            <td class="col-controls col-md-1">
+              <button class="btn btn-round btn-default blue lighten-2" title=""
+                      ng-disabled="isEditing(concept.id)"
+                      ng-click="viewConflict(concept.id)"><span
                 class="md md-edit "></span>
               </button>
-              <button class="btn btn-round btn-default blue lighten-2" title="" ng-click="showModel(concept)"><span
-                class="md md-keyboard-return "></span>
-              </button>
             </td>
+
+
           </tr>
         </table>
-        <script type="text/ng-template" id="ng-table/headers/checkboxResolved.html">
-          <input type="checkbox" ng-model="checkedResolved" ng-change="selectAll(actionTab, checkedResolved)"
-                 id="select_all_resolved"
-                 name="filter-checkbox" value=""/>
-        </script>
+      </div>
+      <div class="col-md-9 no-padding no-gutter" ng-show="conflictsViewed.length > 0">
 
+        <div class="row no-padding no-gutter" style="text-align: center">
+          <div class="col-md-4"><h4>{{targetBranch}}</h4></div>
+          <div class="col-md-4"><h4>Merged</h4></div>
+          <div class="col-md-4"><h4>{{sourceBranch}}</h4></div>
+        </div>
+
+        <div class="row no-padding no-gutter" ng-repeat="conflict in conflictsViewed">
+          <div class="col-md-4">
+            <div concept-edit concept="conflictsViewed[$index].source"
+                 branch="targetBranch" static="true"
+                 component-styles="conflict.styles">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div concept-edit concept="{}" branch="temp"></div>
+            <div class="alert alert-warning" m-10> Merged view not yet functional</div>
+
+          </div>
+          <div class="col-md-4">
+            <div concept-edit concept="conflictsViewed[$index].target"
+                 branch="sourceBranch" static="true">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+
 </section>
 
