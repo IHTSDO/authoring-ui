@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', '$timeout',
-    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, $timeout) {
+  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', '$timeout',
+    function ($rootScope, $filter, NgTableParams, $routeParams, scaService, snowowlService, $timeout) {
       return {
         restrict: 'A',
         transclude: false,
@@ -27,6 +27,10 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.viewTop = true;
           scope.displayStatus = '';
+          scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              scope.changedList = response ? response : {};
+              console.log(response);
+          });
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
@@ -108,8 +112,8 @@ angular.module('singleConceptAuthoringApp')
           scope.failureTableParams = new NgTableParams({
               page: 1,
               count: 10,
-              sorting: {concept: 'asc'},
-              orderBy: 'concept'
+              sorting: {userModified: 'asc'},
+              orderBy: 'userModified'
             },
             {
               total: failures ? failures.length : 0,
@@ -152,7 +156,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewFailures = function (assertionFailure) {
 
-
+            
             scope.assertionFailureViewed = assertionFailure.assertionText;
             scope.viewTop = false;
 
@@ -164,8 +168,16 @@ angular.module('singleConceptAuthoringApp')
               var obj = {
                 concept: null,
                 errorMessage: instance,
-                selected: false
+                selected: false,
+                userModified: false
               };
+              
+              angular.forEach(scope.changedList.concepts, function (concept) {
+                  if(instance.errorMessage.conceptId === concept.conceptId)
+                  {
+                    obj.userModified = true;   
+                  }
+              });
               objArray.push(obj);
 
             });
