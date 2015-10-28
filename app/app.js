@@ -85,7 +85,10 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, $cookies, $timeout) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout) {
+
+    // intialize required SNOMEDCT metadata
+    metadataService.initialize('MAIN');
 
     // set the default redirect/route
     $routeProvider.otherwise({
