@@ -63,13 +63,13 @@ angular.module('singleConceptAuthoringApp')
             if (scope.validationContainer['report']) {
 
               // get the end time if specified
-              if (scope.validationContainer['report']['RVF Validation Result']['End time']) {
-                var endTime = scope.validationContainer['report']['RVF Validation Result']['End time'];
+              if (scope.validationContainer.report.rvfValidationResult.endTime) {
+                var endTime = scope.validationContainer.report.rvfValidationResult.endTime;
                 return status + ' ' + endTime;
               }
 
-              if (scope.validationContainer['report']['RVF Validation Result']['Start time']) {
-                var startTime = scope.validationContainer['report']['RVF Validation Result']['Start time'];
+              if (scope.validationContainer.report.rvfValidationResult.startTime) {
+                var startTime = scope.validationContainer.report.rvfValidationResult.startTime;
                 return status + ', started ' + startTime;
               }
             }
@@ -136,7 +136,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // extract the failed assertions
-            assertionsFailed = scope.validationContainer['report']['RVF Validation Result']['SQL test result']['assertionsFailed'];
+            assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
             // clear the viewed failure type
             failures = [];
@@ -160,6 +160,7 @@ angular.module('singleConceptAuthoringApp')
             var objArray = [];
 
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
+              
               var obj = {
                 concept: null,
                 errorMessage: instance,
