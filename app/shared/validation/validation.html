@@ -97,6 +97,9 @@
             <td data-title="'Error Message'" sortable="'failureCount'">
               {{failure.errorMessage.detail}}
             </td>
+            <td data-title="'Changed Here'" sortable="'userModified'">
+              {{failure.userModified}}
+            </td>
 
             <td ng-if="editable" data-header="'editheader.html'">
               <button type="button" class="btn btn-round btn-default blue" ng-click="editConcept(failure.concept)">
