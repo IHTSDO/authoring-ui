@@ -27,10 +27,7 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.viewTop = true;
           scope.displayStatus = '';
-          scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-              scope.changedList = response ? response : {};
-              console.log(response);
-          });
+          
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
@@ -112,7 +109,7 @@ angular.module('singleConceptAuthoringApp')
           scope.failureTableParams = new NgTableParams({
               page: 1,
               count: 10,
-              sorting: {userModified: 'asc'},
+              sorting: {userModified: 'desc'},
               orderBy: 'userModified'
             },
             {
@@ -171,13 +168,26 @@ angular.module('singleConceptAuthoringApp')
                 selected: false,
                 userModified: false
               };
-              
-              angular.forEach(scope.changedList.concepts, function (concept) {
-                  if(instance.errorMessage.conceptId === concept.conceptId)
-                  {
-                    obj.userModified = true;   
-                  }
-              });
+              if(scope.changedList)
+              {
+                  angular.forEach(scope.changedList.concepts, function (concept) {
+                      if(instance.errorMessage.conceptId === concept.conceptId)
+                      {
+                        obj.userModified = true;   
+                      }
+                  });
+              }
+              else{
+                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                  scope.changedList = response ? response : {};
+                  angular.forEach(scope.changedList.concepts, function (concept) {
+                      if(instance.errorMessage.conceptId === concept.conceptId)
+                      {
+                        obj.userModified = true;   
+                      }
+                  });
+              });   
+              }
               objArray.push(obj);
 
             });
@@ -188,6 +198,10 @@ angular.module('singleConceptAuthoringApp')
             failures = objArray;
 
             scope.failureTableParams.reload();
+          };
+            
+          scope.getChangedList = function(obj){
+              
           };
 
           // TODO Make this respect paging
