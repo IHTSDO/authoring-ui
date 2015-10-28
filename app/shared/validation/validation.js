@@ -123,8 +123,6 @@ angular.module('singleConceptAuthoringApp')
                     failures;
                     params.total(orderedData.length);
                     $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                    console.log(failures);
-                    console.log(orderedData);
                 }
               }
             }
