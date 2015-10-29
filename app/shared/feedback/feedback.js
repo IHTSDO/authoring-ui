@@ -725,37 +725,65 @@ angular.module('singleConceptAuthoringApp')
               return response;
             });
           };
+/*
+          // testing creation of image
+          var can = document.createElement('canvas');
+          var ctx = can.getContext('2d');
 
-          /*
-           e: true
-           concept: Object
-           active: false
-           conceptId: "300198004"
-           definitionStatus: "PRIMITIVE"
-           fsn: "Finding of ability to hear (finding)"
-           moduleId: "900000000000207008"
-           __proto__: Object
-           term: "Ability to hear"
-           __proto__: Object
+          ctx.fillText("Hello World!",10,50);
+
+          var img = new Image();
+          img.src = can.toDataURL();
+
+          console.debug(img, img.src);*/
+
+
+          function createConceptImg(id, fsn) {
+            // testing creation of image
+            var can = document.createElement('canvas');
+            var ctx = can.getContext('2d');
+
+            ctx.canvas.width = ctx.measureText(fsn + ' ' + String.fromCharCode(parseInt('\uf040',16))).width;
+            ctx.canvas.height = 10;
+
+            ctx.font = 'FontAwesome';
+            ctx.fillStyle = '#90CAF9';
+            ctx.fillText(fsn  + ' ' + String.fromCharCode(parseInt('\uf040',16)),0,8);
+
+            var img = new Image();
+            img.src = ctx.canvas.toDataURL();
+
+            console.debug(img, img.src);
+
+            return '<img style="cursor:pointer" src="' + img.src + '" ng-click=addToEdit(' + id + ')">';
+          }
+
+          /**
+           * Function to add search result from typeahead to the feedback message
+           * @param concept the concept object
            */
-
           scope.addConceptToFeedback = function (concept) {
             console.debug(concept);
 
-            scope.htmlVariable += ' ' +
-              '<p class="clearfix"><a ng-click="addToEdit(' + concept.concept.conceptId + ')">' + concept.concept.fsn + '<span class="md md-edit"></span></a></p>' + ' ';
-
+            scope.htmlVariable += ' ' + createConceptImg(concept.concept.conceptId, concept.concept.fsn) + ' ';
             console.debug(scope.htmlVariable);
+
+            //scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.concept.conceptId + ')">' + concept.concept.fsn + '</a>&nbsp&nbsp&nbsp<p></p>';
           };
 
-
+          /**
+           * Function to add a dragged concept from the review/resolved list to the feedback message
+           * @param concept the concept object
+           */
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
 
-            scope.htmlVariable += ' ' +
-              '<p class="clearfix"><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '<span class="md md-edit"></span></a></p>' + ' ';
+            //scope.htmlVariable += ' ' +  createConceptImg(concept.conceptId, concept.fsn) + ' ';
+
+            scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '</a>&nbsp&nbsp&nbsp<p></p>';
 
             console.debug(scope.htmlVariable);
+
           };
 
           scope.submitFeedback = function (requestFollowup) {
