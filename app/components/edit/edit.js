@@ -880,7 +880,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       } else {
         scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.conflictsContainer.conflicts = response ? response : {};
-        })
+        });
       }
     };
 
