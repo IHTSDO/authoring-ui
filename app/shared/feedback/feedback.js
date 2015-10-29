@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'accountService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, accountService, notificationService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -706,27 +706,48 @@ angular.module('singleConceptAuthoringApp')
             getViewedFeedback();
           };
 
-          scope.openSearchModal = function (str) {
-            var modalInstance = $modal.open({
-              templateUrl: 'shared/search-modal/searchModal.html',
-              controller: 'searchModalCtrl',
-              resolve: {
-                searchStr: function () {
-                  return str;
+          scope.getConceptsForTypeahead = function (searchStr) {
+            console.debug('entered getConceptsForTypeAhead', searchStr);
+            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+
+              // remove duplicates
+              for (var i = 0; i < response.length; i++) {
+                console.debug('checking for duplicates', i, response[i]);
+                for (var j = response.length - 1; j > i; j--) {
+                  if (response[j].concept.conceptId === response[i].concept.conceptId) {
+                    console.debug(' duplicate ', j, response[j]);
+                    response.splice(j, 1);
+                    j--;
+                  }
                 }
               }
-            });
 
-            modalInstance.result.then(function (result) {
-              console.debug('selected:', result);
-
-              scope.htmlVariable += ' ' +
-                '<p class="clearfix"><a ng-click="addToEdit(' + result.conceptId + ')">' + result.fsn + '<span class="md md-edit"></span></a></p>' + ' ';
-
-              console.debug(scope.htmlVariable);
-            }, function () {
+              return response;
             });
           };
+
+          /*
+           e: true
+           concept: Object
+           active: false
+           conceptId: "300198004"
+           definitionStatus: "PRIMITIVE"
+           fsn: "Finding of ability to hear (finding)"
+           moduleId: "900000000000207008"
+           __proto__: Object
+           term: "Ability to hear"
+           __proto__: Object
+           */
+
+          scope.addConceptToFeedback = function (concept) {
+            console.debug(concept);
+
+            scope.htmlVariable += ' ' +
+              '<p class="clearfix"><a ng-click="addToEdit(' + concept.concept.conceptId + ')">' + concept.concept.fsn + '<span class="md md-edit"></span></a></p>' + ' ';
+
+            console.debug(scope.htmlVariable);
+          };
+
 
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
@@ -779,6 +800,8 @@ angular.module('singleConceptAuthoringApp')
         }
 
       };
+
+
 
     }])
 ;

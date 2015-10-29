@@ -285,8 +285,11 @@
         <input type='text' class="feedback-search " placeholder='Search concepts...'
                ui-on-drop=""
                ng-model='conceptFilter'
-               ng-model-options='{ debounce: 1000 }'
-               ng-change='openSearchModal(conceptFilter)'>
+               typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+               typeahead-focus-first="false"
+               typeahead-wait-ms="500"
+               typeahead-on-select="addConceptToFeedback($item)"
+               typeahead-editable="false" typeahead-min-length="3">
       </div>
 
 
