@@ -159,8 +159,34 @@ angular.module('singleConceptAuthoringApp')
 
             // convert instances into table objects
             var objArray = [];
-
-            angular.forEach(assertionFailure.firstNInstances, function (instance) {
+            if(!scope.changedList)
+            {
+              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                  scope.changedList = response; 
+                  angular.forEach(assertionFailure.firstNInstances, function (instance) {
+                      var obj = {
+                        concept: null,
+                        errorMessage: instance,
+                        selected: false,
+                        userModified: false
+                      };
+                      angular.forEach(scope.changedList.concepts, function (concept) {
+                          if(instance.conceptId === concept.id)
+                          {
+                            obj.userModified = true;   
+                          }
+                      });
+                      objArray.push(obj);
+                    });
+                  failures = objArray;
+                  scope.failureTableParams.reload();
+                });
+                
+            }
+            
+              
+            else{
+              angular.forEach(assertionFailure.firstNInstances, function (instance) {
               
               var obj = {
                 concept: null,
@@ -168,40 +194,22 @@ angular.module('singleConceptAuthoringApp')
                 selected: false,
                 userModified: false
               };
-              if(scope.changedList)
-              {
-                  angular.forEach(scope.changedList.concepts, function (concept) {
-                      if(instance.errorMessage.conceptId === concept.conceptId)
-                      {
-                        obj.userModified = true;   
-                      }
-                  });
-              }
-              else{
-                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                  scope.changedList = response ? response : {};
-                  angular.forEach(scope.changedList.concepts, function (concept) {
-                      if(instance.errorMessage.conceptId === concept.conceptId)
-                      {
-                        obj.userModified = true;   
-                      }
-                  });
-              });   
-              }
+              angular.forEach(scope.changedList.concepts, function (concept) {
+                  if(instance.conceptId === concept.id)
+                  {
+                    obj.userModified = true;   
+                  }
+              });
+              
               objArray.push(obj);
-
-            });
-
+              });
+            }
             // TODO Set edit enable/disable for edit panel loading
 
             // set failures to trigger watch
             failures = objArray;
 
             scope.failureTableParams.reload();
-          };
-            
-          scope.getChangedList = function(obj){
-              
           };
 
           // TODO Make this respect paging
