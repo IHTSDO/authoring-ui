@@ -134,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
                 conflictObj.styles[description.descriptionId + '-term'] = {
                   message: null,
                   style: styles[getRandomInt(0, styles.length - 1)]
-                }
+                };
 
               }
 
@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp')
               if (conflictObj.hasOwnProperty('source')) {
                 scope.viewConflictHelper(conflictObj);
               }
-            })
+            });
           };
 
           /**
@@ -230,6 +230,6 @@ angular.module('singleConceptAuthoringApp')
           };
 
         }
-      }
+      };
     }])
 ;

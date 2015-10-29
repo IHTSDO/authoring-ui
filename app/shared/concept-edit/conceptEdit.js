@@ -1796,7 +1796,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             if (nStyles++ < 10) {
-              console.debug(id, field, defaultStyle, key, scope.componentStyles.hasOwnProperty(key), scope.componentStyles[key] ? scope.componentStyles[key].style : 'No styles')
+              console.debug(id, field, defaultStyle, key, scope.componentStyles.hasOwnProperty(key), scope.componentStyles[key] ? scope.componentStyles[key].style : 'No styles');
             }
 
             if (scope.componentStyles.hasOwnProperty(key)) {
