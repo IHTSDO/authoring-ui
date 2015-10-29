@@ -903,7 +903,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       switch (branchState) {
         case 'FORWARD':
           $scope.canRebase = false;
-          $scope.canPromote = true;
+          $scope.canPromote = $scope.isOwnTask;
           $scope.canConflict = true;
           break;
         case 'UP_TO_DATE':
@@ -912,13 +912,12 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.canConflict = true;
           break;
         case 'BEHIND':
-          $scope.canRebase = true;
+          $scope.canRebase = $scope.isOwnTask;
           $scope.canPromote = false;
           $scope.canConflict = false;
           break;
         case 'STALE':
-          // TODO
-          $scope.canRebase = true;
+          $scope.canRebase = $scope.isOwnTask;
           $scope.canPromote = false;
           $scope.canConflict = true;
           break;
@@ -937,7 +936,7 @@ angular.module('singleConceptAuthoringApp.edit', [
            * conflicts moved to conceptsResolved)
            *
            */
-          $scope.canRebase = true;
+          $scope.canRebase = $scope.isOwnTask; // cannot rebase if not own task
           $scope.canPromote = false;
           $scope.canConflict = true;
           break;
@@ -1033,6 +1032,13 @@ angular.module('singleConceptAuthoringApp.edit', [
 //////////////////////////////////////////
     // Initialization
 //////////////////////////////////////////
+
+    // if a task, get the task for assigned user information
+    if ($routeParams.taskKey) {
+      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+        $scope.isOwnTask = accountService.getRoleForTask(response) === 'REVIEWER';
+      });
+    }
 
     // start monitoring of task
     scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
