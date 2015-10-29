@@ -66,81 +66,58 @@ angular.module('singleConceptAuthoringApp')
     // on load, retrieve children and descendants if concept specified
     if ($scope.conceptId && $scope.branch) {
 
-      snowowlService.getConceptDescendants($scope.conceptId, $scope.branch).then(function (response) {
+      // limit the number of descendants retrieved to prevent overload
+      snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, 0, 200).then(function (response) {
+        console.debug('descendants', response);
+
         $scope.descendants = response;
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
       });
-      /*
-       NOTE: Not used at present, children are filtered from inbound relationships
-       snowowlService.getConceptChildren($scope.conceptId, $scope.branch).then(function (response) {
-       $scope.children = response;
-       $scope.childrenLoading = false;
-       $scope.tableParamsChildren.reload();
-       }, function (error) {
-       $scope.childrenError = 'Error retrieving children';
-       });*/
-
-      // get a single inbound relationship to get total number of relationships
-      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, 1).then(function (response) {
-        console.debug('inbound', response);
-
-        // get the concept relationships again (all)
-        snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, response.total).then(function (response2) {
-
-          var childrenIds = [];
-          $scope.children = [];
-
-          // set the inbound relationships
-          $scope.inboundRelationships = response2.inboundRelationships;
-
-          // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and make top-level properties
-          angular.forEach($scope.inboundRelationships, function(item) {
-            item.sourceFsn = item.source.fsn;
-            item.typeFsn = item.type.fsn;
-
-            // if a child, and not already added (i.e. prevent STATED/INFERRED duplication), push to children
-            if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
-              childrenIds.push(item.source.id);
-              $scope.children.push(item);
-            }
-          });
-
-          $scope.inboundRelationshipsLoading = false;
-
-          $scope.tableParamsChildren.reload();
-          $scope.tableParamsInboundRelationships.reload();
-
-        });
-
-      });
     }
 
-    // array of concept fsns for display, as descendants does not have fsn
-    // value returned at this time. Not used for children or inbound
-    // relationships
-    $scope.conceptFsns = {};
-    $scope.setConceptFsn = function (item) {
-      console.debug(item);
-      if ($scope.conceptFsns.hasOwnProperty(item.id)) {
-        return $scope.conceptFsns[item.id];
-      } else {
-        $scope.conceptFsns[item.id] = 'Retrieving FSN...';
-        snowowlService.getFullConcept(item.id, $scope.branch).then(function (response) {
-          $scope.conceptFsns[item.id] = response.fsn;
+    // get a single inbound relationship to get total number of relationships
+    snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, 1).then(function (response) {
+      console.debug('inbound', response);
+
+      // get the concept relationships again (all)
+      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, response.total).then(function (response2) {
+
+        var childrenIds = [];
+        $scope.children = [];
+
+        // set the inbound relationships
+        $scope.inboundRelationships = response2.inboundRelationships;
+
+        // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
+        // make top-level properties
+        angular.forEach($scope.inboundRelationships, function (item) {
+          item.sourceFsn = item.source.fsn;
+          item.typeFsn = item.type.fsn;
+
+          // if a child, and not already added (i.e. prevent STATED/INFERRED
+          // duplication), push to children
+          if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
+            childrenIds.push(item.source.id);
+            $scope.children.push(item);
+          }
         });
-      }
-    };
-    
-    $scope.getConceptFsn = function(item) {
-      return $scope.conceptFsns[item.id];
-    };
+
+        $scope.inboundRelationshipsLoading = false;
+
+        $scope.tableParamsChildren.reload();
+        $scope.tableParamsInboundRelationships.reload();
+
+      });
+
+    });
 
     // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {sourceFsn: 'asc'}
+        sorting: {sourceFsn: 'asc'},
+        orderBy: 'sourceFsn'
       },
       {
         total: $scope.children ? $scope.children.length : 0, // length of data
@@ -164,47 +141,19 @@ angular.module('singleConceptAuthoringApp')
     $scope.tableParamsDescendants = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {fsn: 'asc'}
+        sorting: {fsn: 'asc'},
+        orderBy: 'fsn'
       },
       {
-        total: $scope.descendants ? $scope.descendants.length : 0, // length of
+        total: $scope.descendants ? $scope.descendants.items.length : 0, // length of
                                                                    // data
         getData: function ($defer, params) {
 
-          if (!$scope.descendants || $scope.descendants.total === 0) {
+          if (!$scope.descendants || $scope.descendants.length === 0) {
             $defer.resolve([]);
-          }
+          } else {
 
-          // check if more need to be loaded
-          else if (params.page() !== 1 && $scope.descendants.items.length < (params.page() * params.count())) {
-
-            console.debug('getting next set of results');
-
-            $scope.descendantsLoading = true;
-
-            // NOTE: offset is set to current length, limit is set to end of
-            // requested page + 40 more (minimum 5 page load, always loads to
-            // current requested page
-            snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, $scope.descendants.items.length, (params.page() * params.count() + 40 - $scope.descendants.items.length)).then(function (response) {
-
-              $scope.descendantsLoading = false;
-
-              $scope.descendants.items = $scope.descendants.items.concat(response.items);
-
-              params.total($scope.descendants.total);
-              var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
-
-              $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-            }, function (error) {
-              $scope.descendantsError = 'Error retrieving descendants' + error;
-            });
-
-          }
-
-          // otherwise simply get the page
-          else {
-
-            params.total($scope.descendants.total);
+            params.total($scope.descendants.items.length);
             var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
 
             $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -218,7 +167,8 @@ angular.module('singleConceptAuthoringApp')
     $scope.tableParamsInboundRelationships = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {sourceFsn: 'asc'}
+        sorting: {sourceFsn: 'asc'},
+        orderBy: 'sourceFsn'
       },
       {
         total: $scope.inboundRelationships ? $scope.inboundRelationships.length : 0, // length of

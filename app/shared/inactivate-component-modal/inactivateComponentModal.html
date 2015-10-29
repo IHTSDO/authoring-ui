@@ -80,10 +80,12 @@
 
       <!-- descendants -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+        <div ng-show="descendants.total > 200" class="alert alert-warning">Limiting displayed results to {{200}} items</div>
         <table ng-table="tableParamsDescendants" template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
           <tr ng-repeat="item in $data">
-            <td ng-init="setConceptFsn(item)" data-title="'FSN'" sortable="'fsn'">{{getConceptFsn(item)}}</td>
+            <td data-title="'FSN'" sortable="'fsn'">
+              {{item.fsn}}</td>
           </tr>
         </table>
       </div>
