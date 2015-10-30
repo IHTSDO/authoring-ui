@@ -725,18 +725,6 @@ angular.module('singleConceptAuthoringApp')
               return response;
             });
           };
-/*
-          // testing creation of image
-          var can = document.createElement('canvas');
-          var ctx = can.getContext('2d');
-
-          ctx.fillText("Hello World!",10,50);
-
-          var img = new Image();
-          img.src = can.toDataURL();
-
-          console.debug(img, img.src);*/
-
 
           function createConceptImg(id, fsn) {
             // testing creation of image
@@ -753,9 +741,9 @@ angular.module('singleConceptAuthoringApp')
             var img = new Image();
             img.src = ctx.canvas.toDataURL();
 
-            console.debug(img, img.src);
+            console.debug( '<img ng-click="addToEdit(' + id + ')" style="cursor:pointer" src="' + img.src + '">');
 
-            return '<img style="cursor:pointer" src="' + img.src + '" ng-click=addToEdit(' + id + ')">';
+            return '<img style="cursor:pointer" src="' + img.src + '" ng-click="addToEdit(' + id + ')">';
           }
 
           /**
@@ -778,9 +766,9 @@ angular.module('singleConceptAuthoringApp')
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
 
-            //scope.htmlVariable += ' ' +  createConceptImg(concept.conceptId, concept.fsn) + ' ';
+            scope.htmlVariable += ' ' +  createConceptImg(concept.conceptId, concept.fsn) + ' ';
 
-            scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '</a>&nbsp&nbsp&nbsp<p></p>';
+           // scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '</a>&nbsp&nbsp&nbsp<p></p>';
 
             console.debug(scope.htmlVariable);
 
