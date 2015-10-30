@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp')
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
     function getRelationshipChanges(classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes').then(function (response) {
+      return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn').then(function (response) {
         return response.data.items;
       });
     }
