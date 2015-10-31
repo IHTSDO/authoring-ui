@@ -1,5 +1,24 @@
 <div class="edits editing-form">
 <style>
+
+  .yellowhl {
+    border-style: solid;
+    border-width: 5px;
+    border-color: yellow;
+  }
+
+  .redhl {
+    border-style: solid;
+    border-width: 5px;
+    border-color: red;
+  }
+
+  .orangehl {
+    border-style: solid;
+    border-width: 5px;
+    border-color: orange;
+  }
+
 </style>
 
   <!-- begin validation error -->
@@ -113,8 +132,8 @@
   <div ng-show="!isCollapsed" class="editHeightSelector">
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in getDescriptions(true)">
-      <div class="row darken-3 p-t-5 grey ">
+    <div ng-repeat="description in getDescriptions(true)" ng-class="getComponentStyle(description.descriptionId, null, '')">
+      <div class="row darken-3 p-t-5 grey" >
         <div class="col-md-12 no-padding color_{{relationship.groupId}}"
              drop-channel="descriptionObj"
              ui-on-drop="dropDescription(description, $data)"
@@ -130,12 +149,6 @@
             class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
             ui-draggable="true" drag="description" drag-channel="descriptionObj" drag-image="getDragImageForDescription(description)"></button>
 
-          <!-- Commented out until functional
-          <button ng-if="!isStatic" type="button" class="amber md md-undo button-width" title="Undo Changes"></button>
-
-
-          <button ng-if="!isStatic" type="button" class=" blue accent-2 md md-history button-width"
-                  title="Undo Changes"></button> -->
 
           <!-- Active/Inactive -->
           <button type="button"
@@ -155,7 +168,7 @@
           </button>
 
           <!-- Term -->
-          <div class="pull-left description no-padding">
+          <div class="pull-left description no-padding" ng-class="getComponentStyle(description.descriptionId, 'term', null)">
 
 
             <textarea ng-if="description.type !== 'TEXT_DEFINITION'" ng-change="updateDescription(description)"
