@@ -54,7 +54,10 @@ angular.module('singleConceptAuthoringApp')
       if (!limit) {
         limit = 50;
       }
-      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?offset=' + offset + '&limit=' + limit + '&direct=false').then(function(response) {
+      if (limit > 200) {
+        limit = 200;
+      }
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function(response) {
         deferred.resolve(response.data);
       }).then(function (error) {
         deferred.reject(error);

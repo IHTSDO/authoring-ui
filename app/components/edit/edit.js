@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp.edit', [
-  //insert dependencies here
+//insert dependencies here
   'ngRoute'
 ])
 
@@ -22,53 +22,52 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-  //Directive to trigger a function on the rendering of an entire ng-repeat,
+//Directive to trigger a function on the rendering of an entire ng-repeat,
   // will make global once infinite scroll functionality is complete
   .directive('repeatComplete', ['$timeout', function ($timeout) {
     return {
-        restrict: 'A',
-        scope: {
-            callback:'&'
-        },     
-        link: function(scope, elm, attrs) {
-            $timeout(scope.callback(), 0);
-        }
+      restrict: 'A',
+      scope: {
+        callback: '&'
+      },
+      link: function (scope, elm, attrs) {
+        $timeout(scope.callback(), 0);
+      }
     };
   }])
 
   .directive('fillHeight', function ($window, $rootScope) {
     return {
-        restrict: 'A',
-        link: function (scope, element) {
-            scope.first = true;
-            scope.initializeWindowSize = function () {
-                var header = document.getElementsByClassName('navbar-fixed-top');
-                var footer = document.getElementsByClassName('sca-footer');
-                var editPanels = document.getElementsByClassName('panel-height');
-                
-                var panelHeight = 0;
-                angular.forEach(editPanels, function (panel){
-                    panelHeight += panel.clientHeight;
-                });
-                //console.log(header[0].clientHeight);
-                //console.log(footer[0].clientHeight);
-                var existingHeight = header[0].clientHeight + panelHeight;
-                if(scope.first)
-                {
-                    //existingHeight -= 84;
-                }
-                $(element).css('min-height', $window.innerHeight - existingHeight + 15  );
-            };
-            scope.initializeWindowSize();
-            angular.element($window).bind('resize', function () {
-                scope.first = false;
-                scope.initializeWindowSize();
-            });
-            scope.$on('repeatComplete', function (event, data) {
-                console.log('here');
-                scope.initializeWindowSize();
-            });
-        }
+      restrict: 'A',
+      link: function (scope, element) {
+        scope.first = true;
+        scope.initializeWindowSize = function () {
+          var header = document.getElementsByClassName('navbar-fixed-top');
+          var footer = document.getElementsByClassName('sca-footer');
+          var editPanels = document.getElementsByClassName('panel-height');
+
+          var panelHeight = 0;
+          angular.forEach(editPanels, function (panel) {
+            panelHeight += panel.clientHeight;
+          });
+          //console.log(header[0].clientHeight);
+          //console.log(footer[0].clientHeight);
+          var existingHeight = header[0].clientHeight + panelHeight;
+          if (scope.first) {
+            //existingHeight -= 84;
+          }
+          $(element).css('min-height', $window.innerHeight - existingHeight + 15);
+        };
+        scope.initializeWindowSize();
+        angular.element($window).bind('resize', function () {
+          scope.first = false;
+          scope.initializeWindowSize();
+        });
+        scope.$on('repeatComplete', function (event, data) {
+          console.log('here');
+          scope.initializeWindowSize();
+        });
+      }
     };
   })
 
@@ -93,12 +92,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
     $scope.renderingComplete = function () {
-        console.log('broadcasting');
-        $rootScope.$broadcast('repeatComplete');
-        $scope.conceptsRendering = false;
+      console.log('broadcasting');
+      $rootScope.$broadcast('repeatComplete');
+      $scope.conceptsRendering = false;
     };
-
-
 
     /////////////////////////////////
     // View & Layout
@@ -168,8 +165,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     }
 
-
-    $scope.loadEditPanelConcepts = function() {
+    $scope.loadEditPanelConcepts = function () {
 
       console.debug('edit.js: task detected', $scope.taskKey);
       $scope.getEditPanel();
@@ -186,56 +182,47 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.savedList = uiState;
           }
 
-          // set editing flags
-          
         }
       );
     };
-    
-    $scope.getEditPanel = function() {
-        scaService.getUiStateForTask(
-            $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-            .then(function (uiState) {
-              $scope.concepts = [];
-              if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-                $scope.editList = [];
-              }
-              else {
-                $scope.editList = uiState;
-                for (var i = 0; i < $scope.editList.length; i++) {
-                  $scope.addConceptToListFromId($scope.editList[i]);
-                }
-              }
 
-              // set editing flags
-              
-
+    $scope.getEditPanel = function () {
+      scaService.getUiStateForTask(
+        $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
+        .then(function (uiState) {
+          $scope.concepts = [];
+          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+            $scope.editList = [];
+          }
+          else {
+            $scope.editList = uiState;
+            for (var i = 0; i < $scope.editList.length; i++) {
+              $scope.addConceptToListFromId($scope.editList[i]);
             }
-          );
-    };
-    
-    $scope.getClassificationEditPanel = function(){
-        scaService.getUiStateForTask(
-            $routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel')
-            .then(function (uiState) {
-              $scope.concepts = [];
-              if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-                $scope.classificationEditList = [];
-              }
-              else {
-                $scope.classificationEditList = uiState;
-                for (var i = 0; i < $scope.classificationEditList.length; i++) {
-                  $scope.addConceptToListFromId($scope.classificationEditList[i]);
-                }
-              }
+          }
 
-              // set editing flags
-              
-
-            }
-          );   
+        }
+      );
     };
 
+    $scope.getClassificationEditPanel = function () {
+      scaService.getUiStateForTask(
+        $routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel')
+        .then(function (uiState) {
+          $scope.concepts = [];
+          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+            $scope.classificationEditList = [];
+          }
+          else {
+            $scope.classificationEditList = uiState;
+            for (var i = 0; i < $scope.classificationEditList.length; i++) {
+              $scope.addConceptToListFromId($scope.classificationEditList[i]);
+            }
+          }
+
+        }
+      );
+    };
 
     $scope.setView = function (name) {
 
@@ -304,7 +291,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
       }
 
-      /*  // if first view set, retrieve persisted layout state and apply
+      /*       // if first view set, retrieve persisted layout state and apply
        if (!$rootScope.layout) {
        scaService.getUiStateForUser('page-layouts').then(function (response) {
        $rootScope.layout = response;
@@ -380,7 +367,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       return;
     }
 
-
     /**
      * edit.js-specific helper function to return full boostrap col names
      * May need to change depending on responsive needs
@@ -453,40 +439,37 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           $scope.concepts.push(response);
-        console.log($routeParams);
-          if ($routeParams.mode === 'classification')
-          {
-              if($scope.classificationEditList.indexOf(conceptId) === -1)
-              {
-                $scope.updateClassificationEditListUiState();
-              }
+          console.log($routeParams);
+          if ($routeParams.mode === 'classification') {
+            if ($scope.classificationEditList.indexOf(conceptId) === -1) {
+              $scope.updateClassificationEditListUiState();
+            }
           }
 
           else if ($scope.editList.indexOf(conceptId) === -1) {
             console.debug('updating');
             $scope.updateEditListUiState();
-                    // update edited item flagging
+            // update edited item flagging
           }
         }, function (error) {
 
           // if an error, remove from edit list (if exists)
           if ($scope.editList.indexOf(conceptId) !== -1) {
             console.debug('updating');
-            $scope.updateEditListUiState(); // force update the ui state
-            
+            $scope.updateEditListUiState();      // force update the ui state
+
           }
 
         }).finally(function () {
           // send loading notification
-          if ($routeParams.mode === 'classification')
-          {
-              if ($scope.concepts.length === $scope.classificationEditList.length) {
-                notificationService.sendMessage('All concepts loaded', 10000, null);
-                $scope.updateClassificationEditListUiState();
-              } else {
-                // send loading notification for user display
-                notificationService.sendMessage('Loading concepts...', 10000, null);
-              }
+          if ($routeParams.mode === 'classification') {
+            if ($scope.concepts.length === $scope.classificationEditList.length) {
+              notificationService.sendMessage('All concepts loaded', 10000, null);
+              $scope.updateClassificationEditListUiState();
+            } else {
+              // send loading notification for user display
+              notificationService.sendMessage('Loading concepts...', 10000, null);
+            }
           }
           else if ($scope.concepts.length === $scope.editList.length) {
             notificationService.sendMessage('All concepts loaded', 10000, null);
@@ -515,7 +498,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendWarning('Concept ' + $scope.concepts[i].fsn + ' already in list', 5000);
 
           // update the stale flags
-          
+
           return;
         }
       }
@@ -532,7 +515,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     };
 
-// helper function to save current edit list (task view only)
+    // helper function to save current edit list (task view only)
     $scope.updateEditListUiState = function () {
       if ($scope.taskKey) {
         console.log('Updating edit list');
@@ -550,7 +533,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'edit-panel', conceptIds);
       }
     };
-    
+
     // helper function to save current edit list (classification view only)
     $scope.updateClassificationEditListUiState = function () {
       if ($scope.taskKey) {
@@ -565,9 +548,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel', conceptIds);
       }
     };
-    
 
-// watch for concept selection from the edit sidebar
+    // watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
 
       console.debug('editConcept', data);
@@ -579,7 +561,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if ($scope.concepts[i].conceptId === conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
-          
+
           return;
         }
       }
@@ -588,12 +570,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.editList.push(data.conceptId);
       $scope.updateEditListUiState();
 
-      // set editing flags
-      
-
     });
 
-// watch for concept cloning from the edit sidebar
+    // watch for concept cloning from the edit sidebar
     $scope.$on('cloneConcept', function (event, data) {
       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       if (!data || !data.conceptId) {
@@ -633,8 +612,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           $timeout(function () {
             $scope.updateEditListUiState();
 
-            // set editing flags
-            
           }, 1000);
 
         }
@@ -691,7 +668,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-// watch for removal request from concept-edit
+    // watch for removal request from concept-edit
     $scope.$on('stopEditing', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot remove concept: concept must be supplied');
@@ -717,14 +694,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // otherwise, editing view, remove from edit list
-      else if($scope.thisView === 'classification'){
+      else if ($scope.thisView === 'classification') {
         // remove the concept
         var index = $scope.concepts.indexOf(data.concept);
         $scope.concepts.splice(index, 1);
         $scope.updateClassificationEditListUiState();
 
-        // set editing flags
-        
       }
       else {
 
@@ -739,12 +714,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.splice(editIndex, 1);
         $scope.updateEditListUiState();
 
-        // set editing flags
-        
       }
     });
 
-// creates a blank (unsaved) concept in the editing list
+    // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       // check if an unsaved concept already exists
@@ -761,7 +734,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.updateEditListUiState();
     };
 
-// removes concept from editing list (unused currently)
+    // removes concept from editing list (unused currently)
     $scope.closeConcept = function (index) {
       if ($scope.concepts) {
         $scope.concepts.splice(index, 1);
@@ -769,11 +742,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 ////////////////////////////////////////
-// Classification functions           //
+    // Classification functions           //
 ////////////////////////////////////////
 
-// get the various elements of a classification once it has been
-// retrieved
+    // get the various elements of a classification once it has been
+    // retrieved
     $scope.setClassificationComponents = function () {
 
       if (!$scope.classificationContainer || !$scope.classificationContainer.id) {
@@ -789,39 +762,35 @@ angular.module('singleConceptAuthoringApp.edit', [
       // get equivalent concepts if detected
       if ($scope.classificationContainer.equivalentConceptsFound) {
         snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $scope.targetBranch).then(function (equivalentConcepts) {
-            equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
-            $scope.classificationContainer.equivalentConcepts = [];
-            angular.forEach(equivalentConcepts, function(item){
-                console.log(item.equivalentConcepts);
-                if(item.equivalentConcepts.length === 2)
-                {
-                    $scope.classificationContainer.equivalentConcepts.push(item.equivalentConcepts);
+          equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+          $scope.classificationContainer.equivalentConcepts = [];
+          angular.forEach(equivalentConcepts, function (item) {
+            console.log(item.equivalentConcepts);
+            if (item.equivalentConcepts.length === 2) {
+              $scope.classificationContainer.equivalentConcepts.push(item.equivalentConcepts);
+            }
+            else {
+              var key = item.equivalentConcepts[0];
+              angular.forEach(item.equivalentConcepts, function (equivalence) {
+                console.log(item);
+                if (equivalence !== key) {
+                  var newEq = [];
+                  newEq.push(key);
+                  newEq.push(equivalence);
+                  $scope.classificationContainer.equivalentConcepts.push(newEq);
                 }
-                else
-                {
-                    var key = item.equivalentConcepts[0];
-                    angular.forEach(item.equivalentConcepts, function(equivalence){
-                        console.log(item);
-                        if(equivalence !== key)
-                        {
-                            var newEq = [];
-                            newEq.push(key);
-                            newEq.push(equivalence);
-                            $scope.classificationContainer.equivalentConcepts.push(newEq);
-                        }
-                    });
-                }
-            });
-            console.log($scope.classificationContainer.equivalentConcepts);
+              });
+            }
           });
+          console.log($scope.classificationContainer.equivalentConcepts);
+        });
       } else {
         $scope.classificationContainer.equivalentConcepts = [];
       }
-        
 
     };
 
-// function to get the latest classification result
+    // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
       if (!$scope.taskKey) {
@@ -851,10 +820,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 //////////////////////////////////////////
-// Latest Validation
+    // Latest Validation
 //////////////////////////////////////////
 
-// function to get the latest validation result
+    // function to get the latest validation result
     $scope.getLatestValidation = function () {
 
       // if no task specified, retrieve for project
@@ -879,10 +848,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 //////////////////////////////////////////
-// Review and Feedback
+    // Review and Feedback
 //////////////////////////////////////////
 
-// get latest review
+    // get latest review
     $scope.getLatestReview = function () {
       // if no task specified, retrieve for project
       if (!$scope.taskKey) {
@@ -897,139 +866,33 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-//////////////////////////////////////////
-// Conflict Report & Controls
-//////////////////////////////////////////
+    //////////////////////////////////////////
+    // Conflict Report & Controls
+    //////////////////////////////////////////
 
-// Initialize concept edit arrays, one for each branch
-// These are used for the side-by-side concept-edit panels
-    $scope.conflictConceptsBase = [];
-    $scope.conflictConceptsBranch = [];
-
-// Listen for Branch Divergence in order to trigger a conflicts rpoert
-// refresh,  triggered from taskDetail.js on either (a) initialization
-// where a task is in DIVERGED state, or (b) notification of task state
-// change to DIVERGED
-//
-// NOTE:  This happens in parallel with notification.branchState, may
-// want to revisit/fold together in future
-    $rootScope.$on('branchDiverged', function (event) {
-
-      if ($routeParams.taskKey) {
-        scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.conflictsContainer.conflicts = response ? response : {};
-        });
-      } else {
-        scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
-          $scope.conflictsContainer.conflicts = response ? response : {};
-        });
-      }
-    });
-
-// Get latest conflict report -- retrieve for project only
-// Tasks are retrieved on detection of diverged state only
-// using the rootScope.branchDiverged notification
+    // Get latest conflict report
     $scope.getLatestConflictsReport = function () {
 
       if (!$scope.taskKey) {
-        scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
-          $scope.conflictsContainer.conflicts = response ? response : {};
-        });
+        //scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
+        //  $scope.conflictsContainer.conflicts = response ? response : {};
+        //});
+      } else {
+        //scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        //  $scope.conflictsContainer.conflicts = response ? response : {};
+        //});
       }
     };
 
-    /**
-     * Create conflict concept pairs to display for side-by-side conflict
-     * view
-     */
-    $scope.setConflictConceptPairs = function () {
-      var conflictConceptPairs = [];
+    // Listen for Branch Divergence in order to trigger a conflicts rpoert
+    // refresh,  triggered from taskDetail.js on either (a) initialization
+    // where a task is in DIVERGED state, or (b) notification of task state
+    // change to DIVERGED
+//
+      $rootScope.$on('branchDiverged', function (event) {
 
-      // cycle over base conflict concepts
-      angular.forEach($scope.conflictConceptsBase, function (conflictConceptBase) {
-
-        var conflictConceptPair = {sourceConcept: conflictConceptBase};
-
-        // cycle over the branch conflict concepts for a match
-        angular.forEach($scope.conflictConceptsBranch, function (conflictConceptBranch) {
-          if (conflictConceptBranch.conceptId === conflictConceptBase.conceptId) {
-            conflictConceptPair.targetConcept = conflictConceptBranch;
-          }
-        });
-        conflictConceptPairs.push(conflictConceptPair);
+        $scope.getLatestConflictsReport();
       });
-
-      $scope.conflictConceptPairs = conflictConceptPairs;
-    };
-
-// watch for concept conflict selection from the conflicts view
-    $scope.$on('editConflictConcepts', function (event, data) {
-
-      if (!data) {
-        return;
-      }
-
-      var conceptIds = data.conceptIds;
-
-      if (!conceptIds || !Array.isArray(conceptIds)) {
-        return;
-      }
-
-      // remove any concept ids that already exist
-      angular.forEach($scope.conflictConceptsBranch, function (concept) {
-        if (conceptIds.indexOf(concept.id) !== -1) {
-          conceptIds.splice(conceptIds.indexOf(concept.id), 1);
-        }
-      });
-
-      // send loading notification for user display
-      notificationService.sendMessage('Loading concepts for conflict review...', 5000, null);
-
-      var finalLength = $scope.conflictConceptsBase + conceptIds.length;
-
-      // cycle over requested ids
-      angular.forEach(conceptIds, function (conceptId) {
-
-        // get the task branch concept
-        snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
-
-            // push to branch list
-            $scope.conflictConceptsBranch.push(response);
-
-            // check if all requested concepts loaded
-            if (parseInt($scope.conflictConceptsBranch.length) === parseInt(finalLength) && parseInt($scope.conflictConceptsBase.length) === parseInt(finalLength)) {
-              notificationService.sendMessage('Successfully loaded concepts in conflict', 5000);
-            }
-
-            // set the pairs
-            $scope.setConflictConceptPairs();
-
-          },
-          function (error) {
-            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.targetBranch, 0);
-          }
-        );
-
-        // get the project base concept
-        snowowlService.getFullConcept(conceptId, $scope.sourceBranch).then(function (response) {
-
-            // push to base list
-            $scope.conflictConceptsBase.push(response);
-
-            // check if all requested concepts loaded
-            if (parseInt($scope.conflictConceptsBranch.length) === parseInt(finalLength) && parseInt($scope.conflictConceptsBase.length) === parseInt(finalLength)) {
-              notificationService.sendMessage('Successfully loaded concepts in conflict', 5000);
-            }
-
-            // set the pairs
-            $scope.setConflictConceptPairs();
-          },
-          function (error) {
-            notificationService.sendError('Could not load concept ' + conceptId + ' on branch ' + $scope.sourceBranch, 0);
-          }
-        );
-      });
-    });
 
     /**
      * Set page functionality based on branch state
@@ -1040,7 +903,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       switch (branchState) {
         case 'FORWARD':
           $scope.canRebase = false;
-          $scope.canPromote = true;
+          $scope.canPromote = $scope.isOwnTask;
           $scope.canConflict = true;
           break;
         case 'UP_TO_DATE':
@@ -1049,13 +912,12 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.canConflict = true;
           break;
         case 'BEHIND':
-          $scope.canRebase = true;
+          $scope.canRebase = $scope.isOwnTask;
           $scope.canPromote = false;
           $scope.canConflict = false;
           break;
         case 'STALE':
-          // TODO
-          $scope.canRebase = true;
+          $scope.canRebase = $scope.isOwnTask;
           $scope.canPromote = false;
           $scope.canConflict = true;
           break;
@@ -1074,7 +936,7 @@ angular.module('singleConceptAuthoringApp.edit', [
            * conflicts moved to conceptsResolved)
            *
            */
-          $scope.canRebase = true;
+          $scope.canRebase = $scope.isOwnTask; // cannot rebase if not own task
           $scope.canPromote = false;
           $scope.canConflict = true;
           break;
@@ -1086,11 +948,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-// watch for task updates
-// NOTE This is duplicated in taskDetail.js, propagate any changes
-// TODO: Chris Swires -- no changes should be needed here, but this is
-// the trigger for branch state changes, data is the entirely of the
-// notification object processed in scaService.js
+    // watch for task updates
+    // NOTE This is duplicated in taskDetail.js, propagate any changes
+    // TODO: Chris Swires -- no changes should be needed here, but this is
+    // the trigger for branch state changes, data is the entirely of the
+    // notification object processed in scaService.js
     $scope.$on('notification.branchState', function (event, data) {
 
       // check if notification matches this branch
@@ -1099,9 +961,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     });
 
-////////////////////////////////////
-// Rebase & Promote
-/////////////////////////////////////
+    ////////////////////////////////////
+    // Rebase & Promote
+    /////////////////////////////////////
 
     /**
      * Rebase the current project or task
@@ -1168,28 +1030,35 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 //////////////////////////////////////////
-// Initialization
+    // Initialization
 //////////////////////////////////////////
 
-// start monitoring of task
+    // if a task, get the task for assigned user information
+    if ($routeParams.taskKey) {
+      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+        $scope.isOwnTask = accountService.getRoleForTask(response) === 'REVIEWER';
+      });
+    }
+
+    // start monitoring of task
     scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
-// TODO: Chris Swires -- delete this once the monitorTask functionality
-// complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
+    // TODO: Chris Swires -- delete this once the monitorTask functionality
+    // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
     snowowlService.getBranch($scope.targetBranch).then(function (response) {
       setBranchFunctionality(response ? response.state : null);
     });
 
-// initialize the container objects
+    // initialize the container objects
     $scope.classificationContainer = {
       id: null,
-      status: 'Loading...',  // NOTE: Overwritten by validation field
+      status: 'Loading...',       // NOTE: Overwritten by validation field
       equivalentConcepts: [],
       relationshipChanges: []
     };
     $scope.validationContainer = {
-      executionStatus: 'Loading...',  // NOTE: Overwritten by validation
-                                      // field
+      executionStatus: 'Loading...',       // NOTE: Overwritten by validation
+                                           // field
       report: null
     };
     $scope.feedbackContainer = {
@@ -1197,8 +1066,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       feedback: null
     };
 
-// initialize with empty concepts list
-// but do not initialize conflictsToResolve, conflictsResolved
+    // initialize with empty concepts list
+    // but do not initialize conflictsToResolve, conflictsResolved
     $scope.conflictsContainer = {
       conflicts: null
     };
@@ -1208,10 +1077,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('feedback');
     };
 
-// populate the container objects
+    // populate the container objects
     $scope.getLatestClassification();
     $scope.getLatestValidation();
-//$scope.getLatestReview();
     $scope.getLatestConflictsReport();
 
   }

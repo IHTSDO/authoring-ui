@@ -93,8 +93,12 @@
         </div>
       </ul>
 
+      <div class="tab-content row m-t-10 col-sm-12 no-padding" ng-if="!feedbackContainer.review">
+        Loading review...
+      </div>
+
       <!-- Tab panes -->
-      <div class="tab-content row m-t-10 col-sm-12 no-padding">
+      <div class="tab-content row m-t-10 col-sm-12 no-padding" ng-if="feedbackContainer.review">
 
         <!-- Concepts To Review -->
         <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
@@ -107,6 +111,7 @@
             <tr>
               <td></td>
               <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"
+                         placeholder="Filter concepts"
                          ng-model="conceptsToReviewSearchStr"
                          ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
                          ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
@@ -190,6 +195,7 @@
               <tr>
                 <td></td>
                 <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"
+                           placeholder="Filter concepts"
                            ng-model="conceptsReviewedSearchStr"
                            ng-change="reloadConceptsReviewed(conceptsReviewedSearchStr)"
                            ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
@@ -281,18 +287,24 @@
          ng-show="subjectConcepts.length > 0">
 
 
+
       <div class="col-md-12 no-padding concept-filter">
         <input type='text' class="feedback-search " placeholder='Search concepts...'
                ui-on-drop=""
                ng-model='conceptFilter'
-               ng-model-options='{ debounce: 1000 }'
-               ng-change='openSearchModal(conceptFilter)'>
+               typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+               typeahead-focus-first="false"
+               typeahead-wait-ms="500"
+               typeahead-on-select="addConceptToFeedback($item)"
+               typeahead-editable="false" typeahead-min-length="3">
       </div>
 
 
       <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
                     ng-model="htmlVariable"
-                    ta-toolbar="[['bold','italics', 'ul', 'ol', 'redo', 'undo']]"></text-angular>
+                    ta-toolbar="[['bold','italics', 'ul', 'ol', 'redo', 'undo', 'createLink']]"></text-angular>
+
+      {{htmlVariable.length}} / ?? characters
 
       <div class="col-md-12 no-padding p-10 m-t-10">
         <div class="pull-left follow-up" ng-show="role === 'REVIEWER'"><span

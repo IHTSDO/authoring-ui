@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'accountService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, accountService, notificationService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -706,35 +706,84 @@ angular.module('singleConceptAuthoringApp')
             getViewedFeedback();
           };
 
-          scope.openSearchModal = function (str) {
-            var modalInstance = $modal.open({
-              templateUrl: 'shared/search-modal/searchModal.html',
-              controller: 'searchModalCtrl',
-              resolve: {
-                searchStr: function () {
-                  return str;
+          scope.getConceptsForTypeahead = function (searchStr) {
+            console.debug('entered getConceptsForTypeAhead', searchStr);
+            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+
+              // remove duplicates
+              for (var i = 0; i < response.length; i++) {
+                console.debug('checking for duplicates', i, response[i]);
+                for (var j = response.length - 1; j > i; j--) {
+                  if (response[j].concept.conceptId === response[i].concept.conceptId) {
+                    console.debug(' duplicate ', j, response[j]);
+                    response.splice(j, 1);
+                    j--;
+                  }
                 }
               }
-            });
 
-            modalInstance.result.then(function (result) {
-              console.debug('selected:', result);
-
-              scope.htmlVariable += ' ' +
-                '<p class="clearfix"><a ng-click="addToEdit(' + result.conceptId + ')">' + result.fsn + '<span class="md md-edit"></span></a></p>' + ' ';
-
-              console.debug(scope.htmlVariable);
-            }, function () {
+              return response;
             });
           };
+/*
+          // testing creation of image
+          var can = document.createElement('canvas');
+          var ctx = can.getContext('2d');
 
+          ctx.fillText("Hello World!",10,50);
+
+          var img = new Image();
+          img.src = can.toDataURL();
+
+          console.debug(img, img.src);*/
+
+
+          function createConceptImg(id, fsn) {
+            // testing creation of image
+            var can = document.createElement('canvas');
+            var ctx = can.getContext('2d');
+
+            ctx.canvas.width = ctx.measureText(fsn + ' ' + String.fromCharCode(parseInt('\uf040',16))).width;
+            ctx.canvas.height = 10;
+
+            ctx.font = 'FontAwesome';
+            ctx.fillStyle = '#90CAF9';
+            ctx.fillText(fsn  + ' ' + String.fromCharCode(parseInt('\uf040',16)),0,8);
+
+            var img = new Image();
+            img.src = ctx.canvas.toDataURL();
+
+            console.debug(img, img.src);
+
+            return '<img style="cursor:pointer" src="' + img.src + '" ng-click=addToEdit(' + id + ')">';
+          }
+
+          /**
+           * Function to add search result from typeahead to the feedback message
+           * @param concept the concept object
+           */
+          scope.addConceptToFeedback = function (concept) {
+            console.debug(concept);
+
+            scope.htmlVariable += ' ' + createConceptImg(concept.concept.conceptId, concept.concept.fsn) + ' ';
+            console.debug(scope.htmlVariable);
+
+            //scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.concept.conceptId + ')">' + concept.concept.fsn + '</a>&nbsp&nbsp&nbsp<p></p>';
+          };
+
+          /**
+           * Function to add a dragged concept from the review/resolved list to the feedback message
+           * @param concept the concept object
+           */
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
 
-            scope.htmlVariable += ' ' +
-              '<p class="clearfix"><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '<span class="md md-edit"></span></a></p>' + ' ';
+            //scope.htmlVariable += ' ' +  createConceptImg(concept.conceptId, concept.fsn) + ' ';
+
+            scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '</a>&nbsp&nbsp&nbsp<p></p>';
 
             console.debug(scope.htmlVariable);
+
           };
 
           scope.submitFeedback = function (requestFollowup) {
@@ -779,6 +828,8 @@ angular.module('singleConceptAuthoringApp')
         }
 
       };
+
+
 
     }])
 ;

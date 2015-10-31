@@ -20,19 +20,22 @@ angular.module('singleConceptAuthoringApp')
 
         // parent function to invoke updating the ui state for this concept's
         // list (not required)
-        uiStateUpdateFn: '&?'
+        uiStateUpdateFn: '&?',
+
+        // styling for concept elements, as array [id0 : {message, style,
+        // fields : {field0 : {message, style}, field1 : {...}}, id1 : ....]
+        componentStyles: '='
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
       link: function (scope, element, attrs, linkCtrl) {
 
-        console.debug('conceptEdit element', element);
+        console.debug('conceptEdit styles', scope.componentStyles);
 
-        $timeout(function() {
+        $timeout(function () {
           scope.popoverDirection = document.getElementById('testId').getBoundingClientRect().left < 500 ? 'bottom' : 'left';
           console.debug('popover direction detection', scope.popoverDirection, document.getElementById('testId').getBoundingClientRect().left);
         }, 100);
-
 
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
@@ -134,7 +137,7 @@ angular.module('singleConceptAuthoringApp')
         ];
 
         // Retrieve inactivation reasons from metadata service
-        var inactivateComponentReasons =  metadataService.getComponentInactivationReasons();
+        var inactivateComponentReasons = metadataService.getComponentInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
 
         console.debug('conceptEdit inactivateComponentReasons', inactivateComponentReasons, inactivateAssociationReasons);
@@ -548,7 +551,7 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          attrRels.sort(function(a, b) {
+          attrRels.sort(function (a, b) {
             if (a.groupId === b.groupId) {
               return a.target.fsn > b.target.fsn;
             } else {
@@ -722,10 +725,6 @@ angular.module('singleConceptAuthoringApp')
          */
         scope.toggleDescriptionActive = function (description) {
           console.debug('toggling description active', description);
-
-
-
-
 
           // if inactive, simply set active
           if (!description.active) {
@@ -1123,7 +1122,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
           modalInstance.result.then(function (results) {
-              console.log(results);
+            console.log(results);
             deferred.resolve(results);
           }, function () {
             deferred.reject();
@@ -1344,15 +1343,15 @@ angular.module('singleConceptAuthoringApp')
           autoSave();
         };
 
-        scope.getDragImageForConcept = function(fsn) {
+        scope.getDragImageForConcept = function (fsn) {
           return fsn;
         };
 
-        scope.getDragImageForRelationship = function(relationship) {
+        scope.getDragImageForRelationship = function (relationship) {
           return relationship.groupId + ', ' + relationship.type.fsn + ' -> ' + relationship.target.fsn;
         };
 
-        scope.getDragImageForDescription = function(description) {
+        scope.getDragImageForDescription = function (description) {
           return description.term;
         };
 
@@ -1773,10 +1772,40 @@ angular.module('singleConceptAuthoringApp')
         };
 
         //////////////////////////////////////////////////////////////////////////
-        // Toggle directionality of display based on current position of element
-        //////////////////////////////////////////////////////////////////////////
+        // Conditional component styling
+        // ////////////////////////////////////////////////////////////////////////
+
+        var nStyles = 0;
+
+        scope.getComponentStyle = function (id, field, defaultStyle) {
 
 
+          // if no styless supplied, use defaults
+          if (!scope.componentStyles) {
+            return defaultStyle;
+          }
+
+          // if styling indicated for this component
+          else {
+
+            // key is SCTID or SCTID-field pair e.g. 1234567 or 1234567-term
+            var key = id + (field ? '-' + field : '');
+
+            if (nStyles === 0) {
+              console.debug(scope.componentStyles);
+            }
+
+            if (nStyles++ < 10) {
+              console.debug(id, field, defaultStyle, key, scope.componentStyles.hasOwnProperty(key), scope.componentStyles[key] ? scope.componentStyles[key].style : 'No styles');
+            }
+
+            if (scope.componentStyles.hasOwnProperty(key)) {
+              return scope.componentStyles[key].style;
+            } else {
+              return defaultStyle;
+            }
+          }
+        };
 
       }
     }

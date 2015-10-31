@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', '$timeout',
-    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, $timeout) {
+  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', '$timeout',
+    function ($rootScope, $filter, NgTableParams, $routeParams, scaService, snowowlService, $timeout) {
       return {
         restrict: 'A',
         transclude: false,
@@ -27,6 +27,7 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.viewTop = true;
           scope.displayStatus = '';
+          
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
@@ -60,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
 
-            if (scope.validationContainer['report']) {
+            if (scope.validationContainer.report) {
 
               // get the end time if specified
               if (scope.validationContainer.report.rvfValidationResult.endTime) {
@@ -108,8 +109,8 @@ angular.module('singleConceptAuthoringApp')
           scope.failureTableParams = new NgTableParams({
               page: 1,
               count: 10,
-              sorting: {concept: 'asc'},
-              orderBy: 'concept'
+              sorting: {userModified: 'desc'},
+              orderBy: 'userModified'
             },
             {
               total: failures ? failures.length : 0,
@@ -152,24 +153,57 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewFailures = function (assertionFailure) {
 
-
+            
             scope.assertionFailureViewed = assertionFailure.assertionText;
             scope.viewTop = false;
 
             // convert instances into table objects
             var objArray = [];
-
-            angular.forEach(assertionFailure.firstNInstances, function (instance) {
+            if(!scope.changedList)
+            {
+              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                  scope.changedList = response; 
+                  angular.forEach(assertionFailure.firstNInstances, function (instance) {
+                      var obj = {
+                        concept: null,
+                        errorMessage: instance,
+                        selected: false,
+                        userModified: false
+                      };
+                      angular.forEach(scope.changedList.concepts, function (concept) {
+                          if(instance.conceptId === concept.id)
+                          {
+                            obj.userModified = true;   
+                          }
+                      });
+                      objArray.push(obj);
+                    });
+                  failures = objArray;
+                  scope.failureTableParams.reload();
+                });
+                
+            }
+            
+              
+            else{
+              angular.forEach(assertionFailure.firstNInstances, function (instance) {
               
               var obj = {
                 concept: null,
                 errorMessage: instance,
-                selected: false
+                selected: false,
+                userModified: false
               };
+              angular.forEach(scope.changedList.concepts, function (concept) {
+                  if(instance.conceptId === concept.id)
+                  {
+                    obj.userModified = true;   
+                  }
+              });
+              
               objArray.push(obj);
-
-            });
-
+              });
+            }
             // TODO Set edit enable/disable for edit panel loading
 
             // set failures to trigger watch
