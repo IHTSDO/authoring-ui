@@ -712,6 +712,10 @@ angular.module('singleConceptAuthoringApp')
           if (index !== -1) {
             scope.concept.descriptions.splice(index, 1);
             autoSave();
+            if(scope.concept.descriptions.length === 0)
+            {
+                scope.addDescription(0);
+            }
           } else {
             console.error('Error removing description; description not found');
           }
@@ -990,6 +994,10 @@ angular.module('singleConceptAuthoringApp')
           if (index !== -1) {
             scope.concept.relationships.splice(index, 1);
             autoSave();
+            if(scope.concept.relationships.length === 0)
+            {
+                scope.addIsaRelationship(0);
+            }
           } else {
             console.error('Error removing relationship; relationship not found');
           }
