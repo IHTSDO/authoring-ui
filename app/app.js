@@ -32,6 +32,7 @@ angular
     'singleConceptAuthoringApp.home',
     'singleConceptAuthoringApp.project',
     'singleConceptAuthoringApp.projects',
+    'singleConceptAuthoringApp.myProjects',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.taxonomyPanel',

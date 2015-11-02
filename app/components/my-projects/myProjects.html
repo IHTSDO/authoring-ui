@@ -42,12 +42,12 @@
 
         <div class="row" style="margin-right:0px;">
           <div class="col-md-6">
-            <h3 class="table-title p-t-20">All Projects</h3>
+            <h3 class="table-title p-t-20">My Projects</h3>
           </div>
           <div class="col-md-6">
             <div class="table-search">
               <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
-                     placeholder="Search All Projects" autofocus/>
+                     placeholder="Search My Projects" autofocus/>
             </div>
           </div>
 
@@ -99,7 +99,17 @@
                 </button>
 
               </td>
+              <!--
+              As a project lead, I want to be able to see the status of all my projects in relationship to the MAIN release line and its tasks (child branches).
 
+This information will enable project leads to make the decision on when to rebase and/or promote.
+
+The status' are:
+UP_TO_DATE - the branch is up-to-date with its parent there are no changes neither on the branch or on its parent
+FORWARD - the branch has at least one commit while the parent is still unchanged. Merging a branch requires this state, otherwise it will return a HTTP 409 Conflict.
+BEHIND - the parent of the branch has at least one commit while the branch is still unchanged. The branch can be safely rebased with its parent.
+DIVERGED - both parent and branch have at least one commit. The branch must be rebased first before it can be safely merged back to its parent.
+STALE - the branch is no longer in relation with its former parent, and should be deleted. -->
               <td data-title="'Status'" sortable="'branchState'">
                 <span class="badge" ng-class="'{{getBranchStateText(project)}}'">{{getBranchStateText(project)}}</span>
               </td>
@@ -114,3 +124,69 @@
 
 </div>
 
+
+<!-- Removed by PG until Review Tasks are functional
+<section class="tables-data" ng-controller="HomeCtrl">
+  <div class="card">
+
+   <div class="row">
+     <div class="col-md-4">
+       <h3 class="table-title p-20">My Review Tasks</h3>
+     </div>
+     <div class="col-md-7">
+       <div class="table-search">
+         <input type="text" ng-model="tableParams.filter()['search']" class="form-control" placeholder="Search My Tasks" autofocus />
+       </div>
+     </div>
+        <div class="col-md-1">
+     <span class="pull-left p-t-20 ">
+                 <button type="button" class="btn btn-round btn-info ng-scope " bs-tooltip="" title="Total Task Count">{{reviewTasks.length}}<div class="ripple-wrapper"></div></button>
+              <button type="button" class="btn btn-round btn-default " title="Create New Task" data-template="shared/project/project.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div>   </button> </span>
+   </div>
+   </div>
+
+   <div class="table-responsive white">
+
+     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
+            class="table table-full table-full-small">
+       <tr ng-repeat="project in reviewTasks">
+
+         <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'"><a href="#/edit">{{project.name}}</a>
+         </td>
+         <td data-title="'Project'" sortable="'project'" filter="{ 'project': 'text' }" sortable="'project'">
+           {{project.project}}
+         </td>
+         <td data-title="'Last Modified'" sortable="'modified'">
+           {{project.modified | date: "yyyy-MM-dd"}}
+         </td>
+         <td data-title="'Classification Results'" sortable="'classification'">
+           <button type="button" class="btn btn-round btn-default cyan lighten-2" bs-tooltip=""
+                   title="Classification Results"><span class="md md-notifications "></span>
+             <div class="ripple-wrapper"></div>
+           </button>
+
+         </td>
+
+         <td data-title="'Feedback'" sortable="'feedback'">
+           <button type="button" class="btn btn-round btn-default blue darken-2" bs-tooltip=""
+                   title="Feedback Available"><span class="md md-mail "></span>
+             <div class="ripple-wrapper"></div>
+           </button>
+         </td>
+         <td data-title="'Status'" sortable="'status'">
+           {{project.status}}
+         </td>
+       </tr>
+     </table>
+
+   </div>
+
+ </div>
+
+ </div>
+
+
+
+</section>
+-->
+</div>

@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('singleConceptAuthoringApp.projects', [
+angular.module('singleConceptAuthoringApp.myProjects', [
   //insert dependencies here
   'ngRoute',
   'ngTable'
@@ -8,20 +8,22 @@ angular.module('singleConceptAuthoringApp.projects', [
 
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/projects', {
-        controller: 'ProjectsCtrl',
-        templateUrl: 'components/projects/projects.html'
+      .when('/my-projects', {
+        controller: 'MyProjectsCtrl',
+        templateUrl: 'components/my-projects/myProjects.html'
       });
   })
 
-  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q) {
+
+    console.debug('entered my projects ctrl');
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
 
     // TODO Placeholder, as we only have the one tab at the moment
-    $rootScope.pageTitle = "All Projects"
+    $rootScope.pageTitle = "My Projects"
     $scope.projects = null;
 
     // declare table parameters
@@ -69,44 +71,17 @@ angular.module('singleConceptAuthoringApp.projects', [
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
         controller: 'taskCtrl',
-          resolve: {
-            task: function() {
-              return null;
-            }
-          }
-      });
-
-      modalInstance.result.then(function () {
-      }, function () {
-      });
-    };
-
-    // on successful set, reload table parameters
-    $scope.$watch('projects', function () {
-      if (!$scope.projects || $scope.projects.length == 0) {
-      }
-      else {
-        $scope.tableParams.reload();
-      }
-
-    }, true);
-
-    $scope.openCreateTaskModal = function () {
-      var modalInstance = $modal.open({
-        templateUrl: 'shared/task/task.html',
-        controller: 'taskCtrl',
         resolve: {
-            task: function() {
-              return null;
-            }
+          task: function () {
+            return null;
           }
+        }
       });
 
       modalInstance.result.then(function () {
       }, function () {
       });
     };
-
 
     $scope.getBranchStateText = function (project) {
       if (!project) {
@@ -130,27 +105,65 @@ angular.module('singleConceptAuthoringApp.projects', [
       }
     };
 
+    // on successful set, reload table parameters
+    $scope.$watch('projects', function () {
+      console.debug('projects changed', $scope.projects);
+      if (!$scope.projects || $scope.projects.length == 0) {
+      }
+      else {
+        $scope.tableParams.reload();
+      }
+
+    }, true);
+    function loadProjects(projectKeys) {
+      console.debug('load projects', projectKeys);
+      $scope.projects = [];
+      angular.forEach(projectKeys, function (projectKey) {
+        scaService.getProjectForKey(projectKey).then(function (response) {
+          $scope.projects.push(response);
+        })
+      })
+    }
 
     // Initialization:  get projects
     function initialize() {
 
-      $scope.projects = [];
+      var projectKeys = [];
+      var tasksDone = false;
+      var reviewTasksDone = false;
 
-      // get projects from all projects and append sample data
-      scaService.getProjects().then(function (response) {
-        if (!response || response.length == 0) {
-          $scope.projects = [];
-          return;
+      scaService.getTasks().then(function (response) {
+        angular.forEach(response, function (task) {
+          if (projectKeys.indexOf(task.projectKey) === -1) {
+            projectKeys.push(task.projectKey);
+          }
+
+        });
+        tasksDone = true;
+
+        if (reviewTasksDone) {
+          loadProjects(projectKeys)
+        }
+        ;
+      });
+
+      scaService.getReviewTasks().then(function (response) {
+        angular.forEach(response, function (task) {
+          if (projectKeys.indexOf(task.projectKey) === -1) {
+            projectKeys.push(task.projectKey);
+          }
+        });
+        reviewTasksDone = true;
+
+        if (tasksDone) {
+          loadProjects(projectKeys);
         }
 
-        $scope.projects = response;
-
-      }, function (error) {
-        // TODO Handle errors
       });
 
     }
 
     initialize();
+
   })
 ;
