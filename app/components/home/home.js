@@ -149,10 +149,8 @@ angular.module('singleConceptAuthoringApp.home', [
       });
 
       modalInstance.result.then(function (response) {
-        console.debug('modal closed with response', response);
-        if (response) {
+        
           loadTasks();
-        }
       }, function () {
       });
     };
