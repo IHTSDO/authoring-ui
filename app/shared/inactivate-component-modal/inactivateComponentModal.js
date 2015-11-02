@@ -77,29 +77,38 @@ angular.module('singleConceptAuthoringApp')
     }
 
     // get a single inbound relationship to get total number of relationships
-    snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, 1).then(function (response) {
+    snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, 0).then(function (response) {
       console.debug('inbound', response);
 
       // get the concept relationships again (all)
       snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, response.total).then(function (response2) {
 
+        // temporary array for preventing duplicate children
         var childrenIds = [];
-        $scope.children = [];
 
-        // set the inbound relationships
-        $scope.inboundRelationships = response2.inboundRelationships;
+        // initialize the arrays
+        $scope.inboundRelationships = [];
+        $scope.children = [];
 
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
-        angular.forEach($scope.inboundRelationships, function (item) {
-          item.sourceFsn = item.source.fsn;
-          item.typeFsn = item.type.fsn;
+        angular.forEach(response2.inboundRelationships, function (item) {
 
-          // if a child, and not already added (i.e. prevent STATED/INFERRED
-          // duplication), push to children
-          if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
-            childrenIds.push(item.source.id);
-            $scope.children.push(item);
+          console.debug('checking relationship', item.active, item);
+
+          if (item.active) {
+            item.sourceFsn = item.source.fsn;
+            item.typeFsn = item.type.fsn;
+
+            // if a child, and not already added (i.e. prevent STATED/INFERRED
+            // duplication), push to children
+            if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
+              childrenIds.push(item.source.id);
+              $scope.children.push(item);
+              $scope.inboundRelationships.push(item);
+            } else {
+              $scope.inboundRelationships.push(item);
+            }
           }
         });
 
@@ -145,8 +154,9 @@ angular.module('singleConceptAuthoringApp')
         orderBy: 'fsn'
       },
       {
-        total: $scope.descendants ? $scope.descendants.items.length : 0, // length of
-                                                                   // data
+        total: $scope.descendants ? $scope.descendants.items.length : 0, // length
+                                                                         // of
+        // data
         getData: function ($defer, params) {
 
           if (!$scope.descendants || $scope.descendants.length === 0) {
