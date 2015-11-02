@@ -1036,6 +1036,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // if a task, get the task for assigned user information
     if ($routeParams.taskKey) {
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+        $scope.task = response;
         $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
         console.log('init ownTask');
         console.log($scope.isOwnTask);
