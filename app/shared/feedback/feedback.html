@@ -317,7 +317,7 @@
                   ng-click="submitFeedback(requestFollowup)"
                   style="text-transform: none">Submit Feedback
           </button>
-          <button class="btn btn-default amber classify-buttons submit-validation" ng-click="startValidation()"
+          <button class="btn btn-default amber classify-buttons submit-validation" ng-click="htmlVariable = ''"
                   style="text-transform: none">Clear
           </button>
 
@@ -333,6 +333,9 @@
           </ul>
         </div>
       </div>
+
+      <hr>
+      {{htmlVariable}}
     </div>
 
 
