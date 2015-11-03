@@ -714,6 +714,14 @@ angular.module('singleConceptAuthoringApp')
         return null;
       });
     }
+      
+    function getAttributeValues(branch, attributeId, searchStr) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?termPrefix=*' + searchStr + '&expand=fsn&offset=0&limit=50').then(function (response) {
+        return response.data.items;
+      }, function (error) {
+        return null;
+      });
+    }
 
     ////////////////////////////////////////////
     // Method Visibility
@@ -757,7 +765,8 @@ angular.module('singleConceptAuthoringApp')
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
       getBranch: getBranch,
-      getDomainAttributes: getDomainAttributes
+      getDomainAttributes: getDomainAttributes,
+      getAttributeValues: getAttributeValues
 
     };
   }

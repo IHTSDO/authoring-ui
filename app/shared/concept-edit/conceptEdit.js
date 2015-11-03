@@ -1802,6 +1802,23 @@ angular.module('singleConceptAuthoringApp')
             response = response.filter(function(item){return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1});
             return response;
         };
+        scope.getConceptsForValueTypeahead = function (attributeId, searchStr) {
+          return snowowlService.getAttributeValues(scope.branch, attributeId, searchStr).then(function (response) {
+            // remove duplicates
+            for (var i = 0; i < response.length; i++) {
+              console.debug('checking for duplicates', i, response[i]);
+              for (var j = response.length - 1; j > i; j--) {
+                if (response[j].id === response[i].id) {
+                  response.splice(j, 1);
+                  j--;
+                }
+              }
+            }
+              console.log(response);
+            return response;
+          });
+        };
+          
           
         scope.setRelationshipTypeConceptFromMrcm = function (relationship, item) {
           if (!relationship || !item) {
