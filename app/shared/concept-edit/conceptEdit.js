@@ -118,6 +118,7 @@ angular.module('singleConceptAuthoringApp')
         scope.modules = snowowlService.getModules();
         scope.languages = snowowlService.getLanguages();
         scope.dialects = snowowlService.getDialects();
+        scope.allowedAttributes = [];
 
         // flag for viewing active components only. Defaults to true.
         scope.hideInactive = true;
@@ -1752,6 +1753,50 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendMessage('Error reverting concept');
             });
           }
+        };
+          
+        //////////////////////////////////////////////
+        // MRCM functions
+        //////////////////////////////////////////////
+        scope.getDomainAttributes = function() {
+            var idList = '';
+            angular.forEach(scope.concept.relationships, function (relationship) {
+                    if(relationship.type.conceptId === '116680003' && relationship.active === true)
+                    {
+                        idList += relationship.target.conceptId + ',';   
+                    }
+                  });
+            idList = idList.substring(0, idList.length - 1);
+            
+            snowowlService.getDomainAttributes(scope.branch, idList).then(function (response) {
+                scope.allowedAttributes = response.items;
+            });
+        };
+          
+        scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
+                    var changed = false;
+                    angular.forEach(scope.concept.relationships, function (relationship) {
+                        if(relationship.type.conceptId === '116680003' && relationship.active === true)
+                        {
+                            changed = true;   
+                        }
+                    });
+                    if(changed === true){
+                        scope.getDomainAttributes();
+                    }
+                });
+        scope.getConceptsForAttributeTypeahead = function (searchStr) {
+            var response = scope.allowedAttributes;
+            for (var i = 0; i < response.length; i++) {
+              for (var j = response.length - 1; j > i; j--) {
+                if (response[j].id === response[i].id) {
+                  response.splice(j, 1);
+                  j--;
+                }
+              }
+            }
+            response = response.filter(function(item){return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1});
+            return response;
         };
 
         //////////////////////////////////////////////
