@@ -298,9 +298,8 @@
                       typeahead="suggestion as suggestion.fsn for suggestion in getConceptsForAttributeTypeahead($viewValue)"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="500"
-                      typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
+                      typeahead-on-select="setRelationshipTypeConceptFromMrcm(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3">
-
 
             </textarea>
             <span class="pull-left md md-open-with drag-button-width "

@@ -1798,6 +1798,19 @@ angular.module('singleConceptAuthoringApp')
             response = response.filter(function(item){return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1});
             return response;
         };
+          
+        scope.setRelationshipTypeConceptFromMrcm = function (relationship, item) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+
+          console.debug('setting relationship type concept', relationship, item);
+
+          relationship.type.conceptId = item.id;
+          relationship.type.fsn = item.fsn;
+
+          scope.updateRelationship(relationship);
+        };
 
         //////////////////////////////////////////////
         // Attribute Removal functions
