@@ -716,7 +716,7 @@ angular.module('singleConceptAuthoringApp')
     }
       
     function getAttributeValues(branch, attributeId, searchStr) {
-      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?termPrefix=*' + searchStr + '&expand=fsn&offset=0&limit=50').then(function (response) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?termPrefix=' + searchStr + '*&expand=fsn&offset=0&limit=50').then(function (response) {
         return response.data.items;
       }, function (error) {
         return null;
