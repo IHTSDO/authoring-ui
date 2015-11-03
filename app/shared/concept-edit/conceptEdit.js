@@ -1381,7 +1381,7 @@ angular.module('singleConceptAuthoringApp')
             conceptFsns[conceptId] = 'Retrieving FSN...';
             snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
               conceptFsns[conceptId] = response.fsn;
-            })
+            });
 
           }
         };

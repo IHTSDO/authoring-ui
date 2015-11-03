@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp.project', [
       if ($scope.project.validationStatus) {
          scaService.getValidationForProject($scope.project.key).then(function(response) {
           $scope.validationContainer = response;
-        })
+        });
       } else {
         $scope.validationContainer.status = 'Validation not yet run';
       }

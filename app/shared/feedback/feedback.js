@@ -768,7 +768,7 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
-            var img = createConceptImg(concept.id, concept.term)
+            var img = createConceptImg(concept.id, concept.term);
             scope.htmlVariable += '&nbsp ' + img  + ' ';
 
             console.debug(scope.htmlVariable);
