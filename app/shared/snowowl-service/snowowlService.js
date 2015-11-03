@@ -702,6 +702,18 @@ angular.module('singleConceptAuthoringApp')
         return null;
       });
     }
+      
+    ///////////////////////////////////////////////////
+    // MRCM functions
+    //////////////////////////////////////////////////
+      
+    function getDomainAttributes(branch, parentIds) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn&offset=0&limit=50').then(function (response) {
+        return response.data;
+      }, function (error) {
+        return null;
+      });
+    }
 
     ////////////////////////////////////////////
     // Method Visibility
@@ -744,7 +756,8 @@ angular.module('singleConceptAuthoringApp')
       downloadClassification: downloadClassification,
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
-      getBranch: getBranch
+      getBranch: getBranch,
+      getDomainAttributes: getDomainAttributes
 
     };
   }
