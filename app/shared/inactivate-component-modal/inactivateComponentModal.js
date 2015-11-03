@@ -12,11 +12,6 @@ angular.module('singleConceptAuthoringApp')
     $scope.conceptId = conceptId;
     $scope.branch = branch;
     $scope.associationTargets = associationTargets;
-    $scope.associationTargetObject = {};
-
-    // loading flags
-    $scope.descendantsLoading = true;
-    $scope.inboundRelationshipsLoading = true;
 
     // check requirements
     if ($scope.conceptId && !$scope.branch) {
@@ -44,26 +39,64 @@ angular.module('singleConceptAuthoringApp')
       });
     };
 
-    $scope.setInactivationTargetConcept = function () {
-      $scope.associationTargetObject[$scope.associationType.id] = [$scope.associationTargetSelected.concept.conceptId];
-      console.log($scope.associationTargetObject);
-    };
-
-    $scope.selectReason = function (reason, associationTarget) {
+    $scope.selectReason = function () {
 
       // NOTE: associationTarget is optional
-      if (!reason) {
+      if (!$scope.reason) {
         window.alert('You must specify a reason for inactivation');
       } else {
-        console.log($scope.associationTargetObject);
+
+        var associationTarget = {};
+
+        // FORMAT: associationTargets: {MOVED_FROM: ["139569002"]}
+        // validate and convert association targets
+        for (var i = 0; i < $scope.associations.length; i++) {
+          // extract association for convenience
+          var association = $scope.associations[i];
+
+          console.debug('processing association', association);
+
+          // if neither type nor concept specified
+          if (!association.type && !association.concept) {
+            console.debug('blank association, ignoring');
+          }
+
+          // if either field is blank, alert and return
+          else if (!association.type || !association.concept) {
+            window.alert('You must specify both the association type and target');
+            return;
+          }
+
+          // add the association type/target
+          else {
+
+            console.debug('adding association', association, associationTarget.hasOwnProperty(association.type));
+
+            // if this type already specified, add to array
+            if (associationTarget.hasOwnProperty(association.type.id)) {
+              console.debug('adding to existing array', associationTarget.type);
+              associationTarget[association.type.id].push(association.concept.concept.conceptId);
+            }
+
+            // otherwise, set this type to a single-element array containing
+            // this concept
+            else {
+              console.debug('inserting new type');
+              associationTarget[association.type.id] = [association.concept.concept.conceptId];
+            }
+          }
+        }
+
         var results = {};
-        results.reason = reason;
-        results.associationTarget = $scope.associationTargetObject;
+        results.reason = $scope.reason;
+        results.associationTarget = associationTarget;
+        console.debug('select result', results);
+
         $modalInstance.close(results);
       }
     };
 
-    // on load, retrieve children and descendants if concept specified
+// on load, retrieve children and descendants if concept specified
     if ($scope.conceptId && $scope.branch) {
 
       // limit the number of descendants retrieved to prevent overload
@@ -76,7 +109,7 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
-    // get a single inbound relationship to get total number of relationships
+// get a single inbound relationship to get total number of relationships
     snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, 0).then(function (response) {
       console.debug('inbound', response);
 
@@ -121,7 +154,7 @@ angular.module('singleConceptAuthoringApp')
 
     });
 
-    // declare table parameters
+// declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
         page: 1,
         count: 10,
@@ -146,7 +179,7 @@ angular.module('singleConceptAuthoringApp')
       }
     );
 
-    // declare table parameters
+// declare table parameters
     $scope.tableParamsDescendants = new ngTableParams({
         page: 1,
         count: 10,
@@ -173,7 +206,7 @@ angular.module('singleConceptAuthoringApp')
       }
     );
 
-    // declare table parameters
+// declare table parameters
     $scope.tableParamsInboundRelationships = new ngTableParams({
         page: 1,
         count: 10,
@@ -201,4 +234,35 @@ angular.module('singleConceptAuthoringApp')
       $modalInstance.dismiss();
     };
 
-  });
+
+
+    $scope.addAssociation = function () {
+      $scope.associations.push({type: null, concept: null});
+    };
+
+    $scope.removeAssociation = function (index) {
+      $scope.associations.slice(index, 1);
+      if ($scope.associations.length === 0) {
+        $scope.addAssociation();
+      }
+    };
+
+    ////////////////////////////////////
+    // Initialization
+    ////////////////////////////////////
+
+    // selected reason
+    $scope.reason = null;
+
+    // construct the associations array and add a blank row
+    $scope.associations = [];
+    $scope.addAssociation();
+
+    // loading flags
+    $scope.descendantsLoading = true;
+    $scope.inboundRelationshipsLoading = true;
+
+
+
+  })
+;

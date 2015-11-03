@@ -313,7 +313,7 @@ angular.module('singleConceptAuthoringApp')
           else {
             selectInactivationReason('Concept', inactivateComponentReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
-              notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')', 10000);
+              notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
               // console.debug(scope.branch, scope.concept.conceptId, reason,
               // associationTarget);
 
@@ -712,9 +712,8 @@ angular.module('singleConceptAuthoringApp')
           if (index !== -1) {
             scope.concept.descriptions.splice(index, 1);
             autoSave();
-            if(scope.concept.descriptions.length === 0)
-            {
-                scope.addDescription(0);
+            if (scope.concept.descriptions.length === 0) {
+              scope.addDescription(0);
             }
           } else {
             console.error('Error removing description; description not found');
@@ -994,9 +993,8 @@ angular.module('singleConceptAuthoringApp')
           if (index !== -1) {
             scope.concept.relationships.splice(index, 1);
             autoSave();
-            if(scope.concept.relationships.length === 0)
-            {
-                scope.addIsaRelationship(0);
+            if (scope.concept.relationships.length === 0) {
+              scope.addIsaRelationship(0);
             }
           } else {
             console.error('Error removing relationship; relationship not found');
@@ -1373,7 +1371,20 @@ angular.module('singleConceptAuthoringApp')
 
         ///////////////////////////////////////////////
         // Component property retrieval (Inactivation)
-        ///////////////////////////////////////////////
+        ///////////////////////////////////////////////)
+
+        var conceptFsns = {};
+        scope.getFsn = function (conceptId) {
+          if (conceptFsns.hasOwnProperty(conceptId)) {
+            return conceptFsns[conceptId];
+          } else {
+            conceptFsns[conceptId] = 'Retrieving FSN...';
+            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+              conceptFsns[conceptId] = response.fsn;
+            })
+
+          }
+        };
 
         /**
          * Sets needed concept properties as element attributes
@@ -1387,10 +1398,19 @@ angular.module('singleConceptAuthoringApp')
           // retrieve inactivation reason if inactive
           if (!concept.active) {
             snowowlService.getConceptProperties(concept.conceptId, scope.branch).then(function (response) {
+
+              console.debug('inactive concept properties', response);
+
               if (!response.inactivationIndicator) {
                 concept.inactivationIndicator = 'No reason specified';
               } else {
                 concept.inactivationIndicator = response.inactivationIndicator;
+              }
+
+              if (response.associationTargets) {
+                concept.associationTargets = response.associationTargets;
+                console.debug('key check', Object.keys(concept.associationTargets));
+                scope.hasAssociationTargets = Object.keys(concept.associationTargets).length > 0;
               }
             });
           }

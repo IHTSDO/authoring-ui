@@ -65,22 +65,6 @@ angular.module('singleConceptAuthoringApp.projects', [
       }
     );
 
-    $scope.openCreateTaskModal = function () {
-      var modalInstance = $modal.open({
-        templateUrl: 'shared/task/task.html',
-        controller: 'taskCtrl',
-          resolve: {
-            task: function() {
-              return null;
-            }
-          }
-      });
-
-      modalInstance.result.then(function () {
-      }, function () {
-      });
-    };
-
     // on successful set, reload table parameters
     $scope.$watch('projects', function () {
       if (!$scope.projects || $scope.projects.length == 0) {
@@ -150,6 +134,25 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
 
     }
+
+
+    $scope.openCreateTaskModal = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/task/task.html',
+        controller: 'taskCtrl',
+        resolve: {
+          task: function() {
+            return null;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        initialize();
+      }, function () {
+      });
+    };
+
 
     initialize();
   })

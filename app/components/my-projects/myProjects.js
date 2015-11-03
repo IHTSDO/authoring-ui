@@ -67,22 +67,6 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       }
     );
 
-    $scope.openCreateTaskModal = function () {
-      var modalInstance = $modal.open({
-        templateUrl: 'shared/task/task.html',
-        controller: 'taskCtrl',
-        resolve: {
-          task: function () {
-            return null;
-          }
-        }
-      });
-
-      modalInstance.result.then(function () {
-      }, function () {
-      });
-    };
-
     $scope.getBranchStateText = function (project) {
       if (!project) {
         return null;
@@ -162,6 +146,25 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
 
     }
+
+
+    $scope.openCreateTaskModal = function () {
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/task/task.html',
+        controller: 'taskCtrl',
+        resolve: {
+          task: function() {
+            return null;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+        initialize();
+      }, function () {
+      });
+    };
+
 
     initialize();
 
