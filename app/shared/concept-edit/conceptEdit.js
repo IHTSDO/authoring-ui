@@ -1007,6 +1007,7 @@ angular.module('singleConceptAuthoringApp')
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
           objectService.applyMinimumFields(scope.concept);
+            scope.getDomainAttributes();
           autoSave();
         };
 
@@ -1613,6 +1614,7 @@ angular.module('singleConceptAuthoringApp')
 
         // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship) {
+          scope.getDomainAttributes();
           if (!relationship) {
             return;
           }
@@ -1761,7 +1763,7 @@ angular.module('singleConceptAuthoringApp')
         scope.getDomainAttributes = function() {
             var idList = '';
             angular.forEach(scope.concept.relationships, function (relationship) {
-                    if(relationship.type.conceptId === '116680003' && relationship.active === true)
+                    if(relationship.type.conceptId === '116680003' && relationship.active === true && relationship.characteristicType !== 'INFERRED_RELATIONSHIP')
                     {
                         idList += relationship.target.conceptId + ',';   
                     }
@@ -1774,6 +1776,7 @@ angular.module('singleConceptAuthoringApp')
         };
           
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
+                    console.log('watcher');
                     var changed = false;
                     angular.forEach(scope.concept.relationships, function (relationship) {
                         if(relationship.type.conceptId === '116680003' && relationship.active === true)
@@ -1784,7 +1787,8 @@ angular.module('singleConceptAuthoringApp')
                     if(changed === true){
                         scope.getDomainAttributes();
                     }
-                });
+                }, true);
+          
         scope.getConceptsForAttributeTypeahead = function (searchStr) {
             var response = scope.allowedAttributes;
             for (var i = 0; i < response.length; i++) {
@@ -1835,6 +1839,7 @@ angular.module('singleConceptAuthoringApp')
         scope.deleteRelationship = function (relationship) {
           var index = scope.concept.relationships.indexOf(relationship);
           scope.concept.relationships.splice(index, 1);
+          scope.getDomainAttributes();
           autoSave();
         };
 
