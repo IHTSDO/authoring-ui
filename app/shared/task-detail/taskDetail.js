@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'scaService', 'snowowlService', 'notificationService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, scaService, snowowlService, notificationService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'accountService', 'scaService', 'snowowlService', 'notificationService',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, notificationService) {
 
       $scope.task = null;
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -76,10 +76,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $routeParams.projectKey, $routeParams.taskKey,
           {
             'status': 'IN_REVIEW'
-          }).then(function(response) {
+          }).then(function (response) {
             notificationService.sendMessage('Task submitted for review');
             $scope.task = response;
-          }, function(error) {
+          }, function (error) {
             notificationService.sendError('Error submitting task for review');
           });
       };
@@ -109,6 +109,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
 
+          // get role for task
+          $scope.role = accountService.getRoleForTask($scope.task);
+          console.debug('ROLE', $scope.role);
+
           // set button flags
           if ($scope.task && $scope.task.latestClassificationJson) {
             $rootScope.classificationRunning = $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
@@ -123,7 +127,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       }
 
-      $scope.$on('reloadTask', function(event, data) {
+      $scope.$on('reloadTask', function (event, data) {
         initialize();
       });
 
@@ -134,11 +138,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptChange', function (event, data) {
-        /*if ($scope.task.status === 'New' ) {
-          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
-            $scope.task = response;
-          });
-        }*/
         initialize();
       });
 
@@ -147,7 +146,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
         if ($scope.task.status === 'Review Completed') {
           console.debug('updating task');
-          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function(response) {
+          scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
             $scope.task = response;
           });
         }
@@ -155,4 +154,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       initialize();
 
-    }]);
+    }
+
+  ])
+;
