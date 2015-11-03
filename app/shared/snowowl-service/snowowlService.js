@@ -264,6 +264,39 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    function inactivateDescription(branch, descriptionId, inactivationIndicator) {
+
+      console.debug('deactivating description', descriptionId, branch, inactivationIndicator);
+
+      var deferred = $q.defer();
+
+      if (!descriptionId) {
+        deferred.reject('No descriptionId specified');
+      }
+      if (!branch) {
+        deferred.reject('Branch not specified');
+      }
+      if (!inactivationIndicator) {
+        deferred.reject('Inactivation indicator not specified');
+      }
+      // construct the properties object
+      var propertiesObj = {
+        'commitComment': 'Inactivation',
+        'inactivationIndicator': inactivationIndicator,
+        'active': false,
+        'associationTargets' : {}
+      };
+
+      $http.post(apiEndpoint + branch + '/descriptions/' + descriptionId + '/updates', propertiesObj).then(function (response) {
+        deferred.resolve(true);
+      }, function (error) {
+        deferred.reject(error.statusMessage);
+      });
+
+      return deferred.promise;
+
+    }
+
     // Retrieve descriptions of a concept
     // GET /{path}/concepts/{conceptId}/descriptions
     function getConceptDescriptions(conceptId, branch) {
@@ -736,6 +769,7 @@ angular.module('singleConceptAuthoringApp')
       updateConcept: updateConcept,
       createConcept: createConcept,
       inactivateConcept: inactivateConcept,
+      inactivateDescription: inactivateDescription,
       getConceptParents: getConceptParents,
       getConceptChildren: getConceptChildren,
       getConceptDescriptions: getConceptDescriptions,

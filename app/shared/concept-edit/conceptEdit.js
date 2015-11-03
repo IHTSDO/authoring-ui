@@ -749,10 +749,18 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason('Description', inactivateComponentReasons, inactivateAssociationReasons, null, null).then(function (reason) {
+            selectInactivationReason('Description', inactivateComponentReasons, inactivateAssociationReasons, null, null).then(function (results) {
 
-              description.active = false;
-              scope.saveConcept();
+              notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
+
+              snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function(response) {
+                description.active = false;
+                scope.saveConcept();
+
+              }, function(error) {
+                notificationService.sendError('Error inactivating description');
+              });
+
 
             });
 
@@ -1431,10 +1439,10 @@ angular.module('singleConceptAuthoringApp')
           // retrieve inactivation reason if inactive
           if (!description.active) {
             snowowlService.getDescriptionProperties(description.descriptionId, scope.branch).then(function (response) {
-              if (!response.descriptionInactivationIndicator) {
+              if (!response.inactivationIndicator) {
                 description.inactivationIndicator = 'No reason specified';
               } else {
-                description.inactivationIndicator = response.descriptionInactivationIndicator;
+                description.inactivationIndicator = response.inactivationIndicator;
               }
             });
           }
