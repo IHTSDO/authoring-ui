@@ -1814,7 +1814,6 @@ angular.module('singleConceptAuthoringApp')
                 }
               }
             }
-              console.log(response);
             return response;
           });
         };
