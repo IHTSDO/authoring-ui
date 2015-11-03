@@ -781,9 +781,11 @@ angular.module('singleConceptAuthoringApp')
 
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {
               window.alert('Cannot submit empty feedback');
+              return;
             }
             if (!scope.subjectConcepts || scope.subjectConcepts.length === 0) {
               window.alert('Cannot submit feedback without specifying concepts');
+              return;
             }
 
             notificationService.sendMessage('Submitting feedback...', 10000, null);

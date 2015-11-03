@@ -6,12 +6,12 @@
       <span class="fields row "> {{concept.conceptId}}</span>
 
     </div>
-<!--
-    <div ng-if="concept.fsn === null" class="concept-id pull-left" >
-      <label class="control-label">Concept ID</label>
-      <input ng-model="concept.conceptId" type="text" class="fields row" style="background-color:#fff"></input>
-    </div>
--->
+    <!--
+        <div ng-if="concept.fsn === null" class="concept-id pull-left" >
+          <label class="control-label">Concept ID</label>
+          <input ng-model="concept.conceptId" type="text" class="fields row" style="background-color:#fff"></input>
+        </div>
+    -->
 
     <div class="time pull-left">
       <label class="control-label">Eff. Time</label>
@@ -31,6 +31,24 @@
     <div class="module pull-left">
       <label class="control-label">Inactivation Reason</label>
       <span class="fields row">{{concept.inactivationIndicator}}</span>
+    </div>
+
+    <div class="module pull-left p-t-10">
+      <label class="control-label">Association Targets</label>
+      <div ng-show="concept.associationTargets && !hasAssociationTargets">None</div>
+      <div ng-repeat="(key, value) in concept.associationTargets" class="p-b-10">
+        <div class="row no-gutter">
+          <div class="col-md-3 ">
+            {{key}}
+          </div>
+          <div class="col-md-9">
+            <div class="row  p-b-5" ng-repeat="target in value">
+              <div class="col-md-4">{{target}}</div>
+              <div class="col-md-8">{{getFsn(target)}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
