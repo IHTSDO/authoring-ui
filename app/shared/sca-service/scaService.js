@@ -12,6 +12,20 @@ angular.module('singleConceptAuthoringApp')
       // authoring-projects calls
       /////////////////////////////////////
 
+      // get a project by key
+      getProjectForKey: function(projectKey) {
+        if (!projectKey) {
+          return null;
+        }
+        return $http.get(apiEndpoint + 'projects/' + projectKey).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            // TODO Handle errors
+          }
+        );
+      },
+
       // get all projects
       getProjects: function () {
         return $http.get(apiEndpoint + 'projects').then(

@@ -243,7 +243,7 @@
     <!-- rows: Concept IsA Relationships -->
     <div ng-repeat="relationship in getRelationships(true)">
 
-      <div class="row darken-3  grey ">
+      <div class="row darken-3 grey" ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
         <div class="col-md-12 no-padding p-t-5  color_{{relationship.groupId}}"
              ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'"

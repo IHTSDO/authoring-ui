@@ -725,20 +725,11 @@ angular.module('singleConceptAuthoringApp')
               return response;
             });
           };
-/*
-          // testing creation of image
-          var can = document.createElement('canvas');
-          var ctx = can.getContext('2d');
-
-          ctx.fillText("Hello World!",10,50);
-
-          var img = new Image();
-          img.src = can.toDataURL();
-
-          console.debug(img, img.src);*/
-
 
           function createConceptImg(id, fsn) {
+
+            console.debug('creating concept img', id, fsn);
+
             // testing creation of image
             var can = document.createElement('canvas');
             var ctx = can.getContext('2d');
@@ -753,9 +744,9 @@ angular.module('singleConceptAuthoringApp')
             var img = new Image();
             img.src = ctx.canvas.toDataURL();
 
-            console.debug(img, img.src);
+            console.debug( '<img ng-click="addToEdit(' + id + ')" style="cursor:pointer" src="' + img.src + '">');
 
-            return '<img style="cursor:pointer" src="' + img.src + '" ng-click=addToEdit(' + id + ')">';
+            return '<img style="cursor:pointer" src="' + img.src + '" ng-click="addToEdit(' + id + ')">';
           }
 
           /**
@@ -765,11 +756,11 @@ angular.module('singleConceptAuthoringApp')
           scope.addConceptToFeedback = function (concept) {
             console.debug(concept);
 
-            scope.htmlVariable += ' ' + createConceptImg(concept.concept.conceptId, concept.concept.fsn) + ' ';
-            console.debug(scope.htmlVariable);
+            var img = createConceptImg(concept.concept.conceptId, concept.concept.fsn);
 
-            //scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.concept.conceptId + ')">' + concept.concept.fsn + '</a>&nbsp&nbsp&nbsp<p></p>';
-          };
+            scope.htmlVariable += '&nbsp' + img + ' ';
+            console.debug(scope.htmlVariable);
+    };
 
           /**
            * Function to add a dragged concept from the review/resolved list to the feedback message
@@ -777,10 +768,8 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
-
-            //scope.htmlVariable += ' ' +  createConceptImg(concept.conceptId, concept.fsn) + ' ';
-
-            scope.htmlVariable += '<br><a ng-click="addToEdit(' + concept.id + ')">' + concept.term + '</a>&nbsp&nbsp&nbsp<p></p>';
+            var img = createConceptImg(concept.id, concept.term);
+            scope.htmlVariable += '&nbsp ' + img  + ' ';
 
             console.debug(scope.htmlVariable);
 
@@ -788,13 +777,15 @@ angular.module('singleConceptAuthoringApp')
 
           scope.submitFeedback = function (requestFollowup) {
 
-            console.debug('sending feedback', requestFollowup);
+            console.debug('sending feedback', requestFollowup, scope.htmlVariable);
 
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {
               window.alert('Cannot submit empty feedback');
+              return;
             }
             if (!scope.subjectConcepts || scope.subjectConcepts.length === 0) {
               window.alert('Cannot submit feedback without specifying concepts');
+              return;
             }
 
             notificationService.sendMessage('Submitting feedback...', 10000, null);

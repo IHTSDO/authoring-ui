@@ -147,10 +147,10 @@
     <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
             title="Switch to Feedback View"
-            ng-disabled="!feedbackContainer.review"
+            ng-disabled="!task.reviewer"
             ng-click="viewReview()">
       <div class="md md-email"></div>
-      <span>View feedback</span></button>
+      <span>Switch to Feedback View</span></button>
 
     <!-- Switch to Validate View -->
     <button type="button"

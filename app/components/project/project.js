@@ -13,7 +13,6 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-
   .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', 'scaService', 'snowowlService', 'notificationService', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, scaService, snowowlService, notificationService) {
 
     // clear task-related i nformation
@@ -29,29 +28,31 @@ angular.module('singleConceptAuthoringApp.project', [
 
     $scope.validationContainer = {status: 'Loading...'};
     $scope.classificationContainer = {status: 'Loading...'};
-    $scope.conflictsContainer = { conflicts: {}};
+    $scope.conflictsContainer = {conflicts: {}};
 
     // TODO Replace this with straight getProject call when available
-    scaService.getProjects().then(function (response) {
-      console.debug('projects', response);
-      angular.forEach(response, function (project) {
-        if (project.key === $routeParams.projectKey) {
-          console.debug('found project', project);
-          $scope.project = project;
+    scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
+      $scope.project = response;
 
-          // get the lateswt classification for this project (if exists)
-          if ($scope.project.latestClassificationJson) {
-            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
-              $scope.classificationContainer = response;
-            });
-          } else {
-            $scope.classificationContainer.status = 'Classification not yet run';
-          }
+      // get the latest classification for this project (if exists)
+      if ($scope.project.latestClassificationJson) {
+        snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
+          $scope.classificationContainer = response;
+        });
+      } else {
+        $scope.classificationContainer.status = 'Classification not yet run';
+      }
 
+      // get the latest validation for this project (if exists)
+      if ($scope.project.validationStatus) {
+         scaService.getValidationForProject($scope.project.key).then(function(response) {
+          $scope.validationContainer = response;
+        });
+      } else {
+        $scope.validationContainer.status = 'Validation not yet run';
+      }
 
-        }
-      });
     });
 
     // task creation from projects page
@@ -59,18 +60,17 @@ angular.module('singleConceptAuthoringApp.project', [
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
         controller: 'taskCtrl',
-          resolve: {
-            task: function() {
-              return null;
-            }
+        resolve: {
+          task: function () {
+            return null;
           }
+        }
       });
 
       modalInstance.result.then(function () {
       }, function () {
       });
     };
-
 
     // classify the project
     $scope.classify = function () {

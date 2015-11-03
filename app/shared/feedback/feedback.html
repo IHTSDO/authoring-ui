@@ -304,7 +304,6 @@
                     ng-model="htmlVariable"
                     ta-toolbar="[['bold','italics', 'ul', 'ol', 'redo', 'undo', 'createLink']]"></text-angular>
 
-      {{htmlVariable.length}} characters
 
       <div class="col-md-12 no-padding p-10 m-t-10">
         <div class="pull-left follow-up" ng-show="role === 'REVIEWER'"><span
@@ -317,7 +316,7 @@
                   ng-click="submitFeedback(requestFollowup)"
                   style="text-transform: none">Submit Feedback
           </button>
-          <button class="btn btn-default amber classify-buttons submit-validation" ng-click="startValidation()"
+          <button class="btn btn-default amber classify-buttons submit-validation" ng-click="htmlVariable = ''"
                   style="text-transform: none">Clear
           </button>
 
@@ -333,6 +332,9 @@
           </ul>
         </div>
       </div>
+
+      <hr>
+      {{htmlVariable}}
     </div>
 
 
