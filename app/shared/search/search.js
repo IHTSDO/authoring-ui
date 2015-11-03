@@ -131,7 +131,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.results = [];
         }
 
-        snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length + 1, $scope.resultsSize).then(function (concepts) {
+        snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize).then(function (concepts) {
 
 
 
