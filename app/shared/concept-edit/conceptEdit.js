@@ -73,6 +73,9 @@ angular.module('singleConceptAuthoringApp')
             // replace the displayed content with the modified concept
             scope.concept = modifiedConcept;
 
+            sortDescriptions();
+            sortRelationships();
+
             // reset the concept history to reflect modified change
             resetConceptHistory();
 
@@ -1443,6 +1446,7 @@ angular.module('singleConceptAuthoringApp')
                 description.inactivationIndicator = 'No reason specified';
               } else {
                 description.inactivationIndicator = response.inactivationIndicator;
+                description.released = response.released;
               }
             });
           }
@@ -1640,6 +1644,8 @@ angular.module('singleConceptAuthoringApp')
 
           snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response) {
             scope.concept = response;
+            sortDescriptions();
+            sortRelationships();
             notificationService.clear();
             resetConceptHistory();
             scope.isModified = false;
