@@ -46,6 +46,7 @@ angular.module('singleConceptAuthoringApp')
           /**
            On load, get ui state and populate previously viewed conflicts
            */
+          if ($routeParams.taskKey) {
           scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'conflict-list').then(function (uiState) {
             if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
               scope.conflictList = [];
@@ -58,6 +59,9 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           });
+          } else {
+           // TODO Project ui state retrieval
+          }
 
           /**
            * Save the current list of viewed conflicts as ui state

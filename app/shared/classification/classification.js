@@ -147,23 +147,6 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          // helper function to populate names for all relationship display
-          // names
-          function getRelationshipNames(relationship) {
-            // get source name
-            snowowlService.getConceptPreferredTerm(relationship.sourceId, scope.branch).then(function (response) {
-              relationship.sourceName = response.term;
-            });
-            // get destination name
-            snowowlService.getConceptPreferredTerm(relationship.destinationId, scope.branch).then(function (response) {
-              relationship.destinationName = response.term;
-            });
-            // get type name
-            snowowlService.getConceptPreferredTerm(relationship.typeId, scope.branch).then(function (response) {
-              relationship.typeName = response.term;
-            });
-          }
-
           // process the classification object
           scope.$watch('classificationContainer', function () {
 
@@ -178,13 +161,6 @@ angular.module('singleConceptAuthoringApp')
             // get relationship changes
             snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {
               scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
-              //console.debug('set relationship changes',
-              // scope.relationshipChanges);
-
-              // get the relationship names
-              angular.forEach(scope.relationshipChanges, function (item) {
-                getRelationshipNames(item);
-              });
 
               // copy the redundant stated relationships into their own array
               if (scope.classificationContainer.redundantStatedRelationshipsFound) {
