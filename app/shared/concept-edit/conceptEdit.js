@@ -1813,7 +1813,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               }
             }
-            response = response.filter(function(item){return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1});
+            response = response.filter(function(item){return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;});
             return response;
         };
         scope.getConceptsForValueTypeahead = function (attributeId, searchStr) {
