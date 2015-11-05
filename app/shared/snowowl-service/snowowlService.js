@@ -31,6 +31,7 @@ angular.module('singleConceptAuthoringApp')
 
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
+
       // strip unknown tags
       var allowableProperties = [
         'fsn', 'conceptId', 'definitionStatus', 'active', 'moduleId',
@@ -42,6 +43,18 @@ angular.module('singleConceptAuthoringApp')
           delete concept[key];
         }
       }
+
+      var allowableDescriptionProperties = [
+        'conceptId', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap'
+      ];
+
+      angular.forEach(concept.descriptions, function (description) {
+        for (var key in description) {
+          if (allowableDescriptionProperties.indexOf(key) === -1) {
+            delete description[key];
+          }
+        }
+      })
     }
 
     // function to remove disallowed elements from a concept
@@ -57,7 +70,7 @@ angular.module('singleConceptAuthoringApp')
       if (limit > 200) {
         limit = 200;
       }
-      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function(response) {
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function (response) {
         deferred.resolve(response.data);
       }).then(function (error) {
         deferred.reject(error);
@@ -239,7 +252,7 @@ angular.module('singleConceptAuthoringApp')
         'commitComment': 'Inactivation',
         'inactivationIndicator': inactivationIndicator,
         'active': false,
-        'associationTargets' : associationTargets
+        'associationTargets': associationTargets
       };
 
       $http.post(apiEndpoint + branch + '/concepts/' + conceptId + '/updates', propertiesObj).then(function (response) {
@@ -262,6 +275,39 @@ angular.module('singleConceptAuthoringApp')
       }, function (error) {
         return null;
       });
+    }
+
+    function inactivateDescription(branch, descriptionId, inactivationIndicator) {
+
+      console.debug('deactivating description', descriptionId, branch, inactivationIndicator);
+
+      var deferred = $q.defer();
+
+      if (!descriptionId) {
+        deferred.reject('No descriptionId specified');
+      }
+      if (!branch) {
+        deferred.reject('Branch not specified');
+      }
+      if (!inactivationIndicator) {
+        deferred.reject('Inactivation indicator not specified');
+      }
+      // construct the properties object
+      var propertiesObj = {
+        'commitComment': 'Inactivation',
+        'inactivationIndicator': inactivationIndicator,
+        'active': false,
+        'associationTargets': {}
+      };
+
+      $http.post(apiEndpoint + branch + '/descriptions/' + descriptionId + '/updates', propertiesObj).then(function (response) {
+        deferred.resolve(true);
+      }, function (error) {
+        deferred.reject(error.statusMessage);
+      });
+
+      return deferred.promise;
+
     }
 
     // Retrieve descriptions of a concept
@@ -317,7 +363,7 @@ angular.module('singleConceptAuthoringApp')
     // Retrieve inbound relationships of a concept
     // GET /{path}/concepts/{conceptId}/inbound-relationships
     function getConceptRelationshipsInbound(conceptId, branch, offset, limit) {
-      
+
       var deferred = $q.defer();
 
       if (!offset) {
@@ -327,7 +373,7 @@ angular.module('singleConceptAuthoringApp')
       if (!limit) {
         limit = 50;
       }
-      
+
       $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?expand=source.fsn,type.fsn' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit)).then(function (response) {
 
         console.debug('inbound', response);
@@ -339,7 +385,7 @@ angular.module('singleConceptAuthoringApp')
         } else {
 
           // otherwise, return the passed array
-          deferred.resolve( response.data);
+          deferred.resolve(response.data);
         }
       }, function (error) {
         deferred.reject(error);
@@ -362,7 +408,7 @@ angular.module('singleConceptAuthoringApp')
         } else {
 
           // otherwise, return the passed array
-          deferred.resolve( response.data.outboundRelationships);
+          deferred.resolve(response.data.outboundRelationships);
         }
       }, function (error) {
         // TODO Handle error
@@ -533,12 +579,8 @@ angular.module('singleConceptAuthoringApp')
                 moduleId: response.data.moduleId
               }
             };
-            
-            
-            
-            
-            
-            deferred.resolve([ item ]);
+
+            deferred.resolve([item]);
           }, function (error) {
             deferred.reject(error);
           });
@@ -552,8 +594,9 @@ angular.module('singleConceptAuthoringApp')
           // use {path}/descriptions/id call
           $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
 
-            // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function(response2) {
+            // descriptions endpoint returns different format, which does not
+            // include definitionStatus, recall browser
+            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function (response2) {
 
               // convert to browser search form
               var item = {
@@ -568,8 +611,8 @@ angular.module('singleConceptAuthoringApp')
                 }
               };
 
-              deferred.resolve([ item ]);
-            }, function(error) {
+              deferred.resolve([item]);
+            }, function (error) {
               deferred.reject('Secondary call to retrieve concept failed: ', error);
             });
 
@@ -589,8 +632,9 @@ angular.module('singleConceptAuthoringApp')
             var source = null;
             var target = null;
 
-            // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function(sourceResponse) {
+            // descriptions endpoint returns different format, which does not
+            // include definitionStatus, recall browser
+            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function (sourceResponse) {
 
               // convert to browser search form
               source = {
@@ -610,12 +654,13 @@ angular.module('singleConceptAuthoringApp')
               if (source && target) {
                 deferred.resolve([source, target]);
               }
-            }, function(error) {
+            }, function (error) {
               deferred.reject('Secondary call to retrieve concept failed: ', error);
             });
 
-            // descriptions endpoint returns different format, which does not include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.destinationId).then(function(targetResponse) {
+            // descriptions endpoint returns different format, which does not
+            // include definitionStatus, recall browser
+            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.destinationId).then(function (targetResponse) {
 
               // convert to browser search form
               target = {
@@ -635,7 +680,7 @@ angular.module('singleConceptAuthoringApp')
               if (source && target) {
                 deferred.resolve([source, target]);
               }
-            }, function(error) {
+            }, function (error) {
               deferred.reject('Secondary call to retrieve concept failed: ', error);
             });
 
@@ -703,6 +748,26 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    ///////////////////////////////////////////////////
+    // MRCM functions
+    //////////////////////////////////////////////////
+
+    function getDomainAttributes(branch, parentIds) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn&offset=0&limit=50').then(function (response) {
+        return response.data;
+      }, function (error) {
+        return null;
+      });
+    }
+
+    function getAttributeValues(branch, attributeId, searchStr) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?termPrefix=' + searchStr + '*&expand=fsn&offset=0&limit=50').then(function (response) {
+        return response.data.items;
+      }, function (error) {
+        return null;
+      });
+    }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -716,6 +781,7 @@ angular.module('singleConceptAuthoringApp')
       updateConcept: updateConcept,
       createConcept: createConcept,
       inactivateConcept: inactivateConcept,
+      inactivateDescription: inactivateDescription,
       getConceptParents: getConceptParents,
       getConceptChildren: getConceptChildren,
       getConceptDescriptions: getConceptDescriptions,
@@ -744,7 +810,9 @@ angular.module('singleConceptAuthoringApp')
       downloadClassification: downloadClassification,
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
-      getBranch: getBranch
+      getBranch: getBranch,
+      getDomainAttributes: getDomainAttributes,
+      getAttributeValues: getAttributeValues
 
     };
   }

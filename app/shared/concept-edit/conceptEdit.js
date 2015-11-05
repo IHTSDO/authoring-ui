@@ -73,6 +73,9 @@ angular.module('singleConceptAuthoringApp')
             // replace the displayed content with the modified concept
             scope.concept = modifiedConcept;
 
+            sortDescriptions();
+            sortRelationships();
+
             // reset the concept history to reflect modified change
             resetConceptHistory();
 
@@ -118,6 +121,7 @@ angular.module('singleConceptAuthoringApp')
         scope.modules = snowowlService.getModules();
         scope.languages = snowowlService.getLanguages();
         scope.dialects = snowowlService.getDialects();
+        scope.allowedAttributes = [];
 
         // flag for viewing active components only. Defaults to true.
         scope.hideInactive = true;
@@ -748,10 +752,18 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, open a select reason modal
           else {
             // TODO Decide what the heck to do with result
-            selectInactivationReason('Description', inactivateComponentReasons, inactivateAssociationReasons, null, null).then(function (reason) {
+            selectInactivationReason('Description', inactivateComponentReasons, inactivateAssociationReasons, null, null).then(function (results) {
 
-              description.active = false;
-              scope.saveConcept();
+              notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
+
+              snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function(response) {
+                description.active = false;
+                scope.saveConcept();
+
+              }, function(error) {
+                notificationService.sendError('Error inactivating description');
+              });
+
 
             });
 
@@ -1006,6 +1018,7 @@ angular.module('singleConceptAuthoringApp')
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
           objectService.applyMinimumFields(scope.concept);
+            scope.getDomainAttributes();
           autoSave();
         };
 
@@ -1429,10 +1442,11 @@ angular.module('singleConceptAuthoringApp')
           // retrieve inactivation reason if inactive
           if (!description.active) {
             snowowlService.getDescriptionProperties(description.descriptionId, scope.branch).then(function (response) {
-              if (!response.descriptionInactivationIndicator) {
+              if (!response.inactivationIndicator) {
                 description.inactivationIndicator = 'No reason specified';
               } else {
-                description.inactivationIndicator = response.descriptionInactivationIndicator;
+                description.inactivationIndicator = response.inactivationIndicator;
+                description.released = response.released;
               }
             });
           }
@@ -1612,6 +1626,7 @@ angular.module('singleConceptAuthoringApp')
 
         // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship) {
+          scope.getDomainAttributes();
           if (!relationship) {
             return;
           }
@@ -1629,6 +1644,8 @@ angular.module('singleConceptAuthoringApp')
 
           snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response) {
             scope.concept = response;
+            sortDescriptions();
+            sortRelationships();
             notificationService.clear();
             resetConceptHistory();
             scope.isModified = false;
@@ -1753,6 +1770,81 @@ angular.module('singleConceptAuthoringApp')
             });
           }
         };
+          
+        //////////////////////////////////////////////
+        // MRCM functions
+        //////////////////////////////////////////////
+        scope.getDomainAttributes = function() {
+            var idList = '';
+            angular.forEach(scope.concept.relationships, function (relationship) {
+                    if(relationship.type.conceptId === '116680003' && relationship.active === true && relationship.characteristicType !== 'INFERRED_RELATIONSHIP')
+                    {
+                        idList += relationship.target.conceptId + ',';   
+                    }
+                  });
+            idList = idList.substring(0, idList.length - 1);
+            
+            snowowlService.getDomainAttributes(scope.branch, idList).then(function (response) {
+                scope.allowedAttributes = response.items;
+            });
+        };
+          
+        scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
+                    console.log('watcher');
+                    var changed = false;
+                    angular.forEach(scope.concept.relationships, function (relationship) {
+                        if(relationship.type.conceptId === '116680003' && relationship.active === true)
+                        {
+                            changed = true;   
+                        }
+                    });
+                    if(changed === true){
+                        scope.getDomainAttributes();
+                    }
+                }, true);
+          
+        scope.getConceptsForAttributeTypeahead = function (searchStr) {
+            var response = scope.allowedAttributes;
+            for (var i = 0; i < response.length; i++) {
+              for (var j = response.length - 1; j > i; j--) {
+                if (response[j].id === response[i].id) {
+                  response.splice(j, 1);
+                  j--;
+                }
+              }
+            }
+            response = response.filter(function(item){return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1});
+            return response;
+        };
+        scope.getConceptsForValueTypeahead = function (attributeId, searchStr) {
+          return snowowlService.getAttributeValues(scope.branch, attributeId, searchStr).then(function (response) {
+            // remove duplicates
+            for (var i = 0; i < response.length; i++) {
+              console.debug('checking for duplicates', i, response[i]);
+              for (var j = response.length - 1; j > i; j--) {
+                if (response[j].id === response[i].id) {
+                  response.splice(j, 1);
+                  j--;
+                }
+              }
+            }
+            return response;
+          });
+        };
+          
+          
+        scope.setRelationshipTypeConceptFromMrcm = function (relationship, item) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+
+          console.debug('setting relationship type concept', relationship, item);
+
+          relationship.type.conceptId = item.id;
+          relationship.type.fsn = item.fsn;
+
+          scope.updateRelationship(relationship);
+        };
 
         //////////////////////////////////////////////
         // Attribute Removal functions
@@ -1777,6 +1869,7 @@ angular.module('singleConceptAuthoringApp')
         scope.deleteRelationship = function (relationship) {
           var index = scope.concept.relationships.indexOf(relationship);
           scope.concept.relationships.splice(index, 1);
+          scope.getDomainAttributes();
           autoSave();
         };
 
