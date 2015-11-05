@@ -17,14 +17,19 @@
       <div class="page-header col-md-9 p-t-10 project-main-buttons">
 
         <div class="p-10 pull-right">
-          <button class="btn btn-disabled btn-border" ng-click="promote()"><span
+          <button class="btn btn-disabled btn-border"
+                  ng-click="promote()"
+                  ng-disabled="project.status !== 'FORWARD'"><span
             class="project-icon blue darken-1 pull-left"><span class="md md-call-merge"></span></span>Promote
             <div class="ripple-wrapper"></div>
           </button>
         </div>
         <div class="p-10 pull-right">
-          <button class="btn btn-success btn-border" ng-click="rebase()"><span
-            class="project-icon yellow darken-2 pull-left"><span class="md md-autorenew"></span></span>Rebase
+          <button class="btn btn-success btn-border"
+                  ng-click="rebase()"
+                  ng-disabled="project.status !== 'DIVERGED' && project.status !== 'BEHIND'">
+            <span
+              class="project-icon yellow darken-2 pull-left"><span class="md md-autorenew"></span></span>Rebase
             <div class="ripple-wrapper"></div>
           </button>
         </div>
@@ -50,10 +55,13 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-init="validationCollapsed = false" ng-click="validationCollapsed = !validationCollapsed"
+            <button ng-disabled="!project.validationStatus || project.validationStatus != 'COMPLETED' "
+                    ng-init="validationCollapsed = false"
+                    ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : validationCollapsed, 'md-keyboard-arrow-right' : !validationCollapsed}]">
-              <span class="report-text">Validation Results</span></button>
+              <span ng-class="{'report-text' : project.validationStatus && project.validationStatus === 'COMPLETED'}">Validation Results</span>
+            </button>
 
             <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-school"></span></span>
             <span class="arrow-purple pull-right"></span>
@@ -75,10 +83,13 @@
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <button ng-init="classificationCollapsed = true"
+            <button ng-disabled="!project.latestClassificationJson || project.latestClassificationJson.status !== 'COMPLETED'"
+                    ng-init="classificationCollapsed = true"
                     ng-click="classificationCollapsed = !classificationCollapsed" type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
-              <span class="report-text">Classification Results</span></button>
+              <span
+                ng-class="{'report-text' : project.latestClassificationJson.status === 'COMPLETED'}">Classification Results</span>
+            </button>
             <span class="project-icon green pull-right"><span class="md md-notifications"></span></span>
             <span class="arrow-green pull-right"></span>
 
@@ -102,12 +113,12 @@
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <a ng-href="#/projects/project/{{project.key}}/conflicts">
-              <button ng-init="conflictsCollapsed = true"
-                      ng-click="conflictsCollapsed = !conflictsCollapsed" type="button"
+              <button ng-disabled="!project.status === 'DIVERGED'"
+                      ng-init="conflictsCollapsed = true"
+                      ng-click="gotoConflictsView()" type="button"
                       ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
-                <span class="report-text">Conflicts Results</span></button>
-            </a>
+                <span ng-class="{'report-text' : project.status === 'DIVERGED'}">Conflicts Results</span></button>
+
             <span class="project-icon red pull-right"><span class="md md-warning"></span></span>
             <span class="arrow-green pull-right"></span>
 
@@ -120,6 +131,7 @@
 
     </div>
 
-    {{project}}
+    {{project.latestClassificationJson.status}}, {{project.status}}
   </div>
+</div>
 

@@ -15,43 +15,45 @@ angular.module('singleConceptAuthoringApp.project', [
 
   .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', 'scaService', 'snowowlService', 'notificationService', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, scaService, snowowlService, notificationService) {
 
-    // clear task-related i nformation
-    $rootScope.validationRunning = false;
-    $rootScope.classificationRunning = false;
-
     $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
     $scope.project = null;
 
+    // initialize the containers
+    $scope.validationContainer = null;
+    $scope.classificationContainer = null;
+    $scope.conflictsContainer = null;
+
+    // initialize the header notifications
+    $rootScope.classificationRunning = false;
+    $rootScope.validationRunning = false;
+
     // set the branch
     $scope.branch = 'MAIN/' + $routeParams.projectKey;
-
-    $scope.validationContainer = {status: 'Loading...'};
-    $scope.classificationContainer = {status: 'Loading...'};
-    $scope.conflictsContainer = {conflicts: {}};
 
     // TODO Replace this with straight getProject call when available
     scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
       $scope.project = response;
 
+      $rootScope.classificationRunning = $scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status !== 'COMPLETED';
+      $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED';
+
       // get the latest classification for this project (if exists)
-      if ($scope.project.latestClassificationJson) {
+      if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED' ) {
         snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
           $scope.classificationContainer = response;
         });
-      } else {
-        $scope.classificationContainer.status = 'Classification not yet run';
       }
 
       // get the latest validation for this project (if exists)
-      if ($scope.project.validationStatus) {
+      if ($scope.project.validationStatus && $scope.project.validationStatus === 'COMPLETED') {
          scaService.getValidationForProject($scope.project.key).then(function(response) {
           $scope.validationContainer = response;
         });
-      } else {
-        $scope.validationContainer.status = 'Validation not yet run';
       }
+
+      // TODO Retrieve rebase/conflicts report
 
     });
 
@@ -74,28 +76,32 @@ angular.module('singleConceptAuthoringApp.project', [
 
     // classify the project
     $scope.classify = function () {
-      console.debug('classifying project');
+      notificationService.sendMessage('Starting classification for project...');
       scaService.startClassificationForProject($scope.project.key).then(function (response) {
-        if (response && response.status) {
-          $scope.classificationContainer = response;
-        } else {
-          $scope.classificationContainer.executionStatus = 'Error starting classification';
-        }
-      });
+
+        notificationService.sendMessage('Classification running', 5000);
+        $scope.classificationContainer = response;
+      }, function(error) {
+        notificationService.sendError('Error starting classification: ' + error);
+      })
     };
 
     // on load, retrieve latest validation
     scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
+      console.debug('latest validation', response);
       $scope.validationContainer = response;
 
     });
 
     // validate the project
     $scope.validate = function () {
-      console.debug('validating project');
+      notificationService.sendMessage('Starting validation for project...');
       scaService.startValidationForProject($scope.project.key).then(function (response) {
+        notificationService.sendMessage('Validation running');
         $scope.validationContainer.status = response;
-      });
+      }, function(error) {
+        notificationService.sendError('Error starting validation: ' + error);
+      })
     };
 
     // rebase the project
@@ -111,4 +117,9 @@ angular.module('singleConceptAuthoringApp.project', [
         notificationService.sendMessage('Project promoting...', 10000, null);
       });
     };
+
+    // go to the conflicts / rebase view
+    $scope.gotoConflictsView = function() {
+      $location.url('#/projects/project/' + $scope.project.key + '/conflicts')
+    }
   }]);
