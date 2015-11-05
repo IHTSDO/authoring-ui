@@ -1080,6 +1080,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.getLatestReview();
       $scope.setView('feedback');
     };
+    
+    $scope.$on('reloadTask', function (event, data) {
+        $scope.getLatestClassification();
+        $scope.getLatestValidation();
+      });
 
     // populate the container objects
     $scope.getLatestClassification();
