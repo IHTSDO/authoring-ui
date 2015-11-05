@@ -295,12 +295,11 @@
                       ng-model="relationship.type.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
                       class="sca-top"
-                      typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                      typeahead="suggestion as suggestion.fsn for suggestion in getConceptsForAttributeTypeahead($viewValue)"
                       typeahead-focus-first="false"
-                      typeahead-wait-ms="500"
-                      typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
+                      typeahead-wait-ms="700"
+                      typeahead-on-select="setRelationshipTypeConceptFromMrcm(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3">
-
 
             </textarea>
             <span class="pull-left md md-open-with drag-button-width "
@@ -323,10 +322,10 @@
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
                       class="sca-top"
-                      typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
+                      typeahead="suggestion as suggestion.fsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                       typeahead-focus-first="false"
-                      typeahead-wait-ms="500"
-                      typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
+                      typeahead-wait-ms="700"
+                      typeahead-on-select="setRelationshipTypeConceptFromMrcm(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
 
                         <span class="pull-left md md-open-with drag-button-width "

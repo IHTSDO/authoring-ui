@@ -54,7 +54,7 @@ angular.module('singleConceptAuthoringApp')
             delete description[key];
           }
         }
-      })
+      });
     }
 
     // function to remove disallowed elements from a concept
