@@ -90,11 +90,11 @@ angular.module('singleConceptAuthoringApp')
           // load stated parents
           sctClass = "sct-defined-concept";
           $.each(svgIsaModel, function (i, relationship) {
-//                if (relationship.target.definitionStatus == "Primitive") {
-//                    sctClass = "sct-primitive-concept";
-//                } else {
+                if (relationship.target.definitionStatus == "PRIMITIVE") {
+                    sctClass = "sct-primitive-concept";
+                } else {
             sctClass = "sct-defined-concept";
-//                }
+                }
             var rectParent = drawSctBox(svg, x, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
             // $("#" + rectParent.id).css({"top":
             // (rectParent.outerHeight()/2) + "px"});
@@ -106,11 +106,11 @@ angular.module('singleConceptAuthoringApp')
           // load ungrouped attributes
           var maxRoleNumber = 0;
           $.each(svgAttrModel, function (i, relationship) {
-//                if (relationship.target.definitionStatus == "Primitive") {
-//                    sctClass = "sct-primitive-concept";
-//                } else {
+                if (relationship.target.definitionStatus == "PRIMITIVE") {
+                    sctClass = "sct-primitive-concept";
+                } else {
             sctClass = "sct-defined-concept";
-//                }
+                }
             if (relationship.groupId == 0) {
               var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
               connectElements(svg, circle2, rectAttr, 'center', 'left');
@@ -132,10 +132,10 @@ angular.module('singleConceptAuthoringApp')
             connectElements(svg, groupNode, conjunctionNode, 'right', 'left');
             $.each(svgAttrModel, function (m, relationship) {
               if (relationship.groupId == i) {
-//                        if (relationship.target.definitionStatus ==
-// "Primitive") { sctClass = "sct-primitive-concept"; } else {
+                        if (relationship.target.definitionStatus ==
+ "PRIMITIVE") { sctClass = "sct-primitive-concept"; } else {
                 sctClass = "sct-defined-concept";
-//                        }
+                        }
                 var rectRole = drawSctBox(svg, x + 85, y - 18, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
                 connectElements(svg, conjunctionNode, rectRole, 'center', 'left');
                 var rectRole2 = drawSctBox(svg, x + 85 + rectRole.getBBox().width + 30, y - 18, relationship.target.fsn, relationship.target.conceptId, sctClass);
