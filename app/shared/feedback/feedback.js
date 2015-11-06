@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location) {
       return {
         restrict: 'A',
         transclude: false,
@@ -123,7 +123,7 @@ angular.module('singleConceptAuthoringApp')
                     //myData =  $filter('filter')(myData, { 'messages': '!'});
 
                     // really ahckish solution because the above filter for
-                    // swome bizarre reason isn't working
+                    // some bizarre reason isn't working
                     var newData = [];
                     angular.forEach(myData, function (item) {
                       if (item.messages && item.messages.length > 0) {
@@ -137,12 +137,14 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   // hard set the new total
-                  params.total(myData.length);
+                  
 
                   myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
-
+                
+                  params.total(myData.length);
                   // extract the paged results
                   scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  console.log(params);
                 }
               }
             }
@@ -761,6 +763,22 @@ angular.module('singleConceptAuthoringApp')
             scope.htmlVariable += '&nbsp' + img + ' ';
             console.debug(scope.htmlVariable);
     };
+            
+            
+          /**
+           * Function to unclaim a review by nulling the reviewer field and returning the user to the home page
+           */
+          scope.unclaimReview = function() {
+              var updateObj = {
+              "reviewer": {
+                "username": ""
+              }
+            };
+
+            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+              $location.url('home');
+            });
+          }
 
           /**
            * Function to add a dragged concept from the review/resolved list to the feedback message
@@ -810,6 +828,7 @@ angular.module('singleConceptAuthoringApp')
               // this is inefficient
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.feedbackContainer.review = response;
+                scope.conceptsToReviewTableParams.reload();
               });
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
