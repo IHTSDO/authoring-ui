@@ -72,16 +72,24 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
       $scope.submitForReview = function () {
         notificationService.sendMessage('Submitting task for review...');
-        scaService.updateTask(
-          $routeParams.projectKey, $routeParams.taskKey,
-          {
-            'status': 'IN_REVIEW'
-          }).then(function (response) {
-            notificationService.sendMessage('Task submitted for review');
-            $scope.task = response;
-          }, function (error) {
-            notificationService.sendError('Error submitting task for review');
-          });
+        var updateObj = {
+              "reviewer": {
+                "username": ""
+              }
+            };
+            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+              scaService.updateTask(
+              $routeParams.projectKey, $routeParams.taskKey,
+              {
+                'status': 'IN_REVIEW'
+              }).then(function (response) {
+                notificationService.sendMessage('Task submitted for review');
+                $scope.task = response;
+              }, function (error) {
+                notificationService.sendError('Error submitting task for review');
+              });
+            });
+        
       };
 
       $scope.updateTask = function () {
