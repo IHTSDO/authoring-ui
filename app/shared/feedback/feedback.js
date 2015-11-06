@@ -123,7 +123,7 @@ angular.module('singleConceptAuthoringApp')
                     //myData =  $filter('filter')(myData, { 'messages': '!'});
 
                     // really ahckish solution because the above filter for
-                    // swome bizarre reason isn't working
+                    // some bizarre reason isn't working
                     var newData = [];
                     angular.forEach(myData, function (item) {
                       if (item.messages && item.messages.length > 0) {
@@ -137,12 +137,14 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   // hard set the new total
-                  params.total(myData.length);
+                  
 
                   myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
-
+                
+                  params.total(myData.length);
                   // extract the paged results
                   scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  console.log(params);
                 }
               }
             }
@@ -810,6 +812,7 @@ angular.module('singleConceptAuthoringApp')
               // this is inefficient
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.feedbackContainer.review = response;
+                scope.conceptsToReviewTableParams.reload();
               });
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
