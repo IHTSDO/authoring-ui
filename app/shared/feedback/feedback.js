@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location) {
       return {
         restrict: 'A',
         transclude: false,
@@ -763,6 +763,22 @@ angular.module('singleConceptAuthoringApp')
             scope.htmlVariable += '&nbsp' + img + ' ';
             console.debug(scope.htmlVariable);
     };
+            
+            
+          /**
+           * Function to unclaim a review by nulling the reviewer field and returning the user to the home page
+           */
+          scope.unclaimReview = function() {
+              var updateObj = {
+              "reviewer": {
+                "username": ""
+              }
+            };
+
+            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+              $location.url('home');
+            });
+          }
 
           /**
            * Function to add a dragged concept from the review/resolved list to the feedback message
