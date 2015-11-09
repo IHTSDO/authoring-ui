@@ -72,7 +72,7 @@
         <div ng-show="validationCollapsed === true">
           <!-- TODO ng-if here because the damn two-way binding IS NOT WORKING -->
           <div class="card-content clearfix">
-            <div validation validation-container="validationContainer"
+            <div validation validation-container="validationContainer" branch="branch"
                  editable="false" show-title="false"></div>
           </div>
         </div>
@@ -130,8 +130,6 @@
       </div>
 
     </div>
-
-    {{project.latestClassificationJson.status}}, {{project.status}}
   </div>
 </div>
 
