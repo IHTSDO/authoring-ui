@@ -73,8 +73,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.submitForReview = function () {
         notificationService.sendMessage('Submitting task for review...');
         var updateObj = {
-              "reviewer": {
-                "username": ""
+              'reviewer': {
+                'username': ''
               }
             };
             scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {

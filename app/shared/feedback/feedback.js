@@ -770,15 +770,15 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.unclaimReview = function() {
               var updateObj = {
-              "reviewer": {
-                "username": ""
+              'reviewer': {
+                'username': ''
               }
             };
 
             scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
               $location.url('home');
             });
-          }
+          };
 
           /**
            * Function to add a dragged concept from the review/resolved list to the feedback message
