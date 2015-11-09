@@ -144,7 +144,7 @@ angular.module('singleConceptAuthoringApp')
                   params.total(myData.length);
                   // extract the paged results
                   scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                  console.log(params);
+                  $defer.resolve(scope.conceptsToReviewViewed);
                 }
               }
             }
@@ -192,6 +192,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // extract the paged results -- SEE NOTE AT START
                   scope.conceptsReviewedViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  $defer.resolve(scope.conceptsReviewedViewed);
                 }
               }
             }
@@ -770,15 +771,15 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.unclaimReview = function() {
               var updateObj = {
-              "reviewer": {
-                "username": ""
+              'reviewer': {
+                'username': ''
               }
             };
 
             scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
               $location.url('home');
             });
-          }
+          };
 
           /**
            * Function to add a dragged concept from the review/resolved list to the feedback message
