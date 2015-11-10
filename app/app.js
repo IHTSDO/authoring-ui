@@ -81,6 +81,11 @@ angular
       });
       // add the button to the default toolbar definition
       taOptions.toolbar[1].push('taxonomy');
+
+      // set false to allow the textAngular-sanitize provider to be replaced
+      // see https://github.com/fraywing/textAngular/wiki/Setting-Defaults
+      taOptions.forceTextAngularSanitize = false;
+
       return taOptions;
     }]);
 

@@ -1845,6 +1845,19 @@ angular.module('singleConceptAuthoringApp')
 
           scope.updateRelationship(relationship);
         };
+          
+        scope.setRelationshipTargetConceptFromMrcm = function (relationship, item) {
+          if (!relationship || !item) {
+            console.error('Cannot set relationship concept field, either field or item not specified');
+          }
+
+          console.debug('setting relationship type concept', relationship, item);
+
+          relationship.target.conceptId = item.id;
+          relationship.target.fsn = item.fsn;
+
+          scope.updateRelationship(relationship);
+        };
 
         //////////////////////////////////////////////
         // Attribute Removal functions

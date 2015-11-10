@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', '$timeout',
-    function ($rootScope, $filter, NgTableParams, $routeParams, scaService, snowowlService, $timeout) {
+  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
+    function ($rootScope, $filter, NgTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -27,12 +27,14 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.viewTop = true;
           scope.displayStatus = '';
-          
+          scope.taskKey = $routeParams.taskKey;
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
             scope.validationContainer = {executionStatus: '', report: ''};
           }
+
+          console.debug('entered validation.js', scope.validationContainer);
 
           // local variables for ng-table population
           var assertionsFailed = [];
@@ -41,7 +43,7 @@ angular.module('singleConceptAuthoringApp')
           // Allow broadcasting of new validation results
           // e.g. from server-side notification of work complete
           scope.$on('setValidation', function (event, data) {
-             scope.validationContainer = data.validation;
+            scope.validationContainer = data.validation;
 
           });
 
@@ -61,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             });
 
-            if (scope.validationContainer.report) {
+            if (scope.validationContainer.report && scope.validationContainer.report.rvfValidationResult) {
 
               // get the end time if specified
               if (scope.validationContainer.report.rvfValidationResult.endTime) {
@@ -87,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
             },
             {
               filterDelay: 50,
-              total: assertionsFailed.length,
+              total: assertionsFailed ? assertionsFailed.length : 0,
               getData: function ($defer, params) {
 
                 if (!assertionsFailed || assertionsFailed.length === 0) {
@@ -119,11 +121,10 @@ angular.module('singleConceptAuthoringApp')
                 if (!failures || failures.length === 0) {
                   $defer.resolve([]);
                 } else {
-                  var orderedData = params.sorting() ?
-                    $filter('orderBy')(failures, params.orderBy()) :
-                    failures;
-                    params.total(orderedData.length);
-                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  var orderedData = failures;
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
             }
@@ -134,13 +135,13 @@ angular.module('singleConceptAuthoringApp')
 
             if (!scope.validationContainer || !scope.validationContainer.report) {
               return;
+
             }
+
+            console.debug('validationContainer changed - report:', scope.validationContainer.report);
 
             // extract the failed assertions
             assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
-
-            // clear the viewed failure type
-            failures = [];
 
             // reset view to full report
             scope.viewTop = true;
@@ -153,58 +154,65 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewFailures = function (assertionFailure) {
 
-            
+            console.debug('assertionFailure', assertionFailure);
+
             scope.assertionFailureViewed = assertionFailure.assertionText;
             scope.viewTop = false;
 
-            // convert instances into table objects
             var objArray = [];
-            if(!scope.changedList)
-            {
-              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                  scope.changedList = response; 
+
+            // different handling for projects and tasks
+            if (!$routeParams.taskKey) {
+              objArray = assertionFailure.firstNInstances;
+            }
+
+            // task handling
+            else {
+
+              // convert instances into table objects
+              if (!scope.changedList) {
+                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                  scope.changedList = response;
                   angular.forEach(assertionFailure.firstNInstances, function (instance) {
-                      var obj = {
-                        concept: null,
-                        errorMessage: instance,
-                        selected: false,
-                        userModified: false
-                      };
-                      angular.forEach(scope.changedList.concepts, function (concept) {
-                          if(instance.conceptId === concept.id)
-                          {
-                            obj.userModified = true;   
-                          }
-                      });
-                      objArray.push(obj);
+                    var obj = {
+                      concept: null,
+                      errorMessage: instance,
+                      selected: false,
+                      userModified: false
+                    };
+                    angular.forEach(scope.changedList.concepts, function (concept) {
+                      if (instance.conceptId === concept.id) {
+                        obj.userModified = true;
+                      }
                     });
+                    objArray.push(obj);
+                  });
                   failures = objArray;
                   scope.failureTableParams.reload();
                 });
-                
+
+              }
+
+              else {
+                angular.forEach(assertionFailure.firstNInstances, function (instance) {
+
+                  var obj = {
+                    concept: null,
+                    errorMessage: instance,
+                    selected: false,
+                    userModified: false
+                  };
+                  angular.forEach(scope.changedList.concepts, function (concept) {
+                    if (instance.conceptId === concept.id) {
+                      obj.userModified = true;
+                    }
+                  });
+
+                  objArray.push(obj);
+                });
+              }
+              // TODO Set edit enable/disable for edit panel
             }
-            
-              
-            else{
-              angular.forEach(assertionFailure.firstNInstances, function (instance) {
-              
-              var obj = {
-                concept: null,
-                errorMessage: instance,
-                selected: false,
-                userModified: false
-              };
-              angular.forEach(scope.changedList.concepts, function (concept) {
-                  if(instance.conceptId === concept.id)
-                  {
-                    obj.userModified = true;   
-                  }
-              });
-              
-              objArray.push(obj);
-              });
-            }
-            // TODO Set edit enable/disable for edit panel loading
 
             // set failures to trigger watch
             failures = objArray;
@@ -212,9 +220,8 @@ angular.module('singleConceptAuthoringApp')
             scope.failureTableParams.reload();
           };
 
-          // TODO Make this respect paging
           scope.selectAll = function (selectAllActive) {
-            angular.forEach(failures, function (failure) {
+            angular.forEach(failures.firstNInstances, function (failure) {
               failure.selected = selectAllActive;
             });
           };
@@ -224,6 +231,120 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
+          scope.openCreateTaskModal = function () {
+
+            notificationService.sendMessage('Constructing task from project validation...');
+
+            console.debug('failures.firstNInstances', failures, failures.firstNInstances);
+
+            // attempt to construct the edit list from user selections
+            var editList = [];
+            angular.forEach(failures, function(failure) {
+              if (editList.selected && editList.indexOf(failure.conceptId) === -1) {
+                editList.push(failure.conceptId);
+              }
+            });
+
+            // if edit list is empty, use all failure instances
+            angular.forEach(failures, function(failure) {
+              if (editList.indexOf(failure.conceptId === -1)) {
+                editList.push(failure.conceptId);
+              }
+            });
+
+            console.debug('editList', editList);
+
+            // temporary restriction on number of items to prevent giant server load
+            if (editList.length > 10) {
+              notificationService.sendWarning('No more than 20 failures can be put into a task at this time');
+              return;
+            }
+
+            notificationService.sendMessage('Adding concept information to new task ...');
+
+            // retrieve the requested concept information and construct the saved list
+            var idConceptMap = {};
+            var savedList = [];
+            angular.forEach(editList, function(conceptId) {
+              snowowlService.getFullConcept(conceptId, scope.branch).then(function(response) {
+
+                // add concept to map for properties retrieval (for task detail)
+                idConceptMap[conceptId] = response;
+
+                // construct the saved list item
+                var savedListItem = {
+                  active: response.active,
+                  concept: {
+                    conceptId: conceptId,
+                    fsn: response.fsn,
+                    active: response.active,
+                    definitionStatus: response.definitionStatus,
+                    moduleId: response.moduleId
+                  }
+                };
+
+                savedList.push(savedListItem);
+                notificationService.sendMessage('Adding concept information to new task... (' + (savedList.length) + '/' + editList.length + ')');
+              });
+            });
+
+            console.debug('idConceptMap', idConceptMap);
+
+            // construct the saved list and task details
+            var taskDetails = 'Task created from project validation.\n\n';
+            angular.forEach(failures, function(failure) {
+              if (failure.selected) {
+                taskDetails += 'Concept: ' + idConceptMap[failure.conceptId].fsn + ', Error: ' + failure.detail + '\n';
+              }
+            });
+
+            console.debug('editList', editList);
+            console.debug('savedList', savedList);
+            console.debug('taskDetails', taskDetails);
+
+            //Left as I'm presuming it was part of your debug process
+            return;
+
+
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/task/task.html',
+              controller: 'taskCtrl',
+              resolve: {
+                task: function () {
+                  return null;
+                }
+              }
+            });
+
+            modalInstance.result.then(function (response) {
+
+              var editList = [];
+
+              // construct list of selected ids
+              angular.forEach(failures, function(failure) {
+                if (failure.selected && editList.indexOf(failure.conceptId) === -1) {
+
+                  // add to the edit list
+
+                  // get the concept to add to saved list and details
+                  snowowlService.getFullConcept(failure.conceptId, scope.branch).then(function(response) {
+
+                    // add to the edit list
+
+                    // construct the saved list element
+                  });
+                }
+              });
+
+
+
+              // update edit-list -- simple list of ids
+
+
+
+            }, function () {
+            });
+          };
         }
 
       };
