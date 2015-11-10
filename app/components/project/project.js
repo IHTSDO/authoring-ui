@@ -13,7 +13,7 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', 'scaService', 'snowowlService', 'notificationService', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, scaService, snowowlService, notificationService) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', 'scaService', 'snowowlService', 'notificationService', '$location', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, scaService, snowowlService, notificationService, $location) {
 
     $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -83,7 +83,7 @@ angular.module('singleConceptAuthoringApp.project', [
         $scope.classificationContainer = response;
       }, function(error) {
         notificationService.sendError('Error starting classification: ' + error);
-      })
+      });
     };
 
     // on load, retrieve latest validation
@@ -101,7 +101,7 @@ angular.module('singleConceptAuthoringApp.project', [
         $scope.validationContainer.status = response;
       }, function(error) {
         notificationService.sendError('Error starting validation: ' + error);
-      })
+      });
     };
 
     // rebase the project
@@ -120,6 +120,6 @@ angular.module('singleConceptAuthoringApp.project', [
 
     // go to the conflicts / rebase view
     $scope.gotoConflictsView = function() {
-      $location.url('#/projects/project/' + $scope.project.key + '/conflicts')
-    }
+      $location.url('#/projects/project/' + $scope.project.key + '/conflicts');
+    };
   }]);
