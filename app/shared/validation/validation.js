@@ -27,7 +27,7 @@ angular.module('singleConceptAuthoringApp')
           scope.showTitle = attrs.showTitle === 'true';
           scope.viewTop = true;
           scope.displayStatus = '';
-          scope.taskKey = $routeParams.taskKey
+          scope.taskKey = $routeParams.taskKey;
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
@@ -122,7 +122,7 @@ angular.module('singleConceptAuthoringApp')
                   $defer.resolve([]);
                 } else {
                   var orderedData = failures;
-                  params.total(orderedData.length)
+                  params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
@@ -302,6 +302,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('savedList', savedList);
             console.debug('taskDetails', taskDetails);
 
+            //Left as I'm presuming it was part of your debug process
             return;
 
 
@@ -343,7 +344,7 @@ angular.module('singleConceptAuthoringApp')
 
             }, function () {
             });
-          }
+          };
         }
 
       };
