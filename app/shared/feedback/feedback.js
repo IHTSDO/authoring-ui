@@ -107,7 +107,7 @@ angular.module('singleConceptAuthoringApp')
                 } else {
 
                   var searchStr = scope.conceptsToReviewSearchStr;
-                  
+
                   if (searchStr) {
                     myData = scope.feedbackContainer.review.conceptsToReview.filter(function (item) {
                       return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
@@ -115,7 +115,6 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     myData = scope.feedbackContainer.review.conceptsToReview;
                   }
-
 
                   // filter based on presence of feedback if requested
                   if (scope.viewOnlyConceptsWithFeedback) {
@@ -137,10 +136,9 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   // hard set the new total
-                  
 
                   myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
-                
+
                   params.total(myData.length);
                   // extract the paged results
                   scope.conceptsToReviewViewed = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -177,8 +175,6 @@ angular.module('singleConceptAuthoringApp')
                   } else {
                     myData = scope.feedbackContainer.review.conceptsReviewed;
                   }
-
-                
 
                   // hard set the new total
                   params.total(myData.length);
@@ -729,6 +725,19 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
+          function createConceptPlaceholder(id, fsn) {
+
+            console.debug('creating concept placeholder', id, fsn);
+
+            return '<span style="color: #00a6e5" id="id">' + fsn + '</span>';
+          }
+
+          /**
+           * Creates an image object with data source
+           * @param id
+           * @param fsn
+           * @returns {string}
+           */
           function createConceptImg(id, fsn) {
 
             console.debug('creating concept img', id, fsn);
@@ -737,40 +746,45 @@ angular.module('singleConceptAuthoringApp')
             var can = document.createElement('canvas');
             var ctx = can.getContext('2d');
 
-            ctx.canvas.width = ctx.measureText(fsn + ' ' + String.fromCharCode(parseInt('\uf040',16))).width;
+            ctx.canvas.width = ctx.measureText(fsn + ' ' + String.fromCharCode(parseInt('\uf040', 16))).width;
             ctx.canvas.height = 10;
 
             ctx.font = 'FontAwesome';
             ctx.fillStyle = '#90CAF9';
-            ctx.fillText(fsn  + ' ' + String.fromCharCode(parseInt('\uf040',16)),0,8);
+            ctx.fillText(fsn + ' ' + String.fromCharCode(parseInt('\uf040', 16)), 0, 8);
 
             var img = new Image();
             img.src = ctx.canvas.toDataURL();
 
-            console.debug( '<img ng-click="addToEdit(' + id + ')" style="cursor:pointer" src="' + img.src + '">');
 
-            return '<img style="cursor:pointer" src="' + img.src + '" ng-click="addToEdit(' + id + ')">';
+            return '<img src="' + img.src + '" id="' + id + '-' + fsn + '-endConceptLink" />';
           }
 
           /**
-           * Function to add search result from typeahead to the feedback message
+           * Function to add search result from typeahead to the feedback
+           * message
            * @param concept the concept object
            */
           scope.addConceptToFeedback = function (concept) {
-            console.debug(concept);
 
+            var temp = scope.htmlVariable;
+
+            //var img = createConceptPlaceholder(concept.concept.conceptId,
+            // concept.concept.fsn);
             var img = createConceptImg(concept.concept.conceptId, concept.concept.fsn);
 
-            scope.htmlVariable += '&nbsp' + img + ' ';
+            temp = temp + img + '&nbsp';
+
+            scope.htmlVariable = temp;
             console.debug(scope.htmlVariable);
-    };
-            
-            
+          };
+
           /**
-           * Function to unclaim a review by nulling the reviewer field and returning the user to the home page
+           * Function to unclaim a review by nulling the reviewer field and
+           * returning the user to the home page
            */
-          scope.unclaimReview = function() {
-              var updateObj = {
+          scope.unclaimReview = function () {
+            var updateObj = {
               'reviewer': {
                 'username': ''
               }
@@ -782,13 +796,14 @@ angular.module('singleConceptAuthoringApp')
           };
 
           /**
-           * Function to add a dragged concept from the review/resolved list to the feedback message
+           * Function to add a dragged concept from the review/resolved list to
+           * the feedback message
            * @param concept the concept object
            */
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
             var img = createConceptImg(concept.id, concept.term);
-            scope.htmlVariable += '&nbsp ' + img  + ' ';
+            scope.htmlVariable += '&nbsp ' + img + ' ';
 
             console.debug(scope.htmlVariable);
 
@@ -807,6 +822,16 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
+            /**
+             * Strip the constructed conceptImg and replace with a normal link
+             * NOTE: This is necessary for two reasons: (1) textAngular allows tag "bleeding", such that inserting a link and typing after it will cause the new text to insert into the link
+             * (2) it is desirable to keep the concept link formaqt exactly the same.  Using the image in the editor, then replacing for the non-editable feedback allows this.
+             * @type {string}
+             */
+            var feedbackStr = scope.htmlVariable.replace(/<img [^>]* id="(\d+)-(.*?(?=-endConceptLink"))[^>]*>/g, '<a ng-click="addToEdit($1)" style="cursor:pointer">$2</a>');
+            console.debug(feedbackStr);
+
+
             notificationService.sendMessage('Submitting feedback...', 10000, null);
 
             // extract the subject concept ids
@@ -816,7 +841,7 @@ angular.module('singleConceptAuthoringApp')
               subjectConceptIds.push(subjectConcept.id);
             });
 
-            scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, scope.htmlVariable, subjectConceptIds, requestFollowup).then(function (response) {
+            scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, subjectConceptIds, requestFollowup).then(function (response) {
 
               notificationService.sendMessage('Feedback submitted', 5000, null);
               // clear the htmlVariable and requestFolllowUp flag
@@ -839,8 +864,6 @@ angular.module('singleConceptAuthoringApp')
         }
 
       };
-
-
 
     }])
 ;
