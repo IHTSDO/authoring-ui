@@ -773,7 +773,7 @@ angular.module('singleConceptAuthoringApp')
             // concept.concept.fsn);
             var img = createConceptImg(concept.concept.conceptId, concept.concept.fsn);
 
-            var temp = temp + img + '&nbsp';
+            temp = temp + img + '&nbsp';
 
             scope.htmlVariable = temp;
             console.debug(scope.htmlVariable);
