@@ -754,15 +754,15 @@ angular.module('singleConceptAuthoringApp')
 
     function getDomainAttributes(branch, parentIds) {
       return $http.get(apiEndpoint + '/mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn&offset=0&limit=50').then(function (response) {
-        return response.data;
+        return response.data ? response.data : [];
       }, function (error) {
         return null;
       });
     }
 
     function getAttributeValues(branch, attributeId, searchStr) {
-      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?termPrefix=' + searchStr + '*&expand=fsn&offset=0&limit=50').then(function (response) {
-        return response.data.items;
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') + '&expand=fsn&offset=0&limit=50').then(function (response) {
+        return response.data.items ? response.data.items : [];
       }, function (error) {
         return null;
       });
