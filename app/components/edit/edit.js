@@ -390,6 +390,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       return colClasses;
     };
 
+    $scope.conceptUpdateFunction = function(project, task, concept){
+            console.log('functionCalled');
+            var deferred = $q.defer();
+            snowowlService.updateConcept(project, task, concept).then(function (response) {
+                deferred.resolve(response);
+            });
+            return deferred.promise;
+    };
     /**
      * Adds concept from this branch to the concepts array
      * @param conceptId the SCTID of the concept

@@ -74,7 +74,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //            description: ["reasonForChange", "justificationForChange"],
 //            relationship: ["reasonForChange", "justificationForChange"]
 //        }
-       additionalFields : '=?'
+       additionalFields : '=?',
+        
+       saveFunction : '&?'
     },
     templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -356,7 +358,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // if not new, use update
         else {
           //// console.debug('update concept', concept);
-          snowowlService.updateConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
+          scope.saveFunction({project: $routeParams.projectKey, task: $routeParams.taskKey, concept: concept}).then(function (response) {
 
             // send notification of success with timeout
             var saveMessage = 'Concept saved:' + concept.fsn;
