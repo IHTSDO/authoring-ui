@@ -81,6 +81,15 @@ angular
       });
       // add the button to the default toolbar definition
       taOptions.toolbar[1].push('taxonomy');
+      var index = taOptions.toolbar[1].indexOf('undo');    // <-- Not supported in <IE9
+        if (index !== -1) {
+            taOptions.toolbar[1].splice(index, 1);
+        }
+      index = taOptions.toolbar[1].indexOf('redo');    // <-- Not supported in <IE9
+        if (index !== -1) {
+            taOptions.toolbar[1].splice(index, 1);
+        }
+      console.log(taOptions.toolbar);
 
       // set false to allow the textAngular-sanitize provider to be replaced
       // see https://github.com/fraywing/textAngular/wiki/Setting-Defaults
