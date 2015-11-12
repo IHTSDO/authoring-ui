@@ -300,7 +300,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3 panel-height" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="false"
+                 branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)"
               >
             </div>
           </div>
@@ -345,7 +345,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="false"
+                 branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)"
               >
             </div>
           </div>
@@ -386,7 +386,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="true">
+                 branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)">
             </div>
           </div>
 
@@ -426,7 +426,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="true"
+                 branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
               >
             </div>
           </div>
@@ -467,7 +467,7 @@
           <!-- concept -->
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height" style="margin-right:0px; z-index:999">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="true"
+                 branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
               >
             </div>
           </div>
