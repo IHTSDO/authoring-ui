@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp')
         'term': null,
         'lang': 'en',
         'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
-        'conceptId' : conceptId,
+        'conceptId': conceptId,
         'acceptabilityMap': {
           '900000000000509007': 'ACCEPTABLE',
           '900000000000508004': 'ACCEPTABLE'
@@ -66,9 +66,6 @@ angular.module('singleConceptAuthoringApp')
 
       return desc;
     }
-
-
-
 
     // creates a blank relationship linked to specified source concept
     function getNewIsaRelationship(conceptId) {
@@ -135,7 +132,6 @@ angular.module('singleConceptAuthoringApp')
       return concept;
     }
 
-
     /**
      * Checks if concept has basic fields required and adds them if not
      * Specifically checks one FSN, one SYNONYM, one IsA relationship
@@ -150,7 +146,7 @@ angular.module('singleConceptAuthoringApp')
 
       // check one FSN exists
       elementFound = false;
-      angular.forEach(concept.descriptions, function(description) {
+      angular.forEach(concept.descriptions, function (description) {
         if (description.type === 'FSN' && description.active) {
           elementFound = true;
         }
@@ -165,7 +161,7 @@ angular.module('singleConceptAuthoringApp')
       // currently left out because user can modify, and seems undesirable
       // to force a check for dialect
       elementFound = false;
-      angular.forEach(concept.descriptions, function(description) {
+      angular.forEach(concept.descriptions, function (description) {
         if (description.type === 'SYNONYM' && description.active) {
           elementFound = true;
         }
@@ -177,7 +173,7 @@ angular.module('singleConceptAuthoringApp')
 
       // check one IsA relationship exists
       elementFound = false;
-      angular.forEach(concept.relationships, function(relationship) {
+      angular.forEach(concept.relationships, function (relationship) {
         if (relationship.type.conceptId === '116680003' && relationship.active) {
           elementFound = true;
         }
@@ -202,7 +198,7 @@ angular.module('singleConceptAuthoringApp')
 
       // check one FSN exists
       elementFound = false;
-      angular.forEach(concept.descriptions, function(description) {
+      angular.forEach(concept.descriptions, function (description) {
         if (description.type === 'FSN' && description.active) {
           elementFound = true;
         }
@@ -216,7 +212,7 @@ angular.module('singleConceptAuthoringApp')
       // currently left out because user can modify, and seems undesirable
       // to force a check for dialect
       elementFound = false;
-      angular.forEach(concept.descriptions, function(description) {
+      angular.forEach(concept.descriptions, function (description) {
         if (description.type === 'SYNONYM' && description.active) {
           elementFound = true;
         }
@@ -227,7 +223,7 @@ angular.module('singleConceptAuthoringApp')
 
       // check one IsA relationship exists
       elementFound = false;
-      angular.forEach(concept.relationships, function(relationship) {
+      angular.forEach(concept.relationships, function (relationship) {
         if (relationship.type.conceptId === '116680003' && relationship.active) {
           elementFound = true;
         }
@@ -240,6 +236,118 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
+    function isConceptsEqual(c1, c2) {
+
+      var i, j;
+
+      // TODO Implement concept fields
+
+      for (i = 0; i < c1.descriptions.length; i++) {
+        for (j = 0; j < c2.descriptions.length; j++) {
+          if (!isDescriptionsEqual(c1.descriptions[i], c2.descriptions[i])) {
+            return false;
+          }
+        }
+      }
+      for (i = 0; i < c1.relationships.length; i++) {
+        for (j = 0; j < c2.relationships.length; j++) {
+          if (!isRelationshipsEqual(c1.relationships[i], c2.relationships[i])) {
+            return false;
+          }
+        }
+      }
+    }
+
+    function isDescriptionsEqual(d1, d2) {
+      if (d1.descriptionId !== d2.descriptionId) {
+        // console.debug('ids not equal');
+        return false;
+      }
+      if (d1.active !== d2.active) {
+        // console.debug('active not equal');
+        return false;
+      }
+      if (d1.term !== d2.term) {
+        // console.debug('term not equal');
+        return false;
+      }
+      if (d1.type !== d2.type) {
+        // console.debug('type not equal');
+        return false;
+      }
+      // TODO Equality check needs improvement
+      /*if (d1.acceptabilityMap !== d2.acceptabilityMap) {
+        // console.debug('acceptabilityMap not equal');
+        return false;
+      }*/
+      // console.debug('equal');
+      return true;
+
+      // TODO Check other fields, e.g. moduleId
+    }
+
+    function isRelationshipsEqual(r1, r2) {
+      if (r1.relationshipId !== r2.relationshipId) {
+        console.debug('id not equal');
+        return false;
+      }
+      if (r1.active !== r2.active) {
+        console.debug('active not equal');
+        return false;
+      }
+      if (r1.groupId !== r2.groupId) {
+        console.debug('groupId not equal');
+        return false;
+      }
+      if (r1.type && !r2.type) {
+        console.debug('type not equal');
+        return false;
+      }
+      if (r2.type && !r1.type) {
+        console.debug('type not equal');
+        return false;
+      }
+      if (r1.type.conceptId !== r2.type.conceptId) {
+        console.debug('type not equal');
+        return false;
+      }
+      if (r1.target && !r2.target) {
+        console.debug('target not equal');
+        return false;
+      }
+      if (r2.target && !r1.target) {
+        console.debug('target not equal');
+        return false;
+      }
+      if (r1.target.conceptId !== r2.target.conceptId) {
+        console.debug('target not equal');
+        return false;
+      }
+      console.debug('equal');
+      return true;
+
+      // TODO Check other fields, e.g. moduleId
+
+    }
+
+    function isComponentsEqual(c1, c2) {
+      console.debug('checking component equality', c1, c2);
+      // determine type by id
+      // NOTE descriptions have 'conceptId' field, must be checked first
+      if (c1.hasOwnProperty('descriptionId') && c2.hasOwnProperty('descriptionId')) {
+        console.debug('type -> description');
+        return isDescriptionsEqual(c1, c2);
+      } else if (c1.hasOwnProperty('relationshipId') && c2.hasOwnProperty('relationshipId')) {
+        console.debug('type -> relationship');
+        return isRelationshipsEqual(c1, c2);
+      } else if (c1.hasOwnProperty('conceptId') && c2.hasOwnProperty('conceptId')) {
+        console.debug('type -> concept');
+        return isConceptsEqual(c1, c2);
+      } else {
+        console.debug('type -> UNKNOWN');
+        return false;
+      }
+    }
 
     return {
       getNewConcept: getNewConcept,
@@ -249,7 +357,11 @@ angular.module('singleConceptAuthoringApp')
       getNewIsaRelationship: getNewIsaRelationship,
       getNewAttributeRelationship: getNewAttributeRelationship,
       applyMinimumFields: applyMinimumFields,
-      hasMinimumFields: hasMinimumFields
+      hasMinimumFields: hasMinimumFields,
+      isComponentsEqual: isComponentsEqual,
+      isConceptsEqual: isConceptsEqual,
+      isDescriptionsEqual: isDescriptionsEqual,
+      isRelationshipsEqual: isRelationshipsEqual
     };
 
   });

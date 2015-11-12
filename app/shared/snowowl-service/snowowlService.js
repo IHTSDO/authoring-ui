@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', function ($http, $q) {
+  .service('snowowlService', ['$http', '$q', '$timeout', function ($http, $q, $timeout) {
     var apiEndpoint = '../snowowl/snomed-ct/v2/';
 
     /////////////////////////////////////
@@ -768,6 +768,58 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    //////////////////////////////////////////////////////////
+    // Merge Review functions
+    /////////////////////////////////////////////////////////
+
+    /**
+     * Create a merge review given a source and target branch
+     * @param parentBranch the parent branch
+     * @param childBranch the child branch
+     * @returns {*}
+     */
+    function getMergeReview(parentBranch, childBranch) {
+
+      var deferred = $q.defer();
+      $http.post(apiEndpoint + 'merge-reviews', {
+        source: parentBranch,
+        target: childBranch
+      }).then(function (response) {
+        console.debug(response, response.headers);
+        console.debug(response.headers('Location'));
+
+        // extract the merge-review id from the location header
+        var locHeader = response.headers('Location');
+        var mergeReviewId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
+
+        console.debug('merge-review id', mergeReviewId);
+
+        // timeout required to avoid PENDING errors -- 5s too long, 10s may be inadequate in some cases
+        // TODO Yell at Peter & Kai some :)
+        $timeout(function () {
+
+          console.debug('timeout over');
+
+          // get the merge review details
+          $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response) {
+            console.debug(response);
+            deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject('Could not retrieve merge details');
+          });
+        }, 10000);
+
+      }, function (error) {
+        deferred.reject('Could not create merge review');
+      });
+
+      return deferred.promise;
+    }
+
+    function storeConceptAgainstMergeReview(id, conceptId, concept) {
+
+    }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -812,7 +864,11 @@ angular.module('singleConceptAuthoringApp')
       getReview: getReview,
       getBranch: getBranch,
       getDomainAttributes: getDomainAttributes,
-      getAttributeValues: getAttributeValues
+      getAttributeValues: getAttributeValues,
+
+      // merge-review functionality
+      getMergeReview: getMergeReview,
+      storeConceptAgainstMergeReview: storeConceptAgainstMergeReview
 
     };
   }
