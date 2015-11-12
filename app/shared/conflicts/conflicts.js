@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'objectService', 'snowowlService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, objectService, snowowlService, notificationService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'objectService', 'snowowlService', 'notificationService', '$q',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, objectService, snowowlService, notificationService, $q) {
       return {
         restrict: 'A',
         transclude: false,
@@ -66,9 +66,9 @@ angular.module('singleConceptAuthoringApp')
            * @param task
            * @param concept
            */
-          $scope.conceptUpdateFunction = function(project, task, concept){
+          scope.conceptUpdateFunction = function(project, task, concept){
             var deferred = $q.defer();
-            snowowlService.updateConcept(project, task, concept).then(function (response) {
+            snowowlService.saveMergeConcept(project, task, concept).then(function (response) {
                 deferred.resolve(response);
             });
             return deferred.promise;
