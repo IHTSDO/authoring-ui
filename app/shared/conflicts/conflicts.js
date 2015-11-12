@@ -68,7 +68,8 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.conceptUpdateFunction = function(project, task, concept){
             var deferred = $q.defer();
-            snowowlService.saveMergeConcept(project, task, concept).then(function (response) {
+              console.log(concept);
+            snowowlService.storeConceptAgainstMergeReview(scope.id, concept.conceptId, concept).then(function (response) {
                 deferred.resolve(response);
             });
             return deferred.promise;
@@ -222,7 +223,8 @@ angular.module('singleConceptAuthoringApp')
           // on load, generate the review
           snowowlService.getMergeReview(scope.sourceBranch, scope.targetBranch).then(function (response) {
             console.debug('review', response);
-
+            scope.id = response.id;
+            
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
 
