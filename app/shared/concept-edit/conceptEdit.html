@@ -19,6 +19,12 @@
       border-color: orange;
     }
 
+    .greenhl {
+      border-style: solid;
+      border-width: 5px;
+      border-color: green;
+    }
+
   </style>
 
   <!-- begin validation error -->
@@ -243,7 +249,8 @@
     </div>
 
     <!-- rows: Relationships -->
-    <div ng-repeat="relationship in getRelationships(true)">
+    <div ng-repeat="relationship in getRelationships(true)"
+         ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
       <div class="row darken-3 grey" ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 

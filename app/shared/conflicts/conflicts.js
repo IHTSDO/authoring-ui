@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'snowowlService', 'notificationService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, snowowlService, notificationService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'objectService', 'snowowlService', 'notificationService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, objectService, snowowlService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -23,61 +23,10 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope) {
 
-          console.debug('conflicts container', scope.conflictsContainer);
-
-          scope.conflictsViewed = [];
-          scope.conflictList = [];
-
-          /**
-           * Watch the conflicts container for any changes
-           */
-          scope.$watch('conflictsContainer', function () {
-
-            console.debug('conflictsContainer changed', scope.conflictsContainer);
-
-            if (!scope.conflictsContainer || !scope.conflictsContainer.conflicts) {
-              scope.conflictsReportStatus = 'Conflicts report not available';
-              return;
-            } else {
-              scope.conceptsInConflict = scope.conflictsContainer.conflicts.concepts;
-            }
-          }, true);
-
-          /**
-           On load, get ui state and populate previously viewed conflicts
-           */
-          if ($routeParams.taskKey) {
-          scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'conflict-list').then(function (uiState) {
-            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-              scope.conflictList = [];
-            }
-            else {
-              scope.conflictList = uiState;
-              console.debug('conflict list', scope.conflictList);
-              for (var i = 0; i < scope.conflictList.length; i++) {
-                scope.viewConflict(scope.conflictList[i]);
-              }
-            }
-          });
-          } else {
-           // TODO Project ui state retrieval
-          }
-
-          /**
-           * Save the current list of viewed conflicts as ui state
-           */
-          function saveUiState() {
-            var conflictList = [];
-            angular.forEach(scope.conflictsViewed, function (conflict) {
-              conflictList.push(conflict.id);
-            });
-            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'conflict-list', conflictList);
-          }
-
           /**
            * Conflict ngTable parameters
            */
-          scope.conceptsInConflictTableParams = new NgTableParams({
+          scope.conflictsTableParams = new NgTableParams({
               page: 1,
               count: 10,
               sorting: {fsn: 'asc'},
@@ -85,13 +34,13 @@ angular.module('singleConceptAuthoringApp')
             },
             {
               filterDelay: 50,
-              total: scope.conceptsInConflict ? scope.conflictsInConflict.length : 0,
+              total: scope.conflicts ? scope.conflicts.length : 0,
 
               getData: function ($defer, params) {
 
-                var concepts = scope.conceptsInConflict;
+                var concepts = scope.conflicts;
 
-                console.debug('concepts', concepts);
+                console.debug('conflictsTableParams getData', concepts);
 
                 if (!concepts) {
                   $defer.resolve([]);
@@ -107,131 +56,220 @@ angular.module('singleConceptAuthoringApp')
             }
           );
 
-          /**
-           * Helper function to pre-process a conflict triad (source, target,
-           * merge)
-           * @param conflictObj the object containing the three concepts
-           */
-          scope.viewConflictHelper = function (conflictObj) {
-
-            console.debug('generating conflict triad', conflictObj);
-
-            // TODO Sample styling, classes found in conceptEdit.html
-            var styles = ['redhl', 'yellowhl', 'orangehl'];
-
-            var testFlag = true;
-
-            angular.forEach(conflictObj.source.descriptions, function (description) {
-
-              console.debug('applying random style to description', description);
-              var sourceStyle = {};
-
-              testFlag = !testFlag;
-
-              if (!testFlag) {
-                conflictObj.styles[description.descriptionId] = {
-                  message: null,
-                  style: styles[getRandomInt(0, styles.length - 1)]
-                };
-              } else {
-
-                conflictObj.styles[description.descriptionId + '-term'] = {
-                  message: null,
-                  style: styles[getRandomInt(0, styles.length - 1)]
-                };
-
-              }
-
-              console.debug('applying random style', sourceStyle);
-            });
-
-            // push onto viewed list
-            scope.conflictsViewed.push(conflictObj);
-
-            // save the ui state
-            saveUiState();
-
-            if (scope.conflictsViewed.length === scope.conflictList.length) {
-              notificationService.sendMessage('Conflict data loaded', 5000);
-            }
-
-            console.debug('new styles', scope.conflictsStyles);
-          };
+          /////////////////////////////////////////////////////
+          // Helper functions
+          /////////////////////////////////////////////////////
 
           /**
-           * View a concept in conflict-view
-           * @param concept
+           * Constructs a map of componentId -> {source, target, merged}
+           * @param merge
            */
-          scope.viewConflict = function (conceptId) {
+          function mapComponents(merge) {
 
-            console.debug('viewConflict', conceptId, scope.conflictList);
+            // initialize the mapped components array
+            var mappedComponents = {};
 
-            if (scope.conflictList.indexOf(conceptId) === -1) {
-              console.debug('adding to conflict list');
-              scope.conflictList.push(conceptId);
-            }
-
-            notificationService.sendMessage('Loading conflict data...');
-
-            var conflictObj = {id: conceptId, styles: []};
-
-            snowowlService.getFullConcept(conceptId, scope.sourceBranch).then(function (response) {
-              conflictObj.source = response;
-              if (conflictObj.hasOwnProperty('target')) {
-                scope.viewConflictHelper(conflictObj);
+            // map descriptions
+            angular.forEach(merge.source.descriptions, function (description) {
+              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                mappedComponents[description.descriptionId] = {};
               }
+              mappedComponents[description.descriptionId].source = description;
             });
 
-            snowowlService.getFullConcept(conceptId, scope.targetBranch).then(function (response) {
-              conflictObj.target = response;
-              if (conflictObj.hasOwnProperty('source')) {
-                scope.viewConflictHelper(conflictObj);
+            angular.forEach(merge.target.descriptions, function (description) {
+              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                mappedComponents[description.descriptionId] = {};
               }
+              mappedComponents[description.descriptionId].target = description;
             });
-          };
 
-          /**
-           * Generate a random int between min/max (inclusive)
-           * @param min the min
-           * @param max the max
-           * @returns {*} the random integer
-           */
-          function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+            angular.forEach(merge.merged.descriptions, function (description) {
+              if (!mappedComponents.hasOwnProperty(description.descriptionId)) {
+                mappedComponents[description.descriptionId] = {};
+              }
+              mappedComponents[description.descriptionId].merged = description;
+            });
+
+            // map relationships
+            angular.forEach(merge.source.relationships, function (relationship) {
+              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                mappedComponents[relationship.relationshipId] = {};
+              }
+              mappedComponents[relationship.relationshipId].source = relationship;
+            });
+
+            angular.forEach(merge.target.relationships, function (relationship) {
+              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                mappedComponents[relationship.relationshipId] = {};
+              }
+              mappedComponents[relationship.relationshipId].target = relationship;
+            });
+
+            angular.forEach(merge.merged.relationships, function (relationship) {
+              if (!mappedComponents.hasOwnProperty(relationship.relationshipId)) {
+                mappedComponents[relationship.relationshipId] = {};
+              }
+              mappedComponents[relationship.relationshipId].merged = relationship;
+            });
+
+            return mappedComponents;
           }
 
-          /**
-           * Watch for stop editing requests
-           */
-          scope.$on('stopEditing', function (event, data) {
-            if (!data || !data.concept || !data.concept.conceptId) {
-              console.error('stopEditing event received without concept id in conflicts view', data);
-            } else {
-              angular.forEach(scope.conceptsInConflict, function (concept) {
-                if (concept.conceptId === data.concept.conceptId) {
-                  concept.editing = false;
-                }
-              });
-              for (var i = 0; i < scope.conflictsViewed.length; i++) {
-                if (scope.conflictsViewed[i].source.conceptId === data.concept.conceptId) {
-                  scope.conflictsViewed.splice(i, 1);
-                  break;
-                }
+          function highlightChanges(merge) {
+
+            // create blank styling object
+            var styles = {
+              source: {},
+              target: {},
+              merged: {}
+            };
+
+            // map the components for convenience
+            var mappedComponents = mapComponents(merge);
+
+            console.debug('mapped components', mappedComponents);
+
+            // cycle over each discovered componentId and check
+            // equality/presence
+            for (var key in mappedComponents) {
+
+              var c = mappedComponents[key]
+
+              console.debug('----------------------');
+              console.debug('Checking components:', c);
+              console.debug('----------------------');
+
+              // Case 1: Source component not present in merged component --> Removed in merge
+              if (c.source && !c.merged) {
+                console.debug('key -> case 1');
+                styles.source[key] = {message: null, style: 'redhl'};
               }
 
-              saveUiState();
+              // Case 2: Source component present in merged
+              if (c.source && c.merged) {
+
+                // Case 2a: Component not present in target --> Added by source
+                if (!c.target) {
+                  console.debug('key -> case 2a');
+                  styles.source[key] = {message: null, style: 'yellowhl'};
+                  styles.merged[key] = {message: null, style: 'yellowhl'}
+                }
+
+                // Case 2b: Component present in target, but not equal --> Modified by merge
+                // Modified by target
+                else if (!objectService.isComponentsEqual(c.source, c.merged)) {
+                  console.debug('key -> case 2b');
+                  styles.source[key] = {message: null, style: 'yellowhl'};
+                  styles.merged[key] = {message: null, style: 'yellowhl'};
+                }
+              }
+              // Case 3: Target component not present in merged component --> Removed in merge
+              if (c.target && !c.merged) {
+                console.debug('key -> case 3');
+                styles.target[key] = {message: null, styles: 'redhl'};
+              }
+
+              // Case 4: Target component present in merged
+              if (c.target && c.merged) {
+
+                // Case 4a: Component not present in source --> Added by target
+                if (!c.source) {
+                  console.debug('key -> case 4a');
+                  styles.target[key] = {message: null, style: 'orangehl'};
+                  styles.merged[key] = {message: null, style: 'orangehl'}
+                }
+
+                // Case 4b: Component present in target, but not equal --> Modified by merge
+                // Modified by target
+                else if (!objectService.isComponentsEqual(c.target, c.merged)) {
+                console.debug('key -> case 4b');
+                  styles.target[key] = {message: null, style: 'orangehl'};
+                  styles.merged[key] = {message: null, style: 'orangehl'};
+                }
+              }
+            }
+
+            console.debug('styles after concept calculation', styles);
+            return styles;
+
+          };
+
+          /////////////////////////////////////////////////////
+          // Initialization of merge-review functionality
+          /////////////////////////////////////////////////////
+
+          scope.conflicts = null;
+          scope.viewedMerges = [];
+
+          // on load, generate the review
+          snowowlService.getMergeReview(scope.sourceBranch, scope.targetBranch).then(function (response) {
+            console.debug('review', response)
+
+            // intiialize the list of conflicts for tabular display
+            scope.conflicts = [];
+
+            // initialize the conditional highlighting map (conceptId -> {target -> styles, source -> styles, merged -> styles))
+            scope.styles = {};
+
+            ///////////////////////////////////////////
+            // Cycle over each type and add to map
+            ////////////////////////////////////////////
+
+            // constrcut a map of conceptId -> {source, target, merged concepts}
+            var conceptMap = {};
+
+            // add all source concepts
+            angular.forEach(response.sourceChanges, function(concept) {
+              if (!conceptMap.hasOwnProperty(concept.conceptId)) {
+                conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
+              }
+              conceptMap[concept.conceptId].source = concept;
+            });
+
+            // add all target concepts
+            angular.forEach(response.targetChanges, function(concept) {
+              if (!conceptMap.hasOwnProperty(concept.conceptId)) {
+                conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
+              }
+              conceptMap[concept.conceptId].target = concept;
+            });
+
+            // add all merged concepts
+            angular.forEach(response.mergedChanges, function(concept) {
+              if (!conceptMap.hasOwnProperty(concept.conceptId)) {
+                conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
+              }
+              conceptMap[concept.conceptId].merged = concept;
+            });
+
+            for (var key in conceptMap) {
+
+              var concept = conceptMap[key];
+
+              // construct list of conflicts for ng-table display
+              var conflict = {
+                id: concept.conceptId,
+                fsn: concept.fsn
+              };
+
+              // push to conflicts list
+              scope.conflicts.push(conflict);
+
+              // calculate merge changes
+              concept.styles = highlightChanges(concept);
+
+              // add to viewed list
+              // TODO Remove this once controls are satisfactory (i.e. don't display by default)
+              scope.viewedMerges.push(concept);
 
             }
-          });
 
-          /**
-           * Get whether the concept is currently edited
-           * @param conceptId the concept id
-           * @returns {boolean} true if editing, false if not
-           */
-          scope.isEdited = function (conceptId) {
-            return scope.conflictList.indexOf(conceptId) !== -1;
-          };
+            console.debug('viewedMerges', scope.viewedMerges);
+            console.debug('conflicts', scope.conflicts);
+            console.debug('styles', scope.styles);
+            scope.conflictsTableParams.reload();
+          });
 
         }
       };

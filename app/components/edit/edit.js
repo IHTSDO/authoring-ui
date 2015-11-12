@@ -874,7 +874,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.getLatestConflictsReport = function () {
 
       if (!$scope.taskKey) {
-        //scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
+        // scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
         //  $scope.conflictsContainer.conflicts = response ? response : {};
         //});
       } else {
