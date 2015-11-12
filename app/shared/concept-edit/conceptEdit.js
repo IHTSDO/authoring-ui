@@ -128,18 +128,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   }
                   if(scope.additionalFields.relationship.length > 0)
                   {
+                    angular.forEach(concept.relationships, function (relationship) {
+                            relationship.additionalFields = [];
+                        }); 
                     angular.forEach(scope.additionalFields.relationship, function (field) {
                         angular.forEach(concept.relationships, function (relationship) {
-                            relationship.additionalFields = [];
                             relationship.additionalFields.push({[field] : ''});
                         }); 
                     });  
                   }
                   if(scope.additionalFields.description.length > 0)
                   {
+                    angular.forEach(concept.descriptions, function (description) {
+                            description.additionalFields = [];
+                        }); 
                     angular.forEach(scope.additionalFields.description, function (field) {
                         angular.forEach(concept.descriptions, function (description) {
-                            description.additionalFields = [];
                             description.additionalFields.push({[field] : ''});
                         }); 
                     });  
@@ -154,48 +158,54 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       // initialize the last saved version of this concept
       scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
       scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
-        console.log(scope.unmodifiedConcept);
+      if(scope.autosave === false)
+      {
+        scope.concept = scope.unmodifiedConcept;
+      }
 
       // on load, check if a modified, unsaved version of this concept
       // exists
-      scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
+      if(scope.autosave === true)
+      {
+          scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
 
-        // console.debug('getting modified concept for task');
+            // console.debug('getting modified concept for task');
 
-        // if not an empty JSON object, process the modified version
-        if (modifiedConcept) {
+            // if not an empty JSON object, process the modified version
+            if (modifiedConcept) {
 
-          // console.debug('passed concept', scope.concept);
-          // console.debug('modified concept', modifiedConcept);
+              // console.debug('passed concept', scope.concept);
+              // console.debug('modified concept', modifiedConcept);
 
-          // replace the displayed content with the modified concept
-          scope.concept = modifiedConcept;
+              // replace the displayed content with the modified concept
+              scope.concept = modifiedConcept;
 
-          sortDescriptions();
-          sortRelationships();
+              sortDescriptions();
+              sortRelationships();
 
-          // reset the concept history to reflect modified change
-          resetConceptHistory();
+              // reset the concept history to reflect modified change
+              resetConceptHistory();
 
-          // set scope flag
-          scope.isModified = true;
-        }
+              // set scope flag
+              scope.isModified = true;
+            }
 
-        // special case for unsaved concepts to catch possible bugs
-        else {
-          // if unsaved, and no modified data found, simply replace with
-          // blank concept
-          if (scope.concept.conceptId === 'unsaved') {
-            scope.concept = objectService.getNewConcept(scope.branch);
-          }
+            // special case for unsaved concepts to catch possible bugs
+            else {
+              // if unsaved, and no modified data found, simply replace with
+              // blank concept
+              if (scope.concept.conceptId === 'unsaved') {
+                scope.concept = objectService.getNewConcept(scope.branch);
+              }
 
-          // if an actual unsaved concept (no fsn assigned), mark as
-          // modified
-          if (!scope.concept.fsn) {
-            scope.isModified = true;
-          }
-        }
-      });
+              // if an actual unsaved concept (no fsn assigned), mark as
+              // modified
+              if (!scope.concept.fsn) {
+                scope.isModified = true;
+              }
+            }
+          });
+      }
 
       scope.collapse = function (concept) {
         if (scope.isCollapsed === true) {
@@ -297,7 +307,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (response && response.conceptId) {
 
               scope.concept = response;
-
+              scope.concept = scope.addAdditionalFields(scope.concept);
               // set concept and unmodified state
               scope.concept = response;
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
