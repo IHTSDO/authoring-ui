@@ -134,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
             // equality/presence
             for (var key in mappedComponents) {
 
-              var c = mappedComponents[key]
+              var c = mappedComponents[key];
 
               console.debug('----------------------');
               console.debug('Checking components:', c);
@@ -153,7 +153,7 @@ angular.module('singleConceptAuthoringApp')
                 if (!c.target) {
                   console.debug('key -> case 2a');
                   styles.source[key] = {message: null, style: 'yellowhl'};
-                  styles.merged[key] = {message: null, style: 'yellowhl'}
+                  styles.merged[key] = {message: null, style: 'yellowhl'};
                 }
 
                 // Case 2b: Component present in target, but not equal --> Modified by merge
@@ -177,7 +177,7 @@ angular.module('singleConceptAuthoringApp')
                 if (!c.source) {
                   console.debug('key -> case 4a');
                   styles.target[key] = {message: null, style: 'orangehl'};
-                  styles.merged[key] = {message: null, style: 'orangehl'}
+                  styles.merged[key] = {message: null, style: 'orangehl'};
                 }
 
                 // Case 4b: Component present in target, but not equal --> Modified by merge
@@ -193,7 +193,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('styles after concept calculation', styles);
             return styles;
 
-          };
+          }
 
           /////////////////////////////////////////////////////
           // Initialization of merge-review functionality
@@ -204,7 +204,7 @@ angular.module('singleConceptAuthoringApp')
 
           // on load, generate the review
           snowowlService.getMergeReview(scope.sourceBranch, scope.targetBranch).then(function (response) {
-            console.debug('review', response)
+            console.debug('review', response);
 
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
