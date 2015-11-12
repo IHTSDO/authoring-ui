@@ -61,6 +61,20 @@ angular.module('singleConceptAuthoringApp')
           /////////////////////////////////////////////////////
 
           /**
+           * Saves a concept to the update merge endpoint, params are passed from the conceptEdit directive
+           * @param project
+           * @param task
+           * @param concept
+           */
+          $scope.conceptUpdateFunction = function(project, task, concept){
+            var deferred = $q.defer();
+            snowowlService.updateConcept(project, task, concept).then(function (response) {
+                deferred.resolve(response);
+            });
+            return deferred.promise;
+          };
+            
+          /**
            * Constructs a map of componentId -> {source, target, merged}
            * @param merge
            */
@@ -201,6 +215,9 @@ angular.module('singleConceptAuthoringApp')
 
           scope.conflicts = null;
           scope.viewedMerges = [];
+        
+          
+          
 
           // on load, generate the review
           snowowlService.getMergeReview(scope.sourceBranch, scope.targetBranch).then(function (response) {
