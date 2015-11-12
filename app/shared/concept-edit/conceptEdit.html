@@ -97,7 +97,7 @@
               ng-class="[btn-default, editbuttons, ' fa fa-power-off', {green : concept.active}, {red: !concept.active}]"
               ng-click="toggleConceptActive(concept)" class="small-buttons tooltips-left tooltips-light normal-case">
         <span ng-if="!isStatic"> Activate/ inactivate concept </span>
-        <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span</button>
+        <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span></button>
       <button type="button"
               style="vertical-align: bottom"
               class="btn-default editbuttons small-buttons color_{{relationship.groupId}} tooltips-left tooltips-light normal-case"
@@ -153,10 +153,10 @@
              drag-hover-class="sca-drag-hover">
 
           <button ng-click="setDescriptionProperties(description)"
-                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width"
+                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
-                  ng-click="populateDescriptionMore(description)" popover-append-to-body="true"></button>
+                  ng-click="populateDescriptionMore(description)" popover-append-to-body="true"><span>More details</span></button>
 
           <button
             class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
@@ -275,12 +275,12 @@
              drag-hover-class="sca-drag-hover">
 
           <div class="p-t-5 ">
-            <button class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width"
+            <button class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
                     ng-click="setRelationshipProperties(relationship)"
                     popover-template="'shared/component-more/relationshipMore.html'"
                     popover-placement="{{popoverDirection}}"
                     title="Some title here" popover-append-to-body="true"
-              ></button>
+              ><span>More details</span></button>
 
             <button
               class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width "
