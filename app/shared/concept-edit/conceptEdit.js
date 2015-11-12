@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp')
           var viewValue = ngModel.$viewValue;
 
           //restore to null value so that the typeahead can detect a change
-          if (ngModel.$viewValue == ' ') {
+          if (ngModel.$viewValue === ' ') {
             ngModel.$setViewValue(null);
           }
 
@@ -29,13 +29,13 @@ angular.module('singleConceptAuthoringApp')
         //compare function that treats the empty space as a match
         scope.emptyOrMatch = function (actual, expected) {
           // console.debug('emptyormatch', actual, expected);
-          if (expected == ' ') {
+          if (expected === ' ') {
             return true;
           }
           return actual ? actual.toString().toLowerCase().indexOf(expected.toLowerCase()) > -1 : false;
         };
       }
-    }
+    };
   });
 
 angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, scaService, snowowlService, objectService, notificationService, $routeParams, metadataService) {
@@ -1235,7 +1235,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
           if (response && response.length > 0) {
             relationship.target.conceptId = data.id;
-            relationship.target.fsn = data.name
+            relationship.target.fsn = data.name;
             scope.warning = '';
             scope.updateRelationship(relationship);
           }
