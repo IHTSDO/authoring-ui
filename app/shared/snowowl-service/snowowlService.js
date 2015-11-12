@@ -816,8 +816,19 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    /**
+     * Save a concept against its merge review for later playback
+     * @param id the merge review id
+     * @param conceptId
+     * @param concept
+     * @returns {status}
+     */
     function storeConceptAgainstMergeReview(id, conceptId, concept) {
-
+        return $http.post(apiEndpoint + 'merge-reviews/' + id + '/' + conceptId, concept).then(function (response) {
+            return response.data;
+          }, function (error) {
+            return error.data;
+          });
     }
 
     ////////////////////////////////////////////
