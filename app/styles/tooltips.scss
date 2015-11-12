@@ -95,11 +95,11 @@ a:hover.tooltips-right span, button:hover.tooltips-right span  {
   z-index: 999;
 }
 /* bottom */
-a.tooltips-btm {
+a.tooltips-btm, button.tooltips-btm {
   position: relative;
   display: inline;
 }
-a.tooltips-btm span {
+a.tooltips-btm span, button.tooltips-btm span {
   position: absolute;
  font-size:12px;
   color: #FFFFFF;
@@ -109,7 +109,7 @@ a.tooltips-btm span {
   visibility: hidden;
   border-radius: 6px;
 }
-a.tooltips-btm span:after {
+a.tooltips-btm span:after, button.tooltips-btm span:after {
   content: '';
   position: absolute;
   bottom: 100%;
@@ -120,7 +120,7 @@ a.tooltips-btm span:after {
   border-right: 8px solid transparent;
   border-left: 8px solid transparent;
 }
-a:hover.tooltips-btm span {
+a:hover.tooltips-btm span, button:hover.tooltips-btm span {
   visibility: visible;
   opacity: 0.8;
   top: 30px;

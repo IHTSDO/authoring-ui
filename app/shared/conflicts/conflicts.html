@@ -93,28 +93,40 @@
   </style>
 
 
+  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
+    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
+           id="select_all_to_review"
+           name="filter-checkbox" value=""/>
+  </script>
+
   <div class="row no-gutter no-padding">
 
     <div class="col-md-12 no-padding no-gutter">
 
       <!-- Conflicts Report: Sidebar -->
-      <div class="col-md-3 no-padding no-gutter">
+      <div class="col-md-2 no-padding no-gutter">
 
-        <table show-filter="false" ng-table="conceptsInConflictTableParams"
+        <div ng-if="!conflicts" class="alert alert-warning">Loading conflicts...</div>
+
+        <div ng-if="conflicts" class="row no-padding no-gutter" style="text-align: center">
+          <div class="col-md-12"><h4>Conflicts</h4></div>
+        </div>
+
+        <table show-filter="false" ng-table="conflictsTableParams" ng-if="conflicts"
                template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small" drop-channel="feedbackConcept">
 
 
-          <tr ng-repeat="concept in conceptsInConflict">
+          <tr ng-repeat="concept in conflicts">
 
             <!-- Checkbox control -->
-            <td class="col-checkbox col-md-1" header="'ng-table/headers/checkboxToReview.html'">
+            <td class="col-checkbox col-md-1" header="'ng-table/headers/checkboxHeader.html'">
               <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
             </td>
 
             <!-- Fsn -->
             <td class="col-concept col-md-10" data-title="'Concept'" sortable="'fsn'">
-              {{concept.fsn}}
+              Concept: {{concept.fsn}}
             </td>
 
             <!-- Controls -->
@@ -130,30 +142,33 @@
           </tr>
         </table>
       </div>
-      <div class="col-md-9 no-padding no-gutter" ng-show="conflictsViewed.length > 0">
+      <div class="col-md-10 no-padding no-gutter" ng-show="viewedMerges.length > 0">
 
         <div class="row no-padding no-gutter" style="text-align: center">
-          <div class="col-md-4"><h4>{{targetBranch}}</h4></div>
-          <div class="col-md-4"><h4>Merged</h4></div>
-          <div class="col-md-4"><h4>{{sourceBranch}}</h4></div>
+          <div class="col-md-4"><h4>Project Version</h4></div>
+          <div class="col-md-4"><h4>Merged Version</h4></div>
+          <div class="col-md-4"><h4>Task Version</h4></div>
         </div>
 
-        <div class="row no-padding no-gutter" ng-repeat="conflict in conflictsViewed">
+        <div class="row no-padding no-gutter" ng-repeat="merge in viewedMerges">
+          <div class="col-md-12">
+            {{merge.conceptId}}, {{styles[merge.conceptId]}}
+          </div>
           <div class="col-md-4">
-            <div concept-edit concept="conflictsViewed[$index].source"
-                 branch="targetBranch" static="true"
-                 component-styles="conflict.styles">
+            <div concept-edit concept="viewedMerges[$index].source"
+                 branch="targetBranch" static="true" component-styles="merge.styles.source">
             </div>
           </div>
 
           <div class="col-md-4">
-            <div concept-edit concept="{}" branch="temp"></div>
-            <div class="alert alert-warning" m-10> Merged view not yet functional</div>
+            <div concept-edit concept="viewedMerges[$index].merged" branch="sourceBranch" static="false"
+              component-styles="merge.styles.merged" save-function="conceptUpdateFunction(project, task, concept)"></div>
 
           </div>
           <div class="col-md-4">
-            <div concept-edit concept="conflictsViewed[$index].target"
-                 branch="sourceBranch" static="true">
+            <div concept-edit concept="viewedMerges[$index].target"
+                 branch="sourceBranch" static="true"
+              component-styles="merge.styles.target">
             </div>
           </div>
         </div>
