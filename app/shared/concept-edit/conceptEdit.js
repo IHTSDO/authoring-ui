@@ -59,10 +59,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       // parent function to invoke updating the ui state for this concept's
       // list (not required)
       uiStateUpdateFn: '&?',
+        
+      //Whether or not autosave should be enabled (not required)
+      autosave: '@?',
 
       // styling for concept elements, as array [id0 : {message, style,
       // fields : {field0 : {message, style}, field1 : {...}}, id1 : ....]
-      componentStyles: '='
+      componentStyles: '=',
+        
+      // Any additional fields you would like adding to the concept model (not required)
+      //e.g. All fields are added as text fields to the form and if fields are specified then concept cleanup is disabled
+      //{
+//            concept: ["notes"],
+//            description: ["reasonForChange", "justificationForChange"],
+//            relationship: ["reasonForChange", "justificationForChange"]
+//        }
+       additionalFields : '=?'
     },
     templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -91,11 +103,58 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       } else {
         scope.isStatic = false;
       }
+        
+      if (scope.autosave === 'false') {
+        scope.autosave = false;
+      } else {
+        scope.autosave = true;
+      }
+        
+      if (angular.isDefined(scope.additionalFields)) {
+        scope.additionalFieldsDeclared = true;
+      } else {
+        scope.additionalFieldsDeclared = false;
+      }
+        scope.addAdditionalFields = function(concept)
+          {
+              if(scope.additionalFieldsDeclared === true)
+              {
+                  if(scope.additionalFields.concept.length > 0)
+                  {
+                    angular.forEach(scope.additionalFields.concept, function (field) {
+                        concept.additionalFields = [];
+                        concept.additionalFields.push({[field] : ''});
+                    });  
+                  }
+                  if(scope.additionalFields.relationship.length > 0)
+                  {
+                    angular.forEach(scope.additionalFields.relationship, function (field) {
+                        angular.forEach(concept.relationships, function (relationship) {
+                            relationship.additionalFields = [];
+                            relationship.additionalFields.push({[field] : ''});
+                        }); 
+                    });  
+                  }
+                  if(scope.additionalFields.description.length > 0)
+                  {
+                    angular.forEach(scope.additionalFields.description, function (field) {
+                        angular.forEach(concept.descriptions, function (description) {
+                            description.additionalFields = [];
+                            description.additionalFields.push({[field] : ''});
+                        }); 
+                    });  
+                  }
+                  return concept;
+              }
+              else{return concept;}
+          };
 
       // console.debug('entered conceptEdit.js');
 
       // initialize the last saved version of this concept
       scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
+      scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
+        console.log(scope.unmodifiedConcept);
 
       // on load, check if a modified, unsaved version of this concept
       // exists
@@ -242,6 +301,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // set concept and unmodified state
               scope.concept = response;
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+              scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
               scope.isModified = false;
 
               // clear the saved modified state
@@ -298,6 +358,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // set concept and unmodified state
               scope.concept = response;
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+              scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
               scope.isModified = false;
 
               // clear the saved modified state
@@ -318,6 +379,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // but only AFTER successful save -- duplicated in
               // updateConcept below
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+              scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
               scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
             }
             else {
@@ -1727,17 +1789,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
        * NOTE: outside $watch to prevent spurious updates
        */
       function autoSave() {
+        if(scope.autosave === true)
+        {
+            // console.debug('conceptEdit: autosave called', scope.concept ===
+            // scope.lastModifiedConcept, scope.concept);
 
-        // console.debug('conceptEdit: autosave called', scope.concept ===
-        // scope.lastModifiedConcept, scope.concept);
+            scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
+            scope.conceptHistoryPtr++;
 
-        scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
-        scope.conceptHistoryPtr++;
+            // console.debug('autosave', scope.conceptHistory);
 
-        // console.debug('autosave', scope.conceptHistory);
-
-        // save the modified concept
-        saveModifiedConcept();
+            // save the modified concept
+            saveModifiedConcept();
+        }
 
       }
 
@@ -1792,6 +1856,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             notificationService.sendMessage('Concept successfully reverted to saved version', 5000);
             scope.concept = response;
             scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+            scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
             scope.isModified = false;
             scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
           }, function (error) {
