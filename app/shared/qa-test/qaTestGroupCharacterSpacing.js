@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp')
         return concept;
       }
 
-      var tests = [
+      tests = [
         {
           name: 'White space scenario - PASS',
           action: 'Create concept',
@@ -69,7 +69,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 error: 'Valid concept could not be created (message: ' + error + ' )',
                 data: concept
-              }
+              };
             });
           }
         }, {
@@ -86,7 +86,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 data: concept,
                 response: response
-              }
+              };
             }, function (error) {
               return {
                 status: 'PASSED',
@@ -110,7 +110,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 data: concept,
                 response: response
-              }
+              };
             }, function (error) {
               return {
                 status: 'PASSED',
@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 data: concept,
                 response: response
-              }
+              };
             }, function (error) {
               return {
                 status: 'PASSED',
@@ -156,7 +156,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 data: concept,
                 response: response
-              }
+              };
             }, function (error) {
               return {
                 status: 'PASSED',
@@ -180,7 +180,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 data: concept,
                 response: response
-              }
+              };
             }, function (error) {
               return {
                 status: 'PASSED',
@@ -203,7 +203,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 data: concept,
                 response: response
-              }
+              };
             }, function (error) {
               return {
                 status: 'PASSED',
@@ -226,7 +226,7 @@ angular.module('singleConceptAuthoringApp')
                 status: 'FAILED',
                 data: concept,
                 response: response
-              }
+              };
             }, function (error) {
               return {
                 status: 'PASSED',
@@ -335,7 +335,7 @@ angular.module('singleConceptAuthoringApp')
         cancel: cancel,
         getResults: getResults,
         getName: getName
-      }
+      };
 
     }])
 ;

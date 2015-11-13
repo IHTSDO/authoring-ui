@@ -26,7 +26,7 @@ angular.module('singleConceptAuthoringApp')
 
         // run the next test
         return runTestsHelper(testGroups, ++index);
-      })
+      });
 
     }
 
@@ -44,10 +44,10 @@ angular.module('singleConceptAuthoringApp')
       project = projectKey;
       task = taskKey;
 
-      QaTest.status = 'Running'
+      QaTest.status = 'Running';
       runTestsHelper(testGroups, 0).then(function() {
         QaTest.status = 'Complete';
-      })
+      });
      
     };
 

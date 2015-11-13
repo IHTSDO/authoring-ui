@@ -40,6 +40,6 @@ angular.module( 'singleConceptAuthoringApp.test', [
         //console.debug('polling for results', results);
         testPackage.results = results;
         //console.debug('polling result', $scope.results);
-      }, 2000)
+      }, 2000);
     };
 });
