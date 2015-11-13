@@ -1,0 +1,119 @@
+<style>
+  .Available.badge {
+    background-color: #00b0ff;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+
+  .Claimed.badge {
+    background-color: grey;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+
+
+</style>
+
+<div class="row no-gutter sca-container">
+  <div class="sca-column col-lg-2 col-md-2 col-sm-2 dashboard-sidebar">
+    <div style="background-color:#474747;">
+
+      <ul ng-cloak style="padding: 0px; list-style: none;">
+
+        <li><a class="dashboard-links" ng-href="#/home">
+          <button type="button" class="btn grey darken-2 dashboard-links">
+            <i class="md md-format-list-numbered"></i>All Tests
+          </button>
+        </a></li>
+        <li ng-repeat="test in tests"><a class="dashboard-links" ng-click="showTest(test)">
+          <button type="button" class="btn grey darken-3 dashboard-links">
+            <i class="md md-format-list-numbered"></i>{{test.name}}
+          </button>
+        </a></li>
+      </ul>
+    </div>
+
+
+  </div>
+
+  <div class="sca-column col-lg-10 col-md-10 col-sm-10 p-l-20">
+    <div class="row">
+      <h3 class="table-title p-20">Test Management
+      </h3>
+    </div>
+
+    <div class="row p-l-20" ng-repeat="testPackage in testPackages">
+      <div class="row">
+        <h4 >{{testPackage.name}} -
+        <button class="" ng-click="runTest(testPackage)">Run Test Package</button>
+        </h4>
+
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-1">
+            <h4>Result</h4>
+          </div>
+          <div class="col-md-3">
+            <h4>Test</h4>
+          </div>
+       <!--   <div class="col-md-2">
+            <h4>Action</h4>
+          </div>-->
+          <div class="col-md-8" style="word-break:break-all">
+            <h4>Expected Error</h4>
+          </div>
+        </div>
+      </div>
+      <div ng-repeat="(key, value) in testPackage.results">
+        <!--{{key}}
+        <hr>
+        {{value}}-->
+        <div class="row p-l-10">
+          <div class="col-md-1"></div>
+          <div class="col-md-11"><strong>Test Group: {{key}} </strong>-
+                         {{value.nTestsTotal}} Total /
+                         {{value.nTestsRun}} Complete /
+                         <span color="green">{{value.nTestsPassed}}</span> Passed /
+                         <span color="yellow">{{value.nTestsFailed}}</span> Failed /
+                         <span color="red">{{value.nTestsError}}</span> Errors</span>
+        </div>
+
+        <div class="row" ng-repeat="test in value.tests">
+          <div class="col-md-1" style="text-align: center" ng-class="[{'red' : test.results.status === 'FAILED'}, {'green' : test.results.status === 'PASSED'}]">
+
+            {{test.results.status}}
+          </div>
+          <div class="col-md-3">
+            {{test.name}}
+          </div>
+          <!--<div class="col-md-2">
+            {{test.action}}
+          </div>-->
+          <div class="col-md-8">
+            {{test.expectedError}}
+          </div>
+
+
+        </div>
+      <!--  <div class="row">
+          <div class="col-md-2">Test Data</div>
+
+          <div class="col-md-6">
+            {{test.data}}
+            <div concept-edit concept="test.data" branch="branch" static="true" autosave="false"></div>
+          </div>
+        </div>-->
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+</div>

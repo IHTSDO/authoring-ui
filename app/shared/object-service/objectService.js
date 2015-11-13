@@ -277,9 +277,9 @@ angular.module('singleConceptAuthoringApp')
       }
       // TODO Equality check needs improvement
       /*if (d1.acceptabilityMap !== d2.acceptabilityMap) {
-        // console.debug('acceptabilityMap not equal');
-        return false;
-      }*/
+       // console.debug('acceptabilityMap not equal');
+       return false;
+       }*/
       // console.debug('equal');
       return true;
 
@@ -362,6 +362,7 @@ angular.module('singleConceptAuthoringApp')
       isConceptsEqual: isConceptsEqual,
       isDescriptionsEqual: isDescriptionsEqual,
       isRelationshipsEqual: isRelationshipsEqual
+
     };
 
   });

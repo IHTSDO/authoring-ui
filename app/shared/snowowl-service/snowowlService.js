@@ -11,6 +11,7 @@ angular.module('singleConceptAuthoringApp')
     // Create New Concept
     // POST /browser/{path}/concepts
     function createConcept(project, task, concept) {
+    console.debug('createConcept', project, task, concept);
       return $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
         return response.data;
       }, function (error) {
