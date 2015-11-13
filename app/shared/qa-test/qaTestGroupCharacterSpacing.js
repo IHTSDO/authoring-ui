@@ -250,7 +250,7 @@ angular.module('singleConceptAuthoringApp')
         return (test.testFn.call()).then(function (response) {
 
           // append results of test function to the test
-          console.debug('runHelper response', response);
+          //console.debug('runHelper response', response);
           test.results = response;
 
           // update the results counts
@@ -274,7 +274,7 @@ angular.module('singleConceptAuthoringApp')
        */
       function runTests(projectKey, taskKey) {
 
-        console.debug('qaPackageCharacterSpacing: run test', projectKey, taskKey);
+        //console.debug('qaPackageCharacterSpacing: run test', projectKey, taskKey);
 
         var deferred = $q.defer();
 

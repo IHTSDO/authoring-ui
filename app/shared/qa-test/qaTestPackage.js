@@ -56,10 +56,10 @@ angular.module('singleConceptAuthoringApp')
 
       // get latest results for each package
       angular.forEach(testGroups, function (testGroup) {
-        console.debug('QaTest getResults', testGroup.getResults());
+        //console.debug('QaTest getResults', testGroup.getResults());
         results[testGroup.getName()] = testGroup.getResults();
       });
-      console.debug('returning results', results);
+      //console.debug('returning results', results);
       return results;
     };
 
