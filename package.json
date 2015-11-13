@@ -34,7 +34,9 @@
     "time-grunt": "^1.0.0"
   },
   "repository": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt-contrib-compass": "^1.0.4"
+  },
   "engines": {
     "node": ">=0.10.0"
   },
