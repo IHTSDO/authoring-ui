@@ -119,13 +119,12 @@
               <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
             </td>
 
-
             <!-- other columns here -->
             <td data-title="'Concept'" sortable="'conceptId'">
-              {{failure.conceptId}}
+              {{failure.errorMessage.conceptId}}
             </td>
             <td data-title="'Error Message'" sortable="'detail'">
-              {{failure.detail}}
+              {{failure.errorMessage .detail}}
             </td>
             <td ng-if="taskKey" data-title="'Changed Here'" sortable="'userModified'">
               {{failure.userModified}}
