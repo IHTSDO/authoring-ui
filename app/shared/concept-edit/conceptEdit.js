@@ -59,14 +59,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       // parent function to invoke updating the ui state for this concept's
       // list (not required)
       uiStateUpdateFn: '&?',
-        
+
       //Whether or not autosave should be enabled (not required)
       autosave: '@?',
 
       // styling for concept elements, as array [id0 : {message, style,
       // fields : {field0 : {message, style}, field1 : {...}}, id1 : ....]
       componentStyles: '=',
-        
+
       // Any additional fields you would like adding to the concept model (not required)
       //e.g. All fields are added as text fields to the form and if fields are specified then concept cleanup is disabled
       //{
@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //            relationship: ["reasonForChange", "justificationForChange"]
 //        }
        additionalFields : '=?',
-        
+
        saveFunction : '&?'
     },
     templateUrl: 'shared/concept-edit/conceptEdit.html',
@@ -105,13 +105,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       } else {
         scope.isStatic = false;
       }
-        
+
       if (scope.autosave === 'false') {
         scope.autosave = false;
       } else {
         scope.autosave = true;
       }
-        
+
       if (angular.isDefined(scope.additionalFields)) {
         scope.additionalFieldsDeclared = true;
       } else {
@@ -125,30 +125,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   {
                     angular.forEach(scope.additionalFields.concept, function (field) {
                         concept.additionalFields = [];
-                        concept.additionalFields.push({[field] : ''});
-                    });  
+                        concept.additionalFields.push({field : ''});
+                    });
                   }
                   if(scope.additionalFields.relationship.length > 0)
                   {
                     angular.forEach(concept.relationships, function (relationship) {
                             relationship.additionalFields = [];
-                        }); 
+                        });
                     angular.forEach(scope.additionalFields.relationship, function (field) {
                         angular.forEach(concept.relationships, function (relationship) {
-                            relationship.additionalFields.push({[field] : ''});
-                        }); 
-                    });  
+                            relationship.additionalFields.push({field : ''});
+                        });
+                    });
                   }
                   if(scope.additionalFields.description.length > 0)
                   {
                     angular.forEach(concept.descriptions, function (description) {
                             description.additionalFields = [];
-                        }); 
+                        });
                     angular.forEach(scope.additionalFields.description, function (field) {
                         angular.forEach(concept.descriptions, function (description) {
-                            description.additionalFields.push({[field] : ''});
-                        }); 
-                    });  
+                            description.additionalFields.push({field : ''});
+                        });
+                    });
                   }
                   return concept;
               }
@@ -713,81 +713,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       // List of acceptable reasons for inactivating a description
       // TODO:  More metadata to be retrieved on init and stored
       var inactivateDescriptionReasons = [
-        {
-          id: '', text: 'No reason'
-        },
-        {
-          id: '',
-          text: 'Component moved elsewhere (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'Concept non-current (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'Duplicate component (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'Erroneous component (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'Inappropriate component (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'Limited component (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'Outdated component (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'Pending move (foundation metadata concept)'
-        }
+
+        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
+        {id: 'CONCEPT_NON_CURRENT', text: 'Concept not current'},
+        {id: 'DUPLICATE', text: 'Duplicate component'},
+        {id: 'ERRONEOUS', text: 'Erroneous component'},
+        {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
+        {id: 'LIMITED', text: 'Limited component'},
+        {id: 'OUTDATED', text: 'Outdated component'},
+        {id: 'PENDING_MOVE', text: 'Pending move'}
+
       ];
 
-      var inactivateDescriptionHistoricalReasons = [
-        {
-          id: '',
-          text: 'ALTERNATIVE association reference set (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'MOVED FROM association reference set (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'MOVED TO association reference set (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'POSSIBLY EQUIVALENT TO association reference set (foundation metadata concept'
-        },
-        {
-          id: '',
-          text: 'REFERS TO concept association reference set (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'REPLACED BY association reference set (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'SAME AS association reference set (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'SIMILAR TO association reference set (foundation metadata concept)'
-        },
-        {
-          id: '',
-          text: 'WAS A association reference set (foundation metadata concept)'
-        }
-      ];
 
       // get viewed descriptions
       scope.getDescriptions = function (checkForActive) {
@@ -873,7 +810,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // otherwise, open a select reason modal
         else {
           // TODO Decide what the heck to do with result
-          selectInactivationReason('Description', inactivateComponentReasons, inactivateAssociationReasons, null, null).then(function (results) {
+          selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
 
             notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
