@@ -163,7 +163,18 @@ angular.module('singleConceptAuthoringApp')
 
             // different handling for projects and tasks
             if (!$routeParams.taskKey) {
-              objArray = assertionFailure.firstNInstances;
+              console.debug('project detected');
+
+              angular.forEach(assertionFailure.firstNInstances, function (instance) {
+                var obj = {
+                  concept: null,
+                  errorMessage: instance,
+                  selected: false
+                };
+                objArray.push(obj);
+              });
+              failures = objArray;
+              scope.failureTableParams.reload();
             }
 
             // task handling
@@ -187,8 +198,6 @@ angular.module('singleConceptAuthoringApp')
                     });
                     objArray.push(obj);
                   });
-                  failures = objArray;
-                  scope.failureTableParams.reload();
                 });
 
               }
@@ -214,6 +223,8 @@ angular.module('singleConceptAuthoringApp')
               // TODO Set edit enable/disable for edit panel
             }
 
+            console.debug('failures', failures);
+
             // set failures to trigger watch
             failures = objArray;
 
@@ -227,11 +238,38 @@ angular.module('singleConceptAuthoringApp')
           };
 
           // TODO Decide how to represent concepts and implement
-          scope.editConcept = function (concept) {
-
+          scope.editConcept = function (conceptId) {
+            $rootScope.$broadcast('editConcept', {conceptId: conceptId});
           };
 
-          scope.openCreateTaskModal = function () {
+          scope.openCreateTaskModal = function (task, editList, savedList) {
+
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/task/task.html',
+              controller: 'taskCtrl',
+              resolve: {
+                task: function () {
+                  return task;
+                }
+              }
+            });
+
+            modalInstance.result.then(function (task) {
+
+              notificationService.sendMessage('Task ' + task.key + ' created', -1, '#/tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+
+              console.debug('Task created', task.projectKey, task.key);
+
+
+              scaService.saveUiStateForTask(task.projectKey, task.key, 'edit-panel', editList).then(function(response) {
+                scaService.saveUiStateForTask(task.projectKey, task.key, 'saved-list', { items : savedList }) ; // TODO Seriously rethink the saved list
+              })
+
+            }, function () {
+            });
+          };
+
+          scope.createTaskFromFailures = function () {
 
             notificationService.sendMessage('Constructing task from project validation...');
 
@@ -239,22 +277,23 @@ angular.module('singleConceptAuthoringApp')
 
             // attempt to construct the edit list from user selections
             var editList = [];
-            angular.forEach(failures, function(failure) {
-              if (editList.selected && editList.indexOf(failure.conceptId) === -1) {
-                editList.push(failure.conceptId);
+            angular.forEach(failures, function (failure) {
+              if (editList.selected && editList.indexOf(failure.errorMessage.conceptId) === -1) {
+                editList.push(failure.errorMessage.conceptId);
               }
             });
 
             // if edit list is empty, use all failure instances
-            angular.forEach(failures, function(failure) {
-              if (editList.indexOf(failure.conceptId === -1)) {
-                editList.push(failure.conceptId);
+            angular.forEach(failures, function (failure) {
+              if (editList.indexOf(failure.errorMessage.conceptId === -1)) {
+                editList.push(failure.errorMessage.conceptId);
               }
             });
 
             console.debug('editList', editList);
 
-            // temporary restriction on number of items to prevent giant server load
+            // temporary restriction on number of items to prevent giant server
+            // load
             if (editList.length > 10) {
               notificationService.sendWarning('No more than 20 failures can be put into a task at this time');
               return;
@@ -262,14 +301,15 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Adding concept information to new task ...');
 
-            // retrieve the requested concept information and construct the saved list
+            // retrieve the requested concept information and construct the
+            // saved list
             var idConceptMap = {};
             var savedList = [];
-            angular.forEach(editList, function(conceptId) {
-              snowowlService.getFullConcept(conceptId, scope.branch).then(function(response) {
+            angular.forEach(editList, function (conceptId) {
+              snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
 
                 // add concept to map for properties retrieval (for task detail)
-                idConceptMap[conceptId] = response;
+                idConceptMap[conceptId] = response.fsn;
 
                 // construct the saved list item
                 var savedListItem = {
@@ -285,65 +325,37 @@ angular.module('singleConceptAuthoringApp')
 
                 savedList.push(savedListItem);
                 notificationService.sendMessage('Adding concept information to new task... (' + (savedList.length) + '/' + editList.length + ')');
-              });
-            });
 
-            console.debug('idConceptMap', idConceptMap);
+                if (savedList.length === editList.length) {
 
-            // construct the saved list and task details
-            var taskDetails = 'Task created from project validation.\n\n';
-            angular.forEach(failures, function(failure) {
-              if (failure.selected) {
-                taskDetails += 'Concept: ' + idConceptMap[failure.conceptId].fsn + ', Error: ' + failure.detail + '\n';
-              }
-            });
+                  notificationService.sendMessage('Creating task...');
 
-            console.debug('editList', editList);
-            console.debug('savedList', savedList);
-            console.debug('taskDetails', taskDetails);
+                  console.debug('idConceptMap', idConceptMap);
 
-            //Left as I'm presuming it was part of your debug process
-            return;
-
-
-            var modalInstance = $modal.open({
-              templateUrl: 'shared/task/task.html',
-              controller: 'taskCtrl',
-              resolve: {
-                task: function () {
-                  return null;
-                }
-              }
-            });
-
-            modalInstance.result.then(function (response) {
-
-              var editList = [];
-
-              // construct list of selected ids
-              angular.forEach(failures, function(failure) {
-                if (failure.selected && editList.indexOf(failure.conceptId) === -1) {
-
-                  // add to the edit list
-
-                  // get the concept to add to saved list and details
-                  snowowlService.getFullConcept(failure.conceptId, scope.branch).then(function(response) {
-
-                    // add to the edit list
-
-                    // construct the saved list element
+                  // construct the saved list and task details
+                  var taskDetails = 'Error Type: ' + scope.assertionFailureViewed + '\n\n';
+                  angular.forEach(failures, function (failure) {
+                    // if this concept was encountered, add it to details
+                    if (idConceptMap[failure.errorMessage.conceptId]) {
+                      taskDetails += 'Concept: ' + idConceptMap[failure.errorMessage.conceptId] + ', Error: ' + failure.errorMessage.detail + '\n';
+                    }
                   });
+
+                  console.debug('editList', editList);
+                  console.debug('savedList', savedList);
+                  console.debug('taskDetails', taskDetails);
+
+                  var task = {
+                    projectKey: $routeParams.projectKey,
+                    summary: 'Validation errors found at project level',
+                    description: taskDetails
+                  };
+
+                  scope.openCreateTaskModal(task, editList, savedList);
                 }
               });
-
-
-
-              // update edit-list -- simple list of ids
-
-
-
-            }, function () {
             });
+
           };
         }
 

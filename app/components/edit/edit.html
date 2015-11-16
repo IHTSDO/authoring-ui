@@ -156,7 +156,7 @@
     <button type="button"
             class="btn btn-default widget-toolbar deep-purple lighten-1 validate tooltips-right tooltips-light normal-case"
             ng-click="setView('validation')"
-            ng-disabled="!validationContainer.report">
+            ng-disabled="task.latestValidationStatus !== 'COMPLETED'">
       <div class="md md-school"></div>
       <span>View the most recent Validation Report</span></button>
 

@@ -67,6 +67,19 @@ angular.module('singleConceptAuthoringApp')
       return desc;
     }
 
+    function getNewTextDefinition(conceptId) {
+      // add PT acceptability and type
+      var desc = getNewDescription(conceptId);
+      desc.type = 'TEXT_DEFINITION';
+      desc.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
+      desc.acceptabilityMap = {
+        '900000000000509007': 'PREFERRED',
+        '900000000000508004': 'PREFERRED'
+      };
+
+      return desc;
+    }
+
     // creates a blank relationship linked to specified source concept
     function getNewIsaRelationship(conceptId) {
       return {
@@ -277,9 +290,9 @@ angular.module('singleConceptAuthoringApp')
       }
       // TODO Equality check needs improvement
       /*if (d1.acceptabilityMap !== d2.acceptabilityMap) {
-        // console.debug('acceptabilityMap not equal');
-        return false;
-      }*/
+       // console.debug('acceptabilityMap not equal');
+       return false;
+       }*/
       // console.debug('equal');
       return true;
 
@@ -354,6 +367,7 @@ angular.module('singleConceptAuthoringApp')
       getNewDescription: getNewDescription,
       getNewFsn: getNewFsn,
       getNewPt: getNewPt,
+      getNewTextDefinition: getNewTextDefinition,
       getNewIsaRelationship: getNewIsaRelationship,
       getNewAttributeRelationship: getNewAttributeRelationship,
       applyMinimumFields: applyMinimumFields,
@@ -362,6 +376,7 @@ angular.module('singleConceptAuthoringApp')
       isConceptsEqual: isConceptsEqual,
       isDescriptionsEqual: isDescriptionsEqual,
       isRelationshipsEqual: isRelationshipsEqual
+
     };
 
   });
