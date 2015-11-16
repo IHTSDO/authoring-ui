@@ -838,6 +838,56 @@ angular.module('singleConceptAuthoringApp')
           });
     }
 
+    ////////////////////////////////////////////////////
+    // Concept Validation
+    ////////////////////////////////////////////////////
+
+    function createGuid()
+    {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+    }
+
+    function validateConceptForTask(projectKey, taskKey, concept) {
+
+      // assign UUIDs to elements without an SCTID
+      if(!concept.conceptId) {
+        concept.conceptId = createGuid();
+      }
+      angular.forEach(concept.descriptions, function(description) {
+        if (!description.descriptionId) {
+          description.descriptionId = createGuid();
+        }
+      });
+      angular.forEach(concept.relationships, function(relationship) {
+        if (!relationship.relationshipId) {
+          relationship.relationshipId = createGuid();
+        }
+      });
+
+      var deferred = $q.defer();
+      $http.post(apiEndpoint + 'browser/' + projectKey + '/' + taskKey + '/validate/concept', concept).then(function(response) {
+        console.debug('validate success');
+        deferred.resolve(response.data);
+      }, function(error) {
+        console.debug('validate error', error);
+        deferred.reject(error.message);
+      });
+      return deferred.promise;
+    }
+
+    function validateConceptForProject(projectKey, concept) {
+      var deferred = $q.defer();
+      $http.post(apiEndpoint + 'browser/' + projectKey + '/validate/concept', concept).then(function(response) {
+        deferred.resolve(response.data);
+      }, function(error) {
+        deferred.reject(error.message);
+      });
+      return deferred.promise;
+    }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -886,7 +936,11 @@ angular.module('singleConceptAuthoringApp')
 
       // merge-review functionality
       getMergeReview: getMergeReview,
-      storeConceptAgainstMergeReview: storeConceptAgainstMergeReview
+      storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
+
+      // validation
+      validateConceptForTask: validateConceptForTask,
+      validateConceptForProject : validateConceptForProject
 
     };
   }

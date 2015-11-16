@@ -61,11 +61,9 @@
           <div class="col-md-3">
             <h4>Test</h4>
           </div>
-          <!--   <div class="col-md-2">
-               <h4>Action</h4>
-             </div>-->
-          <div class="col-md-8" style="word-break:break-all">
-            <h4>Expected Error</h4>
+          <div class="col-md-1"></div>
+          <div class="col-md-7" style="word-break:break-all">
+            <h4>Expected Error /<br> Error Received</h4>
           </div>
         </div>
       </div>
@@ -83,22 +81,46 @@
             <span color="red">{{value.nTestsError}}</span> Errors</span>
           </div>
 
-          <div class="row" ng-repeat="test in value.tests">
-            <div class="col-md-1" style="text-align: center"
-                 ng-class="[{'red' : test.results.status === 'FAILED'}, {'green' : test.results.status === 'PASSED'}]">
+          <div ng-repeat="test in value.tests" ng-init="showDetails = false">
+            <div class="row p-t-5">
+              <div class="col-md-1" style="text-align: center"
+                   ng-class="[{'red' : test.status === 'FAILED'}, {'green' : test.status === 'PASSED'}]">
 
-              {{test.results.status}}
-            </div>
-            <div class="col-md-3">
-              {{test.name}}
-            </div>
-            <!--<div class="col-md-2">
-              {{test.action}}
-            </div>-->
-            <div class="col-md-8">
-              {{test.expectedError}}
+                {{test.status}}
+              </div>
+              <div class="col-md-3">
+             {{test.name}}
+              </div>
+              <div class="col-md-1"><div class="md md-add blue p-l-5 p-r-5" ng-show="test.status !== 'Not Run'" ng-click="showDetails = !showDetails">Details</div></div>
+              <div class="col-md-7">
+                <div class="">
+                  {{test.expectedError}}
+                </div>
+              </div>
+
+
             </div>
 
+            <div class="row p-l-10 m-b-15" ng-if="showDetails">
+
+              <div class="col-md-1">
+                <!-- blank -->
+              </div>
+              <div class="col-md-11 no-padding">
+                <div class="col-md-6 no-padding">
+                  <h4>Test Data Sent</h4>
+                  <div concept-edit concept="test.results.data" static="true" branch="branch" autosave="false"></div>
+                </div>
+                <div class="col-md-6">
+                  <h4>Errors/Warnings Received</h4>
+                  <div ng-repeat="error in test.results.errorsReceived">
+                    {{error.severity}} : {{error.message}}
+                  </div>
+                </div>
+                <hr>
+              </div>
+
+            </div>
 
           </div>
           <!--  <div class="row">
