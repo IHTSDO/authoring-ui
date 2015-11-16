@@ -193,7 +193,6 @@ angular.module('singleConceptAuthoringApp')
           }
         },
 
-
         // Active descriptions do not have spaces, either before or after,
         // hyphens.
         {
@@ -212,7 +211,8 @@ angular.module('singleConceptAuthoringApp')
           }
         },
 
-        // Where an active fully specified name includes the word “pre-filled” change to prefilled
+        // Where an active fully specified name includes the word “pre-filled”
+        // change to prefilled
 
         // WRP-1546	Active FSNs must end in closing parentheses
         {
@@ -267,8 +267,9 @@ angular.module('singleConceptAuthoringApp')
 
         //
 
-        // Similar to WRP-1696	Each active concept has at least one active Fully Specified Name per dialect
-        // Active Fully Specified Names will not include commas
+        // Similar to WRP-1696	Each active concept has at least one active
+        // Fully Specified Name per dialect Active Fully Specified Names will
+        // not include commas
         {
           name: 'Active concept does not have FSN for en-US',
 
@@ -284,13 +285,11 @@ angular.module('singleConceptAuthoringApp')
             fsn.term = 'Desc Test93 concept (test)';
             fsn.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
 
-
             // add PT
             var pt = objectService.getNewPt();
             pt.term = 'Desc Test93 concept ';
 
-            concept.descriptions = [ fsn, pt ];
-
+            concept.descriptions = [fsn, pt];
 
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
@@ -301,8 +300,9 @@ angular.module('singleConceptAuthoringApp')
           }
         },
 
-        // Similar to WRP-1696	Each active concept has at least  one active Fully Specified Name per dialect
-        // Active Fully Specified Names will not include commas
+        // Similar to WRP-1696	Each active concept has at least  one active
+        // Fully Specified Name per dialect Active Fully Specified Names will
+        // not include commas
         {
           name: 'Active concept does not have FSN for en-GB',
 
@@ -318,13 +318,11 @@ angular.module('singleConceptAuthoringApp')
             fsn.term = 'Desc Test93 concept (test)';
             fsn.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
 
-
             // add PT
             var pt = objectService.getNewPt();
             pt.term = 'Desc Test93 concept ';
 
-            concept.descriptions = [ fsn, pt ];
-
+            concept.descriptions = [fsn, pt];
 
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
@@ -568,7 +566,7 @@ angular.module('singleConceptAuthoringApp')
         {
           name: 'Text definition has en-GB acceptability of ACCEPTABLE)',
 
-          expectedError: 'The system has detected a contraindication of the following convention: active text definitions must have an acceptability of Preferred in the en-GB dialect.',
+          expectedError: 'The system has detected a contradiction of the following convention: active text definitions must have an acceptability of Preferred in the en-GB dialect.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
             var textDefinition = objectService.getNewTextDefinition();
@@ -595,7 +593,7 @@ angular.module('singleConceptAuthoringApp')
         {
           name: 'Text definition has en-US acceptability of ACCEPTABLE)',
 
-          expectedError: 'The system has detected a contraindication of the following convention: active text definitions must have an acceptability of Preferred in the en-US dialect.',
+          expectedError: 'The system has detected a contradiction of the following convention: active text definitions must have an acceptability of Preferred in the en-US dialect.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
             var textDefinition = objectService.getNewTextDefinition();
@@ -627,6 +625,21 @@ angular.module('singleConceptAuthoringApp')
         nTestsError: 0,
         tests: []
       };
+
+      function countResults() {
+        // update the results counts
+        results.nTestsTotal = tests.length;
+        angular.forEach(tests, function (test) {
+          results.nTestsRun++;
+          if (test.status === 'PASSED') {
+            results.nTestsPassed++;
+          } else if (test.status === 'FAILED') {
+            results.nTestsFailed++;
+          } else {
+            results.nTestsError++;
+          }
+        })
+      }
 
       function runHelper(tests, index) {
 
@@ -663,11 +676,11 @@ angular.module('singleConceptAuthoringApp')
 
               console.debug(test.name, test.results, test.expectedError);
 
-        /*      console.debug('comparing errors');
-              console.debug(test.expectedError);
-              console.debug(receivedError.message);*/
+              /*      console.debug('comparing errors');
+               console.debug(test.expectedError);
+               console.debug(receivedError.message);*/
               if (test.expectedError === receivedError.message) {
-/*                console.debug('--> Match Found');*/
+                /*                console.debug('--> Match Found');*/
                 errorFound = true;
               }
             });
@@ -687,19 +700,41 @@ angular.module('singleConceptAuthoringApp')
             test.status = 'PASSED';
           }
 
-          // update the results counts
-          results.nTestsRun++;
-          if (test.status === 'PASSED') {
-            results.nTestsPassed++;
-          } else if (test.status === 'FAILED') {
-            results.nTestsFailed++;
-          } else {
-            results.nTestsError++;
-          }
+          console.debug('Test complete', test.status);
 
           // run next test
           return runHelper(tests, ++index);
         })
+      }
+
+      function runSingleTest(testName, projectKey, taskKey) {
+
+        var deferred = $q.defer();
+
+
+        project = projectKey;
+        task = taskKey;
+
+        var testFound = false;
+        // find the matching test by name
+        angular.forEach(tests, function (test) {
+
+          if (test.name === testName) {
+            testFound = true;
+            test.status = 'Pending';
+            runHelper([test], 0).then(function() {
+              console.debug('test complete', test);
+              deferred.resolve(test);
+            })
+          }
+        });
+
+        if (!testFound) {
+          console.error('Could not find test with name ' + testName);
+          deferred.reject();
+        }
+
+        return deferred.promise;
       }
 
       /**
@@ -771,6 +806,7 @@ angular.module('singleConceptAuthoringApp')
 
       return {
         runTests: runTests,
+        runSingleTest: runSingleTest,
         cancel: cancel,
         getResults: getResults,
         getName: getName
