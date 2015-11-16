@@ -175,7 +175,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
         .then(function (uiState) {
 
-          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+          console.debug('saved-list:', uiState);
+
+          if (!uiState) {
             $scope.savedList = {items: []};
           }
           else {
@@ -217,6 +219,25 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.classificationEditList = uiState;
             for (var i = 0; i < $scope.classificationEditList.length; i++) {
               $scope.addConceptToListFromId($scope.classificationEditList[i]);
+            }
+          }
+
+        }
+      );
+    };
+
+    $scope.getValidationEditPanel = function () {
+      scaService.getUiStateForTask(
+        $routeParams.projectKey, $routeParams.taskKey, 'validation-edit-panel')
+        .then(function (uiState) {
+          $scope.concepts = [];
+          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+            $scope.validationEditList = [];
+          }
+          else {
+            $scope.validationEditList = uiState;
+            for (var i = 0; i < $scope.validationEditList.length; i++) {
+              $scope.addConceptToListFromId($scope.validationEditList[i]);
             }
           }
 
@@ -452,9 +473,11 @@ angular.module('singleConceptAuthoringApp.edit', [
             if ($scope.classificationEditList.indexOf(conceptId) === -1) {
               $scope.updateClassificationEditListUiState();
             }
-          }
-
-          else if ($scope.editList.indexOf(conceptId) === -1) {
+          } else if ($routeParams.mode === 'validation') {
+            if ($scope.validationEditList.indexOf(conceptId) === -1) {
+              $scope.updateValidationEditListUiState();
+            }
+          } else if ($scope.editList.indexOf(conceptId) === -1) {
             console.debug('updating');
             $scope.updateEditListUiState();
             // update edited item flagging
@@ -554,6 +577,22 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
         scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel', conceptIds);
+      }
+    };
+
+
+    // helper function to save current edit list (validation view only)
+    $scope.updateValidationEditListUiState = function () {
+      if ($scope.taskKey) {
+        console.log('Updating validation edit list');
+        var conceptIds = [];
+        angular.forEach($scope.concepts, function (concept) {
+          if (concept.conceptId) {
+            conceptIds.push(concept.conceptId);
+          }
+        });
+
+        scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'validation-edit-panel', conceptIds);
       }
     };
 
@@ -912,12 +951,12 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'FORWARD':
           $scope.canRebase = false;
           $scope.canPromote = $scope.isOwnTask;
-          $scope.canConflict = true;
+          $scope.canConflict = false;
           break;
         case 'UP_TO_DATE':
           $scope.canRebase = false;
           $scope.canPromote = false;
-          $scope.canConflict = true;
+          $scope.canConflict = false;
           break;
         case 'BEHIND':
           $scope.canRebase = $scope.isOwnTask;

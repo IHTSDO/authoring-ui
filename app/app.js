@@ -35,6 +35,7 @@ angular
     'singleConceptAuthoringApp.myProjects',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
+    'singleConceptAuthoringApp.test',
     'singleConceptAuthoringApp.taxonomyPanel',
     'singleConceptAuthoringApp.searchPanel',
     'singleConceptAuthoringApp.searchModal',

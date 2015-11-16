@@ -11,22 +11,29 @@ angular.module('singleConceptAuthoringApp')
     // Create New Concept
     // POST /browser/{path}/concepts
     function createConcept(project, task, concept) {
-      return $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
-        return response.data;
+      var deferred = $q.defer();
+     $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+        console.debug('createConcept success', response);
+        deferred.resolve(response.data);
       }, function (error) {
-        return error.data;
+        console.debug('createConcept failure', error);
+       deferred.reject(error.message);
       });
-
+      return deferred.promise;
     }
 
     // Update Existing Concept
     // PUT /browser/{path}/concepts/{conceptId}
     function updateConcept(project, task, concept) {
-      return $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
-        return response.data;
+      var deferred = $q.defer();
+      $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
+        console.debug('createConcept success', response);
+        deferred.resolve(response.data);
       }, function (error) {
-        return error.data;
+        console.debug('createConcept failure', error);
+        deferred.reject(error.message);
       });
+      return deferred.promise;
     }
 
     // function to remove disallowed elements from a concept
@@ -761,7 +768,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getAttributeValues(branch, attributeId, searchStr) {
-      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') + '&expand=fsn&offset=0&limit=50').then(function (response) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') : '') + '&expand=fsn&offset=0&limit=50').then(function (response) {
         return response.data.items ? response.data.items : [];
       }, function (error) {
         return null;
