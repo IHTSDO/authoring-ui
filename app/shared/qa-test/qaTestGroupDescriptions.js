@@ -44,84 +44,54 @@ angular.module('singleConceptAuthoringApp')
 
         // set isa relationship to root
         concept.relationships[0].target.conceptId = '138875005';
-
+        concept.relationships[0].target.fsn = 'SNOMED CT Concept (SNOMED RT+CTV3)';
         return concept;
       }
 
       tests = [
         {
           name: 'PASS',
-          action: 'Create concept',
+
           expectedError: null,
-          results: {
-            status: 'Not Started'
-          },
           testFn: function test() {
             var concept = getTestConcept('Desc Test01 concept (test)', 'Desc Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'PASSED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'FAILED',
-                error: 'Valid concept could not be created (message: ' + error + ' )',
-                data: concept
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // WRP-1541	Active Descriptions cannot match other description already committed
+        // WRP-1541	Active Descriptions cannot match other description already
+        // committed
         {
           name: 'description matches already committed description',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: active descriptions must not match other description already committed.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: active descriptions must not match other description already committed.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test02 concept (test)', 'Desc Test02 concept');
             var tempDesc = concept.descriptions[0];
             return snowowlService.createConcept(project, task, concept).then(function (response) {
               concept = response;
               concept.descriptions.push(tempDesc);
-              return snowowlService.updateConcept(project, task, concept).then(function (response) {
-
+              return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
                 return {
-                  status: 'FAILED',
                   data: concept,
-                  response: response
-                };
-              }, function (error) {
-                return {
-                  status: 'PASSED',
-                  data: concept,
-                  response: error
-                };
-
+                  errorsReceived: response
+                }
               });
-            }, function (error) {
-              return {
-                status: 'ERROR',
-                data: concept,
-                response: error
-              };
             });
           }
         },
 
-        // Similar  to WRP-1685, WRP-1682	Active concepts have one active Preferred Synonym in each dialect
+        // Similar  to WRP-1685, WRP-1682	Active concepts have one active
+        // Preferred Synonym in each dialect
         {
           name: 'en-us preferred term not specified',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: concepts may only have one Preferred Synonym in each dialect',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: concepts may only have one Preferred Synonym in each dialect',
           testFn: function test() {
             var concept = getTestConcept('Desc Test03 concept (test)', 'Desc Test03 concept');
             angular.forEach(concept.descriptions, function (description) {
@@ -131,30 +101,21 @@ angular.module('singleConceptAuthoringApp')
                 description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
               }
             });
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Similar  to WRP-1685, WRP-1682	Active concepts have one active Preferred Synonym in each dialect
+        // Similar  to WRP-1685, WRP-1682	Active concepts have one active
+        // Preferred Synonym in each dialect
         {
           name: 'en-gb preferred term not specified',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: concepts may only have one Preferred Synonym in each dialect',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: concepts may only have one Preferred Synonym in each dialect',
           testFn: function test() {
             var concept = getTestConcept('Desc Test04 concept (test)', 'Desc Test04 concept');
             angular.forEach(concept.descriptions, function (description) {
@@ -164,141 +125,125 @@ angular.module('singleConceptAuthoringApp')
                 description.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
               }
             });
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Similar  to WRP-1685, WRP-1682	Active concepts have one active Preferred Synonym in each dialect
+        // Similar  to WRP-1685, WRP-1682	Active concepts have one active
+        // Preferred Synonym in each dialect
         {
           name: 'two preferred terms specified for a dialect',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: concepts may only have one Preferred Synonym in each dialect',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: concepts may only have one Preferred Synonym in each dialect',
+
           testFn: function test() {
             var concept = getTestConcept('Desc Test05 concept (test)', 'Desc Test05 concept');
             var description = objectService.getNewPt();
             description.term = 'Desc Test03 concept duplicate';
             concept.descriptions.push(description);
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // TODO Wait for verification on WRP-1669 and WRP-1661, authors
+        // TODO Wait for verification on WRP-1669 authors
         // indicate possible revision
 
-        // Active descriptions do not have spaces, either before or after, hyphens.
+        //WRP-1661	Active Descriptions must be unique in concept
+
+        {
+          name: 'Active descriptions must be unique in concept',
+          expectedError: 'The system has detected a contradiction of the following convention: active descriptions must be unique in a concept.',
+          testFn: function test() {
+            var concept = getTestConcept('Desc Test1661 concept (test)', 'Desc Test1661 concept');
+            concept.descriptions.push(concept.descriptions[0]);
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return {
+                data: concept,
+                errorsReceived: response
+              }
+            });
+          }
+        },
+
+        // Active descriptions do not have spaces, either before or after,
+        // hyphens.
         {
           name: 'term has space before hyphen',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: active descriptions must not have spaces, either before or after, hyphens.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: active descriptions must not have spaces, either before or after, hyphens.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test07 -concept (test)', 'Desc Test07-concept');
 
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Active descriptions do not have spaces, either before or after, hyphens.
+
+        // Active descriptions do not have spaces, either before or after,
+        // hyphens.
         {
           name: 'term has space after hyphen',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: active descriptions must not have spaces, either before or after, hyphens.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: active descriptions must not have spaces, either before or after, hyphens.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test08- concept (test)', 'Desc Test08 concept');
 
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // TODO 'Where an active fully specified name includes the word
-        // “pre-filled” change to prefilled'
-        // Authors indicate possible removal
+        // Where an active fully specified name includes the word “pre-filled” change to prefilled
 
+        // WRP-1546	Active FSNs must end in closing parentheses
+        {
+          name: 'FSN contains the word "pre-filled"',
+
+          expectedError: 'The system has detected a contradiction of the following convention: FSNs containing the word "pre-filled" must be changed to prefilled.',
+          testFn: function test() {
+            var concept = getTestConcept('Desc Test09 pre-filled concept (test', 'Desc Test09 concept');
+
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return {
+                data: concept,
+                errorsReceived: response
+              }
+            });
+          }
+        },
 
         // WRP-1546	Active FSNs must end in closing parentheses
         {
           name: 'FSN does not end in closing parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: FSNs must end in closing parentheses.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: FSNs must end in closing parentheses.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test09- concept (test', 'Desc Test09 concept');
 
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
@@ -306,27 +251,86 @@ angular.module('singleConceptAuthoringApp')
         // Active Fully Specified Names will not include commas
         {
           name: 'FSN contains commas',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: FSNs must not include commas.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: FSNs must not include commas.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test10, concept (test)', 'Desc Test10 concept');
 
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return {
+                data: concept,
+                errorsReceived: response
+              }
+            });
+          }
+        },
 
+        //
+
+        // Similar to WRP-1696	Each active concept has at least one active Fully Specified Name per dialect
+        // Active Fully Specified Names will not include commas
+        {
+          name: 'Active concept does not have FSN for en-US',
+
+          expectedError: 'The system has detected a contradiction of the following convention: an active concept must have at least one active FSN per dialect.',
+          testFn: function test() {
+            var concept = getTestConcept('Desc Test10, concept (test)', 'Desc Test10 concept');
+
+            // cleaer descriptions
+            concept.descriptions = [];
+
+            // add en-us FSN
+            var fsn = objectService.getNewFsn();
+            fsn.term = 'Desc Test93 concept (test)';
+            fsn.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+
+
+            // add PT
+            var pt = objectService.getNewPt();
+            pt.term = 'Desc Test93 concept ';
+
+            concept.descriptions = [ fsn, pt ];
+
+
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
+                errorsReceived: response
+              }
+            });
+          }
+        },
+
+        // Similar to WRP-1696	Each active concept has at least  one active Fully Specified Name per dialect
+        // Active Fully Specified Names will not include commas
+        {
+          name: 'Active concept does not have FSN for en-GB',
+
+          expectedError: 'The system has detected a contradiction of the following convention: an active concept must have at least one active FSN per dialect.',
+          testFn: function test() {
+            var concept = getTestConcept('Desc Test10, concept (test)', 'Desc Test10 concept');
+
+            // cleaer descriptions
+            concept.descriptions = [];
+
+            // add en-us FSN
+            var fsn = objectService.getNewFsn();
+            fsn.term = 'Desc Test93 concept (test)';
+            fsn.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
+
+
+            // add PT
+            var pt = objectService.getNewPt();
+            pt.term = 'Desc Test93 concept ';
+
+            concept.descriptions = [ fsn, pt ];
+
+
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'PASSED',
                 data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
@@ -334,63 +338,44 @@ angular.module('singleConceptAuthoringApp')
         // TODO 'Each active concept has at least one active Fully Specified
         // Name per dialect' - authors indicate policy decision required
 
-        // Similair to WRP-1544	Active Descriptions or FSNs text should not be longer than 255 bytes
-        // TODO Find out if we need to change this to 32Kb limit instead of length limit, authors indicate RF1/RF2 considerations
+        // Similair to WRP-1544	Active Descriptions or FSNs text should not be
+        // longer than 255 bytes TODO Find out if we need to change this to
+        // 32Kb limit instead of length limit, authors indicate RF1/RF2
+        // considerations
         {
           name: 'Active description with greater than 255 characters',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: an active descriptions must not be longer than 255 characters.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: an active descriptions must not be longer than 255 characters.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test11 concept(test)', 'Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept');
+            var concept = getTestConcept('Desc Test11 concept (test)', 'Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept');
 
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Similiar to WRP-1672, WRP-1673, WRP-1673, WRP-1674,WRP-1675	Active Text definitions should be case-sensitive
-        // TODO Some confusion about whether this is only for text definitions, confirm
+        // Similiar to WRP-1672, WRP-1673, WRP-1673, WRP-1674,WRP-1675	Active
+        // Text definitions should be case-sensitive TODO Some confusion about
+        // whether this is only for text definitions, confirm
         {
           name: 'Text definition is not case sensitive',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: descriptions must be case-sensitive.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: text definitions must be case-sensitive.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test12 concept(test)', 'Desc Test12 concept');
+            var concept = getTestConcept('Desc Test12 concept (test)', 'Desc Test12 concept');
             var textDefinition = objectService.getNewTextDefinition();
             textDefinition.term = 'Text Definition';
             textDefinition.caseSignificance = 'CASE_INSENSITIVE';
             concept.descriptions.push(textDefinition);
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
@@ -399,60 +384,39 @@ angular.module('singleConceptAuthoringApp')
         // TODO Again, confusion between text definitions and all descriptions?
         {
           name: 'Text definition does not start with upper-case character',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: the first character in a description field must be upper case.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: the first character of a text definition must be upper case.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test13 concept (test)', 'Desc Test13 concept');
             var textDefinition = objectService.getNewTextDefinition();
             textDefinition.term = 'text Definition';
             concept.descriptions.push(textDefinition);
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-
-        // TODO Where an active fully specified name includes a + symbol a space will be placed either side of the plus symbol e.g. ibuprofen + oxycodone (product) - author review indicated
+        // TODO Where an active fully specified name includes a + symbol a
+        // space will be placed either side of the plus symbol e.g. ibuprofen +
+        // oxycodone (product) - author review indicated
 
         // Similiar  to WRP-1546	Active FSNs cannot start with open parentheses
         {
           name: 'FSN starts with open parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: FSNs must not start with open parentheses.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: FSNs must not start with open parentheses.',
           testFn: function test() {
             var concept = getTestConcept('(Desc Test15 concept (test)', 'Desc Test15 concept');
 
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
@@ -460,39 +424,26 @@ angular.module('singleConceptAuthoringApp')
         // WRP-1547	Active FSNs must have a space before semantic tag
         {
           name: 'FSN does not have space before semantic tag',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a single space must be included before a semantic tag.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: a single space must be included before a semantic tag.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test16 concept(test)', 'Desc Test16 concept');
 
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Not Found	Active Fully Specified Names are represented in at least one dialect
+        // Not Found	Active Fully Specified Names are represented in at least
+        // one dialect
         {
           name: 'FSN represented in zero dialects',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: an FSN must be represented in at least one dialect.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: an FSN must be represented in at least one dialect.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test17 concept (test)', 'Desc Test17 concept');
             angular.forEach(concept.descriptions, function (description) {
@@ -500,47 +451,27 @@ angular.module('singleConceptAuthoringApp')
                 description.acceptabilityMap = {};
               }
             });
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-
         // WRP-1547	Active Fully Specified Names end with Semantic Tags
         {
           name: 'FSN does not end in semantic tag',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: an FSN must end with Semantic Tags.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: an FSN must end with a semantic tag.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test18 concept', 'Desc Test18 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
@@ -548,31 +479,20 @@ angular.module('singleConceptAuthoringApp')
         // TODO 'In an active description, use a colon for ratio
         // representations' authors indicate clarification neeeded
 
-
         // Active Fully Specified Names do not contain dashes
-        // TODO See KK's notes on all forms of dashes, only testing the one here without further clarification
+        // TODO See KK's notes on all forms of dashes, only testing the one
+        // here without further clarification
         {
           name: 'FSN does not contain dashes',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: an FSN must end with Semantic Tags.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: an FSN must end with Semantic Tags.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test19-concept', 'Desc Test19 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
@@ -580,147 +500,118 @@ angular.module('singleConceptAuthoringApp')
         // Active Fully Specified Names are not in the plural form (warning)
         {
           name: 'FSN is in plural form',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: an FSNs must not be in a plural form.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: an FSNs must not be in a plural form.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test20 concepts', 'Desc Test20 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Active Fully Specified Names for Techniques must include the word "technique" in their FSN; for example, "Microbial culture technique (qualifier value)".
+        // Active Fully Specified Names for Techniques must include the word
+        // "technique" in their FSN; for example, "Microbial culture technique
+        // (qualifier value)".
         {
           name: 'FSN For Technique Concept does not include the term "technique"',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: an FSN for techniques must include the word "technique"',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: an FSN for techniques must include the word "technique"',
           testFn: function test() {
             var concept = getTestConcept('Desc Test21 concepts', 'Desc Test21 concept');
             concept.relationships[0].target.conceptId = '272394005';
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
 
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Similiar to WRP-1688	Active Fully Specified Names starting with lowercase characters have case sensitivity id "sensitive"
-        // Authors request to put on hold for Editorial Panel
+        // Similiar to WRP-1688	Active Fully Specified Names starting with
+        // lowercase characters have case sensitivity id "sensitive" Authors
+        // request to put on hold for Editorial Panel
 
-        // All active Fully Specified Names names which include the term product or preparation other than as part of the semantic tag will be retired and the new name will not include product or preparation. E.g. formaldehyde product (product) to formaldehyde (product); acetylcholine preparation (product) to acetylcholine (product)
+        // All active Fully Specified Names names which include the term
+        // product or preparation other than as part of the semantic tag will
+        // be retired and the new name will not include product or preparation.
+        // E.g. formaldehyde product (product) to formaldehyde (product);
+        // acetylcholine preparation (product) to acetylcholine (product)
         // AUthors indicate removal
 
-
-
-        // 'Active concepts must have active synonyms that have the same text as the active Fully Specified Names excluding the semantic tags (warning)' authors indicate review needed before implementation
+        // 'Active concepts must have active synonyms that have the same text
+        // as the active Fully Specified Names excluding the semantic tags
+        // (warning)' authors indicate review needed before implementation
         {
           name: 'FSN does not have matching synonym (without semantic tag)',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: concepts’ must have an active synonym that has the same text as the active FSN.',
-          results: {
-            status: 'Not Started'
-          },
+
+          expectedError: 'The system has detected a contradiction of the following convention: concepts\' must have an active synonym that has the same text as the active FSN.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
 
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         },
 
-        // Active text definitions have acceptability Preferred in the en-GB dialect
+        // Active text definitions have acceptability Preferred in the en-GB
+        // dialect
         {
           name: 'Text definition has en-GB acceptability of ACCEPTABLE)',
-          action: 'Create concept',
+
           expectedError: 'The system has detected a contraindication of the following convention: active text definitions must have an acceptability of Preferred in the en-GB dialect.',
-          results: {
-            status: 'Not Started'
-          },
           testFn: function test() {
             var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
             var textDefinition = objectService.getNewTextDefinition();
+            textDefinition.term = 'Text definition for testing';
             textDefinition.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            concept.descriptions.push(textDefinition);
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
 
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
+                errorsReceived: response
+              }
             }, function (error) {
               return {
-                status: 'PASSED',
                 data: concept,
-                response: error
-              };
+                errorsReceived: null
+              }
             });
           }
         },
 
-        // Active text definitions have acceptability Preferred in the en-US dialect
+        // Active text definitions have acceptability Preferred in the en-US
+        // dialect
         {
           name: 'Text definition has en-US acceptability of ACCEPTABLE)',
-          action: 'Create concept',
+
           expectedError: 'The system has detected a contraindication of the following convention: active text definitions must have an acceptability of Preferred in the en-US dialect.',
-          results: {
-            status: 'Not Started'
-          },
           testFn: function test() {
             var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
             var textDefinition = objectService.getNewTextDefinition();
+            textDefinition.term = 'Text definition for testing';
             textDefinition.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-
+            concept.descriptions.push(textDefinition);
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
+                errorsReceived: response
+              }
             }, function (error) {
               return {
-                status: 'PASSED',
                 data: concept,
-                response: error
-              };
+                errorsReceived: null
+              }
             });
           }
         }
@@ -745,22 +636,62 @@ angular.module('singleConceptAuthoringApp')
         }
         var test = tests[index];
 
-        test.results.status = 'Running';
-
-        console.log('Running test: ', test.name);
+        test.status = 'Running';
 
         // call the test's test function
         return (test.testFn.call()).then(function (response) {
+
 
           // append results of test function to the test
           //console.debug('runHelper response', response);
           test.results = response;
 
+          console.log(test.name, Array.isArray(test.results.errorsReceived), test.results, test.results.errorsReceived);
+
+          // check error condition
+          if (!Array.isArray(test.results.errorsReceived)) {
+            test.status = 'ERROR';
+          }
+
+          // check fail condition
+          else if (test.expectedError) {
+            var errorFound = false;
+            angular.forEach(test.results.errorsReceived, function (receivedError) {
+
+              // replace unicode characters
+              receivedError.message = receivedError.message.replace(/\u2019/g, '\'').replace(/[\u201C\u201d]/g, '"');
+
+              console.debug(test.name, test.results, test.expectedError);
+
+        /*      console.debug('comparing errors');
+              console.debug(test.expectedError);
+              console.debug(receivedError.message);*/
+              if (test.expectedError === receivedError.message) {
+/*                console.debug('--> Match Found');*/
+                errorFound = true;
+              }
+            });
+            if (!errorFound) {
+              test.status = 'FAILED';
+            } else {
+              test.status = 'PASSED';
+            }
+
+          }
+
+          // check pass condition
+          else if (!test.expectedError && test.results.errorsReceived.length > 0) {
+            test.status = 'FAILED';
+          } else {
+            // default to passed
+            test.status = 'PASSED';
+          }
+
           // update the results counts
           results.nTestsRun++;
-          if (test.results.status === 'PASSED') {
+          if (test.status === 'PASSED') {
             results.nTestsPassed++;
-          } else if (test.results.status === 'FAILED') {
+          } else if (test.status === 'FAILED') {
             results.nTestsFailed++;
           } else {
             results.nTestsError++;
@@ -768,8 +699,7 @@ angular.module('singleConceptAuthoringApp')
 
           // run next test
           return runHelper(tests, ++index);
-
-        });
+        })
       }
 
       /**
@@ -786,14 +716,10 @@ angular.module('singleConceptAuthoringApp')
         project = projectKey;
         task = taskKey;
 
-
         // set all tests to Pending status
-        angular.forEach(tests, function(test) {
-          test.results = {
-            status: 'Pending'
-          }
+        angular.forEach(tests, function (test) {
+          test.status = 'Pending';
         });
-
 
         // reset results
         results = {
@@ -850,5 +776,7 @@ angular.module('singleConceptAuthoringApp')
         getName: getName
       };
 
-    }])
+    }
+
+  ])
 ;
