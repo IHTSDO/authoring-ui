@@ -146,7 +146,7 @@ angular.module('singleConceptAuthoringApp')
       getUiStateForUser: function (panelId) {
         if (!panelId) {
           console.error('Must specify panelId to get UI state');
-          return {};
+          return null;
         }
         return $http.get(apiEndpoint + 'ui-state/' + panelId).then(
           function (response) {
@@ -161,11 +161,11 @@ angular.module('singleConceptAuthoringApp')
       saveUiStateForUser: function (panelId, uiState) {
         if (!panelId) {
           console.error('Must specify panelId to save UI state');
-          return {};
+          return null;
         }
         if (!uiState) {
           console.error('Must supply ui state in order to save it');
-          return {};
+          return null;
         }
         return $http.post(apiEndpoint + 'ui-state/' + panelId, uiState).then(
           function (response) {
@@ -179,7 +179,7 @@ angular.module('singleConceptAuthoringApp')
       deleteUiStateForUser: function (panelId) {
         if (!panelId) {
           console.error('Must specify panelId to delete UI state');
-          return {};
+          return null;
         }
 
         return $http.delete(apiEndpoint + 'ui-state/' + panelId).then(
@@ -195,21 +195,21 @@ angular.module('singleConceptAuthoringApp')
       getUiStateForTask: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
           console.error('Must specify projectKey to get UI state');
-          return {};
+          return null;
         }
         if (!taskKey) {
           console.error('Must specify taskKey to get UI state');
-          return {};
+          return null;
         }
         if (!panelId) {
           console.error('Must specify panelId to get UI state');
-          return {};
+          return null;
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
           function (response) {
             return response.data;
           }, function (error) {
-            return {};
+            return null;
           }
         );
       },
