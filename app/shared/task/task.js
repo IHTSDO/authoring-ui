@@ -58,6 +58,7 @@ angular.module('singleConceptAuthoringApp')
       scaService.createTaskForProject($scope.task.projectKey, $scope.task).then(
         function (response) {
 
+          console.debug('MODAL: task created', response);
           // close modal
           $modalInstance.close(response);
         }, function (error) {

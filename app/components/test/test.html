@@ -48,8 +48,8 @@
 
     <div class="row p-l-20" ng-repeat="testPackage in testPackages">
       <div class="row">
-        <h4 >{{testPackage.name}} -
-        <button class="" ng-click="runTest(testPackage)">Run Test Package</button>
+        <h4>{{testPackage.name}} -
+          <button class="" ng-disabled="!taskKey" ng-click="runTest(testPackage)">Run Test Package</button>
         </h4>
 
       </div>
@@ -61,59 +61,62 @@
           <div class="col-md-3">
             <h4>Test</h4>
           </div>
-       <!--   <div class="col-md-2">
-            <h4>Action</h4>
-          </div>-->
+          <!--   <div class="col-md-2">
+               <h4>Action</h4>
+             </div>-->
           <div class="col-md-8" style="word-break:break-all">
             <h4>Expected Error</h4>
           </div>
         </div>
       </div>
-      <div ng-repeat="(key, value) in testPackage.results">
+      <div ng-repeat="(key, value) in testPackage.results" class="m-t-10" style="border-top: thick double grey;">
         <!--{{key}}
         <hr>
         {{value}}-->
         <div class="row p-l-10">
           <div class="col-md-1"></div>
           <div class="col-md-11"><strong>Test Group: {{key}} </strong>-
-                         {{value.nTestsTotal}} Total /
-                         {{value.nTestsRun}} Complete /
-                         <span color="green">{{value.nTestsPassed}}</span> Passed /
-                         <span color="yellow">{{value.nTestsFailed}}</span> Failed /
-                         <span color="red">{{value.nTestsError}}</span> Errors</span>
+                                                                      {{value.nTestsTotal}} Total /
+                                                                      {{value.nTestsRun}} Complete /
+            <span color="green">{{value.nTestsPassed}}</span> Passed /
+            <span color="yellow">{{value.nTestsFailed}}</span> Failed /
+            <span color="red">{{value.nTestsError}}</span> Errors</span>
+          </div>
+
+          <div class="row" ng-repeat="test in value.tests">
+            <div class="col-md-1" style="text-align: center"
+                 ng-class="[{'red' : test.results.status === 'FAILED'}, {'green' : test.results.status === 'PASSED'}]">
+
+              {{test.results.status}}
+            </div>
+            <div class="col-md-3">
+              {{test.name}}
+            </div>
+            <!--<div class="col-md-2">
+              {{test.action}}
+            </div>-->
+            <div class="col-md-8">
+              {{test.expectedError}}
+            </div>
+
+
+          </div>
+          <!--  <div class="row">
+              <div class="col-md-2">Test Data</div>
+
+              <div class="col-md-6">
+                {{test.data}}
+                <div concept-edit concept="test.data" branch="branch" static="true" autosave="false"></div>
+              </div>
+            </div>-->
         </div>
 
-        <div class="row" ng-repeat="test in value.tests">
-          <div class="col-md-1" style="text-align: center" ng-class="[{'red' : test.results.status === 'FAILED'}, {'green' : test.results.status === 'PASSED'}]">
-
-            {{test.results.status}}
-          </div>
-          <div class="col-md-3">
-            {{test.name}}
-          </div>
-          <!--<div class="col-md-2">
-            {{test.action}}
-          </div>-->
-          <div class="col-md-8">
-            {{test.expectedError}}
-          </div>
-
-
-        </div>
-      <!--  <div class="row">
-          <div class="col-md-2">Test Data</div>
-
-          <div class="col-md-6">
-            {{test.data}}
-            <div concept-edit concept="test.data" branch="branch" static="true" autosave="false"></div>
-          </div>
-        </div>-->
       </div>
-
     </div>
+
   </div>
 
-</div>
+  {{ results}}
 
 
 </div>

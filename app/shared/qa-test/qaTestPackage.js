@@ -4,13 +4,18 @@
 
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .factory('QaTestPackage', function ($q, $interval, qaTestGroupCharacterSpacing) {
+  .factory('QaTestPackage', function ($q, $interval,
+                                      qaTestGroupCharacterSpacing,
+                                      qaTestGroupDescriptions,
+                                      qaTestGroupRelationships) {
 
 
     ////////////////////////////////////
     // Private Elements
     ////////////////////////////////////
     var testGroups = [
+      qaTestGroupRelationships,
+      qaTestGroupDescriptions,
       qaTestGroupCharacterSpacing
     ];
     var results = {};
@@ -21,7 +26,8 @@ angular.module('singleConceptAuthoringApp')
         return;
       }
       var testGroup = testGroups[index];
-      return testGroup.runTests(project, task).then(function(response) {
+      console.log('Running tests for ' + testGroup.getName());
+      return testGroup.runTests(project, task).then(function (response) {
         results[testGroup.getName()] = response;
 
         // run the next test
@@ -38,25 +44,23 @@ angular.module('singleConceptAuthoringApp')
     QaTest.name = 'Concept QA Tests';
     QaTest.status = 'Not run';
 
-
     QaTest.runTests = function (projectKey, taskKey) {
-      console.debug('QaTest: Running tests',  projectKey, taskKey);
+      console.debug('QaTest: Running tests', projectKey, taskKey);
       project = projectKey;
       task = taskKey;
 
       QaTest.status = 'Running';
-      runTestsHelper(testGroups, 0).then(function() {
+      runTestsHelper(testGroups, 0).then(function () {
         QaTest.status = 'Complete';
       });
-     
-    };
 
+    };
 
     QaTest.getResults = function () {
 
       // get latest results for each package
       angular.forEach(testGroups, function (testGroup) {
-        //console.debug('QaTest getResults', testGroup.getResults());
+        // console.debug('QaTest getResults', testGroup.getResults());
         results[testGroup.getName()] = testGroup.getResults();
       });
       //console.debug('returning results', results);
