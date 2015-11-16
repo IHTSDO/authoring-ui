@@ -104,7 +104,7 @@
             <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
           </div>
           <div class="col-md-6 p-10">
-            <button class="btn btn-default blue pull-right" ng-click="openCreateTaskModal()">
+            <button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
                Create Task From Failures
             </button>
           </div>
@@ -124,14 +124,14 @@
               {{failure.errorMessage.conceptId}}
             </td>
             <td data-title="'Error Message'" sortable="'detail'">
-              {{failure.errorMessage .detail}}
+              {{failure.errorMessage.detail}}
             </td>
             <td ng-if="taskKey" data-title="'Changed Here'" sortable="'userModified'">
               {{failure.userModified}}
             </td>
 
             <td ng-if="editable" data-header="'editheader.html'">
-              <button type="button" class="btn btn-round btn-default blue" ng-click="editConcept(failure.concept)">
+              <button type="button" class="btn btn-round btn-default blue" ng-click="editConcept(failure.errorMessage.conceptId)">
                 <span class="md md-edit"></span>
               </button>
             </td>

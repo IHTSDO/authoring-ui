@@ -19,20 +19,29 @@ angular.module( 'singleConceptAuthoringApp.test', [
 
     $scope.results = {};
 
-    var projectKey, taskKey;
+    $scope.projectKey = null;
+    $scope.taskKey = null;
+
     scaService.getTaskForProject('WRPTEST', 'WRPTEST-2').then(function(response) {
-      projectKey = response.projectKey;
-      taskKey = response.key;
-      $scope.branch = 'MAIN/' + projectKey + '/' + taskKey;
+      $scope.projectKey = response.projectKey;
+      $scope.taskKey = response.key;
+      $scope.branch = 'MAIN/' + $scope.projectKey + '/' + $scope.taskKey;
     });
 
     $scope.testPackages = [
       QaTestPackage
     ];
 
+    // initialize the available tests
+    angular.forEach($scope.testPackages, function (testPackage) {
+      var results = testPackage.getResults();
+      testPackage.results = results;
+      console.debug('testpackage w/results', testPackage);
+    });
+
 
     $scope.runTest = function(testPackage) {
-      testPackage.runTests(projectKey, taskKey);
+      testPackage.runTests($scope.projectKey, $scope.taskKey);
 
       var resultsPolling = $interval(function() {
 

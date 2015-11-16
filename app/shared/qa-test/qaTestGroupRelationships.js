@@ -5,17 +5,20 @@
  */
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .service('qaTestGroupCharacterSpacing', ['$q', 'snowowlService', 'scaService', 'objectService',
+  .service('qaTestGroupRelationships', ['$q', 'snowowlService', 'scaService', 'objectService',
     function ($q, snowowlService, scaService, objectService) {
 
       // test package name
-      var name = 'Character Spacing';
+      var name = 'Relationships';
 
       // the project to run this task against
       var project = null;
 
       // the task to run this test against
       var task = null;
+
+      // the branch corresponding to this project & task (computed)
+      var branch = null;
 
       // the tests to be run in this package
       var tests = null;
@@ -72,15 +75,24 @@ angular.module('singleConceptAuthoringApp')
               };
             });
           }
-        }, {
-          name: 'double space',
+        },
+
+        // Is-a relationships should not be grouped
+        {
+          name: 'IsA relationship is grouped',
           action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: {{field.type}} must not contain double, leading or trailing spaces.',
+          expectedError: 'The system has detected a contraindication of the following convention: an “Is-a” relationships must not be grouped.',
           results: {
             status: 'Not Started'
           },
           testFn: function test() {
-            var concept = getTestConcept('WSP Test01  concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+            var rel = objectService.getNewIsaRelationship();
+            rel.groupId = 1;
+            rel.target.conceptId = '900000000000487009'; // random concept for
+            // isa relationship
+            concept.relationships.push(rel);
+
             return snowowlService.createConcept(project, task, concept).then(function (response) {
               return {
                 status: 'FAILED',
@@ -96,61 +108,105 @@ angular.module('singleConceptAuthoringApp')
 
             });
           }
-        }, {
-          name: 'leading space',
+        },
+
+        // A role group should have at least 2 relationships
+        {
+          name: 'Role group only has one relationship',
           action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: {{field.type}} must not contain double, leading or trailing spaces.',
+          expectedError: 'The system has detected a contraindication of the following convention: a role group must have at least two relationships.',
           results: {
             status: 'Not Started'
           },
           testFn: function test() {
-            var concept = getTestConcept(' WSP Test01 concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-              return {
-                status: 'FAILED',
-                data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+            var deferred = $q.defer();
+
+            var concept = getTestConcept('Rel Test03 concept (test)', 'Rel Test03 concept');
+
+            // change IsA target to something that will allow domain attributes
+            concept.relationships[0].target.conceptId = '123037004'; // body structure
+
+            var attrRel = objectService.getNewAttributeRelationship();
+
+            // get a legal attribute type
+            snowowlService.getDomainAttributes(branch, [concept.relationships[0].target.conceptId]).then(function (attrTypes) {
+              if (attrTypes.length === 0) {
+                deferred.resolve({
+                  status: 'ERROR',
+                  data: concept,
+                  attrTypes: 'No legal domain attributes found for test concept'
+                });
+              }
+
+              console.debug(attrTypes);
+
+              // get the first relationship that is not IsA
+              // NOTE the MRCM endpoint returns field 'id', not 'conceptId'
+              for (var i = 0; i < attrTypes.items.length; i++) {
+                if (attrTypes.items[i].id !== '116680003') {
+                  attrRel.type.conceptId = attrTypes.items[i].id;
+                  break;
+                }
+              }
+
+              console.debug(attrRel);
+
+              // get the first valid target from the MRCM rules
+              snowowlService.getAttributeValues(branch, attrRel.type.conceptId, null).then(function (attrValues) {
+                if (attrValues.length === 0) {
+                  deferred.resolve({
+                    status: 'ERROR',
+                    data: concept,
+                    attrTypes: 'No legal attribute valuess found for test concept'
+                  });
+                }
+
+                attrRel.target.conceptId = attrValues[0].id;
+
+                // finally, actually test the darn concept
+                attrRel.groupId = 1;
+
+                concept.relationships.push(attrRel);
+
+                snowowlService.createConcept(project, task, concept).then(function (response) {
+                  deferred.resolve({
+                    status: 'FAILED',
+                    data: concept,
+                    response: response
+                  });
+                }, function (error) {
+                  deferred.resolve({
+                    status: 'PASSED',
+                    data: concept,
+                    response: error
+                  });
+
+                });
+              })
+
             });
+
+            return deferred.promise;
           }
-        }, {
-          name: 'trailing space',
+        },
+
+        // Active Concepts should not have two relationships with the same
+        // type, target and group
+        // TODO Consider adding identical attribute
+        // relationships
+        {
+          name: 'Two relationships with same type, target, and group',
           action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: {{field.type}} must not contain double, leading or trailing spaces.',
+          expectedError: 'The system has detected a contraindication of the following convention: an active concepts must not have two relationships with the same type, target and group.',
           results: {
             status: 'Not Started'
           },
           testFn: function test() {
-            var concept = getTestConcept('WSP Test01 concept (test) ', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-              return {
-                status: 'FAILED',
-                data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
-            });
-          }
-        }, {
-          name: 'no space before parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          results: {
-            status: 'Not Started'
-          },
-          testFn: function test() {
-            var concept = getTestConcept('WSP(Test01)concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+
+            var rel = angular.copy(concept.relationships[0]);
+            concept.relationships.push(rel);
+
             return snowowlService.createConcept(project, task, concept).then(function (response) {
               return {
                 status: 'FAILED',
@@ -166,15 +222,24 @@ angular.module('singleConceptAuthoringApp')
 
             });
           }
-        }, {
-          name: 'no space after non-terminating parenthesis',
+        },
+
+        // Similar  WRP-1700, WRP-1701	Active concepts' Semantic Tags are
+        // compatible with those of the active parents.]; TODO Get examples
+
+        {
+          name: 'Two relationships with same type, target, and group',
           action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
+          expectedError: 'The system has detected a contraindication of the following convention: an active concepts must not have two relationships with the same type, target and group.',
           results: {
             status: 'Not Started'
           },
           testFn: function test() {
-            var concept = getTestConcept('WSP (Test01)concept (test)', 'WSP (Test01) concept');
+            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+
+            var rel = angular.copy(concept.relationships[0]);
+            concept.relationships.push(rel);
+
             return snowowlService.createConcept(project, task, concept).then(function (response) {
               return {
                 status: 'FAILED',
@@ -187,17 +252,25 @@ angular.module('singleConceptAuthoringApp')
                 data: concept,
                 response: error
               };
+
             });
           }
-        }, {
-          name: 'space after beginning parenthesis',
+        },
+
+        // WRP-1534 matches but contradicts WRP-1535	Active Concepts should
+        // have at least one ISA
+        {
+          name: 'Concept must have one active IsA relationship',
           action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
+          expectedError: 'The system has detected a contraindication of the following convention: an active concepts must have at least one ISA relationship.',
           results: {
             status: 'Not Started'
           },
           testFn: function test() {
-            var concept = getTestConcept('WSP ( Test01) concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+
+            concept.relationships[0].active = false;
+
             return snowowlService.createConcept(project, task, concept).then(function (response) {
               return {
                 status: 'FAILED',
@@ -210,32 +283,12 @@ angular.module('singleConceptAuthoringApp')
                 data: concept,
                 response: error
               };
+
             });
           }
-        }, {
-          name: 'space before terminating parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          results: {
-            status: 'Not Started'
-          },
-          testFn: function test() {
-            var concept = getTestConcept('WSP (Test01 ) concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-              return {
-                status: 'FAILED',
-                data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
-            });
-          }
-        }];
+        }
+
+      ];
 
       // initialize results
       results = {
@@ -248,7 +301,6 @@ angular.module('singleConceptAuthoringApp')
         tests: tests
       };
 
-
       function runHelper(tests, index) {
 
         if (index >= tests.length) {
@@ -259,27 +311,33 @@ angular.module('singleConceptAuthoringApp')
 
         test.results.status = 'Running';
 
-        // call the test's test function
-        return (test.testFn.call()).then(function (response) {
+        try {
 
-          // append results of test function to the test
-          //console.debug('runHelper response', response);
-          test.results = response;
+          // call the test's test function
+          return (test.testFn.call()).then(function (response) {
 
-          // update the results counts
-          results.nTestsRun++;
-          if (test.results.status === 'PASSED') {
-            results.nTestsPassed++;
-          } else if (test.results.status === 'FAILED') {
-            results.nTestsFailed++;
-          } else {
-            results.nTestsError++;
-          }
+            // append results of test function to the test
+            //console.debug('runHelper response', response);
+            test.results = response;
 
-          // run next test
-          return runHelper(tests, ++index);
+            // update the results counts
+            results.nTestsRun++;
+            if (test.results.status === 'PASSED') {
+              results.nTestsPassed++;
+            } else if (test.results.status === 'FAILED') {
+              results.nTestsFailed++;
+            } else {
+              results.nTestsError++;
+            }
 
-        });
+            // run next test
+            return runHelper(tests, ++index);
+
+          });
+        } catch(err) {
+          test.results.status === 'ERROR';
+          test.response = err;
+        }
       }
 
       /**
@@ -287,16 +345,18 @@ angular.module('singleConceptAuthoringApp')
        */
       function runTests(projectKey, taskKey) {
 
-        //console.debug('qaPackageCharacterSpacing: run test', projectKey, taskKey);
+        //console.debug('qaPackageCharacterSpacing: run test', projectKey,
+        // taskKey);
 
         var deferred = $q.defer();
 
         // set the project and task
         project = projectKey;
         task = taskKey;
+        branch = 'MAIN/' + projectKey + '/' + taskKey;
 
         // set all tests to Pending status
-        angular.forEach(tests, function(test) {
+        angular.forEach(tests, function (test) {
           test.results = {
             status: 'Pending'
           }

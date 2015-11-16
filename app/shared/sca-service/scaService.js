@@ -104,9 +104,9 @@ angular.module('singleConceptAuthoringApp')
         }
         $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks', task).then(
           function (response) {
-            deferred.resolve(response);
+            deferred.resolve(response.data);
           }, function (error, data) {
-            deferred.reject(error);
+            deferred.reject(error.message);
           }
         );
 
