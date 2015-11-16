@@ -52,9 +52,9 @@ angular.module('singleConceptAuthoringApp')
       tests = [
         {
           name: 'PASS',
-          action: 'Create concept',
+          
           expectedError: null,
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP Test01 concept (test)', 'WSP Test01 concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -66,9 +66,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, {
           name: 'double space',
-          action: 'Create concept',
+          
           expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP Test01  concept (test)', 'WSP Test01 concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -80,9 +80,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, {
           name: 'leading space',
-          action: 'Create concept',
+          
           expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept(' WSP Test01 concept (test)', 'WSP Test01 concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -94,9 +94,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, {
           name: 'trailing space',
-          action: 'Create concept',
+          
           expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP Test01 concept (test) ', 'WSP Test01 concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -108,9 +108,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, {
           name: 'no space before parenthesis',
-          action: 'Create concept',
+          
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP(Test01)concept (test)', 'WSP Test01 concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -122,9 +122,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, {
           name: 'no space after non-terminating parenthesis',
-          action: 'Create concept',
+          
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP (Test01)concept (test)', 'WSP (Test01) concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -136,9 +136,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, {
           name: 'space after beginning parenthesis',
-          action: 'Create concept',
+          
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP ( Test01) concept (test)', 'WSP Test01 concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -150,9 +150,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, {
           name: 'space before terminating parenthesis',
-          action: 'Create concept',
+          
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          status: 'Not Run',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP (Test01 ) concept (test)', 'WSP Test01 concept');
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -174,6 +174,37 @@ angular.module('singleConceptAuthoringApp')
         nTestsError: 0,
         tests: tests
       };
+
+
+      function runSingleTest(testName, projectKey, taskKey) {
+
+        var deferred = $q.defer();
+
+
+        project = projectKey;
+        task = taskKey;
+
+        var testFound = false;
+        // find the matching test by name
+        angular.forEach(tests, function (test) {
+
+          if (test.name === testName) {
+            testFound = true;
+            test.status = 'Pending';
+            runHelper([test], 0).then(function() {
+              console.debug('test complete', test);
+              deferred.resolve(test);
+            })
+          }
+        });
+
+        if (!testFound) {
+          console.error('Could not find test with name ' + testName);
+          deferred.reject();
+        }
+
+        return deferred.promise;
+      }
 
       function runHelper(tests, index) {
 
@@ -319,6 +350,7 @@ angular.module('singleConceptAuthoringApp')
 
       return {
         runTests: runTests,
+        runSingleTest: runSingleTest,
         cancel: cancel,
         getResults: getResults,
         getName: getName
