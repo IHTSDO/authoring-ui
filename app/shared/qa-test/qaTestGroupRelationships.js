@@ -70,7 +70,7 @@ angular.module('singleConceptAuthoringApp')
         // Is-a relationships should not be grouped
         {
           name: 'IsA relationship is grouped',
-          expectedError: 'The system has detected a contraindication of the following convention: an “Is-a” relationships must not be grouped.',
+          expectedError: 'The system has detected a contradiction of the following convention: an "Is-a" relationships must not be grouped.',
           testFn: function test() {
             var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
             var rel = objectService.getNewIsaRelationship();
@@ -93,9 +93,8 @@ angular.module('singleConceptAuthoringApp')
         // A role group should have at least 2 relationships
         {
           name: 'Role group only has one relationship',
-          expectedError: 'The system has detected a contraindication of the following convention: a role group must have at least two relationships.',
+          expectedError: 'The system has detected a contradiction of the following convention: a role group must have at least two relationships.',
           testFn: function test() {
-            var deferred = $q.defer();
 
             var concept = getTestConcept('Rel Test03 concept (test)', 'Rel Test03 concept');
 
@@ -103,58 +102,22 @@ angular.module('singleConceptAuthoringApp')
             concept.relationships[0].target.conceptId = '123037004'; // body structure
             concept.relationships[0].target.fsn = 'Body structure (body structure)';
 
-            var attrRel = objectService.getNewAttributeRelationship();
+            // add Laterality domain attribute
+            var rel = objectService.getNewAttributeRelationship();
+            rel.type.conceptId = '272741003';
+            rel.type.fsn = 'Laterality (attribute)';
+            rel.target.conceptId = '24028007';
+            rel.target.fsn = 'Right (qualifier value)';
+            rel.groupId = '1';
 
-            // get a legal attribute type
-            snowowlService.getDomainAttributes(branch, [concept.relationships[0].target.conceptId]).then(function (attrTypes) {
-              if (attrTypes.length === 0) {
-                deferred.resolve({
-                  status: 'ERROR',
-                  data: concept,
-                  attrTypes: 'No legal domain attributes found for test concept'
-                });
+            concept.relationships.push(rel);
+
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return {
+                data: concept,
+                errorsReceived: response
               }
-
-              console.debug(attrTypes);
-
-              // get the first relationship that is not IsA
-              // NOTE the MRCM endpoint returns field 'id', not 'conceptId'
-              for (var i = 0; i < attrTypes.items.length; i++) {
-                if (attrTypes.items[i].id !== '116680003') {
-                  attrRel.type.conceptId = attrTypes.items[i].id;
-                  break;
-                }
-              }
-
-              console.debug(attrRel);
-
-              // get the first valid target from the MRCM rules
-              snowowlService.getAttributeValues(branch, attrRel.type.conceptId, null).then(function (attrValues) {
-                if (attrValues.length === 0) {
-                  deferred.resolve({
-                    status: 'ERROR',
-                    data: concept,
-                    attrTypes: 'No legal attribute valuess found for test concept'
-                  });
-                }
-
-                attrRel.target.conceptId = attrValues[0].id;
-
-                // finally, actually test the darn concept
-                attrRel.groupId = 1;
-
-                concept.relationships.push(attrRel);
-
-                snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
-                  deferred.resolve( {
-                    data: concept,
-                    errorsReceived: response
-                  });
-                });
-              })
             });
-
-            return deferred.promise;
           }
         },
 
@@ -163,10 +126,10 @@ angular.module('singleConceptAuthoringApp')
         // TODO Consider adding identical attribute
         // relationships
         {
-          name: 'Two relationships with same type, target, and group',
-          expectedError: 'The system has detected a contraindication of the following convention: an active concepts must not have two relationships with the same type, target and group.',
+          name: 'Two relationships with same type, target, and group (group 0)',
+          expectedError: 'The system has detected a contradiction of the following convention: an active concepts must not have two relationships with the same type, target and group.',
           testFn: function test() {
-            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+            var concept = getTestConcept('Rel Test04 concept (test)', 'Rel Test04 concept');
 
             var rel = angular.copy(concept.relationships[0]);
             concept.relationships.push(rel);
@@ -185,12 +148,18 @@ angular.module('singleConceptAuthoringApp')
         // compatible with those of the active parents.]; TODO Get examples
 
         {
-          name: 'Two relationships with same type, target, and group',
-          expectedError: 'The system has detected a contraindication of the following convention: an active concepts must not have two relationships with the same type, target and group.',
+          name: 'Two relationships with same type, target, and group (group 1)',
+          expectedError: 'The system has detected a contradiction of the following convention: an active concepts must not have two relationships with the same type, target and group.',
           testFn: function test() {
-            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+            var concept = getTestConcept('Rel Test05 concept (test)', 'Rel Test05 concept');
 
-            var rel = angular.copy(concept.relationships[0]);
+            var rel = objectService.getNewAttributeRelationship();
+            rel.type.conceptId = '272741003';
+            rel.type.fsn = 'Laterality (attribute)';
+            rel.target.conceptId = '24028007';
+            rel.target.fsn = 'Right (qualifier value)';
+            rel.groupId = '1';
+            concept.relationships.push(rel);
             concept.relationships.push(rel);
 
             return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
@@ -207,9 +176,9 @@ angular.module('singleConceptAuthoringApp')
         // have at least one ISA
         {
           name: 'Concept must have one active IsA relationship',
-          expectedError: 'The system has detected a contraindication of the following convention: an active concepts must have at least one ISA relationship.',
+          expectedError: 'The system has detected a contradiction of the following convention: an active concepts must have at least one ISA relationship.',
           testFn: function test() {
-            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+            var concept = getTestConcept('Rel Test06 concept (test)', 'Rel Test06 concept');
 
             concept.relationships[0].active = false;
 
@@ -221,11 +190,33 @@ angular.module('singleConceptAuthoringApp')
 
             });
           }
-        }
+        },
 
+        // Similar  WRP-1700, WRP-1701	Active concepts' Semantic Tags are compatible with those of the active parents.
+        {
+          name: 'Concept\'s semantic tag not compatible with that of parents',
+          notes: [
+            'Test written, but back-end support still in progress'
+          ],
+          expectedError: 'The system has detected a contradiction of the following convention: an active concepts must have at least one ISA relationship.',
+          testFn: function test() {
+            var concept = getTestConcept('Rel Test07 concept (body structure)', 'Rel Test07 concept');
+
+            concept.relationships[0].target.conceptId = '133928008';
+            concept.relationships[0].target.fsn = 'Community (social concept)';
+
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return {
+                data: concept,
+                errorsReceived: response
+              }
+
+            });
+          }
+        }
       ];
 
-      // initialize results
+      // reset results
       results = {
         status: 'Running',
         nTestsTotal: tests.length,
@@ -233,38 +224,22 @@ angular.module('singleConceptAuthoringApp')
         nTestsPassed: 0,
         nTestsFailed: 0,
         nTestsError: 0,
-        tests: tests
+        tests: []
       };
 
-
-      function runSingleTest(testName, projectKey, taskKey) {
-
-        var deferred = $q.defer();
-
-
-        project = projectKey;
-        task = taskKey;
-
-        var testFound = false;
-        // find the matching test by name
+      function countResults() {
+        // update the results counts
+        results.nTestsTotal = tests.length;
         angular.forEach(tests, function (test) {
-
-          if (test.name === testName) {
-            testFound = true;
-            test.status = 'Pending';
-            runHelper([test], 0).then(function() {
-              console.debug('test complete', test);
-              deferred.resolve(test);
-            })
+          results.nTestsRun++;
+          if (test.status === 'PASSED') {
+            results.nTestsPassed++;
+          } else if (test.status === 'FAILED') {
+            results.nTestsFailed++;
+          } else {
+            results.nTestsError++;
           }
-        });
-
-        if (!testFound) {
-          console.error('Could not find test with name ' + testName);
-          deferred.reject();
-        }
-
-        return deferred.promise;
+        })
       }
 
       function runHelper(tests, index) {
@@ -326,19 +301,40 @@ angular.module('singleConceptAuthoringApp')
             test.status = 'PASSED';
           }
 
-          // update the results counts
-          results.nTestsRun++;
-          if (test.status === 'PASSED') {
-            results.nTestsPassed++;
-          } else if (test.status === 'FAILED') {
-            results.nTestsFailed++;
-          } else {
-            results.nTestsError++;
-          }
+          console.debug('Test complete', test.status);
 
           // run next test
           return runHelper(tests, ++index);
         })
+      }
+
+      function runSingleTest(testName, projectKey, taskKey) {
+
+        var deferred = $q.defer();
+
+        project = projectKey;
+        task = taskKey;
+
+        var testFound = false;
+        // find the matching test by name
+        angular.forEach(tests, function (test) {
+
+          if (test.name === testName) {
+            testFound = true;
+            test.status = 'Pending';
+            runHelper([test], 0).then(function () {
+              console.debug('test complete', test);
+              deferred.resolve(test);
+            })
+          }
+        });
+
+        if (!testFound) {
+          console.error('Could not find test with name ' + testName);
+          deferred.reject();
+        }
+
+        return deferred.promise;
       }
 
       /**
@@ -354,13 +350,10 @@ angular.module('singleConceptAuthoringApp')
         // set the project and task
         project = projectKey;
         task = taskKey;
-        branch = 'MAIN/' + projectKey + '/' + taskKey;
 
         // set all tests to Pending status
         angular.forEach(tests, function (test) {
-          test.results = {
-            status: 'Pending'
-          }
+          test.status = 'Pending';
         });
 
         // reset results
@@ -418,6 +411,7 @@ angular.module('singleConceptAuthoringApp')
         getResults: getResults,
         getName: getName
       };
+
 
     }])
 ;

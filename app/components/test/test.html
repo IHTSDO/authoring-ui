@@ -80,17 +80,29 @@
           <div ng-repeat="test in value.tests" ng-init="showDetails = false">
             <div class="row p-t-5">
               <div class="col-md-1" style=""
-                   ng-class="[{'red' : test.status === 'FAILED'}, {'green' : test.status === 'PASSED'}]">
+                   ng-class="[
+                   {'red' : test.status === 'FAILED' && !test.notes },
+                   {'green' : test.status === 'PASSED'},
+                   {'orange': test.status && test.status !== 'Pending' && test.status !== 'Running' && test.notes}]">
 
                 <div ng-show="!test.status">
                   <i class="md md-play-arrow m-r-10" ng-click="runSingleTest(testPackage, key, test)"></i>
                   Not Run
                 </div>
 
-                <div>
-                  <i ng-show="test.status && test.status != 'Pending' && test.status != 'Running'"
-                     class="md md-replay m-r-10" ng-click="runSingleTest(testPackage, key, test)"></i>
+                <div ng-show="test.status && test.status != 'Pending' && test.status != 'Running' && !test.notes">
+                  <i
+                    class="md md-replay m-r-10" ng-click="runSingleTest(testPackage, key, test)"></i>
                   {{test.status}}
+                </div>
+
+                <div ng-show="test.status === 'Pending' || test.status === 'Running'">
+                  {{test.status}}
+                </div>
+
+                <div ng-show="test.status && test.status !== 'Pending' && test.status !== 'Running' && test.notes">
+                  <i class="md md-block m-r-10"></i>
+                  DEFER
                 </div>
 
 
@@ -104,12 +116,24 @@
                 </div>
               </div>
               <div class="col-md-7">
-                <div class="">
+                <div class="row">
                   {{test.expectedError}}
                 </div>
+
               </div>
 
 
+            </div>
+
+            <div class="row p-l-10 m-b-15" ng-if="test.notes.length > 0 && showDetails">
+              <div class="col-md-1"></div>
+              <div class="col-md-11 no-padding">
+                <h4>Test Deferred</h4>
+
+                <div ng-repeat="note in test.notes">
+                  {{note}}
+                </div>
+              </div>
             </div>
 
             <div class="row p-l-10 m-b-15" ng-if="showDetails">
