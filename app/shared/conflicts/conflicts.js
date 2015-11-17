@@ -23,6 +23,12 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope) {
 
+          // Parameter to show or hide the sidebar table
+          scope.hideSidebar = false;
+          scope.toggleSidebar = function() {
+            scope.hideSidebar = !scope.hideSidebar;
+          }
+
           /**
            * Conflict ngTable parameters
            */
