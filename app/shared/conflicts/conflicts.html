@@ -104,12 +104,16 @@
     <div class="col-md-12 no-padding no-gutter">
 
       <!-- Conflicts Report: Sidebar -->
-      <div class="col-md-2 no-padding no-gutter">
+      <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
 
         <div ng-if="!conflicts" class="alert alert-warning">Loading conflicts...</div>
 
         <div ng-if="conflicts" class="row no-padding no-gutter" style="text-align: center">
-          <div class="col-md-12"><h4>Conflicts</h4></div>
+          <div class="col-md-12">
+
+            <!-- Hide sidebar control -->
+
+            <h4>Conflicts <button type="button" ng-click="toggleSidebar()" class="md md-keyboard-arrow-left pull-left " title="Hide Sidebar"></button></h4></div>
         </div>
 
         <table show-filter="false" ng-table="conflictsTableParams" ng-if="conflicts"
@@ -142,18 +146,15 @@
           </tr>
         </table>
       </div>
-      <div class="col-md-10 no-padding no-gutter" ng-show="viewedMerges.length > 0">
+      <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]" ng-show="viewedMerges.length > 0">
 
         <div class="row no-padding no-gutter" style="text-align: center">
-          <div class="col-md-4"><h4>Project Version</h4></div>
+          <div class="col-md-4"><h4><button ng-show="hideSidebar" ng-click = "toggleSidebar()" type="button" class="md md-keyboard-arrow-right pull-left " title="Show Sidebar"></button>Project Version</h4></div>
           <div class="col-md-4"><h4>Merged Version</h4></div>
           <div class="col-md-4"><h4>Task Version</h4></div>
         </div>
 
         <div class="row no-padding no-gutter" ng-repeat="merge in viewedMerges">
-          <div class="col-md-12">
-            {{merge.conceptId}}, {{styles[merge.conceptId]}}
-          </div>
           <div class="col-md-4">
             <div concept-edit concept="viewedMerges[$index].source"
                  branch="targetBranch" static="true" component-styles="merge.styles.source">
