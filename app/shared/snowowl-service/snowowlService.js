@@ -39,11 +39,18 @@ angular.module('singleConceptAuthoringApp')
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
 
+      console.debug('cleaning concept', concept);
+
       // strip unknown tags
       var allowableProperties = [
         'fsn', 'conceptId', 'definitionStatus', 'active', 'moduleId',
         'isLeafInferred', 'effectiveTime', 'descriptions',
         'preferredSynonym', 'relationships'];
+
+      // if a locally assigned UUID, strip
+      if (concept.conceptId && concept.conceptId.indexOf('-') !== -1) {
+        concept.conceptId = null;
+      }
 
       for (var key in concept) {
         if (allowableProperties.indexOf(key) === -1) {
@@ -56,12 +63,26 @@ angular.module('singleConceptAuthoringApp')
       ];
 
       angular.forEach(concept.descriptions, function (description) {
+
+        // if a locally assigned UUID, strip
+        if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
+          description.descriptionId = null;
+        }
         for (var key in description) {
           if (allowableDescriptionProperties.indexOf(key) === -1) {
             delete description[key];
           }
         }
       });
+
+      // TODO Add relationship cleaning fields
+      angular.forEach(concept.relationships, function (relationship) {
+
+        // if a locally assigned UUID, strip
+        if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
+          relationship.relationshipId = null;
+        }
+      })
     }
 
     // function to remove disallowed elements from a concept
