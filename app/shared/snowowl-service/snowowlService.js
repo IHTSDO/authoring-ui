@@ -889,7 +889,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/' + projectKey + '/' + taskKey + '/validate/concept', concept).then(function(response) {
+      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/validate/concept', concept).then(function(response) {
         console.debug('validate success');
         deferred.resolve(response.data);
       }, function(error) {
@@ -900,13 +900,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function validateConceptForProject(projectKey, concept) {
-      var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/' + projectKey + '/validate/concept', concept).then(function(response) {
-        deferred.resolve(response.data);
-      }, function(error) {
-        deferred.reject(error.message);
-      });
-      return deferred.promise;
+      // TODO
     }
 
     ////////////////////////////////////////////

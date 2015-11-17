@@ -68,6 +68,9 @@ angular.module('singleConceptAuthoringApp')
         // committed
         {
           name: 'description matches already committed description',
+          notes: [
+            'Test written, but back-end implementation deferred by request of author due to similarity with another tests'
+          ],
 
           expectedError: 'The system has detected a contradiction of the following convention: active descriptions must not match other description already committed.',
           testFn: function test() {
@@ -343,7 +346,7 @@ angular.module('singleConceptAuthoringApp')
         {
           name: 'Active description with greater than 255 characters',
 
-          expectedError: 'The system has detected a contradiction of the following convention: an active descriptions must not be longer than 255 characters.',
+          expectedError: 'The system has detected a contradiction of the following convention: an active description must not be longer than 255 characters.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test11 concept (test)', 'Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept');
 
@@ -398,14 +401,43 @@ angular.module('singleConceptAuthoringApp')
           }
         },
 
-        // TODO Where an active fully specified name includes a + symbol a
-        // space will be placed either side of the plus symbol e.g. ibuprofen +
-        // oxycodone (product) - author review indicated
+        // Where an active fully specified name includes a + symbol a space
+        // will be placed either side of the plus symbol e.g. ibuprofen +
+        // oxycodone (product)
+        {
+          name: 'FSN contains + character without space before it',
+          expectedError: 'The system has detected a contradiction of the following convention: an active FSN containing a + symbol, must include a single space placed at either side of the symbol e.g. Ibuprofen + oxycodone (product)',
+          testFn: function test() {
+            var concept = getTestConcept('Desc Test14+ concept (test)', 'Desc Test14+ concept');
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return {
+                data: concept,
+                errorsReceived: response
+              }
+            });
+          }
+        },
+
+        // Where an active fully specified name includes a + symbol a space
+        // will be placed either side of the plus symbol e.g. ibuprofen +
+        // oxycodone (product)
+        {
+          name: 'FSN contains + character without space after it',
+          expectedError: 'The system has detected a contradiction of the following convention: an active FSN containing a + symbol, must include a single space placed at either side of the symbol e.g. Ibuprofen + oxycodone (product)',
+          testFn: function test() {
+            var concept = getTestConcept('Desc Test14 +concept (test)', 'Desc Test14 +concept');
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return {
+                data: concept,
+                errorsReceived: response
+              }
+            });
+          }
+        },
 
         // Similiar  to WRP-1546	Active FSNs cannot start with open parentheses
         {
           name: 'FSN starts with open parenthesis',
-
           expectedError: 'The system has detected a contradiction of the following convention: FSNs must not start with open parentheses.',
           testFn: function test() {
             var concept = getTestConcept('(Desc Test15 concept (test)', 'Desc Test15 concept');
@@ -482,7 +514,9 @@ angular.module('singleConceptAuthoringApp')
         // here without further clarification
         {
           name: 'FSN does not contain dashes',
-
+          notes: [
+            'Test written, but back-end implementation deferred by request of authors'
+          ],
           expectedError: 'The system has detected a contradiction of the following convention: an FSN must end with Semantic Tags.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test19-concept', 'Desc Test19 concept');
@@ -498,7 +532,9 @@ angular.module('singleConceptAuthoringApp')
         // Active Fully Specified Names are not in the plural form (warning)
         {
           name: 'FSN is in plural form',
-
+          notes: [
+            'Test written, but back-end implementation deferred by request of authors'
+          ],
           expectedError: 'The system has detected a contradiction of the following convention: an FSNs must not be in a plural form.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test20 concepts', 'Desc Test20 concept');
@@ -516,7 +552,9 @@ angular.module('singleConceptAuthoringApp')
         // (qualifier value)".
         {
           name: 'FSN For Technique Concept does not include the term "technique"',
-
+          notes: [
+            'Test written, but back-end implementation deferred by request of authors'
+          ],
           expectedError: 'The system has detected a contradiction of the following convention: an FSN for techniques must include the word "technique"',
           testFn: function test() {
             var concept = getTestConcept('Desc Test21 concepts', 'Desc Test21 concept');
@@ -547,7 +585,9 @@ angular.module('singleConceptAuthoringApp')
         // (warning)' authors indicate review needed before implementation
         {
           name: 'FSN does not have matching synonym (without semantic tag)',
-
+          notes: [
+            'Test written, but back-end implementation deferred by request of authors'
+          ],
           expectedError: 'The system has detected a contradiction of the following convention: concepts\' must have an active synonym that has the same text as the active FSN.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
@@ -711,7 +751,6 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
 
-
         project = projectKey;
         task = taskKey;
 
@@ -722,7 +761,7 @@ angular.module('singleConceptAuthoringApp')
           if (test.name === testName) {
             testFound = true;
             test.status = 'Pending';
-            runHelper([test], 0).then(function() {
+            runHelper([test], 0).then(function () {
               console.debug('test complete', test);
               deferred.resolve(test);
             })

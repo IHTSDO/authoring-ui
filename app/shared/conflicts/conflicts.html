@@ -121,23 +121,23 @@
                class="table table-full table-full-small" drop-channel="feedbackConcept">
 
 
-          <tr ng-repeat="concept in conflicts">
+          <tr ng-repeat="conflict in conflicts">
 
             <!-- Checkbox control -->
             <td class="col-checkbox col-md-1" header="'ng-table/headers/checkboxHeader.html'">
-              <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
+              <input type="checkbox" ng-model="conflict.selected" ui-on-drop="">
             </td>
 
             <!-- Fsn -->
             <td class="col-concept col-md-10" data-title="'Concept'" sortable="'fsn'">
-              Concept: {{concept.fsn}}
+              {{conflict.fsn}}
             </td>
 
             <!-- Controls -->
             <td class="col-controls col-md-1">
               <button class="btn btn-round btn-default blue lighten-2" title=""
-                      ng-disabled="isEditing(concept.id)"
-                      ng-click="viewConflict(concept.id)"><span
+                      ng-disabled="conflict.viewed"
+                      ng-click="viewConflict(conflict)"><span
                 class="md md-edit "></span>
               </button>
             </td>
