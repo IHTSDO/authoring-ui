@@ -3,6 +3,7 @@
   <!-- for ng-table checkboxes -->
 
   <style>
+ 
 
   </style>
 
@@ -20,7 +21,20 @@
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
 
-        <div ng-if="!conflicts" class="alert alert-warning">Loading conflicts...</div>
+        <div ng-if="!conflicts" class="alert loading"><p><div class="fading-circle">
+  <div class="sk-circle1 sk-circle"></div>
+  <div class="sk-circle2 sk-circle"></div>
+  <div class="sk-circle3 sk-circle"></div>
+  <div class="sk-circle4 sk-circle"></div>
+  <div class="sk-circle5 sk-circle"></div>
+  <div class="sk-circle6 sk-circle"></div>
+  <div class="sk-circle7 sk-circle"></div>
+  <div class="sk-circle8 sk-circle"></div>
+  <div class="sk-circle9 sk-circle"></div>
+  <div class="sk-circle10 sk-circle"></div>
+  <div class="sk-circle11 sk-circle"></div>
+  <div class="sk-circle12 sk-circle"></div>
+</div>Loading conflicts, please wait just a moment...</p></div>
 
         <div ng-if="conflicts" class="row no-padding no-gutter" style="text-align: center">
           <div class="col-md-12 conflicts-list-header no-padding">
@@ -37,10 +51,7 @@
 
           <tr ng-repeat="conflict in conflicts">
 
-            <!-- Checkbox control -->
-            <td class="col-checkbox conflist-list-check col-md-1" header="'ng-table/headers/checkboxHeader.html'">
-              <input type="checkbox" ng-model="conflict.selected" ui-on-drop="">
-            </td>
+         
 
             <!-- Fsn -->
             <td class="col-concept col-md-10" data-title="'Concept'" sortable="'fsn'">
@@ -49,10 +60,10 @@
 
             <!-- Controls -->
             <td class="col-controls col-md-1">
-              <button class="btn btn-round btn-default blue lighten-2" title=""
+              <button class="btn btn-round btn-default blue lighten-2 " title=""
                       ng-disabled="conflict.viewed"
-                      ng-click="viewConflict(conflict)"><span
-                class="md md-edit "></span>
+                      ng-click="viewConflict(conflict)"><div
+                class="md md-edit "></div>
               </button>
             </td>
 
