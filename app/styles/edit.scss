@@ -227,12 +227,15 @@ button,
 }
 
 .saved {
-  padding: 8px 30px 8px 8px;
-  margin: 14px 36px;
+    padding: 8px 30px 8px 8px;
+    margin: 10px 10px;
+	font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	 line-height:16px;
+	  font-weight: 400;
 }
 
 .green-save {
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .alert {
@@ -242,6 +245,8 @@ button,
 .model-header h4 {
   font-size: 12px;
   font-weight: 500;
+ 
+  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0px;
 }
 
@@ -615,7 +620,7 @@ select.primitive {
 }
 
 .Review.Completed.badge {
-  background-color: #01A2E1;
+  background-color: #610a98;
 }
 
 
