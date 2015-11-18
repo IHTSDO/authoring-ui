@@ -53,8 +53,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // the parent branch of the concept (not required)
         parentBranch: '=?',
 
-        // whether to display as static list for conflicts (not required)
+        // whether to display as static (not editable) (not required)
         static: '@?',
+
+        // whether this display is part of the merge view, triggers display
+        // changes TODO These parameters are getting ridiculous, need to clean
+        // this up
+        mergeView: '@?',
 
         // parent function to invoke updating the ui state for this concept's
         // list (not required)
@@ -263,7 +268,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Validation and saving
         ///////////////////////////////////////////////
 
-
         /**
          * Helper function to save or update concept after validation
          * @param concept
@@ -326,7 +330,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // handle error
               else {
                 // set the local error
-                scope.errors = [ response.message ];
+                scope.errors = [response.message];
               }
             });
           }
@@ -380,75 +384,83 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
         };
-        
+
         scope.storedValidationResults = null;
         scope.saveConcept = function () {
 
           scope.errors = null;
           scope.warnings = null;
 
-
           // deep-copy object for modification before submission
           // i.e. strip local values without modifying the current object
-          var concept = JSON.parse(JSON.stringify(scope.concept));
+          //var concept = JSON.parse(JSON.stringify(scope.concept));
 
           // display error msg if concept not valid but no other
           // errors/warnings specified
-          if (!scope.isConceptValid(concept) && !scope.errors && !scope.warnings) {
+          if (!scope.isConceptValid(scope.concept) && !scope.errors && !scope.warnings) {
             scope.errors = ['Concept is not complete, and cannot be saved.  Specify all empty fields and try again.'];
             return;
           }
 
           // clean concept of any locally added information
-          snowowlService.cleanConcept(concept);
+          snowowlService.cleanConcept(scope.concept);
 
+          // TODO CHeck if still needed
           // cycle over descriptions and relationships and remove any
           // inactive, unpublished content i.e. this is user added content
           // that is later removed via inactivation
-          for (var i = 0; i < concept.descriptions.length; i++) {
-            if (!concept.descriptions[i].effectiveTime && !concept.descriptions[i].active) {
-              concept.descriptions.splice(i, 1);
-              i--; // decrement counter to check next available description
-            }
-          }
-          for (i = 0; i < concept.relationships.length; i++) {
-            if (!concept.relationships[i].effectiveTime && !concept.relationships[i].active) {
-              concept.relationships.splice(i, 1);
-              i--; // decrement counter to check next available relationship
-            }
-          }
-
+          /* for (var i = 0; i < concept.descriptions.length; i++) {
+           if (!concept.descriptions[i].effectiveTime && !concept.descriptions[i].active) {
+           concept.descriptions.splice(i, 1);
+           i--; // decrement counter to check next available description
+           }
+           }
+           for (i = 0; i < concept.relationships.length; i++) {
+           if (!concept.relationships[i].effectiveTime && !concept.relationships[i].active) {
+           concept.relationships.splice(i, 1);
+           i--; // decrement counter to check next available relationship
+           }
+           }
+           */
           notificationService.sendMessage('Validating concept prior to save...');
-          snowowlService.validateConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept).then(function (validationResults) {
+          snowowlService.validateConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+
+            scope.validationWarnings = {};
+            scope.validationErrors = {};
 
             // clear notification service
             notificationService.clear();
 
             if (validationResults.length === 0) {
-              saveHelper(concept);
+              saveHelper(scope.concept);
             }
 
             // otherwise, if
-            // TODO Allow saving through warnings (too tired at the moment to do this)
+            // TODO Allow saving through warnings (too tired at the moment to
+            // do this)
             else if (validationResults.length > 0) {
-              notificationService.sendMessage('Validation errors detected; correctr and save again');
 
-              scope.warnings = [];
-              scope.errors = [];
-              angular.forEach(validationResults, function(validationResult) {
+              notificationService.sendError('This task contains convention errors. Please resolve before saving.');
+
+              angular.forEach(validationResults, function (validationResult) {
                 console.debug(validationResult);
                 if (validationResult.severity === 'WARNING') {
-                  scope.warnings.push(validationResult.message);
+                  if (!scope.validationWarnings[validationResult.componentId]) {
+                    scope.validationWarnings[validationResult.componentId] = [];
+                  }
+                  scope.validationWarnings[validationResult.componentId].push(validationResult.message);
                 }
                 else if (validationResult.severity === 'ERROR') {
-                  scope.errors.push(validationResult.message);
+                  if (!scope.validationErrors[validationResult.componentId]) {
+                    scope.validationErrors[validationResult.componentId] = [];
+                  }
+                  scope.validationErrors[validationResult.componentId].push(validationResult.message);
                 }
               });
             }
 
           });
         };
-
 
 // function to toggle active status of concept
 // cascades to children components
@@ -2062,3 +2074,4 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
   }
 )
 ;
+
