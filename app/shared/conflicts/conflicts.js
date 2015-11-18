@@ -186,7 +186,7 @@ angular.module('singleConceptAuthoringApp')
             // map the components for convenience
             var mappedComponents = mapComponents(merge);
 
-            console.debug('mapped components', mappedComponents);
+            // console.debug('mapped components', mappedComponents);
 
             // cycle over each discovered componentId and check
             // equality/presence
@@ -194,13 +194,13 @@ angular.module('singleConceptAuthoringApp')
 
               var c = mappedComponents[key];
 
-              console.debug('----------------------');
-              console.debug('Checking components:', c);
-              console.debug('----------------------');
+              // console.debug('----------------------');
+              // console.debug('Checking components:', c);
+              // console.debug('----------------------');
 
               // Case 1: Source component not present in merged component --> Removed in merge
               if (c.source && !c.merged) {
-                console.debug('key -> case 1');
+                // console.debug('key -> case 1');
                 styles.source[key] = {message: null, style: 'redhl'};
               }
 
@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // Case 2a: Component not present in target --> Added by source
                 if (!c.target) {
-                  console.debug('key -> case 2a');
+                  // console.debug('key -> case 2a');
                   styles.source[key] = {message: null, style: 'yellowhl'};
                   styles.merged[key] = {message: null, style: 'yellowhl'};
                 }
@@ -217,14 +217,14 @@ angular.module('singleConceptAuthoringApp')
                 // Case 2b: Component present in target, but not equal --> Modified by merge
                 // Modified by target
                 else if (!objectService.isComponentsEqual(c.source, c.merged)) {
-                  console.debug('key -> case 2b');
+                  // console.debug('key -> case 2b');
                   styles.source[key] = {message: null, style: 'yellowhl'};
                   styles.merged[key] = {message: null, style: 'yellowhl'};
                 }
               }
               // Case 3: Target component not present in merged component --> Removed in merge
               if (c.target && !c.merged) {
-                console.debug('key -> case 3');
+                // console.debug('key -> case 3');
                 styles.target[key] = {message: null, styles: 'redhl'};
               }
 
@@ -233,7 +233,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // Case 4a: Component not present in source --> Added by target
                 if (!c.source) {
-                  console.debug('key -> case 4a');
+                  // console.debug('key -> case 4a');
                   styles.target[key] = {message: null, style: 'orangehl'};
                   styles.merged[key] = {message: null, style: 'orangehl'};
                 }
@@ -241,14 +241,14 @@ angular.module('singleConceptAuthoringApp')
                 // Case 4b: Component present in target, but not equal --> Modified by merge
                 // Modified by target
                 else if (!objectService.isComponentsEqual(c.target, c.merged)) {
-                console.debug('key -> case 4b');
+                // console.debug('key -> case 4b');
                   styles.target[key] = {message: null, style: 'orangehl'};
                   styles.merged[key] = {message: null, style: 'orangehl'};
                 }
               }
             }
 
-            console.debug('styles after concept calculation', styles);
+            // console.debug('styles after concept calculation', styles);
             return styles;
 
           }
@@ -297,15 +297,14 @@ angular.module('singleConceptAuthoringApp')
                 conflict.viewed = false;
               }
             })
-          });
+          })
+          
+          function initializeMergeReview(review) {
 
+            // set the ui state -- note, have to add apostrophes to prevent javascript interpreting as mathematical operation (due to UUID structure)
+            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review', '"' + review.id + '"');
 
-
-
-          // on load, generate the review
-          snowowlService.getMergeReview(scope.sourceBranch, scope.targetBranch).then(function (response) {
-            console.debug('review', response);
-            scope.id = response.id;
+            scope.id = review.id;
 
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
@@ -318,7 +317,7 @@ angular.module('singleConceptAuthoringApp')
             ////////////////////////////////////////////
 
             // add all source concepts
-            angular.forEach(response.sourceChanges, function(concept) {
+            angular.forEach(review.sourceChanges, function(concept) {
               if (!conceptMap.hasOwnProperty(concept.conceptId)) {
                 conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
               }
@@ -326,7 +325,7 @@ angular.module('singleConceptAuthoringApp')
             });
 
             // add all target concepts
-            angular.forEach(response.targetChanges, function(concept) {
+            angular.forEach(review.targetChanges, function(concept) {
               if (!conceptMap.hasOwnProperty(concept.conceptId)) {
                 conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
               }
@@ -334,7 +333,7 @@ angular.module('singleConceptAuthoringApp')
             });
 
             // add all merged concepts
-            angular.forEach(response.mergedChanges, function(concept) {
+            angular.forEach(review.mergedChanges, function(concept) {
               if (!conceptMap.hasOwnProperty(concept.conceptId)) {
                 conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
               }
@@ -365,7 +364,53 @@ angular.module('singleConceptAuthoringApp')
             console.debug('styles', scope.styles);
             scope.conflictsToReviewTableParams.reload();
             scope.conflictsAcceptedTableParams.reload();
+          }
+
+
+          // on load, check ui-state for merge review id
+          scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function(mergeReviewId) {
+
+            // if ui-state has merge review id from previous visit
+            if (mergeReviewId) {
+
+              // strip the leading and trailing ' from the mergeReviewId
+              mergeReviewId = mergeReviewId.replace(/"/g, '');
+
+              console.debug('Merge review ui-state found', mergeReviewId);
+
+              // retrieve the merge review information
+              snowowlService.getMergeReview(mergeReviewId).then(function(mergeReview) {
+
+                console.debug('Existing merge review', mergeReview);
+                // if review exists and is current (i.e. returned), initialize
+                if (mergeReview) {
+                  console.debug('Existing merge review exists and is current');
+                  initializeMergeReview(mergeReview);
+                }
+
+                // if review does not exist or is not current, generate the merge review
+                else {
+                  console.debug('Existing merge review does not exist or is not current');
+                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function(newReview) {
+                    initializeMergeReview(newReview);
+                  }, function(error) {
+                    notificationService.sendError('Error generating merge review');
+                  });
+                }
+              })
+            }
+
+            // if no ui state, generate the merge review
+            else {
+              console.debug('No review ui-state');
+              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function(newReview) {
+                initializeMergeReview(newReview);
+              }, function(error) {
+                notificationService.sendError('Error generating merge review');
+              })
+            }
           });
+
 
         }
       };

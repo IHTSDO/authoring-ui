@@ -12,12 +12,12 @@ angular.module('singleConceptAuthoringApp')
     // POST /browser/{path}/concepts
     function createConcept(project, task, concept) {
       var deferred = $q.defer();
-     $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+      $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
         console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
         console.debug('createConcept failure', error);
-       deferred.reject(error.message);
+        deferred.reject(error.message);
       });
       return deferred.promise;
     }
@@ -800,48 +800,99 @@ angular.module('singleConceptAuthoringApp')
     // Merge Review functions
     /////////////////////////////////////////////////////////
 
+    function pollForReview(mergeReviewId, intervalTime) {
+
+      var deferred = $q.defer();
+
+      if (!mergeReviewId) {
+        console.error('Cannot poll for merge details, id required');
+        deferred.reject('Cannot poll for merge details, id required');
+      }
+      if (!intervalTime) {
+        intervalTime = 1000;
+      }
+
+      //console.debug('polling for ' + mergeReviewId + ' with interval ' + intervalTime);
+
+      $timeout(function () {
+        $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
+          //console.debug('poll response', response.data);
+
+          // if review is ready, get the details
+          if (response && response.data && response.data.status === 'CURRENT') {
+            $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response) {
+              deferred.resolve(response.data);
+            }, function (error) {
+              deferred.reject('Could not retrieve details of reported current review');
+            });
+          } else {
+            pollForReview(mergeReviewId, intervalTime * 1.5).then(function (pollResults) {
+              deferred.resolve(pollResults);
+            }, function(error) {
+              deferred.reject(error);
+            })
+          }
+        }, function (error) {
+          deferred.reject('Cannot retrieve review information');
+        });
+      }, intervalTime);
+
+      return deferred.promise;
+    }
+
     /**
-     * Create a merge review given a source and target branch
+     * Generates a new merge review for a specified source and target branch
+     * Polls for details and returns details once available
      * @param parentBranch the parent branch
      * @param childBranch the child branch
      * @returns {*}
      */
-    function getMergeReview(parentBranch, childBranch) {
+    function generateMergeReview(parentBranch, childBranch) {
 
+      console.debug('Generating merge review', parentBranch, childBranch);
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'merge-reviews', {
         source: parentBranch,
         target: childBranch
       }).then(function (response) {
-        console.debug(response, response.headers);
-        console.debug(response.headers('Location'));
+        //console.debug(response, response.headers);
+        //console.debug(response.headers('Location'));
 
         // extract the merge-review id from the location header
         var locHeader = response.headers('Location');
         var mergeReviewId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
 
-        console.debug('merge-review id', mergeReviewId);
+       // console.debug('merge-review id', mergeReviewId);
 
-        // timeout required to avoid PENDING errors -- 5s too long, 10s may be inadequate in some cases
-        // TODO Yell at Peter & Kai some :)
-        $timeout(function () {
-
-          console.debug('timeout over');
-
-          // get the merge review details
-          $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response) {
-            console.debug(response);
-            deferred.resolve(response.data);
-          }, function (error) {
-            deferred.reject('Could not retrieve merge details');
-          });
-        }, 10000);
-
+        pollForReview(mergeReviewId, 1000).then(function (response) {
+          //console.debug('end poll result', response);
+          deferred.resolve(response);
+        }, function(error) {
+          deferred.reject(error);
+        });
       }, function (error) {
         deferred.reject('Could not create merge review');
       });
 
       return deferred.promise;
+    }
+
+    /**
+     * Function to get a current merge review by id
+     * Returns null if review does not exist or is not current
+     */
+    function getMergeReview(mergeReviewId) {
+      return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
+        if (response && response.data && response.data.status === 'CURRENT') {
+          return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
+            return response2.data;
+          }, function (error) {
+            return null;
+          });
+        }
+      }, function(error) {
+        return null;
+      })
     }
 
     /**
@@ -852,21 +903,20 @@ angular.module('singleConceptAuthoringApp')
      * @returns {status}
      */
     function storeConceptAgainstMergeReview(id, conceptId, concept) {
-        return $http.post(apiEndpoint + 'merge-reviews/' + id + '/' + conceptId, concept).then(function (response) {
-            return response.data;
-          }, function (error) {
-            return error.data;
-          });
+      return $http.post(apiEndpoint + 'merge-reviews/' + id + '/' + conceptId, concept).then(function (response) {
+        return response.data;
+      }, function (error) {
+        return error.data;
+      });
     }
 
     ////////////////////////////////////////////////////
     // Concept Validation
     ////////////////////////////////////////////////////
 
-    function createGuid()
-    {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+    function createGuid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
     }
@@ -874,25 +924,25 @@ angular.module('singleConceptAuthoringApp')
     function validateConceptForTask(projectKey, taskKey, concept) {
 
       // assign UUIDs to elements without an SCTID
-      if(!concept.conceptId) {
+      if (!concept.conceptId) {
         concept.conceptId = createGuid();
       }
-      angular.forEach(concept.descriptions, function(description) {
+      angular.forEach(concept.descriptions, function (description) {
         if (!description.descriptionId) {
           description.descriptionId = createGuid();
         }
       });
-      angular.forEach(concept.relationships, function(relationship) {
+      angular.forEach(concept.relationships, function (relationship) {
         if (!relationship.relationshipId) {
           relationship.relationshipId = createGuid();
         }
       });
 
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/validate/concept', concept).then(function(response) {
+      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/validate/concept', concept).then(function (response) {
         console.debug('validate success');
         deferred.resolve(response.data);
-      }, function(error) {
+      }, function (error) {
         console.debug('validate error', error);
         deferred.reject(error.message);
       });
@@ -951,11 +1001,12 @@ angular.module('singleConceptAuthoringApp')
 
       // merge-review functionality
       getMergeReview: getMergeReview,
+      generateMergeReview : generateMergeReview,
       storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
 
       // validation
       validateConceptForTask: validateConceptForTask,
-      validateConceptForProject : validateConceptForProject
+      validateConceptForProject: validateConceptForProject
 
     };
   }
