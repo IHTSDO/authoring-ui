@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'objectService', 'snowowlService', 'notificationService', '$q',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, scaService, objectService, snowowlService, notificationService, $q) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'objectService', 'snowowlService', 'notificationService', '$q',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, objectService, snowowlService, notificationService, $q) {
       return {
         restrict: 'A',
         transclude: false,
@@ -25,9 +25,9 @@ angular.module('singleConceptAuthoringApp')
 
           // Parameter to show or hide the sidebar table
           scope.hideSidebar = false;
-          scope.toggleSidebar = function() {
+          scope.toggleSidebar = function () {
             scope.hideSidebar = !scope.hideSidebar;
-          }
+          };
 
           /**
            * Conflict ngTable parameters
@@ -44,7 +44,7 @@ angular.module('singleConceptAuthoringApp')
 
               getData: function ($defer, params) {
 
-                var concepts = scope.conflicts.filter(function(conflict) {
+                var concepts = scope.conflicts.filter(function (conflict) {
                   return !conflict.accepted;
                 });
 
@@ -58,6 +58,14 @@ angular.module('singleConceptAuthoringApp')
                   concepts = params.sorting() ? $filter('orderBy')(concepts, params.orderBy()) : concepts;
                   concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
                   console.debug('concepts to review page', concepts);
+
+                  if (concepts.length === 0 && scope.conflicts.length !== 0) {
+                    scope.actionTab = 2; // switch to conflicts resolved
+                    scope.mergesComplete = true;
+                  } else {
+                    scope.mergesComplete = false;
+                  }
+
                   $defer.resolve(concepts);
                 }
               }
@@ -79,7 +87,7 @@ angular.module('singleConceptAuthoringApp')
 
               getData: function ($defer, params) {
 
-                var concepts = scope.conflicts.filter(function(conflict) {
+                var concepts = scope.conflicts.filter(function (conflict) {
                   return conflict.accepted;
                 });
 
@@ -99,21 +107,57 @@ angular.module('singleConceptAuthoringApp')
             }
           );
 
+          scope.$on('acceptMerge', function (event, data) {
+            notificationService.sendMessage('Accepting merged version for concept ' + data.concept.fsn);
+            scope.conceptUpdateFunction($routeParams.projectKey, $routeParams.taskKey, data.concept).then(function (response) {
+              notificationService.sendMessage('Merge accepted for concept ' + data.concept.fsn, 5000);
+
+              // mark the conflict as accepted
+              angular.forEach(scope.conflicts, function (conflict) {
+                if (conflict.id === data.concept.conceptId) {
+                  conflict.accepted = true
+
+                  // update the ui state
+                  if (scope.acceptedConceptIds.indexOf(conflict.id)) {
+                    scope.acceptedConceptIds.push(conflict.id);
+                    scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted', scope.acceptedConceptIds);
+                  }
+                }
+              });
+
+
+
+              // remove the concept from the viewed list (use the $on statement
+              // in this file)
+              $rootScope.$broadcast('stopEditing', {concept: data.concept});
+
+              // reload the tables
+              scope.conflictsToReviewTableParams.reload();
+              scope.conflictsAcceptedTableParams.reload();
+
+            }, function (error) {
+              notificationService.sendError('Error accepting merge');
+            });
+          });
+
           /////////////////////////////////////////////////////
           // Helper functions
           /////////////////////////////////////////////////////
 
           /**
-           * Saves a concept to the update merge endpoint, params are passed from the conceptEdit directive
+           * Saves a concept to the update merge endpoint, params are passed
+           * from the conceptEdit directive
            * @param project
            * @param task
            * @param concept
            */
-          scope.conceptUpdateFunction = function(project, task, concept){
+          scope.conceptUpdateFunction = function (project, task, concept) {
             var deferred = $q.defer();
-              console.log(concept);
+            console.log(concept);
             snowowlService.storeConceptAgainstMergeReview(scope.id, concept.conceptId, concept).then(function (response) {
-                deferred.resolve(response);
+              deferred.resolve(response);
+            }, function (error) {
+              deferred.reject(error);
             });
             return deferred.promise;
           };
@@ -198,7 +242,8 @@ angular.module('singleConceptAuthoringApp')
               // console.debug('Checking components:', c);
               // console.debug('----------------------');
 
-              // Case 1: Source component not present in merged component --> Removed in merge
+              // Case 1: Source component not present in merged component -->
+              // Removed in merge
               if (c.source && !c.merged) {
                 // console.debug('key -> case 1');
                 styles.source[key] = {message: null, style: 'redhl'};
@@ -214,15 +259,16 @@ angular.module('singleConceptAuthoringApp')
                   styles.merged[key] = {message: null, style: 'yellowhl'};
                 }
 
-                // Case 2b: Component present in target, but not equal --> Modified by merge
-                // Modified by target
+                // Case 2b: Component present in target, but not equal -->
+                // Modified by merge Modified by target
                 else if (!objectService.isComponentsEqual(c.source, c.merged)) {
                   // console.debug('key -> case 2b');
                   styles.source[key] = {message: null, style: 'yellowhl'};
                   styles.merged[key] = {message: null, style: 'yellowhl'};
                 }
               }
-              // Case 3: Target component not present in merged component --> Removed in merge
+              // Case 3: Target component not present in merged component -->
+              // Removed in merge
               if (c.target && !c.merged) {
                 // console.debug('key -> case 3');
                 styles.target[key] = {message: null, styles: 'redhl'};
@@ -238,10 +284,10 @@ angular.module('singleConceptAuthoringApp')
                   styles.merged[key] = {message: null, style: 'orangehl'};
                 }
 
-                // Case 4b: Component present in target, but not equal --> Modified by merge
-                // Modified by target
+                // Case 4b: Component present in target, but not equal -->
+                // Modified by merge Modified by target
                 else if (!objectService.isComponentsEqual(c.target, c.merged)) {
-                // console.debug('key -> case 4b');
+                  // console.debug('key -> case 4b');
                   styles.target[key] = {message: null, style: 'orangehl'};
                   styles.merged[key] = {message: null, style: 'orangehl'};
                 }
@@ -263,25 +309,31 @@ angular.module('singleConceptAuthoringApp')
           // the viewed merges (source, merge, target concepts)
           scope.viewedMerges = [];
 
+          // the persisted (ui-state) list of concepts accepted
+          scope.acceptedConceptIds = [];
+
+          var viewedMergePoll = null;
+
           // map of conceptId -> {source, target, merged concepts}
           var conceptMap = {};
 
-          scope.viewConflict = function(conflict) {
+          scope.mergesComplete = false;
 
-            // get the conflict triple from the concept map
-            var merge = conceptMap[conflict.id];
+          scope.viewConflict = function (conflict) {
 
             // if viewed, do not add
             if (!conflict.viewed) {
               if (!scope.viewedMerges) {
                 scope.viewedMerges = [];
               }
-              scope.viewedMerges.push(merge);
+              scope.viewedMerges.push(conflict.data);
               conflict.viewed = true;
             }
+
+            console.debug('viewedMerges', scope.viewedMerges);
           };
 
-          scope.$on('stopEditing', function(event, data) {
+          scope.$on('stopEditing', function (event, data) {
 
             // find the merge matching this id
             for (var i = 0; i < scope.viewedMerges.length; i++) {
@@ -292,16 +344,18 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // find the conflict matching this id
-            angular.forEach(scope.conflicts, function(conflict) {
+            angular.forEach(scope.conflicts, function (conflict) {
               if (conflict.id === data.concept.conceptId) {
                 conflict.viewed = false;
               }
             })
-          })
-          
+          });
+
           function initializeMergeReview(review) {
 
-            // set the ui state -- note, have to add apostrophes to prevent javascript interpreting as mathematical operation (due to UUID structure)
+            // set the ui state -- note, have to add apostrophes to prevent
+            // javascript interpreting as mathematical operation (due to UUID
+            // structure)
             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review', '"' + review.id + '"');
 
             scope.id = review.id;
@@ -309,7 +363,8 @@ angular.module('singleConceptAuthoringApp')
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
 
-            // initialize the conditional highlighting map (conceptId -> {target -> styles, source -> styles, merged -> styles))
+            // initialize the conditional highlighting map (conceptId ->
+            // {target -> styles, source -> styles, merged -> styles))
             scope.styles = {};
 
             ///////////////////////////////////////////
@@ -317,25 +372,34 @@ angular.module('singleConceptAuthoringApp')
             ////////////////////////////////////////////
 
             // add all source concepts
-            angular.forEach(review.sourceChanges, function(concept) {
+            angular.forEach(review.sourceChanges, function (concept) {
               if (!conceptMap.hasOwnProperty(concept.conceptId)) {
-                conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
+                conceptMap[concept.conceptId] = {
+                  conceptId: concept.conceptId,
+                  fsn: concept.fsn
+                };
               }
               conceptMap[concept.conceptId].source = concept;
             });
 
             // add all target concepts
-            angular.forEach(review.targetChanges, function(concept) {
+            angular.forEach(review.targetChanges, function (concept) {
               if (!conceptMap.hasOwnProperty(concept.conceptId)) {
-                conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
+                conceptMap[concept.conceptId] = {
+                  conceptId: concept.conceptId,
+                  fsn: concept.fsn
+                };
               }
               conceptMap[concept.conceptId].target = concept;
             });
 
             // add all merged concepts
-            angular.forEach(review.mergedChanges, function(concept) {
+            angular.forEach(review.mergedChanges, function (concept) {
               if (!conceptMap.hasOwnProperty(concept.conceptId)) {
-                conceptMap[concept.conceptId] = {conceptId : concept.conceptId, fsn : concept.fsn};
+                conceptMap[concept.conceptId] = {
+                  conceptId: concept.conceptId,
+                  fsn: concept.fsn
+                };
               }
               conceptMap[concept.conceptId].merged = concept;
             });
@@ -349,7 +413,8 @@ angular.module('singleConceptAuthoringApp')
                 id: concept.conceptId,
                 fsn: concept.fsn,
                 viewed: false,
-                accepted: false // TODO Use ui-state for this
+                accepted: false, // TODO Use ui-state for this
+                data: conceptMap[key]
               };
 
               // push to conflicts list
@@ -362,13 +427,37 @@ angular.module('singleConceptAuthoringApp')
             console.debug('viewedMerges', scope.viewedMerges);
             console.debug('conflicts', scope.conflicts);
             console.debug('styles', scope.styles);
-            scope.conflictsToReviewTableParams.reload();
-            scope.conflictsAcceptedTableParams.reload();
+
+            // get previously accepted merges, if they exist, and apply to
+            // conflicts
+            scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function (mergesAccepted) {
+              if (!mergesAccepted) {
+                mergesAccepted = [];
+              }
+              angular.forEach(scope.conflicts, function (conflict) {
+                if (mergesAccepted.indexOf(conflict.id)) {
+                  conflict.accepted = true;
+                }
+              });
+
+              // load the tables
+              scope.conflictsToReviewTableParams.reload();
+              scope.conflictsAcceptedTableParams.reload();
+            });
+
+            // start polling to detect changes in status of merge-review
+            viewedMergePoll = $interval(function () {
+              snowowlService.getMergeReview(review.id).then(function (response) {
+                if (response.status !== 'CURRENT') {
+                  notificationService.sendWarning('Merge review is no longer current; pull project changes in and start again');
+                  viewedMergePoll = $interval.cancel(viewedMergePoll);
+                }
+              })
+            }, 10000);
           }
 
-
           // on load, check ui-state for merge review id
-          scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function(mergeReviewId) {
+          scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
 
             // if ui-state has merge review id from previous visit
             if (mergeReviewId) {
@@ -379,7 +468,7 @@ angular.module('singleConceptAuthoringApp')
               console.debug('Merge review ui-state found', mergeReviewId);
 
               // retrieve the merge review information
-              snowowlService.getMergeReview(mergeReviewId).then(function(mergeReview) {
+              snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
 
                 console.debug('Existing merge review', mergeReview);
                 // if review exists and is current (i.e. returned), initialize
@@ -388,12 +477,17 @@ angular.module('singleConceptAuthoringApp')
                   initializeMergeReview(mergeReview);
                 }
 
-                // if review does not exist or is not current, generate the merge review
+                // if review does not exist or is not current, generate the
+                // merge review
                 else {
+
+                  // clear the accepted merges
+                  scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted', []);
+
                   console.debug('Existing merge review does not exist or is not current');
-                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function(newReview) {
+                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
                     initializeMergeReview(newReview);
-                  }, function(error) {
+                  }, function (error) {
                     notificationService.sendError('Error generating merge review');
                   });
                 }
@@ -403,16 +497,14 @@ angular.module('singleConceptAuthoringApp')
             // if no ui state, generate the merge review
             else {
               console.debug('No review ui-state');
-              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function(newReview) {
+              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
                 initializeMergeReview(newReview);
-              }, function(error) {
+              }, function (error) {
                 notificationService.sendError('Error generating merge review');
               })
             }
           });
 
-
         }
-      };
-    }])
-;
+      }
+    }]);

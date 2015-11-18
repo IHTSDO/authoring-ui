@@ -55,6 +55,7 @@
       {{warning}}
     </div>
   </div>
+
   <!-- end validation error -->
   <div class="row p-t-5 grey darken-4 concept-headers " id="testId" name="testId" style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
@@ -69,6 +70,10 @@
         ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj"
         drop-channel="NA" drag-image="getDragImageForConcept(concept.fsn)"></button>
 
+      <button ng-click="saveConcept()" type="button"
+              class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-left tooltips-light normal-case "
+              ng-click="saveConcept()"
+              ng-if="isMerge"><span> Accept Merged Version </span></button>
 
     </div>
 

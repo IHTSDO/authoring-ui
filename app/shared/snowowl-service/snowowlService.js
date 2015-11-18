@@ -878,10 +878,10 @@ angular.module('singleConceptAuthoringApp')
     }
 
     /**
-     * Function to get a current merge review by id
+     * Function to get details of a current merge review by id
      * Returns null if review does not exist or is not current
      */
-    function getMergeReview(mergeReviewId) {
+    function getMergeReviewDetails(mergeReviewId) {
       return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
         if (response && response.data && response.data.status === 'CURRENT') {
           return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
@@ -890,6 +890,17 @@ angular.module('singleConceptAuthoringApp')
             return null;
           });
         }
+      }, function(error) {
+        return null;
+      });
+    }
+
+    /**
+     * Function to get the basic merge-review object without details
+     */
+    function getMergeReview(mergeReviewId) {
+      return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
+        return response.data;
       }, function(error) {
         return null;
       })
@@ -1001,6 +1012,7 @@ angular.module('singleConceptAuthoringApp')
 
       // merge-review functionality
       getMergeReview: getMergeReview,
+      getMergeReviewDetails : getMergeReviewDetails,
       generateMergeReview : generateMergeReview,
       storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
 

@@ -59,7 +59,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // whether this display is part of the merge view, triggers display
         // changes TODO These parameters are getting ridiculous, need to clean
         // this up
-        mergeView: '@?',
+        merge: '@?',
 
         // parent function to invoke updating the ui state for this concept's
         // list (not required)
@@ -117,6 +117,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.autosave = false;
         } else {
           scope.autosave = true;
+        }
+
+        if (scope.merge === 'true') {
+          scope.isMerge = true;
+        } else {
+          scope.isMerge = false;
         }
 
         if (angular.isDefined(scope.additionalFields)) {
@@ -279,8 +285,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var saveMessage = concept.conceptId ? 'Saving concept: ' + concept.fsn : 'Saving new concept';
           notificationService.sendMessage(saveMessage, 10000, null);
 
+          // special case:  if merge view, broadcast
+          if (scope.isMerge) {
+            $rootScope.$broadcast('acceptMerge', {concept : scope.concept});
+          }
+
           // if new, use create
-          if (concept.fsn === null) {
+          else if (concept.fsn === null) {
 
             snowowlService.createConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 

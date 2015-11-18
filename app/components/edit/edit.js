@@ -276,7 +276,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.getClassificationEditPanel();
           break;
         case 'conflicts':
-          $rootScope.pageTitle = 'Resolve Conflicts/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+          $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
           $routeParams.mode = 'conflicts';
 
           //  view starts with no concepts
@@ -964,7 +964,7 @@ angular.module('singleConceptAuthoringApp.edit', [
            * conflicts moved to conceptsResolved)
            *
            */
-          $scope.canRebase = false; // cannot rebase if not own task
+          $scope.canRebase = $scope.isOwnTask;
           $scope.canPromote = false;
           $scope.canConflict = true;
           break;
