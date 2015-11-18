@@ -772,6 +772,9 @@ button.fsn-title-button {
 .review.btn-default[disabled]{
     background-color: rgb(233, 30, 99);
 }
+.button-nav .review.btn-default[disabled],
+.button-nav .btn-default[disabled]
+{   background-color: #494949!important; color:#7c7c7c;border-bottom:1px #7c7c7c solid;}
 .Classify.btn-default[disabled]{
     background-color: rgb(76, 175, 80);
 }

@@ -1,10 +1,10 @@
-a.tooltips-left, button.tooltips-left {
+a.tooltips-left, button.tooltips-left, button[disabled].tooltips-left {
   position: relative;
   display: inline;
 }
  button.tooltips-left.normal-case span, button.tooltips-right.normal-case span{text-transform:none!important}
 
-a.tooltips-left span, button.tooltips-left span {
+a.tooltips-left span, button.tooltips-left span, button[disabled] span {
   position: absolute;
   width:auto;
   min-width:140px;
@@ -47,7 +47,7 @@ a.tooltips-left span:after, button.tooltips-left span:after {
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
 }
-a:hover.tooltips-left span, button:hover.tooltips-left span {
+a:hover.tooltips-left span, button:hover.tooltips-left span, button[disabled]:hover.tooltips-left span {
   visibility: visible;
   opacity: 1.0;
   right: 100%;
@@ -57,11 +57,11 @@ a:hover.tooltips-left span, button:hover.tooltips-left span {
   z-index: 999;
 }
 
-a.tooltips-right, button.tooltips-right{
+a.tooltips-right, button.tooltips-right, button[disabled]:hover.tooltips-right{
   position: relative;
   display: inline;
 }
-a.tooltips-right span, button.tooltips-right span {
+a.tooltips-right span, button.tooltips-right span, button[disabled].tooltips-right span  {
   position: absolute;
   min-width:160px;
   color: #FFFFFF;
@@ -73,7 +73,7 @@ a.tooltips-right span, button.tooltips-right span {
   visibility: hidden;
   border-radius: 6px;
 }
-a.tooltips-right span:after, button.tooltips-right span:after {
+a.tooltips-right span:after, button.tooltips-right span:after, button[disabled].tooltips-right span:after {
   content: '';
   position: absolute;
   top: 50%;
@@ -84,8 +84,8 @@ a.tooltips-right span:after, button.tooltips-right span:after {
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
 }
-
-a:hover.tooltips-right span, button:hover.tooltips-right span  {
+.btn[disabled]{pointer-events:visibleFill;opacity:1.0}
+a:hover.tooltips-right span, button:hover.tooltips-right span, button[disabled]:hover.tooltips-right span  {
   visibility: visible;
   opacity: 1;
   left: 100%;
