@@ -39,11 +39,18 @@ angular.module('singleConceptAuthoringApp')
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
 
+      console.debug('cleaning concept', concept);
+
       // strip unknown tags
       var allowableProperties = [
         'fsn', 'conceptId', 'definitionStatus', 'active', 'moduleId',
         'isLeafInferred', 'effectiveTime', 'descriptions',
         'preferredSynonym', 'relationships'];
+
+      // if a locally assigned UUID, strip
+      if (concept.conceptId && concept.conceptId.indexOf('-') !== -1) {
+        concept.conceptId = null;
+      }
 
       for (var key in concept) {
         if (allowableProperties.indexOf(key) === -1) {
@@ -56,12 +63,26 @@ angular.module('singleConceptAuthoringApp')
       ];
 
       angular.forEach(concept.descriptions, function (description) {
+
+        // if a locally assigned UUID, strip
+        if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
+          description.descriptionId = null;
+        }
         for (var key in description) {
           if (allowableDescriptionProperties.indexOf(key) === -1) {
             delete description[key];
           }
         }
       });
+
+      // TODO Add relationship cleaning fields
+      angular.forEach(concept.relationships, function (relationship) {
+
+        // if a locally assigned UUID, strip
+        if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
+          relationship.relationshipId = null;
+        }
+      })
     }
 
     // function to remove disallowed elements from a concept
@@ -838,6 +859,50 @@ angular.module('singleConceptAuthoringApp')
           });
     }
 
+    ////////////////////////////////////////////////////
+    // Concept Validation
+    ////////////////////////////////////////////////////
+
+    function createGuid()
+    {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+    }
+
+    function validateConceptForTask(projectKey, taskKey, concept) {
+
+      // assign UUIDs to elements without an SCTID
+      if(!concept.conceptId) {
+        concept.conceptId = createGuid();
+      }
+      angular.forEach(concept.descriptions, function(description) {
+        if (!description.descriptionId) {
+          description.descriptionId = createGuid();
+        }
+      });
+      angular.forEach(concept.relationships, function(relationship) {
+        if (!relationship.relationshipId) {
+          relationship.relationshipId = createGuid();
+        }
+      });
+
+      var deferred = $q.defer();
+      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/validate/concept', concept).then(function(response) {
+        console.debug('validate success');
+        deferred.resolve(response.data);
+      }, function(error) {
+        console.debug('validate error', error);
+        deferred.reject(error.message);
+      });
+      return deferred.promise;
+    }
+
+    function validateConceptForProject(projectKey, concept) {
+      // TODO
+    }
+
     ////////////////////////////////////////////
     // Method Visibility
     // TODO All methods currently visible!
@@ -886,7 +951,11 @@ angular.module('singleConceptAuthoringApp')
 
       // merge-review functionality
       getMergeReview: getMergeReview,
-      storeConceptAgainstMergeReview: storeConceptAgainstMergeReview
+      storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
+
+      // validation
+      validateConceptForTask: validateConceptForTask,
+      validateConceptForProject : validateConceptForProject
 
     };
   }

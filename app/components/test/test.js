@@ -51,4 +51,13 @@ angular.module( 'singleConceptAuthoringApp.test', [
         //console.debug('polling result', $scope.results);
       }, 2000);
     };
+
+    $scope.runSingleTest = function (testPackage, testGroupName, test) {
+      console.debug('running single test', test);
+      testPackage.runSingleTest(testGroupName, test.name, $scope.projectKey, $scope.taskKey).then(function(response) {
+        console.debug('single test complete & response', test, response);
+        test = response;
+      })
+    };
+
 });

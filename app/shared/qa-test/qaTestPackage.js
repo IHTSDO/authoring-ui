@@ -16,6 +16,7 @@ angular.module('singleConceptAuthoringApp')
     var testGroups = [
       qaTestGroupRelationships,
       qaTestGroupDescriptions,
+
       qaTestGroupCharacterSpacing
     ];
     var results = {};
@@ -65,6 +66,26 @@ angular.module('singleConceptAuthoringApp')
       });
       //console.debug('returning results', results);
       return results;
+    };
+
+    QaTest.runSingleTest = function(testGroupName, testName, projectKey,taskKey) {
+      var deferred = $q.defer();
+      var testFound = false;
+      angular.forEach(testGroups, function(testGroup) {
+        console.debug('checking test group', testGroup, testGroup.getName());
+        if (testGroup.getName() === testGroupName) {
+          testFound = true;
+          testGroup.runSingleTest(testName, projectKey, taskKey).then(function(response) {
+            deferred.resolve(response);
+          });
+        }
+      });
+
+      if (!testFound) {
+        deferred.reject('Could not find test');
+      }
+
+      return deferred.promise;
     };
 
     return QaTest;
