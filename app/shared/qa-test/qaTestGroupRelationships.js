@@ -149,6 +149,9 @@ angular.module('singleConceptAuthoringApp')
 
         {
           name: 'Two relationships with same type, target, and group (group 1)',
+          notes: [
+            'Test should pass successfully -- known bug, fix in development'
+          ],
           expectedError: 'The system has detected a contradiction of the following convention: an active concepts must not have two relationships with the same type, target and group.',
           testFn: function test() {
             var concept = getTestConcept('Rel Test05 concept (test)', 'Rel Test05 concept');
