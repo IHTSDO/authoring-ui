@@ -3,9 +3,47 @@
   <!-- for ng-table checkboxes -->
 
   <style>
+ .conflicts .small-buttons {
+    padding: .45% !important;
+    font-size: 13px !important;
+	line-height:13px!important;
+}
+
+.conflicts .text-center {
+    text-align: center;
+    font-size: 10px;
+    font-family: 'Roboto', sans-serif;
+}
     .conflicts-report-header {
     }
+	.conflicts .small-buttons {
+    padding: 0% !important;}
+	.conflicts .button-width-plus, .conflicts .add-buttons{
+    width: 12px;
+    padding: 0px!important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 10px !important;
+	margin-left:0px;
+	margin-right:1px;
+	color:#fff!important
+}
 
+.conflicts .editing-form .description {
+    width: 46%;
+}
+	.conflicts #select-primitive-choice {width:25px!important}
+.conflicts concept-headers.col-md-6 {width: 58.33333%;}
+.merged-version .col-md-6 {width: 45%;}
+.conflicts .concept-title.col-md-4{width: 16.66667%;}
+.merged-version .concept-title.col-md-4 {width: 31.33333%;}
+.conflicts .col-md-1.filled{    width: 16.66667%;}
+.merged-version .col-md-1.filled {    width: 11%;}
+.merged-version, .task-version{  border-left: 1px solid #474747;
+  
+    -webkit-box-shadow: -5px 0px 5px -3px #3a3840;
+    box-shadow: -5px 0px 5px -3px #3a3840;}
     .conflicts-report .checkbox input[type=checkbox]:after, .conflicts-report .checkbox-inline input[type=checkbox]:after, .conflicts-report input[type=checkbox]:after {
       content: "";
       display: block;
@@ -90,6 +128,34 @@
     section thead input {
       background-color: #fff;
     }
+	.conflicts .col-md-9 .fsn, 
+	.conflicts .col-md-9 .is_a textarea, 
+	.conflicts .col-md-9 .editing-form .sourcename textarea
+	.conflicts .col-md-9 .description input, 
+	.conflicts .col-md-9 .description textarea{font-size:10px!important}
+	{font-size:10px!important;}
+	.conflicts .more-button-width {width: 9px;margin: 0px !important;
+    padding: 0px 0px !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 12px !important;line-height:30px;}
+	.conflicts .drag-button-width {
+    width: 17px;
+    padding: 0% !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 11px !important;
+	line-height:30px;
+}
+.conflicts .fa.fa-power-off.green, .conflicts .fa.fa-power-off.red{font-size:12px!important}
+.col-xs-12.col-sm-12.col-md-12.col-lg-12.col-xl-12{    padding-left: 0px;
+    padding-right: 0px;}
+	.merged-header{background-color:#ff6755}
+	.merged-header h4, .project-header h4, .task-header h4{color:#fff;font-size:13px;}
+	.project-header{background-color:#0091d7}
+	.task-header{background-color:#00a39b}
   </style>
 
 
@@ -109,7 +175,7 @@
         <div ng-if="!conflicts" class="alert alert-warning">Loading conflicts...</div>
 
         <div ng-if="conflicts" class="row no-padding no-gutter" style="text-align: center">
-          <div class="col-md-12">
+          <div class="col-md-12 no-padding">
 
             <!-- Hide sidebar control -->
 
@@ -149,9 +215,9 @@
       <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]" ng-show="viewedMerges.length > 0">
 
         <div class="row no-padding no-gutter" style="text-align: center">
-          <div class="col-md-4"><h4><button ng-show="hideSidebar" ng-click = "toggleSidebar()" type="button" class="md md-keyboard-arrow-right pull-left " title="Show Sidebar"></button>Project Version</h4></div>
-          <div class="col-md-4"><h4>Merged Version</h4></div>
-          <div class="col-md-4"><h4>Task Version</h4></div>
+          <div class="col-md-4 project-header"><h4><button ng-show="hideSidebar" ng-click = "toggleSidebar()" type="button" class="md md-keyboard-arrow-right pull-left " title="Show Sidebar"></button>Project Version</h4></div>
+          <div class="col-md-4 merged-header"><h4>Merged Version</h4></div>
+          <div class="col-md-4 task-header"><h4>Task Version</h4></div>
         </div>
 
         <div class="row no-padding no-gutter" ng-repeat="merge in viewedMerges">
@@ -161,12 +227,12 @@
             </div>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-4 merged-version">
             <div concept-edit concept="viewedMerges[$index].merged" branch="sourceBranch" static="false"
               component-styles="merge.styles.merged" save-function="conceptUpdateFunction(project, task, concept)"></div>
 
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 task-version">
             <div concept-edit concept="viewedMerges[$index].target"
                  branch="sourceBranch" static="true"
               component-styles="merge.styles.target">
