@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp')
           /**
            * Conflict ngTable parameters
            */
-          scope.conflictsTableParams = new NgTableParams({
+          scope.conflictsToReviewTableParams = new NgTableParams({
               page: 1,
               count: 10,
               sorting: {fsn: 'asc'},
@@ -44,7 +44,9 @@ angular.module('singleConceptAuthoringApp')
 
               getData: function ($defer, params) {
 
-                var concepts = scope.conflicts;
+                var concepts = scope.conflicts.filter(function(conflict) {
+                  return !conflict.accepted;
+                });
 
                 console.debug('conflictsTableParams getData', concepts);
 
@@ -55,7 +57,42 @@ angular.module('singleConceptAuthoringApp')
                   params.total(concepts.length);
                   concepts = params.sorting() ? $filter('orderBy')(concepts, params.orderBy()) : concepts;
                   concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  console.debug('concepts page', concepts);
+                  console.debug('concepts to review page', concepts);
+                  $defer.resolve(concepts);
+                }
+              }
+            }
+          );
+
+          /**
+           * Conflict ngTable parameters
+           */
+          scope.conflictsAcceptedTableParams = new NgTableParams({
+              page: 1,
+              count: 10,
+              sorting: {fsn: 'asc'},
+              orderBy: 'fsn'
+            },
+            {
+              filterDelay: 50,
+              total: scope.conflicts ? scope.conflicts.length : 0,
+
+              getData: function ($defer, params) {
+
+                var concepts = scope.conflicts.filter(function(conflict) {
+                  return conflict.accepted;
+                });
+
+                console.debug('conflictsTableParams getData', concepts);
+
+                if (!concepts) {
+                  $defer.resolve([]);
+                } else {
+
+                  params.total(concepts.length);
+                  concepts = params.sorting() ? $filter('orderBy')(concepts, params.orderBy()) : concepts;
+                  concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                  console.debug('concepts accepted page', concepts);
                   $defer.resolve(concepts);
                 }
               }
@@ -80,7 +117,7 @@ angular.module('singleConceptAuthoringApp')
             });
             return deferred.promise;
           };
-            
+
           /**
            * Constructs a map of componentId -> {source, target, merged}
            * @param merge
@@ -261,15 +298,15 @@ angular.module('singleConceptAuthoringApp')
               }
             })
           });
-        
-          
-          
+
+
+
 
           // on load, generate the review
           snowowlService.getMergeReview(scope.sourceBranch, scope.targetBranch).then(function (response) {
             console.debug('review', response);
             scope.id = response.id;
-            
+
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
 
@@ -279,8 +316,6 @@ angular.module('singleConceptAuthoringApp')
             ///////////////////////////////////////////
             // Cycle over each type and add to map
             ////////////////////////////////////////////
-
-
 
             // add all source concepts
             angular.forEach(response.sourceChanges, function(concept) {
@@ -314,7 +349,8 @@ angular.module('singleConceptAuthoringApp')
               var conflict = {
                 id: concept.conceptId,
                 fsn: concept.fsn,
-                viewed: false
+                viewed: false,
+                accepted: false // TODO Use ui-state for this
               };
 
               // push to conflicts list
@@ -327,7 +363,8 @@ angular.module('singleConceptAuthoringApp')
             console.debug('viewedMerges', scope.viewedMerges);
             console.debug('conflicts', scope.conflicts);
             console.debug('styles', scope.styles);
-            scope.conflictsTableParams.reload();
+            scope.conflictsToReviewTableParams.reload();
+            scope.conflictsAcceptedTableParams.reload();
           });
 
         }
