@@ -53,12 +53,11 @@
 
             <!-- Nav tabs -->
             <div class="row classification-report ">
-              <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist"
-                  ng-init="actionTab=1">
-                <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
+              <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="classification" ng-class="{'active' : actionTab === 1}"><a style="margin: 0px" ng-click="actionTab=1"
                                                                          aria-controls="home" role="tab"
                                                                          data-toggle="tab">Merges To Review</a></li>
-                <li role="presentation" class="classification"><a ng-click="actionTab=2" aria-controls="home" role="tab"
+                <li role="presentation" class="classification" ng-class="{'active' : actionTab === 2}"><a ng-click="actionTab=2" aria-controls="home" role="tab"
                                                                   data-toggle="tab">Merges Accepted</a>
                 </li>
               </ul>
@@ -78,7 +77,8 @@
 
                     <!-- Fsn -->
                     <td class="col-concept col-md-10" style="text-align: left" data-title="'Concept'" sortable="'fsn'">
-                      {{conflict.fsn}}
+                      {{conflict.fsn}}, {{conflict.data.source.descriptions.length}},
+                      {{conflict.data.merged.descriptions.length}}, {{conflict.data.target.descriptions.length}}
                     </td>
 
                     <!-- Controls -->
@@ -94,9 +94,19 @@
 
                   </tr>
                 </table>
+
+                <!-- buttons trigger off whether all merges are complete
+               NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
+                <button ng-if="mergesComplete" class="btn btn-default red lighten-2"><span
+                  class="md md-assignment-turned-in darken-1"></span>Finalize Merges
+                </button>
+                <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case"><span
+                  class="md md-assignment-turned-in darken-1 normal-case"></span>All merges must be accepted to continue
+                </button>
+
               </div>
 
-              <!-- redundant stated relationships -->
+              <!-- Merges Accepted -->
               <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
                 <table show-filter="false" ng-table="conflictsAcceptedTableParams"
                        template-pagination="utilities/data-table-pager.html"
@@ -106,7 +116,7 @@
                   <tr ng-repeat="conflict in $data">
 
                     <!-- Fsn -->
-                    <td class="col-concept col-md-10" data-title="'Concept'" sortable="'fsn'">
+                    <td class="col-concept col-md-10" style="text-align: left" data-title="'Concept'" sortable="'fsn'">
                       {{conflict.fsn}}
                     </td>
 
@@ -121,6 +131,16 @@
                     </td>
                   </tr>
                 </table>
+
+                <!-- buttons trigger off whether all merges are complete
+                NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
+                <button ng-if="mergesComplete" class="btn btn-default red lighten-2"><span
+                  class="md md-assignment-turned-in darken-1"></span>Finalize Merges
+                </button>
+                <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case"><span
+                  class="md md-assignment-turned-in darken-1 normal-case"></span>All merges must be accepted to continue
+                </button>
+
               </div>
             </div>
           </div>
@@ -144,21 +164,34 @@
         </div>
 
         <div class="row no-padding no-gutter" ng-repeat="merge in viewedMerges">
+
           <div class="col-md-4">
-            <div concept-edit concept="viewedMerges[$index].source"
-                 branch="targetBranch" static="true" component-styles="merge.styles.source">
+            <div concept-edit
+                 concept="merge.source"
+                 branch="targetBranch"
+                 static="true"
+                 autosave="false"
+                 component-styles="merge.styles.source">
             </div>
           </div>
 
           <div class="col-md-4 merged-version">
-            <div concept-edit concept="viewedMerges[$index].merged" branch="sourceBranch" static="false"
+            <div concept-edit
+                 concept="merge.merged"
+                 branch="sourceBranch"
+                 static="false"
+                 autosave="false"
+                 merge="true"
                  component-styles="merge.styles.merged"
                  save-function="conceptUpdateFunction(project, task, concept)"></div>
 
           </div>
           <div class="col-md-4 task-version">
-            <div concept-edit concept="viewedMerges[$index].target"
-                 branch="sourceBranch" static="true"
+            <div concept-edit
+                 concept="merge.target"
+                 branch="sourceBranch"
+                 static="true"
+                 autosave="false"
                  component-styles="merge.styles.target">
             </div>
           </div>
