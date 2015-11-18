@@ -44,6 +44,7 @@ angular.module('singleConceptAuthoringApp')
 
         // set isa relationship to root
         concept.relationships[0].target.conceptId = '138875005';
+        concept.relationships[0].target.fsn = 'SNOMED CT Concept (SNOMED RT+CTV3)';
 
         return concept;
       }
@@ -51,188 +52,114 @@ angular.module('singleConceptAuthoringApp')
       tests = [
         {
           name: 'PASS',
-          action: 'Create concept',
+          
           expectedError: null,
-          results: {
-            status: 'Not Started'
-          },
+          
           testFn: function test() {
             var concept = getTestConcept('WSP Test01 concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'PASSED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'FAILED',
-                error: 'Valid concept could not be created (message: ' + error + ' )',
-                data: concept
-              };
+                errorsReceived: response
+              }
             });
           }
         }, {
           name: 'double space',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: {{field.type}} must not contain double, leading or trailing spaces.',
-          results: {
-            status: 'Not Started'
-          },
+          
+          expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP Test01  concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
-
+                errorsReceived: response
+              }
             });
           }
         }, {
           name: 'leading space',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: {{field.type}} must not contain double, leading or trailing spaces.',
-          results: {
-            status: 'Not Started'
-          },
+          
+          expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
+          
           testFn: function test() {
             var concept = getTestConcept(' WSP Test01 concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         }, {
           name: 'trailing space',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: {{field.type}} must not contain double, leading or trailing spaces.',
-          results: {
-            status: 'Not Started'
-          },
+          
+          expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP Test01 concept (test) ', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         }, {
           name: 'no space before parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          results: {
-            status: 'Not Started'
-          },
+          
+          expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP(Test01)concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
-                data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
-
+                  data: concept,
+                  errorsReceived: response
+              }
             });
           }
         }, {
           name: 'no space after non-terminating parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          results: {
-            status: 'Not Started'
-          },
+          
+          expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP (Test01)concept (test)', 'WSP (Test01) concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         }, {
           name: 'space after beginning parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          results: {
-            status: 'Not Started'
-          },
+          
+          expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP ( Test01) concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         }, {
           name: 'space before terminating parenthesis',
-          action: 'Create concept',
-          expectedError: 'The system has detected a contraindication of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
-          results: {
-            status: 'Not Started'
-          },
+          
+          expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
+          
           testFn: function test() {
             var concept = getTestConcept('WSP (Test01 ) concept (test)', 'WSP Test01 concept');
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
+            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
               return {
-                status: 'FAILED',
                 data: concept,
-                response: response
-              };
-            }, function (error) {
-              return {
-                status: 'PASSED',
-                data: concept,
-                response: error
-              };
+                errorsReceived: response
+              }
             });
           }
         }];
@@ -249,6 +176,36 @@ angular.module('singleConceptAuthoringApp')
       };
 
 
+      function runSingleTest(testName, projectKey, taskKey) {
+
+        var deferred = $q.defer();
+
+
+        project = projectKey;
+        task = taskKey;
+
+        var testFound = false;
+        // find the matching test by name
+        angular.forEach(tests, function (test) {
+
+          if (test.name === testName) {
+            testFound = true;
+            test.status = 'Pending';
+            runHelper([test], 0).then(function() {
+              console.debug('test complete', test);
+              deferred.resolve(test);
+            })
+          }
+        });
+
+        if (!testFound) {
+          console.error('Could not find test with name ' + testName);
+          deferred.reject();
+        }
+
+        return deferred.promise;
+      }
+
       function runHelper(tests, index) {
 
         if (index >= tests.length) {
@@ -257,20 +214,62 @@ angular.module('singleConceptAuthoringApp')
         }
         var test = tests[index];
 
-        test.results.status = 'Running';
+        test.status = 'Running';
 
         // call the test's test function
         return (test.testFn.call()).then(function (response) {
+
 
           // append results of test function to the test
           //console.debug('runHelper response', response);
           test.results = response;
 
+
+
+          console.log(test.name, Array.isArray(test.results.errorsReceived), test.results, test.results.errorsReceived);
+
+          // check error condition
+          if (!Array.isArray(test.results.errorsReceived)) {
+            test.status = 'ERROR';
+          }
+
+          // check fail condition
+          else if (test.expectedError) {
+            var errorFound = false;
+            angular.forEach(test.results.errorsReceived, function (receivedError) {
+
+              // strip unicode apostrophe characters and replace with normal apostrophe
+              receivedError.message = receivedError.message.replace(/\u2019/g, '\'');
+
+              console.debug('comparing errors');
+              console.debug(test.expectedError);
+              console.debug(receivedError.message);
+              if (test.expectedError === receivedError.message) {
+                console.debug('--> Match Found');
+                errorFound = true;
+              }
+            });
+            if (!errorFound) {
+              test.status = 'FAILED';
+            } else {
+              test.status = 'PASSED';
+            }
+
+          }
+
+          // check pass condition
+          else if (!test.expectedError && test.results.errorsReceived.length > 0) {
+            test.status = 'FAILED';
+          } else {
+            // default to passed
+            test.status = 'PASSED';
+          }
+
           // update the results counts
           results.nTestsRun++;
-          if (test.results.status === 'PASSED') {
+          if (test.status === 'PASSED') {
             results.nTestsPassed++;
-          } else if (test.results.status === 'FAILED') {
+          } else if (test.status === 'FAILED') {
             results.nTestsFailed++;
           } else {
             results.nTestsError++;
@@ -287,7 +286,8 @@ angular.module('singleConceptAuthoringApp')
        */
       function runTests(projectKey, taskKey) {
 
-        //console.debug('qaPackageCharacterSpacing: run test', projectKey, taskKey);
+        //console.debug('qaPackageCharacterSpacing: run test', projectKey,
+        // taskKey);
 
         var deferred = $q.defer();
 
@@ -296,10 +296,8 @@ angular.module('singleConceptAuthoringApp')
         task = taskKey;
 
         // set all tests to Pending status
-        angular.forEach(tests, function(test) {
-          test.results = {
-            status: 'Pending'
-          }
+        angular.forEach(tests, function (test) {
+          test.status = 'Pending';
         });
 
         // reset results
@@ -352,6 +350,7 @@ angular.module('singleConceptAuthoringApp')
 
       return {
         runTests: runTests,
+        runSingleTest: runSingleTest,
         cancel: cancel,
         getResults: getResults,
         getName: getName

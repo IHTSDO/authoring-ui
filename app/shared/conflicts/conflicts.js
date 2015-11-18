@@ -23,6 +23,12 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope) {
 
+          // Parameter to show or hide the sidebar table
+          scope.hideSidebar = false;
+          scope.toggleSidebar = function() {
+            scope.hideSidebar = !scope.hideSidebar;
+          }
+
           /**
            * Conflict ngTable parameters
            */
@@ -214,8 +220,47 @@ angular.module('singleConceptAuthoringApp')
           // Initialization of merge-review functionality
           /////////////////////////////////////////////////////
 
+          // the list of conflicts (id, fsn, viewed)
           scope.conflicts = null;
+
+          // the viewed merges (source, merge, target concepts)
           scope.viewedMerges = [];
+
+          // map of conceptId -> {source, target, merged concepts}
+          var conceptMap = {};
+
+          scope.viewConflict = function(conflict) {
+
+            // get the conflict triple from the concept map
+            var merge = conceptMap[conflict.id];
+
+            // if viewed, do not add
+            if (!conflict.viewed) {
+              if (!scope.viewedMerges) {
+                scope.viewedMerges = [];
+              }
+              scope.viewedMerges.push(merge);
+              conflict.viewed = true;
+            }
+          };
+
+          scope.$on('stopEditing', function(event, data) {
+
+            // find the merge matching this id
+            for (var i = 0; i < scope.viewedMerges.length; i++) {
+              if (scope.viewedMerges[i].merged.conceptId === data.concept.conceptId) {
+                scope.viewedMerges.splice(i, 1);
+                break;
+              }
+            }
+
+            // find the conflict matching this id
+            angular.forEach(scope.conflicts, function(conflict) {
+              if (conflict.id === data.concept.conceptId) {
+                conflict.viewed = false;
+              }
+            })
+          });
         
           
           
@@ -235,8 +280,7 @@ angular.module('singleConceptAuthoringApp')
             // Cycle over each type and add to map
             ////////////////////////////////////////////
 
-            // constrcut a map of conceptId -> {source, target, merged concepts}
-            var conceptMap = {};
+
 
             // add all source concepts
             angular.forEach(response.sourceChanges, function(concept) {
@@ -269,7 +313,8 @@ angular.module('singleConceptAuthoringApp')
               // construct list of conflicts for ng-table display
               var conflict = {
                 id: concept.conceptId,
-                fsn: concept.fsn
+                fsn: concept.fsn,
+                viewed: false
               };
 
               // push to conflicts list
@@ -277,11 +322,6 @@ angular.module('singleConceptAuthoringApp')
 
               // calculate merge changes
               concept.styles = highlightChanges(concept);
-
-              // add to viewed list
-              // TODO Remove this once controls are satisfactory (i.e. don't display by default)
-              scope.viewedMerges.push(concept);
-
             }
 
             console.debug('viewedMerges', scope.viewedMerges);

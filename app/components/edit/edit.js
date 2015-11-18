@@ -722,26 +722,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      // if in conflicts view, remove from conflict lists
-      if ($scope.thisView === 'conflicts') {
-
-        for (var i = 0; i < $scope.conflictConceptsBase.length; i++) {
-          if ($scope.conflictConceptsBase[i].conceptId === data.concept.conceptId) {
-            $scope.conflictConceptsBase.splice(i, 1);
-            break;
-          }
-        }
-        for (i = 0; i < $scope.conflictConceptsBranch.length; i++) {
-          if ($scope.conflictConceptsBranch[i].conceptId === data.concept.conceptId) {
-            $scope.conflictConceptsBranch.splice(i, 1);
-            break;
-          }
-        }
-        $scope.setConflictConceptPairs();
-      }
-
-      // otherwise, editing view, remove from edit list
-      else if ($scope.thisView === 'classification') {
+      if ($scope.thisView === 'classification') {
         // remove the concept
         var index = $scope.concepts.indexOf(data.concept);
         $scope.concepts.splice(index, 1);
