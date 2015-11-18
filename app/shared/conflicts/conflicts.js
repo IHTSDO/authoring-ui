@@ -335,7 +335,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.$on('stopEditing', function (event, data) {
 
-            // find the merge matching this id
+            // find the merge matching this id and remove it from viewed list
             for (var i = 0; i < scope.viewedMerges.length; i++) {
               if (scope.viewedMerges[i].merged.conceptId === data.concept.conceptId) {
                 scope.viewedMerges.splice(i, 1);
@@ -343,12 +343,17 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // find the conflict matching this id
+            // find the conflict matching this id and mark it unviewed
             angular.forEach(scope.conflicts, function (conflict) {
               if (conflict.id === data.concept.conceptId) {
                 conflict.viewed = false;
               }
-            })
+            });
+
+            // if no viewed concepts, ensure sidebar open
+            if (scope.viewedMerges.length === 0) {
+              scope.hideSidebar = false;
+            }
           });
 
           function initializeMergeReview(review) {
