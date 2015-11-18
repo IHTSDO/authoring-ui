@@ -964,7 +964,7 @@ angular.module('singleConceptAuthoringApp.edit', [
            * conflicts moved to conceptsResolved)
            *
            */
-          $scope.canRebase = $scope.isOwnTask; // cannot rebase if not own task
+          $scope.canRebase = false; // cannot rebase if not own task
           $scope.canPromote = false;
           $scope.canConflict = true;
           break;
