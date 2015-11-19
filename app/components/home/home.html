@@ -73,7 +73,7 @@
 
               <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus !== null && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                         type="button"
                           ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
@@ -190,7 +190,7 @@
 
               <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
                <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus !== null && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                         type="button"
                           ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
