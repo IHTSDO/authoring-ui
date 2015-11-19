@@ -15,6 +15,28 @@
     color: #fff;
 }
 .tab-content>.active,
-.sca-column,
+
 .dashboard-sidebar,
 .full-height{height:100vh!important;}
+
+ .Available.badge {
+    background-color: #00b0ff;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+
+  .Claimed.badge {
+    background-color: grey;
+    font-size: 13px;
+    padding: 6px 10px;
+    margin: 0px;
+    line-height: 13px;
+  }
+  .sidebar-spacer{height:100vh!important;}
+  .dashboard-sidebar{    position: fixed!important;
+    top: 64px;
+    height: 100%;
+	    width: 25%;
+}
