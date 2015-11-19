@@ -17,9 +17,9 @@
       <div class="page-header col-md-9 p-t-10 project-main-buttons">
 
         <div class="p-10 pull-right">
-          <button class="btn btn-disabled btn-border"
+          <button class="btn btn-border"
                   ng-click="promote()"
-                  ng-disabled="project.status !== 'FORWARD'"><span
+                  ng-disabled="project.branchState !== 'FORWARD'"><span
             class="project-icon blue darken-1 pull-left"><span class="md md-call-merge"></span></span>Promote
             <div class="ripple-wrapper"></div>
           </button>
@@ -27,7 +27,7 @@
         <div class="p-10 pull-right">
           <button class="btn btn-success btn-border"
                   ng-click="rebase()"
-                  ng-disabled="project.status !== 'DIVERGED' && project.status !== 'BEHIND'">
+                  ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND'">
             <span
               class="project-icon yellow darken-2 pull-left"><span class="md md-autorenew"></span></span>Rebase
             <div class="ripple-wrapper"></div>
