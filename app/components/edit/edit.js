@@ -939,9 +939,16 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     /**
      * Set page functionality based on branch state
-     * @param branchState
      */
     function setBranchFunctionality(branchState) {
+
+      console.debug('setBranchFunctionality', branchState, $scope.task);
+
+      // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
+      // status
+      if (!branchState) {
+        branchState = $scope.task.status === 'New' ? 'UP_TO_DATE' : $scope.task.status;
+      }
 
       switch (branchState) {
         case 'FORWARD':
@@ -1038,20 +1045,35 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (!window.confirm('Pulling changes in from the project may erase work you have done.  Are you sure you want to continue?\n\nCancel this dialog and click the View Merge button on the navigation sidebar to merge your work with changes on the project.')) {
             return;
           }
+
+          notificationService.sendMessage('Rebasing task...', 0);
+          scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+            console.debug('rebase task completed', response);
+            if (response !== null) {
+              notificationService.sendMessage('Task successfully rebased', 5000);
+
+              // should regenerate conflicts, update task state, etc.
+              // manually
+              $window.location.reload();
+            }
+          });
         }
 
-        notificationService.sendMessage('Rebasing task...', 0);
-        scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
-          console.debug('rebase task completed', response);
-          if (response !== null) {
-            notificationService.sendMessage('Task successfully rebased', 5000);
+        // duplicated code due to unexpected behavior on task status window
+        // confirmation
+        else {
+          notificationService.sendMessage('Rebasing task...', 0);
+          scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+            console.debug('rebase task completed', response);
+            if (response !== null) {
+              notificationService.sendMessage('Task successfully rebased', 5000);
 
-            // should regenerate conflicts, update task state, etc.
-            // manually
-            $window.location.reload();
-          }
-        });
-
+              // should regenerate conflicts, update task state, etc.
+              // manually
+              $window.location.reload();
+            }
+          });
+        }
       }
     };
 
@@ -1121,8 +1143,16 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.$on('reloadTask', function (event, data) {
-      $scope.getLatestClassification();
-      $scope.getLatestValidation();
+      if ($routeParams.taskKey) {
+        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          $scope.task = response;
+
+          $scope.getLatestClassification();
+          $scope.getLatestValidation();
+
+          setBranchFunctionality($scope.task.branchState);
+        })
+      }
     });
 
     // populate the container objects

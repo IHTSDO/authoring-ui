@@ -934,6 +934,31 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    /**
+     * Merge and apply stored changes
+     */
+    function mergeAndApply(parentBranch, childBranch, mergeReviewId) {
+      var deferred = $q.defer();
+      $http.post(apiEndpoint + 'merges/apply', {
+        source: parentBranch,
+        target: childBranch,
+        commitComment: 'Applying changes',
+        mergeReviewId: mergeReviewId
+      }).then(function(response) {
+        deferred.resolve(response.data);
+      }, function(error) {
+        deferred.reject(error.message);
+      });
+      return deferred.promise;
+    }
+    /*{
+      "source": "",
+      "target": "",
+      "commitComment": "",
+      "reviewId": "",
+      "mergeReviewId": ""
+    }*/
+
     ////////////////////////////////////////////////////
     // Concept Validation
     ////////////////////////////////////////////////////
@@ -1029,6 +1054,7 @@ angular.module('singleConceptAuthoringApp')
       getMergeReviewDetails : getMergeReviewDetails,
       generateMergeReview : generateMergeReview,
       storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
+      mergeAndApply: mergeAndApply,
 
       // validation
       validateConceptForTask: validateConceptForTask,

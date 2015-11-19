@@ -316,10 +316,29 @@ angular.module('singleConceptAuthoringApp')
 
           var viewedMergePoll = null;
 
+          scope.mergeFinalized = false;
+
           // map of conceptId -> {source, target, merged concepts}
           var conceptMap = {};
 
           scope.mergesComplete = false;
+
+          scope.finalizeMerges = function() {
+
+            // cancel polling
+            viewedMergePoll = $interval.cancel(viewedMergePoll);
+
+            notificationService.sendMessage('Applying merged changes....');
+            snowowlService.mergeAndApply(scope.sourceBranch, scope.targetBranch, scope.id).then(function(response) {
+              notificationService.sendMessage('Merges successfully applied', 5000);
+
+              // set flag for finalized merge
+              scope.mergeFinalized = true;
+              $rootScope.$broadcast('reloadTask');
+            }, function(error) {
+              notificationService.sendError('Error applying merges: ' + error);
+            })
+          };
 
           scope.viewConflict = function (conflict) {
 
