@@ -279,7 +279,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Helper function to save or update concept after validation
          * @param concept
          */
-        function saveHelper(concept, suppressNotifications) {
+        function saveHelper() {
 
           // special case:  if merge view, broadcast and return no promise
           if (scope.isMerge) {
@@ -290,23 +290,29 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // simple promise with resolve/reject on success/failure
           var deferred = $q.defer();
 
-          snowowlService.cleanConcept(concept);
+          //// console.debug('update concept', concept);
+          /*scope.saveFunction({
+           project: $routeParams.projectKey,
+           task: $routeParams.taskKey,
+           concept: concept
+           })*/
 
+          var saveFn = null;
+          if (scope.concept.fsn === null) {
+            saveFn = snowowlService.createConcept;
+          } else {
+            saveFn = snowowlService.updateConcept;
+          }
 
-
-          // if new, use create
-          if (concept.fsn === null) {
-
-            snowowlService.createConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
-
+          saveFn($routeParams.projectKey,
+            $routeParams.taskKey,
+            scope.concept).then(function (response) {
               //// console.debug('create', response);
               // successful response will have conceptId
               if (response && response.conceptId) {
 
                 console.debug('Create concept successful');
 
-                scope.concept = response;
-                scope.concept = scope.addAdditionalFields(scope.concept);
                 // set concept and unmodified state
                 scope.concept = response;
                 scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
@@ -350,59 +356,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 deferred.reject();
               }
             });
-          }
-
-          // if not new, use update
-          else {
-            //// console.debug('update concept', concept);
-            scope.saveFunction({
-              project: $routeParams.projectKey,
-              task: $routeParams.taskKey,
-              concept: concept
-            }).then(function (response) {
-
-
-              // console.debug('update response', response);
-              if (response && response.conceptId) {
-
-                console.debug('Update concept successful');
-
-                // set concept and unmodified state
-                scope.concept = response;
-                scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
-                scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
-                scope.isModified = false;
-
-                // clear the saved modified state
-                scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
-
-                // broadcast event to any listeners (currently task detail,
-                // conflict/feedback resolved lists)
-                $rootScope.$broadcast('conceptEdit.conceptChange', {
-                  branch: scope.branch,
-                  conceptId: scope.concept.conceptId
-                });
-
-                // ensure descriptions & relationships are sorted
-                sortDescriptions();
-                sortRelationships();
-
-                // clear any stored modified versions of this unsaved
-                // concept but only AFTER successful save -- duplicated in
-                // updateConcept below
-                scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
-                scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
-                scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
-
-                deferred.resolve();
-              }
-              else {
-                console.error('Update concept failed:' + response);
-                scope.errors = [response.message];
-                deferred.reject();
-              }
-            });
-          }
 
           return deferred.promise;
         };
@@ -410,9 +363,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // helper function to display validation results based on results from
         // getValidationResultsForConcept
         scope.displayValidationResults = function (results) {
+          scope.validationWarnings = {};
+          scope.validationErrors = {};
+
+          $timeout( function() {
           scope.validationWarnings = results.warnings;
           scope.validationErrors = results.errors;
+          console.debug('validationWarnings', scope.validationWarnings);
+          console.debug('validationErrors', scope.validationErrors);
+          }, 250);
         };
+
+        scope.$watch('validationWarnings', function () {
+          console.debug('validationWarnings changed', scope.validationWarnings);
+        }, true);
 
         // function to validate concept and display any errors or warnings
         scope.getValidationResultsForConcept = function () {
@@ -477,6 +441,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
           notificationService.sendMessage(saveMessage);
 
+          scope.$watch('concept', function () {
+            console.debug('concept changed', scope.concept);
+          }, true);
+
           // validate concept first
           scope.getValidationResultsForConcept().then(function (validationResults) {
 
@@ -492,35 +460,39 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else if (validationResults.hasWarnings) {
 
               // save the concept with warnings
-              saveHelper(scope.concept, true).then(function() {
+              saveHelper(scope.concept, true).then(function () {
 
-                // check the newly returned concepts for persistent warnings
-                scope.getValidationResultsForConcept().then(function(newValidationResults) {
+                  // check the newly returned concepts for persistent warnings
+                  scope.getValidationResultsForConcept().then(function (newValidationResults) {
 
-                  // if warnings still detected, notify and display (will also display errors, which should not happen)
-                  if (newValidationResults.hasWarnings) {
-                    notificationService.sendWarning('Concept saved, but convention warnings were detected');
-                    scope.displayValidationResults(newValidationResults);
-                  }
+                    // if warnings still detected, notify and display (will
+                    // also display errors, which should not happen)
+                    if (newValidationResults.hasWarnings) {
 
-                  // otherwise, simply notify of save
-                  else {
-                    notificationService.sendMessage('Concept saved:' + concept.fsn, 5000);
-                  }
-                })
-              },
+                        notificationService.sendWarning('Concept saved, but convention warnings were detected');
+                        console.debug('new Validation Results', newValidationResults);
+                        scope.displayValidationResults(newValidationResults);
+
+                    }
+
+                    // otherwise, simply notify of save
+                    else {
+                      notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
+                    }
+                  });
+                },
                 // on error, notifyh
-                function(error) {
-                notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
-                scope.displayValidationResults(validationResults);
-              });
+                function (error) {
+                  notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
+                  scope.displayValidationResults(validationResults);
+                });
             }
 
             // otherwise, just save
             else {
-              saveHelper(scope.concept).then(function() {
-                notificationService.sendMessage('Concept saved:' + concept.fsn, 5000);
-              }, function(error) {
+              saveHelper(scope.concept).then(function () {
+                notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
+              }, function (error) {
                 notificationService.sendError('Error saving concept');
               })
             }
