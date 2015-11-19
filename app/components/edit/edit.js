@@ -909,18 +909,21 @@ angular.module('singleConceptAuthoringApp.edit', [
         // (response) { $scope.conflictsContainer.conflicts = response ?
         // response : {}; });
       } else {
-        snowowlService.getMergeReviewForBranches($scope.parentBranch, $scope.branch).then(function (response) {
 
-          if (!response || response.status !== 'CURRENT') {
-            console.debug('No current merge review');
-            $scope.mergeReviewCurrent = false;
-          }
+        /* TODO Removed 11/19, would prefer to have merge-review status as part of task info
 
-          else if (response.status === 'CURRENT') {
-            console.debug('Current merge review');
-            $scope.mergeReviewCurrent = true;
-          }
-        })
+         snowowlService.getMergeReviewForBranches($scope.parentBranch, $scope.branch).then(function (response) {
+
+         if (!response || response.status !== 'CURRENT') {
+         console.debug('No current merge review');
+         $scope.mergeReviewCurrent = false;
+         }
+
+         else if (response.status === 'CURRENT') {
+         console.debug('Current merge review');
+         $scope.mergeReviewCurrent = true;
+         }
+         })*/
       }
     };
 
@@ -952,7 +955,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.canConflict = false;
           break;
         case 'BEHIND':
-          $scope.canRebase = $scope.isOwnTask;
+          $scope.canRebase = true// true $scope.isOwnTask;
           $scope.canPromote = false;
           $scope.canConflict = false;
           break;
@@ -1012,16 +1015,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       console.debug($scope.conflictsContainer);
 
-      // if unresolved conflicts exist, confirm with user before
-      // continuing
-      if ($scope.conflictsContainer && $scope.conflictsContainer.conflicts && $scope.conflictsContainer.conflicts.conflictsToResolve && $scope.conflictsContainer.conflictsToResolve.length > 0) {
-        var response = window.confirm('Unresolved conflicts detected.  Rebasing may cause your changes to be lost.  Continue?');
-
-        if (!response) {
-          return;
-        }
-      }
-
       // rebase the project or task, and reload the page on success
       // to trigger all necessary state updates
       if (!$scope.taskKey) {
@@ -1040,21 +1033,25 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
       } else {
 
-        if (window.confirm('Pulling changes in from the project may erase work you have done.  Are you sure you want to continue?\n\nCancel this dialog and click the View Merge button on the navigation sidebar to merge your work with changes on the project.')) {
-
-          notificationService.sendMessage('Rebasing task...', 0);
-          scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
-            console.debug('rebase task completed', response);
-            if (response !== null) {
-              notificationService.sendMessage('Task successfully rebased', 5000);
-
-              // should regenerate conflicts, update task state, etc.
-              // manually
-              $window.location.reload();
-            }
-          });
-
+        // if task is diverged, confirm before allowing rebase
+        if ($scope.task.status === 'DIVERGED') {
+          if (!window.confirm('Pulling changes in from the project may erase work you have done.  Are you sure you want to continue?\n\nCancel this dialog and click the View Merge button on the navigation sidebar to merge your work with changes on the project.')) {
+            return;
+          }
         }
+
+        notificationService.sendMessage('Rebasing task...', 0);
+        scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+          console.debug('rebase task completed', response);
+          if (response !== null) {
+            notificationService.sendMessage('Task successfully rebased', 5000);
+
+            // should regenerate conflicts, update task state, etc.
+            // manually
+            $window.location.reload();
+          }
+        });
+
       }
     };
 
