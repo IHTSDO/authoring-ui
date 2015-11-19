@@ -29,6 +29,8 @@ angular.module('singleConceptAuthoringApp')
             scope.hideSidebar = !scope.hideSidebar;
           };
 
+          scope.actionTab = 1;
+
           /**
            * Conflict ngTable parameters
            */
@@ -440,7 +442,7 @@ angular.module('singleConceptAuthoringApp')
                 mergesAccepted = [];
               }
               angular.forEach(scope.conflicts, function (conflict) {
-                if (mergesAccepted.indexOf(conflict.id)) {
+                if (mergesAccepted.indexOf(conflict.id) !== -1) {
                   conflict.accepted = true;
                 }
               });

@@ -906,6 +906,19 @@ angular.module('singleConceptAuthoringApp')
       })
     }
 
+    function getMergeReviewForBranches(parentBranch, childBranch) {
+      return $http.post(apiEndpoint + 'merge-reviews', {
+        source: parentBranch,
+        target: childBranch
+      }).then(function (response) {
+        // extract the merge-review id from the location header
+        var locHeader = response.headers('Location');
+        var mergeReviewId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
+
+        return getMergeReview(mergeReviewId);
+      });
+    }
+
     /**
      * Save a concept against its merge review for later playback
      * @param id the merge review id
@@ -1012,6 +1025,7 @@ angular.module('singleConceptAuthoringApp')
 
       // merge-review functionality
       getMergeReview: getMergeReview,
+      getMergeReviewForBranches: getMergeReviewForBranches,
       getMergeReviewDetails : getMergeReviewDetails,
       generateMergeReview : generateMergeReview,
       storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
