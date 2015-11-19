@@ -85,7 +85,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
-      link: function (scope, element, attrs, linkCtrl) {
+      link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
+      {
 
         console.debug('conceptEdit styles', scope.componentStyles);
 
@@ -278,26 +279,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Helper function to save or update concept after validation
          * @param concept
          */
-        function saveHelper(concept) {
+        function saveHelper(concept, suppressNotifications) {
+
+          // special case:  if merge view, broadcast and return no promise
+          if (scope.isMerge) {
+            $rootScope.$broadcast('acceptMerge', {concept: scope.concept});
+            return;
+          }
+
+          // simple promise with resolve/reject on success/failure
+          var deferred = $q.defer();
 
           snowowlService.cleanConcept(concept);
 
-          var saveMessage = concept.conceptId ? 'Saving concept: ' + concept.fsn : 'Saving new concept';
-          notificationService.sendMessage(saveMessage, 10000, null);
 
-          // special case:  if merge view, broadcast
-          if (scope.isMerge) {
-            $rootScope.$broadcast('acceptMerge', {concept : scope.concept});
-          }
 
           // if new, use create
-          else if (concept.fsn === null) {
+          if (concept.fsn === null) {
 
             snowowlService.createConcept($routeParams.projectKey, $routeParams.taskKey, concept).then(function (response) {
 
               //// console.debug('create', response);
               // successful response will have conceptId
               if (response && response.conceptId) {
+
+                console.debug('Create concept successful');
 
                 scope.concept = response;
                 scope.concept = scope.addAdditionalFields(scope.concept);
@@ -313,10 +319,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // ensure descriptions & relationships are sorted
                 sortDescriptions();
                 sortRelationships();
-
-                // send notification of success with timeout
-                var saveMessage = 'Concept saved: ' + response.fsn;
-                notificationService.sendMessage(saveMessage, 5000, null);
 
                 // broadcast event to any listeners (currently task detail,
                 // conflict/feedback resolved lists)
@@ -336,12 +338,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   }
                 }, 3000);
 
+                deferred.resolve();
+
               }
 
               // handle error
               else {
                 // set the local error
+                console.error('Create concept failed:', response);
                 scope.errors = [response.message];
+                deferred.reject();
               }
             });
           }
@@ -355,12 +361,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               concept: concept
             }).then(function (response) {
 
-              // send notification of success with timeout
-              var saveMessage = 'Concept saved:' + concept.fsn;
-              notificationService.sendMessage(saveMessage, 5000, null);
 
               // console.debug('update response', response);
               if (response && response.conceptId) {
+
+                console.debug('Update concept successful');
 
                 // set concept and unmodified state
                 scope.concept = response;
@@ -388,19 +393,72 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
                 scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                 scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+
+                deferred.resolve();
               }
               else {
+                console.error('Update concept failed:' + response);
                 scope.errors = [response.message];
+                deferred.reject();
               }
             });
           }
+
+          return deferred.promise;
         };
 
-        scope.storedValidationResults = null;
+        // helper function to display validation results based on results from
+        // getValidationResultsForConcept
+        scope.displayValidationResults = function (results) {
+          scope.validationWarnings = results.warnings;
+          scope.validationErrors = results.errors;
+        };
+
+        // function to validate concept and display any errors or warnings
+        scope.getValidationResultsForConcept = function () {
+
+          return snowowlService.validateConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+
+            var results = {
+              hasWarnings: false,
+              hasErrors: false,
+              warnings: {},
+              errors: {}
+            };
+
+            angular.forEach(validationResults, function (validationResult) {
+              console.debug(validationResult);
+              if (validationResult.severity === 'WARNING') {
+                results.hasWarnings = true;
+                if (!results.warnings[validationResult.componentId]) {
+                  results.warnings[validationResult.componentId] = [];
+                }
+                results.warnings[validationResult.componentId].push(validationResult.message);
+              }
+              else if (validationResult.severity === 'ERROR') {
+                results.hasErrors = true;
+                if (!results.errors[validationResult.componentId]) {
+                  results.errors[validationResult.componentId] = [];
+                }
+                results.errors[validationResult.componentId].push(validationResult.message);
+              }
+            });
+
+            return results;
+          }, function (error) {
+            return null;
+          });
+        };
+
         scope.saveConcept = function () {
 
+          // clear the top level errors and warnings
           scope.errors = null;
           scope.warnings = null;
+
+          // clear the component-level errors and warnings
+          scope.validationWarnings = {};
+          scope.validationErrors = {};
 
           // deep-copy object for modification before submission
           // i.e. strip local values without modifying the current object
@@ -416,58 +474,55 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // clean concept of any locally added information
           snowowlService.cleanConcept(scope.concept);
 
-          // TODO CHeck if still needed
-          // cycle over descriptions and relationships and remove any
-          // inactive, unpublished content i.e. this is user added content
-          // that is later removed via inactivation
-          /* for (var i = 0; i < concept.descriptions.length; i++) {
-           if (!concept.descriptions[i].effectiveTime && !concept.descriptions[i].active) {
-           concept.descriptions.splice(i, 1);
-           i--; // decrement counter to check next available description
-           }
-           }
-           for (i = 0; i < concept.relationships.length; i++) {
-           if (!concept.relationships[i].effectiveTime && !concept.relationships[i].active) {
-           concept.relationships.splice(i, 1);
-           i--; // decrement counter to check next available relationship
-           }
-           }
-           */
-          notificationService.sendMessage('Validating concept prior to save...');
-          snowowlService.validateConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+          var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
+          notificationService.sendMessage(saveMessage);
 
-            scope.validationWarnings = {};
-            scope.validationErrors = {};
+          // validate concept first
+          scope.getValidationResultsForConcept().then(function (validationResults) {
 
-            // clear notification service
-            notificationService.clear();
-
-            if (validationResults.length === 0) {
-              saveHelper(scope.concept);
+            // if errors, notify and do not save
+            if (validationResults.hasErrors) {
+              notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
+              scope.displayValidationResults(validationResults);
             }
 
-            // otherwise, if
-            // TODO Allow saving through warnings (too tired at the moment to
-            // do this)
-            else if (validationResults.length > 0) {
+            // if no errors but warnings, save, results will be displayed after
+            // save NOTE: Do not notify or display until after save, as
+            // component ids may change on return from term server
+            else if (validationResults.hasWarnings) {
 
-              notificationService.sendError('This task contains convention errors. Please resolve before saving.');
+              // save the concept with warnings
+              saveHelper(scope.concept, true).then(function() {
 
-              angular.forEach(validationResults, function (validationResult) {
-                console.debug(validationResult);
-                if (validationResult.severity === 'WARNING') {
-                  if (!scope.validationWarnings[validationResult.componentId]) {
-                    scope.validationWarnings[validationResult.componentId] = [];
+                // check the newly returned concepts for persistent warnings
+                scope.getValidationResultsForConcept().then(function(newValidationResults) {
+
+                  // if warnings still detected, notify and display (will also display errors, which should not happen)
+                  if (newValidationResults.hasWarnings) {
+                    notificationService.sendWarning('Concept saved, but convention warnings were detected');
+                    scope.displayValidationResults(newValidationResults);
                   }
-                  scope.validationWarnings[validationResult.componentId].push(validationResult.message);
-                }
-                else if (validationResult.severity === 'ERROR') {
-                  if (!scope.validationErrors[validationResult.componentId]) {
-                    scope.validationErrors[validationResult.componentId] = [];
+
+                  // otherwise, simply notify of save
+                  else {
+                    notificationService.sendMessage('Concept saved:' + concept.fsn, 5000);
                   }
-                  scope.validationErrors[validationResult.componentId].push(validationResult.message);
-                }
+                })
+              },
+                // on error, notifyh
+                function(error) {
+                notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
+                scope.displayValidationResults(validationResults);
               });
+            }
+
+            // otherwise, just save
+            else {
+              saveHelper(scope.concept).then(function() {
+                notificationService.sendMessage('Concept saved:' + concept.fsn, 5000);
+              }, function(error) {
+                notificationService.sendError('Error saving concept');
+              })
             }
 
           });
