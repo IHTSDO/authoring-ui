@@ -1,5 +1,47 @@
 /* Scss Document */
-
+@media (max-width: 1350px) {
+.brand-logo {
+    font-size: 13px;
+    line-height: 64px;
+}
+.identity-services{    padding-left: 5px;
+    padding-right: 5px;}
+.breadcrumb{font-size:11px;padding: 10px 10px;}
+.nav > li > a {
+    position: relative;
+    display: block;
+    font-size: 11px;
+    padding: 5px 3px;
+    line-height: 30px;
+}
+.drag-button-width {
+    width: 17px;
+ 
+    font-size: 12px !important;
+}
+.more-button-width {
+    width: 15px;
+    
+}
+.angular-ui-tree .badge {
+    font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 16px;
+    padding: 0px 0px;
+    width: 18px;
+    text-align: center;
+    margin: 0px;
+    height: 18px;
+    line-height: 18px;
+}
+.taxonomy-chevron {
+  
+    font-size: 10px;
+}
+.angular-ui-tree-nodes {
+ 
+    font-size: 11px;
+}}
  @media (max-width: 1440px){
         /* styles for browsers larger than 1440px; */
 		nav > li > a {
