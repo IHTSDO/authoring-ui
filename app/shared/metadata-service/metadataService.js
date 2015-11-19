@@ -105,6 +105,8 @@ angular.module('singleConceptAuthoringApp')
        });*/
     }
 
+    var projects = [];
+
     return {
 
       /**
@@ -130,6 +132,14 @@ angular.module('singleConceptAuthoringApp')
        */
       getAssociationInactivationReasons: function () {
         return associationInactivationReasons;
+      },
+
+      getProjects: function() {
+        return projects;
+      },
+
+      setProjects: function(projectsList) {
+        projects = projectsList;
       },
 
       /**
