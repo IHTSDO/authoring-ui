@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, task) {
+  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task) {
 
     console.debug('task.js with task', task);
     // scope variables
@@ -19,16 +19,8 @@ angular.module('singleConceptAuthoringApp')
     // cached values
     function initialize() {
       $scope.disabled = false;
-      scaService.getProjects().then(function (response) {
-        $scope.projects = response;
+      $scope.projects = metadataService.getProjects();
 
-        // set default project to first project (if it exists)
-        if ($scope.projects && $scope.projects.length > 0) {
-          $scope.taskProject = $scope.projects[0];
-        }
-      }, function (error) {
-        // TODO Handle error
-      });
     }
 
     // TODO Consider relaxing jshint to allow functions to be called pre
