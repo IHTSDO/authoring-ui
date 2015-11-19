@@ -297,6 +297,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
            concept: concept
            })*/
 
+          snowowlService.cleanConcept(scope.concept);
+
           var saveFn = null;
           if (scope.concept.fsn === null) {
             saveFn = snowowlService.createConcept;
@@ -366,11 +368,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.validationWarnings = {};
           scope.validationErrors = {};
 
-          $timeout( function() {
-          scope.validationWarnings = results.warnings;
-          scope.validationErrors = results.errors;
-          console.debug('validationWarnings', scope.validationWarnings);
-          console.debug('validationErrors', scope.validationErrors);
+          $timeout(function () {
+            scope.validationWarnings = results.warnings;
+            scope.validationErrors = results.errors;
+            console.debug('validationWarnings', scope.validationWarnings);
+            console.debug('validationErrors', scope.validationErrors);
           }, 250);
         };
 
@@ -439,12 +441,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           snowowlService.cleanConcept(scope.concept);
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
-          notificationService.sendMessage(saveMessage);
 
-          scope.$watch('concept', function () {
-            console.debug('concept changed', scope.concept);
-          }, true);
-
+          // special case -- don't want save notifications in merge view, all handling done in conflicts.js
+          if (!scope.merge) {
+            notificationService.sendMessage(saveMessage);
+          }
           // validate concept first
           scope.getValidationResultsForConcept().then(function (validationResults) {
 
@@ -459,33 +460,41 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // component ids may change on return from term server
             else if (validationResults.hasWarnings) {
 
-              // save the concept with warnings
-              saveHelper(scope.concept, true).then(function () {
+              // special case -- merge:  display warnings and continue
+              if (scope.merge) {
+                // display the validation warnings and continue
+                scope.displayValidationResults(validationResults);
+                saveHelper(); // will send broadcast to conflicts.js
+              } else {
 
-                  // check the newly returned concepts for persistent warnings
-                  scope.getValidationResultsForConcept().then(function (newValidationResults) {
+                // save the concept with warnings
+                saveHelper(scope.concept, true).then(function () {
 
-                    // if warnings still detected, notify and display (will
-                    // also display errors, which should not happen)
-                    if (newValidationResults.hasWarnings) {
+                    // check the newly returned concepts for persistent warnings
+                    scope.getValidationResultsForConcept().then(function (newValidationResults) {
+
+                      // if warnings still detected, notify and display (will
+                      // also display errors, which should not happen)
+                      if (newValidationResults.hasWarnings) {
 
                         notificationService.sendWarning('Concept saved, but convention warnings were detected');
                         console.debug('new Validation Results', newValidationResults);
                         scope.displayValidationResults(newValidationResults);
 
-                    }
+                      }
 
-                    // otherwise, simply notify of save
-                    else {
-                      notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
-                    }
+                      // otherwise, simply notify of save
+                      else {
+                        notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
+                      }
+                    });
+                  },
+                  // on error, notifyh
+                  function (error) {
+                    notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
+                    scope.displayValidationResults(validationResults);
                   });
-                },
-                // on error, notifyh
-                function (error) {
-                  notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
-                  scope.displayValidationResults(validationResults);
-                });
+              }
             }
 
             // otherwise, just save
