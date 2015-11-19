@@ -16,7 +16,11 @@
 
   <div class="row no-gutter no-padding">
 
-    <div class="col-md-12 no-padding no-gutter">
+    <div class="col-md-3 alert alert-warning">
+      Merge Finalized
+    </div>
+
+    <div class="col-md-12 no-padding no-gutter" ng-if="!mergeFinalized">
 
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
@@ -97,7 +101,7 @@
 
                 <!-- buttons trigger off whether all merges are complete
                NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
-                <button ng-if="mergesComplete" class="btn btn-default red lighten-2"><span
+                <button ng-if="mergesComplete" ng-click="finalizeMerges()" class="btn btn-default red lighten-2"><span
                   class="md md-assignment-turned-in darken-1"></span>Finalize Merges
                 </button>
                 <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case"><span
@@ -134,7 +138,7 @@
 
                 <!-- buttons trigger off whether all merges are complete
                 NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
-                <button ng-if="mergesComplete" class="btn btn-default red lighten-2"><span
+                <button ng-if="mergesComplete"  ng-click="finalizeMerges()" class="btn btn-default red lighten-2"><span
                   class="md md-assignment-turned-in darken-1"></span>Finalize Merges
                 </button>
                 <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case"><span
