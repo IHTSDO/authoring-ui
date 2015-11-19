@@ -148,6 +148,8 @@ angular
         })
       });
 
+
+
       // add required endpoints to route provider
       $routeProvider
         .when('/login', {
@@ -171,6 +173,14 @@ angular
           }
         });
     });
+
+    ///////////////////////////////////////////
+    // Cache local data
+    ///////////////////////////////////////////
+    scaService.getProjects().then(function(response) {
+      metadataService.setProjects(response);
+    });
+
 
     ///////////////////////////////////////////
     // Instantiate basic metadata in SnowOwl //
