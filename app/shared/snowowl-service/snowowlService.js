@@ -13,10 +13,10 @@ angular.module('singleConceptAuthoringApp')
     function createConcept(project, task, concept) {
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
-        console.debug('createConcept success', response);
+        //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
-        console.debug('createConcept failure', error);
+       // console.debug('createConcept failure', error);
         deferred.reject(error.message);
       });
       return deferred.promise;
@@ -27,10 +27,10 @@ angular.module('singleConceptAuthoringApp')
     function updateConcept(project, task, concept) {
       var deferred = $q.defer();
       $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
-        console.debug('createConcept success', response);
+        //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
-        console.debug('createConcept failure', error);
+        //console.debug('createConcept failure', error);
         deferred.reject(error.message);
       });
       return deferred.promise;
