@@ -4,7 +4,7 @@ a.tooltips-left, button.tooltips-left, button[disabled].tooltips-left {
 }
  button.tooltips-left.normal-case span, button.tooltips-right.normal-case span{text-transform:none!important}
 
-a.tooltips-left span, button.tooltips-left span, button[disabled] span {
+a.tooltips-left span, button.tooltips-left span, button[disabled].tooltips-left span {
   position: absolute;
   width:auto;
   min-width:140px;
