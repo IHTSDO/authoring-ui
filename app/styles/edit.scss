@@ -787,6 +787,14 @@ sca-column
   border-right: 8px solid #4CAF50;
 }
 
+.arrow-red {
+  width: 0;
+  height: 0;
+  margin-top: 22px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid #c13244;
+}
 .project-icon {
   height: 60px;
   width: 60px;
@@ -794,6 +802,7 @@ sca-column
   border-radius: 0px 4px 4px 0px;
 }
 
+button[disabled] .project-icon{background-color:#7c7c7c}
 .project-icon .md {
   font-size: 24px;
   text-align: center;
@@ -801,7 +810,7 @@ sca-column
   width: 100%;
   float: left;
 }
-
+.card-header button[disabled]:hover{color:#7c7c7c}
 .project-page .card {
   margin: 20px;
 }
@@ -844,7 +853,7 @@ sca-column
   border: 1px solid #eee !important;
   border-radius: 4px;
   text-transform: none;
-  color: #eee !important;
+  color: #7c7c7c !important;
   font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0px 10px 0px 0px !important;
   line-height: 30px;
