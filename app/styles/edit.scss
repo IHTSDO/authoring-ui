@@ -107,7 +107,6 @@ button,
   margin: 0;
   padding-left: 10px;
   color: #424242;
-  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .card .card-title {
@@ -115,7 +114,6 @@ button,
   font-weight: 400;
   margin: 0;
   line-height: 14px;
-  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .add-buttons {
@@ -229,7 +227,6 @@ button,
 .saved {
     padding: 8px 30px 8px 8px;
     margin: 10px 10px;
-	font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 	 line-height:16px;
 	  font-weight: 400;
 }
@@ -245,8 +242,6 @@ button,
 .model-header h4 {
   font-size: 12px;
   font-weight: 500;
- 
-  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 0px;
 }
 
@@ -467,7 +462,7 @@ button,
 .text-center {
   text-align: center;
   font-size: 13px;
-  font-family: 'Roboto', sans-serif;
+  
 }
 
 input:focus.color_0,
@@ -505,7 +500,6 @@ select:active.color_3 {
 }
 
 select.primitive {
-  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   display: block;
   width: 100%;
   -webkit-box-sizing: border-box;
@@ -594,7 +588,7 @@ select.primitive {
 }
 
 .badge {
-  font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  
   font-weight: normal;
   font-size: 13px;
   padding: 6px 10px;
@@ -839,7 +833,6 @@ button[disabled] .project-icon{background-color:#7c7c7c}
   border-radius: 4px;
   text-transform: none;
   color: #424242;
-  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0px 10px 0px 0px !important;
   line-height: 30px;
 }
@@ -854,7 +847,6 @@ button[disabled] .project-icon{background-color:#7c7c7c}
   border-radius: 4px;
   text-transform: none;
   color: #7c7c7c !important;
-  font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0px 10px 0px 0px !important;
   line-height: 30px;
 }
