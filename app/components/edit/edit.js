@@ -80,6 +80,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
+    $scope.branch = 'MAIN/' + $scope.projectKey + '/' + $scope.taskKey;
+    $scope.parentBranch = 'MAIN/' + $scope.projectKey;
+
     //////////////////////////////
     // Infinite Scroll
     //////////////////////////////
@@ -411,13 +414,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       return colClasses;
     };
 
-    $scope.conceptUpdateFunction = function(project, task, concept){
-            console.log('functionCalled');
-            var deferred = $q.defer();
-            snowowlService.updateConcept(project, task, concept).then(function (response) {
-                deferred.resolve(response);
-            });
-            return deferred.promise;
+    $scope.conceptUpdateFunction = function (project, task, concept) {
+      console.log('functionCalled');
+      var deferred = $q.defer();
+      snowowlService.updateConcept(project, task, concept).then(function (response) {
+        deferred.resolve(response);
+      });
+      return deferred.promise;
     };
     /**
      * Adds concept from this branch to the concepts array
@@ -579,7 +582,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel', conceptIds);
       }
     };
-
 
     // helper function to save current edit list (validation view only)
     $scope.updateValidationEditListUiState = function () {
@@ -899,16 +901,26 @@ angular.module('singleConceptAuthoringApp.edit', [
     //////////////////////////////////////////
 
     // Get latest conflict report
+    $scope.mergeReviewCurrent = null;
     $scope.getLatestConflictsReport = function () {
 
       if (!$scope.taskKey) {
-        // scaService.getConflictReportForProject($routeParams.projectKey).then(function (response) {
-        //  $scope.conflictsContainer.conflicts = response ? response : {};
-        //});
+        // scaService.getConflictReportForProject($routeParams.projectKey).then(function
+        // (response) { $scope.conflictsContainer.conflicts = response ?
+        // response : {}; });
       } else {
-        //scaService.getConflictReportForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-        //  $scope.conflictsContainer.conflicts = response ? response : {};
-        //});
+        snowowlService.getMergeReviewForBranches($scope.parentBranch, $scope.branch).then(function (response) {
+
+          if (!response || response.status !== 'CURRENT') {
+            console.debug('No current merge review');
+            $scope.mergeReviewCurrent = false;
+          }
+
+          else if (response.status === 'CURRENT') {
+            console.debug('Current merge review');
+            $scope.mergeReviewCurrent = true;
+          }
+        })
       }
     };
 
@@ -917,10 +929,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     // where a task is in DIVERGED state, or (b) notification of task state
     // change to DIVERGED
 //
-      $rootScope.$on('branchDiverged', function (event) {
+    $rootScope.$on('branchDiverged', function (event) {
 
-        $scope.getLatestConflictsReport();
-      });
+      $scope.getLatestConflictsReport();
+    });
 
     /**
      * Set page functionality based on branch state
@@ -1028,17 +1040,21 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
       } else {
 
-        notificationService.sendMessage('Rebasing task...', 0);
-        scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
-          console.debug('rebase task completed', response);
-          if (response !== null) {
-            notificationService.sendMessage('Task successfully rebased', 5000);
+        if (window.confirm('Pulling changes in from the project may erase work you have done.  Are you sure you want to continue?\n\nCancel this dialog and click the View Merge button on the navigation sidebar to merge your work with changes on the project.')) {
 
-            // should regenerate conflicts, update task state, etc.
-            // manually
-            $window.location.reload();
-          }
-        });
+          notificationService.sendMessage('Rebasing task...', 0);
+          scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
+            console.debug('rebase task completed', response);
+            if (response !== null) {
+              notificationService.sendMessage('Task successfully rebased', 5000);
+
+              // should regenerate conflicts, update task state, etc.
+              // manually
+              $window.location.reload();
+            }
+          });
+
+        }
       }
     };
 
@@ -1063,12 +1079,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // if a task, get the task for assigned user information
     if ($routeParams.taskKey) {
-      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
         $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
-        console.log('init ownTask');
-        console.log($scope.isOwnTask);
-          console.log($scope.canRebase);
+        setBranchFunctionality($scope.task.branchState);
       });
     }
 
@@ -1108,11 +1122,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.getLatestReview();
       $scope.setView('feedback');
     };
-    
+
     $scope.$on('reloadTask', function (event, data) {
-        $scope.getLatestClassification();
-        $scope.getLatestValidation();
-      });
+      $scope.getLatestClassification();
+      $scope.getLatestValidation();
+    });
 
     // populate the container objects
     $scope.getLatestClassification();
