@@ -165,7 +165,7 @@
     <div class="validation red" ng-repeat="error in validationErrors[concept.conceptId]"><strong>Convention Error:</strong> {{error}}</div>
   </div>
   <div class="row">
-    <div class="validation yellow" ng-repeat="warning in validationWarning[concept.conceptId]"><strong>Convention Warning:</strong> {{warning}}</div>
+    <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[concept.conceptId]"><strong>Convention Warning:</strong> {{warning}}</div>
   </div>
 
 
@@ -299,7 +299,7 @@
         <div class="validation red" ng-repeat="error in validationErrors[description.descriptionId]"><strong>Convention Error:</strong> {{error}}</div>
       </div>
       <div class="row">
-        <div class="validation yellow" ng-repeat="warning in validationWarning[description.descriptionId]"><strong>Convention Warning:</strong> {{warning}}</div>
+        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[description.descriptionId]"><strong>Convention Warning:</strong> {{warning}}</div>
       </div>
 
     </div>
@@ -436,7 +436,7 @@
         <div class="validation red" ng-repeat="error in validationErrors[relationship.relationshipId]"><strong>Convention Error:</strong> {{error}}</div>
       </div>
       <div class="row">
-        <div class="validation yellow" ng-repeat="warning in validationWarning[relationship.relationshipId]"><strong>Convention Warning:</strong> {{warning}}</div>
+        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[relationship.relationshipId]"><strong>Convention Warning:</strong> {{warning}}</div>
       </div>
 
 
