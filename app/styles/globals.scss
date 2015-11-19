@@ -10,10 +10,17 @@
     line-height: 13px;
     font-size: 12px;
 }
+.breadcrumb{font-family: 'Roboto-Regular', sans-serif; font-size:12px; font-weight:400;}
 .red {
     background-color: #c13244;
     color: #fff;
 }
+.identity-services{    padding-left: 5px;
+    padding-right: 5px;}
+.navbar-nav.navbar-left .small-buttons {
+    padding: 0%!important;
+    font-size: 25px!important;
+    margin-top: 10px;}
 .modal-body .tab-content>.active{height:50vh!important;}
 .tab-content>.active,
 
