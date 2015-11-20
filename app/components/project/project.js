@@ -106,15 +106,21 @@ angular.module('singleConceptAuthoringApp.project', [
 
     // rebase the project
     $scope.rebase = function () {
+      notificationService.sendMessage('Rebasing project...');
       scaService.rebaseProject($scope.project.key).then(function (response) {
-        notificationService.sendMessage('Project Rebasing...', 10000, null);
+        notificationService.sendMessage('Project successfully rebased', 10000, null);
+      }, function(error) {
+        notificationService.sendError('Error rebasing project: ' + error);
       });
     };
 
     // promote the project
-    $scope.promote = function () {
+    $scope.promote = function ()  {
+    notificationService.sendMessage('Promoting project....');
       scaService.promoteProject($scope.project.key).then(function (response) {
-        notificationService.sendMessage('Project promoting...', 10000, null);
+        notificationService.sendMessage('Project successfully promoted', 10000, null);
+      }, function(error) {
+        notificationService.sendError('Error promoting project: ' + error);
       });
     };
 

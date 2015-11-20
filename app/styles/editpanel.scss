@@ -52,7 +52,6 @@ aside.editpanel ul a {
 	margin-right:0px!important;
 }
 .editing-form {
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-text-size-adjust: 100%;
     padding-bottom: 5px;
 }
@@ -63,7 +62,7 @@ aside.editpanel ul a {
 .editing-form input,
 .editing-form textarea,
 .editing-form select {
-    font-family: 'Roboto', sans-serif;
+    
     display: block;
     width: 100%;
     -webkit-box-sizing: border-box;
@@ -322,11 +321,15 @@ select.primitive  {
     background-color: #41ca65;
 }
 textarea,
-input {
+input,
+select {
     height: 30px!important;
     resize: none;
     line-height: 12px!important;
-    font-family: 'Open Sans Condensed', sans-serif;
+   font-weight:400!important;
+	    -webkit-font-smoothing: antialiased;
+    letter-spacing: .1px;
+    text-rendering: optimizeLegibility;
 }
 .button-width {
     width: 4.5%;
@@ -494,6 +497,7 @@ input {
       padding: 0% 0.25% !important;
       margin: 0% !important;
       text-align: center;
+	  line-height:25px;
     }
 
     .editing-form .sourcename textarea {
@@ -539,7 +543,7 @@ input {
         padding-left: 1%;
     }
     .editing-form .description {
-        width: 49%;
+        width: 47%;
     }
     .editing-form .acceptability {
         width: 22%;
@@ -772,6 +776,9 @@ button.fsn-title-button {
 .review.btn-default[disabled]{
     background-color: rgb(233, 30, 99);
 }
+.button-nav .review.btn-default[disabled],
+.button-nav .btn-default[disabled]
+{   background-color: #494949!important; color:#7c7c7c;border-bottom:1px #7c7c7c solid;}
 .Classify.btn-default[disabled]{
     background-color: rgb(76, 175, 80);
 }

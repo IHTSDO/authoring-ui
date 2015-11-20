@@ -22,6 +22,8 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "ta.scss";
 @import "tooltips.scss";
 @import "conflicts.scss";
+@import "responsive.scss";
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -34,6 +36,9 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
+  font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif!important;
+  font-weight: 400;
+	font-style: normal
 }
 html{ height: 100%;}
 
@@ -95,7 +100,6 @@ html{ height: 100%;}
   border: none;
   border-radius: 0px;
   text-shadow: none;
-  font-family: 'museo300', sans-serif;
   .navbar-brand {
     color: #fff;
   }

@@ -1,28 +1,12 @@
-<style>
-  .Available.badge {
-    background-color: #00b0ff;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-  }
 
-  .Claimed.badge {
-    background-color: grey;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-  }
-  
-
-</style>
 
 <div class="row no-gutter sca-container">
   <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
-       ng-include src="'layout/sidebar.html'"></div>
+       ng-include src="'layout/sidebar.html'">
+       <div class="sidebar-spacer"></div>
+       </div>
 
-  <div class="sca-column col-lg-9 col-md-9 col-sm-9">
+  <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right">
 
     <!-- Author Tasks -->
     <section class="tables-data">
@@ -89,7 +73,7 @@
 
               <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus != null"
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                         type="button"
                           ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
@@ -206,7 +190,7 @@
 
               <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
                <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus != null"
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                         type="button"
                           ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
