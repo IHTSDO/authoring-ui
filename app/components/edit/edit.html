@@ -343,7 +343,7 @@
   display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding darken-3 grey" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)"
               >
@@ -384,7 +384,7 @@
              repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey no-padding" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)">
             </div>
@@ -424,7 +424,7 @@
              repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
               >
@@ -465,7 +465,7 @@
              repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height" style="margin-right:0px; z-index:999">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey" style="margin-right:0px; z-index:999">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
               >

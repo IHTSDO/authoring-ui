@@ -226,13 +226,13 @@
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
 	margin-left: -33px;
 }
-.col-checkbox {
+.conflicts .col-checkbox {
 	width: 10%;
 }
-.col-concept {
+.conflicts .col-concept {
 	width: 80%;
 }
-.col-controls {
+.conflicts .col-controls {
 	width: 10%;
 	padding-right: 0px;
 }
@@ -242,14 +242,7 @@
 .conflicts table {
 	min-height: 300px;
 }
-.add-shadow {
-	box-shadow: inset 12px 0px 22px -14px #ABABAB;
-	-webkit-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-	-moz-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-	-o-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-	background-color: #fff;
-	padding: 5px !important;
-}
+
 input.conflicts-search {
 	margin: 0px 4%;
 	padding: 5px 0px;
