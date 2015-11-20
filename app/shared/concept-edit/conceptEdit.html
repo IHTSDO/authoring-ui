@@ -2,9 +2,13 @@
   <style>
 
     .yellowhl {
-     border-bottom:5px solid #0091d7
+      border-bottom: 5px solid #0091d7
     }
- .yellowhl .grey.darken-3{background-color:#0091d7}
+
+    .yellowhl .grey.darken-3 {
+      background-color: #0091d7
+    }
+
     .redhl {
       border-style: solid;
       border-width: 5px;
@@ -12,27 +16,46 @@
     }
 
     .orangehl {
-   
-	 border-bottom:5px solid #00a39b
+
+      border-bottom: 5px solid #00a39b
     }
-.orangehl .grey.darken-3{background-color:#00a39b}
-    .greenhl .grey.darken-3{background-color:#ff6755} {
-     
+
+    .orangehl .grey.darken-3 {
+      background-color: #00a39b
+    }
+
+    .greenhl .grey.darken-3 {
+      background-color: #ff6755
+    }
+
+
+    .validation {
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-top: 5px;
+      padding: 5px;
     }
 
   </style>
 
   <!-- begin validation error -->
-  <div class="alert alert-dismissible alert-danger validation" ng-show="error">
-    <button type="button" class="close" ng-click="error = null">×</button>
-    <h4>Validation Error!</h4>
-    {{error}}
+  <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
+    <button type="button" class="close" ng-click="errors = null">×</button>
+    <h4>Error!</h4>
+
+    <div ng-repeat="error in errors">
+      {{error}}
+    </div>
   </div>
-  <div class="alert alert-dismissible alert-warning validation" ng-show="warning">
-    <button type="button" class="close" ng-click="warning = null">×</button>
-    <h4>Warning</h4>
-    {{warning}}
+  <div class="alert alert-dismissible alert-warning validation" ng-show="warnings.length > 0">
+    <button type="button" class="close" ng-click="warnings = null">×</button>
+    <h4>Warning!</h4>
+
+    <div ng-repeat="warning in warnings">
+      {{warning}}
+    </div>
   </div>
+
   <!-- end validation error -->
   <div class="row p-t-5 grey darken-4 concept-headers " id="testId" name="testId" style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
@@ -47,6 +70,10 @@
         ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj"
         drop-channel="NA" drag-image="getDragImageForConcept(concept.fsn)"></button>
 
+      <button ng-click="saveConcept()" type="button"
+              class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-left tooltips-light normal-case "
+              ng-click="saveConcept()"
+              ng-if="isMerge"><span> Accept Merged Version </span></button>
 
     </div>
 
@@ -124,22 +151,32 @@
       <button type="button"
               class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-left tooltips-light normal-case"
               ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span></button>
-        <div ng-repeat="field in concept.additionalFields">
+      <div ng-repeat="field in concept.additionalFields">
             <textarea class="msd-elastic resizable-text form-control"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="field.value" type="text"
                       placeholder="{{field}}">
             </textarea>
-        </div>
+      </div>
     </div>
   </div>
+
+  <div class="row">
+    <div class="validation red" ng-repeat="error in validationErrors[concept.conceptId]"><strong>Convention Error:</strong> {{error}}</div>
+  </div>
+  <div class="row">
+    <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[concept.conceptId]"><strong>Convention Warning:</strong> {{warning}}</div>
+  </div>
+
 
   <!-- Toggle-able collapsed concept elements -->
   <div ng-show="!isCollapsed" class="editHeightSelector">
 
+
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions(true)"
          ng-class="getComponentStyle(description.descriptionId, null, '')">
+
       <div class="row darken-3 p-t-5 grey">
         <div class="col-md-12 no-padding color_{{relationship.groupId}}"
              drop-channel="descriptionObj"
@@ -151,13 +188,13 @@
                   class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
-                  ng-click="populateDescriptionMore(description)" popover-append-to-body="true"><span>More details</span></button>
+                  ng-click="populateDescriptionMore(description)" popover-append-to-body="true">
+            <span>More details</span></button>
 
           <button
             class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
             ui-draggable="true" drag="description" drag-channel="descriptionObj"
             drag-image="getDragImageForDescription(description)"></button>
-
 
           <!-- Active/Inactive -->
           <button type="button"
@@ -171,7 +208,7 @@
           <button type="button" class=" blue accent-2 button-width custom-button text-center" ng-disabled="isStatic"
                   title="Case Significance " ng-click="toggleCaseSignificance(description)">
 
-            <span class="md col-md-12 no-padding text-center">{{getCaseSignificanceDisplayText(description)}}</span>
+            <div class="md col-md-12 no-padding text-center">{{getCaseSignificanceDisplayText(description)}}</div>
 
 
           </button>
@@ -216,21 +253,24 @@
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="isStatic || description.effectiveTime || description.type === 'FSN'"
-                    title="Acceptability (en-us) " ng-click="toggleAcceptability(description, 'en-us')"> <span
+                    title="Acceptability (en-us) " ng-click="toggleAcceptability(description, 'en-us')"> <div
               class="md col-md-12 no-padding text-center">us:
                                                                                                     {{getAcceptabilityDisplayText(description,
-                                                                                                    'en-us')}}</span>
+                                                                                                    'en-us')}}</div>
             </button>
 
             <!-- en-gb acceptability -->
             <button type="button" class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="isStatic || description.effectiveTime  || description.type === 'FSN'"
-                    title="Acceptability (en-gb)" ng-click="toggleAcceptability(description, 'en-gb')"> <span
+                    title="Acceptability (en-gb)" ng-click="toggleAcceptability(description, 'en-gb')"> <div
               class="md col-md-12 no-padding text-center">gb:
                                                                                                     {{getAcceptabilityDisplayText(description,
-                                                                                                    'en-gb')}}</span>
+                                                                                                    'en-gb')}}</div>
             </button>
+
+
           </div>
+
 
           <div ng-show="!isStatic">
 
@@ -244,15 +284,22 @@
               <span>Remove Description</span></button>
 
           </div>
+
           <div ng-if="description.additionalFields" ng-repeat="field in description.additionalFields">
                 <textarea class="msd-elastic resizable-text form-control"
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">
                 </textarea>
-            </div>
+          </div>
 
         </div>
+      </div>
+      <div class="row">
+        <div class="validation red" ng-repeat="error in validationErrors[description.descriptionId]"><strong>Convention Error:</strong> {{error}}</div>
+      </div>
+      <div class="row">
+        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[description.descriptionId]"><strong>Convention Warning:</strong> {{warning}}</div>
       </div>
     </div>
 
@@ -270,11 +317,12 @@
              drag-hover-class="sca-drag-hover">
 
           <div class="p-t-5 ">
-            <button class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
-                    ng-click="setRelationshipProperties(relationship)"
-                    popover-template="'shared/component-more/relationshipMore.html'"
-                    popover-placement="{{popoverDirection}}"
-                    title="Some title here" popover-append-to-body="true"
+            <button
+              class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
+              ng-click="setRelationshipProperties(relationship)"
+              popover-template="'shared/component-more/relationshipMore.html'"
+              popover-placement="{{popoverDirection}}"
+              title="Some title here" popover-append-to-body="true"
               ><span>More details</span></button>
 
             <button
@@ -351,12 +399,14 @@
                       typeahead-on-select="setRelationshipTargetConceptFromMrcm(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
 
-                        <span class="pull-left drag-button-width " ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
+                        <span class="pull-left drag-button-width "
+                              ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                               ui-draggable="true"
                               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                               drag-channel="conceptPropertiesObj"
                               drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
             </div>
+
 
             <div ng-if="!isStatic">
               <button type="button" ng-click="addRelationship($index)"
@@ -370,17 +420,23 @@
 
             </div>
           </div>
-            <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
+          <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
                 <textarea class="msd-elastic resizable-text form-control"
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">
                 </textarea>
-            </div>
+          </div>
         </div>
 
       </div>
-      
+
+      <div class="row">
+        <div class="validation red" ng-repeat="error in validationErrors[relationship.relationshipId]"><strong>Convention Error:</strong> {{error}}</div>
+      </div>
+      <div class="row">
+        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[relationship.relationshipId]"><strong>Convention Warning:</strong> {{warning}}</div>
+      </div>
 
 
     </div>
@@ -390,4 +446,5 @@
 
   </div>
 </div>
+
 

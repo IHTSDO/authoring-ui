@@ -273,27 +273,27 @@ angular.module('singleConceptAuthoringApp')
 
     function isDescriptionsEqual(d1, d2) {
       if (d1.descriptionId !== d2.descriptionId) {
-        // console.debug('ids not equal');
+        // // console.debug('ids not equal');
         return false;
       }
       if (d1.active !== d2.active) {
-        // console.debug('active not equal');
+        // // console.debug('active not equal');
         return false;
       }
       if (d1.term !== d2.term) {
-        // console.debug('term not equal');
+        // // console.debug('term not equal');
         return false;
       }
       if (d1.type !== d2.type) {
-        // console.debug('type not equal');
+        // // console.debug('type not equal');
         return false;
       }
       // TODO Equality check needs improvement
       /*if (d1.acceptabilityMap !== d2.acceptabilityMap) {
-       // console.debug('acceptabilityMap not equal');
+       // // console.debug('acceptabilityMap not equal');
        return false;
        }*/
-      // console.debug('equal');
+      // // console.debug('equal');
       return true;
 
       // TODO Check other fields, e.g. moduleId
@@ -301,42 +301,42 @@ angular.module('singleConceptAuthoringApp')
 
     function isRelationshipsEqual(r1, r2) {
       if (r1.relationshipId !== r2.relationshipId) {
-        console.debug('id not equal');
+        // console.debug('id not equal');
         return false;
       }
       if (r1.active !== r2.active) {
-        console.debug('active not equal');
+        // console.debug('active not equal');
         return false;
       }
       if (r1.groupId !== r2.groupId) {
-        console.debug('groupId not equal');
+        // console.debug('groupId not equal');
         return false;
       }
       if (r1.type && !r2.type) {
-        console.debug('type not equal');
+        // console.debug('type not equal');
         return false;
       }
       if (r2.type && !r1.type) {
-        console.debug('type not equal');
+        // console.debug('type not equal');
         return false;
       }
       if (r1.type.conceptId !== r2.type.conceptId) {
-        console.debug('type not equal');
+        // console.debug('type not equal');
         return false;
       }
       if (r1.target && !r2.target) {
-        console.debug('target not equal');
+        // console.debug('target not equal');
         return false;
       }
       if (r2.target && !r1.target) {
-        console.debug('target not equal');
+        // console.debug('target not equal');
         return false;
       }
       if (r1.target.conceptId !== r2.target.conceptId) {
-        console.debug('target not equal');
+        // console.debug('target not equal');
         return false;
       }
-      console.debug('equal');
+      // console.debug('equal');
       return true;
 
       // TODO Check other fields, e.g. moduleId
@@ -344,20 +344,20 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function isComponentsEqual(c1, c2) {
-      console.debug('checking component equality', c1, c2);
+      // console.debug('checking component equality', c1, c2);
       // determine type by id
       // NOTE descriptions have 'conceptId' field, must be checked first
       if (c1.hasOwnProperty('descriptionId') && c2.hasOwnProperty('descriptionId')) {
-        console.debug('type -> description');
+        // console.debug('type -> description');
         return isDescriptionsEqual(c1, c2);
       } else if (c1.hasOwnProperty('relationshipId') && c2.hasOwnProperty('relationshipId')) {
-        console.debug('type -> relationship');
+        // console.debug('type -> relationship');
         return isRelationshipsEqual(c1, c2);
       } else if (c1.hasOwnProperty('conceptId') && c2.hasOwnProperty('conceptId')) {
-        console.debug('type -> concept');
+        // console.debug('type -> concept');
         return isConceptsEqual(c1, c2);
       } else {
-        console.debug('type -> UNKNOWN');
+        // console.debug('type -> UNKNOWN');
         return false;
       }
     }

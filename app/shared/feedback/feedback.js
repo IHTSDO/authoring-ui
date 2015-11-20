@@ -553,7 +553,6 @@ angular.module('singleConceptAuthoringApp')
                 // ensure response is in form of array for indexOf checking
                 // later
                 if (!reviewedListIds || !Array.isArray(reviewedListIds)) {
-                  console.debug('reviewedListIds', reviewedListIds, reviewedListIds.length);
                   reviewedListIds = [];
                 }
                 console.debug('reviewed list ids', reviewedListIds);

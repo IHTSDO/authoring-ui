@@ -2,7 +2,7 @@
   <div ng-include style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar"
        src="'layout/sidebar.html'"></div>
 
-  <div class="sca-column col-lg-9 col-md-9 col-sm-9 ">
+  <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right ">
     <div class="page-header row ">
       <div class="page-header col-md-3 p-t-15">
         <h1>
@@ -17,32 +17,32 @@
       <div class="page-header col-md-9 p-t-10 project-main-buttons">
 
         <div class="p-10 pull-right">
-          <button class="btn btn-disabled btn-border"
+          <button class="btn btn-border tooltips-left normal-case"
                   ng-click="promote()"
-                  ng-disabled="project.status !== 'FORWARD'"><span
-            class="project-icon blue darken-1 pull-left"><span class="md md-call-merge"></span></span>Promote
-            <div class="ripple-wrapper"></div>
+                  ng-disabled="project.branchState !== 'FORWARD'"><div
+            class="project-icon blue darken-1 pull-left "><div class="md md-call-merge"></div></div>Promote
+           <span>Promote this project</span>
           </button>
         </div>
         <div class="p-10 pull-right">
-          <button class="btn btn-success btn-border"
+          <button class="btn btn-success btn-border tooltips-left normal-case"
                   ng-click="rebase()"
-                  ng-disabled="project.status !== 'DIVERGED' && project.status !== 'BEHIND'">
-            <span
-              class="project-icon yellow darken-2 pull-left"><span class="md md-autorenew"></span></span>Rebase
-            <div class="ripple-wrapper"></div>
+                  ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND'">
+            <div
+              class="project-icon yellow darken-2 pull-left"><div class="md md-autorenew"></div></div>Pull in Mainline Changes
+           <span>Pull in changes from the mainline into this project</span>
           </button>
         </div>
-        <div class="p-10 pull-right">
-          <button class="btn btn-success btn-border" ng-click="classify()"><span
-            class="project-icon green pull-left"><span class="md md-notifications"></span></span>Classify
-            <div class="ripple-wrapper"></div>
+        <div class="p-10 pull-right ">
+          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()"><div
+            class="project-icon green pull-left"><div class="md md-notifications"></div></div>Classify
+             <span>Run classification against this project</span>
           </button>
         </div>
-        <div class="p-10 pull-right">
-          <button class="btn btn-success btn-border" ng-click="validate()"><span
-            class="project-icon deep-purple lighten-1 pull-left"><span class="md md-school"></span></span>Validate
-            <div class="ripple-wrapper"></div>
+        <div class="p-10 pull-right ">
+          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()"><div
+            class="project-icon deep-purple lighten-1 pull-left"><div class="md md-school"></div></div>Validate
+            <span>Run validation against this project</span>
           </button>
         </div>
       </div>
@@ -120,7 +120,7 @@
                 <span ng-class="{'report-text' : project.status === 'DIVERGED'}">Conflicts Results</span></button>
 
             <span class="project-icon red pull-right"><span class="md md-warning"></span></span>
-            <span class="arrow-green pull-right"></span>
+            <span class="arrow-red pull-right"></span>
 
             <div class="clearfix"></div>
 

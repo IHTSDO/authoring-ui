@@ -16,14 +16,14 @@
 label input[type=checkbox] {
     margin-left: -33px;
 }
-.col-checkbox {
+.feedback .col-checkbox {
     width: 10%;
 }
-.col-concept {
-    width: 80%;
+.feedback .col-concept {
+    width: 60%;
 }
-.col-controls {
-    width: 10%;
+.feedback .col-controls{
+    width: 30%;
     padding-right: 0px;
 }
 .h-45 {
@@ -33,10 +33,8 @@ label input[type=checkbox] {
    
 }
 .add-shadow {
-    box-shadow: inset 12px 0px 22px -14px #ABABAB;
-    -webkit-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-    -moz-box-shadow: inset 12px 0px 22px -14px #ABABAB;
-    -o-box-shadow: inset 12px 0px 22px -14px #ABABAB;
+     box-shadow: 
+	0 4px 5px -2px rgba(0, 0, 0, 0.2), 0 2px 16px 1px rgba(0, 0, 0, 0.10);
     background-color: #fff;
     padding: 5px !important;
     display: inline-block;
@@ -102,9 +100,10 @@ section thead input {
     margin: 5px;
 }
 .feedback-view .table > tbody > tr > td {
-    line-height: 12px;
+    line-height: 14px;
+	font-size:12px;
     vertical-align: middle;
-    line-height: 12px;
+    
     padding: 5px;
 }
 .feedback-view .table input {
