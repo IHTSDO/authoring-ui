@@ -62,7 +62,9 @@
 	margin-top: -5px;
 }
 
-
+.feedback-header{width:100%;float:left; margin-left:-5px;margin-right:-5px;margin-left:-5px;}
+.feedback-header .username{font-weight:500;margin-left:10px;}
+.feedback-header .date{font-weight:400;font-size:11px;}
 
 </style>
   <!-- for ng-table checkboxes -->
@@ -338,10 +340,9 @@
               <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case" title="Reviewer requested follow-up"
                       ng-show="feedback.feedbackRequested"><div
                 class="md md-flag"></div><span>Reviewer requested follow-up</span></button>
-              Feedback received {{feedback.creationDate | date : 'short'}} from {{feedback.fromUsername}}:
+             <div class="feedback-header"><span class="username">{{feedback.fromUsername}} </span>  <span class="date">{{feedback.creationDate | date:"MM/dd/yyyy 'at' h:mma"}}</span></div>
               <p compile-html="feedback.messageHtml"></p>
 
-              <hr>
             </div>
           </div>
         </div>
