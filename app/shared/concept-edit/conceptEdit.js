@@ -442,15 +442,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
 
-          // special case -- don't want save notifications in merge view, all handling done in conflicts.js
+          // special case -- don't want save notifications in merge view, all
+          // handling done in conflicts.js
           if (!scope.merge) {
             notificationService.sendMessage(saveMessage);
           }
           // validate concept first
           scope.getValidationResultsForConcept().then(function (validationResults) {
 
+            // special case -- merge:  display warnings and continue
+            if (scope.merge) {
+              // display the validation warnings and continue
+              scope.displayValidationResults(validationResults);
+              $rootScope.$broadcast('acceptMerge', {concept: scope.concept, validationResults: validationResults});
+            }
+
             // if errors, notify and do not save
-            if (validationResults.hasErrors) {
+            else if (validationResults.hasErrors) {
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
               scope.displayValidationResults(validationResults);
             }
@@ -460,41 +468,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // component ids may change on return from term server
             else if (validationResults.hasWarnings) {
 
-              // special case -- merge:  display warnings and continue
-              if (scope.merge) {
-                // display the validation warnings and continue
-                scope.displayValidationResults(validationResults);
-                saveHelper(); // will send broadcast to conflicts.js
-              } else {
+              // save the concept with warnings
+              saveHelper(scope.concept, true).then(function () {
 
-                // save the concept with warnings
-                saveHelper(scope.concept, true).then(function () {
+                  // check the newly returned concepts for persistent warnings
+                  scope.getValidationResultsForConcept().then(function (newValidationResults) {
 
-                    // check the newly returned concepts for persistent warnings
-                    scope.getValidationResultsForConcept().then(function (newValidationResults) {
+                    // if warnings still detected, notify and display (will
+                    // also display errors, which should not happen)
+                    if (newValidationResults.hasWarnings) {
 
-                      // if warnings still detected, notify and display (will
-                      // also display errors, which should not happen)
-                      if (newValidationResults.hasWarnings) {
+                      notificationService.sendWarning('Concept saved, but convention warnings were detected');
+                      console.debug('new Validation Results', newValidationResults);
+                      scope.displayValidationResults(newValidationResults);
 
-                        notificationService.sendWarning('Concept saved, but convention warnings were detected');
-                        console.debug('new Validation Results', newValidationResults);
-                        scope.displayValidationResults(newValidationResults);
+                    }
 
-                      }
-
-                      // otherwise, simply notify of save
-                      else {
-                        notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
-                      }
-                    });
-                  },
-                  // on error, notifyh
-                  function (error) {
-                    notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
-                    scope.displayValidationResults(validationResults);
+                    // otherwise, simply notify of save
+                    else {
+                      notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
+                    }
                   });
-              }
+                },
+                // on error, notifyh
+                function (error) {
+                  notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
+                  scope.displayValidationResults(validationResults);
+                });
+
             }
 
             // otherwise, just save
