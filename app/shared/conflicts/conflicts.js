@@ -110,36 +110,55 @@ angular.module('singleConceptAuthoringApp')
           );
 
           scope.$on('acceptMerge', function (event, data) {
-            notificationService.sendMessage('Accepting merged version for concept ' + data.concept.fsn);
-            scope.conceptUpdateFunction($routeParams.projectKey, $routeParams.taskKey, data.concept).then(function (response) {
-              notificationService.sendMessage('Merge accepted for concept ' + data.concept.fsn, 5000);
 
-              // mark the conflict as accepted
-              angular.forEach(scope.conflicts, function (conflict) {
-                if (conflict.id === data.concept.conceptId) {
-                  conflict.accepted = true
+            console.debug('acceptMerge event', data);
 
-                  // update the ui state
-                  if (scope.acceptedConceptIds.indexOf(conflict.id)) {
-                    scope.acceptedConceptIds.push(conflict.id);
-                    scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted', scope.acceptedConceptIds);
+            if (!data.concept) {
+              console.error('AcceptMerge event must have concept attached');
+              return;
+            }
+            if (!data.validationResults || !data.validationResults.errors || !data.validationResults.warnings) {
+              console.error('AcceptMerge event must have validation results (empty or non-empty) attached')
+              return;
+            }
+
+            if (Object.keys(data.validationResults.errors).length > 0) {
+              console.sendError('Cannot accept merge due to convention errors');
+            } else {
+
+              notificationService.sendMessage('Accepting merged version for concept ' + data.concept.fsn);
+              scope.conceptUpdateFunction($routeParams.projectKey, $routeParams.taskKey, data.concept).then(function (response) {
+                notificationService.sendMessage('Merge accepted for concept ' + data.concept.fsn, 5000);
+
+                // mark the conflict as accepted
+                angular.forEach(scope.conflicts, function (conflict) {
+                  if (conflict.id === data.concept.conceptId) {
+                    conflict.accepted = true
+
+                    // update the ui state
+                    if (scope.acceptedConceptIds.indexOf(conflict.id)) {
+                      scope.acceptedConceptIds.push(conflict.id);
+                      scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted', scope.acceptedConceptIds);
+                    }
                   }
+                });
+
+                // remove the concept from the viewed list (use the $on statement
+                // in this file) -- only if no errors detected, otherwise leave the concept in editing to display warnings
+                if (Object.keys(data.validationResults.warnings).length === 0) {
+                  $rootScope.$broadcast('stopEditing', {concept: data.concept});
+                } else {
+                  notificationService.sendWarning('Merged changes accepted, but convention warnings were detected');
                 }
+
+                // reload the tables
+                scope.conflictsToReviewTableParams.reload();
+                scope.conflictsAcceptedTableParams.reload();
+
+              }, function (error) {
+                notificationService.sendError('Error accepting merge');
               });
-
-
-
-              // remove the concept from the viewed list (use the $on statement
-              // in this file)
-              $rootScope.$broadcast('stopEditing', {concept: data.concept});
-
-              // reload the tables
-              scope.conflictsToReviewTableParams.reload();
-              scope.conflictsAcceptedTableParams.reload();
-
-            }, function (error) {
-              notificationService.sendError('Error accepting merge');
-            });
+            }
           });
 
           /////////////////////////////////////////////////////
