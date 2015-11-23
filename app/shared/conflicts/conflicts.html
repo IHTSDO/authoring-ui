@@ -18,18 +18,19 @@
 
   <div class="row no-gutter no-padding">
 
-    <!-- Displayed after merges complete -->
-    <div class="col-md-3 alert alert-warning" ng-if="rebaseComplete">
-      All changes successfully pulled in from project. <span ng-if="conflicts">Resolved merges successfully applied</span>
-    </div>
-
     <!-- Displayed before merges complete, or during rebasing -->
-    <div class="col-md-12 no-padding no-gutter" ng-if="!rebaseComplete">
+    <div class="col-md-12 no-padding no-gutter">
 
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
 
-        <div ng-if="!conflicts && !rebaseRunning" class="alert loading"><p>
+        <!-- Displayed after merges complete -->
+        <div class="alert loading m-20" ng-if="rebaseComplete">
+          <div class="green md md-done"></div> &nbsp All changes successfully pulled in from project. <span ng-if="conflicts">Resolved merges successfully applied</span>
+        </div>
+
+
+        <div ng-if="!conflicts && !rebaseRunning && !rebaseComplete" class="alert loading"><p>
 
           <div class="fading-circle">
             <div class="sk-circle1 sk-circle"></div>
