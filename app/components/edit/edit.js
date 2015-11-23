@@ -964,7 +964,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'BEHIND':
           $scope.canRebase = true// true $scope.isOwnTask;
           $scope.canPromote = false;
-          $scope.canConflict = false;
+          $scope.canConflict = true;
           break;
         case 'STALE':
           $scope.canRebase = $scope.isOwnTask;

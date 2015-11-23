@@ -23,6 +23,22 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope) {
 
+          // the list of conflicts (id, fsn, viewed)
+          scope.conflicts = null;
+
+          // the viewed merges (source, merge, target concepts)
+          scope.viewedMerges = [];
+
+          // the persisted (ui-state) list of concepts accepted
+          scope.acceptedConceptIds = [];
+
+          // status flags
+          scope.mergesComplete = false; // true if all merge concepts have been accepted
+          scope.rebaseRunning = false; // true if rebase has been triggered when no conflicts were detected
+          scope.rebaseComplete = false; // true if either (a) rebase with no conflicts complete, or (b) rebase with accepted merges is complete
+
+         
+
           // Parameter to show or hide the sidebar table
           scope.hideSidebar = false;
           scope.toggleSidebar = function () {
@@ -143,8 +159,9 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
 
-                // remove the concept from the viewed list (use the $on statement
-                // in this file) -- only if no errors detected, otherwise leave the concept in editing to display warnings
+                // remove the concept from the viewed list (use the $on
+                // statement in this file) -- only if no errors detected,
+                // otherwise leave the concept in editing to display warnings
                 if (Object.keys(data.validationResults.warnings).length === 0) {
                   $rootScope.$broadcast('stopEditing', {concept: data.concept});
                 } else {
@@ -239,6 +256,11 @@ angular.module('singleConceptAuthoringApp')
             return mappedComponents;
           }
 
+          /**
+           * Constructs a three-component map for conditional highlighting
+           * @param merge
+           * @returns {{source: {}, target: {}, merged: {}}}
+           */
           function highlightChanges(merge) {
 
             // create blank styling object
@@ -324,37 +346,26 @@ angular.module('singleConceptAuthoringApp')
           // Initialization of merge-review functionality
           /////////////////////////////////////////////////////
 
-          // the list of conflicts (id, fsn, viewed)
-          scope.conflicts = null;
-
-          // the viewed merges (source, merge, target concepts)
-          scope.viewedMerges = [];
-
-          // the persisted (ui-state) list of concepts accepted
-          scope.acceptedConceptIds = [];
-
+          // local variable containing the merge poll variable
           var viewedMergePoll = null;
 
-          scope.mergeFinalized = false;
-
-          // map of conceptId -> {source, target, merged concepts}
+          // local variable containing map of conceptId -> {source, target,
+          // merged concepts}
           var conceptMap = {};
 
-          scope.mergesComplete = false;
-
-          scope.finalizeMerges = function() {
+          scope.finalizeMerges = function () {
 
             // cancel polling
             viewedMergePoll = $interval.cancel(viewedMergePoll);
 
             notificationService.sendMessage('Applying merged changes....');
-            snowowlService.mergeAndApply(scope.sourceBranch, scope.targetBranch, scope.id).then(function(response) {
+            snowowlService.mergeAndApply(scope.sourceBranch, scope.targetBranch, scope.id).then(function (response) {
               notificationService.sendMessage('Merges successfully applied', 5000);
 
               // set flag for finalized merge
-              scope.mergeFinalized = true;
+              scope.rebaseComplete = true;
               $rootScope.$broadcast('reloadTask');
-            }, function(error) {
+            }, function (error) {
               notificationService.sendError('Error applying merges: ' + error);
             })
           };
@@ -501,55 +512,94 @@ angular.module('singleConceptAuthoringApp')
             }, 10000);
           }
 
+          function rebase() {
+            console.debug('Rebasing');
+            scope.rebaseRunning = true;
+            return;
+
+            if ($routeParams.taskKey) {
+              scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                scope.rebaseRunning = false;
+                scope.rebaseComplete = false;
+
+              }, function(error) {
+                scope.rebaseRunning = false;
+                scope.rebaseComplete = false;
+                notificationService.sendError('Error pulling changes from project: ' + error);
+              });
+            } else {
+              scaService.rebaseProject($routeParams.projectKey).then(function(response) {
+                // TODO Implement for project level
+              })
+            }
+          }
+
+          /* ON LOAD PROCESS
+           (1) Check if saved ui-state for merge-review id exists, and if so, get details
+           (1a) if details are present, with concepts returned, merge review is current. Display the results and stop
+           (1b) if review not current (1a fails), review is not current.  Continue.
+           (2) Generate a merge review for this source/target pair
+           (2a) If merge review returns empty (no concepts), rebase
+           (2b) If merge review returns with concepts, switch to merge resolution view.
+           */
+
           // on load, check ui-state for merge review id
+          // TODO Ui-State saving will not work with projects, resulting in
+          // re-generation of reviews on every load
           scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
 
-            // if ui-state has merge review id from previous visit
-            if (mergeReviewId) {
+              // (2) if ui-state has merge review id from previous visit
+              if (mergeReviewId) {
 
-              // strip the leading and trailing ' from the mergeReviewId
-              mergeReviewId = mergeReviewId.replace(/"/g, '');
+                console.debug('Previous merge-review exists with id: ' + mergeReviewId);
 
-              console.debug('Merge review ui-state found', mergeReviewId);
+                snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
 
-              // retrieve the merge review information
-              snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
+                  // (2a) Previous review is current and has concepts,
+                  // initialize from this review
+                  if (mergeReview && mergeReview.mergedChanges) {
+                    console.debug('Previous merge-review is current');
+                    initializeMergeReview(mergeReview);
+                  }
 
-                console.debug('Existing merge review', mergeReview);
-                // if review exists and is current (i.e. returned), initialize
-                if (mergeReview) {
-                  console.debug('Existing merge review exists and is current');
-                  initializeMergeReview(mergeReview);
-                }
+                  // (2b) Previous review is not current, generate new review
+                  // and initialize from new review
+                  else {
+                    console.debug('Previous merge-review is not current, generating new merge-review');
+                    snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+                      initializeMergeReview(newReview);
+                    }, function (error) {
+                      notificationService.sendError('Error generating merge review');
+                    });
+                  }
 
-                // if review does not exist or is not current, generate the
-                // merge review
-                else {
+                });
+              }
 
-                  // clear the accepted merges
-                  scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted', []);
+              // (3) if no review or review not current, generate new merge
+              // review
+              else {
+                console.debug('No review ui-state, generating new merge-review');
+                snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
-                  console.debug('Existing merge review does not exist or is not current');
-                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+                  // (3a) DIVERGED, but no merges to resolve
+                  if (!newReview || !newReview.mergedChanges) {
+                    rebase();
+                  }
+
+                  // (3b) DIVERGED, with merges to resolve
+                  else {
                     initializeMergeReview(newReview);
-                  }, function (error) {
-                    notificationService.sendError('Error generating merge review');
-                  });
-                }
-              })
+                  }
+                }, function (error) {
+                  notificationService.sendError('Error generating merge review');
+                });
+              }
             }
-
-            // if no ui state, generate the merge review
-            else {
-              console.debug('No review ui-state');
-              snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
-                initializeMergeReview(newReview);
-              }, function (error) {
-                notificationService.sendError('Error generating merge review');
-              })
-            }
-          });
+          )
+          ;
 
         }
       }
-    }]);
+    }])
+;
