@@ -55,6 +55,19 @@
       </button></div>
         </div>
       <!-- Conflicts Report: Sidebar -->
+      
+        <div ng-if="!conflicts && rebaseRunning" class="loading-merges green">
+
+          <div class="all-done"><div class="md md-done"> </div></div> 
+          <h3>Task and project can be merged without issues, pulling changes in from project...</h3>
+        </div>
+
+        <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
+        <div ng-if="conflicts && rebaseRunning" class="loading-merges red">
+         <div class="all-done"><div class="md md-sync-problem"> </div></div> 
+          <h3>Unexpected error:  Attempt to pull in changes while merges remain unresolved.  Contact the administrator.</h3>
+          
+          </div>
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
 
      
@@ -62,15 +75,7 @@
 
       
 
-        <div ng-if="!conflicts && rebaseRunning" class="loading-merges-sucess">
-
-         
-          Task and project can be merged without issues, pulling changes in from project...
-        </div>
-
-        <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
-        <div ng-if="conflicts && rebaseRunning" class="alert loading"><p>
-          <div class="m-10 alert alert-warning">Unexpected error:  Attempt to pull in changes while merges remain unresolved.  Contact the administrator.</div>
+      
         </div>
 
 
