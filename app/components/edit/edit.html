@@ -168,11 +168,9 @@
     <button type="button"
             class="btn btn-default widget-toolbar red lighten-1 conflicts tooltips-right tooltips-light normal-case"
             ng-disabled="!canConflict"
-
-            title="Switch to Resolve Conflicts View"
             ng-click="setView('conflicts')">
       <div class="md md-warning"></div>
-      <span>View Conflicts Report</span></button>
+      <span>Pull new changes from project</span></button>
 
     <!-- Promote -- Project only -->
     <button type="button"
@@ -206,14 +204,6 @@
       <div class="md md-grid-off"></div>
       <span>Hide all concept models</span></button>
 
-    <!-- Rebase Task: Disabled IF canRebase flag is false OR conflicted concepts not resolved exist -->
-    <button type="button"
-            class="btn btn-default widget-toolbar yellow darken-2 tooltips-right tooltips-light normal-case"
-            style="width: 50px; height: 50px; margin: 0; padding: 0; position:fixed; bottom:38px; left:0px"
-            ng-disabled="!canRebase"
-            ng-click="rebase()">
-      <div class="md md-autorenew"></div>
-      <span>Pull new changes from project</span></button>
   </div>
 
   <!-- Main page content -->
