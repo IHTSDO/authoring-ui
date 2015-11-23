@@ -90,13 +90,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         console.debug('conceptEdit styles', scope.componentStyles);
 
-        $timeout(function () {
-          scope.popoverDirection = document.getElementById('testId').getBoundingClientRect().left < 500 ? 'bottom' : 'left';
-          // console.debug('popover direction detection',
-          // scope.popoverDirection,
-          // document.getElementById('testId').getBoundingClientRect().left);
-        }, 100);
-
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
           return;
@@ -1565,10 +1558,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Sets needed concept properties as element attributes
          * @param concept
          */
-        scope.setConceptProperties = function (concept) {
+        scope.setConceptProperties = function (concept, $event) {
           if (!concept) {
             return;
           }
+          scope.setPopoverDirection($event);
 
           // retrieve inactivation reason if inactive
           if (!concept.active) {
@@ -1596,11 +1590,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Sets needed description properties as element attributes
          * @param description
          */
-        scope.setDescriptionProperties = function (description) {
+        scope.setDescriptionProperties = function (description, $event) {
 
           if (!description) {
             return;
           }
+
+          scope.setPopoverDirection($event);
 
           // retrieve inactivation reason if inactive
           if (!description.active) {
@@ -1613,6 +1609,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             });
           }
+        };
+
+        /**
+         * Sets needed relationship properties as element attributes
+         * @param relationship
+         */
+        scope.setRelationshipProperties = function (relationship, $event) {
+
+          if (!relationship) {
+            return;
+          }
+
+          scope.setPopoverDirection($event);
         };
 
 // NOTE: No inactivation reasons currently for relationships
@@ -2076,6 +2085,28 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             $('#image-' + concept.conceptId).css('display', 'none');
           }
         };
+
+        //////////////////////////////////////////////////////////
+        // Component More Details Popover Conditional Direction //
+        //////////////////////////////////////////////////////////
+
+        // sets the popover direction (left, bottom, right) based on current position of root element
+        scope.setPopoverDirection = function($event) {
+          if ($event.pageX < 500) {
+            scope.popoverDirection = $event.pageX < 300 ? 'right' : 'bottom';
+          } else {
+            scope.popoverDirection = 'left';
+          }
+        };
+
+        // on layout changed notifications, recalculate popoverDirection for this concept edit element
+        scope.$on('layoutChanged', function() {
+          setPopoverDirection();
+        });
+
+        // on load, set the popover direction
+        setPopoverDirection();
+
 
 //////////////////////////////////////////////////////////////////////////
 // Conditional component styling
