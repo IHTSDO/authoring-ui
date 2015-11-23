@@ -4,9 +4,7 @@
 
   <style>
 
-    .conflict-concept-column {
-      background-color: #424242
-    }
+
   </style>
 
 
@@ -20,52 +18,54 @@
 
     <!-- Displayed before merges complete, or during rebasing -->
     <div class="col-md-12 no-padding no-gutter">
+  <div ng-if="!conflicts && !rebaseRunning && !rebaseComplete" class="loading-merges blue darken-1">
 
+         <div class="loading-merges">   <div class="clock">
+<svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+<circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
+<line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
+  <animatetransform attributeName="transform" 
+       dur="2s"
+       type="rotate"
+       from="0 50 50"
+       to="360 50 50"
+       repeatCount="indefinite" />
+</line>
+<line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
+  <animatetransform attributeName="transform" 
+       dur="15s"
+       type="rotate"
+       from="0 50 50"
+       to="360 50 50"
+       repeatCount="indefinite" />
+</line>
+</svg>
+</div>
+ <h3>Comparing task to project, please wait just a moment...</h3>
+
+</div>
+         
+        </div>
+           <!-- Displayed after merges complete -->
+        <div class="loading-merges green" ng-if="rebaseComplete">
+          <div class="all-done"><div class="md md-done"> </div></div> 
+          <h3> All changes successfully pulled in from project. <span ng-if="conflicts">Resolved merges successfully applied</span></h3>
+           <div class="successful-merge"> <button class="btn btn-default green darken-1" >Click Here to Resume Editing
+      </button></div>
+        </div>
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
 
-        <!-- Displayed after merges complete -->
-        <div class="alert loading m-20" ng-if="rebaseComplete">
-          <div class="green md md-done"></div> &nbsp All changes successfully pulled in from project. <span ng-if="conflicts">Resolved merges successfully applied</span>
-        </div>
+     
 
 
-        <div ng-if="!conflicts && !rebaseRunning && !rebaseComplete" class="alert loading"><p>
+      
 
-          <div class="fading-circle">
-            <div class="sk-circle1 sk-circle"></div>
-            <div class="sk-circle2 sk-circle"></div>
-            <div class="sk-circle3 sk-circle"></div>
-            <div class="sk-circle4 sk-circle"></div>
-            <div class="sk-circle5 sk-circle"></div>
-            <div class="sk-circle6 sk-circle"></div>
-            <div class="sk-circle7 sk-circle"></div>
-            <div class="sk-circle8 sk-circle"></div>
-            <div class="sk-circle9 sk-circle"></div>
-            <div class="sk-circle10 sk-circle"></div>
-            <div class="sk-circle11 sk-circle"></div>
-            <div class="sk-circle12 sk-circle"></div>
-          </div>
-          Comparing task to project, please wait just a moment...</p>
-        </div>
+        <div ng-if="!conflicts && rebaseRunning" class="loading-merges-sucess">
 
-        <div ng-if="!conflicts && rebaseRunning" class="alert loading"><p>
-
-          <div class="fading-circle">
-            <div class="sk-circle1 sk-circle"></div>
-            <div class="sk-circle2 sk-circle"></div>
-            <div class="sk-circle3 sk-circle"></div>
-            <div class="sk-circle4 sk-circle"></div>
-            <div class="sk-circle5 sk-circle"></div>
-            <div class="sk-circle6 sk-circle"></div>
-            <div class="sk-circle7 sk-circle"></div>
-            <div class="sk-circle8 sk-circle"></div>
-            <div class="sk-circle9 sk-circle"></div>
-            <div class="sk-circle10 sk-circle"></div>
-            <div class="sk-circle11 sk-circle"></div>
-            <div class="sk-circle12 sk-circle"></div>
-          </div>
-          Task and project can be merged without issues, pulling changes in from project...</p>
+         
+          Task and project can be merged without issues, pulling changes in from project...
         </div>
 
         <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
