@@ -33,11 +33,13 @@ angular.module('singleConceptAuthoringApp')
           scope.acceptedConceptIds = [];
 
           // status flags
-          scope.mergesComplete = false; // true if all merge concepts have been accepted
-          scope.rebaseRunning = false; // true if rebase has been triggered when no conflicts were detected
-          scope.rebaseComplete = false; // true if either (a) rebase with no conflicts complete, or (b) rebase with accepted merges is complete
-
-         
+          scope.mergesComplete = false; // true if all merge concepts have been
+                                        // accepted
+          scope.rebaseRunning = false; // true if rebase has been triggered
+                                       // when no conflicts were detected
+          scope.rebaseComplete = false; // true if either (a) rebase with no
+                                        // conflicts complete, or (b) rebase
+                                        // with accepted merges is complete
 
           // Parameter to show or hide the sidebar table
           scope.hideSidebar = false;
@@ -364,6 +366,10 @@ angular.module('singleConceptAuthoringApp')
 
               // set flag for finalized merge
               scope.rebaseComplete = true;
+
+              // clear the conflicts list -- no further changes are permissible
+              scope.conflicts = null;
+
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
               notificationService.sendError('Error applying merges: ' + error);
@@ -521,16 +527,17 @@ angular.module('singleConceptAuthoringApp')
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = true;
 
-                // broadcast reload task to any current listeners, to pull in new branch state
+                // broadcast reload task to any current listeners, to pull in
+                // new branch state
                 $rootScope.$broadcast('reloadTask');
 
-              }, function(error) {
+              }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
                 notificationService.sendError('Error pulling changes from project: ' + error);
               });
             } else {
-              scaService.rebaseProject($routeParams.projectKey).then(function(response) {
+              scaService.rebaseProject($routeParams.projectKey).then(function (response) {
                 // TODO Implement for project level
               })
             }
@@ -569,7 +576,12 @@ angular.module('singleConceptAuthoringApp')
                   else {
                     console.debug('Previous merge-review is not current, generating new merge-review');
                     snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
-                      initializeMergeReview(newReview);
+
+                      if (mergeReview && mergeReview.mergedChanges) {
+                        initializeMergeReview(newReview);
+                      } else {
+                        rebase(); // TODO Consider how we want to handle this scenario -- this rebase effectively is a null op but calls backend
+                      }
                     }, function (error) {
                       notificationService.sendError('Error generating merge review');
                     });
