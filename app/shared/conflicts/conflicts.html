@@ -7,6 +7,28 @@
     .conflict-concept-column {
       background-color: #424242
     }
+	
+	.conflicts .iconbase {
+    width: 40px;
+    height: 40px;
+    padding: 6px 8px;
+    float: left;
+    font-size: 18px;
+}
+.merges-button {
+    padding: 0px!important;
+    margin: 0px!important;
+    width: 100%!important;
+    margin-bottom: 10px;}
+	.merges-button .button-link {
+    padding: 8px 15px;
+    float: left;
+    font-weight: 500;
+	text-transform:none;
+}
+.merges-button[disabled]:hover{    background-color: #bdbdbd;
+    color: #fff;}
+
   </style>
 
 
@@ -155,14 +177,11 @@
 
                 <!-- buttons trigger off whether all merges are complete
                NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
-                <button ng-if="mergesComplete" ng-click="finalizeMerges()" class="btn btn-default red lighten-2"><span
-                  class="md md-assignment-turned-in darken-1"></span>Finalize Merges
+               <div class="col-md-12">
+                <button ng-if="mergesComplete" ng-click="finalizeMerges()" class="btn btn-default red lighten-2 merges-button"> <span class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span>
                 </button>
-                <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case"><span
-                  class="md md-assignment-turned-in darken-1 normal-case"></span>All merges must be accepted to
-                                                                                 continue
-                </button>
-
+                <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case merges-button"><span class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span></button>
+</div>
               </div>
 
               <!-- Merges Accepted -->
@@ -191,17 +210,16 @@
                     </td>
                   </tr>
                 </table>
-
+<div class="col-md-12">
                 <!-- buttons trigger off whether all merges are complete
                 NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
-                <button ng-if="mergesComplete" ng-click="finalizeMerges()" class="btn btn-default red lighten-2"><span
-                  class="md md-assignment-turned-in darken-1"></span>Finalize Merges
+                <button ng-if="mergesComplete" ng-click="finalizeMerges()" class="btn btn-default red lighten-2 merges-button"><span
+                  class="md md-assignment-turned-in darken-2 iconbase"></span><span class="button-link">Finalize Merges</span>
                 </button>
-                <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case"><span
-                  class="md md-assignment-turned-in darken-1 normal-case"></span>All merges must be accepted to
-                                                                                 continue
+                <button ng-if="!mergesComplete" disabled class="btn btn-default red lighten-2 normal-case merges-button"><span
+                  class="md md-assignment-turned-in red lighten-1 iconbase"></span><span class="button-link">All merges must be accepted to continue</span>
                 </button>
-
+</div>
               </div>
             </div>
           </div>
