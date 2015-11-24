@@ -56,6 +56,7 @@ angular.module('singleConceptAuthoringApp')
               sorting: {fsn: 'asc'},
               orderBy: 'fsn'
             },
+                                                                 
             {
               filterDelay: 50,
               total: scope.conflicts ? scope.conflicts.length : 0,
@@ -134,7 +135,7 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
             if (!data.validationResults || !data.validationResults.errors || !data.validationResults.warnings) {
-              console.error('AcceptMerge event must have validation results (empty or non-empty) attached')
+              console.error('AcceptMerge event must have validation results (empty or non-empty) attached');
               return;
             }
 
@@ -149,7 +150,7 @@ angular.module('singleConceptAuthoringApp')
                 // mark the conflict as accepted
                 angular.forEach(scope.conflicts, function (conflict) {
                   if (conflict.id === data.concept.conceptId) {
-                    conflict.accepted = true
+                    conflict.accepted = true;
 
                     // update the ui state
                     if (scope.acceptedConceptIds.indexOf(conflict.id)) {
@@ -374,7 +375,7 @@ angular.module('singleConceptAuthoringApp')
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
               notificationService.sendError('Error applying merges: ' + error);
-            })
+            });
           };
 
           scope.viewConflict = function (conflict) {
@@ -527,7 +528,7 @@ angular.module('singleConceptAuthoringApp')
                   notificationService.sendWarning('Merge review is no longer current; pull project changes in and start again');
                   viewedMergePoll = $interval.cancel(viewedMergePoll);
                 }
-              })
+              });
             }, 10000);
           }
 
@@ -552,7 +553,7 @@ angular.module('singleConceptAuthoringApp')
             } else {
               scaService.rebaseProject($routeParams.projectKey).then(function (response) {
                 // TODO Implement for project level
-              })
+              });
             }
           }
 
@@ -626,7 +627,7 @@ angular.module('singleConceptAuthoringApp')
                   });
                 }
               }
-            )
+            );
 
           }
 
@@ -641,6 +642,6 @@ angular.module('singleConceptAuthoringApp')
           }
 
         }
-      }
+      };
     }])
 ;

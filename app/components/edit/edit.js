@@ -963,7 +963,7 @@ Removed as project views are now handled in project.js and projectMerge.js
           $scope.canConflict = false;
           break;
         case 'BEHIND':
-          $scope.canRebase = true// true $scope.isOwnTask;
+          $scope.canRebase = true;// true $scope.isOwnTask;
           $scope.canPromote = false;
           $scope.canConflict = true;
           break;
@@ -1093,7 +1093,7 @@ Removed as project views are now handled in project.js and projectMerge.js
           $scope.getLatestValidation();
 
           setBranchFunctionality($scope.task.branchState);
-        })
+        });
       }
     });
 
