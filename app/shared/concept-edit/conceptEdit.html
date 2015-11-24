@@ -57,10 +57,10 @@
   </div>
 
   <!-- end validation error -->
-  <div class="row p-t-5 grey darken-4 concept-headers " id="testId" name="testId" style=" margin-right:0px;">
+  <div class="row p-t-5 grey darken-4 concept-headers" ="rootElement" style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
 
-      <button ng-click="setConceptProperties(concept)" type="button"
+      <button ng-click="setConceptProperties(concept, $event)" type="button"
               class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}"
               popover-trigger="click: click" popover-append-to-body="true"><span>More details</span></button>
@@ -252,7 +252,7 @@
             <!-- en-us acceptability -->
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button"
-                    ng-disabled="isStatic || description.effectiveTime || description.type === 'FSN'"
+                    ng-disabled="description.type === 'FSN' && description.effectiveTime"
                     title="Acceptability (en-us) " ng-click="toggleAcceptability(description, 'en-us')"> <div
               class="md col-md-12 no-padding text-center">us:
                                                                                                     {{getAcceptabilityDisplayText(description,
@@ -261,7 +261,7 @@
 
             <!-- en-gb acceptability -->
             <button type="button" class=" blue accent-2 button-width-acceptability custom-button"
-                    ng-disabled="isStatic || description.effectiveTime  || description.type === 'FSN'"
+                    ng-disabled="description.type === 'FSN' && description.effectiveTime"
                     title="Acceptability (en-gb)" ng-click="toggleAcceptability(description, 'en-gb')"> <div
               class="md col-md-12 no-padding text-center">gb:
                                                                                                     {{getAcceptabilityDisplayText(description,

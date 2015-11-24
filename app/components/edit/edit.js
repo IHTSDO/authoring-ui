@@ -13,13 +13,14 @@ angular.module('singleConceptAuthoringApp.edit', [
         templateUrl: 'components/edit/edit.html',
         resolve: {}
       });
-
+/*
+Removed as project views are now handled in project.js and projectMerge.js
     $routeProvider
       .when('/projects/project/:projectKey/:mode', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {}
-      });
+      });*/
   })
 
 //Directive to trigger a function on the rendering of an entire ng-repeat,
@@ -964,7 +965,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'BEHIND':
           $scope.canRebase = true// true $scope.isOwnTask;
           $scope.canPromote = false;
-          $scope.canConflict = false;
+          $scope.canConflict = true;
           break;
         case 'STALE':
           $scope.canRebase = $scope.isOwnTask;
@@ -1012,70 +1013,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
     ////////////////////////////////////
-    // Rebase & Promote
+    // Project Promotion
     /////////////////////////////////////
-
-    /**
-     * Rebase the current project or task
-     */
-    $scope.rebase = function () {
-
-      console.debug($scope.conflictsContainer);
-
-      // rebase the project or task, and reload the page on success
-      // to trigger all necessary state updates
-      if (!$scope.taskKey) {
-
-        notificationService.sendMessage('Rebasing project...', 0);
-        scaService.rebaseProject($scope.projectKey).then(function (response) {
-          console.debug('rebase project completed', response);
-          if (response !== null) {
-            notificationService.sendMessage('Project successfully rebased', 5000);
-
-            // TODO This is clunky, short-term fix
-            // should regenerate conflicts, update task state, etc.
-            // manually
-            $window.location.reload();
-          }
-        });
-      } else {
-
-        // if task is diverged, confirm before allowing rebase
-        if ($scope.task.status === 'DIVERGED') {
-          if (!window.confirm('Pulling changes in from the project may erase work you have done.  Are you sure you want to continue?\n\nCancel this dialog and click the View Merge button on the navigation sidebar to merge your work with changes on the project.')) {
-            return;
-          }
-
-          notificationService.sendMessage('Rebasing task...', 0);
-          scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
-            console.debug('rebase task completed', response);
-            if (response !== null) {
-              notificationService.sendMessage('Task successfully rebased', 5000);
-
-              // should regenerate conflicts, update task state, etc.
-              // manually
-              $window.location.reload();
-            }
-          });
-        }
-
-        // duplicated code due to unexpected behavior on task status window
-        // confirmation
-        else {
-          notificationService.sendMessage('Rebasing task...', 0);
-          scaService.rebaseTask($scope.projectKey, $scope.taskKey).then(function (response) {
-            console.debug('rebase task completed', response);
-            if (response !== null) {
-              notificationService.sendMessage('Task successfully rebased', 5000);
-
-              // should regenerate conflicts, update task state, etc.
-              // manually
-              $window.location.reload();
-            }
-          });
-        }
-      }
-    };
 
     $scope.promoteProject = function () {
       notificationService.sendMessage('Promoting project....', 0);
@@ -1087,6 +1026,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       });
     };
+
+
+    // infinite scroll function -- TODO Relocate
     $scope.isLast = function (check) {
       var cssClass = check ? 'last' : null;
       return cssClass;

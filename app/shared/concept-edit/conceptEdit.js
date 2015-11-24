@@ -90,13 +90,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         console.debug('conceptEdit styles', scope.componentStyles);
 
-        $timeout(function () {
-          scope.popoverDirection = document.getElementById('testId').getBoundingClientRect().left < 500 ? 'bottom' : 'left';
-          // console.debug('popover direction detection',
-          // scope.popoverDirection,
-          // document.getElementById('testId').getBoundingClientRect().left);
-        }, 100);
-
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
           return;
@@ -442,15 +435,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
 
-          // special case -- don't want save notifications in merge view, all handling done in conflicts.js
+          // special case -- don't want save notifications in merge view, all
+          // handling done in conflicts.js
           if (!scope.merge) {
             notificationService.sendMessage(saveMessage);
           }
           // validate concept first
           scope.getValidationResultsForConcept().then(function (validationResults) {
 
+            // special case -- merge:  display warnings and continue
+            if (scope.merge) {
+              // display the validation warnings and continue
+              scope.displayValidationResults(validationResults);
+              $rootScope.$broadcast('acceptMerge', {concept: scope.concept, validationResults: validationResults});
+            }
+
             // if errors, notify and do not save
-            if (validationResults.hasErrors) {
+            else if (validationResults.hasErrors) {
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
               scope.displayValidationResults(validationResults);
             }
@@ -460,41 +461,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // component ids may change on return from term server
             else if (validationResults.hasWarnings) {
 
-              // special case -- merge:  display warnings and continue
-              if (scope.merge) {
-                // display the validation warnings and continue
-                scope.displayValidationResults(validationResults);
-                saveHelper(); // will send broadcast to conflicts.js
-              } else {
+              // save the concept with warnings
+              saveHelper(scope.concept, true).then(function () {
 
-                // save the concept with warnings
-                saveHelper(scope.concept, true).then(function () {
+                  // check the newly returned concepts for persistent warnings
+                  scope.getValidationResultsForConcept().then(function (newValidationResults) {
 
-                    // check the newly returned concepts for persistent warnings
-                    scope.getValidationResultsForConcept().then(function (newValidationResults) {
+                    // if warnings still detected, notify and display (will
+                    // also display errors, which should not happen)
+                    if (newValidationResults.hasWarnings) {
 
-                      // if warnings still detected, notify and display (will
-                      // also display errors, which should not happen)
-                      if (newValidationResults.hasWarnings) {
+                      notificationService.sendWarning('Concept saved, but convention warnings were detected');
+                      console.debug('new Validation Results', newValidationResults);
+                      scope.displayValidationResults(newValidationResults);
 
-                        notificationService.sendWarning('Concept saved, but convention warnings were detected');
-                        console.debug('new Validation Results', newValidationResults);
-                        scope.displayValidationResults(newValidationResults);
+                    }
 
-                      }
-
-                      // otherwise, simply notify of save
-                      else {
-                        notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
-                      }
-                    });
-                  },
-                  // on error, notifyh
-                  function (error) {
-                    notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
-                    scope.displayValidationResults(validationResults);
+                    // otherwise, simply notify of save
+                    else {
+                      notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
+                    }
                   });
-              }
+                },
+                // on error, notifyh
+                function (error) {
+                  notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
+                  scope.displayValidationResults(validationResults);
+                });
+
             }
 
             // otherwise, just save
@@ -1564,10 +1558,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Sets needed concept properties as element attributes
          * @param concept
          */
-        scope.setConceptProperties = function (concept) {
+        scope.setConceptProperties = function (concept, $event) {
           if (!concept) {
             return;
           }
+          scope.setPopoverDirection($event);
 
           // retrieve inactivation reason if inactive
           if (!concept.active) {
@@ -1595,11 +1590,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Sets needed description properties as element attributes
          * @param description
          */
-        scope.setDescriptionProperties = function (description) {
+        scope.setDescriptionProperties = function (description, $event) {
 
           if (!description) {
             return;
           }
+
+          scope.setPopoverDirection($event);
 
           // retrieve inactivation reason if inactive
           if (!description.active) {
@@ -1612,6 +1609,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             });
           }
+        };
+
+        /**
+         * Sets needed relationship properties as element attributes
+         * @param relationship
+         */
+        scope.setRelationshipProperties = function (relationship, $event) {
+
+          if (!relationship) {
+            return;
+          }
+
+          scope.setPopoverDirection($event);
         };
 
 // NOTE: No inactivation reasons currently for relationships
@@ -2075,6 +2085,28 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             $('#image-' + concept.conceptId).css('display', 'none');
           }
         };
+
+        //////////////////////////////////////////////////////////
+        // Component More Details Popover Conditional Direction //
+        //////////////////////////////////////////////////////////
+
+        // sets the popover direction (left, bottom, right) based on current position of root element
+        scope.setPopoverDirection = function($event) {
+          if ($event.pageX < 500) {
+            scope.popoverDirection = $event.pageX < 300 ? 'right' : 'bottom';
+          } else {
+            scope.popoverDirection = 'left';
+          }
+        };
+
+        // on layout changed notifications, recalculate popoverDirection for this concept edit element
+        scope.$on('layoutChanged', function() {
+          setPopoverDirection();
+        });
+
+        // on load, set the popover direction
+        setPopoverDirection();
+
 
 //////////////////////////////////////////////////////////////////////////
 // Conditional component styling
