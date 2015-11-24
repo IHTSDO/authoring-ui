@@ -353,7 +353,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
 
           return deferred.promise;
-        };
+        }
 
         // helper function to display validation results based on results from
         // getValidationResultsForConcept
@@ -497,7 +497,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
               }, function (error) {
                 notificationService.sendError('Error saving concept');
-              })
+              });
             }
 
           });
@@ -2101,11 +2101,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // on layout changed notifications, recalculate popoverDirection for this concept edit element
         scope.$on('layoutChanged', function() {
-          setPopoverDirection();
+          scope.setPopoverDirection();
         });
 
         // on load, set the popover direction
-        setPopoverDirection();
+        scope.setPopoverDirection();
 
 
 //////////////////////////////////////////////////////////////////////////
