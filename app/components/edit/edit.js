@@ -13,13 +13,14 @@ angular.module('singleConceptAuthoringApp.edit', [
         templateUrl: 'components/edit/edit.html',
         resolve: {}
       });
-
+/*
+Removed as project views are now handled in project.js and projectMerge.js
     $routeProvider
       .when('/projects/project/:projectKey/:mode', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {}
-      });
+      });*/
   })
 
 //Directive to trigger a function on the rendering of an entire ng-repeat,

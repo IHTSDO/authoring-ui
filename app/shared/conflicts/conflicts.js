@@ -10,8 +10,6 @@ angular.module('singleConceptAuthoringApp')
         replace: true,
         scope: {
 
-          conflictsContainer: '=',
-
           // branch this conflict report was generated against
           sourceBranch: '=',
 
@@ -418,7 +416,9 @@ angular.module('singleConceptAuthoringApp')
             // set the ui state -- note, have to add apostrophes to prevent
             // javascript interpreting as mathematical operation (due to UUID
             // structure)
-            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review', '"' + review.id + '"');
+            if ($routeParams.taskKey) {
+              scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review', '"' + review.id + '"');
+            }
 
             scope.id = review.id;
 
@@ -492,20 +492,30 @@ angular.module('singleConceptAuthoringApp')
 
             // get previously accepted merges, if they exist, and apply to
             // conflicts
-            scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function (mergesAccepted) {
-              if (!mergesAccepted) {
-                mergesAccepted = [];
-              }
-              angular.forEach(scope.conflicts, function (conflict) {
-                if (mergesAccepted.indexOf(conflict.id) !== -1) {
-                  conflict.accepted = true;
+            if ($routeParams.taskKey) {
+              scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function (mergesAccepted) {
+                if (!mergesAccepted) {
+                  mergesAccepted = [];
                 }
+                angular.forEach(scope.conflicts, function (conflict) {
+                  if (mergesAccepted.indexOf(conflict.id) !== -1) {
+                    conflict.accepted = true;
+                  }
+                });
+
+                // load the tables
+                scope.conflictsToReviewTableParams.reload();
+                scope.conflictsAcceptedTableParams.reload();
               });
+            }
+
+            // if project, just load tables
+            else {
 
               // load the tables
               scope.conflictsToReviewTableParams.reload();
               scope.conflictsAcceptedTableParams.reload();
-            });
+            }
 
             // start polling to detect changes in status of merge-review
             viewedMergePoll = $interval(function () {
@@ -555,63 +565,77 @@ angular.module('singleConceptAuthoringApp')
           // on load, check ui-state for merge review id
           // TODO Ui-State saving will not work with projects, resulting in
           // re-generation of reviews on every load
-          scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
+          if ($routeParams.taskKey) {
+            scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function (mergeReviewId) {
 
-              // (2) if ui-state has merge review id from previous visit
-              if (mergeReviewId) {
+                // (2) if ui-state has merge review id from previous visit
+                if (mergeReviewId) {
 
-                console.debug('Previous merge-review exists with id: ' + mergeReviewId);
+                  console.debug('Previous merge-review exists with id: ' + mergeReviewId);
 
-                snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
+                  snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
 
-                  // (2a) Previous review is current and has concepts,
-                  // initialize from this review
-                  if (mergeReview && mergeReview.mergedChanges) {
-                    console.debug('Previous merge-review is current');
-                    initializeMergeReview(mergeReview);
-                  }
+                    // (2a) Previous review is current and has concepts,
+                    // initialize from this review
+                    if (mergeReview && mergeReview.mergedChanges) {
+                      console.debug('Previous merge-review is current');
+                      initializeMergeReview(mergeReview);
+                    }
 
-                  // (2b) Previous review is not current, generate new review
-                  // and initialize from new review
-                  else {
-                    console.debug('Previous merge-review is not current, generating new merge-review');
-                    snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+                    // (2b) Previous review is not current, generate new review
+                    // and initialize from new review
+                    else {
+                      console.debug('Previous merge-review is not current, generating new merge-review');
+                      snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
-                      if (mergeReview && mergeReview.mergedChanges) {
-                        initializeMergeReview(newReview);
-                      } else {
-                        rebase(); // TODO Consider how we want to handle this scenario -- this rebase effectively is a null op but calls backend
-                      }
-                    }, function (error) {
-                      notificationService.sendError('Error generating merge review');
-                    });
-                  }
+                        if (mergeReview && mergeReview.mergedChanges) {
+                          initializeMergeReview(newReview);
+                        } else {
+                          rebase(); // TODO Consider how we want to handle this
+                                    // scenario -- this rebase effectively is a
+                                    // null op but calls backend
+                        }
+                      }, function (error) {
+                        notificationService.sendError('Error generating merge review');
+                      });
+                    }
 
-                });
+                  });
+                }
+
+                // (3) if no review or review not current, generate new merge
+                // review
+                else {
+                  console.debug('No review ui-state, generating new merge-review');
+                  snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+
+                    // (3a) DIVERGED, but no merges to resolve
+                    if (!newReview || !newReview.mergedChanges) {
+                      rebase();
+                    }
+
+                    // (3b) DIVERGED, with merges to resolve
+                    else {
+                      initializeMergeReview(newReview);
+                    }
+                  }, function (error) {
+                    notificationService.sendError('Error generating merge review');
+                  });
+                }
               }
+            )
 
-              // (3) if no review or review not current, generate new merge
-              // review
-              else {
-                console.debug('No review ui-state, generating new merge-review');
-                snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+          }
 
-                  // (3a) DIVERGED, but no merges to resolve
-                  if (!newReview || !newReview.mergedChanges) {
-                    rebase();
-                  }
-
-                  // (3b) DIVERGED, with merges to resolve
-                  else {
-                    initializeMergeReview(newReview);
-                  }
-                }, function (error) {
-                  notificationService.sendError('Error generating merge review');
-                });
-              }
-            }
-          )
-          ;
+          // otherwise, project
+          // TODO Support for ui-state here
+          else {
+            snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
+              initializeMergeReview(newReview);
+            }, function (error) {
+              notificationService.sendError('Error generating merge review');
+            });
+          }
 
         }
       }
