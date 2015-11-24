@@ -57,7 +57,7 @@
   </div>
 
   <!-- end validation error -->
-  <div class="row p-t-5 grey darken-4 concept-headers" id="rootElement" style=" margin-right:0px;">
+  <div class="row p-t-5 grey darken-4 concept-headers" ="rootElement" style=" margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
 
       <button ng-click="setConceptProperties(concept, $event)" type="button"
@@ -184,7 +184,7 @@
              drag-enter-class="sca-drag-target"
              drag-hover-class="sca-drag-hover">
 
-          <button ng-click="setDescriptionProperties(description, $event)"
+          <button ng-click="setDescriptionProperties(description)"
                   class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
@@ -319,7 +319,7 @@
           <div class="p-t-5 ">
             <button
               class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
-              ng-click="setRelationshipProperties(relationship, $event)"
+              ng-click="setRelationshipProperties(relationship)"
               popover-template="'shared/component-more/relationshipMore.html'"
               popover-placement="{{popoverDirection}}"
               title="Some title here" popover-append-to-body="true"
