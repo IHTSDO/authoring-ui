@@ -53,6 +53,17 @@
               <td data-title="'Last Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
+
+              <td data-title="'Project Changes'" sortable="'status'">
+                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/conflicts">
+                  <button ng-show="task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE'"
+                          title="Attention Needed: {{task.branchState}}" type="button"
+                          class="btn btn-round btn-default lighten-1 red" tooltip="">
+                    <span class="md md-sync-problem "></span>
+                  </button>
+                </a>
+              </td>
+
               <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                   <button ng-show="task.latestClassificationJson != null"

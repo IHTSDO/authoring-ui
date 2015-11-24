@@ -740,13 +740,14 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/tasks/{taskKey}/rebase
 // Rebase the task from the project
       rebaseTask: function (projectKey, taskKey) {
+        var deferred = $q.defer();
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
-          return response.data;
+          deferred.resolve(response);
         }, function (error) {
-          console.error('Error rebasing project ' + projectKey + ', task ' + taskKey);
-          notificationService.sendError('Error rebasing task', 10000);
-          return null;
+          console.error('Error rebasing task ' + projectKey + ', task ' + taskKey);
+          deferred.reject(error.message);
         });
+        return deferred.promise;
       },
 
 //////////////////////////////////////////

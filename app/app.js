@@ -33,6 +33,7 @@ angular
     'singleConceptAuthoringApp.project',
     'singleConceptAuthoringApp.projects',
     'singleConceptAuthoringApp.myProjects',
+    'singleConceptAuthoringApp.projectMerge',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
     'singleConceptAuthoringApp.test',
