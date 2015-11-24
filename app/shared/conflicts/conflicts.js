@@ -368,6 +368,9 @@ angular.module('singleConceptAuthoringApp')
               // clear the conflicts list -- no further changes are permissible
               scope.conflicts = null;
 
+              // set flag to indicate that conflicts were resolved and accepted
+              scope.rebaseWithMerges = true;
+
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
               notificationService.sendError('Error applying merges: ' + error);
