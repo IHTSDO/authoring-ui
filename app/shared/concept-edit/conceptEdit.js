@@ -2000,6 +2000,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return snowowlService.getAttributeValues(scope.branch, attributeId, searchStr).then(function (response) {
             // remove duplicates
             for (var i = 0; i < response.length; i++) {
+              var status = 'FD';
+              if(response[i].definitionStatus === 'PRIMITIVE')
+              {
+                  status = 'P';
+              }
+              response[i].tempFsn = response[i].fsn + ' - ' + status;
+              console.log(response[i].fsn);
               // console.debug('checking for duplicates', i, response[i]);
               for (var j = response.length - 1; j > i; j--) {
                 if (response[j].id === response[i].id) {
@@ -2033,9 +2040,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // console.debug('setting relationship type concept',
           // relationship, item);
-
           relationship.target.conceptId = item.id;
           relationship.target.fsn = item.fsn;
+          relationship.target.definitionStatus = item.definitionStatus;
 
           scope.updateRelationship(relationship);
         };
