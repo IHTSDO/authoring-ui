@@ -73,7 +73,7 @@
   }
 
   .last {
-    /*    padding-bottom:40px;*/
+/*    margin-bottom:37px;*/
     height: auto;
   }
 
@@ -228,7 +228,7 @@
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
-               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId" ng-class="isLast($last)"
                repeat-complete callback="renderingComplete()">
 
             <!-- model -->
@@ -485,7 +485,7 @@
       </div>
 
     </div>
-    <div ng-if="conceptsRendering" class="loader" style="bottom:10px; position:fixed;">Loading...</div>
+<!--    <div ng-if="conceptsRendering" class="loader" style="bottom:10px; position:fixed;">Loading...</div>-->
 
   </div>
 
