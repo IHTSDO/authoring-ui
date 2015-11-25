@@ -56,6 +56,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             }
 
             scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              $rootScope.$broadcast('reloadTask');
             });
           } else {
             notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion', 0);
