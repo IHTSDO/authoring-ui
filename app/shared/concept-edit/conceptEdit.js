@@ -447,7 +447,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (scope.merge) {
               // display the validation warnings and continue
               scope.displayValidationResults(validationResults);
-              $rootScope.$broadcast('acceptMerge', {concept: scope.concept, validationResults: validationResults});
+              $rootScope.$broadcast('acceptMerge', {
+                concept: scope.concept,
+                validationResults: validationResults
+              });
             }
 
             // if errors, notify and do not save
@@ -2001,9 +2004,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // remove duplicates
             for (var i = 0; i < response.length; i++) {
               var status = 'FD';
-              if(response[i].definitionStatus === 'PRIMITIVE')
-              {
-                  status = 'P';
+              if (response[i].definitionStatus === 'PRIMITIVE') {
+                status = 'P';
               }
               response[i].tempFsn = response[i].fsn + ' - ' + status;
               console.log(response[i].fsn);
@@ -2097,8 +2099,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Component More Details Popover Conditional Direction //
         //////////////////////////////////////////////////////////
 
-        // sets the popover direction (left, bottom, right) based on current position of root element
-        scope.setPopoverDirection = function($event) {
+        // sets the popover direction (left, bottom, right) based on current
+        // position of root element
+        scope.setPopoverDirection = function ($event) {
           if ($event.pageX < 500) {
             scope.popoverDirection = $event.pageX < 300 ? 'right' : 'bottom';
           } else {
@@ -2145,9 +2148,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
+        //////////////////////////////////////////////////////////////////////////
+        // CHeck for Promoted Task -- must be static
+        // ////////////////////////////////////////////////////////////////////////
+
+        // function to set static flag if task is promoted, regardless of other context
+        scope.checkPromotedStatus = function() {
+          if ($routeParams.taskKey) {
+            scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              scope.task = response;
+
+              console.debug('Task', scope.task);
+
+              if (scope.task.status === 'Promoted') {
+                console.debug('setting static to true, task is Promoted');
+                scope.isStatic = true;
+              }
+            })
+          }
+        };
+
+        // on task reload notifications, reload task and set flag
+        scope.$on('reloadTask', function() {
+          scope.checkPromotedStatus();
+        });
+
+        // on initialization, check task status
+        scope.checkPromotedStatus();
       }
-    }
-      ;
+    };
+
+
   }
 )
 ;
