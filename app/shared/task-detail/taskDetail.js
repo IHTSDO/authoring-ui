@@ -7,6 +7,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.task = null;
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
 
+      // set the parent concept for initial taxonomy load (null -> SNOMEDCT root)
+      $scope.taxonomyConcept = null;
+
       $scope.classify = function () {
 
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);

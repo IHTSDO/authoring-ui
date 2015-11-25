@@ -2106,15 +2106,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        // on layout changed notifications, recalculate popoverDirection for this concept edit element
-        scope.$on('layoutChanged', function() {
-          scope.setPopoverDirection();
-        });
-
-        // on load, set the popover direction
-        scope.setPopoverDirection();
-
-
 //////////////////////////////////////////////////////////////////////////
 // Conditional component styling
 // ////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,7 @@
   <div class="row no-padding">
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
       <input type="search" class="form-control m-5" placeholder="Enter at least three characters" ng-model="searchStr"
-             ng-change="search()" ng-model-options="{ debounce: 500 }"/>
+             ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
 
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
@@ -36,7 +36,7 @@
         <!-- No content -->
       </div>
       <div class="no-padding"
-           ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-9' : userOptions.groupByConcept}]">
+           ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
         <div class="p-5"><strong>FSN</strong></div>
       </div>
 
@@ -73,17 +73,24 @@
                drag-image="result.concept.fsn">{{result.concept.fsn}}
           </div>
         </div>
-        <div class="col-md-1 no-padding">
-          <button ng-if="!result.concept.active"
-                  type="button"
-                  class="p-5 transparent md md-dnd-forwardslash tooltips-right tooltips-light normal-case"><span>Inactive Concept</span>
+
+        <div class="col-md-2 no-padding">
+
+
+          <button type="button"
+                  ng-click="viewConceptInTaxonomy(result)"
+                  ng-disabled="!result.concept.active"
+                  class="addButton btn btn-round btn-default widget-button tooltips-right tooltips-light normal-case lighten-1"
+                  ng-class="[{'fa fa-book purple' : result.concept.active}, {'fa fa-power-off red' : !result.concept.active }]">
+            <span ng-if="result.concept.active">View Concept in Taxonomy</span>
+            <span ng-if="!result.concept.active">Inactive Concept</span>
           </button>
-        </div>
-        <div class="col-md-1 no-padding">
+
+
           <button type="button"
                   ng-click="addItemToSavedList(result)"
                   ng-disabled="findItemInSavedList(result.concept.conceptId)"
-                  class="addButton btn btn-round btn-default widget-button grey lighten-5 md md-playlist-add  tooltips-right tooltips-light normal-case">
+                  class="addButton btn btn-round btn-default widget-button md md-playlist-add  tooltips-right tooltips-light normal-case green lighten-1">
             <span>Add to Saved List</span></button>
         </div>
       </div>
