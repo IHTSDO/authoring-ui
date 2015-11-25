@@ -392,13 +392,12 @@
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
                       class="sca-top"
-                      typeahead="suggestion as suggestion.fsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
+                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                       typeahead-loading="targetTypeaheadLoading"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="700"
                       typeahead-on-select="setRelationshipTargetConceptFromMrcm(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
-
                         <span class="pull-left drag-button-width "
                               ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                               ui-draggable="true"
@@ -406,6 +405,8 @@
                               drag-channel="conceptPropertiesObj"
                               drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
             </div>
+            <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left">FD</span>
+            <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left">P</span>
 
 
             <div ng-if="!isStatic">
