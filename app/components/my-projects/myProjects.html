@@ -86,7 +86,7 @@
               </td>
               <td data-title="'Validation Results'" sortable="'validationStatus'">
                 <a ng-href="#/project/{{project.key}}">
-                  <button ng-show="project.validationStatus != null"
+                  <button ng-show="project.validationStatus != null && project.validationStatus !== 'NOT_TRIGGERED'"
                           title="{{project.validationStatus}}" type="button"
                           ng-class="[{gray : project.validationStatus === 'SCHEDULED'},
                           {red : project.validationStatus === 'FAILED'},
