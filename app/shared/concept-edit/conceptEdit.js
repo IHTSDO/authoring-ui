@@ -816,13 +816,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateDescriptionReasons = [
 
           {id: '', text: 'No reason'},
-          {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
+          {id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere'},
           {id: 'CONCEPT_NON_CURRENT', text: 'Concept not current'},
-          {id: 'DUPLICATE', text: 'Duplicate component'},
-          {id: 'ERRONEOUS', text: 'Erroneous component'},
-          {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
-          {id: 'LIMITED', text: 'Limited component'},
-          {id: 'OUTDATED', text: 'Outdated component'},
+          {id: 'DUPLICATE', text: 'Duplicate concept'},
+          {id: 'ERRONEOUS', text: 'Erroneous concept'},
+          {id: 'INAPPROPRIATE', text: 'Inappropriate concept'},
+          {id: 'LIMITED', text: 'Limited concept'},
+          {id: 'OUTDATED', text: 'Outdated concept'},
           {id: 'PENDING_MOVE', text: 'Pending move'}
 
         ];
