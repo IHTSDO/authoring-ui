@@ -77,10 +77,8 @@
 
     </div>
 
-
     <!-- concept name -->
-    <div class="pull-left col-md-6 no-padding title-text"
-      >
+    <div class="pull-left col-md-6 no-padding title-text">
       <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
         <span class="fsn p-t-5">{{concept.fsn}}</span>
 
@@ -184,7 +182,7 @@
              drag-enter-class="sca-drag-target"
              drag-hover-class="sca-drag-hover">
 
-          <button ng-click="setDescriptionProperties(description)"
+          <button ng-click="setDescriptionProperties(description, $event)"
                   class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
@@ -319,7 +317,7 @@
           <div class="p-t-5 ">
             <button
               class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
-              ng-click="setRelationshipProperties(relationship)"
+              ng-click="setRelationshipProperties(relationship, $event)"
               popover-template="'shared/component-more/relationshipMore.html'"
               popover-placement="{{popoverDirection}}"
               title="Some title here" popover-append-to-body="true"
@@ -392,13 +390,12 @@
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
                       class="sca-top"
-                      typeahead="suggestion as suggestion.fsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
+                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                       typeahead-loading="targetTypeaheadLoading"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="700"
                       typeahead-on-select="setRelationshipTargetConceptFromMrcm(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
-
                         <span class="pull-left drag-button-width "
                               ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                               ui-draggable="true"
@@ -406,6 +403,8 @@
                               drag-channel="conceptPropertiesObj"
                               drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
             </div>
+            <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left">FD</span>
+            <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left">P</span>
 
 
             <div ng-if="!isStatic">

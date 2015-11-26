@@ -241,7 +241,8 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.removeAssociation = function (index) {
-      $scope.associations.slice(index, 1);
+      console.debug('removing association at position ' + index);
+      $scope.associations.splice(index, 1);
       if ($scope.associations.length === 0) {
         $scope.addAssociation();
       }

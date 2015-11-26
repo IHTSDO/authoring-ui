@@ -353,7 +353,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
 
           return deferred.promise;
-        };
+        }
 
         // helper function to display validation results based on results from
         // getValidationResultsForConcept
@@ -447,7 +447,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (scope.merge) {
               // display the validation warnings and continue
               scope.displayValidationResults(validationResults);
-              $rootScope.$broadcast('acceptMerge', {concept: scope.concept, validationResults: validationResults});
+              $rootScope.$broadcast('acceptMerge', {
+                concept: scope.concept,
+                validationResults: validationResults
+              });
             }
 
             // if errors, notify and do not save
@@ -497,7 +500,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
               }, function (error) {
                 notificationService.sendError('Error saving concept');
-              })
+              });
             }
 
           });
@@ -816,13 +819,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateDescriptionReasons = [
 
           {id: '', text: 'No reason'},
-          {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
+          {id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere'},
           {id: 'CONCEPT_NON_CURRENT', text: 'Concept not current'},
-          {id: 'DUPLICATE', text: 'Duplicate component'},
-          {id: 'ERRONEOUS', text: 'Erroneous component'},
-          {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
-          {id: 'LIMITED', text: 'Limited component'},
-          {id: 'OUTDATED', text: 'Outdated component'},
+          {id: 'DUPLICATE', text: 'Duplicate concept'},
+          {id: 'ERRONEOUS', text: 'Erroneous concept'},
+          {id: 'INAPPROPRIATE', text: 'Inappropriate concept'},
+          {id: 'LIMITED', text: 'Limited concept'},
+          {id: 'OUTDATED', text: 'Outdated concept'},
           {id: 'PENDING_MOVE', text: 'Pending move'}
 
         ];
@@ -2000,6 +2003,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return snowowlService.getAttributeValues(scope.branch, attributeId, searchStr).then(function (response) {
             // remove duplicates
             for (var i = 0; i < response.length; i++) {
+              var status = 'FD';
+              if (response[i].definitionStatus === 'PRIMITIVE') {
+                status = 'P';
+              }
+              response[i].tempFsn = response[i].fsn + ' - ' + status;
+              console.log(response[i].fsn);
               // console.debug('checking for duplicates', i, response[i]);
               for (var j = response.length - 1; j > i; j--) {
                 if (response[j].id === response[i].id) {
@@ -2033,9 +2042,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // console.debug('setting relationship type concept',
           // relationship, item);
-
           relationship.target.conceptId = item.id;
           relationship.target.fsn = item.fsn;
+          relationship.target.definitionStatus = item.definitionStatus;
 
           scope.updateRelationship(relationship);
         };
@@ -2090,23 +2099,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Component More Details Popover Conditional Direction //
         //////////////////////////////////////////////////////////
 
-        // sets the popover direction (left, bottom, right) based on current position of root element
-        scope.setPopoverDirection = function($event) {
+        // sets the popover direction (left, bottom, right) based on current
+        // position of root element
+        scope.setPopoverDirection = function ($event) {
           if ($event.pageX < 500) {
             scope.popoverDirection = $event.pageX < 300 ? 'right' : 'bottom';
           } else {
             scope.popoverDirection = 'left';
           }
         };
-
-        // on layout changed notifications, recalculate popoverDirection for this concept edit element
-        scope.$on('layoutChanged', function() {
-          setPopoverDirection();
-        });
-
-        // on load, set the popover direction
-        setPopoverDirection();
-
 
 //////////////////////////////////////////////////////////////////////////
 // Conditional component styling
@@ -2147,9 +2148,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
+        //////////////////////////////////////////////////////////////////////////
+        // CHeck for Promoted Task -- must be static
+        // ////////////////////////////////////////////////////////////////////////
+
+        // function to set static flag if task is promoted, regardless of other context
+        scope.checkPromotedStatus = function() {
+          if ($routeParams.taskKey) {
+            scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              scope.task = response;
+
+              console.debug('Task', scope.task);
+
+              if (scope.task.status === 'Promoted') {
+                console.debug('setting static to true, task is Promoted');
+                scope.isStatic = true;
+              }
+            })
+          }
+        };
+
+        // on task reload notifications, reload task and set flag
+        scope.$on('reloadTask', function() {
+          scope.checkPromotedStatus();
+        });
+
+        // on initialization, check task status
+        scope.checkPromotedStatus();
       }
-    }
-      ;
+    };
+
+
   }
 )
 ;
