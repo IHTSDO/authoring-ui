@@ -1,26 +1,26 @@
-<aside class="sidebar-bg col-md-12 no-padding">
+<aside class="sidebar-bg col-md-12 no-padding" ng-controller="sidebarEditCtrl">
 
   <!-- show if sidebar not hidden -->
   <div role="tabpanel sidebar-tabs ">
 
     <!-- Nav tabs -->
     <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs sidebar-tabs col-md-12 no-padding"
-        role="tablist" ng-init="actionTab=4">
-      <li role="presentation"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home"
+        role="tablist">
+      <li role="presentation" ng-class="{'active' : actionTab === 1}"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home"
                                  role="tab"
                                  data-toggle="tab" class="tooltips-btm tooltips-light normal-case">
         <div class="fa fa-book"></div>
         <span>Taxonomy</span></a></li>
-      <li role="presentation" class=""><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 2}"><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
                                           class="tooltips-btm tooltips-light normal-case">
         <div class="fa fa-search"></div>
         <span>Search</span>
       </a></li>
-      <li role="presentation"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 3}"><a ng-click="actionTab=3" aria-controls="home" role="tab" data-toggle="tab"
                                  class="tooltips-btm tooltips-btm normal-case">
         <div class="fa fa-list-ol"></div>
         <span>Saved List</span></a></li>
-      <li role="presentation" class="active"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
+      <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
         <div class="fa fa-info-circle"></div>
         <span>Task Details</span></a></li>

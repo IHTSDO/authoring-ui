@@ -114,7 +114,7 @@ angular.module('singleConceptAuthoringApp')
         function mergeTrees() {
 
           //console.debug('paths', paths);
-          //console.debug('nodes', nodes);
+          //console.debug('nodes', nodes)
 
           angular.forEach(nodes, function (node) {
             //console.debug('constructing node', node);
@@ -127,7 +127,6 @@ angular.module('singleConceptAuthoringApp')
               node.isCollapsed = true;
             }
           });
-
 
           console.debug('final result', nodes['138875005']);
 
@@ -248,8 +247,11 @@ angular.module('singleConceptAuthoringApp')
 
         function initialize() {
 
+
+          // clear any existing trees
+          scope.terminologyTree = [];
+
           // if a concept is supplied
-          // TODO: Improve this such that ng-ifs not required on parent div (i.e. no concept renders  taxonomy)
           if (scope.concept) {
             scope.constructRootTrees(scope.concept);
           }
@@ -270,15 +272,16 @@ angular.module('singleConceptAuthoringApp')
             // get the children
             scope.getAndSetChildren(parent);
 
-
             console.debug(parent);
             // add as root tree
             scope.terminologyTree.push(parent);
           }
         }
 
-        // call initialization
-        initialize();
+        scope.$watch('concept', function () {
+          console.debug('taxonomyTree concept changed', scope.concept);
+          initialize();
+        }, true);
       }
     };
   })

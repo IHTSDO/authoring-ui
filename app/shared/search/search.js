@@ -176,6 +176,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.searchStatus = null;
       };
 
+      $scope.viewConceptInTaxonomy = function(item) {
+        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+        $rootScope.$broadcast('viewTaxonomy', {concept : { conceptId : item.concept.conceptId, fsn : item.concept.fsn}});
+      };
+
       /**
        * Add item to save list
        * @param item The full item in browser format: {term, active, concept:
@@ -243,6 +248,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         console.debug('Getting concept properties obj', concept);
         return {id: concept.conceptId, name: concept.fsn};
       };
+
+
 
     }
   ])

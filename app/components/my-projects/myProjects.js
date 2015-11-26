@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       });
   })
 
-  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q) {
+  .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, metadataService) {
 
     console.debug('entered my projects ctrl');
 
@@ -102,11 +102,16 @@ angular.module('singleConceptAuthoringApp.myProjects', [
     function loadProjects(projectKeys) {
       console.debug('load projects', projectKeys);
       $scope.projects = [];
+
+      var cachedProjects = metadataService.getProjects();
+
       angular.forEach(projectKeys, function (projectKey) {
-        scaService.getProjectForKey(projectKey).then(function (response) {
-          $scope.projects.push(response);
-        })
-      })
+        angular.forEach(cachedProjects, function (project) {
+          if (project.key === projectKey) {
+            $scope.projects.push(project);
+          }
+        });
+      });
     }
 
     // Initialization:  get projects

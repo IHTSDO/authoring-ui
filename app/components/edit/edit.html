@@ -73,7 +73,7 @@
   }
 
   .last {
-    /*    padding-bottom:40px;*/
+/*    margin-bottom:37px;*/
     height: auto;
   }
 
@@ -131,6 +131,7 @@
     <!-- Create new concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             type="button" ng-click="createConcept()"
+            ng-disabled="task.status === 'Promoted'"
             class="btn-default btn-block create-new-concept tooltips-right tooltips-light normal-case"
             title="Active">
       <div class="md fa fa-edit"></div>
@@ -215,7 +216,7 @@
       <!-- sidebar -->
       <div class="editpanel sca-column no-padding"
            ng-class="getLayoutWidths('sidebar')"
-           ng-include src="'layout/sidebar-edit.html'"></div>
+           ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- models & concepts-->
       <div ng-class="getLayoutWidths('modelsAndConcepts')"
@@ -228,7 +229,7 @@
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
-               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId" ng-class="isLast($last)"
                repeat-complete callback="renderingComplete()">
 
             <!-- model -->
@@ -318,7 +319,7 @@
 
       <!-- sidebar -->
       <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 no-padding"
-           ng-include src="'layout/sidebar-edit.html'"></div>
+           ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- concepts-->
       <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9  no-padding"
@@ -458,7 +459,7 @@
           <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey" style="margin-right:0px; z-index:999">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
-              >
+                 component-styles="getFeedbackStyles(concept)">
             </div>
           </div>
 
@@ -485,7 +486,7 @@
       </div>
 
     </div>
-    <div ng-if="conceptsRendering" class="loader" style="bottom:10px; position:fixed;">Loading...</div>
+<!--    <div ng-if="conceptsRendering" class="loader" style="bottom:10px; position:fixed;">Loading...</div>-->
 
   </div>
 

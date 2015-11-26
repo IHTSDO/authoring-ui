@@ -19,9 +19,13 @@
         <div class="p-10 pull-right">
           <button class="btn btn-border tooltips-left normal-case"
                   ng-click="promote()"
-                  ng-disabled="project.branchState !== 'FORWARD'"><div
-            class="project-icon blue darken-1 pull-left "><div class="md md-call-merge"></div></div>Promote
-           <span>Promote this project</span>
+                  ng-disabled="project.branchState !== 'FORWARD'">
+            <div
+              class="project-icon blue darken-1 pull-left ">
+              <div class="md md-call-merge"></div>
+            </div>
+            Promote
+            <span>Promote this project</span>
           </button>
         </div>
         <div class="p-10 pull-right">
@@ -29,19 +33,30 @@
                   ng-click="rebase()"
                   ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND'">
             <div
-              class="project-icon yellow darken-2 pull-left"><div class="md md-autorenew"></div></div>Pull in Mainline Changes
-           <span>Pull in changes from the mainline into this project</span>
+              class="project-icon yellow darken-2 pull-left">
+              <div class="md md-autorenew"></div>
+            </div>
+            Pull in Mainline Changes
+            <span>Pull in changes from the mainline into this project</span>
           </button>
         </div>
         <div class="p-10 pull-right ">
-          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()"><div
-            class="project-icon green pull-left"><div class="md md-notifications"></div></div>Classify
-             <span>Run classification against this project</span>
+          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()">
+            <div
+              class="project-icon green pull-left">
+              <div class="md md-notifications"></div>
+            </div>
+            Classify
+            <span>Run classification against this project</span>
           </button>
         </div>
         <div class="p-10 pull-right ">
-          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()"><div
-            class="project-icon deep-purple lighten-1 pull-left"><div class="md md-school"></div></div>Validate
+          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()">
+            <div
+              class="project-icon deep-purple lighten-1 pull-left">
+              <div class="md md-school"></div>
+            </div>
+            Validate
             <span>Run validation against this project</span>
           </button>
         </div>
@@ -83,10 +98,11 @@
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="!project.latestClassificationJson || project.latestClassificationJson.status !== 'COMPLETED'"
-                    ng-init="classificationCollapsed = true"
-                    ng-click="classificationCollapsed = !classificationCollapsed" type="button"
-                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
+            <button
+              ng-disabled="!project.latestClassificationJson || project.latestClassificationJson.status !== 'COMPLETED'"
+              ng-init="classificationCollapsed = true"
+              ng-click="classificationCollapsed = !classificationCollapsed" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
               <span
                 ng-class="{'report-text' : project.latestClassificationJson.status === 'COMPLETED'}">Classification Results</span>
             </button>
@@ -113,13 +129,16 @@
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <!--<a ng-href="#/projects/project/{{project.key}}/conflicts">-->
-              <button ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'"
-                      ng-init="conflictsCollapsed = true"
-                      ng-click="gotoConflictsView()" type="button"
-                      ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
-                <span ng-class="{'report-text' : project.branchState === 'DIVERGED' || project.branchState === 'BEHIND' || project.branchState === 'STALE'}">Pull changes from Mainline Content [NOT YET FUNCTIONAL]</span></button>
-     <!--       </a>-->
+            <!--ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'" -->
+            <button
+              ng-disabled="true"
+              ng-init="conflictsCollapsed = true"
+              ng-click="gotoConflictsView()" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
+              <span
+                ng-class="{'report-text' : project.branchState === 'DIVERGED' || project.branchState === 'BEHIND' || project.branchState === 'STALE'}">Pull changes from Mainline Content</span>
+            </button>
+            <!--       </a>-->
 
             <span class="project-icon red pull-right"><span class="md md-sync-problem"></span></span>
             <span class="arrow-red pull-right"></span>
@@ -129,6 +148,109 @@
           </div>
         </div>
 
+      </div>
+
+      <div class="card">
+        <!-- Tasks in project -->
+
+        <div class="card-header">
+          <div class="card-title">
+            <button
+              ng-disabled="!tasks.length || tasks.length === 0"
+              ng-init="tasksCollapsed = true"
+              ng-click="tasksCollapsed = !tasksCollapsed" type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : tasksCollapsed, 'md-keyboard-arrow-down' : !tasksCollapsed}]">
+              <span
+                ng-class="{'report-text' : tasks.length > 0}">Project Tasks</span>
+            </button>
+
+            <span class="project-icon blue pull-right"><span class="md md-folder-open"></span></span>
+            <span class="arrow-blue pull-right"></span>
+
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <div class="table-responsive white m-b-40" style="margin-right:0px;" ng-show="!tasksCollapsed">
+
+          <table ng-table="taskTableParams" template-pagination="utilities/data-table-pager.html"
+                 class="table table-full table-full-small">
+            <tr ng-repeat="task in $data">
+
+              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
+                <a class="tooltips-right"
+                   ng-click="window.alert('Not yet functional')"> {{task.summary}}<span>TBD</span></a>
+              </td>
+              <td data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
+                {{task.assignee.displayName}}
+              </td>
+              <td data-title="'Reviewer'" sortable="'reviewerKey'" filter="{ 'reviewer' : 'text' }">
+                {{task.reviewer.displayName}}
+
+              </td>
+              <td data-title="'Last Modified'" sortable="'updated'">
+                {{task.updated | date: "yyyy-MM-dd"}}
+              </td>
+              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
+                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
+                  <button ng-show="task.latestClassificationJson != null"
+                          title="{{task.latestClassificationJson.status}}" type="button"
+                          ng-class="[{gray : task.latestClassificationJson.status === 'RUNNING'},
+                          {red : task.latestClassificationJson.equivalentConceptsFound === true || task.latestClassification.status === 'FAILED'},
+                           {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
+                           {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
+                          class="btn btn-round btn-default lighten-2" tooltip="">
+                    <span class="md md-notifications "></span>
+                  </button>
+                </a>
+
+                <div class="ripple-wrapper"></div>
+                </button>
+
+              </td>
+
+              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+                <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                          type="button"
+                          ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                          {red : task.latestValidationStatus === 'FAILED'},
+                          {gray : task.latestValidationStatus === 'BUILDING'},
+                          {green : task.latestValidationStatus === 'COMPLETED'}]"
+                          class="btn btn-round btn-default lighten-2" tooltip="">
+                    <div class="md md-school "></div>  <span ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                          {red : task.latestValidationStatus === 'FAILED'},
+                          {gray : task.latestValidationStatus === 'BUILDING'},
+                          {green : task.latestValidationStatus === 'COMPLETED'}]">Validation {{task.latestValidationStatus}}</span>
+                  </button>
+
+                </a>
+              </td>
+
+              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'">
+                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
+
+                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
+                          class="btn btn-round btn-default pink darken-1" tooltip=""
+                          title="View Feedback (All read)"><span class="md md-drafts"></span>
+
+                    <div class="ripple-wrapper"></div>
+                  </button>
+                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
+                          class="btn btn-round btn-default pink darken-1" tooltip=""
+                          title="View Feedback (Unread)"><span class="md md-email"></span>
+
+                    <div class="ripple-wrapper"></div>
+                  </button>
+                </a>
+              </td>
+              <td data-title="'Status'" sortable="'status'">
+                <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
+              </td>
+            </tr>
+          </table>
+
+        </div>
       </div>
 
     </div>
