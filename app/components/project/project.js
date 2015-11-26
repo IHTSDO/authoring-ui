@@ -13,7 +13,7 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', 'scaService', 'snowowlService', 'notificationService', '$location', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, scaService, snowowlService, notificationService, $location) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, scaService, snowowlService, notificationService, $location, ngTableParams) {
 
     $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -128,4 +128,57 @@ angular.module('singleConceptAuthoringApp.project', [
     $scope.gotoConflictsView = function() {
       $location.url('#/projects/project/' + $scope.project.key + '/conflicts');
     };
+    
+    // tasks table params
+    // declare table parameters
+    $scope.taskTableParams = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {updated: 'desc', name: 'asc'}
+      },
+      {
+        filterDelay: 50,
+        total: $scope.tasks ? $scope.tasks.length : 0, // length of
+                                                                   // data
+        getData: function ($defer, params) {
+
+          if (!$scope.tasks || $scope.tasks.length == 0) {
+            $defer.resolve([]);
+          } else {
+
+            var searchStr = params.filter().search;
+            var mydata = [];
+
+            if (searchStr) {
+              mydata = $scope.tasks.filter(function (item) {
+                return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.reviewer.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.reviewer.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+              });
+            } else {
+              mydata = $scope.tasks;
+            }
+            params.total(mydata.length);
+            mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
+
+            $defer.resolve(mydata.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          }
+
+        }
+      }
+    );
+
+    // on load, retrieve tasks for project
+    scaService.getTasksForProject($routeParams.projectKey).then(function(response) {
+      $scope.tasks = response;
+      angular.forEach($scope.tasks, function(task) {
+        task.authorKey = task.assignee ? task.assignee.displayName : '';
+        task.reviewerKey = task.reviewer ? task.reviewer.displayName : '';
+      });
+      $scope.taskTableParams.reload();
+    });
   }]);
