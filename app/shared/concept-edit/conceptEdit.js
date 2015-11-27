@@ -764,7 +764,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // console.debug('sorting relationships');
+          console.debug('sorting relationships');
 
           var isaRels = scope.concept.relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
@@ -774,29 +774,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return rel.type.conceptId !== '116680003';
           });
 
+          console.debug(isaRels, attrRels);
+
           // console.debug(isaRels, attrRels);
 
           // NOTE: All isaRels should be group 0, but sort by group anyway
           isaRels.sort(function (a, b) {
+            if (!a.groupId && b.groupId) {
+              return -1;
+            }
+            if (!b.groupId && a.groupId) {
+              return 1;
+            }
             if (a.groupId === b.groupId) {
               return a.target.fsn > b.target.fsn;
             } else {
-              return a.groupId > b.groupId;
+              return a.groupId - b.groupId;
             }
           });
 
           attrRels.sort(function (a, b) {
+            if (!a.groupId && b.groupId) {
+              return -1;
+            }
+            if (!b.groupId && a.groupId) {
+              return 1;
+            }
             if (a.groupId === b.groupId) {
               return a.target.fsn > b.target.fsn;
             } else {
-              return a.groupId > b.groupId;
+              return a.groupId - b.groupId;
             }
           });
-
+          
           scope.concept.relationships = isaRels.concat(attrRels);
         }
 
-// on load, sort descriptions && relationships
+        // on load, sort descriptions && relationships
         sortDescriptions();
         sortRelationships();
 
