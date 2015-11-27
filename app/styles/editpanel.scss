@@ -902,6 +902,12 @@ button.fsn-title-button {
 .case-s li:nth-child(3) {
     border-color: transparent
 }
+/* fix on type ahead */
+.sourcename .dropdown-menu {margin-left:-70px;}
+.dropdown-menu{font-size:12px; max-width:350px;}
+.dropdown-menu > li {width:100%; word-wrap:normal!important; white-space:normal!important}
+.dropdown-menu > li > a {
+   padding:3px 5px; color:#474747; word-wrap:normal!important; white-space:normal!important}
 /* popover */
 
 
@@ -962,6 +968,7 @@ button.fsn-title-button {
 .popover-content {
     padding: 0px 3px !important;
 }
+button.fsn-title-button{width:100%}
 .concept-more .concept-id {
     width: 14%;
     margin-right: 3%
