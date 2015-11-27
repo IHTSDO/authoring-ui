@@ -17,26 +17,36 @@
 .conflicts .editbuttons.fa-sitemap, 
 .conflicts .concept-headers .drag-button-width {display:none;}
 .btn[disabled].btn-round.lighten-2{color:#7c7c7c;background-color:#494949}
-.yellowhl {
-	border-bottom: 5px solid #0091d7
-}
+
 .yellowhl .grey.darken-3 {
 	background-color: #0091d7
 }
-.redhl {
-	border-style: solid;
-	border-width: 5px;
-	border-color: red;
+.yellowhl  .grey.darken-3  {
+	border-bottom: 5px solid #0091d7
 }
-.orangehl {
-	border-bottom: 5px solid #00a39b
+
+.bluehl .grey.darken-3 {
+	background-color: #0091d7
 }
-.orangehl .grey.darken-3 {
+.bluehl  .grey.darken-3  {
+	border-bottom: 5px solid #0091d7
+}
+
+
+.tealhl .grey.darken-3 {
 	background-color: #00a39b
 }
-.greenhl .grey.darken-3 {
+.tealhl {
+	border-bottom: 5px solid #00a39b
+}
+
+.redhl .grey.darken-3 {
 	background-color: #ff6755
 }
+.redlhl {
+	border-bottom: 5px solid #ff6755
+}
+
 .conflicts .small-buttons {
 	padding: .45% !important;
 	font-size: 13px !important;
