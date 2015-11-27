@@ -30,13 +30,13 @@
   <div ng-if="!concept.active" class="pop-edit concept-more description-popover row">
     <div class="col-md-12 no-padding pull-left">
       <label class="control-label">Inactivation Reason</label>
-      <span class="fields row" ng-if="concept.inactivationIndicator">{{concept.inactivationIndicator}}</span>
+      <span class="fields row" ng-if="concept.inactivationIndicator">{{formatComponentMoreText(concept.inactivationIndicator)}}</span>
       <span class="fields row" ng-if="!concept.inactivationIndicator || concept.inactivationIndicator.length === 0">No reason specified</span>
     </div>
 
-    <div class="col-md-12 no-padding pull-left p-t-10">
+    <div class="col-md-12 no-padding pull-left m-t-20">
       <label class="control-label">Association Targets</label>
-      <div ng-show="concept.associationTargets && !hasAssociationTargets">None</div>
+      <div ng-show="!concept.associationTargets">None</div>
       <div ng-repeat="(key, value) in concept.associationTargets" class="p-b-10">
         <div class="row no-gutter col-md-12 no-padding">
           <div class="col-md-4">
