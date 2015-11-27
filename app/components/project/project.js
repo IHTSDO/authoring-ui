@@ -27,6 +27,7 @@ angular.module('singleConceptAuthoringApp.project', [
     // initialize the header notifications
     $rootScope.classificationRunning = false;
     $rootScope.validationRunning = false;
+    $scope.browserLink = '..';
 
     // set the branch
     $scope.branch = 'MAIN/' + $routeParams.projectKey;
