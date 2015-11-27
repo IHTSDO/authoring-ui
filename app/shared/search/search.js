@@ -67,12 +67,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // cycle over all results
         for (var i = 0; i < $scope.storedResults.length; i++) {
 
-          console.debug('checking', i, $scope.storedResults[i].concept.fsn);
-
           // if item already added skip
           if (tempIds.indexOf($scope.storedResults[i].concept.conceptId) === -1) {
-
-            console.debug('not already in displayed results');
 
             // push the item
             displayedResults.push($scope.storedResults[i]);
@@ -87,12 +83,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
               // list
               if ($scope.storedResults[i].concept.conceptId === $scope.storedResults[j].concept.conceptId) {
 
-                console.debug('duplicate concept found', $scope.storedResults[j].concept.fsn);
-
                 // add duplicate to list if (1) groupByConcept is off, and (2)
                 // displayed results do not already contain this item
                 if (!$scope.userOptions.groupByConcept) {
-                  console.debug('--> pushing (not group by concept');
                   displayedResults.push($scope.storedResults[j]);
                 }
               }
@@ -132,8 +125,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
 
         snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize).then(function (concepts) {
-
-
 
           if (!concepts) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);
@@ -176,9 +167,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.searchStatus = null;
       };
 
-      $scope.viewConceptInTaxonomy = function(item) {
+      $scope.viewConceptInTaxonomy = function (item) {
         console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
-        $rootScope.$broadcast('viewTaxonomy', {concept : { conceptId : item.concept.conceptId, fsn : item.concept.fsn}});
+        $rootScope.$broadcast('viewTaxonomy', {
+          concept: {
+            conceptId: item.concept.conceptId,
+            fsn: item.concept.fsn
+          }
+        });
       };
 
       /**
@@ -248,8 +244,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         console.debug('Getting concept properties obj', concept);
         return {id: concept.conceptId, name: concept.fsn};
       };
-
-
 
     }
   ])
