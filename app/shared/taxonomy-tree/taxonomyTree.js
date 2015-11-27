@@ -66,41 +66,6 @@ angular.module('singleConceptAuthoringApp')
           );
         };
 
-        /**
-         * Constructs a single tree to the root, using the first parent of each
-         * level
-         * @param node
-         */
-        scope.constructRootTree = function (node) {
-
-          node.isCollapsed = false;
-
-          ////console.debug('construct root tree', node.conceptId, node.fsn);
-
-          // get the parents
-          return snowowlService.getConceptParents(node.conceptId, scope.branch).then(function (parents) {
-
-            //console.debug('parents', parents);
-
-            // if root, return node
-            if (parents.length === 0) {
-              ////console.debug('root node');
-              return node;
-            }
-
-            // otherwise, construct new level
-            else {
-              parents[0].children = [node];
-
-              return scope.constructRootTree(parents[0]).then(function (tree) {
-                // //console.debug('new tree', tree);
-                return tree;
-              });
-            }
-          });
-
-        };
-
         var paths = {};
         var parentsCache = [];
         var nodes = {};
@@ -120,16 +85,23 @@ angular.module('singleConceptAuthoringApp')
             //console.debug('constructing node', node);
             node.children = [];
             angular.forEach(paths[node.conceptId], function (path) {
-              //console.debug('  adding path ', node.conceptId + '->' + path);
-              node.children.push(nodes[path]);
+
+              // NOTE added to fix strange error where previous searches are not properly clearing the nodes...?
+              // each search was somehow preserving the node/path relationship of the root concept to each first-level child
+              // put this in as a quick fix, but should investigate it
+              // TODO FIX THIS
+              if (nodes[path]) {
+                node.children.push(nodes[path]);
+              }
             });
             if (node.conceptId === scope.concept.conceptId) {
               node.isCollapsed = true;
             }
-          });
+        });
 
           console.debug('final result', nodes['138875005']);
 
+          scope.terminologyTree = [];
           scope.terminologyTree.push(nodes['138875005']);
 
         }
@@ -169,19 +141,19 @@ angular.module('singleConceptAuthoringApp')
 
           // check if this node is stored
           if (!nodes.hasOwnProperty(node.conceptId)) {
+            //console.debug('adding node', node);
             nodes[node.conceptId] = node;
           }
 
           // get all parents
           getParentsHelper(node).then(function (parents) {
 
-            //console.debug('parents for ', node.conceptId, parents);
+          //  console.debug('parents for ', node.conceptId, parents);
 
             // if root, check if all started tree computations are complete
             if (!parents || parents.length === 0) {
               treesDone++;
-              //console.debug('treesDone/treesStarted', treesDone,
-              // treesStarted);
+             // console.debug('treesDone/treesStarted', treesDone, treesStarted);
               if (treesDone === treesStarted) {
                 mergeTrees();
               }
@@ -200,8 +172,7 @@ angular.module('singleConceptAuthoringApp')
                 treesStarted += Math.min(nEligibleParents, parents.length) - 1;
               }
 
-              //console.debug('limit/started/done/eligible', scope.limit,
-              // treesStarted, treesDone, nEligibleParents);
+             // console.debug('limit/started/done/eligible', scope.limit, treesStarted, treesDone, nEligibleParents);
 
               // add path and recursively call on parents
               for (var i = 0; i < nEligibleParents && i < parents.length; i++) {
@@ -215,6 +186,9 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.constructRootTrees = function (node) {
+          treesDone = 0; // reset the number of trees calculated
+          treesStarted = 1; // the original node
+          nodes = {};
           scope.constructRootTreesHelper(node, node.conceptId);
         };
 
@@ -247,6 +221,8 @@ angular.module('singleConceptAuthoringApp')
 
         function initialize() {
 
+          console.debug('initializing with concept (null = SNOMEDCT root)', scope.concept);
+
 
           // clear any existing trees
           scope.terminologyTree = [];
@@ -278,9 +254,18 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
+        var viewedConceptId = null;
         scope.$watch('concept', function () {
-          console.debug('taxonomyTree concept changed', scope.concept);
-          initialize();
+          console.debug('taxonomyTree concept changed from/to', viewedConceptId, scope.concept ? scope.concept.conceptId : 'null');
+
+          // only re-initialize if the requested concept is different than the currently viewed concept
+          if (scope.concept && scope.concept.conceptId !== viewedConceptId) {
+            viewedConceptId = scope.concept.conceptId;
+            initialize();
+          } else if (!scope.concept) {
+            initialize();
+          }
+
         }, true);
       }
     };

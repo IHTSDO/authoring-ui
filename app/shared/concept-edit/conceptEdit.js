@@ -806,7 +806,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return a.groupId - b.groupId;
             }
           });
-          
+
           scope.concept.relationships = isaRels.concat(attrRels);
         }
 
