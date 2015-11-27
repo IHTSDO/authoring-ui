@@ -2109,6 +2109,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
+        scope.formatComponentMoreText = function (text) {
+          if (!text || text.length === 0) {
+            return '';
+          }
+
+          // replace underscores with spaces and make only first character upper case
+          text = text.replace(/_/g, ' ');
+          return text.substr(0, 1).toUpperCase() + text.substr(1).toLowerCase();
+        };
+
 //////////////////////////////////////////////////////////////////////////
 // Conditional component styling
 // ////////////////////////////////////////////////////////////////////////
@@ -2152,8 +2162,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // CHeck for Promoted Task -- must be static
         // ////////////////////////////////////////////////////////////////////////
 
-        // function to set static flag if task is promoted, regardless of other context
-        scope.checkPromotedStatus = function() {
+        // function to set static flag if task is promoted, regardless of other
+        // context
+        scope.checkPromotedStatus = function () {
           if ($routeParams.taskKey) {
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               scope.task = response;
@@ -2169,7 +2180,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         // on task reload notifications, reload task and set flag
-        scope.$on('reloadTask', function() {
+        scope.$on('reloadTask', function () {
           scope.checkPromotedStatus();
         });
 
@@ -2177,7 +2188,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.checkPromotedStatus();
       }
     };
-
 
   }
 )
