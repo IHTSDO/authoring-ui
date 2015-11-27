@@ -405,6 +405,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             return results;
           }, function (error) {
+            notificationService.sendError('Unexpected error validationg concept prior to save');
             return null;
           });
         };
@@ -443,6 +444,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // validate concept first
           scope.getValidationResultsForConcept().then(function (validationResults) {
 
+            if (!validationResults) {
+              return;
+            }
+
+
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
               // display the validation warnings and continue
@@ -454,7 +460,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             // if errors, notify and do not save
-            else if (validationResults.hasErrors) {
+            else if (validationResults && validationResults.hasErrors) {
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
               scope.displayValidationResults(validationResults);
             }
@@ -462,7 +468,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if no errors but warnings, save, results will be displayed after
             // save NOTE: Do not notify or display until after save, as
             // component ids may change on return from term server
-            else if (validationResults.hasWarnings) {
+            else if (validationResults && validationResults.hasWarnings) {
 
               // save the concept with warnings
               saveHelper(scope.concept, true).then(function () {
