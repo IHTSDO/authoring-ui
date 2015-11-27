@@ -796,14 +796,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
           $scope.classificationContainer.equivalentConcepts = [];
           angular.forEach(equivalentConcepts, function (item) {
-            console.log(item.equivalentConcepts);
+            //console.log(item.equivalentConcepts);
             if (item.equivalentConcepts.length === 2) {
               $scope.classificationContainer.equivalentConcepts.push(item.equivalentConcepts);
             }
             else {
               var key = item.equivalentConcepts[0];
               angular.forEach(item.equivalentConcepts, function (equivalence) {
-                console.log(item);
+               // console.log(item);
                 if (equivalence !== key) {
                   var newEq = [];
                   newEq.push(key);
@@ -813,7 +813,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               });
             }
           });
-          console.log($scope.classificationContainer.equivalentConcepts);
+          //console.log($scope.classificationContainer.equivalentConcepts);
         });
       } else {
         $scope.classificationContainer.equivalentConcepts = [];
