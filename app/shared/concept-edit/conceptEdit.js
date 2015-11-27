@@ -2099,11 +2099,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Component More Details Popover Conditional Direction //
         //////////////////////////////////////////////////////////
 
+        // set the initial direction based on load position
+        $timeout(function() {
+        if (document.getElementById('conceptMoreButton').getBoundingClientRect().left < 500) {
+          scope.popoverDirection = 'right';
+        } else {
+          scope.popoverDirection = 'left';
+        }
+        }, 250);
+
         // sets the popover direction (left, bottom, right) based on current
         // position of root element
         scope.setPopoverDirection = function ($event) {
           if ($event.pageX < 500) {
-            scope.popoverDirection = $event.pageX < 300 ? 'right' : 'bottom';
+            scope.popoverDirection = 'right';
           } else {
             scope.popoverDirection = 'left';
           }
