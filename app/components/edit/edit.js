@@ -986,24 +986,20 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         switch (branchState) {
           case 'FORWARD':
-            $scope.canRebase = false;
             $scope.canPromote = $scope.isOwnTask;
             $scope.canConflict = false;
             break;
           case 'UP_TO_DATE':
-            $scope.canRebase = false;
             $scope.canPromote = false;
             $scope.canConflict = false;
             break;
           case 'BEHIND':
-            $scope.canRebase = true;// true $scope.isOwnTask;
             $scope.canPromote = false;
-            $scope.canConflict = true;
+            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
             break;
           case 'STALE':
-            $scope.canRebase = $scope.isOwnTask;
             $scope.canPromote = false;
-            $scope.canConflict = true;
+            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
             break;
           case 'DIVERGED':
             /**
@@ -1020,13 +1016,11 @@ angular.module('singleConceptAuthoringApp.edit', [
              * conflicts moved to conceptsResolved)
              *
              */
-            $scope.canRebase = $scope.isOwnTask;
             $scope.canPromote = false;
-            $scope.canConflict = true;
+            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
             break;
           default:
             notificationService.sendError('Error:  Cannot determine branch state. Conflict, rebase, and promote functions disabled');
-            $scope.canRebase = false;
             $scope.canPromote = false;
             $scope.canConflict = false;
         }
