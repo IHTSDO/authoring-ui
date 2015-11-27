@@ -7,27 +7,33 @@
     .conflict-concept-column {
       background-color: #424242
     }
-	
-	.conflicts .iconbase {
-    width: 40px;
-    height: 40px;
-    padding: 6px 8px;
-    float: left;
-    font-size: 18px;
-}
-.merges-button {
-    padding: 0px!important;
-    margin: 0px!important;
-    width: 100%!important;
-    margin-bottom: 10px;}
-	.merges-button .button-link {
-    padding: 8px 15px;
-    float: left;
-    font-weight: 500;
-	text-transform:none;
-}
-.merges-button[disabled]:hover{    background-color: #bdbdbd;
-    color: #fff;}
+
+    .conflicts .iconbase {
+      width: 40px;
+      height: 40px;
+      padding: 6px 8px;
+      float: left;
+      font-size: 18px;
+    }
+
+    .merges-button {
+      padding: 0px !important;
+      margin: 0px !important;
+      width: 100% !important;
+      margin-bottom: 10px;
+    }
+
+    .merges-button .button-link {
+      padding: 8px 15px;
+      float: left;
+      font-weight: 500;
+      text-transform: none;
+    }
+
+    .merges-button[disabled]:hover {
+      background-color: #bdbdbd;
+      color: #fff;
+    }
 
   </style>
 
@@ -39,10 +45,11 @@
   </script>
 
   <div class="row no-gutter no-padding">
-  <div ng-if="!conflicts && !rebaseRunning && !rebaseComplete" class="loading-merges blue darken-1">
+    <div ng-if="!conflicts && !rebaseRunning && !rebaseComplete" class="loading-merges blue darken-1">
 
-         <div class="loading-merges">   <div class="clock">
-<svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      <div class="loading-merges">
+        <div class="clock">
+          <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
 <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
 <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
@@ -62,16 +69,17 @@
        repeatCount="indefinite" />
 </line>
 </svg>
-</div>
- <h3>Comparing task to project, please wait just a moment...</h3>
-
-</div>
-         
         </div>
-              <div ng-if="!conflicts && rebaseRunning" class="loading-merges green">
+        <h3>{{comparingText}}</h3>
 
-              <div class="loading-merges">   <div class="clock">
-<svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      </div>
+
+    </div>
+    <div ng-if="!conflicts && rebaseRunning" class="loading-merges green">
+
+      <div class="loading-merges">
+        <div class="clock">
+          <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
 <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
 <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
@@ -91,30 +99,33 @@
        repeatCount="indefinite" />
 </line>
 </svg>
-</div>
-          <h3>Task and project can be merged without issues, pulling changes in from project...</h3>
-          </div>
-</div>
-               <!-- Displayed after merges complete -->
-        <div class="loading-merges green" ng-if="rebaseComplete">
-          <div class="all-done"><div class="md md-done"> </div></div> 
-          <h3> All changes successfully pulled in from project. <span ng-if="rebaseWithMerges">Resolved merges successfully applied</span></h3>
-       
         </div>
-   
-  <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
-        <div ng-if="conflicts && rebaseRunning" class="loading-merges red">
-         <div class="all-done"><div class="md md-sync-problem"> </div></div> 
-          <h3>Unexpected error:  Attempt to pull in changes while merges remain unresolved.  Contact the administrator.</h3>
-          
-          </div>
+        <h3>{{rebasingText}}</h3>
+      </div>
+    </div>
+    <!-- Displayed after merges complete -->
+    <div class="loading-merges green" ng-if="rebaseComplete">
+      <div class="all-done">
+        <div class="md md-done"></div>
+      </div>
+      <h3> All changes successfully pulled in. <span
+        ng-if="rebaseWithMerges">Resolved merges successfully applied</span></h3>
+
+    </div>
+
+    <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
+    <div ng-if="conflicts && rebaseRunning" class="loading-merges red">
+      <div class="all-done">
+        <div class="md md-sync-problem"></div>
+      </div>
+      <h3>Unexpected error: Attempt to pull in changes while merges remain unresolved. Contact the administrator.</h3>
+
+    </div>
     <!-- Displayed before merges complete, or during rebasing -->
     <div class="col-md-12 no-padding no-gutter" ng-if="!rebaseComplete">
 
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
-
-  
 
 
         <div ng-if="conflicts && !rebasing">
@@ -124,7 +135,8 @@
               <!-- Hide sidebar control -->
 
               <h4>Concept Merges
-                <button type="button" ng-click="toggleSidebar()" class="md md-keyboard-arrow-left pull-right " ng-if="viewedMerges.length > 0"
+                <button type="button" ng-click="toggleSidebar()" class="md md-keyboard-arrow-left pull-right "
+                        ng-if="viewedMerges.length > 0"
                         title="Hide Sidebar"></button>
               </h4>
             </div>
@@ -177,11 +189,17 @@
 
                 <!-- buttons trigger off whether all merges are complete
                NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
-               <div class="col-md-12">
-                <button ng-if="mergesComplete" ng-click="finalizeMerges()" class="btn btn-default red lighten-2 merges-button"> <span class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span>
-                </button>
-                <button ng-if="!mergesComplete" disabled class="btn btn-default grey lighten-1 normal-case merges-button"><span class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span></button>
-</div>
+                <div class="col-md-12">
+
+                  <button ng-if="mergesComplete" ng-click="finalizeMerges()"
+                          class="btn btn-default red lighten-2 merges-button"><span
+                    class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span>
+                  </button>
+                  <button ng-if="!mergesComplete" disabled
+                          class="btn btn-default grey lighten-1 normal-case merges-button"><span
+                    class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span>
+                  </button>
+                </div>
               </div>
 
               <!-- Merges Accepted -->
@@ -210,16 +228,18 @@
                     </td>
                   </tr>
                 </table>
-<div class="col-md-12">
-                <!-- buttons trigger off whether all merges are complete
-                NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
-                <button ng-if="mergesComplete" ng-click="finalizeMerges()" class="btn btn-default red lighten-2 merges-button"><span
-                  class="md md-assignment-turned-in darken-2 iconbase"></span><span class="button-link">Finalize Merges</span>
-                </button>
-                <button ng-if="!mergesComplete" disabled class="btn btn-default red lighten-2 normal-case merges-button"><span
-                  class="md md-assignment-turned-in red lighten-1 iconbase"></span><span class="button-link">All merges must be accepted to continue</span>
-                </button>
-</div>
+                <div class="col-md-12">
+                  <!-- buttons trigger off whether all merges are complete
+                  NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
+                  <button ng-if="mergesComplete" ng-click="finalizeMerges()"
+                          class="btn btn-default red lighten-2 merges-button"><span
+                    class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span>
+                  </button>
+                  <button ng-if="!mergesComplete" disabled
+                          class="btn btn-default grey lighten-1 normal-case merges-button"><span
+                    class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

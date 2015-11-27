@@ -58,7 +58,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: null,
           testFn: function test() {
             var concept = getTestConcept('WSP Test01 concept (test)', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp')
             // isa relationship
             concept.relationships.push(rel);
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -112,7 +112,7 @@ angular.module('singleConceptAuthoringApp')
 
             concept.relationships.push(rel);
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -134,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
             var rel = angular.copy(concept.relationships[0]);
             concept.relationships.push(rel);
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -165,7 +165,7 @@ angular.module('singleConceptAuthoringApp')
             concept.relationships.push(rel);
             concept.relationships.push(rel);
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -185,7 +185,7 @@ angular.module('singleConceptAuthoringApp')
 
             concept.relationships[0].active = false;
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -208,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
             concept.relationships[0].target.conceptId = '133928008';
             concept.relationships[0].target.fsn = 'Community (social concept)';
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response

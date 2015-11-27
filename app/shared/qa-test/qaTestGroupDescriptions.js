@@ -55,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: null,
           testFn: function test() {
             var concept = getTestConcept('Desc Test01 concept (test)', 'Desc Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -79,7 +79,7 @@ angular.module('singleConceptAuthoringApp')
             return snowowlService.createConcept(project, task, concept).then(function (response) {
               concept = response;
               concept.descriptions.push(tempDesc);
-              return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+              return snowowlService.validateConcept(project, task, concept).then(function (response) {
                 return {
                   data: concept,
                   errorsReceived: response
@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
                 description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
               }
             });
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
                 description.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
               }
             });
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -149,7 +149,7 @@ angular.module('singleConceptAuthoringApp')
             var description = objectService.getNewPt();
             description.term = 'Desc Test03 concept duplicate';
             concept.descriptions.push(description);
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -169,7 +169,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test1661 concept (test)', 'Desc Test1661 concept');
             concept.descriptions.push(concept.descriptions[0]);
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -187,7 +187,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test07 -concept (test)', 'Desc Test07-concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -205,7 +205,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test08- concept (test)', 'Desc Test08 concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test09 pre-filled concept (test', 'Desc Test09 concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -242,7 +242,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test09- concept (test', 'Desc Test09 concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -259,7 +259,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test10, concept (test)', 'Desc Test10 concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -294,7 +294,7 @@ angular.module('singleConceptAuthoringApp')
 
             concept.descriptions = [fsn, pt];
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -327,7 +327,7 @@ angular.module('singleConceptAuthoringApp')
 
             concept.descriptions = [fsn, pt];
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -350,7 +350,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test11 concept (test)', 'Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -372,7 +372,7 @@ angular.module('singleConceptAuthoringApp')
             textDefinition.term = 'Text Definition';
             textDefinition.caseSignificance = 'CASE_INSENSITIVE';
             concept.descriptions.push(textDefinition);
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -392,7 +392,7 @@ angular.module('singleConceptAuthoringApp')
             var textDefinition = objectService.getNewTextDefinition();
             textDefinition.term = 'text Definition';
             concept.descriptions.push(textDefinition);
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -409,7 +409,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: an active FSN containing a + symbol, must include a single space placed at either side of the symbol e.g. Ibuprofen + oxycodone (product)',
           testFn: function test() {
             var concept = getTestConcept('Desc Test14+ concept (test)', 'Desc Test14+ concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -426,7 +426,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: an active FSN containing a + symbol, must include a single space placed at either side of the symbol e.g. Ibuprofen + oxycodone (product)',
           testFn: function test() {
             var concept = getTestConcept('Desc Test14 +concept (test)', 'Desc Test14 +concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -442,7 +442,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('(Desc Test15 concept (test)', 'Desc Test15 concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -459,7 +459,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test16 concept(test)', 'Desc Test16 concept');
 
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -481,7 +481,7 @@ angular.module('singleConceptAuthoringApp')
                 description.acceptabilityMap = {};
               }
             });
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -497,7 +497,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: an FSN must end with a semantic tag.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test18 concept', 'Desc Test18 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -520,7 +520,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: an FSN must end with Semantic Tags.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test19-concept', 'Desc Test19 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -538,7 +538,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: an FSNs must not be in a plural form.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test20 concepts', 'Desc Test20 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -559,7 +559,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test21 concepts', 'Desc Test21 concept');
             concept.relationships[0].target.conceptId = '272394005';
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
 
               return {
                 data: concept,
@@ -591,7 +591,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: concepts\' must have an active synonym that has the same text as the active FSN.',
           testFn: function test() {
             var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
 
               return {
                 data: concept,
@@ -613,7 +613,7 @@ angular.module('singleConceptAuthoringApp')
             textDefinition.term = 'Text definition for testing';
             textDefinition.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
             concept.descriptions.push(textDefinition);
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
 
               return {
                 data: concept,
@@ -640,7 +640,7 @@ angular.module('singleConceptAuthoringApp')
             textDefinition.term = 'Text definition for testing';
             textDefinition.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
             concept.descriptions.push(textDefinition);
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
