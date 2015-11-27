@@ -41,7 +41,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED';
 
       // get the latest classification for this project (if exists)
-      if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED' ) {
+      if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED') {
         snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
           $scope.classificationContainer = response;
         });
@@ -49,7 +49,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // get the latest validation for this project (if exists)
       if ($scope.project.validationStatus && $scope.project.validationStatus === 'COMPLETED') {
-         scaService.getValidationForProject($scope.project.key).then(function(response) {
+        scaService.getValidationForProject($scope.project.key).then(function (response) {
           $scope.validationContainer = response;
         });
       }
@@ -75,14 +75,22 @@ angular.module('singleConceptAuthoringApp.project', [
       });
     };
 
+    function reloadProject() {
+      scaService.getProjectForKey($scope.project.key).then(function (response) {
+        $scope.project = response;
+      })
+    }
+
     // classify the project
     $scope.classify = function () {
       notificationService.sendMessage('Starting classification for project...');
       scaService.startClassificationForProject($scope.project.key).then(function (response) {
 
-        notificationService.sendMessage('Classification running', 5000);
+        notificationService.sendMessage('Classification running', 10000);
         $scope.classificationContainer = response;
-      }, function(error) {
+        $rootScope.classificationRunning = true;
+        reloadProject();
+      }, function (error) {
         notificationService.sendError('Error starting classification: ' + error);
       });
     };
@@ -90,6 +98,7 @@ angular.module('singleConceptAuthoringApp.project', [
     // on load, retrieve latest validation
     scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
       console.debug('latest validation', response);
+      notificationService.sendMessage('Validation scheduled', 1000);
       $scope.validationContainer = response;
 
     });
@@ -100,7 +109,9 @@ angular.module('singleConceptAuthoringApp.project', [
       scaService.startValidationForProject($scope.project.key).then(function (response) {
         notificationService.sendMessage('Validation running');
         $scope.validationContainer.status = response;
-      }, function(error) {
+        $rootScope.validationRunning = true;
+        reloadProject();
+      }, function (error) {
         notificationService.sendError('Error starting validation: ' + error);
       });
     };
@@ -109,27 +120,26 @@ angular.module('singleConceptAuthoringApp.project', [
     $scope.rebase = function () {
       notificationService.sendMessage('Rebasing project...');
       scaService.rebaseProject($scope.project.key).then(function (response) {
-        notificationService.sendMessage('Project successfully rebased', 10000, null);
-      }, function(error) {
+
+        notificationService.sendMessage('Successfully pulled in mainline content changes', 10000, null);
+        reloadProject();
+      }, function (error) {
         notificationService.sendError('Error rebasing project: ' + error);
       });
     };
 
     // promote the project
-    $scope.promote = function ()  {
-    notificationService.sendMessage('Promoting project....');
+    $scope.promote = function () {
+      notificationService.sendMessage('Promoting project....');
       scaService.promoteProject($scope.project.key).then(function (response) {
+
         notificationService.sendMessage('Project successfully promoted', 10000, null);
-      }, function(error) {
+        reloadProject();
+      }, function (error) {
         notificationService.sendError('Error promoting project: ' + error);
       });
     };
 
-    // go to the conflicts / rebase view
-    $scope.gotoConflictsView = function() {
-      $location.url('#/projects/project/' + $scope.project.key + '/conflicts');
-    };
-    
     // tasks table params
     // declare table parameters
     $scope.taskTableParams = new ngTableParams({
@@ -140,7 +150,7 @@ angular.module('singleConceptAuthoringApp.project', [
       {
         filterDelay: 50,
         total: $scope.tasks ? $scope.tasks.length : 0, // length of
-                                                                   // data
+        // data
         getData: function ($defer, params) {
 
           if (!$scope.tasks || $scope.tasks.length == 0) {
@@ -174,9 +184,9 @@ angular.module('singleConceptAuthoringApp.project', [
     );
 
     // on load, retrieve tasks for project
-    scaService.getTasksForProject($routeParams.projectKey).then(function(response) {
+    scaService.getTasksForProject($routeParams.projectKey).then(function (response) {
       $scope.tasks = response;
-      angular.forEach($scope.tasks, function(task) {
+      angular.forEach($scope.tasks, function (task) {
         task.authorKey = task.assignee ? task.assignee.displayName : '';
         task.reviewerKey = task.reviewer ? task.reviewer.displayName : '';
       });

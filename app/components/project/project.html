@@ -41,7 +41,8 @@
           </button>
         </div>
         <div class="p-10 pull-right ">
-          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()">
+          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()"
+            ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status !== 'COMPLETED'">
             <div
               class="project-icon green pull-left">
               <div class="md md-notifications"></div>
@@ -51,7 +52,8 @@
           </button>
         </div>
         <div class="p-10 pull-right ">
-          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()">
+          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()"
+            ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'">
             <div
               class="project-icon deep-purple lighten-1 pull-left">
               <div class="md md-school"></div>
@@ -70,7 +72,7 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="!project.validationStatus || project.validationStatus != 'COMPLETED' "
+            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED' "
                     ng-init="validationCollapsed = false"
                     ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
@@ -99,7 +101,7 @@
         <div class="card-header">
           <div class="card-title">
             <button
-              ng-disabled="!project.latestClassificationJson || project.latestClassificationJson.status !== 'COMPLETED'"
+              ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status === 'COMPLETED'"
               ng-init="classificationCollapsed = true"
               ng-click="classificationCollapsed = !classificationCollapsed" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
@@ -130,15 +132,16 @@
         <div class="card-header">
           <div class="card-title">
             <!--ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'" -->
+            <a ng-href="#/projects/project/{{project.key}}/conflicts">
             <button
-              ng-disabled="true"
+              ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'"
               ng-init="conflictsCollapsed = true"
-              ng-click="gotoConflictsView()" type="button"
+              type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
               <span
                 ng-class="{'report-text' : project.branchState === 'DIVERGED' || project.branchState === 'BEHIND' || project.branchState === 'STALE'}">Pull changes from Mainline Content</span>
             </button>
-            <!--       </a>-->
+            </a>
 
             <span class="project-icon red pull-right"><span class="md md-sync-problem"></span></span>
             <span class="arrow-red pull-right"></span>

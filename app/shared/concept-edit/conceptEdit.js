@@ -376,7 +376,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // function to validate concept and display any errors or warnings
         scope.getValidationResultsForConcept = function () {
 
-          return snowowlService.validateConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+          return snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
 
             var results = {
               hasWarnings: false,
@@ -440,6 +440,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // handling done in conflicts.js
           if (!scope.merge) {
             notificationService.sendMessage(saveMessage);
+          } else {
+            notificationService.sendMessage('Saving accepted merged concept...');
           }
           // validate concept first
           scope.getValidationResultsForConcept().then(function (validationResults) {
