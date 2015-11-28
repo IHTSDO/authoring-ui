@@ -73,7 +73,7 @@
   }
 
   .last {
-/*    margin-bottom:37px;*/
+    /*    margin-bottom:37px;*/
     height: auto;
   }
 
@@ -133,7 +133,7 @@
             type="button" ng-click="createConcept()"
             ng-disabled="task.status === 'Promoted'"
             class="btn-default btn-block create-new-concept tooltips-right tooltips-light normal-case"
-          >
+      >
       <div class="md fa fa-edit"></div>
       <span>Create New Concept</span></button>
     <!-- Switch to Classify View -->
@@ -147,7 +147,7 @@
     <!-- Switch to Feedback/Review View -- Task View Only -->
     <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
-          
+
             ng-disabled="!task.reviewer"
             ng-click="viewReview()">
       <div class="md md-email"></div>
@@ -229,7 +229,8 @@
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
-               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId" ng-class="isLast($last)"
+               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+               ng-class="isLast($last)"
                repeat-complete callback="renderingComplete()">
 
             <!-- model -->
@@ -241,7 +242,8 @@
             <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')"
                  style="margin-right:0px;">
               <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()" save-function="conceptUpdateFunction(project, task, concept)"
+                   branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
+                   save-function="conceptUpdateFunction(project, task, concept)"
                 >
               </div>
             </div>
@@ -334,7 +336,8 @@
   display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding darken-3 grey" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding darken-3 grey"
+               style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)"
               >
@@ -375,7 +378,8 @@
              repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey no-padding" style="margin-right:0px;">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey no-padding"
+               style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)">
             </div>
@@ -396,43 +400,16 @@
     <!-- Classification view -->
     <div ng-if="thisView === 'classification'">
 
-      <!-- classification report -->
-      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
-        <div classification classification-container="classificationContainer" branch="targetBranch"
-             editable="true"></div>
-      </div>
+      <div class="row no-padding no-gutter">
 
-      <!-- concept edit : non-static, can create -->
-      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding"
-           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
-           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-
-        <!-- concept data-->
-        <div class="row no-gutter" style="display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;" ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
-             repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
-
-          <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey" style="margin-right:0px;">
-            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
-              >
-            </div>
-          </div>
-
-        </div>
-        <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
-          <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" fill-height style="margin-right:0px;">
-          </div>
+        <!-- classification report -->
+        <div class="col-md-12">
+          <div classification classification-container="classificationContainer" branch="targetBranch"
+               editable="true"></div>
         </div>
       </div>
     </div>
+
 
     <!-- Review/Feedback view -->
     <div ng-if="thisView === 'feedback'">
@@ -456,7 +433,8 @@
              repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey" style="margin-right:0px; z-index:999">
+          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey"
+               style="margin-right:0px; z-index:999">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
                  component-styles="getFeedbackStyles(concept)">
@@ -486,7 +464,7 @@
       </div>
 
     </div>
-<!--    <div ng-if="conceptsRendering" class="loader" style="bottom:10px; position:fixed;">Loading...</div>-->
+    <!--    <div ng-if="conceptsRendering" class="loader" style="bottom:10px; position:fixed;">Loading...</div>-->
 
   </div>
 
