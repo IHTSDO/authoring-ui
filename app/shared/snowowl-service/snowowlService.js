@@ -82,7 +82,7 @@ angular.module('singleConceptAuthoringApp')
         if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
           relationship.relationshipId = null;
         }
-      })
+      });
     }
 
     // function to remove disallowed elements from a concept
@@ -830,7 +830,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(pollResults);
             }, function(error) {
               deferred.reject(error);
-            })
+            });
           }
         }, function (error) {
           deferred.reject('Cannot retrieve review information');
@@ -903,7 +903,7 @@ angular.module('singleConceptAuthoringApp')
         return response.data;
       }, function(error) {
         return null;
-      })
+      });
     }
 
     function getMergeReviewForBranches(parentBranch, childBranch) {

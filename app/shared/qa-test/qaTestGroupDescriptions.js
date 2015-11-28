@@ -59,7 +59,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -83,7 +83,7 @@ angular.module('singleConceptAuthoringApp')
                 return {
                   data: concept,
                   errorsReceived: response
-                }
+                };
               });
             });
           }
@@ -108,7 +108,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -132,7 +132,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -153,7 +153,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -173,7 +173,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -191,7 +191,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -229,7 +229,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -246,7 +246,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -263,7 +263,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -298,7 +298,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -331,7 +331,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -354,7 +354,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -376,7 +376,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -396,7 +396,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -413,7 +413,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -430,7 +430,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -446,7 +446,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -463,7 +463,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -485,7 +485,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -501,7 +501,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -524,7 +524,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -542,7 +542,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -564,7 +564,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -596,7 +596,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         },
@@ -618,12 +618,12 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             }, function (error) {
               return {
                 data: concept,
                 errorsReceived: null
-              }
+              };
             });
           }
         },
@@ -644,12 +644,12 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             }, function (error) {
               return {
                 data: concept,
                 errorsReceived: null
-              }
+              };
             });
           }
         }
@@ -678,7 +678,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
             results.nTestsError++;
           }
-        })
+        });
       }
 
       function runHelper(tests, index) {
@@ -744,7 +744,7 @@ angular.module('singleConceptAuthoringApp')
 
           // run next test
           return runHelper(tests, ++index);
-        })
+        });
       }
 
       function runSingleTest(testName, projectKey, taskKey) {
@@ -764,7 +764,7 @@ angular.module('singleConceptAuthoringApp')
             runHelper([test], 0).then(function () {
               console.debug('test complete', test);
               deferred.resolve(test);
-            })
+            });
           }
         });
 

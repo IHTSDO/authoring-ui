@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         }, {
@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         }, {
@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         }, {
@@ -103,7 +103,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         }, {
@@ -117,7 +117,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                   data: concept,
                   errorsReceived: response
-              }
+              };
             });
           }
         }, {
@@ -131,7 +131,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         }, {
@@ -145,7 +145,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         }, {
@@ -159,7 +159,7 @@ angular.module('singleConceptAuthoringApp')
               return {
                 data: concept,
                 errorsReceived: response
-              }
+              };
             });
           }
         }];
@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp')
             runHelper([test], 0).then(function() {
               console.debug('test complete', test);
               deferred.resolve(test);
-            })
+            });
           }
         });
 
