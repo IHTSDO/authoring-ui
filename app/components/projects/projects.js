@@ -23,6 +23,7 @@ angular.module('singleConceptAuthoringApp.projects', [
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "All Projects"
     $scope.projects = null;
+    $scope.browserLink = '..';
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({

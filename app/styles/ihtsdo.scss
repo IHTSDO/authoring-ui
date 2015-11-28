@@ -23,7 +23,9 @@ html {
   -webkit-text-size-adjust: 100%;
   font-size: 10px;
   -webkit-tap-highlight-color: transparent;
+  
 }
+.timeline-title, textarea{ word-break: break-all;}
 article,
 aside,
 details,

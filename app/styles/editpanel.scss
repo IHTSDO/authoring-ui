@@ -2,16 +2,45 @@
     width: 100%;
     margin-bottom: 0px;
 }
+.addButton.btn-round {
+    width: 20px;
+    height: 20px;
+    font-size: 14px !important;
+    line-height: 20px;
+    position: relative;
+}
+.keep.switch{width:100%!important;}
+.fsn, .title-text,{width:100%;}
 .editpanel {
     color: #737373 !important;
 }
-.addButton.btn-round {
-    width: 25px;
-    height: 25px;
-    font-size: 16px!important;
-    line-height: 25px;
-    position: relative;
+
+.model-header label {
+    margin-bottom: 0px;
+    width: 100%;
 }
+tab-pane.active .no-padding.col-md-9,
+.angular-ui-tree-node,  {
+   
+    line-height: 12px;
+    font-size: 12px;
+    padding-bottom: 3px;
+}
+.angular-ui-tree-nodes .angular-ui-tree-nodes {
+    padding-left: 15px;
+}
+button.fsn-title-button{width:100%;}
+.badge.alert-warning{
+    font-weight: normal;
+    font-size: 17px!important;
+	text-align:center;
+    padding: 0px 0px 7px 3px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    margin: 0px;}
+ 	
 .saved-list {font-size:12px;}
 .editpanel a {
     color: #666;
@@ -873,6 +902,12 @@ button.fsn-title-button {
 .case-s li:nth-child(3) {
     border-color: transparent
 }
+/* fix on type ahead */
+.sourcename .dropdown-menu {margin-left:-70px;}
+.dropdown-menu{font-size:12px; max-width:350px;}
+.dropdown-menu > li {width:100%; word-wrap:normal!important; white-space:normal!important}
+.dropdown-menu > li > a {
+   padding:3px 5px; color:#474747; word-wrap:normal!important; white-space:normal!important}
 /* popover */
 
 
@@ -905,7 +940,7 @@ button.fsn-title-button {
     margin-right: 10px;
 }
 .popover {
-    min-width: 450px !important;
+    min-width: 650px ;
 }
 .pop-edit {
     font-size: 11px;
@@ -929,7 +964,11 @@ button.fsn-title-button {
     box-shadow: inset 0 -1px 0 #ddd!important;
 }
 /* Concept level */
-
+.popover select{    height: 10px !important;}
+.popover-content {
+    padding: 0px 3px !important;
+}
+button.fsn-title-button{width:100%}
 .concept-more .concept-id {
     width: 14%;
     margin-right: 3%
@@ -944,7 +983,7 @@ button.fsn-title-button {
 /* description level */
 
 .description-more .sct-id {
-    width: 14%;
+    width: 16%;
     margin-right: 1%
 }
 .description-more .time {
@@ -952,11 +991,11 @@ button.fsn-title-button {
     margin-right: 1%
 }
 .description-more .lang-id {
-    width: 7%;
+    width: 9%;
     margin-right: 1%
 }
 .description-more .module-id {
-    width: 63%;
+    width: 56%;
 }
 /* slider*/
     .sca-layout-elem {
