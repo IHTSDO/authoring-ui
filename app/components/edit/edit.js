@@ -796,14 +796,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
           $scope.classificationContainer.equivalentConcepts = [];
           angular.forEach(equivalentConcepts, function (item) {
-            console.log(item.equivalentConcepts);
+            //console.log(item.equivalentConcepts);
             if (item.equivalentConcepts.length === 2) {
               $scope.classificationContainer.equivalentConcepts.push(item.equivalentConcepts);
             }
             else {
               var key = item.equivalentConcepts[0];
               angular.forEach(item.equivalentConcepts, function (equivalence) {
-                console.log(item);
+               // console.log(item);
                 if (equivalence !== key) {
                   var newEq = [];
                   newEq.push(key);
@@ -813,7 +813,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               });
             }
           });
-          console.log($scope.classificationContainer.equivalentConcepts);
+          //console.log($scope.classificationContainer.equivalentConcepts);
         });
       } else {
         $scope.classificationContainer.equivalentConcepts = [];
@@ -986,24 +986,20 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         switch (branchState) {
           case 'FORWARD':
-            $scope.canRebase = false;
             $scope.canPromote = $scope.isOwnTask;
             $scope.canConflict = false;
             break;
           case 'UP_TO_DATE':
-            $scope.canRebase = false;
             $scope.canPromote = false;
             $scope.canConflict = false;
             break;
           case 'BEHIND':
-            $scope.canRebase = true;// true $scope.isOwnTask;
             $scope.canPromote = false;
-            $scope.canConflict = true;
+            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
             break;
           case 'STALE':
-            $scope.canRebase = $scope.isOwnTask;
             $scope.canPromote = false;
-            $scope.canConflict = true;
+            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
             break;
           case 'DIVERGED':
             /**
@@ -1020,13 +1016,11 @@ angular.module('singleConceptAuthoringApp.edit', [
              * conflicts moved to conceptsResolved)
              *
              */
-            $scope.canRebase = $scope.isOwnTask;
             $scope.canPromote = false;
-            $scope.canConflict = true;
+            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
             break;
           default:
             notificationService.sendError('Error:  Cannot determine branch state. Conflict, rebase, and promote functions disabled');
-            $scope.canRebase = false;
             $scope.canPromote = false;
             $scope.canConflict = false;
         }

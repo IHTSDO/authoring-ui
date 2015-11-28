@@ -57,7 +57,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept('WSP Test01 concept (test)', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -71,7 +71,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept('WSP Test01  concept (test)', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -85,7 +85,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept(' WSP Test01 concept (test)', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -99,7 +99,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept('WSP Test01 concept (test) ', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept('WSP(Test01)concept (test)', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                   data: concept,
                   errorsReceived: response
@@ -127,7 +127,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept('WSP (Test01)concept (test)', 'WSP (Test01) concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept('WSP ( Test01) concept (test)', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
@@ -155,7 +155,7 @@ angular.module('singleConceptAuthoringApp')
           
           testFn: function test() {
             var concept = getTestConcept('WSP (Test01 ) concept (test)', 'WSP Test01 concept');
-            return snowowlService.validateConceptForTask(project, task, concept).then(function (response) {
+            return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response

@@ -133,7 +133,7 @@
             type="button" ng-click="createConcept()"
             ng-disabled="task.status === 'Promoted'"
             class="btn-default btn-block create-new-concept tooltips-right tooltips-light normal-case"
-            title="Active">
+          >
       <div class="md fa fa-edit"></div>
       <span>Create New Concept</span></button>
     <!-- Switch to Classify View -->
@@ -147,7 +147,7 @@
     <!-- Switch to Feedback/Review View -- Task View Only -->
     <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
-            title="Switch to Feedback View"
+          
             ng-disabled="!task.reviewer"
             ng-click="viewReview()">
       <div class="md md-email"></div>

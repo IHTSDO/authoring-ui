@@ -376,7 +376,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // function to validate concept and display any errors or warnings
         scope.getValidationResultsForConcept = function () {
 
-          return snowowlService.validateConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+          return snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
 
             var results = {
               hasWarnings: false,
@@ -405,6 +405,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             return results;
           }, function (error) {
+            notificationService.sendError('Unexpected error validationg concept prior to save');
             return null;
           });
         };
@@ -439,9 +440,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // handling done in conflicts.js
           if (!scope.merge) {
             notificationService.sendMessage(saveMessage);
+          } else {
+            notificationService.sendMessage('Saving accepted merged concept...');
           }
           // validate concept first
           scope.getValidationResultsForConcept().then(function (validationResults) {
+
+            if (!validationResults) {
+              return;
+            }
+
 
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
@@ -454,7 +462,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             // if errors, notify and do not save
-            else if (validationResults.hasErrors) {
+            else if (validationResults && validationResults.hasErrors) {
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
               scope.displayValidationResults(validationResults);
             }
@@ -462,7 +470,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if no errors but warnings, save, results will be displayed after
             // save NOTE: Do not notify or display until after save, as
             // component ids may change on return from term server
-            else if (validationResults.hasWarnings) {
+            else if (validationResults && validationResults.hasWarnings) {
 
               // save the concept with warnings
               saveHelper(scope.concept, true).then(function () {
@@ -758,7 +766,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // console.debug('sorting relationships');
+          console.debug('sorting relationships');
 
           var isaRels = scope.concept.relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
@@ -768,29 +776,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return rel.type.conceptId !== '116680003';
           });
 
+          console.debug(isaRels, attrRels);
+
           // console.debug(isaRels, attrRels);
 
           // NOTE: All isaRels should be group 0, but sort by group anyway
           isaRels.sort(function (a, b) {
+            if (!a.groupId && b.groupId) {
+              return -1;
+            }
+            if (!b.groupId && a.groupId) {
+              return 1;
+            }
             if (a.groupId === b.groupId) {
               return a.target.fsn > b.target.fsn;
             } else {
-              return a.groupId > b.groupId;
+              return a.groupId - b.groupId;
             }
           });
 
           attrRels.sort(function (a, b) {
+            if (!a.groupId && b.groupId) {
+              return -1;
+            }
+            if (!b.groupId && a.groupId) {
+              return 1;
+            }
             if (a.groupId === b.groupId) {
               return a.target.fsn > b.target.fsn;
             } else {
-              return a.groupId > b.groupId;
+              return a.groupId - b.groupId;
             }
           });
 
           scope.concept.relationships = isaRels.concat(attrRels);
         }
 
-// on load, sort descriptions && relationships
+        // on load, sort descriptions && relationships
         sortDescriptions();
         sortRelationships();
 
@@ -2099,14 +2121,33 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Component More Details Popover Conditional Direction //
         //////////////////////////////////////////////////////////
 
+        // set the initial direction based on load position
+        $timeout(function() {
+        if (document.getElementById('conceptMoreButton').getBoundingClientRect().left < 500) {
+          scope.popoverDirection = 'right';
+        } else {
+          scope.popoverDirection = 'left';
+        }
+        }, 250);
+
         // sets the popover direction (left, bottom, right) based on current
         // position of root element
         scope.setPopoverDirection = function ($event) {
           if ($event.pageX < 500) {
-            scope.popoverDirection = $event.pageX < 300 ? 'right' : 'bottom';
+            scope.popoverDirection = 'right';
           } else {
             scope.popoverDirection = 'left';
           }
+        };
+
+        scope.formatComponentMoreText = function (text) {
+          if (!text || text.length === 0) {
+            return '';
+          }
+
+          // replace underscores with spaces and make only first character upper case
+          text = text.replace(/_/g, ' ');
+          return text.substr(0, 1).toUpperCase() + text.substr(1).toLowerCase();
         };
 
 //////////////////////////////////////////////////////////////////////////
@@ -2152,8 +2193,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // CHeck for Promoted Task -- must be static
         // ////////////////////////////////////////////////////////////////////////
 
-        // function to set static flag if task is promoted, regardless of other context
-        scope.checkPromotedStatus = function() {
+        // function to set static flag if task is promoted, regardless of other
+        // context
+        scope.checkPromotedStatus = function () {
           if ($routeParams.taskKey) {
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               scope.task = response;
@@ -2169,7 +2211,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         // on task reload notifications, reload task and set flag
-        scope.$on('reloadTask', function() {
+        scope.$on('reloadTask', function () {
           scope.checkPromotedStatus();
         });
 
@@ -2177,7 +2219,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.checkPromotedStatus();
       }
     };
-
 
   }
 )

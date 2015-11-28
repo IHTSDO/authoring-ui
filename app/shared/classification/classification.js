@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.saveClassification = function () {
             notificationService.sendMessage('Saving classification....', 0);
-            snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function(data) {
+            snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
               if (!data) {
                 notificationService.sendError('Saving classification unexpectedly failed', 0);
               } else {
@@ -160,7 +160,22 @@ angular.module('singleConceptAuthoringApp')
 
             // get relationship changes
             snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {
+
               scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
+
+              // apply sourceName, typeName, and destinationName to allow for
+              // ng-table sorting (ng-table cannot sort by item.property
+              angular.forEach(scope.relationshipChanges, function (rel) {
+                if (rel.source) {
+                  rel.sourceName = rel.source.fsn;
+                }
+                if (rel.destination) {
+                  rel.destinationName = rel.destination.fsn;
+                }
+                if (rel.type) {
+                  rel.typeName = rel.type.fsn;
+                }
+              });
 
               // copy the redundant stated relationships into their own array
               if (scope.classificationContainer.redundantStatedRelationshipsFound) {
@@ -175,36 +190,9 @@ angular.module('singleConceptAuthoringApp')
 
             // get equivalent concepts
             if (scope.classificationContainer.equivalentConceptsFound) {
-                scope.equivalentConcepts = scope.classificationContainer.equivalentConcepts;
-//              snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.targetBranch).then(function (equivalentConcepts) {
-//            equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
-//            scope.equivalentConcepts = [];
-//            angular.forEach(equivalentConcepts, function(item){
-//                console.log(item.equivalentConcepts);
-//                if(item.equivalentConcepts.length === 2)
-//                {
-//                    scope.equivalentConcepts.push(item.equivalentConcepts);
-//                }
-//                else
-//                {
-//                    var key = item.equivalentConcepts[0];
-//                    angular.forEach(item.equivalentConcepts, function(equivalence){
-//                        console.log(item);
-//                        if(equivalence !== key)
-//                        {
-//                            var newEq = [];
-//                            newEq.push(key);
-//                            newEq.push(equivalence);
-//                            scope.equivalentConcepts.push(newEq);
-//                        }
-//                    });
-//                }
-//            });
-//          });
+              scope.equivalentConcepts = scope.classificationContainer.equivalentConcepts;
             } else {
               scope.equivalentConcepts = [];
-              console.debug('set equivalent concepts',
-               scope.equivalentConcepts);
             }
 
           }, true);
@@ -273,7 +261,6 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-          // on load, get task to set review button status
         }
 
       };

@@ -970,7 +970,7 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
-    function validateConceptForTask(projectKey, taskKey, concept) {
+    function validateConcept(projectKey, taskKey, concept) {
 
       // assign UUIDs to elements without an SCTID
       if (!concept.conceptId) {
@@ -988,7 +988,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/validate/concept', concept).then(function (response) {
+      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
         console.debug('validate success');
         deferred.resolve(response.data);
       }, function (error) {
@@ -1057,8 +1057,7 @@ angular.module('singleConceptAuthoringApp')
       mergeAndApply: mergeAndApply,
 
       // validation
-      validateConceptForTask: validateConceptForTask,
-      validateConceptForProject: validateConceptForProject
+      validateConcept: validateConcept
 
     };
   }

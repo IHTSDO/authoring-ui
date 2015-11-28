@@ -25,6 +25,7 @@ angular.module('singleConceptAuthoringApp.home', [
     $scope.tasks = null;
     $scope.reviewTasks = null;
     $scope.projects = [];
+    $scope.browserLink = '..';
 
     // declare table parameters
     $scope.tableParams = new ngTableParams({
