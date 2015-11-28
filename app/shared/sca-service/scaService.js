@@ -747,7 +747,7 @@ angular.module('singleConceptAuthoringApp')
           console.error('Error rebasing task ' + projectKey + ', task ' + taskKey);
           deferred.reject(error.message);
         });
-        return deferred.promise;
+        //return deferred.promise;
       },
 
 //////////////////////////////////////////

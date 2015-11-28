@@ -2206,7 +2206,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 console.debug('setting static to true, task is Promoted');
                 scope.isStatic = true;
               }
-            })
+            });
           }
         };
 

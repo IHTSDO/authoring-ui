@@ -263,7 +263,7 @@ angular.module('singleConceptAuthoringApp')
 
               scaService.saveUiStateForTask(task.projectKey, task.key, 'edit-panel', editList).then(function(response) {
                 scaService.saveUiStateForTask(task.projectKey, task.key, 'saved-list', { items : savedList }) ; // TODO Seriously rethink the saved list
-              })
+              });
 
             }, function () {
             });
