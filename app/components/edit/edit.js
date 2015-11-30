@@ -521,8 +521,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.dropConcept = function (conceptIdNamePair) {
 
-      console.debug('Dropping concept', conceptIdNamePair);
-
       var conceptId = conceptIdNamePair.id;
       var name = conceptIdNamePair.name;
 
@@ -1128,6 +1126,4 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.getLatestValidation();
       $scope.getLatestConflictsReport();
 
-    }
-    )
-    ;
+    });

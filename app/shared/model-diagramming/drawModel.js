@@ -504,6 +504,8 @@ angular.module('singleConceptAuthoringApp')
             element.find('#image-' + id).remove();
           }
           img.src = canvas.toDataURL();
+          scope.downloadLink = img.src;
+          scope.img = img;
           element.find('#canvas-' + id).remove();
           element.append(img);
           element.find('#image-' + id).addClass('img-responsive');
@@ -512,6 +514,11 @@ angular.module('singleConceptAuthoringApp')
           element.find('#image-' + id).css('padding', '10px');
 
         }
+        
+        scope.openImage = function(){
+            var w = window.open("");
+            w.document.write(scope.img.outerHTML);  
+        };
 
         function cropImageFromCanvas(ctx, canvas) {
 
