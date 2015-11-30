@@ -82,7 +82,7 @@ angular.module('singleConceptAuthoringApp')
         if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
           relationship.relationshipId = null;
         }
-      })
+      });
     }
 
     // function to remove disallowed elements from a concept
@@ -184,9 +184,7 @@ angular.module('singleConceptAuthoringApp')
     // get preview of model
     function getModelPreview(classifierId, branch, id) {
       return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/concept-preview/' + id).then(function (response) {
-        var temp = response.data;
-        temp.conceptId = 'After-' + temp.conceptId;
-        return temp;
+        return response.data;
       });
     }
 
@@ -830,7 +828,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(pollResults);
             }, function(error) {
               deferred.reject(error);
-            })
+            });
           }
         }, function (error) {
           deferred.reject('Cannot retrieve review information');
@@ -903,7 +901,7 @@ angular.module('singleConceptAuthoringApp')
         return response.data;
       }, function(error) {
         return null;
-      })
+      });
     }
 
     function getMergeReviewForBranches(parentBranch, childBranch) {

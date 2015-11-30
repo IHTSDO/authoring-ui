@@ -38,5 +38,5 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
           isLeafStated: false
         };*/
         console.debug('root concept', $scope.rootConcept);
-      }
+      };
     }]);

@@ -912,7 +912,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         } else {
 
           angular.forEach(concept.descriptions, function (description) {
-            console.debug('checking description', description.effectiveTime)
+            console.debug('checking description', description.effectiveTime);
             if (description.effectiveTime === undefined) {
               console.debug('--> modified');
               styleObj[description.descriptionId] = {message: null, style: 'orangehl'};

@@ -30,6 +30,9 @@ angular.module('singleConceptAuthoringApp')
 
           scope.editable = attrs.editable === 'true';
 
+          // local concept-edit and model list
+          scope.viewedConcepts = [];
+
           // function to get formatted summary tex
           scope.getStatusText = function () {
 
@@ -67,18 +70,53 @@ angular.module('singleConceptAuthoringApp')
             return status;
           };
 
-          $rootScope.$on('comparativeModelAdded', function (event, model) {
-            snowowlService.getFullConcept(model.id, scope.branch).then(function (response) {
-              var temp = response;
-              var id = temp.conceptId;
-              temp.conceptId = 'Before-' + temp.conceptId;
-              scope.modelConcept = response;
-              snowowlService.getModelPreview(scope.classificationContainer.id, scope.branch, model.id).then(function (secondResponse) {
-                scope.modelConceptAfter = secondResponse;
-                scope.displayModels = true;
+          $rootScope.$on('stopEditing', function(event, data) {
+            console.debug('classification received stopEditing event', data.concept);
+            for (var i = 0; i < scope.viewedConcepts.length; i++) {
+              console.debug('comparing', scope.viewedConcepts[i].conceptBefore.conceptId, data.concept.conceptId);
+              if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
+
+                scope.viewedConcepts.splice(i, 1);
+                return;
+              }
+            }
+          });
+
+          $rootScope.$on('viewClassificationConcept', function (event, data) {
+
+            // check if concept already exists in list
+            for (var i = 0; i < scope.viewedConcepts.length; i++) {
+              if (scope.viewedConcepts[i].conceptId === data.conceptId) {
+                notificationService.sendWarning('Concept already shown');
+                return;
+              }
+            }
+
+            notificationService.sendMessage('Retrieving concept before & after information...');
+
+            // construct an object with before and after concept models
+            var conceptModelObj = {conceptId : data.conceptId, conceptBefore : null, conceptAfter : null};
+
+            // get the full concept for this branch (before version)
+            snowowlService.getFullConcept(data.conceptId, scope.branch).then(function (response) {
+
+              conceptModelObj.fsn = response.fsn;
+
+              // set the before concept
+              conceptModelObj.conceptBefore = response;
+
+              // get the model preview (after version)
+              snowowlService.getModelPreview(scope.classificationContainer.id, scope.branch, data.conceptId).then(function (secondResponse) {
+                conceptModelObj.conceptAfter = secondResponse;
+
+                scope.viewedConcepts.push(conceptModelObj);
+                console.debug('conceptPairObj', conceptModelObj);
+                notificationService.clear();
+
+                // after a slight delay, broadcast a draw event
                 $timeout(function () {
                   $rootScope.$broadcast('comparativeModelDraw');
-                }, 1000);
+                }, 500);
               });
             });
           });
@@ -197,6 +235,16 @@ angular.module('singleConceptAuthoringApp')
 
           }, true);
 
+          scope.viewConceptInTaxonomy = function (concept) {
+            console.debug('broadcasting viewTaxonomy event to taxonomy.js', concept);
+            $rootScope.$broadcast('viewTaxonomy', {
+              concept: {
+                conceptId: concept.conceptId,
+                fsn: concept.fsn
+              }
+            });
+          };
+
           ////////////////////////////////////
           // Validation Functions
           ////////////////////////////////////
@@ -260,6 +308,13 @@ angular.module('singleConceptAuthoringApp')
             });
 
           };
+
+          /////////////////////////////////////////
+          // Concept Edit/Display Functions
+          /////////////////////////////////////////
+          scope.$on('viewClassificationConcept', function(event, data) {
+            var conceptId = data.conceptId;
+          });
 
         }
 

@@ -27,35 +27,28 @@ angular.module('singleConceptAuthoringApp')
 
             // check all current data items for edit re-enable
             angular.forEach(scope.items, function (item) {
-              if (item.destinationId === data.concept.conceptId) {
+              console.debug('comparing', item.sourceId, data.concept.conceptId);
+              if (item.sourceId === data.concept.conceptId) {
                 item.isLoaded = false;
               }
             });
           }
         });
 
-        // listen for edit concpet notifications from this and other reports
-        scope.$on('editConcept', function (event, data) {
-       // flag this item as loaded, no need to update UI State
-          angular.forEach(scope.items, function (item) {
-            if (data.conceptId === item.destinationId) {
-              item.isLoaded = true;
-            }
-          });
-        });
-
         // scope function to broadcast element to edit panel
-        scope.editDestinationConcept = function (item) {
+        scope.editSourceConcept = function (item) {
+
+          item.isLoaded = true;
 
           // issue notification of edit concept request
-          $rootScope.$broadcast('editConcept', {conceptId: item.sourceId});
+          $rootScope.$broadcast('viewClassificationConcept', {conceptId: item.sourceId});
 
         };
 
         // scope function to broadcast element to edit panel
         scope.editEquivalentConcept = function (id) {
           // issue notification of edit concept request
-          $rootScope.$broadcast('editConcept', {conceptId: id});
+          $rootScope.$broadcast('viewCLassificationConcept', {conceptId: id});
 
         };
 
