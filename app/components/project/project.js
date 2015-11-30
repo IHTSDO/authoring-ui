@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.project = response;
 
       $rootScope.classificationRunning = $scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status !== 'COMPLETED';
-      $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED';
+      $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED' || 'NOT_TRIGGERED';
 
       // get the latest classification for this project (if exists)
       if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED') {
