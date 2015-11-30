@@ -349,15 +349,15 @@
 
 
 
-        <div class="row darken-3 " ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+        <div class="row darken-3 p-t-5 grey" ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
-          <div class="col-md-11 no-padding p-t-5  color_{{relationship.groupId}}"
+          <div class="col-md-11 no-padding p-t-5 color_{{relationship.groupId}}"
                drop-channel="relationshipObj"
                ui-on-drop="dropRelationship(relationship, $data)"
                drag-enter-class="sca-drag-target"
                drag-hover-class="sca-drag-hover">
 
-            <div class="p-t-5 ">
+            <div class="">
               <button
                 class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
                 ng-click="setRelationshipProperties(relationship, $event)"
@@ -475,7 +475,8 @@
             </div>
           </div>
 
-          <div class="col-md-1 p-t-5"
+          <div class="col-md-1"
+               ng-if="!isStatic"
                drop-channel="relationshipGroupObj"
                ui-on-drop="dropRelationshipGroup($data)"
                drag-enter-class="sca-relgroup-drag-target"

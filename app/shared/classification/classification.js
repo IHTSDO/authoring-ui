@@ -116,6 +116,7 @@ angular.module('singleConceptAuthoringApp')
                 // after a slight delay, broadcast a draw event
                 $timeout(function () {
                   $rootScope.$broadcast('comparativeModelDraw');
+                  scope.viewConceptInTaxonomy(conceptModelObj.conceptBefore);
                 }, 500);
               });
             });
