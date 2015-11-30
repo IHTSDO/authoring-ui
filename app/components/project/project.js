@@ -13,7 +13,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, scaService, snowowlService, notificationService, $location, ngTableParams) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, scaService, snowowlService, notificationService, $location, ngTableParams, accountService) {
 
     $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -182,6 +183,23 @@ angular.module('singleConceptAuthoringApp.project', [
         }
       }
     );
+
+    $scope.viewTask = function(task) {
+
+      // determine destination based on role
+      switch (accountService.getRoleForTask(task)) {
+        case 'REVIWER':
+          $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+          break;
+        case 'AUTHOR':
+          $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+          break;
+        default:
+          $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+          break;
+      }
+      //ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/edit"
+    };
 
     // on load, retrieve tasks for project
     scaService.getTasksForProject($routeParams.projectKey).then(function (response) {
