@@ -48,13 +48,13 @@ angular.module('singleConceptAuthoringApp')
         return 'AUTHOR';
       }
 
-      return null;
+      return 'UNDEFINED';
 
 
     }
 
     function getRoleForProject(project) {
-
+      return 'UNDEFINED';
     }
     
     function isReviewer() {
