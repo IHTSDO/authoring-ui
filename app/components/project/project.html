@@ -53,7 +53,7 @@
         </div>
         <div class="p-10 pull-right ">
           <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()"
-            ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'">
+            ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED' || 'NOT_TRIGGERED'">
             <div
               class="project-icon deep-purple lighten-1 pull-left">
               <div class="md md-school"></div>
@@ -72,7 +72,7 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED' "
+            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'  || 'NOT_TRIGGERED'"
                     ng-init="validationCollapsed = false"
                     ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
@@ -216,12 +216,15 @@
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
-                          ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                          ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
+                          {gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {gray : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2" tooltip="">
-                    <div class="md md-school "></div>  <span ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                    <div class="md md-school "></div>  <span ng-class="[
+                          {hidden : project.validationStatus === 'NOT_TRIGGERED'},
+                          {gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {gray : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]">Validation {{task.latestValidationStatus}}</span>
