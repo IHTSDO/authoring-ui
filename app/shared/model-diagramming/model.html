@@ -1,12 +1,15 @@
 <div class="col-md-12 no-padding modelHeader" style="background-color:#fff; height:100%;">
 
   <div class="col-md-12 no-padding grey lighten-4 model-header keep" ng-init="view=false">
-    <div class="col-md-5 no-padding keep">
+    <div class="col-md-6 no-padding keep">
       <h4 class="p-10 keep"> {{concept.fsn}} </h4>
     </div>
-    <div class="col-md-2 no-padding keep">
-      <button class="btn btn-primary keep" ng-click="openImage()">Open</button>
-    </div>
+    <a class="tooltips-right keep" ng-click="openImage()">
+                  <button class="col-md-1 btn btn-round btn-default lighten-2 blue no-padding keep">
+                    <div class="md md-open-in-new keep"></div>  
+                      <span class="keep">Open Model in new Tab</span>
+                  </button>
+                </a>
     <div class="col-md-5 no-padding keep">
       <div class="switch pull-right p-5 keep">
         <label class="keep">
