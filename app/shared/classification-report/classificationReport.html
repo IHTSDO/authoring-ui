@@ -34,12 +34,6 @@
           {{parseCharacteristic(result.characteristicTypeId)}}
         </td>
         <td>
-          <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left m-r-5" tooltip=""
-                  title="View Model" ng-click="viewComparativeModel(result.sourceId)"><span
-            class="md md-view-quilt "></span>
-
-            <div class="ripple-wrapper"></div>
-          </button>
           <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                   title="Edit"><span class="md md-edit " ng-click="editSourceConcept(result)"></span>
