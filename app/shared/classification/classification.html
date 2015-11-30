@@ -1,68 +1,166 @@
 <div>
-  <div role="tabpanel" class="m-t-10">
-    <div class="row">
-      <div class="pull-left p-5"><strong>Classification Report: </strong> {{getStatusText()}}</div>
 
-      <div class="pull-right ">
-        <button ng-disabled="relationshipChanges.length === 0" class="btn btn-default green classify-buttons accept-classification" style="text-transform: none" ng-click="saveClassification()">Accept Classification Results</button>
-        <button ng-disabled="relationshipChanges.length === 0" class="btn btn-default green classify-buttons download-classification" ng-click="downloadClassification()" style="text-transform: none">Download</button>
+  <style>
+    .pager {
+      padding: 0;
+      margin: 0
+    }
+  </style>
+  <div class="row no-padding no-gutter">
+    <div class="col-md-12 green p-t-10 p-b-10" style="vertical-align: middle">
+      Classification Report: {{getStatusText()}}
+      <button ng-disabled="relationshipChanges.length === 0"
+              class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
+              ng-click="downloadClassification()" style="text-transform: none">
+        <span>Download Classification Results</span>
+      </button>
+
+      <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+              class="btn btn-default green pull-right"
+              ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+
+      <button ng-disabled="relationshipChanges.length === 0"
+              class="btn btn-default green darken-1 pull-right" style="text-transform: none"
+              ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
+      </button>
+
+
+    </div>
+
+    <!-- Classification Report Contents -->
+    <div ng-show="!isCollapsed">
+
+      <!-- Nav tabs -->
+      <div class="row classification-report">
+        <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+
+          <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
+                                                                   aria-controls="home" role="tab"
+                                                                   data-toggle="tab"> Classification Results</a></li>
+          <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
+                                                       data-toggle="tab">Redundant Stated Relationships</a>
+          </li>
+          <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
+                                                  data-toggle="tab">Inferred
+                                                                    Not
+                                                                    Previously
+                                                                    Stated</a>
+          </li>
+          <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
+                                                         data-toggle="tab">Equivalency Errors</a></li>
+        </ul>
+      </div>
+
+      <!-- Tab panes -->
+      <div class="tab-content row m-t-10 col-sm-12 no-padding">
+
+        <!-- changed relationships -->
+        <div role="tabpanel" ng-if="actionTab===1">
+          <div classification-report items="relationshipChanges" type="'changes'" editable="editable"></div>
+        </div>
+
+        <!-- redundant stated relationships -->
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+          <div classification-report items="redundantStatedRelationships" type="'redundant'"
+               editable="editable"></div>
+        </div>
+
+        <!-- inferred not previously stated -->
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+          <div classification-report items="inferredNotPreviouslyStated" type="'inferred'" editable="editable"></div>
+        </div>
+
+        <!-- equivalent concept errors -->
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
+          <div classification-report items="equivalentConcepts" type="'equivalence'" editable="editable"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Taxonomy, models, and concepts -->
+  <div class="row classification-report no-padding no-gutter m-t-15" ng-if="viewedConcepts.length > 0">
+
+    <!-- Taxonomy -->
+    <div class="col-md-3 grey lighten-2">
+      <div>
+        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
       </div>
     </div>
 
-    <!-- Nav tabs -->
-    <div class="row classification-report ">
-      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+    <div class="col-md-9">
 
-        <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
-                                                                 aria-controls="home" role="tab"
-                                                                 data-toggle="tab"> Classification Results</a></li>
-        <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
-                                                     data-toggle="tab">Redundant Stated Relationships</a>
-        </li>
-        <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
-                                                data-toggle="tab">Inferred
-                                                                  Not
-                                                                  Previously
-                                                                  Stated</a>
-        </li>
-        <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Equivalency Errors</a></li>
-      </ul>
-    </div>
+      <div class="row no-padding no-gutter" ng-repeat="conceptPair in viewedConcepts">
 
-    <!-- Tab panes -->
-    <div class="tab-content row m-t-10 col-sm-12 no-padding">
+        <div class="col-md-7 no-padding no-gutter">
 
-      <!-- changed relationships -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
-        <div classification-report items="relationshipChanges" type="'changes'" editable="editable"></div>
-      </div>
+          <div class="row no-padding no-gutter grey darken-4">
+            <div class="col-md-7 p-l-10 p-t-5 p-b-15 concept-headers no-padding no-gutter">
+              {{conceptPair.conceptAfter.fsn}}
 
-      <!-- redundant stated relationships -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
-        <div classification-report items="redundantStatedRelationships" type="'redundant'" editable="editable"></div>
-      </div>
+              <button
+                class="btn btn-round btn-default fa fa-book tooltips-right tooltips-light normal-case purple darken-1 m-l-10"
+                ng-click="viewConceptInTaxonomy(conceptPair.conceptBefore)" style="text-transform: none">
+                <span>View Taxonomy</span>
+              </button>
 
-      <!-- inferred not previously stated -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
-        <div classification-report items="inferredNotPreviouslyStated" type="'inferred'" editable="editable"></div>
-      </div>
+            </div>
+            <div class="col-md-5 p-t-5 p-b-5 no-padding no-gutter " ng-init="conceptFormSelected = 3">
+              <button class="btn btn-default"
+                      ng-class="[{'grey darken-2' : conceptFormSelected !== 1}, {'blue' : conceptFormSelected === 1}]"
+                      ng-click="conceptFormSelected = 1;">Short Normal
+              </button>
+              <button class="btn btn-default"
+                      ng-class="[{'grey darken-2' : conceptFormSelected !== 2}, {'blue' : conceptFormSelected === 2}]"
+                      ng-click="conceptFormSelected = 2;">Inferred
+              </button>
+              <button class="btn btn-default"
+                      ng-class="[{'grey darken-2' : conceptFormSelected !== 2}, {'blue' : conceptFormSelected === 3}]"
+                      ng-click="conceptFormSelected = 3;">Stated
+              </button>
+            </div>
+          </div>
 
-      <!-- equivalent concept errors -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
-        <div classification-report items="equivalentConcepts" type="'equivalence'" editable="editable"></div>
+          <div class="row no-padding no-gutter">
+
+            <!-- Model Before -->
+            <div class="col-md-6 no-padding no-gutter">
+              <h6>Prior Inferred Form</h6>
+
+              <div draw-model class="modelScrollBox" concept="conceptPair.conceptBefore"></div>
+            </div>
+
+            <!-- Model After -->
+            <div class="col-md-6 no-padding no-gutter">
+              <h6>Proposed Inferred Form ({{classificationContainer.completionDate | date: 'medium'}})</h6>
+
+              <div draw-model class="modelScrollBox" concept="conceptPair.conceptAfter"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Concept Panel -->
+        <div class="col-md-5 no-padding no-gutter">
+          <div concept-edit concept="conceptPair.conceptAfter" branch="branch" static="true" autosave="false"></div>
+        </div>
       </div>
 
     </div>
   </div>
+
+  <div class="m-b-50">&nbsp</div>
+
+  <!--
   <div ng-if="displayModels" class="tab-content row m-t-10 col-sm-12 no-padding">
     <div class="col-md-6 no-padding">
-        <h6>Prior Inferred Form</h6>
-        <div draw-model concept="modelConcept"></div>
+      <h6>Prior Inferred Form</h6>
+
+      <div draw-model concept="modelConcept"></div>
     </div>
     <div class="col-md-6 no-padding">
-        <h6>Proposed Inferred Form ({{classificationContainer.completionDate | date: 'medium'}})</h6>
-        <div draw-model concept="modelConceptAfter"></div>
+      <h6>Proposed Inferred Form ({{classificationContainer.completionDate | date: 'medium'}})</h6>
+
+      <div draw-model concept="modelConceptAfter"></div>
     </div>
-  </div>
-</div>
+  </div>-->

@@ -78,7 +78,7 @@ angular.module('singleConceptAuthoringApp.project', [
     function reloadProject() {
       scaService.getProjectForKey($scope.project.key).then(function (response) {
         $scope.project = response;
-      })
+      });
     }
 
     // classify the project
@@ -153,7 +153,7 @@ angular.module('singleConceptAuthoringApp.project', [
         // data
         getData: function ($defer, params) {
 
-          if (!$scope.tasks || $scope.tasks.length == 0) {
+          if (!$scope.tasks || $scope.tasks.length === 0) {
             $defer.resolve([]);
           } else {
 
@@ -162,13 +162,13 @@ angular.module('singleConceptAuthoringApp.project', [
 
             if (searchStr) {
               mydata = $scope.tasks.filter(function (item) {
-                return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.reviewer.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.reviewer.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                   item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                   item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                   item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                   item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                   item.reviewer.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 ||
+                   item.reviewer.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.tasks;
