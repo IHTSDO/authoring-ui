@@ -913,12 +913,12 @@ angular.module('singleConceptAuthoringApp.edit', [
             console.debug('checking description', description.effectiveTime);
             if (description.effectiveTime === undefined) {
               console.debug('--> modified');
-              styleObj[description.descriptionId] = {message: null, style: 'orangehl'};
+              styleObj[description.descriptionId] = {message: null, style: 'tealhl'};
             }
           });
           angular.forEach(concept.relationships, function (relationship) {
             if (!relationship.effectiveTime) {
-              styleObj[relationship.relationshipId] = {message: null, style: 'orangehl'};
+              styleObj[relationship.relationshipId] = {message: null, style: 'tealhl'};
             }
           });
         }
