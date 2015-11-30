@@ -253,6 +253,9 @@
               <td data-title="'Status'" sortable="'status'">
                 <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
               </td>
+              <td data-title="''" sortable="''">
+                <button class="btn btn-default btn-round md md-edit blue tooltips-left tooltips-light normal-case" ng-click="editTask(task)"><span>Edit Task</span></button>
+              </td>
             </tr>
           </table>
 

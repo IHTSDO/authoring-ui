@@ -546,15 +546,16 @@ angular.module('singleConceptAuthoringApp')
 //////////////////////////////////////////
 
       updateTask: function (projectKey, taskKey, object) {
-        return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+        var deferred = $q.defer();
+        $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
           //notificationService.sendMessage('Task ' + taskKey + ' sucessfully
           // updated.', 5000, null, null);
-          return response.data;
+          deferred.resolve(response.data);
         }, function (error) {
-          //notificationService.sendError('Error Updating Task ' + taskKey + '
-          // in project ' + projectKey);
-          return false;
+          console.debug(error);
+          deferred.reject(error.statusText);
         });
+        return deferred.promise;
       },
 
 //////////////////////////////////////////
