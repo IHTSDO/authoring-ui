@@ -1483,6 +1483,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           autoSave();
+
+          scope.computeRelationshipGroups();
         };
 
         scope.dropRelationshipGroup = function (relGroup) {
@@ -1540,9 +1542,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return description.term;
         };
 
-        scope.getDragImageForRelationshipGroup = function (groupId) {
-          return 'Relationship Group ' + groupId;
-        }
+        scope.getDragImageForRelationshipGroup = function (relationshipGroup) {
+          return 'Relationship Group ' + relationshipGroup[0].groupId;
+        };
 
 // dummy function added for now to prevent default behavior
 // of dropping into untagged input boxes.  Issue has been raised

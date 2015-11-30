@@ -342,11 +342,7 @@
     </div>
 
     <!-- rows: Relationships -->
-    <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups"
-         drop-channel="relationshipGroupObj"
-         ui-on-drop="dropRelationshipGroup($data)"
-         drag-enter-class="sca-drag-target"
-         drag-hover-class="sca-drag-hover">
+    <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
 
       <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
            ng-class="getComponentStyle(relationship.relationshipId, null, '')">
@@ -479,11 +475,15 @@
             </div>
           </div>
 
-          <div class="col-md-1 p-t-5">
+          <div class="col-md-1 p-t-5"
+               drop-channel="relationshipGroupObj"
+               ui-on-drop="dropRelationshipGroup($data)"
+               drag-enter-class="sca-relgroup-drag-target"
+               drag-hover-class="sca-relgroup-drag-hover">
             <button ng-if="$index === 0"
                     class="btn-default add-buttons md-open-with drag-button-width tooltips-left tooltips-light normal-case "
                     ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
-                    drag-image="getDragImageForRelationshipGroup(groupId)"><span>Drag Relationship Group</span></button>
+                    drag-image="getDragImageForRelationshipGroup(relationshipGroup)"><span>Drag Relationship Group</span></button>
           </div>
         </div>
 
