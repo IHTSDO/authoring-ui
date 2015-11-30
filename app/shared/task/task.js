@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task) {
+  .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete) {
 
     console.debug('task.js with task', task);
     // scope variables
     $scope.projects = null;
     $scope.task = task;
+    $scope.canDelete = canDelete;
 
     // if no task passed in, create empty object
     if (!$scope.task) {
@@ -44,7 +45,7 @@ angular.module('singleConceptAuthoringApp')
         window.alert('You must specify a project');
         return;
       }
-
+      $scope.msgError = null;
       $scope.msgSuccess = 'Creating task...';
       $scope.disabled = true;
       scaService.createTaskForProject($scope.task.projectKey, $scope.task).then(
@@ -74,6 +75,7 @@ angular.module('singleConceptAuthoringApp')
       taskUpdate.summary = $scope.task.summary;
       taskUpdate.description = $scope.task.description;
 
+      $scope.msgError = null;
       $scope.msgSuccess = 'Updating task...';
       $scope.disabled = true;
       scaService.updateTask($scope.task.projectKey, $scope.task.key, taskUpdate).then(function (response) {
@@ -82,6 +84,19 @@ angular.module('singleConceptAuthoringApp')
         $scope.disabled = false;
         $scope.msgSuccess = '';
         $scope.msgError = 'Error occurred when trying to update task: ' + error;
+      });
+    };
+
+    $scope.deleteTask = function() {
+      $scope.msgSuccess = 'Deleting task...';
+      $scope.disabled = true;
+      $scope.task.status = 'DELETED';
+      scaService.updateTask($scope.task.projectKey, $scope.task.key, $scope.task).then(function (response) {
+        $modalInstance.close('DELETED');
+      }, function (error) {
+        $scope.disabled = false;
+        $scope.msgSuccess = '';
+        $scope.msgError = 'Error occurred when trying to delete task: ' + error;
       });
     };
 

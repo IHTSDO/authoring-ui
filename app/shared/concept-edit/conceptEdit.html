@@ -76,7 +76,7 @@
     <div class="pull-left col-md-1 no-padding">
 
       <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
-              class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
+              class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width \"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}"
               popover-trigger="click: click" popover-append-to-body="true"><span>More details</span></button>
 
@@ -240,7 +240,7 @@
 
             <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="description.effectiveTime || isStatic"
+                      ng-disabled="isStatic"
                       maxlength="255"
                       ng-model="description.term"
                       class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
@@ -249,7 +249,7 @@
 
             <textarea ng-if="description.type === 'SYNONYM'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="description.effectiveTime || isStatic"
+                      ng-disabled="isStatic"
                       maxlength="255"
                       ng-model="description.term"
                       class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
