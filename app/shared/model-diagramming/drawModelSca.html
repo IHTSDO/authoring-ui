@@ -1,0 +1,45 @@
+<div class="col-md-12 no-padding" style="background-color:#fff; height:100%;">
+
+  <div class="col-md-12 p-10  darken-3 grey keep">
+    {{concept.fsn}}
+
+    <button
+      class="btn btn-round btn-default fa fa-book tooltips-right tooltips-light normal-case purple darken-1 m-l-20"
+      ng-click="viewConceptInTaxonomy(concept)" style="text-transform: none">
+      <span>View Taxonomy</span>
+    </button>
+
+    <button class="btn btn-default m-l-30" style="font-size:8px;" ng-init="viewInferred = false"
+            ng-class="[{'grey darken-2' : !viewInferred}, {'blue' : viewInferred}]"
+            ng-click="viewInferred = true;">Inferred
+    </button>
+    <button class="btn btn-default" style="font-size:8px;"
+            ng-class="[{'grey darken-2' : viewInferred}, {'blue' : !viewInferred}]"
+            ng-click="viewInferred = false;">Stated
+    </button>
+
+
+    <button
+      ng-click="openImage()"
+      class="btn btn-round btn-default lighten-2 blue no-padding keep pull-right tooltips-left m-r-30
+      tooltips-light normal-case md md-open-in-new keep">
+      <span class="keep">Open Model in new Tab</span>
+    </button>
+  </div>
+
+  <div class="row">
+
+    <!-- Model Before -->
+    <div class="no-padding no-gutter" ng-class="[{'col-md-12' : !conceptAfter}, {'col-md-6' : conceptAfter}]">
+      <div draw-model class="modelScrollBox" concept="concept" view="viewInferred"></div>
+    </div>
+
+    <!-- Model After -->
+    <div class="col-md-6 no-padding no-gutter" ng-if="conceptAfter">
+      <div draw-model class="modelScrollBox" concept="conceptAfter" view="viewInferred"></div>
+    </div>
+  </div>
+</div>
+
+
+

@@ -34,12 +34,6 @@
           {{parseCharacteristic(result.characteristicTypeId)}}
         </td>
         <td>
-          <button type="button" class="btn btn-round btn-default cyan lighten-2 pull-left m-r-5" tooltip=""
-                  title="View Model" ng-click="viewComparativeModel(result.sourceId)"><span
-            class="md md-view-quilt "></span>
-
-            <div class="ripple-wrapper"></div>
-          </button>
           <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                   title="Edit"><span class="md md-edit " ng-click="editSourceConcept(result)"></span>
@@ -52,31 +46,32 @@
 
   </div>
   <div ng-if="type === 'equivalence'" class="table-responsive white">
+    
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
 
 
-        <td data-title="'Concept'" sortable="'result[0].label'">
-          {{result[0].label}}
+        <td data-title="'Concept'" sortable="'leftConceptLabel'">
+          {{result.leftConceptLabel}}
         </td>
         <td style="padding: 0">
           <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left"
                   tooltip=""
                   title="Edit"><span class="md md-edit "
-                                     ng-click="editEquivalentConcept(result[0].id)"></span>
+                                     ng-click="editEquivalentConcept(result.leftConceptId)"></span>
 
             <div class="ripple-wrapper"></div>
           </button>
         </td>
-        <td data-title="'Equivalence'" sortable="'result[1].label'">
-          {{result[1].label}}
+        <td data-title="'Equivalence'" sortable="'rightConceptLabel'">
+          {{result.rightConceptLabel}}
         </td>
         <td style="padding: 0">
           <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                   title="Edit"><span class="md md-edit "
-                                     ng-click="editEquivalentConcept(result[1].id)"></span>
+                                     ng-click="editEquivalentConcept(result.rightConceptId)"></span>
 
             <div class="ripple-wrapper"></div>
           </button>

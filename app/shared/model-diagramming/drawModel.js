@@ -1,3 +1,7 @@
+/**
+ * Directive to append a image file generated via SVG to a parent div
+ */
+
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
@@ -7,9 +11,10 @@ angular.module('singleConceptAuthoringApp')
       transclude: false,
       replace: true,
       scope: {
-        concept: '=concept'
+        concept: '=',
+        view: '=?'   // false to view stated, true to view inferred
       },
-      templateUrl: 'shared/model-diagramming/model.html',
+      templateUrl: 'shared/model-diagramming/drawModel.html',
 
       link: function (scope, element, attrs, linkCtrl, snowowlService) {
         //scope.view = true;
@@ -22,9 +27,13 @@ angular.module('singleConceptAuthoringApp')
             drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
         }, true);
         scope.$watch('view', function(newVal, oldVal){
+          console.debug('drawModel view changed');
             element.append($("<div></div>").addClass('modelContainer'));
             drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
         }, true);
+
+
+
         function drawConceptDiagram(concept, div, options) {
           var svgIsaModel = [];
           var svgAttrModel = [];
@@ -504,6 +513,8 @@ angular.module('singleConceptAuthoringApp')
             element.find('#image-' + id).remove();
           }
           img.src = canvas.toDataURL();
+          scope.downloadLink = img.src;
+          scope.img = img;
           element.find('#canvas-' + id).remove();
           element.append(img);
           element.find('#image-' + id).addClass('img-responsive');
@@ -512,6 +523,18 @@ angular.module('singleConceptAuthoringApp')
           element.find('#image-' + id).css('padding', '10px');
 
         }
+
+        scope.$on('openDrawModelConceptImage', function(event, data) {
+          console.debug('openImage request', data.conceptId, data.pageTitle);
+          if (scope.concept.conceptId === data.conceptId || (!scope.concept.conceptId && !data.conceptId)) {
+            scope.openImage(data.conceptId);
+          }
+        });
+        
+        scope.openImage = function(pageName){
+            var w = window.open(pageName);
+            w.document.write(scope.img.outerHTML);  
+        };
 
         function cropImageFromCanvas(ctx, canvas) {
 

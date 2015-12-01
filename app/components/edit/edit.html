@@ -108,6 +108,13 @@
     background: #dedede !important;
   }
 
+  .sca-relgroup-drag-target, .sca-relgroup-drag-hover {
+
+    border: 1px dashed #fff !important;
+    background: #00a6e5 !important;
+    color: #fff !important;
+  }
+
   .sca-drag-handle {
     background-color: red;
   }
@@ -157,7 +164,7 @@
     <button type="button"
             class="btn btn-default widget-toolbar deep-purple lighten-1 validate tooltips-right tooltips-light normal-case"
             ng-click="setView('validation')"
-            ng-disabled="task.latestValidationStatus !== 'COMPLETED'">
+            ng-disabled="task.latestValidationStatus !== 'COMPLETED' || 'NOT_TRIGGERED'">
       <div class="md md-school"></div>
       <span>View the most recent Validation Report</span></button>
 
@@ -235,7 +242,7 @@
 
             <!-- model -->
             <div class="no-gutter" style="height: 100%" ng-class="getLayoutWidths('models')">
-              <div draw-model class="modelScrollBox" concept="concept"></div>
+              <div draw-model-sca concept="concept"></div>
             </div>
 
             <!-- concept -->
@@ -287,7 +294,7 @@
 
           <!-- model -->
           <div class="no-gutter col-sm-7 col-md-7 col-lg-7" style="height: 100%">
-            <div draw-model class="" concept="concept"></div>
+            <div draw-model-sca class="" concept="concept"></div>
           </div>
 
           <!-- concept -->

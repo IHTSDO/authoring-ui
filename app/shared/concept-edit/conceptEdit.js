@@ -450,7 +450,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return;
             }
 
-
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
               // display the validation warnings and continue
@@ -853,7 +852,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         ];
 
 // get viewed descriptions
-        scope.getDescriptions = function (checkForActive) {
+        scope.getDescriptions = function () {
           var descs = [];
 
           if (!scope.concept.descriptions) {
@@ -863,7 +862,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           for (var i = 0; i < scope.concept.descriptions.length; i++) {
 
             // check hideInactive
-            if (!checkForActive || !scope.hideInactive || (scope.hideInactive && scope.concept.descriptions[i].active === true)) {
+            if (!scope.hideInactive || (scope.hideInactive && scope.concept.descriptions[i].active === true)) {
               descs.push(scope.concept.descriptions[i]);
             }
 
@@ -1046,80 +1045,42 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return scope.acceptabilityAbbrs[acceptability];
         };
 
-////////////////////////////////
-// Relationship Elements
-////////////////////////////////
-        scope.getRelationships = function (checkForActive) {
+        ////////////////////////////////
+        // Relationship Elements
+        ////////////////////////////////
 
-          if (!scope.concept.relationships) {
-            return [];
-          }
+        scope.relationshipGroups = {};
 
-          var rels = scope.concept.relationships.filter(function (rel) {
-            return (!checkForActive || !scope.hideInactive || (scope.hideInactive && rel.active === true));
-          });
-
-          return rels;
+        scope.filterRelationships = function(rel) {
+          return !scope.hideInactive || rel.active;
         };
 
-        scope.getIsARelationships = function (checkForActive) {
 
-          if (!scope.concept.relationships) {
-            return [];
-          }
-          var rels = [];
-          for (var i = 0; i < scope.concept.relationships.length; i++) {
+        // function compute the relationship groups
+        scope.computeRelationshipGroups = function () {
 
-            // check for type id and active-view flag
-            if (scope.concept.relationships[i].type.conceptId === '116680003') {
+          // sort relationships to ensure proper sorting
+          sortRelationships();
 
-              // check hideInactive
-              if (!checkForActive || !scope.hideInactive || (scope.hideInactive && scope.concept.relationships[i].active === true)) {
-                rels.push(scope.concept.relationships[i]);
+          // clear the relationship groups
+          scope.relationshipGroups = {};
+
+          angular.forEach(scope.concept.relationships, function (rel) {
+
+            // only show stated relationships
+            if (rel.characteristicType === 'STATED_RELATIONSHIP') {
+
+              // if map does not have this group id, add blank array
+              if (!scope.relationshipGroups.hasOwnProperty(parseInt(rel.groupId))) {
+                scope.relationshipGroups[parseInt(rel.groupId)] = [];
               }
-            }
-          }
 
-          rels.sort(function (a, b) {
-            if (a.groupId !== b.groupId) {
-              return a.groupId > b.groupId;
+              // push this relationship onto group-mapped array
+              scope.relationshipGroups[parseInt(rel.groupId)].push(rel);
             }
-            if (a.type.conceptId !== b.type.conceptId) {
-              return a.type.conceptId > b.type.conceptId;
-            }
-            return a.target.conceptId > b.target.conceptName;
           });
 
-          return rels;
-        };
-
-        scope.getAttributeRelationships = function (checkForActive) {
-
-          if (!scope.concept.relationships) {
-            return [];
-          }
-          var rels = [];
-          for (var i = 0; i < scope.concept.relationships.length; i++) {
-            if (scope.concept.relationships[i].type.conceptId !== '116680003') {
-
-              // check hideInactive
-              if (!checkForActive || !scope.hideInactive || (scope.hideInactive && scope.concept.relationships[i].active === true)) {
-                rels.push(scope.concept.relationships[i]);
-              }
-            }
-          }
-
-          rels.sort(function (a, b) {
-            if (a.groupId !== b.groupId) {
-              return a.groupId > b.groupId;
-            }
-            if (a.type.conceptId !== b.type.conceptId) {
-              return a.type.conceptId > b.type.conceptId;
-            }
-            return a.target.conceptId > b.target.conceptName;
-          });
-
-          return rels;
+          console.debug('rel groups', scope.relationshipGroups);
         };
 
 // define characteristic types
@@ -1159,9 +1120,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          }
          };*/
 
-        scope.addRelationship = function (afterIndex, relGroup) {
-
-          //  // console.debug('adding attribute relationship', afterIndex);
+        scope.addRelationship = function (relGroup) {
 
           var relationship = objectService.getNewAttributeRelationship(null);
 
@@ -1170,29 +1129,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.groupId = relGroup;
           }
 
-          // if afterIndex not supplied or invalid, simply add
-          if (afterIndex === null || afterIndex === undefined) {
-            scope.concept.relationships.push(relationship);
+          scope.concept.relationships.push(relationship);
 
-            autoSave();
-          }
+          autoSave();
 
-          // otherwise, add at the index specified
-          else {
-            // find the index of the requested insertion point
-            var rels = scope.getAttributeRelationships();
-            var relIndex = scope.concept.relationships.indexOf(rels[afterIndex]);
+          scope.computeRelationshipGroups();
 
-            //   // console.debug('found relationship index', relIndex);
-
-            // add the relationship
-            scope.concept.relationships.splice(relIndex + 1, 0, relationship);
-
-            autoSave();
-          }
         };
 
         scope.removeRelationship = function (relationship) {
+          console.debug(scope.concept.relationships, relationship);
           var index = scope.concept.relationships.indexOf(relationship);
           if (index !== -1) {
             scope.concept.relationships.splice(index, 1);
@@ -1203,6 +1149,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             console.error('Error removing relationship; relationship not found');
           }
+          scope.computeRelationshipGroups();
 
         };
 
@@ -1515,13 +1462,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var copy = angular.copy(source);
 
           // clear the effective time and source information
-          copy.sourceId = null;
-          copy.effectiveTime = null;
+          delete copy.sourceId;
+          delete copy.effectiveTime;
           delete copy.relationshipId;
-          delete copy.target.effectiveTime;
-          delete copy.target.active;
-          delete copy.target.definitionStatus;
-          delete copy.target.characteristicType;
 
           // set the group based on target
           copy.groupId = target.groupId;
@@ -1540,6 +1483,51 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           autoSave();
+
+          scope.computeRelationshipGroups();
+        };
+
+        scope.dropRelationshipGroup = function (relGroup) {
+
+          console.debug('dropped relationship group', relGroup);
+
+          if (!relGroup || relGroup.length === 0) {
+            return;
+          }
+
+          // get the max group id and increment by one (or set to zero if no
+          // groups defined)
+          var maxGroup = -1;
+          angular.forEach(scope.concept.relationships, function(rel) {
+            if (parseInt(rel.groupId) > maxGroup) {
+              maxGroup = parseInt(rel.groupId);
+            }
+          });
+          var newGroupId = maxGroup + 1;
+
+          console.debug('new group id ', newGroupId);
+
+          // strip identifying information from each relationship and push to
+          // relationships with new group id
+          angular.forEach(relGroup, function (rel) {
+            var copy = angular.copy(rel);
+
+            // set the group id
+            copy.groupId = newGroupId;
+
+            // clear the effective time and source information
+            delete copy.sourceId;
+            delete copy.effectiveTime;
+            delete copy.relationshipId;
+
+            // push to relationships
+            scope.concept.relationships.push(copy);
+          });
+
+          // recompute the relationship groups
+          scope.computeRelationshipGroups();
+
+          autoSave();
         };
 
         scope.getDragImageForConcept = function (fsn) {
@@ -1552,6 +1540,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.getDragImageForDescription = function (description) {
           return description.term;
+        };
+
+        scope.getDragImageForRelationshipGroup = function (relationshipGroup) {
+          return 'Relationship Group ' + relationshipGroup[0].groupId;
         };
 
 // dummy function added for now to prevent default behavior
@@ -1830,6 +1822,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          scope.computeRelationshipGroups();
+
           autoSave(relationship);
 
         };
@@ -1993,16 +1987,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
-          console.log('watcher');
+          console.log('watcher: relationships changed');
           var changed = false;
           angular.forEach(scope.concept.relationships, function (relationship) {
             if (relationship.type.conceptId === '116680003' && relationship.active === true) {
               changed = true;
             }
           });
+
+          // get the permissible domain attributes
           if (changed === true) {
             scope.getDomainAttributes();
           }
+
+          // compute the role groups
+          scope.computeRelationshipGroups();
         }, true);
 
         scope.getConceptsForAttributeTypeahead = function (searchStr) {
@@ -2122,18 +2121,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //////////////////////////////////////////////////////////
 
         // set the initial direction based on load position
-        $timeout(function() {
-        if (document.getElementById('conceptMoreButton').getBoundingClientRect().left < 500) {
-          scope.popoverDirection = 'right';
-        } else {
-          scope.popoverDirection = 'left';
-        }
+        $timeout(function () {
+          if (document.getElementById('conceptMoreButton').getBoundingClientRect().left < 500) {
+            scope.popoverDirection = 'right';
+          } else {
+            scope.popoverDirection = 'left';
+          }
         }, 250);
 
         // sets the popover direction (left, bottom, right) based on current
         // position of root element
         scope.setPopoverDirection = function ($event) {
-          if ($event.pageX < 500) {
+          console.debug($event.pageX);
+          if ($event.pageX < 700) {
             scope.popoverDirection = 'right';
           } else {
             scope.popoverDirection = 'left';
@@ -2145,7 +2145,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return '';
           }
 
-          // replace underscores with spaces and make only first character upper case
+          // replace underscores with spaces and make only first character
+          // upper case
           text = text.replace(/_/g, ' ');
           return text.substr(0, 1).toUpperCase() + text.substr(1).toLowerCase();
         };

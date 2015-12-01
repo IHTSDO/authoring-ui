@@ -7,7 +7,7 @@
     }
   </style>
   <div class="row no-padding no-gutter">
-    <div class="col-md-12 green p-t-10 p-b-10" style="vertical-align: middle">
+    <div class="col-md-12 green p-t-10 p-b-10 p-l-10" style="vertical-align: middle">
       Classification Report: {{getStatusText()}}
       <button ng-disabled="relationshipChanges.length === 0"
               class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
@@ -91,76 +91,34 @@
 
     <div class="col-md-9">
 
-      <div class="row no-padding no-gutter" ng-repeat="conceptPair in viewedConcepts">
+      <div ng-repeat="conceptPair in viewedConcepts">
 
-        <div class="col-md-7 no-padding no-gutter">
-
-          <div class="row no-padding no-gutter grey darken-4">
-            <div class="col-md-7 p-l-10 p-t-5 p-b-15 concept-headers no-padding no-gutter">
-              {{conceptPair.conceptAfter.fsn}}
-
-              <button
-                class="btn btn-round btn-default fa fa-book tooltips-right tooltips-light normal-case purple darken-1 m-l-10"
-                ng-click="viewConceptInTaxonomy(conceptPair.conceptBefore)" style="text-transform: none">
-                <span>View Taxonomy</span>
-              </button>
-
-            </div>
-            <div class="col-md-5 p-t-5 p-b-5 no-padding no-gutter " ng-init="conceptFormSelected = 3">
-              <button class="btn btn-default"
-                      ng-class="[{'grey darken-2' : conceptFormSelected !== 1}, {'blue' : conceptFormSelected === 1}]"
-                      ng-click="conceptFormSelected = 1;">Short Normal
-              </button>
-              <button class="btn btn-default"
-                      ng-class="[{'grey darken-2' : conceptFormSelected !== 2}, {'blue' : conceptFormSelected === 2}]"
-                      ng-click="conceptFormSelected = 2;">Inferred
-              </button>
-              <button class="btn btn-default"
-                      ng-class="[{'grey darken-2' : conceptFormSelected !== 2}, {'blue' : conceptFormSelected === 3}]"
-                      ng-click="conceptFormSelected = 3;">Stated
-              </button>
-            </div>
-          </div>
-
-          <div class="row no-padding no-gutter">
-
-            <!-- Model Before -->
-            <div class="col-md-6 no-padding no-gutter">
-              <h6>Prior Inferred Form</h6>
-
-              <div draw-model class="modelScrollBox" concept="conceptPair.conceptBefore"></div>
-            </div>
-
-            <!-- Model After -->
-            <div class="col-md-6 no-padding no-gutter">
-              <h6>Proposed Inferred Form ({{classificationContainer.completionDate | date: 'medium'}})</h6>
-
-              <div draw-model class="modelScrollBox" concept="conceptPair.conceptAfter"></div>
-            </div>
-          </div>
+        <div class="row no-padding no-gutter">
+          <div concept-edit concept="conceptPair.conceptAfter" branch="branch" static="true" autosave="false"></div>
         </div>
 
-        <!-- Concept Panel -->
-        <div class="col-md-5 no-padding no-gutter">
-          <div concept-edit concept="conceptPair.conceptAfter" branch="branch" static="true" autosave="false"></div>
+
+        <div class="row">
+
+          <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"></div>
+<!--
+          &lt;!&ndash; Model Before &ndash;&gt;
+          <div class="col-md-6 no-padding no-guttery">
+            <div draw-model class="modelScrollBox" concept="conceptPair.conceptBefore" title="Concept Model Before Classification" view="viewInferred"></div>
+          </div>
+
+          &lt;!&ndash; Model After &ndash;&gt;
+          <div class="col-md-6 no-padding no-gutter">
+            <div draw-model class="modelScrollBox" concept="conceptPair.conceptAfter" title="Concept Model After Classification" view="viewInferred"></div>
+          </div>-->
         </div>
       </div>
 
     </div>
+
   </div>
-
   <div class="m-b-50">&nbsp</div>
+</div>
 
-  <!--
-  <div ng-if="displayModels" class="tab-content row m-t-10 col-sm-12 no-padding">
-    <div class="col-md-6 no-padding">
-      <h6>Prior Inferred Form</h6>
 
-      <div draw-model concept="modelConcept"></div>
-    </div>
-    <div class="col-md-6 no-padding">
-      <h6>Proposed Inferred Form ({{classificationContainer.completionDate | date: 'medium'}})</h6>
 
-      <div draw-model concept="modelConceptAfter"></div>
-    </div>
-  </div>-->
