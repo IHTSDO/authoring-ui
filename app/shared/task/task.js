@@ -21,7 +21,6 @@ angular.module('singleConceptAuthoringApp')
     function initialize() {
       $scope.disabled = false;
       $scope.projects = metadataService.getProjects();
-
     }
 
     // TODO Consider relaxing jshint to allow functions to be called pre

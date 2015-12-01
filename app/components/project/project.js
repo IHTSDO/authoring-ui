@@ -39,11 +39,12 @@ angular.module('singleConceptAuthoringApp.project', [
         $scope.project = response;
 
         $rootScope.classificationRunning = $scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status !== 'COMPLETED';
-        $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED' || 'NOT_TRIGGERED';
+        $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED';
 
         // get the latest classification for this project (if exists)
         if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED') {
           snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
+              console.log(response);
             $scope.classificationContainer = response;
           });
         }
@@ -67,6 +68,9 @@ angular.module('singleConceptAuthoringApp.project', [
           resolve: {
             task: function () {
               return null;
+            },
+            canDelete: function() {
+              return false;
             }
           }
         });
