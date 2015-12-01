@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('taxonomyTree', function ($rootScope, $q, snowowlService) {
+  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -285,6 +285,27 @@ angular.module('singleConceptAuthoringApp')
           }
 
         }, true);
+
+        scope.openConceptInformationModal = function (node) {
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/concept-information/conceptInformationModal.html',
+            controller: 'conceptInformationModalCtrl',
+            resolve: {
+              conceptId: function () {
+                return node.conceptId;
+              },
+              branch: function () {
+                return scope.branch;
+              }
+            }
+          });
+
+          modalInstance.result.then(function (response) {
+            // do nothing
+          }, function () {
+            // do nothing
+          });
+        };
       }
     };
   })
