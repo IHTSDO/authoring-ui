@@ -1,27 +1,23 @@
 <div>
-
-  <style>
-
-  </style>
   <div class="row no-padding no-gutter">
     <div class="col-md-12 green classification-header" style="vertical-align: middle">
       <div class="p-5">Classification Report: {{getStatusText()}}
-      <button ng-disabled="relationshipChanges.length === 0"
-              class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
-              ng-click="downloadClassification()" style="text-transform: none">
-        <span>Download Classification Results</span>
-      </button>
+        <button ng-disabled="relationshipChanges.length === 0"
+                class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
+                ng-click="downloadClassification()" style="text-transform: none">
+          <span>Download Classification Results</span>
+        </button>
 
-      <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-              class="btn btn-default green pull-right"
-              ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+        <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+                class="btn btn-default green pull-right"
+                ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
-      <button ng-disabled="relationshipChanges.length === 0"
-              class="btn btn-default green darken-1 pull-right" style="text-transform: none"
-              ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
-      </button>
+        <button ng-disabled="relationshipChanges.length === 0"
+                class="btn btn-default green darken-1 pull-right" style="text-transform: none"
+                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
+        </button>
 
-</div>
+      </div>
     </div>
 
     <!-- Classification Report Contents -->
@@ -76,7 +72,7 @@
     </div>
   </div>
 
-  <!-- Taxonomy, models, and concepts -->
+     <!-- Taxonomy, models, and concepts -->
   <div class="row classification-report no-padding no-gutter m-t-15" ng-if="viewedConcepts.length > 0">
 
     <!-- Taxonomy -->
@@ -98,16 +94,16 @@
         <div class="row grey darken-3">
 
           <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"></div>
-<!--
-          &lt;!&ndash; Model Before &ndash;&gt;
-          <div class="col-md-6 no-padding no-guttery">
-            <div draw-model class="modelScrollBox" concept="conceptPair.conceptBefore" title="Concept Model Before Classification" view="viewInferred"></div>
-          </div>
+          <!--
+                    &lt;!&ndash; Model Before &ndash;&gt;
+                    <div class="col-md-6 no-padding no-guttery">
+                      <div draw-model class="modelScrollBox" concept="conceptPair.conceptBefore" title="Concept Model Before Classification" view="viewInferred"></div>
+                    </div>
 
-          &lt;!&ndash; Model After &ndash;&gt;
-          <div class="col-md-6 no-padding no-gutter">
-            <div draw-model class="modelScrollBox" concept="conceptPair.conceptAfter" title="Concept Model After Classification" view="viewInferred"></div>
-          </div>-->
+                    &lt;!&ndash; Model After &ndash;&gt;
+                    <div class="col-md-6 no-padding no-gutter">
+                      <div draw-model class="modelScrollBox" concept="conceptPair.conceptAfter" title="Concept Model After Classification" view="viewInferred"></div>
+                    </div>-->
         </div>
       </div>
 

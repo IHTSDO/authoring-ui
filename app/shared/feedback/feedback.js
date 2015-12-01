@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location',
+    function ($rootScope, NgTableParams,$q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location) {
       return {
         restrict: 'A',
         transclude: false,
@@ -308,23 +308,98 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          scope.viewedConcepts = [];
+
+          /**
+           * On stop editing events, deselect viewed element (both lists)
+           */
+          scope.$on('stopEditing', function (event, data) {
+
+            angular.forEach(scope.conceptsToReviewViewed, function (item) {
+              if (item.id === data.concept.conceptId) {
+                item.viewed = false;
+              }
+            });
+
+            angular.forEach(scope.conceptsReviewedViewed, function (item) {
+              if (item.id === data.concept.conceptId) {
+                scope.addToEdit(item.id);
+                item.viewed = false;
+              }
+            });
+
+          });
+
           scope.addToEdit = function (id) {
-            $rootScope.$broadcast('editConcept', {conceptId: id});
+
+            // used for status update of addMultipleToEdit
+            var deferred = $q.defer();
+
+            // check if concept already exists in list
+            for (var i = 0; i < scope.viewedConcepts.length; i++) {
+              if (scope.viewedConcepts[i].conceptId === id) {
+                notificationService.sendWarning('Concept already shown');
+                return;
+              }
+            }
+
+            // get the full concept for this branch (before version)
+            snowowlService.getFullConcept(id, scope.branch).then(function (response) {
+
+
+              scope.viewedConcepts.push(response);
+
+              deferred.resolve(response);
+
+              console.debug('new viewed concepts', scope.viewedConcepts);
+
+              // after a slight delay, broadcast a draw event
+              $timeout(function () {
+                $rootScope.$broadcast('comparativeModelDraw');
+              }, 500);
+            });
+            return deferred.promise;
           };
 
           // add all selected objects to edit panel list
           // depending on current viewed tab
           scope.addMultipleToEdit = function (actionTab) {
+            var conceptsToAdd = [];
+            var conceptsAdded = 0;
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
-                if (item.selected === true) {
-                  scope.addToEdit(item.id);
+                if (item.selected === true && !item.viewed) {
+                  conceptsToAdd.push(item);
+                  item.viewed = true;
                 }
               });
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 if (item.selected === true) {
-                  scope.addToEdit(item.id);
+                  conceptsToAdd.push(item.id);
+                  item.viewed = true;
+                }
+              });
+            }
+            if (conceptsToAdd.length === 0) {
+              notificationService.sendWarning('No concepts selected', 5000);
+            }
+
+            if (conceptsToAdd.length === 1) {
+              notificationService.sendMessage('Loading concept ' + conceptsToAdd[0].term);
+            }
+
+            if (conceptsToAdd.length > 1) {
+              notificationService.sendMessage('Loading concepts (0/' + conceptsToAdd.length + ')');
+            }
+
+            for (var i = 0; i < conceptsToAdd.length; i++) {
+              scope.addToEdit(conceptsToAdd[i].id).then(function(response) {
+                conceptsAdded++;
+                if (conceptsAdded === conceptsToAdd.length) {
+                  notificationService.sendMessage('All concepts loaded', 5000);
+                } else {
+                  notificationService.sendMessage('Loading concepts (' + conceptsAdded +  '/' + conceptsToAdd.length + ')');
                 }
               });
             }
@@ -664,7 +739,11 @@ angular.module('singleConceptAuthoringApp')
 
               // if concept is in selected list and has messages, add them
               if (conceptIds.indexOf(concept.id) !== -1 && concept.messages && concept.messages.length > 0) {
-                viewedFeedback = viewedFeedback.concat(concept.messages);
+                angular.forEach(concept.messages, function(message) {
+                  // attach the concept name to the message for display when multiple concept feedbacks are viewed
+                  message.conceptName = concept.term;
+                  viewedFeedback.push(message);
+                });
 
                 // mark read if unread is indicated
                 if (!concept.read) {
@@ -755,7 +834,6 @@ angular.module('singleConceptAuthoringApp')
             var img = new Image();
             img.src = ctx.canvas.toDataURL();
 
-
             return '<img src="' + img.src + '" id="' + id + '-' + fsn + '-endConceptLink" />';
           }
 
@@ -823,13 +901,17 @@ angular.module('singleConceptAuthoringApp')
 
             /**
              * Strip the constructed conceptImg and replace with a normal link
-             * NOTE: This is necessary for two reasons: (1) textAngular allows tag "bleeding", such that inserting a link and typing after it will cause the new text to insert into the link
-             * (2) it is desirable to keep the concept link formaqt exactly the same.  Using the image in the editor, then replacing for the non-editable feedback allows this.
+             * NOTE: This is necessary for two reasons: (1) textAngular allows
+             * tag
+             * "bleeding", such that inserting a link and typing after it will
+             * cause the new text to insert into the link
+             * (2) it is desirable to keep the concept link formaqt exactly the
+             * same.  Using the image in the editor, then replacing for the
+             * non-editable feedback allows this.
              * @type {string}
              */
             var feedbackStr = scope.htmlVariable.replace(/<img [^>]* id="(\d+)-(.*?(?=-endConceptLink"))[^>]*>/g, '<a ng-click="addToEdit($1)" style="cursor:pointer">$2</a>');
             console.debug(feedbackStr);
-
 
             notificationService.sendMessage('Submitting feedback...', 10000, null);
 
@@ -862,7 +944,8 @@ angular.module('singleConceptAuthoringApp')
 
         }
 
-      };
+      }
+        ;
 
     }])
 ;

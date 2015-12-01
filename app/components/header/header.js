@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
               return el.key === project;
             });
             if(tooltip.length > 0){
-                console.log(tooltip[0].title);
+                // console.log(tooltip[0].title);
                 return tooltip[0].title;
             }
         };
