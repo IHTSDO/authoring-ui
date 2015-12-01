@@ -5,10 +5,36 @@
       padding: 0;
       margin: 0
     }
+		.classification-header{padding-bottom:8px;padding-top:5px;}
+	.classification-header p{margin:0px;}
+	.classification-report .nav-tabs > li {
+   
+    width: 25%;
+    text-align: center;
+}
+.classification-header button.md-keyboard-arrow-down:hover, 
+.classification-header button.md-keyboard-arrow-up:hover,
+.classification-header button.md-keyboard-arrow-down:active, 
+.classification-header button.md-keyboard-arrow-up:active,
+.classification-header button.md-keyboard-arrow-down:focus, 
+.classification-header button.md-keyboard-arrow-up:focus{background-color:transparent!important; color:#2d7130!important;}
+.table > thead > tr > th {
+    padding: 4px 8px;
+    line-height: 14px;
+    vertical-align: top;
+    border-top: 1px solid #F0F0F0;
+    vertical-align: bottom;
+    border-bottom: 2px solid #F0F0F0;
+}.table > tbody > tr > td, .table > tbody > tr > th {
+ 
+    line-height: 12px!important;
+    vertical-align: middle!important;
+  
+}
   </style>
   <div class="row no-padding no-gutter">
-    <div class="col-md-12 green p-t-10 p-b-10 p-l-10" style="vertical-align: middle">
-      Classification Report: {{getStatusText()}}
+    <div class="col-md-12 green classification-header" style="vertical-align: middle">
+      <div class="p-5">Classification Report: {{getStatusText()}}
       <button ng-disabled="relationshipChanges.length === 0"
               class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
               ng-click="downloadClassification()" style="text-transform: none">
@@ -24,7 +50,7 @@
               ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
       </button>
 
-
+</div>
     </div>
 
     <!-- Classification Report Contents -->
@@ -93,12 +119,12 @@
 
       <div ng-repeat="conceptPair in viewedConcepts">
 
-        <div class="row no-padding no-gutter">
+        <div class="row no-padding  grey darken-3 no-gutter">
           <div concept-edit concept="conceptPair.conceptAfter" branch="branch" static="true" autosave="false"></div>
         </div>
 
 
-        <div class="row">
+        <div class="row grey darken-3">
 
           <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"></div>
 <!--

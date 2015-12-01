@@ -1,11 +1,9 @@
 <div ng-controller="taxonomyPanelCtrl">
 
-  <div class="row m-l-10 m-t-10 taxonomy-list" ng-if="rootConcept">
-    <div class="col-md-2" >
-      <h4>Concept:</h4>
-    </div>
-    <div class="col-md-9"><h4>{{rootConcept.fsn}}</h4></div>
-    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
+  <div class="row m-l-10 m-t-5 taxonomy-list" ng-if="rootConcept">
+    <div class="col-md-11 no-padding" >
+      <h4 class="p-l-5">Concept: {{rootConcept.fsn}}</h4></div>
+    <div class="col-md-1 no-padding">
       <button class="btn btn-default md md-close" title="Return to SNOMEDCT hieararchy view" ng-click="clearConcept()" style="background: transparent"></button>
     </div>
   </div>
