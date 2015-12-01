@@ -1,6 +1,7 @@
 .dashboard-sidebar {
     background-color: #474747;
 }
+
 .dashboard-sidebar button {
     width: 100%;
     padding: 15px;
@@ -322,3 +323,21 @@
     background: transparent
 }
 .sca-light .saved, .sca-light .fa-close {color:#fff;}
+
+.sca-light .project-icon.deep-purple.lighten-1{    background-color: #7e57c2;
+    color: #fff;}
+	
+	.sca-light .project-icon.green {
+    background-color: #4CAF50;
+    color: #fff;
+}
+	
+	.sca-light .project-icon.red {
+    background-color: #e92848;
+    color: #fff;
+}
+	
+	.sca-light .project-icon.blue {
+    background-color: #00a6e5;
+    color: #fff;
+}
