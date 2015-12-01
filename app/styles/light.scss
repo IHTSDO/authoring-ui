@@ -9,8 +9,13 @@
     color: #fff;
     text-align: left
 }
+.sca-light a.tooltips-right span:after, .sca-light button.tooltips-right span:after, .sca-light button[disabled].tooltips-right span:after {
+   
+    border-right: 8px solid #e6e6e6;;
+    
+}
 .sca-light .dashboard-sidebar {
-    background: #fff;
+    background-color: #fff!important;
     border-right: 1px rgba(0, 0, 0, .07)solid;
 }
 .sca-light .dashboard-sidebar button {
@@ -35,12 +40,24 @@
 .sca-light .navbar-default {
     background: #fff;
     color: #737373;
+	    border-bottom: 1px rgba(0, 0, 0, 0.07) solid;
 }
 .sca-light .navbar-default .navbar-nav li a {
     color: #00a6e5;
 }
 /*tooltips*/
-
+.sca-light .green.classification-header{background-color: #4CAF50;
+    color: #fff;}
+	.sca-light .green.darken-1.classification-header {
+    background-color: #43A047;
+    color: #fff;
+}
+.sca-light .button-nav .review.btn-default[disabled], .sca-light .button-nav .btn-default[disabled] {
+    background-color: #d1d1d1 !important;
+   
+    color: #737373!important;
+    border-bottom: 1px #737373 solid;
+}
 .sca-light .tooltips-left span.green {
     background-color: #e6e6e6!important;
     color: #737373
