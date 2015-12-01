@@ -2,6 +2,7 @@
     width: 100%;
     margin-bottom: 0px;
 }
+.p-l-3{padding-left:3px;}
 .addButton.btn-round {
     width: 20px;
     height: 20px;
@@ -27,8 +28,9 @@ tab-pane.active .no-padding.col-md-9,
     padding-bottom: 3px;
 }
 .angular-ui-tree-nodes .angular-ui-tree-nodes {
-    padding-left: 15px;
+    padding-left: 10px;
 }
+.angular-ui-tree.p-10{padding: 0px 5px!important;}
 button.fsn-title-button{width:100%;}
 .badge.alert-warning{
     font-weight: normal;
@@ -378,7 +380,7 @@ select {
     width: 23%;
 }
 .editing-form .rolegroup {
-    width: 4.5%;
+    width: 4.0%;
     padding-left: 0px;
 }
 .editing-form .is_a {
@@ -578,6 +580,29 @@ background-color:transparent!important;
     .editing-form .acceptability {
         width: 22%;
     }
+	
+    .classification-report .editing-form .typeid {
+        width: 6%;
+        padding-left: 1%;
+    }
+    .classification-report .editing-form .description {
+        width: 54%;
+    }
+    .classification-report .editing-form .acceptability {
+        width: 22%;
+    }
+	
+	.classification-report .editing-form .rolegroup {
+    width: 2.5%;
+    padding-left: 0px;
+}
+.classification-report .editing-form .is_a{    width: 25.5%;
+    padding-left: .25%;
+}
+.classification-report .editing-form .sourcename{    width: 60%;
+    padding-left: .25%;
+}
+.white-text{color:#fff}
     .nav > li > a {
         position: relative;
         display: block;
@@ -622,7 +647,7 @@ background-color:transparent!important;
     /* form widths */
     
     .editing-form .rolegroup {
-        width: 4.5%;
+        width: 4.0%;
         padding-left: 0px;
     }
     .editing-form .language {
@@ -1020,14 +1045,15 @@ button.fsn-title-button{width:100%}
 
 .role-group-buttons{height:100%; width:80%;background-color:transparent!important; color:#fff!important; pading-left:20%;}
 .fa.pull-right{margin:0px;}
-.edits-row .col-md-11{    width: 94.66667%;}
+.col-md-1.role-group-drag{float:right}
+.left-of-edit.col-md-11{    width: 94.66667%; padding:2px 0px!important;}
 .edits-row .col-md-1{width: 4.33333%;}
-.col-md-11.color_0{     background-color: #00897b;}
-.col-md-11.color_1{background-color: #00acc1;}
-.col-md-11.color_2{    background-color: #039be5;}
-.col-md-11.color_3{        background-color: #1e88e5;}
-.col-md-11.color_4{     background-color: #3949ab;}
-.col-md-11.color_5{background-color: #5e35b1;}
+.edits-row.color_0{     background-color: #00897b;}
+.edits-row.color_1{background-color: #00acc1;}
+.edits-row.color_2{    background-color: #039be5;}
+.edits-row.color_3{        background-color: #1e88e5;}
+.edits-row.color_4{     background-color: #3949ab;}
+.edits-row.color_5{background-color: #5e35b1;}
 
 .color_0.role-group-drag{    background-color: #00796b;}
 .color_1.role-group-drag{background-color: #0097a7;}
@@ -1035,4 +1061,10 @@ button.fsn-title-button{width:100%}
 .color_3.role-group-drag{    background-color: #1976d2;}
 .color_4.role-group-drag{        background-color: #303f9f;}
 .color_5.role-group-drag{   background-color: #512da8;}
-
+.p-4{padding:4px;}
+.btn-round {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 24px;}
+	.model-header-sca{min-height:35px!important;}

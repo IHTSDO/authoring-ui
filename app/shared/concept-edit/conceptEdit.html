@@ -358,9 +358,9 @@
 
 
 
-        <div class="row darken-3 edits-row " ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+        <div class="row darken-3 edits-row color_{{relationship.groupId}} " ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
-          <div class="col-md-11 no-padding p-t-5 color_{{relationship.groupId}}"
+          <div class="col-md-11 no-padding left-of-edit"
                drop-channel="relationshipObj"
                ui-on-drop="dropRelationship(relationship, $data)"
                drag-enter-class="sca-drag-target"
@@ -455,8 +455,8 @@
                               drag-channel="conceptPropertiesObj"
                               drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
               </div>
-              <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left">FD</span>
-              <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left">P</span>
+              <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding">=&nbsp; </span></span>
+              <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding">&nbsp; </span></span>
 
 
               <div ng-if="!isStatic">
