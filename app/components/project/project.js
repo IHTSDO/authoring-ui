@@ -44,6 +44,7 @@ angular.module('singleConceptAuthoringApp.project', [
         // get the latest classification for this project (if exists)
         if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED') {
           snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
+              console.log(response);
             $scope.classificationContainer = response;
           });
         }
