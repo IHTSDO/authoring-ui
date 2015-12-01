@@ -146,6 +146,9 @@ angular.module('singleConceptAuthoringApp.home', [
           resolve: {
             task: function() {
               return null;
+            },
+            canDelete: function() {
+              return false;
             }
           }
       });

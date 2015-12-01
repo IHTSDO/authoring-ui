@@ -161,7 +161,10 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         resolve: {
           task: function() {
             return null;
-          }
+          },
+          canDelete: function() {
+              return false;
+            }
         }
       });
 
