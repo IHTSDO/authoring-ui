@@ -1,21 +1,21 @@
-<div class ="view-height-tall">
+<div class ="view-height-tall" ng-controller="sidebarCtrl">
   <ul ng-cloak style="padding: 0px; list-style: none;">
-    <li><a class="dashboard-links" ng-href="{{browserLink}}" target="_blank">
+    <li class="dashboard-links" ng-click="gotoBrowser()">
       <button type="button" class="btn grey darken-3 dashboard-links">
         <i class="md md-computer"></i> View The TS Browser
       </button>
     </a></li>
-    <li><a class="dashboard-links" ng-href="#/my-projects">
+    <li class="dashboard-links" ng-click="gotoMyProjects()">
       <button type="button" class="btn grey darken-3 dashboard-links">
         <i class="md md-computer"></i> View My Projects
       </button>
     </a></li>
-    <li><a class="dashboard-links" ng-href="#/projects">
+    <li class="dashboard-links" ng-click="gotoAllProjects()">
       <button type="button" class="btn grey darken-3 dashboard-links">
         <i class="md md-computer"></i> View All Projects
       </button>
     </a></li>
-    <li><a class="dashboard-links" ng-href="#/home">
+    <li class="dashboard-links" ng-click="gotoHome()">
       <button type="button" class="btn grey darken-3 dashboard-links">
         <i class="md md-format-list-numbered"></i> View My Tasks
       </button>
