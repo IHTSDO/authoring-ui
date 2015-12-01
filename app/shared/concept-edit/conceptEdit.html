@@ -135,7 +135,7 @@
         <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span></button>
       <button type="button"
               style="vertical-align: bottom"
-              class="btn-default editbuttons small-buttons color_{{relationship.groupId}} tooltips-left tooltips-light normal-case"
+              class="btn-default editbuttons small-buttons  tooltips-left tooltips-light normal-case"
               ng-class="[{'red fa fa-level-down' : !hideInactive}, {'fa fa-level-up green' : hideInactive}]"
               ng-click="toggleHideInactive()"><span> Show/hide inactive components </span></button>
 
@@ -349,7 +349,7 @@
 
 
 
-        <div class="row darken-3 p-t-5 grey" ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+        <div class="row darken-3 edits-row " ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
           <div class="col-md-11 no-padding p-t-5 color_{{relationship.groupId}}"
                drop-channel="relationshipObj"
@@ -381,7 +381,7 @@
 
               <!-- relationship group -->
               <div class="pull-left rolegroup">
-            <textarea style="" class="msd-elastic"
+            <textarea class="msd-elastic"
                       ng-disabled="isStatic"
                       ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
@@ -475,14 +475,13 @@
             </div>
           </div>
 
-          <div class="col-md-1"
-               ng-if="!isStatic"
+          <div class="col-md-1 no-padding color_{{relationship.groupId}} role-group-drag p-t-5"
                drop-channel="relationshipGroupObj"
                ui-on-drop="dropRelationshipGroup($data)"
                drag-enter-class="sca-relgroup-drag-target"
                drag-hover-class="sca-relgroup-drag-hover">
             <button ng-if="$index === 0"
-                    class="btn-default add-buttons md-open-with drag-button-width tooltips-left tooltips-light normal-case "
+                    class="btn-default md-open-with role-group-buttons tooltips-left tooltips-light normal-case "
                     ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
                     drag-image="getDragImageForRelationshipGroup(relationshipGroup)"><span>Drag Relationship Group</span></button>
           </div>

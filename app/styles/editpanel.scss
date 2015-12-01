@@ -472,12 +472,13 @@ select {
       float: left;
       height: 100%;
       min-height: 30px;
+	  background-color:transparent!important;
       font-size: 13px !important;
     }
 
     .drag-button-width {
       width: 19px;
-
+background-color:transparent!important;
       padding: 0% !important;
       float: left;
       height: 100%;
@@ -486,13 +487,13 @@ select {
     }
 
     .button-width-plus {
-      width: 21px;
+      width: 12px;
 
-      padding: 5px 5px !important;
+      padding: 5px 3px !important;
       float: left;
       height: 100%;
       min-height: 30px;
-      font-size: 14px !important;
+      font-size: 12px !important;
     }
 
     .button-width-minus {min-height: 30px;
@@ -1015,3 +1016,23 @@ button.fsn-title-button{width:100%}
 	.layout-slider{width:100%; text-align:center}
 	.slider-title{    padding: 1px 8px; font-size:10px; text-transform:uppercase}
 #layoutGrid{margin-bottom:15px;}
+.role-group-drag{min-height:35px!important; padding:0px}
+
+.role-group-buttons{height:100%; width:80%;background-color:transparent!important; color:#fff!important; pading-left:20%;}
+.fa.pull-right{margin:0px;}
+.edits-row .col-md-11{    width: 94.66667%;}
+.edits-row .col-md-1{width: 4.33333%;}
+.col-md-11.color_0{     background-color: #00897b;}
+.col-md-11.color_1{background-color: #00acc1;}
+.col-md-11.color_2{    background-color: #039be5;}
+.col-md-11.color_3{        background-color: #1e88e5;}
+.col-md-11.color_4{     background-color: #3949ab;}
+.col-md-11.color_5{background-color: #5e35b1;}
+
+.color_0.role-group-drag{    background-color: #00796b;}
+.color_1.role-group-drag{background-color: #0097a7;}
+.color_2.role-group-drag{background-color: #0288d1;}
+.color_3.role-group-drag{    background-color: #1976d2;}
+.color_4.role-group-drag{        background-color: #303f9f;}
+.color_5.role-group-drag{   background-color: #512da8;}
+
