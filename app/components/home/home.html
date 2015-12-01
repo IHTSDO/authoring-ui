@@ -49,7 +49,7 @@
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
 
-              <td data-title="'Project Changes'" sortable="'status'">
+              <td data-title="'Project Changes'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/conflicts">
                   <button ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'"
                           title="Attention Needed: {{task.branchState}}" type="button"
@@ -166,7 +166,7 @@
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
               </td>
-              <td data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
+              <td data-title="'Author'" sortable="'assignee.displayName'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
               </td>
               <td data-title="'Review Status'" sortable="'reviewer'">
