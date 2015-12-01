@@ -2,6 +2,15 @@ a.tooltips-left, button.tooltips-left, button[disabled].tooltips-left {
   position: relative;
   display: inline;
 }
+.Cs:before{
+   content: "Only initial character case insensitive";
+}
+.CS:before{
+   content: "Entire term case sensitive";
+}
+.ci:before{
+   content: "Entire term case insensitive";
+}
  button.tooltips-left.normal-case span, button.tooltips-right.normal-case span{text-transform:none!important}
 
 a.tooltips-left span, button.tooltips-left span, button[disabled].tooltips-left span {
