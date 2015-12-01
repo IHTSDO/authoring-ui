@@ -65,12 +65,13 @@
                   <button ng-show="task.latestClassificationJson != null"
                           type="button"
                           ng-class="[{gray : task.latestClassificationJson.status === 'RUNNING'},
+                          {green : task.latestClassificationJson.status === 'COMPLETED'},
                           {red : task.latestClassificationJson.equivalentConceptsFound === true || task.latestClassification.status === 'FAILED'},
                            {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
                            {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default lighten-2 tooltips-right normalcase" >
                     <div class="md md-notifications "></div>
-                    <span> Classification is {{task.latestClassificationJson.status}}</span>
+                    <span clas="normalcase"> Classification is {{task.latestClassificationJson.status}}</span>
                   </button>
                 </a>
 
@@ -108,7 +109,7 @@
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
                           class="btn btn-round btn-default pink darken-1 tooltips-right tooltips-light normal-case" 
                           title="View Feedback (Unread)"><div class="md md-email"></div>
-<span>New Feedback is Available</span>
+<span>New Feedback </span>
                   </button>
                 </a>
               </td>
@@ -222,7 +223,7 @@
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
                           class="btn btn-round btn-default pink darken-1 tooltips-left" 
                          ><div class="md md-email"></div>
-<span>New Feedback is Available</span>
+<span>New Feedback </span>
                    
                   </button>
                 </a>
