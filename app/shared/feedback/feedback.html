@@ -133,9 +133,10 @@
 
           <div class="p-l-20 col-md-3">
             Review and Feedback
-            <div ng-show="role === 'REVIEWER'">Author: {{task.assignee.displayName}}</div>
-            <div ng-show="role === 'AUTHOR' && task.reviewer">Reviewer: {{task.reviewer.displayName}}</div>
-            <div ng-show="role === 'AUTHOR' && !task.reviewer">Reviewer: Review Unclaimed</div>
+            <div ng-show="role === 'REVIEWER'">Task Author: {{task.assignee.displayName}}</div>
+            <div ng-show="role === 'AUTHOR' && task.reviewer">Task Reviewer: {{task.reviewer.displayName}}</div>
+            <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a reviewer</div>
+            <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status !== 'In Review'">Task not submitted for review</div>
           </div>
 
 
