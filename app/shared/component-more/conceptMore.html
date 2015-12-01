@@ -40,7 +40,7 @@
       <div ng-repeat="(key, value) in concept.associationTargets" class="p-b-10">
         <div class="row no-gutter col-md-12 no-padding">
           <div class="col-md-4">
-            {{key}}
+            {{formatComponentMoreText(key)}}
           </div>
           <div class="col-md-8">
             <div class="row  p-b-5" ng-repeat="target in value">

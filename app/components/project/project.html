@@ -53,7 +53,7 @@
         </div>
         <div class="p-10 pull-right ">
           <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()"
-            ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'">
+            ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED' || 'NOT_TRIGGERED'">
             <div
               class="project-icon deep-purple lighten-1 pull-left">
               <div class="md md-school"></div>
@@ -72,7 +72,7 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED' "
+            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'  || 'NOT_TRIGGERED'"
                     ng-init="validationCollapsed = false"
                     ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
@@ -182,7 +182,7 @@
 
               <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
                 <a class="tooltips-right"
-                   ng-click="window.alert('Not yet functional')"> {{task.summary}}<span>TBD</span></a>
+                   ng-click="viewTask(task)"> {{task.summary}}<span>Open Task</span></a>
               </td>
               <td data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
@@ -216,12 +216,15 @@
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
-                          ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                          ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
+                          {gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {gray : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2" tooltip="">
-                    <div class="md md-school "></div>  <span ng-class="[{gray : task.latestValidationStatus === 'SCHEDULED'},
+                    <div class="md md-school "></div>  <span ng-class="[
+                          {hidden : project.validationStatus === 'NOT_TRIGGERED'},
+                          {gray : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {gray : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]">Validation {{task.latestValidationStatus}}</span>
@@ -249,6 +252,9 @@
               </td>
               <td data-title="'Status'" sortable="'status'">
                 <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
+              </td>
+              <td data-title="''" sortable="''">
+                <button class="btn btn-default btn-round md md-edit blue tooltips-left tooltips-light normal-case" ng-click="editTask(task)"><span>Edit Task</span></button>
               </td>
             </tr>
           </table>

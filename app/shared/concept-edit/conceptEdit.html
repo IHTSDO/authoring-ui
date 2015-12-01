@@ -1,11 +1,11 @@
 <div class="edits editing-form">
   <style>
 
-    .yellowhl {
+    .bluehl {
       border-bottom: 5px solid #0091d7
     }
 
-    .yellowhl .grey.darken-3 {
+    .bluehl .grey.darken-3 {
       background-color: #0091d7
     }
 
@@ -15,19 +15,18 @@
       border-color: red;
     }
 
-    .orangehl {
+    .tealhl {
 
       border-bottom: 5px solid #00a39b
     }
 
-    .orangehl .grey.darken-3 {
+    .tealhl .grey.darken-3 {
       background-color: #00a39b
     }
 
-    .greenhl .grey.darken-3 {
+    .redhl .grey.darken-3 {
       background-color: #ff6755
     }
-
 
     .validation {
       margin-left: 20px;
@@ -35,6 +34,22 @@
       margin-top: 5px;
       padding: 5px;
     }
+
+    .sca-relgroup-drag-hover {
+
+      border: 1px dashed #fff !important;
+      background: #00a6e5 !important;
+      color: #fff !important;
+      visibility: visible;
+    }
+
+    .sca-relgroup-drag-target textarea {
+
+      border: 1px dashed #9f9f9f !important;
+      background: #dedede !important;
+      visibility: visible;
+    }
+
 
   </style>
 
@@ -59,6 +74,15 @@
   <!-- end validation error -->
   <div class="row p-t-5 grey darken-4 concept-headers" style="margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
+
+      <!--   <button ng-click="setDescriptionProperties(description, $event)"
+                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
+                  popover-template="'shared/component-more/descriptionMore.html'"
+                  popover-placement="{{popoverDirection}}"
+                  ng-click="populateDescriptionMore(description)" popover-append-to-body="true">
+            <span>More details</span></button>
+
+            -->
 
       <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
               class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
@@ -120,7 +144,7 @@
         <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span></button>
       <button type="button"
               style="vertical-align: bottom"
-              class="btn-default editbuttons small-buttons color_{{relationship.groupId}} tooltips-left tooltips-light normal-case"
+              class="btn-default editbuttons small-buttons  tooltips-left tooltips-light normal-case"
               ng-class="[{'red fa fa-level-down' : !hideInactive}, {'fa fa-level-up green' : hideInactive}]"
               ng-click="toggleHideInactive()"><span> Show/hide inactive components </span></button>
 
@@ -160,10 +184,16 @@
   </div>
 
   <div class="row">
-    <div class="validation red" ng-repeat="error in validationErrors[concept.conceptId]"><strong>Convention Error:</strong> {{error}}</div>
+    <div class="validation red" ng-repeat="error in validationErrors[concept.conceptId]"><strong>Convention
+                                                                                                 Error:</strong>
+      {{error}}
+    </div>
   </div>
   <div class="row">
-    <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[concept.conceptId]"><strong>Convention Warning:</strong> {{warning}}</div>
+    <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[concept.conceptId]"><strong>Convention
+                                                                                                                 Warning:</strong>
+      {{warning}}
+    </div>
   </div>
 
 
@@ -172,7 +202,7 @@
 
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in getDescriptions(true)"
+    <div ng-repeat="description in getDescriptions()"
          ng-class="getComponentStyle(description.descriptionId, null, '')">
 
       <div class="row darken-3 p-t-5 grey">
@@ -219,7 +249,7 @@
 
             <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="description.effectiveTime || isStatic"
+                      ng-disabled="isStatic"
                       maxlength="255"
                       ng-model="description.term"
                       class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
@@ -228,7 +258,7 @@
 
             <textarea ng-if="description.type === 'SYNONYM'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="description.effectiveTime || isStatic"
+                      ng-disabled="isStatic"
                       maxlength="255"
                       ng-model="description.term"
                       class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
@@ -261,19 +291,23 @@
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="description.type === 'FSN' && description.effectiveTime"
-                    title="Acceptability (en-us) " ng-click="toggleAcceptability(description, 'en-us')"> <div
-              class="md col-md-12 no-padding text-center">us:
-                                                                                                    {{getAcceptabilityDisplayText(description,
-                                                                                                    'en-us')}}</div>
+                    title="Acceptability (en-us) " ng-click="toggleAcceptability(description, 'en-us')">
+              <div
+                class="md col-md-12 no-padding text-center">us:
+                                                            {{getAcceptabilityDisplayText(description,
+                                                            'en-us')}}
+              </div>
             </button>
 
             <!-- en-gb acceptability -->
             <button type="button" class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="description.type === 'FSN' && description.effectiveTime"
-                    title="Acceptability (en-gb)" ng-click="toggleAcceptability(description, 'en-gb')"> <div
-              class="md col-md-12 no-padding text-center">gb:
-                                                                                                    {{getAcceptabilityDisplayText(description,
-                                                                                                    'en-gb')}}</div>
+                    title="Acceptability (en-gb)" ng-click="toggleAcceptability(description, 'en-gb')">
+              <div
+                class="md col-md-12 no-padding text-center">gb:
+                                                            {{getAcceptabilityDisplayText(description,
+                                                            'en-gb')}}
+              </div>
             </button>
 
 
@@ -304,51 +338,59 @@
         </div>
       </div>
       <div class="row">
-        <div class="validation red" ng-repeat="error in validationErrors[description.descriptionId]"><strong>Convention Error:</strong> {{error}}</div>
+        <div class="validation red" ng-repeat="error in validationErrors[description.descriptionId]"><strong>Convention
+                                                                                                             Error:</strong>
+          {{error}}
+        </div>
       </div>
       <div class="row">
-        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[description.descriptionId]"><strong>Convention Warning:</strong> {{warning}}</div>
+        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[description.descriptionId]">
+          <strong>Convention Warning:</strong> {{warning}}
+        </div>
       </div>
     </div>
 
     <!-- rows: Relationships -->
-    <div ng-repeat="relationship in getRelationships(true)"
-         ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+    <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
 
-      <div class="row darken-3 grey" ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+      <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
+           ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
-        <div class="col-md-12 no-padding p-t-5  color_{{relationship.groupId}}"
-             ng-if="relationship.characteristicType === 'STATED_RELATIONSHIP'"
-             drop-channel="relationshipObj"
-             ui-on-drop="dropRelationship(relationship, $data)"
-             drag-enter-class="sca-drag-target"
-             drag-hover-class="sca-drag-hover">
 
-          <div class="p-t-5 ">
-            <button
-              class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
-              ng-click="setRelationshipProperties(relationship, $event)"
-              popover-template="'shared/component-more/relationshipMore.html'"
-              popover-placement="{{popoverDirection}}"
-              title="Some title here" popover-append-to-body="true"
-              ><span>More details</span></button>
 
-            <button
-              class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width "
-              ui-draggable="true" drag="relationship" drag-channel="relationshipObj"
-              drag-image="getDragImageForRelationship(relationship)"></button>
+        <div class="row darken-3 edits-row " ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
-            <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
-            <button type="button"
-                    style="vertical-align: bottom"
-                    ng-disabled="isStatic"
-                    ng-click="toggleRelationshipActive(relationship)"
-                    ng-class="[btn, btn-default, editbuttons, md, 'fa fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]"
-                    title="Active/Inactive"></button>
+          <div class="col-md-11 no-padding p-t-5 color_{{relationship.groupId}}"
+               drop-channel="relationshipObj"
+               ui-on-drop="dropRelationship(relationship, $data)"
+               drag-enter-class="sca-drag-target"
+               drag-hover-class="sca-drag-hover">
 
-            <!-- relationship group -->
-            <div class="pull-left rolegroup">
-            <textarea style="" class="msd-elastic"
+            <div class="">
+              <button
+                class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
+                ng-click="setRelationshipProperties(relationship, $event)"
+                popover-template="'shared/component-more/relationshipMore.html'"
+                popover-placement="{{popoverDirection}}"
+                title="Some title here" popover-append-to-body="true"
+                ><span>More details</span></button>
+
+              <button
+                class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width "
+                ui-draggable="true" drag="relationship" drag-channel="relationshipObj"
+                drag-image="getDragImageForRelationship(relationship)"></button>
+
+              <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
+              <button type="button"
+                      style="vertical-align: bottom"
+                      ng-disabled="isStatic"
+                      ng-click="toggleRelationshipActive(relationship)"
+                      ng-class="[btn, btn-default, editbuttons, md, 'fa fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]"
+                      title="Active/Inactive"></button>
+
+              <!-- relationship group -->
+              <div class="pull-left rolegroup">
+            <textarea class="msd-elastic"
                       ng-disabled="isStatic"
                       ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
@@ -356,15 +398,15 @@
                       class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                       ui-on-drop="dropNullOp()">
             </textarea>
-            </div>
+              </div>
 
-            <!-- attribute type' -->
-            <div class="pull-left is_a"
-                 drag-enter-class="sca-drag-target"
-                 drag-hover-class="sca-drag-hover"
-                 drop-channel="conceptPropertiesObj"
-                 ui-on-drop="dropRelationshipType(relationship, $data)"
-                 drop-validate="!relationship.effectiveTime && !isStatic">
+              <!-- attribute type' -->
+              <div class="pull-left is_a"
+                   drag-enter-class="sca-drag-target"
+                   drag-hover-class="sca-drag-hover"
+                   drop-channel="conceptPropertiesObj"
+                   ui-on-drop="dropRelationshipType(relationship, $data)"
+                   drop-validate="!relationship.effectiveTime && !isStatic">
 
             <textarea type="text"
                       ng-model="relationship.type.fsn"
@@ -386,15 +428,15 @@
                   drag-channel="conceptPropertiesObj"
                   drag-image="getDragImageForConcept(relationship.type.fsn)"></span>
 
-            </div>
+              </div>
 
-            <!-- linked concept -->
-            <div class="pull-left sourcename"
-                 drag-enter-class="sca-drag-target"
-                 drag-hover-class="sca-drag-hover"
-                 drop-channel="conceptPropertiesObj"
-                 ui-on-drop="dropRelationshipTarget(relationship, $data)"
-                 drop-validate="!relationship.effectiveTime && !isStatic">
+              <!-- linked concept -->
+              <div class="pull-left sourcename"
+                   drag-enter-class="sca-drag-target"
+                   drag-hover-class="sca-drag-hover"
+                   drop-channel="conceptPropertiesObj"
+                   ui-on-drop="dropRelationshipTarget(relationship, $data)"
+                   drop-validate="!relationship.effectiveTime && !isStatic">
 
             <textarea type="text"
                       ng-model="relationship.target.fsn"
@@ -412,43 +454,66 @@
                               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                               drag-channel="conceptPropertiesObj"
                               drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
+              </div>
+              <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left">FD</span>
+              <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left">P</span>
+
+
+              <div ng-if="!isStatic">
+
+                <button type="button" ng-click="addRelationship(groupId)"
+                        class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-left tooltips-light normal-case"
+                        title="Add New Relationship"></button>
+
+                <button type="button" ng-click="removeRelationship(relationship)"
+                        ng-if="!relationship.effectiveTime"
+                        class="btn-default add-buttons md fa fa-minus button-width-minus pull-right tooltips-left tooltips-light normal-case">
+                  <span>Remove Relationship</span></button>
+
+
+              </div>
+
+
             </div>
-            <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left">FD</span>
-            <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left">P</span>
-
-
-            <div ng-if="!isStatic">
-              <button type="button" ng-click="addRelationship($index)"
-                      class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-left tooltips-light normal-case"
-                      title="Add New Relationship"></button>
-
-              <button type="button" ng-click="removeRelationship(relationship)"
-                      ng-if="!relationship.effectiveTime"
-                      class="btn-default add-buttons md fa fa-minus button-width-minus pull-right tooltips-left tooltips-light normal-case">
-                <span>Remove Relationship</span></button>
-
-            </div>
-          </div>
-          <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
+            <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
                 <textarea class="msd-elastic resizable-text form-control"
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">
                 </textarea>
+            </div>
+          </div>
+
+          <div class="col-md-1 no-padding color_{{relationship.groupId}} role-group-drag p-t-5"
+               drop-channel="relationshipGroupObj"
+               ui-on-drop="dropRelationshipGroup($data)"
+               drag-enter-class="sca-relgroup-drag-target"
+               drag-hover-class="sca-relgroup-drag-hover">
+            <button ng-if="$index === 0"
+                    class="btn-default md-open-with role-group-buttons tooltips-left tooltips-light normal-case "
+                    ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
+                    drag-image="getDragImageForRelationshipGroup(relationshipGroup)"><span>Drag Relationship Group</span></button>
           </div>
         </div>
 
-      </div>
 
-      <div class="row">
-        <div class="validation red" ng-repeat="error in validationErrors[relationship.relationshipId]"><strong>Convention Error:</strong> {{error}}</div>
-      </div>
-      <div class="row">
-        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[relationship.relationshipId]"><strong>Convention Warning:</strong> {{warning}}</div>
+        <div class="row">
+          <div class="validation red" ng-repeat="error in validationErrors[relationship.relationshipId]"><strong>Convention
+                                                                                                                 Error:</strong>
+            {{error}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="validation orange darken-1"
+               ng-repeat="warning in validationWarnings[relationship.relationshipId]">
+            <strong>Convention Warning:</strong> {{warning}}
+          </div>
+        </div>
       </div>
 
 
     </div>
+
 
     <div class="clearfix"></div>
 
