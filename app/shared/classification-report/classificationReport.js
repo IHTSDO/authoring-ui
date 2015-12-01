@@ -70,6 +70,7 @@ angular.module('singleConceptAuthoringApp')
                 $filter('orderBy')(scope.items, params.orderBy()) :
                 scope.items;
                 params.total(orderedData.length);
+             // console.debug(orderedData);
                 $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
           }
