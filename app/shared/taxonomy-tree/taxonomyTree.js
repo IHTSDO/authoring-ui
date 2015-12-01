@@ -71,9 +71,13 @@ angular.module('singleConceptAuthoringApp')
         var nodes = {};
         var treesStarted = 1; // the original node
         var treesDone = 0;
-
+        var conceptLoaded = 0; // 1 if concept retrieved
+        /**
+         * Progress defined as 100 * (1/4 [if concept load complete] + 3/4 * treesDone / treesStarted)
+         * @returns {Number}
+         */
         scope.getProgress = function () {
-          return parseInt(treesDone / treesStarted * 100);
+          return parseInt(25 * conceptLoaded + 75 * treesDone / treesStarted);
         };
 
         function mergeTrees() {
@@ -186,6 +190,7 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.constructRootTrees = function (node) {
+          conceptLoaded = 1;
           treesDone = 0; // reset the number of trees calculated
           treesStarted = 1; // the original node
           nodes = {};
@@ -229,7 +234,20 @@ angular.module('singleConceptAuthoringApp')
 
           // if a concept is supplied
           if (scope.concept) {
-            scope.constructRootTrees(scope.concept);
+
+            // if concept supplied has leaf inferred property, start constructing trees
+            if (scope.concept.hasOwnProperty('isLeafInferred')) {
+              scope.constructRootTrees(scope.concept);
+            }
+
+            // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
+            else {
+              snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
+                scope.concept = response;
+                scope.constructRootTrees(scope.concept);
+              });
+            }
+
           }
 
           // if concept id not specified, use root
