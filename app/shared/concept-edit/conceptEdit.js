@@ -2132,7 +2132,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // sets the popover direction (left, bottom, right) based on current
         // position of root element
         scope.setPopoverDirection = function ($event) {
-          if ($event.pageX < 500) {
+          console.debug($event.pageX);
+          if ($event.pageX < 700) {
             scope.popoverDirection = 'right';
           } else {
             scope.popoverDirection = 'left';

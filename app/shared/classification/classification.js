@@ -233,12 +233,10 @@ angular.module('singleConceptAuthoringApp')
 
             // get equivalent concepts
             if (scope.classificationContainer.equivalentConceptsFound) {
-              console.debug('equivalent concepts found');
-              var equivalentConcepts = [];
+               var equivalentConcepts = [];
 
               // convert equivalent concepts into format usable by ng-table
               angular.forEach(scope.classificationContainer.equivalentConcepts, function (concept) {
-                console.debug('equivalent', concept);
 
                 var equivalentConcept = {
                   leftConceptId: concept[0].id,
