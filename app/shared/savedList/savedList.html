@@ -18,9 +18,9 @@
       <div class="col-lg-5 col-md-3 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}</div>
       <div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1">
-        <button type="button" class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+        <button type="button" class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
                ng-show="!item.concept.active"
-               ><i class="md md-dnd-forwardslash"></i><span>Inactive Concept</span>
+               ><div class="fa fa-power-off"></div><span>Inactive Concept</span>
         </button>
         </div>
       <div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4">
