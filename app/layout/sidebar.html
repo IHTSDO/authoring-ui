@@ -1,8 +1,8 @@
 <div class ="view-height-tall">
   <ul ng-cloak style="padding: 0px; list-style: none;">
-    <li><a class="dashboard-links" ng-href="#/home">
+    <li><a class="dashboard-links" ng-href="{{browserLink}}" target="_blank">
       <button type="button" class="btn grey darken-3 dashboard-links">
-        <i class="md md-format-list-numbered"></i> View My Tasks
+        <i class="md md-computer"></i> View The TS Browser
       </button>
     </a></li>
     <li><a class="dashboard-links" ng-href="#/my-projects">
@@ -15,15 +15,16 @@
         <i class="md md-computer"></i> View All Projects
       </button>
     </a></li>
+    <li><a class="dashboard-links" ng-href="#/home">
+      <button type="button" class="btn grey darken-3 dashboard-links">
+        <i class="md md-format-list-numbered"></i> View My Tasks
+      </button>
+    </a></li>
     <li>
       <button type="button" class="btn grey darken-3 create-links" ng-click="openCreateTaskModal()">
         <i class="md md-view-list"></i> Create New Task
       </button>
     </li>
-    <li><a class="dashboard-links" ng-href="{{browserLink}}" target="_blank">
-      <button type="button" class="btn grey darken-3 dashboard-links">
-        <i class="md md-computer"></i> View The TS Browser
-      </button>
-    </a></li>
+    
   </ul>
 </div>
