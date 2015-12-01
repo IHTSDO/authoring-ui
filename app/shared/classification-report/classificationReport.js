@@ -60,15 +60,28 @@ angular.module('singleConceptAuthoringApp')
           },
           orderBy: 'changeNature'
         }, {
+          filterDelay: 50,
           total: scope.items ? scope.items.length : 0, // length of data
           getData: function ($defer, params) {
-
+            var searchStr = params.filter().search;
+            var mydata = [];
             if (!scope.items || scope.items.length === 0) {
               $defer.resolve([]);
             } else {
+              if (searchStr) {
+                  mydata = scope.items.filter(function (item) {
+                      console.log(item);
+                    return item.source.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                    || item.type.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                    || item.destination.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  });
+                } else {
+                    mydata = scope.items;
+                }
+                
               var orderedData = params.sorting() ?
-                $filter('orderBy')(scope.items, params.orderBy()) :
-                scope.items;
+                $filter('orderBy')(mydata, params.orderBy()) :
+                mydata;
                 params.total(orderedData.length);
              // console.debug(orderedData);
                 $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
