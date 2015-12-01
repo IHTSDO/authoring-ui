@@ -49,9 +49,13 @@
           </div>
           <br>
           <label for="textArea">Task Details</label>
+<!--
           <textarea ng-change="clearMessages()" sca-auto-expand="" class="form-control vertical auto-grow-textarea"
                     rows="3" id="textArea"
-                    ng-model="task.description" placeholder="Enter task details"></textarea>
+                     placeholder="Enter task details"></textarea>
+-->
+            
+          <text-angular ng-model="task.description" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
 
           <br>
 

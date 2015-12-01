@@ -104,6 +104,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             task: function () {
               console.debug('resolved task', $scope.task);
               return $scope.task;
+            },
+            canDelete: function() {
+              return true;
             }
           }
         });
