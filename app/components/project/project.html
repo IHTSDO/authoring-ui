@@ -101,7 +101,7 @@
         <div class="card-header">
           <div class="card-title">
             <button
-              ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status === 'COMPLETED'"
+              ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status !== 'COMPLETED'"
               ng-init="classificationCollapsed = true"
               ng-click="classificationCollapsed = !classificationCollapsed" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
