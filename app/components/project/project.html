@@ -4,8 +4,8 @@
 
   <div class="sca-column col-lg-9 col-md-9 col-sm-9 pull-right ">
     <div class="page-header row ">
-      <div class="page-header col-md-3 p-t-15">
-        <h1>
+      <div class=" col-md-3 no-padding">
+        <h1 class="p-l-15">
 
           {{project.title}}
         </h1>
@@ -13,8 +13,8 @@
         <p class="lead">
           {{project.projectLead.displayName}}
         </p>
-      </div>
-      <div class="page-header col-md-9 p-t-10 project-main-buttons">
+   </div>
+      <div class="col-md-9  project-main-buttons">
 
         <div class="p-10 pull-right">
           <button class="btn btn-border tooltips-left normal-case"
@@ -40,6 +40,7 @@
             <span>Pull in changes from the mainline into this project</span>
           </button>
         </div>
+      
         <div class="p-10 pull-right ">
           <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()"
             ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status !== 'COMPLETED'">
@@ -63,8 +64,9 @@
           </button>
         </div>
       </div>
-
-    </div>
+</div>
+    
+    
     <div class="row project-page">
 
       <!--- Validation Results -->
@@ -77,7 +79,7 @@
                     ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
                     ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : validationCollapsed, 'md-keyboard-arrow-right' : !validationCollapsed}]">
-              <span ng-class="{'report-text' : project.validationStatus && project.validationStatus === 'COMPLETED'}">Validation Results</span>
+              <span class="project-subtitle" ng-class="{'report-text' : project.validationStatus && project.validationStatus === 'COMPLETED'}">Validation Results</span>
             </button>
 
             <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-school"></span></span>
@@ -105,7 +107,7 @@
               ng-init="classificationCollapsed = true"
               ng-click="classificationCollapsed = !classificationCollapsed" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
-              <span
+              <span class="project-subtitle"
                 ng-class="{'report-text' : project.latestClassificationJson.status === 'COMPLETED'}">Classification Results</span>
             </button>
             <span class="project-icon green pull-right"><span class="md md-notifications"></span></span>
@@ -138,7 +140,7 @@
               ng-init="conflictsCollapsed = true"
               type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
-              <span
+              <span class="project-subtitle"
                 ng-class="{'report-text' : project.branchState === 'DIVERGED' || project.branchState === 'BEHIND' || project.branchState === 'STALE'}">Pull changes from Mainline Content</span>
             </button>
             </a>
@@ -163,7 +165,7 @@
               ng-init="tasksCollapsed = true"
               ng-click="tasksCollapsed = !tasksCollapsed" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : tasksCollapsed, 'md-keyboard-arrow-down' : !tasksCollapsed}]">
-              <span
+              <span class="project-subtitle"
                 ng-class="{'report-text' : tasks.length > 0}">Project Tasks</span>
             </button>
 
@@ -191,10 +193,10 @@
                 {{task.reviewer.displayName}}
 
               </td>
-              <td data-title="'Last Modified'" sortable="'updated'">
+              <td data-title="'Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
-              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
+              <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                   <button ng-show="task.latestClassificationJson != null"
                           title="{{task.latestClassificationJson.status}}" type="button"
@@ -212,7 +214,7 @@
 
               </td>
 
-              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+              <td data-title="'Validation'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
