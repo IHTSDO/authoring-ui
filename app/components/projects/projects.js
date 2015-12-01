@@ -83,6 +83,9 @@ angular.module('singleConceptAuthoringApp.projects', [
         resolve: {
             task: function() {
               return null;
+            },
+            canDelete: function() {
+              return false;
             }
           }
       });
@@ -144,7 +147,10 @@ angular.module('singleConceptAuthoringApp.projects', [
         resolve: {
           task: function() {
             return null;
-          }
+          },
+          canDelete: function() {
+              return false;
+            }
         }
       });
 

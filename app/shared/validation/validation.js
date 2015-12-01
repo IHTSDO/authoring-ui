@@ -250,6 +250,9 @@ angular.module('singleConceptAuthoringApp')
               resolve: {
                 task: function () {
                   return task;
+                },
+              canDelete: function() {
+                return false;
                 }
               }
             });
