@@ -227,9 +227,9 @@
 
       <!-- models & concepts-->
       <div ng-class="getLayoutWidths('modelsAndConcepts')"
-           class="no-padding" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+           class="no-padding view-height-100  hide-scroll" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-        <div>
+    
 
           <!-- model & concept data-->
           <div class="row-fluid no-gutter" style="display: -webkit-box;
@@ -241,7 +241,7 @@
                repeat-complete callback="renderingComplete()">
 
             <!-- model -->
-            <div class="no-gutter" style="height: 100%" ng-class="getLayoutWidths('models')">
+            <div class="no-gutter " style="height: 100%" ng-class="getLayoutWidths('models')">
               <div draw-model-sca concept="concept"></div>
             </div>
 
@@ -270,7 +270,7 @@
             </div>
           </div>
 
-        </div>
+   
 
       </div>
 
@@ -280,7 +280,7 @@
     <div ng-if="thisView === 'edit-no-sidebar'">
 
       <!-- models & concepts-->
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding ">
 
 
         <!-- model & concept data-->
@@ -293,12 +293,12 @@
 
 
           <!-- model -->
-          <div class="no-gutter col-sm-7 col-md-7 col-lg-7" style="height: 100%">
+          <div class="no-gutter col-sm-7 col-md-7 col-lg-7" >
             <div draw-model-sca class="" concept="concept"></div>
           </div>
 
           <!-- concept -->
-          <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3 panel-height" style="margin-right:0px;">
+          <div class="no-gutter col-sm-5 col-md-5 col-lg-5  grey darken-3 panel-height" style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
                  branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)"
               >
@@ -331,7 +331,7 @@
            ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9  no-padding"
+      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9   no-padding"
            sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
