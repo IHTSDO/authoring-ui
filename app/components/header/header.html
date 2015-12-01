@@ -12,7 +12,7 @@
       <li>
         <ul class="breadcrumb" style="line-height: 2em;">
           <li><a ng-href="#/">Dashboard</a></li>
-          <li ng-repeat = "titleSection in titleSections" ng-bind="titleSection"></li>
+          <li ng-repeat="titleSection in titleSections" class="tooltips-right tooltips-light normal-case" title="{{parseProject(titleSection)}}">{{titleSection}}</li>
         </ul>
       </li>
 
