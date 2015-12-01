@@ -233,12 +233,12 @@
                   title="Active/Inactive"></button>
 
           <!-- Case Significance -->
-          <button type="button" class=" blue accent-2 button-width custom-button text-center" ng-disabled="isStatic"
-                  title="Case Significance " ng-click="toggleCaseSignificance(description)">
+          <button type="button" class=" blue accent-2 button-width custom-button text-center tooltips-right tooltips-light normal-case" ng-disabled="isStatic"
+                  ng-click="toggleCaseSignificance(description)">
 
-            <div class="md col-md-12 no-padding text-center">{{getCaseSignificanceDisplayText(description)}}</div>
+            <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
 
-
+<span><div class="{{getCaseSignificanceDisplayText(description)}}"></div></span>
           </button>
 
           <!-- Term -->
@@ -455,7 +455,7 @@
                               drag-channel="conceptPropertiesObj"
                               drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
               </div>
-              <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding">=&nbsp; </span></span>
+              <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding">≡&nbsp; </span></span>
               <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding">&nbsp; </span></span>
 
 

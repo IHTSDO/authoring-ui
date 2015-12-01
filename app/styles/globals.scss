@@ -14,7 +14,7 @@ html {
 .view-height-100{height:100vh!important}
 .hide-scroll::-webkit-scrollbar { 
     display: none; }
-	
+	.modal-body .ta-scroll-window.form-control{min-height:150px!important}
 html::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track
 {
