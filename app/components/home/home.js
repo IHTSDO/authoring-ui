@@ -154,11 +154,14 @@ angular.module('singleConceptAuthoringApp.home', [
       });
 
       modalInstance.result.then(function (response) {
-        
           loadTasks();
       }, function () {
       });
     };
+
+    $scope.$on('reloadTasks', function(event, data) {
+      loadTasks();
+    });
 
     $scope.viewReviewTask = function (task) {
 

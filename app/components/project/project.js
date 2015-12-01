@@ -200,6 +200,11 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       }
 
+      // on reload task broadcast, re-initialize
+      $scope.$on('reloadTasks', function(event, data) {
+        initialize();
+      });
+
       $scope.editTask = function (task) {
         var modalInstance = $modal.open({
           templateUrl: 'shared/task/task.html',
