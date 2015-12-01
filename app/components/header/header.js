@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', function ($rootScope, $timeout, $modal, $location, $route) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', function ($rootScope, $timeout, $modal, $location, $route, metadataService) {
     return {
       restrict: '',
       transclude: false,
@@ -82,6 +82,17 @@ angular.module('singleConceptAuthoringApp')
             }
           }
         });
+          
+        scope.parseProject = function(project){
+            var projects = metadataService.getProjects();
+            var tooltip = projects.filter(function (el) {
+              return el.key === project;
+            });
+            if(tooltip.length > 0){
+                console.log(tooltip[0].title);
+                return tooltip[0].title;
+            }
+        };
 
         scope.$on('clearNotifications', function (event, data) {
           scope.clearNotification();
