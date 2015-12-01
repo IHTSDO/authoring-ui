@@ -70,7 +70,7 @@ angular.module('singleConceptAuthoringApp')
             return status;
           };
 
-          $rootScope.$on('stopEditing', function(event, data) {
+          $rootScope.$on('stopEditing', function (event, data) {
             console.debug('classification received stopEditing event', data.concept);
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               console.debug('comparing', scope.viewedConcepts[i].conceptBefore.conceptId, data.concept.conceptId);
@@ -95,7 +95,11 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendMessage('Retrieving concept before & after information...');
 
             // construct an object with before and after concept models
-            var conceptModelObj = {conceptId : data.conceptId, conceptBefore : null, conceptAfter : null};
+            var conceptModelObj = {
+              conceptId: data.conceptId,
+              conceptBefore: null,
+              conceptAfter: null
+            };
 
             // get the full concept for this branch (before version)
             snowowlService.getFullConcept(data.conceptId, scope.branch).then(function (response) {
@@ -229,9 +233,24 @@ angular.module('singleConceptAuthoringApp')
 
             // get equivalent concepts
             if (scope.classificationContainer.equivalentConceptsFound) {
-              scope.equivalentConcepts = scope.classificationContainer.equivalentConcepts;
+              console.debug('equivalent concepts found');
+              var equivalentConcepts = [];
+
+              // convert equivalent concepts into format usable by ng-table
+              angular.forEach(scope.classificationContainer.equivalentConcepts, function (concept) {
+                console.debug('equivalent', concept);
+
+                var equivalentConcept = {
+                  leftConceptId: concept[0].id,
+                  leftConceptLabel: concept[0].label,
+                  rightConceptId: concept[1].id,
+                  rightConceptLabel: concept[1].label
+                };
+                equivalentConcepts.push(equivalentConcept);
+              });
+              scope.equivalentConcepts = equivalentConcepts;
             } else {
-              scope.equivalentConcepts = [];
+              scope.equivalenConcepts = [];
             }
 
           }, true);
@@ -313,7 +332,7 @@ angular.module('singleConceptAuthoringApp')
           /////////////////////////////////////////
           // Concept Edit/Display Functions
           /////////////////////////////////////////
-          scope.$on('viewClassificationConcept', function(event, data) {
+          scope.$on('viewClassificationConcept', function (event, data) {
             var conceptId = data.conceptId;
           });
 
