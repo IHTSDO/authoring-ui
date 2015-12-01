@@ -1327,23 +1327,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           relationship.target.fsn = 'Validating...';
 
-          // check if allowable relationship target using concept id
-          scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
-            if (response && response.length > 0) {
-              relationship.target.conceptId = data.id;
-              relationship.target.fsn = data.name;
-              scope.warnings = null;
-              scope.updateRelationship(relationship);
-            }
+          console.log(relationship);
+          if(relationship.type.conceptId !== null){
+              // check if allowable relationship target using concept id
+              scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
+                if (response && response.length > 0) {
+                  relationship.target.conceptId = data.id;
+                  relationship.target.fsn = data.name;
+                  scope.warnings = null;
+                  scope.updateRelationship(relationship);
+                }
 
-            // notify user of inappropriate relationship target by MRCM
-            // rules
-            else {
-              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target concept.'];
-              relationship.target.fsn = tempFsn;
-            }
+                // notify user of inappropriate relationship target by MRCM
+                // rules
+                else {
+                  scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target concept.'];
+                  relationship.target.fsn = tempFsn;
+                }
 
-          });
+              });
+          }
+            else{
+                relationship.target.conceptId = data.id;
+                relationship.target.fsn = data.name;
+                scope.warnings = null;
+                scope.updateRelationship(relationship);
+            }
         };
 
         scope.dropRelationshipType = function (relationship, data) {
