@@ -240,12 +240,12 @@
             </select>
           </div>
 
-          <!-- Dialect / Acceptability: Never displayed for FSN -->
+          <!-- Dialect / Acceptability -- never alterable for FSN -->
           <div>
             <!-- en-us acceptability -->
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button"
-                    ng-disabled="description.type === 'FSN' && description.effectiveTime"
+                    ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
                     title="Acceptability (en-us) " ng-click="toggleAcceptability(description, 'en-us')">
               <div
                 class="md col-md-12 no-padding text-center">us:
@@ -256,7 +256,7 @@
 
             <!-- en-gb acceptability -->
             <button type="button" class=" blue accent-2 button-width-acceptability custom-button"
-                    ng-disabled="description.type === 'FSN' && description.effectiveTime"
+                    ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
                     title="Acceptability (en-gb)" ng-click="toggleAcceptability(description, 'en-gb')">
               <div
                 class="md col-md-12 no-padding text-center">gb:
