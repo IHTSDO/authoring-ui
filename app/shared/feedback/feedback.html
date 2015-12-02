@@ -127,7 +127,7 @@
       <div class="col-md-8 no-padding no-gutter">
 
         <!-- Feedback Header and Controls -->
-        <div class="row pink1 classification-header" style="vertical-align: middle">
+        <div class="row grey darken-1  classification-header" style="vertical-align: middle">
 
           <!-- Title section -->
 
@@ -143,12 +143,12 @@
           <div class="col-md-7">
             <!-- Cancel/Unclaim Review button -->
             <div ng-if="role === 'AUTHOR'" class="switch pull-right p-5">
-              <button class="btn btn-default pink darken-1 " style="text-transform: none"
+              <button class="btn btn-default orange darken-1 " style="text-transform: none"
                       ng-click="cancelReview()">Cancel Review
               </button>
             </div>
             <div ng-if="role === 'REVIEWER'" class="pull-right p-5">
-              <button class="btn btn-default pink darken-1 pull-right" style="text-transform: none"
+              <button class="btn btn-default orange darken-1 pull-right" style="text-transform: none"
                       ng-click="unclaimReview()">Unclaim Review
               </button>
             </div>
@@ -169,7 +169,7 @@
           <div class="col-md-2">
           <!-- Report collapsible control -->
           <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-                  class="btn btn-default pink1 pull-right m-l-40"
+                  class="btn btn-default pull-right m-l-40"
                   ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
           </div>
@@ -307,7 +307,7 @@
                           </button>
                           <button
                             class="btn btn-round btn-default blue m-r-5 lighten-2 tooltips-left tooltips-light normal-case"
-                            ng-click="addToEdit(concept.id)"
+                            ng-click="addToEdit(concept)"
                             ng-disabled="concept.viewed">
                             <div
                               class="md md-edit "><span>Add to Edit Panel</span></div>
@@ -331,7 +331,7 @@
                           <span>Add to Concepts Reviewed List</span></button>
                         <button
                           class="btn pull-right btn-round btn-default blue lighten-2 tooltips-left tooltips-light normal-case"
-                          ng-click="addToEdit(concept.id)"
+                          ng-click="addToEdit(concept)"
                           ng-disabled="concept.viewed">
                           <div
                             class="md md-edit "></div>
@@ -421,7 +421,7 @@
         <div class="row classification-report no-padding no-gutter m-t-15" ng-if="viewedConcepts.length > 0">
 
           <!-- Taxonomy -->
-          <div class="col-md-5 grey lighten-2">
+          <div class="col-md-5">
             <div>
               <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
             </div>
@@ -449,7 +449,7 @@
 
       <!-- Feedback messages -->
       <div class="col-md-4 no-padding no-gutter">
-        <div class="col-md-12 pink1 classification-header" style="vertical-align: middle; text-align: center;">
+        <div class="col-md-12 grey darken-1 classification-header" style="vertical-align: middle; text-align: center;">
           <div class="p-5">Concept Feedback</div>
         </div>
 
