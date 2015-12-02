@@ -192,6 +192,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // set scope flag
               scope.isModified = true;
+
+              scope.computeRelationshipGroups();
             }
 
             // special case for unsaved concepts to catch possible bugs
@@ -1529,8 +1531,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           angular.forEach(relGroup, function (rel) {
             var copy = angular.copy(rel);
 
-            // set the group id
-            copy.groupId = newGroupId;
+            // set the group id based on whether it is an isa relationship
+            if (metadataService.isIsaRelationship(copy.type.conceptId)) {
+              copy.groupId = 0;
+            } else {
+              copy.groupId = newGroupId;
+            }
 
             // clear the effective time and source information
             delete copy.sourceId;
