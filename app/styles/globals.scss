@@ -118,3 +118,52 @@ html::-webkit-scrollbar-thumb,
     line-height: 18px;
 	    background-color: #F44336;
 }
+ .bluehl {
+      border-bottom: 5px solid #0091d7
+    }
+
+    .bluehl .grey.darken-3 {
+      background-color: #0091d7
+    }
+
+    .redhl {
+      border-style: solid;
+      border-width: 5px;
+      border-color: red;
+    }
+
+    .tealhl {
+
+      border-bottom: 5px solid #00a39b
+    }
+
+    .tealhl .grey.darken-3 {
+      background-color: #00a39b
+    }
+
+    .redhl .grey.darken-3 {
+      background-color: #ff6755
+    }
+
+    .validation {
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-top: 5px;
+      padding: 5px;
+    }
+/* drag targets */
+    .sca-relgroup-drag-hover {
+
+      border: 1px dashed #fff !important;
+      background: #00a6e5 !important;
+      color: #fff !important;
+      visibility: visible;
+    }
+
+    .sca-relgroup-drag-target textarea {
+
+      border: 1px dashed #9f9f9f !important;
+      background: #dedede !important;
+      visibility: visible;
+    }
+
