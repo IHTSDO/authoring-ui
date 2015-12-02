@@ -368,7 +368,7 @@
     <div ng-if="thisView === 'validation'">
 
       <!-- validation report -->
-      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 no-padding">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
         <div validation validation-container="validationContainer" branch="targetBranch" editable="true"></div>
       </div>
 
@@ -423,40 +423,8 @@
 
       <!-- feedback report -->
       <div
-        class="col-xs-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 no-padding">
+        class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
         <div feedback feedback-container="feedbackContainer" branch="targetBranch" editable="true"></div>
-      </div>
-
-      <!-- concept edit : author -> non-static, can create, reviewer -> static, cannot create -->
-      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding"
-           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
-           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-
-        <!-- concept data-->
-        <div class="row no-gutter" style="display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;" ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
-             repeat-complete callback="renderingComplete()" ng-class="isLast($last)">
-
-          <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height darken-3 grey"
-               style="margin-right:0px; z-index:999">
-            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="true" save-function="conceptUpdateFunction(project, task, concept)"
-                 component-styles="getFeedbackStyles(concept)">
-            </div>
-          </div>
-
-        </div>
-        <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
-          <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12" fill-height style="margin-right:0px;">
-          </div>
-        </div>
       </div>
 
     </div>
@@ -471,7 +439,6 @@
       </div>
 
     </div>
-    <!--    <div ng-if="conceptsRendering" class="loader" style="bottom:10px; position:fixed;">Loading...</div>-->
 
   </div>
 
