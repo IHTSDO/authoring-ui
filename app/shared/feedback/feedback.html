@@ -144,11 +144,13 @@
             <!-- Cancel/Unclaim Review button -->
             <div ng-if="role === 'AUTHOR'" class="switch pull-right p-5">
               <button class="btn btn-default orange darken-1 " style="text-transform: none"
+                      ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                       ng-click="cancelReview()">Cancel Review
               </button>
             </div>
             <div ng-if="role === 'REVIEWER'" class="pull-right p-5">
               <button class="btn btn-default orange darken-1 pull-right" style="text-transform: none"
+                      ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                       ng-click="unclaimReview()">Unclaim Review
               </button>
             </div>
@@ -158,6 +160,7 @@
               <label>
                 Review in Progress
                 <input ng-disabled="role != 'REVIEWER' || reviewComplete" type="checkbox" ng-model="reviewComplete"
+                       ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                        ng-change="changeReviewStatus(reviewComplete)">
                 <span class="lever"></span>
                 Review Complete
