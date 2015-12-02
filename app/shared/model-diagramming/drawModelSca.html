@@ -6,7 +6,7 @@
   <div class="p-4">
     <button
       class="btn btn-round btn-default fa fa-book tooltips-right pull-left tooltips-light normal-case purple darken-1 m-r-5"
-      ng-click="viewConceptInTaxonomy(concept)" style="text-transform: none">
+      ng-click="viewConceptInTaxonomy(concept)" style="text-transform: none" ng-disabled="!item.concept.active">
       <span>View Taxonomy</span>
     </button>
   <button

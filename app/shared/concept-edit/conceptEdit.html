@@ -1,56 +1,7 @@
 <div class="edits editing-form">
   <style>
 
-    .bluehl {
-      border-bottom: 5px solid #0091d7
-    }
-
-    .bluehl .grey.darken-3 {
-      background-color: #0091d7
-    }
-
-    .redhl {
-      border-style: solid;
-      border-width: 5px;
-      border-color: red;
-    }
-
-    .tealhl {
-
-      border-bottom: 5px solid #00a39b
-    }
-
-    .tealhl .grey.darken-3 {
-      background-color: #00a39b
-    }
-
-    .redhl .grey.darken-3 {
-      background-color: #ff6755
-    }
-
-    .validation {
-      margin-left: 20px;
-      margin-right: 20px;
-      margin-top: 5px;
-      padding: 5px;
-    }
-
-    .sca-relgroup-drag-hover {
-
-      border: 1px dashed #fff !important;
-      background: #00a6e5 !important;
-      color: #fff !important;
-      visibility: visible;
-    }
-
-    .sca-relgroup-drag-target textarea {
-
-      border: 1px dashed #9f9f9f !important;
-      background: #dedede !important;
-      visibility: visible;
-    }
-
-
+   
   </style>
 
   <!-- begin validation error -->
@@ -111,6 +62,7 @@
     </div>
 
     <div class="pull-right m-l-4 m-r-5 col-md-1 no-padding ">
+<!--
       <select name="select-primitive-choice" id="select-primitive-choice"
               ng-disabled="isStatic"
               ng-model="concept.definitionStatus"
@@ -119,6 +71,9 @@
               style="width:30px;"
               ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
+-->
+      <span ng-if="concept.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="concept.definitionStatus = 'PRIMITIVE'">≡&nbsp; </span></span>
+              <span ng-if="concept.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="concept.definitionStatus = 'FULLY_DEFINED'">&nbsp; </span></span>
 
       <div class="pull-right">
         <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
@@ -510,15 +465,7 @@
           </div>
         </div>
       </div>
-
-
     </div>
-
-
     <div class="clearfix"></div>
-
-
   </div>
 </div>
-
-
