@@ -68,16 +68,28 @@ angular.module('singleConceptAuthoringApp')
             if (!scope.items || scope.items.length === 0) {
               $defer.resolve([]);
             } else {
-              if (searchStr) {
+              if(scope.type === 'equivalence')
+              {
+                  if (searchStr) {
                   mydata = scope.items.filter(function (item) {
-                      console.log(item);
-                    return item.source.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                    || item.type.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                    || item.destination.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                    return item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                    || item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                   });
                 } else {
                     mydata = scope.items;
                 }
+              }
+              else{
+                  if (searchStr) {
+                      mydata = scope.items.filter(function (item) {
+                        return item.source.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                        || item.type.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                        || item.destination.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                      });
+                    } else {
+                        mydata = scope.items;
+                    }
+              }
                 
               var orderedData = params.sorting() ?
                 $filter('orderBy')(mydata, params.orderBy()) :
