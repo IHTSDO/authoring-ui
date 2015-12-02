@@ -562,8 +562,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     relationship.active = false;
                   });
 
-                  // force save the concept
-                  scope.saveConcept();
+                  // save concept but bypass validation checks
+                  saveHelper().then(function() {
+                    notificationService.sendMessage('Concept inactivated');
+                  }, function(error) {
+                    notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                  })
                 }
               }, function () {
                 notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
