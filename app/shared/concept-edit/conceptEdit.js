@@ -1504,6 +1504,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          if (scope.isStatic) {
+            return;
+          }
+
           // get the max group id and increment by one (or set to zero if no
           // groups defined)
           var maxGroup = -1;
