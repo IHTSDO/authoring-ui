@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            // set the height and width`
+            // set the height and width
             var width = parentElem.offsetWidth - 30;
             var height = $('#editPanel-' + id).find('.editHeightSelector').height() + 41;
             if (width < 0) {
