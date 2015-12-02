@@ -62,7 +62,7 @@
                  ng-click="openConceptInformationModal(result)">&nbsp;</span>
           <span class="badge alert-warning" ng-show="result.concept.definitionStatus !== 'PRIMITIVE'"
                 title="Fully Defined"
-                ng-click="openConceptInformationModal(result)">&equiv;</span>
+                ng-click="openConceptInformationModal(result)">≡&nbsp;</span>
         </div>
         <div class="no-padding"
              ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-9' : userOptions.groupByConcept}]">
