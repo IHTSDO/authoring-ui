@@ -10,6 +10,29 @@
     color: #fff;
     text-align: left
 }
+.sca-light .color_0.role-group-drag,
+.sca-light .color_2.role-group-drag,
+.sca-light .color_4.role-group-drag,
+.sca-light .color_6.role-group-drag
+{         background-color: #f5f5f5;}
+.sca-light .color_1.role-group-drag,
+.sca-light .color_3.role-group-drag,
+.sca-light .color_5.role-group-drag,
+.sca-light .color_7.role-group-drag
+{     background-color: #e0e0e0;}
+.sca-light .edits-row.color_0,
+.sca-light .edits-row.color_2,
+.sca-light .edits-row.color_4,
+.sca-light .edits-row.color_6
+
+{     background-color: #fafafa;}
+.sca-light .edits-row.color_1,
+.sca-light .edits-row.color_3,
+.sca-light .edits-row.color_5,
+.sca-light .edits-row.color_7
+{    background-color: #eee;}
+
+.sca-light .grey.darken-4, .sca-light .model-header-sca{    background-color: #e0e0e0;}
 .sca-light a.tooltips-right span:after, .sca-light button.tooltips-right span:after, .sca-light button[disabled].tooltips-right span:after {
    
     border-right: 8px solid #e6e6e6;;
@@ -133,18 +156,25 @@
     background-color: #f0f0f0;
     color: #313131
 }
+.sca-light .Promoted.badge {
+   color: #0091d7;
+    background-color: transparent;
+}
+.sca-light .Promoted.badge {
+    background-color: transparent;
+    color: #43a047;
+}
+.sca-light .New.badge {
+    background-color: transparent;
+    color: #43a047;
+}
 .sca-light .Review.Completed.badge {
     background-color: transparent;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
     color: #01A2E1
 }
 .sca-light .In.Progress.badge {
     background-color: transparent;
-    font-size: 13px;
-    color: #db207e;
+        color: #db207e;
     padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
@@ -341,3 +371,5 @@
     background-color: #00a6e5;
     color: #fff;
 }
+
+.sca-light a.tooltips-left span, .sca-light button.tooltips-left span, .sca-light button[disabled].tooltips-left span{background-color:#e6e6e6;color:#474747}
