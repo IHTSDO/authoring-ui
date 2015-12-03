@@ -52,21 +52,21 @@
 	-webkit-padding-start: 0px;
 	       margin-left: 20px;
 }
-.timeline-heading ul, .feedback ul {
+.timeline-heading ul, .feedback-chat ul {
     list-style: none; /* Remove list bullets */
     padding: 0;
     margin: 0;
 	    margin-left: 0px;
 }
 
-.timeline-heading ul li:before, .feedback ul li:before, {
+.timeline-heading ul li:before, .feedback-chat ul li:before, {
    content: "•"; /* Insert content that looks like bullets */
     padding-right: 4px;
     color: #009cd7; 
 	    font-size: 28px;
    line-height:14px;
     vertical-align: middle;/* Or a color you prefer */}
-.timeline-heading li, .fededback li {
+.timeline-heading li, .feedback-chat li {
     display: list-item;
     text-align: -webkit-match-parent;
 	  line-height:14px;
