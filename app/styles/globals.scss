@@ -164,6 +164,8 @@ td textarea, td input, td select {
       margin-top: 5px;
       padding: 5px;
     }
+   .md-playlist-add[disabled]{    color: #7c7c7c!important;
+    background-color: #494949!important;}
 /* drag targets */
     .sca-relgroup-drag-hover {
 
@@ -179,4 +181,5 @@ td textarea, td input, td select {
       background: #dedede !important;
       visibility: visible;
     }
+    
 
