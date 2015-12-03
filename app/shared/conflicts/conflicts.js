@@ -600,8 +600,8 @@ angular.module('singleConceptAuthoringApp')
 
                 // DIVERGED, but no merges to resolve
                 if (!newReview || !newReview.length === 0) {
-                  notificationService.sendMessage('TODO: Reenable automatic rebase');
-                  // rebase();
+                  // notificationService.sendMessage('TODO: Reenable automatic rebase');
+                  rebase();
                 }
 
                 // DIVERGED, with merges to resolve
