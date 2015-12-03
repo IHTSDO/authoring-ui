@@ -197,6 +197,9 @@ angular.module('singleConceptAuthoringApp')
                       }
                     });
                     objArray.push(obj);
+                    failures = objArray;
+
+                    scope.failureTableParams.reload();
                   });
                 });
 
@@ -218,12 +221,14 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   objArray.push(obj);
+                  failures = objArray;
+
+                    scope.failureTableParams.reload();
                 });
               }
               // TODO Set edit enable/disable for edit panel
             }
 
-            console.debug('failures', failures);
 
             // set failures to trigger watch
             failures = objArray;
