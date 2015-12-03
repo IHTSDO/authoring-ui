@@ -433,10 +433,7 @@
         </div>
 
 
-        <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
-                      ng-model="htmlVariable"
-
-                      ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+        <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept" ng-model="$parent.htmlVariable" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
 
 
         <div class="col-md-12 no-padding p-10 m-t-10">
