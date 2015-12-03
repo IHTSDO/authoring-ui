@@ -949,13 +949,6 @@ angular.module('singleConceptAuthoringApp')
       });
       return deferred.promise;
     }
-    /*{
-      "source": "",
-      "target": "",
-      "commitComment": "",
-      "reviewId": "",
-      "mergeReviewId": ""
-    }*/
 
     ////////////////////////////////////////////////////
     // Concept Validation
