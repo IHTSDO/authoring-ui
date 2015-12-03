@@ -380,7 +380,7 @@ angular.module('singleConceptAuthoringApp')
             viewedMergePoll = $interval.cancel(viewedMergePoll);
 
             notificationService.sendMessage('Applying merged changes....');
-            snowowlService.mergeAndApply(scope.sourceBranch, scope.targetBranch, scope.id).then(function (response) {
+            snowowlService.mergeAndApply(scope.id).then(function (response) {
               notificationService.sendMessage('Merges successfully applied', 5000);
 
               // set flag for finalized merge
