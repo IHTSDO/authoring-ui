@@ -864,6 +864,7 @@ angular.module('singleConceptAuthoringApp')
 
         pollForReview(mergeReviewId, 1000).then(function (response) {
           //console.debug('end poll result', response);
+          response.id = mergeReviewId;
           deferred.resolve(response);
         }, function(error) {
           deferred.reject(error);
@@ -883,7 +884,9 @@ angular.module('singleConceptAuthoringApp')
       return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
         if (response && response.data && response.data.status === 'CURRENT') {
           return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
-            return response2.data;
+            var mergeReview = response2.data;
+            mergeReview.id = mergeReviewId; // re-append id for convenience
+            return mergeReview;
           }, function (error) {
             return null;
           });
@@ -898,7 +901,9 @@ angular.module('singleConceptAuthoringApp')
      */
     function getMergeReview(mergeReviewId) {
       return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
-        return response.data;
+        var mergeReview = response.data;
+        mergeReview.id = mergeReviewId; // re-append id for convenience
+        return mergeReview;
       }, function(error) {
         return null;
       });
