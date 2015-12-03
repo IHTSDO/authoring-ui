@@ -68,11 +68,15 @@
   <div class="task-details p-b-20">
 
     <div class="p-l-15 p-r-15" ng-if="role === 'UNDEFINED'">
-      <button
-        class="btn btn-default red darken-1 classify">
-        <span class="md md-warning red  iconbase"></span>
-        <span class="button-link">CAUTION: You are not the author or reviewer for this task.</span>
-      </button>
+      <div
+        class="alert alert-danger text-center">
+        <div class="row no-padding">
+       <p class="md md-warning  "> </p>
+       </div>
+       <div class="row no-padding alert-text">
+        <p>Warning! You are not the author or reviewer for this task.</p>
+      </div>
+      </div>
     </div>
     <div class="p-l-15 p-r-15" ng-if="task.status === 'Promoted'">
       <div class="alert alert-warning">Task has been promoted. No further changes allowed.</div>

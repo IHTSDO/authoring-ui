@@ -43,3 +43,37 @@
   border-radius: 0px;
   -webkit-user-select: none;
 }
+
+.modal-body .ta-scroll-window .ta-bind{min-height:150px;max-height:150px;box-shadow:none!important; outline:none; border: 1px #ddd solid}
+.timeline-heading ol, .feedback ol
+{
+    margin-top: 0;
+    margin-bottom: 10px;
+	-webkit-padding-start: 0px;
+	       margin-left: 20px;
+}
+.timeline-heading ul, .feedback-chat ul {
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0;
+	    margin-left: 0px;
+}
+
+.timeline-heading ul li:before, .feedback-chat ul li:before, {
+   content: "•"; /* Insert content that looks like bullets */
+    padding-right: 4px;
+    color: #009cd7; 
+	    font-size: 28px;
+   line-height:14px;
+    vertical-align: middle;/* Or a color you prefer */}
+.timeline-heading li, .feedback-chat li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+	  line-height:14px;
+}
+
+.timeline-heading ul ul, 
+.timeline-heading ol ul {
+    list-style-type: circle;
+}
+.no-shadows:focus, .modal-body .ta-scroll-window .ta-bind:focus, .modal-body .ta-scroll-window .ng-touched{box-shadow:none!important; outline:none!important; border: 1px #ddd solid !important;}

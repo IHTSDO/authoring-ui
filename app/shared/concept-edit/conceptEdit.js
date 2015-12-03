@@ -192,6 +192,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // set scope flag
               scope.isModified = true;
+
+              scope.computeRelationshipGroups();
             }
 
             // special case for unsaved concepts to catch possible bugs
@@ -562,8 +564,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     relationship.active = false;
                   });
 
-                  // force save the concept
-                  scope.saveConcept();
+                  // save concept but bypass validation checks
+                  saveHelper().then(function() {
+                    notificationService.sendMessage('Concept inactivated');
+                  }, function(error) {
+                    notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                  })
                 }
               }, function () {
                 notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
@@ -1327,7 +1333,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           relationship.target.fsn = 'Validating...';
 
-          console.log(relationship);
           if(relationship.type.conceptId !== null){
               // check if allowable relationship target using concept id
               scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
@@ -1504,6 +1509,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          if (scope.isStatic) {
+            return;
+          }
+
           // get the max group id and increment by one (or set to zero if no
           // groups defined)
           var maxGroup = -1;
@@ -1521,8 +1530,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           angular.forEach(relGroup, function (rel) {
             var copy = angular.copy(rel);
 
-            // set the group id
-            copy.groupId = newGroupId;
+            // set the group id based on whether it is an isa relationship
+            if (metadataService.isIsaRelationship(copy.type.conceptId)) {
+              copy.groupId = 0;
+            } else {
+              copy.groupId = newGroupId;
+            }
 
             // clear the effective time and source information
             delete copy.sourceId;
@@ -1666,39 +1679,29 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           if (!description.moduleId) {
-            //description.error = 'description must have moduleId
+            console.error('description must have moduleId', description);
             // specified';
             return false;
           }
           if (!description.term) {
-            //description.error = 'Description must have term specified';
+            console.error('Description must have term specified', description);
             return false;
           }
           if (description.active === null) {
-            //description.error = 'Description active flag must be set';
+            console.error('Description active flag must be set', description);
             return false;
           }
           if (!description.lang) {
-            //description.error = 'Description lang must be set';
+            console.error('Description lang must be set', description);
             return false;
           }
           if (!description.caseSignificance) {
-            //description.error = 'Description case significance must be
-            // set';
+            console.error('Description case significance must be set', description);
             return false;
           }
           if (!description.type) {
-            //description.error = 'Description type must be set';
+            console.error('Description type must be set', description);
             return false;
-          }
-          /*if (!description.acceptabilityMap) {
-           console.error('Description acceptability map must be set');
-           return false;
-           }*/
-
-          // remove error (if previously applied)
-          if (description.error) {
-            delete description.error;
           }
 
           // pass all checks -> return true
@@ -1757,6 +1760,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to check the full concept for validity before saving
         scope.isConceptValid = function (concept) {
+
+          console.debug('Checking concept valid', concept);
 
           /*// check the basic concept fields
            if (concept.isLeafInferred === null) {
@@ -1956,15 +1961,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.undoAll = function () {
 
           // if no previously published state, get a new (blank) concept
-          if (scope.concept.conceptId === 'unsaved') {
+          if (scope.concept.conceptId === 'unsaved' || !scope.concept.conceptId) {
 
             scope.concept = objectService.getNewConcept(scope.branch);
-            // console.debug('no last saved version', scope.concept,
-            // objectService.getNewConcept(scope.branch));
+            scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
+            scope.isModified = false;
+
           } else {
             notificationService.sendMessage('Reverting concept...');
             snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
               notificationService.sendMessage('Concept successfully reverted to saved version', 5000);
+              scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
               scope.concept = response;
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
               scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
@@ -2025,7 +2032,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
           response = response.filter(function (item) {
-            return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;
+            return item.fsn.term.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;
           });
           return response;
         };
@@ -2037,8 +2044,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (response[i].definitionStatus === 'PRIMITIVE') {
                 status = 'P';
               }
-              response[i].tempFsn = response[i].fsn + ' - ' + status;
-              console.log(response[i].fsn);
+              response[i].tempFsn = response[i].fsn.term + ' - ' + status;
               // console.debug('checking for duplicates', i, response[i]);
               for (var j = response.length - 1; j > i; j--) {
                 if (response[j].id === response[i].id) {
@@ -2060,7 +2066,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // relationship, item);
 
           relationship.type.conceptId = item.id;
-          relationship.type.fsn = item.fsn;
+          relationship.type.fsn = item.fsn.term;
 
           scope.updateRelationship(relationship);
         };
@@ -2073,7 +2079,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // console.debug('setting relationship type concept',
           // relationship, item);
           relationship.target.conceptId = item.id;
-          relationship.target.fsn = item.fsn;
+          relationship.target.fsn = item.fsn.term;
           relationship.target.definitionStatus = item.definitionStatus;
 
           scope.updateRelationship(relationship);

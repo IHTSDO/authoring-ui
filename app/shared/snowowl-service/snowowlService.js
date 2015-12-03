@@ -98,7 +98,7 @@ angular.module('singleConceptAuthoringApp')
       if (limit > 200) {
         limit = 200;
       }
-      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function (response) {
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn()&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function (response) {
         deferred.resolve(response.data);
       }).then(function (error) {
         deferred.reject(error);
@@ -779,7 +779,7 @@ angular.module('singleConceptAuthoringApp')
     //////////////////////////////////////////////////
 
     function getDomainAttributes(branch, parentIds) {
-      return $http.get(apiEndpoint + '/mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn&offset=0&limit=50').then(function (response) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/domain-attributes?parentIds=' + parentIds + '&expand=fsn()&offset=0&limit=50').then(function (response) {
         return response.data ? response.data : [];
       }, function (error) {
         return null;
@@ -787,7 +787,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getAttributeValues(branch, attributeId, searchStr) {
-      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') : '') + '&expand=fsn&offset=0&limit=50').then(function (response) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?' + (searchStr ? 'termPrefix=' + encodeURIComponent(searchStr) + (!isNaN(parseFloat(searchStr) && isFinite(searchStr)) ? '' : '*') : '') + '&expand=fsn()&offset=0&limit=50').then(function (response) {
         return response.data.items ? response.data.items : [];
       }, function (error) {
         return null;
@@ -864,6 +864,7 @@ angular.module('singleConceptAuthoringApp')
 
         pollForReview(mergeReviewId, 1000).then(function (response) {
           //console.debug('end poll result', response);
+          response.id = mergeReviewId;
           deferred.resolve(response);
         }, function(error) {
           deferred.reject(error);
@@ -883,7 +884,9 @@ angular.module('singleConceptAuthoringApp')
       return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
         if (response && response.data && response.data.status === 'CURRENT') {
           return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/details').then(function (response2) {
-            return response2.data;
+            var mergeReview = response2.data;
+            mergeReview.id = mergeReviewId; // re-append id for convenience
+            return mergeReview;
           }, function (error) {
             return null;
           });
@@ -898,7 +901,9 @@ angular.module('singleConceptAuthoringApp')
      */
     function getMergeReview(mergeReviewId) {
       return $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
-        return response.data;
+        var mergeReview = response.data;
+        mergeReview.id = mergeReviewId; // re-append id for convenience
+        return mergeReview;
       }, function(error) {
         return null;
       });
@@ -935,27 +940,15 @@ angular.module('singleConceptAuthoringApp')
     /**
      * Merge and apply stored changes
      */
-    function mergeAndApply(parentBranch, childBranch, mergeReviewId) {
+    function mergeAndApply(mergeReviewId) {
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'merges/apply', {
-        source: parentBranch,
-        target: childBranch,
-        commitComment: 'Applying changes',
-        mergeReviewId: mergeReviewId
-      }).then(function(response) {
+      $http.post(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/apply').then(function(response) {
         deferred.resolve(response.data);
       }, function(error) {
         deferred.reject(error.message);
       });
       return deferred.promise;
     }
-    /*{
-      "source": "",
-      "target": "",
-      "commitComment": "",
-      "reviewId": "",
-      "mergeReviewId": ""
-    }*/
 
     ////////////////////////////////////////////////////
     // Concept Validation

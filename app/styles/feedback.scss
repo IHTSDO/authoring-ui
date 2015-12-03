@@ -54,9 +54,9 @@ input.feedback-search {
     margin-left: 0px;
 }
 .feedback-header {
-    background-color: #fbfbfb;
-    border-top: solid 1px #ececec;
-    border-bottom: solid 1px #ececec;
+    background-color: #eee;
+    border:none;
+    color:#474747
 }
 .feedback-tabs {
     background-color: #fafafa;
@@ -106,10 +106,11 @@ section thead input {
     
     padding: 5px;
 }
-.feedback-view .table input {
+.feedback-table input[type="checkbox"]{
     height: auto!important;
       margin: 5px;
     font-size: 14px!important;
+    min-height:15px!important
 }
 .ta-scroll-window > .ta-bind {
     min-height: 250px;
@@ -131,3 +132,65 @@ section thead input {
     padding: 3px 8px;
     font-size: 12px;
 }
+.feedback-chat{overflow-x:hidden; overflow-y: scroll;}
+
+.feedback-chat::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.feedback-chat::-webkit-scrollbar-button {
+  width: 7px;
+  height: 7px;
+}
+.feedback-chat::-webkit-scrollbar-thumb {
+  background: #e1e1e1;
+  border: 0px none #ffffff;
+  border-radius: 62px;
+}
+.feedback-chat::-webkit-scrollbar-thumb:hover {
+  background: #57a5cc;
+}
+.feedback-chat::-webkit-scrollbar-thumb:active {
+  background: #e7e7e7;
+}
+.feedback-chat::-webkit-scrollbar-track {
+  background: #edecee;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+.feedback-chat::-webkit-scrollbar-track:hover {
+  background: #e5e6e8;
+}
+.feedback-chat::-webkit-scrollbar-track:active {
+  background: #d8d7d9;
+}
+.feedback-chat::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.feedback-table thead{display:none}
+.feedback-lists .table > tbody > tr > td, 
+.feedback-lists .table > tbody > tr > th{
+	padding:0px!important;
+	line-height:14px!important
+}
+
+
+.feedback .nav > li > a {
+ 
+    padding: 9px 5px 5px 5px;
+}
+.feedback-chat{padding:10px!important}
+.white{background-color:#fff;}
+.feedback-header-main {color:#fff;max-height: 48px;margin:0px;padding:0px;border:none}
+.feedback-header-main label {color:#fff!important; font-weight:400; margin-top:-5px;}
+.feedback-header-main input{height: 24px!important}
+.review-button-list{background-color:#880e4f; border-radius:2px}
+.review-button-list[disabled], .review-button-list[disabled]:hover{background-color:#880e4f; border-radius:2px}
+.review-button-list:hover{background-color:#ad1457}
+
+.transparent,
+.transparent:hover,
+.transparent:active,
+.transparent:focus
+{background-color:transparent!important; color:#fff; background:none!important;}
