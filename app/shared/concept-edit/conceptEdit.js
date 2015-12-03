@@ -1680,39 +1680,29 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           if (!description.moduleId) {
-            //description.error = 'description must have moduleId
+            console.error('description must have moduleId', description);
             // specified';
             return false;
           }
           if (!description.term) {
-            //description.error = 'Description must have term specified';
+            console.error('Description must have term specified', description);
             return false;
           }
           if (description.active === null) {
-            //description.error = 'Description active flag must be set';
+            console.error('Description active flag must be set', description);
             return false;
           }
           if (!description.lang) {
-            //description.error = 'Description lang must be set';
+            console.error('Description lang must be set', description);
             return false;
           }
           if (!description.caseSignificance) {
-            //description.error = 'Description case significance must be
-            // set';
+            console.error('Description case significance must be set', description);
             return false;
           }
           if (!description.type) {
-            //description.error = 'Description type must be set';
+            console.error('Description type must be set', description);
             return false;
-          }
-          /*if (!description.acceptabilityMap) {
-           console.error('Description acceptability map must be set');
-           return false;
-           }*/
-
-          // remove error (if previously applied)
-          if (description.error) {
-            delete description.error;
           }
 
           // pass all checks -> return true
@@ -1771,6 +1761,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to check the full concept for validity before saving
         scope.isConceptValid = function (concept) {
+
+          console.debug('Checking concept valid', concept);
 
           /*// check the basic concept fields
            if (concept.isLeafInferred === null) {
@@ -1970,15 +1962,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.undoAll = function () {
 
           // if no previously published state, get a new (blank) concept
-          if (scope.concept.conceptId === 'unsaved') {
+          if (scope.concept.conceptId === 'unsaved' || !scope.concept.conceptId) {
 
             scope.concept = objectService.getNewConcept(scope.branch);
-            // console.debug('no last saved version', scope.concept,
-            // objectService.getNewConcept(scope.branch));
+            scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
+            scope.isModified = false;
+
           } else {
             notificationService.sendMessage('Reverting concept...');
             snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
               notificationService.sendMessage('Concept successfully reverted to saved version', 5000);
+              scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
               scope.concept = response;
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
               scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
