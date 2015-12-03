@@ -7,7 +7,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // controller $scope.options
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.resultsPage = 1;
-      $scope.resultsSize = 20;
+      $scope.resultsSize = 100;
       $scope.loadPerformed = false;
       $scope.loadMoreEnabled = false;
       $scope.searchStr = '';
