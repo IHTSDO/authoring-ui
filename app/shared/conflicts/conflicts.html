@@ -264,19 +264,19 @@
 
         <div class="row no-padding no-gutter" ng-repeat="merge in viewedMerges">
 
-          <div class="col-md-4 full-height conflict-concept-column">
+          <div class="col-md-4 conflict-concept-column">
             <div concept-edit
-                 concept="merge.source"
-                 branch="targetBranch"
+                 concept="merge.sourceConcept"
+                 branch="sourceBranch"
                  static="true"
                  autosave="false"
                  component-styles="merge.styles.source">
             </div>
           </div>
 
-          <div class="col-md-4 merged-version full-height conflict-concept-column">
+          <div class="col-md-4 merged-version conflict-concept-column">
             <div concept-edit
-                 concept="merge.merged"
+                 concept="merge.autoMergedConcept"
                  branch="sourceBranch"
                  static="false"
                  autosave="false"
@@ -285,10 +285,10 @@
                  save-function="conceptUpdateFunction(project, task, concept)"></div>
 
           </div>
-          <div class="col-md-4 task-version full-height conflict-concept-column">
+          <div class="col-md-4 task-version conflict-concept-column">
             <div concept-edit
-                 concept="merge.target"
-                 branch="sourceBranch"
+                 concept="merge.targetConcept"
+                 branch="targetBranch"
                  static="true"
                  autosave="false"
                  component-styles="merge.styles.target">

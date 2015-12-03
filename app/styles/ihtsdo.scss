@@ -4265,7 +4265,7 @@ button.close {
   filter: alpha(opacity=50);
 }
 .modal-header {
-  padding: 15px;
+ padding: 10px 15px;
   border-bottom: 1px solid transparent;
   min-height: 16.85px;
 }
@@ -4712,13 +4712,16 @@ select {
 }
 .btn {
   border: 0;
-  text-transform: uppercase;
+  text-transform:none;
+  font-weight:500;
+ 
   -webkit-box-shadow: none;
   box-shadow: none;
   transition: all .2s;
   -webkit-transition: all .2s;
   -o-transition: all .2s;
 }
+.modal-footer .btn{ font-size:13px;}
 .btn-link {
   -webkit-transition: all .2s;
   -o-transition: all .2s;
@@ -5004,7 +5007,8 @@ input[type=radio]:disabled:checked:after {
   background-color: transparent;
 }
 label {
-  font-weight: 400;
+ color: #313347;
+    font-weight: 500;
 }
 textarea {
   line-height: 14px;
@@ -6458,7 +6462,7 @@ legend {
 .form-floating .form-group,
 .form-floating.form-group {
   position: relative;
-  margin-top: 25px;
+  margin-top: 0px;
 }
 .floating-label .help-block,
 .form-floating .help-block {

@@ -550,7 +550,7 @@ angular.module('singleConceptAuthoringApp')
         $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
           //notificationService.sendMessage('Task ' + taskKey + ' sucessfully
           // updated.', 5000, null, null);
-          deferred.resolve(response.data);
+          deferred.resolve(response);
         }, function (error) {
           console.debug(error);
           deferred.reject(error.statusText);
