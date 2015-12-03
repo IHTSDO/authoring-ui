@@ -940,9 +940,9 @@ angular.module('singleConceptAuthoringApp')
     /**
      * Merge and apply stored changes
      */
-    function mergeAndApply(parentBranch, childBranch, mergeReviewId) {
+    function mergeAndApply(mergeReviewId) {
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'merges/apply', {
+      $http.post(apiEndpoint + 'merge-review/' + mergeReviewId + '/apply', {
         source: parentBranch,
         target: childBranch,
         commitComment: 'Applying changes',
