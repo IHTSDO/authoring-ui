@@ -12,6 +12,7 @@ html {
 .sca-default .theme-secondary-text, a {
     color: #009cd7;
 }
+.small-header{    font-size: 11.5px; line-height:13px;}
 .view-height-100{height:100vh!important}
 .hide-scroll::-webkit-scrollbar { 
     display: none; }
@@ -37,7 +38,19 @@ html::-webkit-scrollbar-thumb,
 	border-radius: 10px;
 	background-color: #009cd7;
 }
-
+.checkbox input[type=checkbox]:after, .checkbox-inline input[type=checkbox]:after, input[type=checkbox]:after {
+    content: "";
+    display: block;
+    width: 15px;
+    height: 15px;
+    margin-top: -2px;
+    margin-right: 5px;
+    border: 1px solid #666;
+    border-radius: 2px;
+    transition: 240ms;
+}
+td textarea, td input, td select {
+    height: 14px !important;}
 .validation {
     margin-left: 20px;
     margin-right: 20px;
@@ -151,6 +164,8 @@ html::-webkit-scrollbar-thumb,
       margin-top: 5px;
       padding: 5px;
     }
+   .md-playlist-add[disabled]{    color: #7c7c7c!important;
+    background-color: #494949!important;}
 /* drag targets */
     .sca-relgroup-drag-hover {
 
@@ -166,4 +181,5 @@ html::-webkit-scrollbar-thumb,
       background: #dedede !important;
       visibility: visible;
     }
+    
 

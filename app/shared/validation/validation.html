@@ -55,18 +55,13 @@
       <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true">
         <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
       </button>
-
     </div>
-
 
   </div>
   <div class="card m-10 validation-report">
     <div role="tabpanel" class="">
 
-
       <div class="table-responsive white" style="margin-right:0px;" ng-if="viewTop">
-
-
         <table
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
@@ -86,9 +81,7 @@
                 class="glyphicon glyphicon-chevron-right treeButton"></i>
               </button>
 
-
               <div class="ripple-wrapper"></div>
-              </button>
 
             </td>
           </tr>
@@ -109,7 +102,6 @@
             </button>
           </div>
         </div>
-
 
         <table
           ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
@@ -135,12 +127,9 @@
                 <span class="md md-edit"></span>
               </button>
             </td>
-
           </tr>
         </table>
-
       </div>
-
     </div>
   </div>
 </section>
