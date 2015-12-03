@@ -20,6 +20,7 @@
     width: 25%;
     text-align: center;
 }
+textarea{resize:vertical!important;}
 .classification-header button.md-keyboard-arrow-down:hover, 
 .classification-header button.md-keyboard-arrow-up:hover,
 .classification-header button.md-keyboard-arrow-down:active, 
@@ -59,7 +60,7 @@ button.widget-toolbar {
   margin: 0;
   padding: 0;
 }
-
+.model-buttons-toggle{padding:2px 10px!important;}
 /*disabled buttons*/
 
 .classification-btn .btn-default[disabled] {

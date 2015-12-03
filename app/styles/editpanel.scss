@@ -354,8 +354,10 @@ select.primitive  {
 textarea,
 input,
 select {
-    height: 30px!important;
-    resize: none;
+ 
+   resize:none!important;
+min-height:30px!important;
+max-height:60px;
     line-height: 12px!important;
    font-weight:400!important;
 	    -webkit-font-smoothing: antialiased;
@@ -380,11 +382,11 @@ select {
     width: 23%;
 }
 .editing-form .rolegroup {
-    width: 4.0%;
+    width: 3.0%;
     padding-left: 0px;
 }
 .editing-form .is_a {
-    width: 22.5%;
+    width: 25.5%;
     padding-left: .5%;
 }
 .editing-form .attr {
@@ -647,7 +649,7 @@ background-color:transparent!important;
     /* form widths */
     
     .editing-form .rolegroup {
-        width: 4.0%;
+        width: 3.0%;
         padding-left: 0px;
     }
     .editing-form .language {
