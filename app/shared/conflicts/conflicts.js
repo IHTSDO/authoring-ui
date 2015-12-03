@@ -579,8 +579,8 @@ angular.module('singleConceptAuthoringApp')
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
                     } else {
-                      notificationService.sendMessage('TODO: Reenable automatic rebase');
-                      // rebase(); // TODO Consider how we want to handle this
+                      //notificationService.sendMessage('TODO: Reenable automatic rebase');
+                      rebase(); // TODO Consider how we want to handle this
                       // scenario -- this rebase effectively is a
                       // null op but calls backend
                     }
