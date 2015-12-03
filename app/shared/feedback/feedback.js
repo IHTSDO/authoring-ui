@@ -3,7 +3,7 @@
 angular.module('singleConceptAuthoringApp')
 
   .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location',
-    function ($rootScope, NgTableParams,$q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location) {
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location) {
       return {
         restrict: 'A',
         transclude: false,
@@ -315,6 +315,13 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.$on('stopEditing', function (event, data) {
 
+            for (var i = 0; i < scope.viewedConcepts.length; i++) {
+              if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
+                scope.viewedConcepts.splice(i, 1);
+                break;
+              }
+            }
+
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
               if (item.id === data.concept.conceptId) {
                 item.viewed = false;
@@ -330,7 +337,7 @@ angular.module('singleConceptAuthoringApp')
 
           });
 
-          scope.addToEdit = function (id) {
+          function addToEditHelper(id) {
 
             // used for status update of addMultipleToEdit
             var deferred = $q.defer();
@@ -346,7 +353,6 @@ angular.module('singleConceptAuthoringApp')
             // get the full concept for this branch (before version)
             snowowlService.getFullConcept(id, scope.branch).then(function (response) {
 
-
               scope.viewedConcepts.push(response);
 
               deferred.resolve(response);
@@ -359,6 +365,16 @@ angular.module('singleConceptAuthoringApp')
               }, 500);
             });
             return deferred.promise;
+          };
+
+          scope.addToEdit = function (item) {
+            if (!item.viewed) {
+              notificationService.sendMessage('Loading concept ' + item.term);
+              item.viewed = true;
+              addToEditHelper(item.id).then(function (response) {
+                notificationService.sendMessage('Concept loaded', 5000);
+              })
+            }
           };
 
           // add all selected objects to edit panel list
@@ -375,7 +391,7 @@ angular.module('singleConceptAuthoringApp')
               });
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
-                if (item.selected === true) {
+                if (item.selected === true && !item.viewed) {
                   conceptsToAdd.push(item.id);
                   item.viewed = true;
                 }
@@ -394,12 +410,12 @@ angular.module('singleConceptAuthoringApp')
             }
 
             for (var i = 0; i < conceptsToAdd.length; i++) {
-              scope.addToEdit(conceptsToAdd[i].id).then(function(response) {
+              addToEditHelper(conceptsToAdd[i].id).then(function (response) {
                 conceptsAdded++;
                 if (conceptsAdded === conceptsToAdd.length) {
                   notificationService.sendMessage('All concepts loaded', 5000);
                 } else {
-                  notificationService.sendMessage('Loading concepts (' + conceptsAdded +  '/' + conceptsToAdd.length + ')');
+                  notificationService.sendMessage('Loading concepts (' + conceptsAdded + '/' + conceptsToAdd.length + ')');
                 }
               });
             }
@@ -739,8 +755,9 @@ angular.module('singleConceptAuthoringApp')
 
               // if concept is in selected list and has messages, add them
               if (conceptIds.indexOf(concept.id) !== -1 && concept.messages && concept.messages.length > 0) {
-                angular.forEach(concept.messages, function(message) {
-                  // attach the concept name to the message for display when multiple concept feedbacks are viewed
+                angular.forEach(concept.messages, function (message) {
+                  // attach the concept name to the message for display when
+                  // multiple concept feedbacks are viewed
                   message.conceptName = concept.term;
                   viewedFeedback.push(message);
                 });
