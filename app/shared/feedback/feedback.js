@@ -899,13 +899,11 @@ angular.module('singleConceptAuthoringApp')
             var img = createConceptImg(concept.id, concept.term);
             scope.htmlVariable += '&nbsp ' + img + ' ';
 
-            console.debug(scope.htmlVariable);
-
           };
 
           scope.submitFeedback = function (requestFollowup) {
 
-            console.debug('sending feedback', requestFollowup, scope.htmlVariable);
+            console.debug('sending feedback', requestFollowup, scope.htmlVariable, 'here');
 
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {
               window.alert('Cannot submit empty feedback');

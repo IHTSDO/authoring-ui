@@ -78,9 +78,8 @@
   .feedback-header {
     width: 100%;
     float: left;
-    margin-left: -5px;
-    margin-right: -5px;
-    margin-left: -5px;
+
+
   }
 
   .feedback-header .username {
@@ -119,13 +118,13 @@
 
 
   <!-- Feedback Header and Controls -->
-  <div class="row no-padding no-gutter">
-    <div class="col-md-12 grey darken-1  classification-header" style="vertical-align: middle">
+  <div class="row no-padding  white no-gutter">
+    <div class="col-md-12 pink1  feedback-header-main" style="vertical-align: middle">
 
       <!-- Title section -->
 
-      <div class="p-l-20 col-md-4">
-        Review and Feedback
+      <div class="p-l-20 p-t-10 col-md-4">
+       
         <div ng-show="role === 'REVIEWER'">Task Author: {{task.assignee.displayName}}</div>
         <div ng-show="role === 'AUTHOR' && task.reviewer">Task Reviewer: {{task.reviewer.displayName}}</div>
         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
@@ -140,13 +139,13 @@
       <div class="col-md-7">
         <!-- Cancel/Unclaim Review button -->
         <div ng-if="role === 'AUTHOR'" class="switch pull-right p-5">
-          <button class="btn btn-default orange darken-1 " style="text-transform: none"
+          <button class="btn btn-default orange darken-1 review-button-list " style="text-transform: none"
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review
           </button>
         </div>
         <div ng-if="role === 'REVIEWER'" class="pull-right p-5">
-          <button class="btn btn-default orange darken-1" style="text-transform: none"
+          <button class="btn btn-default orange darken-1 review-button-list" style="text-transform: none"
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="unclaimReview()">Unclaim Review
           </button>
@@ -169,7 +168,7 @@
       <div class="col-md-1">
         <!-- Report collapsible control -->
         <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-                class="btn btn-default pull-right m-l-40"
+                class="btn btn-default pull-right transparent m-t-10"
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
       </div>
@@ -187,10 +186,10 @@
     </div>
 
     <!-- Main report and feedback content (once loaded) -->
-    <div class="row m-l-10 no-gutter" ng-if="feedbackContainer.review">
+    <div class="row m-l-10 white no-gutter" ng-if="feedbackContainer.review">
 
       <!-- Review report (concept list) -->
-      <div class="col-md-4  add-shadow" ng-if="feedbackContainer.review">
+      <div class="col-md-4 feedback-lists " ng-if="feedbackContainer.review">
 
         <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist"
             ng-init="actionTab=1">
@@ -432,10 +431,7 @@
         </div>
 
 
-        <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
-                      ng-model="htmlVariable"
-
-                      ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+        <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept" ng-model="$parent.htmlVariable" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
 
 
         <div class="col-md-12 no-padding p-10 m-t-10">
@@ -468,15 +464,15 @@
       </div>
 
       <!-- Feedback messages -->
-      <div class="col-md-4 add-shadow">
+      <div class="col-md-4 feedback-chat p-10">
 
-        <div ng-show="viewedFeedback.length === 0">
-          No feedback to display
+        <div class="no-feedback-yet"ng-show="viewedFeedback.length === 0">
+         No Feedback added yet...
         </div>
 
         <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
 
-          <div class="feedback-header" style="margin: 5px">
+          <div class="feedback-header" >
             <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
                     ng-show="feedback.feedbackRequested">
               <div
