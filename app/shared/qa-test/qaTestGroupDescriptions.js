@@ -539,6 +539,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test21 concepts', 'Desc Test21 concept');
             concept.relationships[0].target.conceptId = '272394005';
+            concept.relationships[0].target.fsn = 'Technique (qualifier value)';
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
 
               return {
