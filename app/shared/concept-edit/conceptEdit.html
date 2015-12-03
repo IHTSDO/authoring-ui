@@ -360,7 +360,6 @@
                    drop-validate="!relationship.effectiveTime && !isStatic">
  
             <textarea type="text"
-              ng-model-options="{updateOn: 'blur'}"
                       ng-model="relationship.type.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
                       typeahead-focus
@@ -391,11 +390,10 @@
                    drop-validate="!relationship.effectiveTime && !isStatic">
 
             <textarea type="text"
-             ng-model-options="{updateOn: 'blur'}"
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
                       class="msd-elastic resizable-text "
-                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
+                      typeahead="suggestion as suggestion.fsn.term for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                       typeahead-loading="targetTypeaheadLoading"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="700"
