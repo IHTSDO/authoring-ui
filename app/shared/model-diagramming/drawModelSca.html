@@ -1,12 +1,12 @@
 <div class="col-md-12 no-padding" style="background-color:#fff; height:100%;">
 
   <div class="col-md-12 no-padding  model-header-sca darken-3 grey keep">
-   <div class="col-md-6 no-padding "> <div class="p-4">{{concept.fsn}}</div></div>
+   <div class="col-md-6 no-padding "> <div class="p-4 small-header">{{concept.fsn}}</div></div>
  <div class="col-md-6 no-padding ">
   <div class="p-4">
     <button
       class="btn btn-round btn-default fa fa-book tooltips-right pull-left tooltips-light normal-case purple darken-1 m-r-5"
-      ng-click="viewConceptInTaxonomy(concept)" style="text-transform: none" ng-disabled="!item.concept.active">
+      ng-click="viewConceptInTaxonomy(concept)" style="text-transform: none" ng-disabled="!concept.active">
       <span>View Taxonomy</span>
     </button>
   <button
@@ -15,11 +15,11 @@
       tooltips-light normal-case md md-open-in-new keep">
       <span class="keep">Open Model in new Tab</span>
     </button>
-    <button class="btn btn-default pull-right m-r-5" style="font-size:8px;" ng-init="viewInferred = false"
+    <button class="btn btn-default pull-right m-r-5 model-buttons-toggle" ng-init="viewInferred = false"
             ng-class="[{'grey darken-2' : !viewInferred}, {'blue' : viewInferred}]"
             ng-click="viewInferred = true;">Inferred
     </button>
-    <button class="btn btn-default pull-right m-r-5" style="font-size:8px;"
+    <button class="btn btn-default pull-right model-buttons-toggle m-r-5" 
             ng-class="[{'grey darken-2' : viewInferred}, {'blue' : !viewInferred}]"
             ng-click="viewInferred = false;">Stated
     </button>

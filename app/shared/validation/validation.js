@@ -197,6 +197,9 @@ angular.module('singleConceptAuthoringApp')
                       }
                     });
                     objArray.push(obj);
+                    failures = objArray;
+
+                    scope.failureTableParams.reload();
                   });
                 });
 
@@ -218,12 +221,14 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   objArray.push(obj);
+                  failures = objArray;
+
+                    scope.failureTableParams.reload();
                 });
               }
               // TODO Set edit enable/disable for edit panel
             }
 
-            console.debug('failures', failures);
 
             // set failures to trigger watch
             failures = objArray;
@@ -343,10 +348,6 @@ angular.module('singleConceptAuthoringApp')
                       taskDetails += 'Concept: ' + idConceptMap[failure.errorMessage.conceptId] + ', Error: ' + failure.errorMessage.detail + '\n';
                     }
                   });
-
-                  console.debug('editList', editList);
-                  console.debug('savedList', savedList);
-                  console.debug('taskDetails', taskDetails);
 
                   var task = {
                     projectKey: $routeParams.projectKey,

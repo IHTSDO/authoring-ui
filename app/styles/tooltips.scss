@@ -267,3 +267,6 @@ a:hover.tooltips-btm span, button:hover.tooltips-btm span {
     word-wrap: break-word
   }
 /* warnings */
+.text-center, .text-center p {text-align:center; margin-bottom:0px; }
+.alert.alert-danger .alert-text {font-size:13px; font-weight:400; margin-top:10px;}
+.alert-danger .md-warning{background-color:transparent!important; font-size:32px;}

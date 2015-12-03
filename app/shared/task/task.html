@@ -20,7 +20,7 @@
 
   <div class="modal-body">
 
-    <div class="col-md-12">
+    <div class="col-md-12 no-padding">
 
       <form class="form-floating">
 
@@ -55,7 +55,7 @@
                      placeholder="Enter task details"></textarea>
 -->
             
-          <text-angular ng-model="task.description" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+          <text-angular ng-model="task.description" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
 
           <br>
 
@@ -78,7 +78,7 @@
       <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
     </div>
 
-    <div class="modal-footer">
+    <div class="modal-footer no-padding">
 
       <!-- Display create only if no task supplied -->
       <div ng-if="!task.key" class="col-md-6">
