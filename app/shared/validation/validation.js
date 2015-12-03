@@ -344,10 +344,6 @@ angular.module('singleConceptAuthoringApp')
                     }
                   });
 
-                  console.debug('editList', editList);
-                  console.debug('savedList', savedList);
-                  console.debug('taskDetails', taskDetails);
-
                   var task = {
                     projectKey: $routeParams.projectKey,
                     summary: 'Validation errors found at project level',
