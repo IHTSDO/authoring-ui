@@ -1333,7 +1333,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           relationship.target.fsn = 'Validating...';
 
-          console.log(relationship);
           if(relationship.type.conceptId !== null){
               // check if allowable relationship target using concept id
               scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
@@ -2033,7 +2032,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
           response = response.filter(function (item) {
-            return item.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;
+            return item.fsn.term.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;
           });
           return response;
         };
@@ -2045,8 +2044,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (response[i].definitionStatus === 'PRIMITIVE') {
                 status = 'P';
               }
-              response[i].tempFsn = response[i].fsn + ' - ' + status;
-              console.log(response[i].fsn);
+              response[i].tempFsn = response[i].fsn.term + ' - ' + status;
               // console.debug('checking for duplicates', i, response[i]);
               for (var j = response.length - 1; j > i; j--) {
                 if (response[j].id === response[i].id) {
