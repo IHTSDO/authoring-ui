@@ -45,10 +45,9 @@ angular.module('singleConceptAuthoringApp')
         ptDesc.term = pt;
         concept.descriptions.push(ptDesc);
 
-        // set isa relationship to root
-        concept.relationships[0].target.conceptId = '138875005';
-        concept.relationships[0].target.fsn = 'SNOMED CT Concept (SNOMED RT+CTV3)';
-
+        // set isa relationship to body structure
+        concept.relationships[0].target.conceptId = '123037004';
+        concept.relationships[0].target.fsn = 'Body structure (body structure)';
         return concept;
       }
 
@@ -99,7 +98,8 @@ angular.module('singleConceptAuthoringApp')
             var concept = getTestConcept('Rel Test03 concept (test)', 'Rel Test03 concept');
 
             // change IsA target to something that will allow domain attributes
-            concept.relationships[0].target.conceptId = '123037004'; // body structure
+            concept.relationships[0].target.conceptId = '123037004'; // body
+                                                                     // structure
             concept.relationships[0].target.fsn = 'Body structure (body structure)';
 
             // add Laterality domain attribute
@@ -195,7 +195,8 @@ angular.module('singleConceptAuthoringApp')
           }
         },
 
-        // Similar  WRP-1700, WRP-1701	Active concepts' Semantic Tags are compatible with those of the active parents.
+        // Similar  WRP-1700, WRP-1701	Active concepts' Semantic Tags are
+        // compatible with those of the active parents.
         {
           name: 'Concept\'s semantic tag not compatible with that of parents',
           notes: [
@@ -414,7 +415,6 @@ angular.module('singleConceptAuthoringApp')
         getResults: getResults,
         getName: getName
       };
-
 
     }])
 ;
