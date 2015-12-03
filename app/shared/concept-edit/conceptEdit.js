@@ -2066,7 +2066,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // relationship, item);
 
           relationship.type.conceptId = item.id;
-          relationship.type.fsn = item.fsn;
+          relationship.type.fsn = item.fsn.term;
 
           scope.updateRelationship(relationship);
         };
@@ -2079,7 +2079,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // console.debug('setting relationship type concept',
           // relationship, item);
           relationship.target.conceptId = item.id;
-          relationship.target.fsn = item.fsn;
+          relationship.target.fsn = item.fsn.term;
           relationship.target.definitionStatus = item.definitionStatus;
 
           scope.updateRelationship(relationship);
