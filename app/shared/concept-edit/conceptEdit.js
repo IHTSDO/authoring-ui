@@ -973,7 +973,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
               return 'Cs';
             case 'CASE_INSENSITIVE':
-              return 'ci';
+              return 'cI';
             case 'ENTIRE_TERM_CASE_SENSITIVE':
               return 'CS';
             default:
