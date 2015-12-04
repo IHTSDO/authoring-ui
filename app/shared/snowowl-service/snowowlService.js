@@ -66,7 +66,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if a locally assigned UUID, strip
         if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
-          delete description.descriptionId = null;
+          delete description.descriptionId;
         }
         for (var key in description) {
           if (allowableDescriptionProperties.indexOf(key) === -1) {
