@@ -393,7 +393,7 @@
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
                       class="msd-elastic resizable-text "
-                      typeahead="suggestion as suggestion.fsn.term for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
+                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                       typeahead-loading="targetTypeaheadLoading"
                       typeahead-focus-first="false"
                       typeahead-wait-ms="700"
