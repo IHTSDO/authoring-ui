@@ -1335,7 +1335,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           if(relationship.type.conceptId !== null){
               // check if allowable relationship target using concept id
-              scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
+              scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.name).then(function (response) {
                 if (response && response.length > 0) {
                   relationship.target.conceptId = data.id;
                   relationship.target.fsn = data.name;
