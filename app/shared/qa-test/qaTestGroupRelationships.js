@@ -45,10 +45,9 @@ angular.module('singleConceptAuthoringApp')
         ptDesc.term = pt;
         concept.descriptions.push(ptDesc);
 
-        // set isa relationship to root
-        concept.relationships[0].target.conceptId = '138875005';
-        concept.relationships[0].target.fsn = 'SNOMED CT Concept (SNOMED RT+CTV3)';
-
+        // set isa relationship to body structure
+        concept.relationships[0].target.conceptId = '123037004';
+        concept.relationships[0].target.fsn = 'Body structure (body structure)';
         return concept;
       }
 
@@ -57,7 +56,7 @@ angular.module('singleConceptAuthoringApp')
           name: 'PASS',
           expectedError: null,
           testFn: function test() {
-            var concept = getTestConcept('WSP Test01 concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('WSP Test01 concept (body structure)', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -72,7 +71,7 @@ angular.module('singleConceptAuthoringApp')
           name: 'IsA relationship is grouped',
           expectedError: 'The system has detected a contradiction of the following convention: an "Is-a" relationships must not be grouped.',
           testFn: function test() {
-            var concept = getTestConcept('Rel Test02 concept (test)', 'Rel Test02 concept');
+            var concept = getTestConcept('Rel Test02 concept (body structure)', 'Rel Test02 concept');
             var rel = objectService.getNewIsaRelationship();
             rel.groupId = 1;
             rel.target.conceptId = '900000000000487009';
@@ -96,10 +95,11 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: a role group must have at least two relationships.',
           testFn: function test() {
 
-            var concept = getTestConcept('Rel Test03 concept (test)', 'Rel Test03 concept');
+            var concept = getTestConcept('Rel Test03 concept (body structure)', 'Rel Test03 concept');
 
             // change IsA target to something that will allow domain attributes
-            concept.relationships[0].target.conceptId = '123037004'; // body structure
+            concept.relationships[0].target.conceptId = '123037004'; // body
+                                                                     // structure
             concept.relationships[0].target.fsn = 'Body structure (body structure)';
 
             // add Laterality domain attribute
@@ -126,10 +126,10 @@ angular.module('singleConceptAuthoringApp')
         // TODO Consider adding identical attribute
         // relationships
         {
-          name: 'Two relationships with same type, target, and group (group 0)',
+          name: 'Two relationships with same type, target, and group (IsA relationships)',
           expectedError: 'The system has detected a contradiction of the following convention: an active concepts must not have two relationships with the same type, target and group.',
           testFn: function test() {
-            var concept = getTestConcept('Rel Test04 concept (test)', 'Rel Test04 concept');
+            var concept = getTestConcept('Rel Test04 concept (body structure)', 'Rel Test04 concept');
 
             var rel = angular.copy(concept.relationships[0]);
             concept.relationships.push(rel);
@@ -148,13 +148,13 @@ angular.module('singleConceptAuthoringApp')
         // compatible with those of the active parents.]; TODO Get examples
 
         {
-          name: 'Two relationships with same type, target, and group (group 1)',
+          name: 'Two relationships with same type, target, and group (attribute relationships)',
           notes: [
-            'Test should pass successfully -- known bug, fix in development'
+            'Test should return errors -- known bug, fix in development (as of 12/3/2015)'
           ],
           expectedError: 'The system has detected a contradiction of the following convention: an active concepts must not have two relationships with the same type, target and group.',
           testFn: function test() {
-            var concept = getTestConcept('Rel Test05 concept (test)', 'Rel Test05 concept');
+            var concept = getTestConcept('Rel Test05 concept (body structure)', 'Rel Test05 concept');
 
             var rel = objectService.getNewAttributeRelationship();
             rel.type.conceptId = '272741003';
@@ -181,7 +181,7 @@ angular.module('singleConceptAuthoringApp')
           name: 'Concept must have one active IsA relationship',
           expectedError: 'The system has detected a contradiction of the following convention: an active concepts must have at least one ISA relationship.',
           testFn: function test() {
-            var concept = getTestConcept('Rel Test06 concept (test)', 'Rel Test06 concept');
+            var concept = getTestConcept('Rel Test06 concept (body structure)', 'Rel Test06 concept');
 
             concept.relationships[0].active = false;
 
@@ -195,13 +195,11 @@ angular.module('singleConceptAuthoringApp')
           }
         },
 
-        // Similar  WRP-1700, WRP-1701	Active concepts' Semantic Tags are compatible with those of the active parents.
+        // Similar  WRP-1700, WRP-1701	Active concepts' Semantic Tags are
+        // compatible with those of the active parents.
         {
           name: 'Concept\'s semantic tag not compatible with that of parents',
-          notes: [
-            'Test written, but back-end support still in progress'
-          ],
-          expectedError: 'The system has detected a contradiction of the following convention: an active concepts must have at least one ISA relationship.',
+          expectedError: 'The system has detected a contradiction of the following convention: A concept\'s semantic tags should be compatible with those of the active parents.',
           testFn: function test() {
             var concept = getTestConcept('Rel Test07 concept (body structure)', 'Rel Test07 concept');
 
@@ -414,7 +412,6 @@ angular.module('singleConceptAuthoringApp')
         getResults: getResults,
         getName: getName
       };
-
 
     }])
 ;

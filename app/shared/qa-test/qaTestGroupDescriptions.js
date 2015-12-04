@@ -42,9 +42,9 @@ angular.module('singleConceptAuthoringApp')
         ptDesc.term = pt;
         concept.descriptions.push(ptDesc);
 
-        // set isa relationship to root
-        concept.relationships[0].target.conceptId = '138875005';
-        concept.relationships[0].target.fsn = 'SNOMED CT Concept (SNOMED RT+CTV3)';
+        // set isa relationship to body structure
+        concept.relationships[0].target.conceptId = '123037004';
+        concept.relationships[0].target.fsn = 'Body structure (body structure)';
         return concept;
       }
 
@@ -54,37 +54,12 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: null,
           testFn: function test() {
-            var concept = getTestConcept('Desc Test01 concept (test)', 'Desc Test01 concept');
+            var concept = getTestConcept('Desc Test01 concept (body structure)', 'Desc Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
                 errorsReceived: response
               };
-            });
-          }
-        },
-
-        // WRP-1541	Active Descriptions cannot match other description already
-        // committed
-        {
-          name: 'description matches already committed description',
-          notes: [
-            'Test written, but back-end implementation deferred by request of author due to similarity with another tests'
-          ],
-
-          expectedError: 'The system has detected a contradiction of the following convention: active descriptions must not match other description already committed.',
-          testFn: function test() {
-            var concept = getTestConcept('Desc Test02 concept (test)', 'Desc Test02 concept');
-            var tempDesc = concept.descriptions[0];
-            return snowowlService.createConcept(project, task, concept).then(function (response) {
-              concept = response;
-              concept.descriptions.push(tempDesc);
-              return snowowlService.validateConcept(project, task, concept).then(function (response) {
-                return {
-                  data: concept,
-                  errorsReceived: response
-                };
-              });
             });
           }
         },
@@ -96,7 +71,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: concepts may only have one Preferred Synonym in each dialect',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test03 concept (test)', 'Desc Test03 concept');
+            var concept = getTestConcept('Desc Test03 concept (body structure)', 'Desc Test03 concept');
             angular.forEach(concept.descriptions, function (description) {
               // find the PT descriptioon and set en-us acceptability to
               // Acceptable
@@ -120,7 +95,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: concepts may only have one Preferred Synonym in each dialect',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test04 concept (test)', 'Desc Test04 concept');
+            var concept = getTestConcept('Desc Test04 concept (body structure)', 'Desc Test04 concept');
             angular.forEach(concept.descriptions, function (description) {
               // find the PT descriptioon and set en-us acceptability to
               // Acceptable
@@ -145,7 +120,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: concepts may only have one Preferred Synonym in each dialect',
 
           testFn: function test() {
-            var concept = getTestConcept('Desc Test05 concept (test)', 'Desc Test05 concept');
+            var concept = getTestConcept('Desc Test05 concept (body structure)', 'Desc Test05 concept');
             var description = objectService.getNewPt();
             description.term = 'Desc Test03 concept duplicate';
             concept.descriptions.push(description);
@@ -167,8 +142,13 @@ angular.module('singleConceptAuthoringApp')
           name: 'Active descriptions must be unique in concept',
           expectedError: 'The system has detected a contradiction of the following convention: active descriptions must be unique in a concept.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test1661 concept (test)', 'Desc Test1661 concept');
-            concept.descriptions.push(concept.descriptions[0]);
+            var concept = getTestConcept('Desc Test1661 concept (body structure)', 'Desc Test1661 concept');
+
+            // add two identical descriptions
+            var description = objectService.getNewDescription();
+            description.term = "Duplicate definition";
+            concept.descriptions.push(description);
+            concept.descriptions.push(description);
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -185,7 +165,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: active descriptions must not have spaces, either before or after, hyphens.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test07 -concept (test)', 'Desc Test07-concept');
+            var concept = getTestConcept('Desc Test07 -concept (body structure)', 'Desc Test07-concept');
 
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
@@ -203,7 +183,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: active descriptions must not have spaces, either before or after, hyphens.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test08- concept (test)', 'Desc Test08 concept');
+            var concept = getTestConcept('Desc Test08- concept (body structure)', 'Desc Test08 concept');
 
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
@@ -257,7 +237,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: FSNs must not include commas.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test10, concept (test)', 'Desc Test10 concept');
+            var concept = getTestConcept('Desc Test10, concept (body structure)', 'Desc Test10 concept');
 
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
@@ -276,21 +256,21 @@ angular.module('singleConceptAuthoringApp')
         {
           name: 'Active concept does not have FSN for en-US',
 
-          expectedError: 'The system has detected a contradiction of the following convention: an active concept must have at least one active FSN per dialect.',
+          expectedError: 'The system has detected a contradiction of the following convention: an active concept must have one active preferred FSN per dialect.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test10, concept (test)', 'Desc Test10 concept');
+            var concept = getTestConcept('Desc Test10 concept (body structure)', 'Desc Test10 concept');
 
             // cleaer descriptions
             concept.descriptions = [];
 
             // add en-us FSN
             var fsn = objectService.getNewFsn();
-            fsn.term = 'Desc Test93 concept (test)';
+            fsn.term = 'Desc Test93 concept (body structure)';
             fsn.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
 
             // add PT
             var pt = objectService.getNewPt();
-            pt.term = 'Desc Test93 concept ';
+            pt.term = 'Desc Test93 concept';
 
             concept.descriptions = [fsn, pt];
 
@@ -309,21 +289,21 @@ angular.module('singleConceptAuthoringApp')
         {
           name: 'Active concept does not have FSN for en-GB',
 
-          expectedError: 'The system has detected a contradiction of the following convention: an active concept must have at least one active FSN per dialect.',
+          expectedError: 'The system has detected a contradiction of the following convention: an active concept must have one active preferred FSN per dialect.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test10, concept (test)', 'Desc Test10 concept');
+            var concept = getTestConcept('Desc Test10 concept (body structure)', 'Desc Test10 concept');
 
             // cleaer descriptions
             concept.descriptions = [];
 
             // add en-us FSN
             var fsn = objectService.getNewFsn();
-            fsn.term = 'Desc Test93 concept (test)';
+            fsn.term = 'Desc Test93 concept (body structure)';
             fsn.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
 
             // add PT
             var pt = objectService.getNewPt();
-            pt.term = 'Desc Test93 concept ';
+            pt.term = 'Desc Test93 concept';
 
             concept.descriptions = [fsn, pt];
 
@@ -348,7 +328,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: an active description must not be longer than 255 characters.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test11 concept (test)', 'Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept');
+            var concept = getTestConcept('Desc Test11 concept (body structure)', 'Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept Desc Test11 Concept');
 
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
@@ -367,7 +347,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: text definitions must be case-sensitive.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test12 concept (test)', 'Desc Test12 concept');
+            var concept = getTestConcept('Desc Test12 concept (body structure)', 'Desc Test12 concept');
             var textDefinition = objectService.getNewTextDefinition();
             textDefinition.term = 'Text Definition';
             textDefinition.caseSignificance = 'CASE_INSENSITIVE';
@@ -388,7 +368,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: the first character of a text definition must be upper case.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test13 concept (test)', 'Desc Test13 concept');
+            var concept = getTestConcept('Desc Test13 concept (body structure)', 'Desc Test13 concept');
             var textDefinition = objectService.getNewTextDefinition();
             textDefinition.term = 'text Definition';
             concept.descriptions.push(textDefinition);
@@ -408,7 +388,7 @@ angular.module('singleConceptAuthoringApp')
           name: 'FSN contains + character without space before it',
           expectedError: 'The system has detected a contradiction of the following convention: an active FSN containing a + symbol, must include a single space placed at either side of the symbol e.g. Ibuprofen + oxycodone (product)',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test14+ concept (test)', 'Desc Test14+ concept');
+            var concept = getTestConcept('Desc Test14+ concept (body structure)', 'Desc Test14+ concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -425,7 +405,7 @@ angular.module('singleConceptAuthoringApp')
           name: 'FSN contains + character without space after it',
           expectedError: 'The system has detected a contradiction of the following convention: an active FSN containing a + symbol, must include a single space placed at either side of the symbol e.g. Ibuprofen + oxycodone (product)',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test14 +concept (test)', 'Desc Test14 +concept');
+            var concept = getTestConcept('Desc Test14 +concept (body structure)', 'Desc Test14 +concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -440,7 +420,7 @@ angular.module('singleConceptAuthoringApp')
           name: 'FSN starts with open parenthesis',
           expectedError: 'The system has detected a contradiction of the following convention: FSNs must not start with open parentheses.',
           testFn: function test() {
-            var concept = getTestConcept('(Desc Test15 concept (test)', 'Desc Test15 concept');
+            var concept = getTestConcept('(Desc Test15 concept (body structure)', 'Desc Test15 concept');
 
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
@@ -475,7 +455,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: an FSN must be represented in at least one dialect.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test17 concept (test)', 'Desc Test17 concept');
+            var concept = getTestConcept('Desc Test17 concept (body structure)', 'Desc Test17 concept');
             angular.forEach(concept.descriptions, function (description) {
               if (description.type === 'FSN') {
                 description.acceptabilityMap = {};
@@ -559,6 +539,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Desc Test21 concepts', 'Desc Test21 concept');
             concept.relationships[0].target.conceptId = '272394005';
+            concept.relationships[0].target.fsn = 'Technique (qualifier value)';
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
 
               return {
@@ -590,7 +571,7 @@ angular.module('singleConceptAuthoringApp')
           ],
           expectedError: 'The system has detected a contradiction of the following convention: concepts\' must have an active synonym that has the same text as the active FSN.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
+            var concept = getTestConcept('Desc Test24 concept (body structure)', 'Desc Test24 diferent concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
 
               return {
@@ -608,7 +589,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: active text definitions must have an acceptability of Preferred in the en-GB dialect.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
+            var concept = getTestConcept('Desc Test24 concept (body structure)', 'Desc Test24 diferent concept');
             var textDefinition = objectService.getNewTextDefinition();
             textDefinition.term = 'Text definition for testing';
             textDefinition.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
@@ -635,7 +616,7 @@ angular.module('singleConceptAuthoringApp')
 
           expectedError: 'The system has detected a contradiction of the following convention: active text definitions must have an acceptability of Preferred in the en-US dialect.',
           testFn: function test() {
-            var concept = getTestConcept('Desc Test24 concept (test)', 'Desc Test24 diferent concept');
+            var concept = getTestConcept('Desc Test24 concept (body structure)', 'Desc Test24 diferent concept');
             var textDefinition = objectService.getNewTextDefinition();
             textDefinition.term = 'Text definition for testing';
             textDefinition.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
@@ -714,7 +695,7 @@ angular.module('singleConceptAuthoringApp')
               // replace unicode characters
               receivedError.message = receivedError.message.replace(/\u2019/g, '\'').replace(/[\u201C\u201d]/g, '"');
 
-              console.debug(test.name, test.results, test.expectedError);
+              console.debug(test.name, receivedError.message, test.expectedError, receivedError.message === test.expectedError);
 
               /*      console.debug('comparing errors');
                console.debug(test.expectedError);

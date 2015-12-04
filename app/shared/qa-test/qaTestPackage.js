@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp')
     ////////////////////////////////////
     var testGroups = [
       qaTestGroupRelationships,
-      qaTestGroupDescriptions,
+     qaTestGroupDescriptions,
 
       qaTestGroupCharacterSpacing
     ];

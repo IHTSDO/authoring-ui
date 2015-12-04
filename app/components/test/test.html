@@ -1,53 +1,16 @@
-<style>
-  .Available.badge {
-    background-color: #00b0ff;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-  }
 
-  .Claimed.badge {
-    background-color: grey;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-  }
+<div class="row no-gutter sca-container ">
+  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
+       src="'shared/sidebar/sidebar.html'"></div>
 
-
-</style>
-
-<div class="row no-gutter sca-container">
-  <div class="sca-column col-lg-2 col-md-2 col-sm-2 dashboard-sidebar">
-    <div style="background-color:#474747;">
-
-      <ul ng-cloak style="padding: 0px; list-style: none;">
-
-        <li><a class="dashboard-links" ng-href="#/home">
-          <button type="button" class="btn grey darken-2 dashboard-links">
-            <i class="md md-format-list-numbered"></i>All Tests
-          </button>
-        </a></li>
-        <li ng-repeat="test in tests"><a class="dashboard-links" ng-click="showTest(test)">
-          <button type="button" class="btn grey darken-3 dashboard-links">
-            <i class="md md-format-list-numbered"></i>{{test.name}}
-          </button>
-        </a></li>
-      </ul>
-    </div>
-
-
-  </div>
-
-  <div class="sca-column col-lg-10 col-md-10 col-sm-10 p-l-20">
+  <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right">
     <div class="row">
       <h3 class="table-title p-20">Test Management
       </h3>
     </div>
 
     <div class="row p-l-20" ng-repeat="testPackage in testPackages">
-      <div class="row">
+      <div class="col-md-12">
         <h4>{{testPackage.name}} -
           <button class="" ng-disabled="!taskKey" ng-click="runTest(testPackage)">Run Test Package</button>
         </h4>
@@ -55,14 +18,14 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <div class="col-md-1">
+          <div class="col-md-2">
             <h4>Result</h4>
           </div>
           <div class="col-md-3">
             <h4>Test</h4>
           </div>
           <div class="col-md-1"></div>
-          <div class="col-md-7" style="word-break:break-all">
+          <div class="col-md-6" style="word-break:break-all">
             <h4>Expected Error</h4>
           </div>
         </div>
@@ -72,14 +35,14 @@
         <hr>
         {{value}}-->
         <div class="row p-l-10">
-          <div class="col-md-1"></div>
+          <div class="col-md-2"></div>
           <div class="col-md-11 p-t-10 p-b-10"><strong>Test Group: {{key}} </strong> - {{value.tests.length}} Tests
 
           </div>
 
           <div ng-repeat="test in value.tests" ng-init="showDetails = false">
             <div class="row p-t-5">
-              <div class="col-md-1" style=""
+              <div class="col-md-2" style=""
                    ng-class="[
                    {'red' : test.status === 'FAILED' && !test.notes },
                    {'green' : test.status === 'PASSED'},
@@ -115,7 +78,7 @@
                      ng-click="showDetails = !showDetails">Details
                 </div>
               </div>
-              <div class="col-md-7">
+              <div class="col-md-6">
                 <div class="row">
                   {{test.expectedError}}
                 </div>

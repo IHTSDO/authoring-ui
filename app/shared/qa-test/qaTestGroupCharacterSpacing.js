@@ -42,10 +42,9 @@ angular.module('singleConceptAuthoringApp')
         ptDesc.term = pt;
         concept.descriptions.push(ptDesc);
 
-        // set isa relationship to root
-        concept.relationships[0].target.conceptId = '138875005';
-        concept.relationships[0].target.fsn = 'SNOMED CT Concept (SNOMED RT+CTV3)';
-
+        // set isa relationship to body structure
+        concept.relationships[0].target.conceptId = '123037004';
+        concept.relationships[0].target.fsn = 'Body structure (body structure)';
         return concept;
       }
 
@@ -56,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: null,
           
           testFn: function test() {
-            var concept = getTestConcept('WSP Test01 concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('WSP Test01 concept (body structure)', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -70,7 +69,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
           
           testFn: function test() {
-            var concept = getTestConcept('WSP Test01  concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('WSP Test01  concept (body structure)', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -84,7 +83,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
           
           testFn: function test() {
-            var concept = getTestConcept(' WSP Test01 concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept(' WSP Test01 concept (body structure)', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -98,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: Term must not contain double, leading or trailing spaces.',
           
           testFn: function test() {
-            var concept = getTestConcept('WSP Test01 concept (test) ', 'WSP Test01 concept');
+            var concept = getTestConcept('WSP Test01 concept (body structure) ', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -112,7 +111,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
           
           testFn: function test() {
-            var concept = getTestConcept('WSP(Test01)concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('WSP(Test01)concept (body structure)', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                   data: concept,
@@ -126,7 +125,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
           
           testFn: function test() {
-            var concept = getTestConcept('WSP (Test01)concept (test)', 'WSP (Test01) concept');
+            var concept = getTestConcept('WSP (Test01)concept (body structure)', 'WSP (Test01) concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -140,7 +139,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
           
           testFn: function test() {
-            var concept = getTestConcept('WSP ( Test01) concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('WSP ( Test01) concept (body structure)', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
@@ -154,7 +153,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: a space must be placed in front of an opening parenthesis and after a closing parenthesis (unless it is at the end of the product\'s name), but not within parentheses e.g. aaaa (bbbb) cccc.',
           
           testFn: function test() {
-            var concept = getTestConcept('WSP (Test01 ) concept (test)', 'WSP Test01 concept');
+            var concept = getTestConcept('WSP (Test01 ) concept (body structure)', 'WSP Test01 concept');
             return snowowlService.validateConcept(project, task, concept).then(function (response) {
               return {
                 data: concept,
