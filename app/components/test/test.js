@@ -22,7 +22,12 @@ angular.module( 'singleConceptAuthoringApp.test', [
     $scope.projectKey = null;
     $scope.taskKey = null;
 
-    scaService.getTaskForProject('WRPTEST', 'WRPTEST-2').then(function(response) {
+    var task = {
+      summary: 'FE Convention Validation Tests',
+      description: 'Run ' + Date.now().toString()
+    };
+
+    scaService.createTaskForProject('WRPTEST', task)   .then(function(response) {
       $scope.projectKey = response.projectKey;
       $scope.taskKey = response.key;
       $scope.branch = 'MAIN/' + $scope.projectKey + '/' + $scope.taskKey;

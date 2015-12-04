@@ -599,9 +599,9 @@ angular.module('singleConceptAuthoringApp')
               snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                 // DIVERGED, but no merges to resolve
-                if (!newReview || !newReview.length === 0) {
-                  notificationService.sendMessage('TODO: Reenable automatic rebase');
-                  // rebase();
+                if (!newReview || newReview.length === 0) {
+                  // notificationService.sendMessage('TODO: Reenable automatic rebase');
+                  rebase();
                 }
 
                 // DIVERGED, with merges to resolve
