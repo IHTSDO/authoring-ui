@@ -971,9 +971,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getCaseSignificanceDisplayText = function (description) {
           switch (description.caseSignificance) {
             case 'INITIAL_CHARACTER_CASE_INSENSITIVE':
-              return 'Cs';
-            case 'CASE_INSENSITIVE':
               return 'cI';
+            case 'CASE_INSENSITIVE':
+              return 'ci';
             case 'ENTIRE_TERM_CASE_SENSITIVE':
               return 'CS';
             default:
