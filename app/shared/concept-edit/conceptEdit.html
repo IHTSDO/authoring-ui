@@ -200,7 +200,7 @@
 
             <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="isStatic"
+                      ng-disabled="isStatic || description.effectiveTime"
                       maxlength="255"
                       ng-model="description.term"
                       class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
@@ -209,7 +209,7 @@
 
             <textarea ng-if="description.type === 'SYNONYM'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="isStatic"
+                      ng-disabled="isStatic || description.effectiveTime"
                       maxlength="255"
                       ng-model="description.term"
                       class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
