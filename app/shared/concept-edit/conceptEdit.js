@@ -1528,22 +1528,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // strip identifying information from each relationship and push to
           // relationships with new group id
           angular.forEach(relGroup, function (rel) {
-            var copy = angular.copy(rel);
+            if (rel.active === true)
+            {
+                var copy = angular.copy(rel);
 
-            // set the group id based on whether it is an isa relationship
-            if (metadataService.isIsaRelationship(copy.type.conceptId)) {
-              copy.groupId = 0;
-            } else {
-              copy.groupId = newGroupId;
+                // set the group id based on whether it is an isa relationship
+                if (metadataService.isIsaRelationship(copy.type.conceptId)) {
+                  copy.groupId = 0;
+                } else {
+                  copy.groupId = newGroupId;
+                }
+
+                // clear the effective time and source information
+                delete copy.sourceId;
+                delete copy.effectiveTime;
+                delete copy.relationshipId;
+
+                // push to relationships
+                scope.concept.relationships.push(copy);
             }
-
-            // clear the effective time and source information
-            delete copy.sourceId;
-            delete copy.effectiveTime;
-            delete copy.relationshipId;
-
-            // push to relationships
-            scope.concept.relationships.push(copy);
           });
 
           // recompute the relationship groups
