@@ -121,14 +121,21 @@ angular.module('singleConceptAuthoringApp')
                     console.debug('Retrieving only concepts with messages');
                     //myData =  $filter('filter')(myData, { 'messages': '!'});
 
-                    // really ahckish solution because the above filter for
-                    // some bizarre reason isn't working
                     var newData = [];
                     angular.forEach(myData, function (item) {
                       if (item.messages && item.messages.length > 0) {
                         newData.push(item);
                       }
                       myData = newData;
+
+                      // set viewed flag based on current viewed list
+                      angular.forEach(scope.viewedConcepts, function (viewedConcept) {
+                        if (viewedConcept.conceptId === item.id) {
+                          item.viewed = true;
+                        } else {
+                          item.viewed = false;
+                        }
+                      })
                     });
 
                     //  $scope.filteredItems = $filter('filter')($scope.items,
@@ -367,15 +374,36 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           };
 
+          // function to add a concept to viewed list from tables
           scope.addToEdit = function (item) {
+            // if viewed, ignore
             if (!item.viewed) {
-              notificationService.sendMessage('Loading concept ' + item.term);
+              notificationService.sendMessage('Loading concept ' + item.id);
               item.viewed = true;
               addToEditHelper(item.id).then(function (response) {
                 notificationService.sendMessage('Concept loaded', 5000);
               })
             }
           };
+
+          // additional function to add based on concept id alone
+          scope.addToEditFromConceptId = function(conceptId) {
+
+            for (var i = 0; i < scope.viewedConcepts.length; i++) {
+              if (scope.viewedConcepts[i].conceptId === conceptId) {
+                return;
+              }
+            }
+
+            notificationService.sendMessage('Loading concept...');
+            addToEditHelper(conceptId).then(function (response) {
+              notificationService.sendMessage('Concept loaded', 5000);
+
+              // reload the table params to ensure viewed flag is set properly
+              scope.conceptsToReviewTableParams.reload();
+              scope.concetpsReviewedTableParams.reload();
+            })
+          }
 
           // add all selected objects to edit panel list
           // depending on current viewed tab
@@ -925,7 +953,7 @@ angular.module('singleConceptAuthoringApp')
              * non-editable feedback allows this.
              * @type {string}
              */
-            var feedbackStr = scope.htmlVariable.replace(/<img [^>]* id="(\d+)-(.*?(?=-endConceptLink"))[^>]*>/g, '<a ng-click="addToEdit($1)" style="cursor:pointer">$2</a>');
+            var feedbackStr = scope.htmlVariable.replace(/<img [^>]* id="(\d+)-(.*?(?=-endConceptLink"))[^>]*>/g, '<a ng-click="addToEditFromConceptId($1)" style="cursor:pointer">$2</a>');
             console.debug(feedbackStr);
 
             notificationService.sendMessage('Submitting feedback...', 10000, null);
