@@ -322,6 +322,10 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.$on('stopEditing', function (event, data) {
 
+            // remove from the styles list (if present)
+            delete scope.styles[data.concept.conceptId];
+
+            // remove from viewed concepts list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
               if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
                 scope.viewedConcepts.splice(i, 1);
@@ -329,12 +333,14 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
+            // mark as unviewed in ToReview list (if present)
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
               if (item.id === data.concept.conceptId) {
                 item.viewed = false;
               }
             });
 
+            // mark as unviewed in Reviewed list (if present)
             angular.forEach(scope.conceptsReviewedViewed, function (item) {
               if (item.id === data.concept.conceptId) {
                 scope.addToEdit(item.id);
@@ -343,6 +349,25 @@ angular.module('singleConceptAuthoringApp')
             });
 
           });
+
+          // the scope variable containing the map of concept -> [style map]
+          scope.styles = {};
+
+          function addConceptStyles(concept) {
+            var styledElements = {};
+            angular.forEach(concept.descriptions, function(description) {
+              if (!description.effectiveTime) {
+                styledElements[description.descriptionId] = {message: null, style: 'tealhl'}
+              }
+            });
+            angular.forEach(concept.relationships, function(relationship) {
+              if (!relationship.effectiveTime) {
+                styledElements[relationship.relationshipId] = {message: null, style: 'tealhl'}
+              }
+            });
+            scope.styles[concept.conceptId] = styledElements;
+
+          }
 
           function addToEditHelper(id) {
 
@@ -361,6 +386,9 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.getFullConcept(id, scope.branch).then(function (response) {
 
               scope.viewedConcepts.push(response);
+
+              // apply styles
+              addConceptStyles(response);
 
               deferred.resolve(response);
 
