@@ -90,7 +90,7 @@ angular.module('singleConceptAuthoringApp')
 
           // check if matches the current task
           if ($rootScope.currentTask && titleSection === $rootScope.currentTask.key) {
-            return 'Task: ' + $rootScope.currentTask.summary;
+            return $rootScope.currentTask.summary;
           }
 
           // otherwise try to match against the existing projects list
