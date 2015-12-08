@@ -68,8 +68,8 @@
               ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
       </select>
 -->
-      <span ng-if="concept.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="concept.definitionStatus = 'PRIMITIVE'">≡&nbsp; </span></span>
-              <span ng-if="concept.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="concept.definitionStatus = 'FULLY_DEFINED'">&nbsp; </span></span>
+      <span ng-if="concept.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus()">≡&nbsp; </span></span>
+              <span ng-if="concept.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus()">&nbsp; </span></span>
 
       <div class="pull-right">
         <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"

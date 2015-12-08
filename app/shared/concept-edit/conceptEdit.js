@@ -584,7 +584,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * with autosave
          */
         scope.toggleConceptDefinitionStatus = function () {
-          // console.debug(scope.concept.definitionStatus);
+            if(scope.concept.definitionStatus === 'FULLY_DEFINED')
+            {
+                scope.concept.definitionStatus = 'PRIMITIVE';   
+            }
+            else{
+                scope.concept.definitionStatus = 'FULLY_DEFINED';   
+            }
           // only action required is autosave, value is changed via select
           // (unlike toggle buttons)
           autoSave();
