@@ -12677,3 +12677,35 @@ textarea.noresize {
   transition: opacity 0.1s linear 0s !important;
   opacity: 0;
 }
+
+/* ==========================================================================
+Developement Ribbon
+========================================================================== */
+.development {
+	position: absolute;
+	width: 149px;
+	height: 149px;
+	top: 0;
+	left: 0;
+	border: 0;
+	z-index: 2000;
+	background-image: url("../images/development_ribbon.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+/* ==========================================================================
+Uat Ribbon
+========================================================================== */
+.uat {
+	position: absolute;
+	width: 149px;
+	height: 149px;
+	top: 0;
+	left: 0;
+	border: 0;
+	z-index: 2000;
+	background-image: url("../images/development_ribbon.png");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
