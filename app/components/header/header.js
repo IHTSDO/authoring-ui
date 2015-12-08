@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
             if (matchingProjects.length > 0) {
               return matchingProjects[0].title;
             } else {
-              return 'Project details could not be retrieved';
+              return null;
             }
           }
         };

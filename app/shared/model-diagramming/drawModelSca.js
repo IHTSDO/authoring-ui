@@ -20,11 +20,11 @@ angular.module('singleConceptAuthoringApp')
 
       link: function (scope, element, attrs, linkCtrl, snowowlService) {
 
-        console.debug('entered drawModelSca', scope.concept, scope.conceptAfter)
+    //    console.debug('entered drawModelSca', scope.concept, scope.conceptAfter)
 
         // broadcast taxonomy request
         scope.viewConceptInTaxonomy = function (concept) {
-          console.debug('broadcasting viewTaxonomy event to taxonomy.js', concept);
+    //      console.debug('broadcasting viewTaxonomy event to taxonomy.js', concept);
           rootScope.$broadcast('viewTaxonomy', {
             concept: {
               conceptId: concept.conceptId,

@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, scaService, snowowlService, objectService, notificationService, $routeParams, metadataService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, objectService, notificationService, $routeParams, metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -88,7 +88,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
       {
 
-        console.debug('conceptEdit styles', scope.componentStyles);
+    //    console.debug('conceptEdit styles', scope.componentStyles);
 
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
@@ -277,6 +277,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function saveHelper() {
 
           // special case:  if merge view, broadcast and return no promise
+          // TODO Should catch this with a 'when' in saveConcept functions
           if (scope.isMerge) {
             $rootScope.$broadcast('acceptMerge', {concept: scope.concept});
             return;
@@ -285,13 +286,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // simple promise with resolve/reject on success/failure
           var deferred = $q.defer();
 
-          //// console.debug('update concept', concept);
-          /*scope.saveFunction({
-           project: $routeParams.projectKey,
-           task: $routeParams.taskKey,
-           concept: concept
-           })*/
-
+          // clean the concept for snowowl-ready save
           snowowlService.cleanConcept(scope.concept);
 
           var saveFn = null;
@@ -308,7 +303,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // successful response will have conceptId
               if (response && response.conceptId) {
 
-                console.debug('Create concept successful');
+                console.debug('Save concept successful');
 
                 // set concept and unmodified state
                 scope.concept = response;
@@ -330,9 +325,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   conceptId: scope.concept.conceptId
                 });
 
+                // validate the concept
+                scope.validateConcept();
+
                 // if ui state update function specified, call it (after a
                 // moment to let binding update)
-                //// console.debug('updating ui state', scope.concept);
                 $timeout(function () {
 
                   if (scope.uiStateUpdateFn) {
@@ -355,28 +352,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         }
 
-        // helper function to display validation results based on results from
-        // getValidationResultsForConcept
-        scope.displayValidationResults = function (results) {
-          scope.validationWarnings = {};
-          scope.validationErrors = {};
-
-          $timeout(function () {
-            scope.validationWarnings = results.warnings;
-            scope.validationErrors = results.errors;
-            console.debug('validationWarnings', scope.validationWarnings);
-            console.debug('validationErrors', scope.validationErrors);
-          }, 250);
-        };
-
-        scope.$watch('validationWarnings', function () {
-          console.debug('validationWarnings changed', scope.validationWarnings);
-        }, true);
+        scope.$watch('validation', function () {
+          console.log('validation changed', scope.validation);
+        })
 
         // function to validate concept and display any errors or warnings
-        scope.getValidationResultsForConcept = function () {
+        scope.validateConcept = function () {
 
-          return snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+          var deferred = $q.defer();
+          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
 
             var results = {
               hasWarnings: false,
@@ -403,11 +387,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             });
 
-            return results;
+            scope.validation = results;
+            deferred.resolve();
           }, function (error) {
-            notificationService.sendError('Unexpected error validationg concept prior to save');
-            return null;
+            notificationService.sendError('Unexpected error validating concept prior to save');
+            scope.validation = {};
+            deferred.reject();
           });
+
+          return deferred.promise;
         };
 
         scope.saveConcept = function () {
@@ -417,12 +405,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.warnings = null;
 
           // clear the component-level errors and warnings
-          scope.validationWarnings = {};
-          scope.validationErrors = {};
-
-          // deep-copy object for modification before submission
-          // i.e. strip local values without modifying the current object
-          //var concept = JSON.parse(JSON.stringify(scope.concept));
+          scope.validation = {
+            'warnings': {},
+            'errors': {}
+          };
 
           // display error msg if concept not valid but no other
           // errors/warnings specified
@@ -444,79 +430,70 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             notificationService.sendMessage('Saving accepted merged concept...');
           }
           // validate concept first
-          scope.getValidationResultsForConcept().then(function (validationResults) {
+          scope.validateConcept().then(function () {
 
-            if (!validationResults) {
-              return;
-            }
+            console.debug('validation results', scope.validation);
 
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
-              // display the validation warnings and continue
-              scope.displayValidationResults(validationResults);
               $rootScope.$broadcast('acceptMerge', {
                 concept: scope.concept,
-                validationResults: validationResults
+                validationResults: scope.validation
               });
             }
 
             // if errors, notify and do not save
-            else if (validationResults && validationResults.hasErrors) {
+            else if (scope.validation && scope.validation.hasErrors) {
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
-              scope.displayValidationResults(validationResults);
             }
 
-            // if no errors but warnings, save, results will be displayed after
-            // save NOTE: Do not notify or display until after save, as
+            // if no errors but warnings, save, results will be displayed
+            // after save NOTE: Do not notify or display until after save, as
             // component ids may change on return from term server
-            else if (validationResults && validationResults.hasWarnings) {
+            else if (scope.validation && scope.validation.hasWarnings) {
 
-              // save the concept with warnings
-              saveHelper(scope.concept, true).then(function () {
-
-                  // check the newly returned concepts for persistent warnings
-                  scope.getValidationResultsForConcept().then(function (newValidationResults) {
-
-                    // if warnings still detected, notify and display (will
-                    // also display errors, which should not happen)
-                    if (newValidationResults.hasWarnings) {
-
-                      notificationService.sendWarning('Concept saved, but convention warnings were detected');
-                      console.debug('new Validation Results', newValidationResults);
-                      scope.displayValidationResults(newValidationResults);
-
-                    }
-
-                    // otherwise, simply notify of save
-                    else {
-                      notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
-                    }
-                  });
-                },
-                // on error, notifyh
-                function (error) {
-                  notificationService.sendError('Concept with convention warnings failed to save; displaying initial warnings.');
-                  scope.displayValidationResults(validationResults);
+              // save concept
+              saveHelper().then(function () {
+                // recompute validation warnings
+                scope.validateConcept().then(function () {
+                  notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                }, function (error) {
+                  notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                 });
 
+              }, function (error) {
+              });
+
+              var poll = $interval(function () {
+                console.debug('checking save complete');
+                if (saveComplete) {
+
+
+                  $interval.cancel(poll);
+                }
+              }, 1000);
+
             }
+
 
             // otherwise, just save
             else {
               saveHelper(scope.concept).then(function () {
                 notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
               }, function (error) {
-                  notificationService.sendError('Error saving concept: ' + error);
+                notificationService.sendError('Error saving concept: ' + error);
               });
             }
 
+          }, function (error) {
+            notificationService.sendError('Fatal error: Could not validate concept');
           });
         };
 
-// function to toggle active status of concept
-// cascades to children components
-// NOTE: This function hard-saves the concept, to prevent sync errors
-// between inactivation reason persistence and concept state
+        // function to toggle active status of concept
+        // cascades to children components
+        // NOTE: This function hard-saves the concept, to prevent sync errors
+        // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function () {
 
           if (scope.isStatic) {
@@ -563,9 +540,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   });
 
                   // save concept but bypass validation checks
-                  saveHelper().then(function() {
+                  saveHelper().then(function () {
                     notificationService.sendMessage('Concept inactivated');
-                  }, function(error) {
+                  }, function (error) {
                     notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
                   })
                 }
@@ -582,13 +559,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * with autosave
          */
         scope.toggleConceptDefinitionStatus = function () {
-            if(scope.concept.definitionStatus === 'FULLY_DEFINED')
-            {
-                scope.concept.definitionStatus = 'PRIMITIVE';   
-            }
-            else{
-                scope.concept.definitionStatus = 'FULLY_DEFINED';   
-            }
+          if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
+            scope.concept.definitionStatus = 'PRIMITIVE';
+          }
+          else {
+            scope.concept.definitionStatus = 'FULLY_DEFINED';
+          }
           // only action required is autosave, value is changed via select
           // (unlike toggle buttons)
           autoSave();
@@ -775,7 +751,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          console.debug('sorting relationships');
+          // console.debug('sorting relationships');
 
           var isaRels = scope.concept.relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
@@ -785,7 +761,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return rel.type.conceptId !== '116680003';
           });
 
-          console.debug(isaRels, attrRels);
+          // console.debug(isaRels, attrRels);
 
           // console.debug(isaRels, attrRels);
 
@@ -1061,10 +1037,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.relationshipGroups = {};
 
-        scope.filterRelationships = function(rel) {
+        scope.filterRelationships = function (rel) {
           return !scope.hideInactive || rel.active;
         };
-
 
         // function compute the relationship groups
         scope.computeRelationshipGroups = function () {
@@ -1090,7 +1065,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
 
-          console.debug('rel groups', scope.relationshipGroups);
+         // console.debug('rel groups', scope.relationshipGroups);
         };
 
 // define characteristic types
@@ -1148,7 +1123,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.removeRelationship = function (relationship) {
-          console.debug(scope.concept.relationships, relationship);
+     //     console.debug(scope.concept.relationships, relationship);
           var index = scope.concept.relationships.indexOf(relationship);
           if (index !== -1) {
             scope.concept.relationships.splice(index, 1);
@@ -1308,7 +1283,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
-          console.debug('dropped target', data, relationship);
+        //  console.debug('dropped target', data, relationship);
 
           // cancel if static
           if (scope.isStatic) {
@@ -1337,31 +1312,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           relationship.target.fsn = 'Validating...';
 
-          if(relationship.type.conceptId !== null){
-              // check if allowable relationship target using concept id
-              scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.name).then(function (response) {
-                if (response && response.length > 0) {
-                  relationship.target.conceptId = data.id;
-                  relationship.target.fsn = data.name;
-                  scope.warnings = null;
-                  scope.updateRelationship(relationship);
-                }
-
-                // notify user of inappropriate relationship target by MRCM
-                // rules
-                else {
-                  scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target concept.'];
-                  relationship.target.fsn = tempFsn;
-                }
-
-              });
-          }
-            else{
+          if (relationship.type.conceptId !== null) {
+            // check if allowable relationship target using concept id
+            scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.name).then(function (response) {
+              if (response && response.length > 0) {
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
                 scope.warnings = null;
                 scope.updateRelationship(relationship);
-            }
+              }
+
+              // notify user of inappropriate relationship target by MRCM
+              // rules
+              else {
+                scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target concept.'];
+                relationship.target.fsn = tempFsn;
+              }
+
+            });
+          }
+          else {
+            relationship.target.conceptId = data.id;
+            relationship.target.fsn = data.name;
+            scope.warnings = null;
+            scope.updateRelationship(relationship);
+          }
         };
 
         scope.dropRelationshipType = function (relationship, data) {
@@ -1507,7 +1482,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipGroup = function (relGroup) {
 
-          console.debug('dropped relationship group', relGroup);
+    //      console.debug('dropped relationship group', relGroup);
 
           if (!relGroup || relGroup.length === 0) {
             return;
@@ -1520,36 +1495,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // get the max group id and increment by one (or set to zero if no
           // groups defined)
           var maxGroup = -1;
-          angular.forEach(scope.concept.relationships, function(rel) {
+          angular.forEach(scope.concept.relationships, function (rel) {
             if (parseInt(rel.groupId) > maxGroup) {
               maxGroup = parseInt(rel.groupId);
             }
           });
           var newGroupId = maxGroup + 1;
 
-          console.debug('new group id ', newGroupId);
+       //   console.debug('new group id ', newGroupId);
 
           // strip identifying information from each relationship and push to
           // relationships with new group id
           angular.forEach(relGroup, function (rel) {
-            if (rel.active === true)
-            {
-                var copy = angular.copy(rel);
+            if (rel.active === true) {
+              var copy = angular.copy(rel);
 
-                // set the group id based on whether it is an isa relationship
-                if (metadataService.isIsaRelationship(copy.type.conceptId)) {
-                  copy.groupId = 0;
-                } else {
-                  copy.groupId = newGroupId;
-                }
+              // set the group id based on whether it is an isa relationship
+              if (metadataService.isIsaRelationship(copy.type.conceptId)) {
+                copy.groupId = 0;
+              } else {
+                copy.groupId = newGroupId;
+              }
 
-                // clear the effective time and source information
-                delete copy.sourceId;
-                delete copy.effectiveTime;
-                delete copy.relationshipId;
+              // clear the effective time and source information
+              delete copy.sourceId;
+              delete copy.effectiveTime;
+              delete copy.relationshipId;
 
-                // push to relationships
-                scope.concept.relationships.push(copy);
+              // push to relationships
+              scope.concept.relationships.push(copy);
             }
           });
 
@@ -1768,7 +1742,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // function to check the full concept for validity before saving
         scope.isConceptValid = function (concept) {
 
-          console.debug('Checking concept valid', concept);
+        //  console.debug('Checking concept valid', concept);
 
           /*// check the basic concept fields
            if (concept.isLeafInferred === null) {
@@ -2028,7 +2002,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }, true);
 
         scope.getConceptsForAttributeTypeahead = function (searchStr) {
-          console.debug('getConceptsForAttributeTypeahead', searchStr, scope.allowedAttributes);
+       //   console.debug('getConceptsForAttributeTypeahead', searchStr, scope.allowedAttributes);
           var response = scope.allowedAttributes;
           for (var i = 0; i < response.length; i++) {
             for (var j = response.length - 1; j > i; j--) {
@@ -2154,7 +2128,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // sets the popover direction (left, bottom, right) based on current
         // position of root element
         scope.setPopoverDirection = function ($event) {
-          console.debug($event.pageX);
+      //    console.debug($event.pageX);
           if ($event.pageX < 700) {
             scope.popoverDirection = 'right';
           } else {
@@ -2216,17 +2190,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // CHeck for Promoted Task -- must be static
         // ////////////////////////////////////////////////////////////////////////
 
-        // function to set static flag if task is promoted, regardless of other
-        // context
+        // function to set static flag if task is promoted, regardless of
+        // other context
         scope.checkPromotedStatus = function () {
           if ($routeParams.taskKey) {
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               scope.task = response;
 
-              console.debug('Task', scope.task);
+        //      console.debug('Task', scope.task);
 
               if (scope.task.status === 'Promoted') {
-                console.debug('setting static to true, task is Promoted');
+          //      console.debug('setting static to true, task is Promoted');
                 scope.isStatic = true;
               }
             });
