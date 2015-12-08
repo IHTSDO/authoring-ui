@@ -609,7 +609,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.changeReviewStatus = function (reviewComplete) {
             if (reviewComplete !== null && reviewComplete !== undefined) {
-              scaService.updateTask(
+              scaService.markTaskReviewComplete(
                 $routeParams.projectKey, $routeParams.taskKey,
                 {
                   'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'

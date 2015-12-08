@@ -571,6 +571,14 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
         });
       },
+        
+      markTaskReviewComplete: function (projectKey, taskKey, object) {
+        $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          notificationService.sendMessage('Task ' + taskKey + ' Review marked as Complete');
+        }, function (error) {
+          notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+        });
+      },
 
 // get latest review
       getReviewForTask: function (projectKey, taskKey) {
