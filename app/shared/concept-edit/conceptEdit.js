@@ -347,10 +347,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // handle error
               else {
-                // set the local error
-                console.error('Create concept failed:', response);
-                scope.errors = [response.message];
-                deferred.reject();
+
+                deferred.reject(response.message);
               }
             });
 
@@ -508,7 +506,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               saveHelper(scope.concept).then(function () {
                 notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
               }, function (error) {
-                notificationService.sendError('Error saving concept');
+                  notificationService.sendError('Error saving concept: ' + error);
               });
             }
 
