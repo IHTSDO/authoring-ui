@@ -132,8 +132,9 @@ section thead input {
     padding: 3px 8px;
     font-size: 12px;
 }
+.btn-default.green.darken-4:hover{background-color: #2E7D32;}
 .feedback-chat{overflow-x:hidden; overflow-y: scroll;}
-
+.feedback-chat p{width:100%;float:left;}
 .feedback-chat::-webkit-scrollbar {
   width: 7px;
   height: 7px;

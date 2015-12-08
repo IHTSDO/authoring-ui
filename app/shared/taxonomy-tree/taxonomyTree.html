@@ -1,5 +1,5 @@
 
-<div>
+<div class="no-padding col-md-12 sidebar-grey p-b-40">
 
   <style>
     .highlight {
@@ -49,7 +49,7 @@
 
 
   <!-- instantiate the tree -->
-  <div ui-tree class="col-md-12 p-10" ng-if="terminologyTree.length > 0">
+  <div ui-tree class="col-md-12 p-10 m-b-40" ng-if="terminologyTree.length > 0">
     <div class="clearfix"> </div>
     <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
       <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
