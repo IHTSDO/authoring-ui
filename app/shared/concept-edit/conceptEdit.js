@@ -463,16 +463,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               }, function (error) {
               });
-
-              var poll = $interval(function () {
-                console.debug('checking save complete');
-                if (saveComplete) {
-
-
-                  $interval.cancel(poll);
-                }
-              }, 1000);
-
             }
 
 

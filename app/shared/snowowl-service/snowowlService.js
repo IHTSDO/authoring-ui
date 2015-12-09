@@ -941,7 +941,7 @@ angular.module('singleConceptAuthoringApp')
       $http.post(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/apply').then(function(response) {
         deferred.resolve(response.data);
       }, function(error) {
-        deferred.reject(error.message);
+        deferred.reject(error.statusText);
       });
       return deferred.promise;
     }
