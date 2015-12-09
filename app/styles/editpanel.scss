@@ -15,7 +15,8 @@
 .editpanel {
     color: #737373 !important;
 }
-
+.primitive-buttons, .primitive-buttons:hover, .primitive-buttons[disabled], .primitive-buttons:focus, .primitive-buttons:active
+{    padding: 0px!important; background-color:transparent!important;}
 .model-header label {
     margin-bottom: 0px;
     width: 100%;

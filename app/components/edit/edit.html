@@ -25,7 +25,7 @@
     <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
 
-            ng-disabled="!task.reviewer"
+            ng-disabled="!task.feedbackMessagesStatus !== 'none'"
             ng-click="viewReview()">
       <div class="md md-email"></div>
       <span>Switch to Feedback View</span></button>
@@ -66,7 +66,7 @@
             class="btn btn-default widget-toolbar blue darken-4 tooltips-right tooltips-light normal-case"
             ng-click="setView('edit-default')">
       <div class="md md-dvr"></div>
-      <span>Restore the default editing view</span></button>
+      <span>Go back to task editing</span></button>
 
     <!-- Edit View:  No sidebar -- Task View Only -->
     <button ng-if="taskKey" type="button" ng-class="{'lighten-2' : thisView === 'edit-no-sidebar'}"

@@ -140,6 +140,7 @@
         <!-- Cancel/Unclaim Review button -->
         <div ng-if="role === 'AUTHOR'" class="switch pull-right p-5">
           <button class="btn btn-default orange darken-1 review-button-list " style="text-transform: none"
+                  ng-if="task.status === 'In Review'"
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review
           </button>
@@ -509,7 +510,7 @@
           <div draw-model-sca concept="concept"></div>
         </div>
         <div class="col-md-6">
-          <div concept-edit concept="concept" branch="branch" static="true"
+          <div concept-edit concept="concept" branch="branch" static="true" component-styles="styles[concept.conceptId]"
                autosave="false"></div>
         </div>
 

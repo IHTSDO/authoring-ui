@@ -13,14 +13,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         templateUrl: 'components/edit/edit.html',
         resolve: {}
       });
-    /*
-     Removed as project views are now handled in project.js and projectMerge.js
-     $routeProvider
-     .when('/projects/project/:projectKey/:mode', {
-     controller: 'EditCtrl',
-     templateUrl: 'components/edit/edit.html',
-     resolve: {}
-     });*/
   })
 
 //Directive to trigger a function on the rendering of an entire ng-repeat,
@@ -77,6 +69,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
+    $rootScope.currentTask = null;
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
@@ -1066,6 +1059,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+          $rootScope.currentTask = response;
           $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
           setBranchFunctionality($scope.task.branchState);
         });
@@ -1112,6 +1106,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if ($routeParams.taskKey) {
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             $scope.task = response;
+            $rootScope.currentTask = response;
 
             $scope.getLatestClassification();
             $scope.getLatestValidation();

@@ -44,10 +44,13 @@
                        to improve your experience.</p>
 <![endif]-->
 
-<!-- Add your site or application content here -->
+<!--
+  <div ng-show="development" class="development" ng-cloak=""></div>
+  <div ng-show="uat" class="uat" ng-cloak=""></div>
+-->
 
 <main style="height:100%;">
-
+  
   <div class="main-container" ng-class="globalStyleClasses">
     <div sca-header></div>
     <div ng-cloak ng-view bs-affix-target ></div>
