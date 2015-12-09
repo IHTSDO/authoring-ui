@@ -135,7 +135,7 @@ angular.module('singleConceptAuthoringApp')
                         } else {
                           item.viewed = false;
                         }
-                      })
+                      });
                     });
 
                     //  $scope.filteredItems = $filter('filter')($scope.items,
@@ -357,12 +357,12 @@ angular.module('singleConceptAuthoringApp')
             var styledElements = {};
             angular.forEach(concept.descriptions, function(description) {
               if (!description.effectiveTime) {
-                styledElements[description.descriptionId] = {message: null, style: 'tealhl'}
+                styledElements[description.descriptionId] = {message: null, style: 'tealhl'};
               }
             });
             angular.forEach(concept.relationships, function(relationship) {
               if (!relationship.effectiveTime) {
-                styledElements[relationship.relationshipId] = {message: null, style: 'tealhl'}
+                styledElements[relationship.relationshipId] = {message: null, style: 'tealhl'};
               }
             });
             scope.styles[concept.conceptId] = styledElements;
@@ -400,7 +400,7 @@ angular.module('singleConceptAuthoringApp')
               }, 500);
             });
             return deferred.promise;
-          };
+          }
 
           // function to add a concept to viewed list from tables
           scope.addToEdit = function (item) {
@@ -410,7 +410,7 @@ angular.module('singleConceptAuthoringApp')
               item.viewed = true;
               addToEditHelper(item.id).then(function (response) {
                 notificationService.sendMessage('Concept loaded', 5000);
-              })
+              });
             }
           };
 
@@ -430,8 +430,8 @@ angular.module('singleConceptAuthoringApp')
               // reload the table params to ensure viewed flag is set properly
               scope.conceptsToReviewTableParams.reload();
               scope.concetpsReviewedTableParams.reload();
-            })
-          }
+            });
+          };
 
           // add all selected objects to edit panel list
           // depending on current viewed tab

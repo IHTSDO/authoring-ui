@@ -354,7 +354,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.$watch('validation', function () {
           console.log('validation changed', scope.validation);
-        })
+        });
 
         // function to validate concept and display any errors or warnings
         scope.validateConcept = function () {
@@ -534,7 +534,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     notificationService.sendMessage('Concept inactivated');
                   }, function (error) {
                     notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                  })
+                  });
                 }
               }, function () {
                 notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
