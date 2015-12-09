@@ -45,7 +45,20 @@
   </script>
 
   <div class="row no-gutter no-padding">
-    <div ng-if="!conflicts && !rebaseRunning && !rebaseComplete" class="loading-merges blue darken-1">
+    
+    <!-- if merge review is not current (out of date, stale, etc), prompt user -->
+    <div ng-if="badStateDetected" class="loading-merges blue darken-1">
+      <h3>{{badStateText}}
+      </h3>
+      <div style="width: 100%; text-align: center">
+      <button ng-click="reinitialize()"
+              class="btn btn-default blue lighten-2 "><span
+        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Regenerate Merge Review</span>
+      </button>
+      </div>
+    </div>
+    
+    <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete" class="loading-merges blue darken-1">
 
       <div class="loading-merges">
         <div class="clock">
@@ -75,7 +88,7 @@
       </div>
 
     </div>
-    <div ng-if="!conflicts && rebaseRunning" class="loading-merges green">
+    <div ng-if="!badStateDetected && !conflicts && rebaseRunning" class="loading-merges green">
 
       <div class="loading-merges">
         <div class="clock">
@@ -104,7 +117,7 @@
       </div>
     </div>
     <!-- Displayed after merges complete -->
-    <div class="loading-merges green" ng-if="rebaseComplete">
+    <div class="loading-merges green" ng-if="!badStateDetected && rebaseComplete">
       <div class="all-done">
         <div class="md md-done"></div>
       </div>
@@ -114,7 +127,7 @@
     </div>
 
     <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
-    <div ng-if="conflicts && rebaseRunning" class="loading-merges red">
+    <div ng-if="!badStateDetected && conflicts && rebaseRunning" class="loading-merges red">
       <div class="all-done">
         <div class="md md-sync-problem"></div>
       </div>
@@ -122,7 +135,7 @@
 
     </div>
     <!-- Displayed before merges complete, or during rebasing -->
-    <div class="col-md-12 no-padding no-gutter" ng-if="!rebaseComplete">
+    <div class="col-md-12 no-padding no-gutter" ng-if="!badStateDetected && !rebaseComplete">
 
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
