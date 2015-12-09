@@ -82,16 +82,31 @@ angular.module('singleConceptAuthoringApp')
             }
           }
         });
-          
-        scope.parseProject = function(project){
+
+        // local storage for current project
+        // NOTE: task is set in edit.js as rootScope variable
+
+        scope.parseTitleSection = function (titleSection) {
+
+          // check if matches the current task
+          if ($rootScope.currentTask && titleSection === $rootScope.currentTask.key) {
+            return $rootScope.currentTask.summary;
+          }
+
+          // otherwise try to match against the existing projects list
+          else {
+
             var projects = metadataService.getProjects();
-            var tooltip = projects.filter(function (el) {
-              return el.key === project;
+
+            var matchingProjects = projects.filter(function (el) {
+              return el.key === titleSection;
             });
-            if(tooltip.length > 0){
-                // console.log(tooltip[0].title);
-                return tooltip[0].title;
+            if (matchingProjects.length > 0) {
+              return matchingProjects[0].title;
+            } else {
+              return null;
             }
+          }
         };
 
         scope.$on('clearNotifications', function (event, data) {

@@ -19,6 +19,7 @@
   </div>
 
   <!-- end validation error -->
+  <!-- The concept itself -->
   <div class="row p-t-5 grey darken-4 concept-headers" style="margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
 
@@ -58,18 +59,24 @@
     </div>
 
     <div class="pull-right m-l-4 m-r-5 col-md-1 no-padding ">
-<!--
-      <select name="select-primitive-choice" id="select-primitive-choice"
-              ng-disabled="isStatic"
-              ng-model="concept.definitionStatus"
-              ng-change="toggleConceptDefinitionStatus()"
-              class="form-control grey darken-4 primitive pull-left"
-              style="width:30px;"
-              ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
-      </select>
--->
-      <span ng-if="concept.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="concept.definitionStatus = 'PRIMITIVE'">≡&nbsp; </span></span>
-              <span ng-if="concept.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding" ng-click="concept.definitionStatus = 'FULLY_DEFINED'">&nbsp; </span></span>
+      <!--
+            <select name="select-primitive-choice" id="select-primitive-choice"
+                    ng-disabled="isStatic"
+                    ng-model="concept.definitionStatus"
+                    ng-change="toggleConceptDefinitionStatus()"
+                    class="form-control grey darken-4 primitive pull-left"
+                    style="width:30px;"
+                    ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
+            </select>
+      -->
+      <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'"
+              class="pull-left p-t-5 p-l-3 white-text primitive-buttons tooltips-left tooltips-light normal-case">
+        <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus()">≡&nbsp; </div>
+        <span>Concept is Fully Defined</span></button>
+      <button ng-if="concept.definitionStatus == 'PRIMITIVE'"
+              class="pull-left  p-t-5 p-l-3 primitive-buttons white-text tooltips-left tooltips-light normal-case">
+        <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus()">&nbsp; </div>
+        <span>Concept is Primitive</span></button>
 
       <div class="pull-right">
         <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
@@ -135,14 +142,14 @@
   </div>
 
   <div class="row">
-    <div class="validation red" ng-repeat="error in validationErrors[concept.conceptId]"><strong>Convention
-                                                                                                 Error:</strong>
+    <div class="validation red" ng-repeat="error in validation.errors[concept.conceptId]"><strong>Convention
+                                                                                                  Error:</strong>
       {{error}}
     </div>
   </div>
   <div class="row">
-    <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[concept.conceptId]"><strong>Convention
-                                                                                                                 Warning:</strong>
+    <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[concept.conceptId]"><strong>Convention
+                                                                                                                  Warning:</strong>
       {{warning}}
     </div>
   </div>
@@ -184,12 +191,14 @@
                   title="Active/Inactive"></button>
 
           <!-- Case Significance -->
-          <button type="button" class=" blue accent-2 button-width custom-button text-center tooltips-right tooltips-light normal-case" ng-disabled="isStatic"
+          <button type="button"
+                  class=" blue accent-2 button-width custom-button text-center tooltips-right tooltips-light normal-case"
+                  ng-disabled="isStatic"
                   ng-click="toggleCaseSignificance(description)">
 
             <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
 
-<span><div class="{{getCaseSignificanceDisplayText(description)}}"></div></span>
+            <span><div class="{{getCaseSignificanceDisplayText(description)}}"></div></span>
           </button>
 
           <!-- Term -->
@@ -289,13 +298,13 @@
         </div>
       </div>
       <div class="row">
-        <div class="validation red" ng-repeat="error in validationErrors[description.descriptionId]"><strong>Convention
-                                                                                                             Error:</strong>
+        <div class="validation red" ng-repeat="error in validation.errors[description.descriptionId]"><strong>Convention
+                                                                                                              Error:</strong>
           {{error}}
         </div>
       </div>
       <div class="row">
-        <div class="validation orange darken-1" ng-repeat="warning in validationWarnings[description.descriptionId]">
+        <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[description.descriptionId]">
           <strong>Convention Warning:</strong> {{warning}}
         </div>
       </div>
@@ -308,8 +317,8 @@
            ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
 
-
-        <div class="row darken-3 edits-row color_{{relationship.groupId}} " ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+        <div class="row darken-3 edits-row color_{{relationship.groupId}} "
+             ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
           <div class="col-md-11 no-padding left-of-edit"
                drop-channel="relationshipObj"
@@ -406,8 +415,12 @@
                               drag-channel="conceptPropertiesObj"
                               drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
               </div>
-              <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding">≡&nbsp; </span></span>
-              <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span class="badge alert-warning ng-binding">&nbsp; </span></span>
+              <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'"
+                    class="pull-left p-t-5 p-l-3 white-text"><span
+                class="badge alert-warning ng-binding">≡&nbsp; </span></span>
+              <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'"
+                    class="pull-left  p-t-5 p-l-3 white-text"><span
+                class="badge alert-warning ng-binding">&nbsp; </span></span>
 
 
               <div ng-if="!isStatic">
@@ -443,20 +456,21 @@
             <button ng-if="$index === 0"
                     class="btn-default md-open-with role-group-buttons tooltips-left tooltips-light normal-case "
                     ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
-                    drag-image="getDragImageForRelationshipGroup(relationshipGroup)"><span>Drag Relationship Group</span></button>
+                    drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
+              <span>Drag Relationship Group</span></button>
           </div>
         </div>
 
 
         <div class="row">
-          <div class="validation red" ng-repeat="error in validationErrors[relationship.relationshipId]"><strong>Convention
-                                                                                                                 Error:</strong>
+          <div class="validation red" ng-repeat="error in validation.errors[relationship.relationshipId]"><strong>Convention
+                                                                                                                  Error:</strong>
             {{error}}
           </div>
         </div>
         <div class="row">
           <div class="validation orange darken-1"
-               ng-repeat="warning in validationWarnings[relationship.relationshipId]">
+               ng-repeat="warning in validation.warnings[relationship.relationshipId]">
             <strong>Convention Warning:</strong> {{warning}}
           </div>
         </div>

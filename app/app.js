@@ -104,7 +104,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location) {
 
     // intialize required SNOMEDCT metadata
     metadataService.initialize('MAIN');
@@ -113,6 +113,15 @@ angular
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
+    var env = $location.host().split(/[.]/)[0];
+    if(env === 'local' || env === 'dev-term')
+    {
+        $rootScope.development = true;   
+    }
+    else if(env === 'uat-term')
+    {
+        $rootScope.uat = true;   
+    }
 
     // begin polling the sca endpoint at 10s intervals
     scaService.startPolling(10000);
