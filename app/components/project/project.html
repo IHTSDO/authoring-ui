@@ -74,7 +74,7 @@
 
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'  || 'NOT_TRIGGERED'"
+            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'  || !project.validationStatus"
                     ng-init="validationCollapsed = false"
                     ng-click="validationCollapsed = !validationCollapsed"
                     type="button"
