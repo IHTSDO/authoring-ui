@@ -1919,12 +1919,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             notificationService.sendMessage('Reverting concept...');
             snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
               notificationService.sendMessage('Concept successfully reverted to saved version', 5000);
-              scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
+
+              // set concept to response
               scope.concept = response;
+
+              // reset the modified concept variables and clear the ui-state
               scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
               scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
               scope.isModified = false;
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
+
+              // sort components and calculate relationship gruops
+              sortDescriptions();
+              sortRelationships();
+              scope.computeRelationshipGroups();
             }, function (error) {
               notificationService.sendMessage('Error reverting concept');
             });
