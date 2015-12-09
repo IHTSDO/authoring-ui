@@ -30,9 +30,7 @@ angular.module('singleConceptAuthoringApp')
           // display text
           scope.comparingText = $routeParams.taskKey ? 'Comparing task to project, please wait just a moment...' : 'Comparing project to mainline content, please wait just a moment...';
           scope.rebasingText = $routeParams.taskKey ? 'Task and project can be merged without issues, pulling changes in from project...' : 'Project can be merged with mainline content without issues, pulling changes in from mainline content...';
-          scope.badStateText = ($routeParams.taskKey ? 'Project ' + $routeParams.projectKey  : 'The mainline content') + ' has changed; the merge review is no longer complete.  Click to regenerate the merge review.';
-
-
+          scope.badStateText = ($routeParams.taskKey ? 'Project ' + $routeParams.projectKey : 'The mainline content') + ' has changed; the merge review is no longer complete.  Click to regenerate the merge review.';
 
           /**
            * Conflict ngTable parameters
@@ -353,6 +351,30 @@ angular.module('singleConceptAuthoringApp')
           // local variable containing the merge poll variable
           var viewedMergePoll = null;
 
+          /**
+           * Starts polling merge review to detect status changes
+           */
+          scope.startMergeReviewPoll = function () {
+            viewedMergePoll = $interval(function () {
+              snowowlService.getMergeReview(review.id).then(function (response) {
+                if (response.status !== 'CURRENT') {
+                  viewedMergePoll = $interval.cancel(viewedMergePoll);
+                  scope.badStateDetected = true;
+                }
+
+              });
+            }, 10000);
+          };
+
+          /**
+           * Stops the merge review polling
+           */
+          scope.stopMergeReviewPoll = function () {
+            if (viewedMergePoll) {
+              viewedMergePoll = $interval.cancel(viewedMergePoll);
+            }
+          };
+
           // local variable containing map of conceptId -> {source, target,
           // merged concepts}
           var conceptMap = {};
@@ -464,14 +486,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // start polling to detect changes in status of merge-review
-            viewedMergePoll = $interval(function () {
-              snowowlService.getMergeReview(review.id).then(function (response) {
-                if (response.status !== 'CURRENT') {
-                   viewedMergePoll = $interval.cancel(viewedMergePoll);
-                  scope.badStateDetected = true;
-                }
-              });
-            }, 10000);
+            scope.startMergeReviewPoll();
           }
 
           function rebase() {
@@ -581,13 +596,16 @@ angular.module('singleConceptAuthoringApp')
           // attempt to finalize merges
           scope.finalizeMerges = function () {
 
+            // cancel polling
+            scope.stopMergeReviewPoll();
 
             notificationService.sendMessage('Applying merged changes....');
+
             snowowlService.mergeAndApply(scope.id).then(function (response) {
               notificationService.sendMessage('Merges successfully applied', 5000);
 
-              // cancel polling
-              viewedMergePoll = $interval.cancel(viewedMergePoll);
+              // ensure bad state is not triggered
+              scope.badStateDetected = false;
 
               // set flag for finalized merge
               scope.rebaseComplete = true;
@@ -604,35 +622,29 @@ angular.module('singleConceptAuthoringApp')
             }, function (error) {
               console.debug(error);
 
-              // send a temporary notification while waiting for BE notification of merge review invalid
-              notificationService.sendError('Unexpected error finalizing merges, please wait a few seconds...');
+              // send a temporary notification while waiting for BE
+              // notification of merge review invalid
+              notificationService.sendError('Unexpected error finalizing merges');
 
               // convenient flag to indicate a bad state was detected
               scope.badStateDetected = true;
-
-              // after 10s (the merge-review polling interval), if still in bad state, send another error
-              $timeout(function() {
-                if (scope.badStateDetected) {
-                  notificationService.sendError('Fatal error finalizing merges; contact an administrator');
-                }
-              }, 10000);
             });
           };
 
-
           // Clears the current review state and
-          scope.reinitialize = function() {
+          scope.reinitialize = function () {
 
             // clear the displayed conflicts
             scope.conflicts = null;
 
-            // set bad state detected to false to trigger display of loading screen
+            // set bad state detected to false to trigger display of loading
+            // screen
             scope.badStateDetected = false;
 
             // clear the ui states (task level), then re-initialize
             if ($routeParams.taskKey) {
-              scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function() {
-                scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function() {
+              scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function () {
+                scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function () {
                   scope.initialize();
                 });
               });
@@ -641,8 +653,8 @@ angular.module('singleConceptAuthoringApp')
 
             // clear the ui states (project level), then re-initialize
             else {
-              scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review').then(function() {
-                scaService.deleteUiStateForUser($routeParams.projectKey + '-merges-accepted').then(function() {
+              scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review').then(function () {
+                scaService.deleteUiStateForUser($routeParams.projectKey + '-merges-accepted').then(function () {
                   scope.initialize();
                 });
               });
@@ -653,6 +665,10 @@ angular.module('singleConceptAuthoringApp')
           // on load, check ui-state for previously viewed merge review id
           scope.initialize = function () {
 
+            // cancel the poll if it is currently running
+            scope.stopMergeReviewPoll();
+
+            // set bad state detection to false
             scope.badStateDetected = false;
 
             // the list of conflicts (id, fsn, viewed)
@@ -665,8 +681,8 @@ angular.module('singleConceptAuthoringApp')
             scope.acceptedConceptIds = [];
 
             // status flags
-            scope.mergesComplete = false; // true if all merge concepts have been
-                                          // accepted
+            scope.mergesComplete = false; // true if all merge concepts have
+                                          // been accepted
             scope.rebaseRunning = false; // true if rebase has been triggered
                                          // when no conflicts were detected
             scope.rebaseComplete = false; // true if either (a) rebase with no

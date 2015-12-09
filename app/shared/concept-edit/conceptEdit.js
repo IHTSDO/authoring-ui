@@ -88,7 +88,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
       {
 
-    //    console.debug('conceptEdit styles', scope.componentStyles);
+        //    console.debug('conceptEdit styles', scope.componentStyles);
 
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
@@ -1035,7 +1035,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.computeRelationshipGroups = function () {
 
           // sort relationships to ensure proper sorting
-          sortRelationships();
+          // sortRelationships();
 
           // clear the relationship groups
           scope.relationshipGroups = {};
@@ -1055,7 +1055,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
 
-         // console.debug('rel groups', scope.relationshipGroups);
+          // console.debug('rel groups', scope.relationshipGroups);
         };
 
 // define characteristic types
@@ -1063,57 +1063,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           {id: 'STATED_RELATIONSHIP', abbr: 'Stated'},
           {id: 'INFERRED_RELATIONSHIP', abbr: 'Inferred'}
         ];
-        /*
-         // Adds an Is A relationship at the specified position
-         // arg: afterIndex, int, the position after which relationship to be
-         // added NOTE: This is relative to is a relationships ONLY
-         scope.addIsaRelationship = function (afterIndex) {
 
-         //// console.debug('adding attribute relationship', afterIndex);
+        scope.addRelationship = function (relGroup, relationshipBefore) {
 
-         var relationship = objectService.getNewIsaRelationship(null);
-
-         // if afterIndex not supplied or invalid, simply add
-         if (afterIndex === null || afterIndex === undefined) {
-         scope.concept.relationships.push(relationship);
-
-         autoSave();
-         }
-
-         // otherwise, add at the index specified
-         else {
-         // find the index of the requested insertion point
-         var rels = scope.getIsARelationships();
-         var relIndex = scope.concept.relationships.indexOf(rels[afterIndex]);
-
-         // console.debug('found relationship index', relIndex);
-
-         // add the relationship
-         scope.concept.relationships.splice(relIndex + 1, 0, relationship);
-
-         autoSave();
-         }
-         };*/
-
-        scope.addRelationship = function (relGroup) {
+          console.debug('adding relationship', relGroup, relationshipBefore);
 
           var relationship = objectService.getNewAttributeRelationship(null);
 
           // set role group if specified
           if (relGroup) {
             relationship.groupId = relGroup;
+
+          }
+          var index = scope.concept.relationships.indexOf(relationshipBefore);
+          if (index === -1) {
+            scope.concept.relationships.push(relationship);
+          } else {
+            scope.concept.relationships.splice(index + 1, 0, relationship);
           }
 
-          scope.concept.relationships.push(relationship);
-
+          // autosave
           autoSave();
 
+          // recompute the relationship groups
           scope.computeRelationshipGroups();
-
         };
 
         scope.removeRelationship = function (relationship) {
-     //     console.debug(scope.concept.relationships, relationship);
+          //     console.debug(scope.concept.relationships, relationship);
           var index = scope.concept.relationships.indexOf(relationship);
           if (index !== -1) {
             scope.concept.relationships.splice(index, 1);
@@ -1273,7 +1250,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
-        //  console.debug('dropped target', data, relationship);
+          //  console.debug('dropped target', data, relationship);
 
           // cancel if static
           if (scope.isStatic) {
@@ -1472,7 +1449,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipGroup = function (relGroup) {
 
-    //      console.debug('dropped relationship group', relGroup);
+          //      console.debug('dropped relationship group', relGroup);
 
           if (!relGroup || relGroup.length === 0) {
             return;
@@ -1492,7 +1469,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           var newGroupId = maxGroup + 1;
 
-       //   console.debug('new group id ', newGroupId);
+          //   console.debug('new group id ', newGroupId);
 
           // strip identifying information from each relationship and push to
           // relationships with new group id
@@ -1732,7 +1709,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // function to check the full concept for validity before saving
         scope.isConceptValid = function (concept) {
 
-        //  console.debug('Checking concept valid', concept);
+          //  console.debug('Checking concept valid', concept);
 
           /*// check the basic concept fields
            if (concept.isLeafInferred === null) {
@@ -1992,7 +1969,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }, true);
 
         scope.getConceptsForAttributeTypeahead = function (searchStr) {
-       //   console.debug('getConceptsForAttributeTypeahead', searchStr, scope.allowedAttributes);
+          //   console.debug('getConceptsForAttributeTypeahead', searchStr,
+          // scope.allowedAttributes);
           var response = scope.allowedAttributes;
           for (var i = 0; i < response.length; i++) {
             for (var j = response.length - 1; j > i; j--) {
@@ -2102,11 +2080,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        //////////////////////////////////////////////////////////
-        // Component More Details Popover Conditional Direction //
-        //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+// Component More Details Popover Conditional Direction //
+//////////////////////////////////////////////////////////
 
-        // set the initial direction based on load position
+// set the initial direction based on load position
         $timeout(function () {
           if (document.getElementById('conceptMoreButton').getBoundingClientRect().left < 500) {
             scope.popoverDirection = 'right';
@@ -2115,10 +2093,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         }, 250);
 
-        // sets the popover direction (left, bottom, right) based on current
-        // position of root element
+// sets the popover direction (left, bottom, right) based on current
+// position of root element
         scope.setPopoverDirection = function ($event) {
-      //    console.debug($event.pageX);
+          //    console.debug($event.pageX);
           if ($event.pageX < 700) {
             scope.popoverDirection = 'right';
           } else {
@@ -2176,36 +2154,38 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        //////////////////////////////////////////////////////////////////////////
-        // CHeck for Promoted Task -- must be static
-        // ////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+// CHeck for Promoted Task -- must be static
+// ////////////////////////////////////////////////////////////////////////
 
-        // function to set static flag if task is promoted, regardless of
-        // other context
+// function to set static flag if task is promoted, regardless of
+// other context
         scope.checkPromotedStatus = function () {
           if ($routeParams.taskKey) {
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               scope.task = response;
 
-        //      console.debug('Task', scope.task);
+              //      console.debug('Task', scope.task);
 
               if (scope.task.status === 'Promoted') {
-          //      console.debug('setting static to true, task is Promoted');
+                //      console.debug('setting static to true, task is
+                // Promoted');
                 scope.isStatic = true;
               }
             });
           }
         };
 
-        // on task reload notifications, reload task and set flag
+// on task reload notifications, reload task and set flag
         scope.$on('reloadTask', function () {
           scope.checkPromotedStatus();
         });
 
-        // on initialization, check task status
+// on initialization, check task status
         scope.checkPromotedStatus();
       }
-    };
+    }
+      ;
 
   }
 )
