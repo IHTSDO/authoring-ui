@@ -612,8 +612,8 @@ angular.module('singleConceptAuthoringApp')
                 if (scope.badStateDetected) {
                   notificationService.sendError('Fatal error finalizing merges; contact an administrator');
                 }
-              }, 10000)
-            })
+              }, 10000);
+            });
           };
 
 
@@ -631,7 +631,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merge-review').then(function() {
                 scaService.deleteUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function() {
                   scope.initialize();
-                })
+                });
               });
               scope.initialize();
             }
@@ -641,7 +641,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review').then(function() {
                 scaService.deleteUiStateForUser($routeParams.projectKey + '-merges-accepted').then(function() {
                   scope.initialize();
-                })
+                });
               });
               scope.initialize();
             }
