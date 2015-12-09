@@ -54,7 +54,7 @@
         </div>
         <div class="p-10 pull-right ">
           <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()"
-            ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED' || 'NOT_TRIGGERED'">
+            ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED' || !project.validationStatus">
             <div
               class="project-icon deep-purple lighten-1 pull-left">
               <div class="md md-school"></div>
