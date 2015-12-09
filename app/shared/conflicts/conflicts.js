@@ -30,6 +30,9 @@ angular.module('singleConceptAuthoringApp')
           // display text
           scope.comparingText = $routeParams.taskKey ? 'Comparing task to project, please wait just a moment...' : 'Comparing project to mainline content, please wait just a moment...';
           scope.rebasingText = $routeParams.taskKey ? 'Task and project can be merged without issues, pulling changes in from project...' : 'Project can be merged with mainline content without issues, pulling changes in from mainline content...';
+          scope.badStateText = ($routeParams.taskKey ? 'Project ' + $routeParams.projectKey  : 'The mainline content') + ' has changed; the merge review is no longer complete.  Click to regenerate the merge review.';
+
+
 
           /**
            * Conflict ngTable parameters
@@ -465,7 +468,7 @@ angular.module('singleConceptAuthoringApp')
               snowowlService.getMergeReview(review.id).then(function (response) {
                 if (response.status !== 'CURRENT') {
                    viewedMergePoll = $interval.cancel(viewedMergePoll);
-                  scope.reinitialize();
+                  scope.badStateDetected = true;
                 }
               });
             }, 10000);
@@ -620,11 +623,11 @@ angular.module('singleConceptAuthoringApp')
           // Clears the current review state and
           scope.reinitialize = function() {
 
-            // set bad state detected to false to prevent further error notifications
-            scope.badStateDetected = false;
+            // clear the displayed conflicts
+            scope.conflicts = null;
 
-            // send user notification
-            notificationService.sendWarning('New content was promoted to ' + ($routeParams.taskKey ? ('project ' + $routeParams.projectKey) : 'MAIN') + ', regenerating merge review data...', 10000);
+            // set bad state detected to false to trigger display of loading screen
+            scope.badStateDetected = false;
 
             // clear the ui states (task level), then re-initialize
             if ($routeParams.taskKey) {
@@ -636,7 +639,7 @@ angular.module('singleConceptAuthoringApp')
               scope.initialize();
             }
 
-            // (project level)
+            // clear the ui states (project level), then re-initialize
             else {
               scaService.deleteUiStateForUser($routeParams.projectKey + '-merge-review').then(function() {
                 scaService.deleteUiStateForUser($routeParams.projectKey + '-merges-accepted').then(function() {
@@ -649,6 +652,8 @@ angular.module('singleConceptAuthoringApp')
 
           // on load, check ui-state for previously viewed merge review id
           scope.initialize = function () {
+
+            scope.badStateDetected = false;
 
             // the list of conflicts (id, fsn, viewed)
             scope.conflicts = null;
