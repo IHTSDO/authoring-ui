@@ -39,7 +39,7 @@ angular.module('singleConceptAuthoringApp.project', [
         $scope.project = response;
 
         $rootScope.classificationRunning = $scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status !== 'COMPLETED';
-        $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED';
+        $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED';
 
         // get the latest classification for this project (if exists)
         if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED') {
@@ -103,7 +103,6 @@ angular.module('singleConceptAuthoringApp.project', [
       // on load, retrieve latest validation
       scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
         console.debug('latest validation', response);
-        notificationService.sendMessage('Validation scheduled', 1000);
         $scope.validationContainer = response;
 
       });
