@@ -378,3 +378,39 @@
 .sca-light .loading-merges.green{background-color:#4CAF50}
 .sca-light .loading-merges.blue.darken-1{background-color:#009cd7}
 .sca-light .loading-merges.red{background-color:#d01c3e}
+/* scolll bars */
+
+.sca-light .sca-container::-webkit-scrollbar, .ta-scroll-window.form-control::-webkit-scrollbar{
+  width: 7px;
+  height: 7px;
+  background-color:#fff
+}
+.sca-light .sca-container::-webkit-scrollbar-button, .ta-scroll-window.form-control::-webkit-scrollbar-button {
+  width: 7px;
+  height: 7px;
+}
+.sca-light .sca-container::-webkit-scrollbar-thumb, .ta-scroll-window.form-control::-webkit-scrollbar-thumb {
+  background: #e1e1e1;
+  border: 0px none #ffffff;
+  border-radius: 62px;
+}
+.sca-light .sca-container::-webkit-scrollbar-thumb:hover, .ta-scroll-window.form-control::-webkit-scrollbar-thumb:hover {
+  background: #57a5cc;
+}
+.sca-light .sca-container::-webkit-scrollbar-thumb:active, .ta-scroll-window.form-control::-webkit-scrollbar-thumb:active {
+  background: #e7e7e7;
+}
+.sca-light .sca-container::-webkit-scrollbar-track, .ta-scroll-window.form-control::-webkit-scrollbar-track {
+  background: #edecee;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+.sca-light .sca-container::-webkit-scrollbar-track:hover, .ta-scroll-window.form-control::-webkit-scrollbar-track:hover {
+  background: #e5e6e8;
+}
+.sca-light .sca-container::-webkit-scrollbar-track:active, .ta-scroll-window.form-control::-webkit-scrollbar-track:active {
+  background: #d8d7d9;
+}
+.sca-light .sca-container::-webkit-scrollbar-corner, .ta-scroll-window.form-control::-webkit-scrollbar-corner {
+  background: transparent;
+} 
