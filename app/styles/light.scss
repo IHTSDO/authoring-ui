@@ -1,3 +1,4 @@
+
 .dashboard-sidebar {
     background-color: #474747;
 }
@@ -373,3 +374,7 @@
 }
 
 .sca-light a.tooltips-left span, .sca-light button.tooltips-left span, .sca-light button[disabled].tooltips-left span{background-color:#e6e6e6;color:#474747}
+
+.sca-light .loading-merges.green{background-color:#4CAF50}
+.sca-light .loading-merges.blue.darken-1{background-color:#009cd7}
+.sca-light .loading-merges.red{background-color:#d01c3e}
