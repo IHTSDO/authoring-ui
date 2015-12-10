@@ -9,6 +9,10 @@ lightest bg #525463
 262e39
 */
 
+.sca-dark .add-shadow,
+.sca-dark input.feedback-search,
+.sca-dark .feedback .btn-group button{background-color:transparent!important}
+.sca-dark .feedback .btn-group button{color:#fff!important}
  .sca-dark .project-page{background-color: #525463}
 .sca-dark{background-color: #525463;text-shadow:none!important; border-color:#414548}
 .sca-dark .saved-list, .sca-dark .saved-list .btn-default, .sca-dark, .sca-dark .model-header h4 {color:#eee}
@@ -430,9 +434,18 @@ color:#fff;
 }
 .sca-dark .classification-report, .sca-dark .feedback-header {
    
-    background-color: #262e39;;
+    background-color: #262e39;
     margin-top: 5px;
     border-top: 1px solid #262e39;
+}
+.sca-dark .classification-btn .btn-default[disabled] span {
+    color: #262e39 !important;
+       background-color: #525463!important;
+}
+.sca-dark .classification-btn .btn-default[disabled] {
+    border-color: #525463 !important;
+   color: #262e39 !important;
+       background-color: #525463!important;
 }
 /*model box*/
 .sca-dark .modelScrollBox {background-color:#3e4142}
@@ -442,4 +455,21 @@ color:#fff;
  
     border-color:#414548;
  
+}
+.sca-dark .pink1.feedback-header-main {
+    background-color: #d81b60;
+    color: #fff;
+}
+.sca-dark .feedback-header-main .pink.darken-2 {
+
+    background-color: #880e4f;
+    color: #fff;
+}
+.sca-dark .sidebar-bg .sidebar-grey {
+       background-color: #2d3743 !important;
+}
+.sca-dark .sidebar-bg .control-label {
+
+    color: #fff;
+  
 }
