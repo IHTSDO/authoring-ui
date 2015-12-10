@@ -135,37 +135,40 @@ section thead input {
 .btn-default.green.darken-4:hover{background-color: #2E7D32;}
 .feedback-chat{overflow-x:hidden; overflow-y: scroll;}
 .feedback-chat p{width:100%;float:left;}
-.feedback-chat::-webkit-scrollbar {
+
+
+.feedback-chat::-webkit-scrollbar, .ta-scroll-window.form-control::-webkit-scrollbar{
+  width: 7px;
+  height: 7px;
+  background-color:#fff
+}
+.feedback-chat::-webkit-scrollbar-button, .ta-scroll-window.form-control::-webkit-scrollbar-button {
   width: 7px;
   height: 7px;
 }
-.feedback-chat::-webkit-scrollbar-button {
-  width: 7px;
-  height: 7px;
-}
-.feedback-chat::-webkit-scrollbar-thumb {
+.feedback-chat::-webkit-scrollbar-thumb, .ta-scroll-window.form-control::-webkit-scrollbar-thumb {
   background: #e1e1e1;
   border: 0px none #ffffff;
   border-radius: 62px;
 }
-.feedback-chat::-webkit-scrollbar-thumb:hover {
+.feedback-chat::-webkit-scrollbar-thumb:hover, .ta-scroll-window.form-control::-webkit-scrollbar-thumb:hover {
   background: #57a5cc;
 }
-.feedback-chat::-webkit-scrollbar-thumb:active {
+.feedback-chat::-webkit-scrollbar-thumb:active, .ta-scroll-window.form-control::-webkit-scrollbar-thumb:active {
   background: #e7e7e7;
 }
-.feedback-chat::-webkit-scrollbar-track {
+.feedback-chat::-webkit-scrollbar-track, .ta-scroll-window.form-control::-webkit-scrollbar-track {
   background: #edecee;
   border: 0px none #ffffff;
   border-radius: 50px;
 }
-.feedback-chat::-webkit-scrollbar-track:hover {
+.feedback-chat::-webkit-scrollbar-track:hover, .ta-scroll-window.form-control::-webkit-scrollbar-track:hover {
   background: #e5e6e8;
 }
-.feedback-chat::-webkit-scrollbar-track:active {
+.feedback-chat::-webkit-scrollbar-track:active, .ta-scroll-window.form-control::-webkit-scrollbar-track:active {
   background: #d8d7d9;
 }
-.feedback-chat::-webkit-scrollbar-corner {
+.feedback-chat::-webkit-scrollbar-corner, .ta-scroll-window.form-control::-webkit-scrollbar-corner {
   background: transparent;
 }
 
