@@ -60,7 +60,7 @@
     
     <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete" class="loading-merges blue darken-1">
 
-      <div class="loading-merges">
+   
         <div class="clock">
           <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
@@ -85,12 +85,12 @@
         </div>
         <h3>{{comparingText}}</h3>
 
-      </div>
+
 
     </div>
     <div ng-if="!badStateDetected && !conflicts && rebaseRunning" class="loading-merges green">
 
-      <div class="loading-merges">
+  
         <div class="clock">
           <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
@@ -115,7 +115,7 @@
         </div>
         <h3>{{rebasingText}}</h3>
       </div>
-    </div>
+
     <!-- Displayed after merges complete -->
     <div class="loading-merges green" ng-if="!badStateDetected && rebaseComplete">
       <div class="all-done">
