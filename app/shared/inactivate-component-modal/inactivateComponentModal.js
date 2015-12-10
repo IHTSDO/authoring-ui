@@ -96,61 +96,65 @@ angular.module('singleConceptAuthoringApp')
       }
     };
 
+    $scope.tableLimit = 200;
+
 // on load, retrieve children and descendants if concept specified
     if ($scope.conceptId && $scope.branch) {
 
       // limit the number of descendants retrieved to prevent overload
-      snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, 0, 200).then(function (response) {
+      snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response) {
         console.debug('descendants', response);
 
         $scope.descendants = response;
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
+
+        // convert the term into a top-level attribute for ng-table sorting
+        angular.forEach($scope.descendants.items, function(descendant) {
+          descendant.sortableName = descendant.fsn.term;
+        })
       });
     }
 
-// get a single inbound relationship to get total number of relationships
-    snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, 0).then(function (response) {
-      console.debug('inbound', response);
 
-      // get the concept relationships again (all)
-      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, response.total).then(function (response2) {
 
-        // temporary array for preventing duplicate children
-        var childrenIds = [];
+    // get the concept relationships again (all)
+    snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
 
-        // initialize the arrays
-        $scope.inboundRelationships = [];
-        $scope.children = [];
+      // temporary array for preventing duplicate children
+      var childrenIds = [];
 
-        // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
-        // make top-level properties
-        angular.forEach(response2.inboundRelationships, function (item) {
+      // initialize the arrays
+      $scope.inboundRelationships = [];
+      $scope.children = []
+      $scope.inboundRelationshipsTotal = response2.total;
 
-          console.debug('checking relationship', item.active, item);
+      // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
+      // make top-level properties
+      angular.forEach(response2.inboundRelationships, function (item) {
 
-          if (item.active) {
-            item.sourceFsn = item.source.fsn;
-            item.typeFsn = item.type.fsn;
+        console.debug('checking relationship', item.active, item);
 
-            // if a child, and not already added (i.e. prevent STATED/INFERRED
-            // duplication), push to children
-            if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
-              childrenIds.push(item.source.id);
-              $scope.children.push(item);
-              $scope.inboundRelationships.push(item);
-            } else {
-              $scope.inboundRelationships.push(item);
-            }
+        if (item.active) {
+          item.sourceFsn = item.source.fsn;
+          item.typeFsn = item.type.fsn;
+
+          // if a child, and not already added (i.e. prevent STATED/INFERRED
+          // duplication), push to children
+          if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
+            childrenIds.push(item.source.id);
+            $scope.children.push(item);
+            $scope.inboundRelationships.push(item);
+          } else {
+            $scope.inboundRelationships.push(item);
           }
-        });
-
-        $scope.inboundRelationshipsLoading = false;
-
-        $scope.tableParamsChildren.reload();
-        $scope.tableParamsInboundRelationships.reload();
-
+        }
       });
+
+      $scope.inboundRelationshipsLoading = false;
+
+      $scope.tableParamsChildren.reload();
+      $scope.tableParamsInboundRelationships.reload();
 
     });
 
@@ -199,6 +203,8 @@ angular.module('singleConceptAuthoringApp')
             params.total($scope.descendants.items.length);
             var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
 
+            console.debug(descendantsDisplayed);
+
             $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
 
@@ -234,8 +240,6 @@ angular.module('singleConceptAuthoringApp')
       $modalInstance.dismiss();
     };
 
-
-
     $scope.addAssociation = function () {
       $scope.associations.push({type: null, concept: null});
     };
@@ -262,8 +266,6 @@ angular.module('singleConceptAuthoringApp')
     // loading flags
     $scope.descendantsLoading = true;
     $scope.inboundRelationshipsLoading = true;
-
-
 
   })
 ;
