@@ -2,7 +2,10 @@
 .concept-headers:first-child {
   padding-top: 15px;
 }
-
+.description textarea, 
+.description input,
+.edits-row textarea, 
+.edits-row input{word-wrap: normal!important;     max-height: 260px;word-break: normal;}
 .table-full-small .badge {
     font-weight: normal;
     font-size: 12px;
