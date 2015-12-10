@@ -2,6 +2,13 @@
 .concept-headers:first-child {
   padding-top: 15px;
 }
+a .side-text{color:#666}
+.side-text {
+    line-height: 22px;
+    margin-left: 4px;
+    font-size: 11px;
+}
+.lower-case{text-transform:lowercase}
 .description textarea, 
 .description input,
 .edits-row textarea, 
