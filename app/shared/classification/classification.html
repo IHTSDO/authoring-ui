@@ -13,7 +13,6 @@
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
         <button ng-if=" classificationContainer.status === 'COMPLETED'"
-                disabled
                 class="btn btn-default green darken-4 pull-right" style="text-transform: none"
                 ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
         </button>

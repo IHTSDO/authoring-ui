@@ -54,20 +54,21 @@ angular.module('singleConceptAuthoringApp')
               return status;
             }
 
-            // get the end time if specified
-            if (status === 'Completed') {
-              var endTime = scope.classificationContainer.completionDate;
-              return status + ' ' + endTime;
+            if (!scope.classificationContainer.status) {
+              return 'Could not determine classification status';
             }
 
-            // otherwise, return the status + start time
-            if (scope.classificationContainer.creationDate) {
-              var startTime = scope.classificationContainer.creationDate;
-              return status + ', started ' + startTime;
+            switch(scope.classificationContainer.status) {
+              case 'COMPLETED':
+              case 'SAVING_IN_PROGRESS':
+              case 'SAVED':
+                var endTime = scope.classificationContainer.completionDate;
+                return status + ', finished ' + endTime;
+                break;
+              default:
+                var startTime = scope.classificationContainer.creationDate;
+                return status + ', started ' + startTime;
             }
-
-            // default -- simply return the status
-            return status;
           };
 
           $rootScope.$on('stopEditing', function (event, data) {
@@ -187,7 +188,7 @@ angular.module('singleConceptAuthoringApp')
                 snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
                   if (response.status === 'SAVED') {
                     scope.classificationContainer = response;
-                    scope.registerSaveEvent();
+                    scope.saveClassificationUiState();
                   }
                 });
               }
@@ -198,25 +199,31 @@ angular.module('singleConceptAuthoringApp')
                snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
                if (response.status === 'SAVED') {
                scope.classificationContainer = response;
-               scope.registerSaveEvent
+               scope.saveClassificationUiState
                }
                });
                }*/
             }, 5000);
           };
-          scope.registerSaveEvent = function () {
+          scope.saveClassificationUiState = function () {
             // cancel the poll
             if (savingClassificationPoll) {
               $interval.cancel(savingClassificationPoll);
             }
 
             // persist this classification id and current time in milliseconds
-            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey,
-              'classification-saved',
+            scaService.saveUiStateForUser(
+              'classification-' + scope.classificationContainer.id,
               {
-                id: scope.id,
-                timestamp: Date.now().getTime()
+                status : scope.classificationContainer.status,
+                timestamp: (new Date()).getTime()
               });
+          };
+          
+          scope.getClassificationUiState = function () {
+            return scaService.getUiStateForUser('classification-' + scope.classificationContainer.id).then(function(response) {
+              return response;
+            })
           };
 
           scope.downloadClassification = function () {
@@ -232,8 +239,8 @@ angular.module('singleConceptAuthoringApp')
           // process the classification object
           scope.$watch('classificationContainer', function () {
 
-            //console.debug('classification container changed',
-            // scope.classificationContainer);
+            console.debug('classification container changed',
+             scope.classificationContainer);
 
             if (!scope.classificationContainer || !scope.classificationContainer.id) {
               //console.debug('Either container or its id is null');
@@ -243,6 +250,18 @@ angular.module('singleConceptAuthoringApp')
             // if the status of the classification is saving, start polling
             if (scope.classificationContainer.status === 'SAVING_IN_PROGRESS') {
               scope.startSavingClassificationPolling();
+            }
+
+            // otherwise, if saved, check if save event previously detected
+            else if (scope.classificationContainer.status === 'SAVED') {
+
+              scope.getClassificationUiState().then(function(response) {
+
+                // if no ui state for this classification id, save one
+                if (!response) {
+                  scope.saveClassificationUiState();
+                }
+              })
             }
 
             // get relationship changes
