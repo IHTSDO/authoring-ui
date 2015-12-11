@@ -9,13 +9,6 @@ angular.module('singleConceptAuthoringApp')
 
     console.debug('promote modal', project, task, flags);
 
-    $scope.falseFlagsFound = false;
-    angular.forEach(flags, function(flag) {
-      if (!flag.value) {
-        $scope.falseFlagsFound = true;
-      }
-    });
-
 
     /////////////////////////////////////////
     // Modal control buttons
