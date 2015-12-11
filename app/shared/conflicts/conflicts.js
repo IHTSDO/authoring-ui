@@ -428,6 +428,11 @@ angular.module('singleConceptAuthoringApp')
 
             scope.id = review.id;
 
+            // check if FAILED
+            if (review.status === 'FAILED') {
+              notificationService.sendError('ERROR: Merge review generation failed.')
+            }
+
             // intiialize the list of conflicts for tabular display
             scope.conflicts = [];
 
