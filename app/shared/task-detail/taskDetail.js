@@ -32,7 +32,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.classificationId = response.data.id;
           $rootScope.classificationRunning = true;
 
-          // broadcast task update to application to capture classification change
+          // broadcast task update to application to capture classification
+          // change
           $rootScope.$broadcast('reloadTask');
 
         });
@@ -74,12 +75,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             // get the ui state for classiifcation saving timestamp and status
             // information
             scaService.getUiStateForUser('classification-' + $scope.task.latestClassificationJson.id).then(function (classificationStatus) {
-              console.debug('classification status retrieved', classificationStatus);
 
-              // get the branch details
+               // get the branch details
               snowowlService.getBranch('MAIN/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '')).then(function (branchStatus) {
-
-                console.debug('promote statuses', classificationStatus, branchStatus, $scope.task);
 
                 /////////////////////////////////////////
                 // Perform Checks
@@ -87,8 +85,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
                 // declare the flags relevant to promotion with their
                 // user-displayed messages
-                console.debug('classification status', $scope.task.latestClassificationJson.status, $scope.task.latestClassificationJson === 'SAVED');
-                flags.push({
+             flags.push({
                   key: 'Classification Completed',
                   message: 'Classification run did not complete for this task. Promote only if you are sure your changes will not affect future classifications.',
                   value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationJson.status === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationJson.status === 'SAVED'
@@ -118,9 +115,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   // otherwise compare the head timestamp of the branch to the
                   // saved timestamp of classification results acceptance
                   else {
-
-                    window.alert((new Date(classificationStatus.timestamp) + '\n' + (new Date(branchStatus.headTimestamp))))
-
                     flags.push({
                       key: 'Classification Current',
                       message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
@@ -158,23 +152,31 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
             // check promotion requirements and proceed accordingly
             checkPromotionRequirements().then(function (response) {
-              console.debug('checked promotion requirements', response);
+
+              var flags = response;
 
               // if no response at all, indicates serious error
-              if (!response) {
-                response = [{
+              if (!flags) {
+                flags = [{
                   key: 'Promotion Requirements Checked',
                   message: 'Unexpected errors checking promotion requirements. This may indicate severe problems with the application. You may promote, but exercise extreme caution',
                   value: false
                 }];
               }
 
+              var falseFlagsFound = false;
+              angular.forEach(flags, function (flag) {
+                if (!flag.value) {
+                  falseFlagsFound = true;
+                }
+              });
+
               // if response contains no flags, simply promote
-              if (response.length === 0) {
-                notificationService.sendMessage('Promoting task... [TODO RENABLE PROMOTE IN TASKDETAIL.JS]');
-                /*scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              if (!falseFlagsFound) {
+                notificationService.sendMessage('Promoting task...');
+                scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   notificationService.sendMessage('Task successfully promoted', 5000);
-                })*/
+                })
               } else {
 
                 // cloear the preparation notification
@@ -190,7 +192,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       return null;
                     },
                     flags: function () {
-                      return response;
+                      return flags;
                     }
                   }
                 });
@@ -198,9 +200,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 modalInstance.result.then(function (proceed) {
                   if (proceed) {
                     notificationService.sendMessage('Promoting task... [TODO RENABLE PROMOTE IN TASKDETAIL.JS]');
-                    /*scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                     notificationService.sendMessage('Task successfully promoted', 5000);
-                     })*/
+                    scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                      notificationService.sendMessage('Task successfully promoted', 5000);
+                    })
                   }
                 }, function () {
                 });
@@ -251,7 +253,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           controller: 'taskCtrl',
           resolve: {
             task: function () {
-              console.debug('resolved task', $scope.task);
               return $scope.task;
             },
             canDelete: function () {
@@ -261,10 +262,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         modalInstance.result.then(function (response) {
-          console.debug('modal closed with response', response);
-          if (response) {
-            $scope.task = response.data;
-          }
+          // broadcast reload task event
+          // NOTE:  Not necessary to broadcast as of 12/11, but in place in case further task revision scenarios require app-wide reload
+          // NOTE:  Also triggers up-to-date task reload here
+          $rootScope.$broadcast('reloadTask');
         }, function () {
         });
       };
