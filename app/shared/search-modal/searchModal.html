@@ -6,7 +6,7 @@
 
   <div class="modal-body">
     <input ng-model="searchStr" style="width: 90%" placeholder="Enter search terms..."
-           ng-model-options='{ debounce: 1000 }' ng-change='search(searchStr)'>
+           ng-model-options="{ debounce: 1000 }' ng-change='search(searchStr)">
 
     <table class="table table-condensed">
       <tr ng-repeat =  "result in results">
