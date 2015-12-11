@@ -32,10 +32,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.classificationId = response.data.id;
           $rootScope.classificationRunning = true;
 
-          // if running, broadcast to edit.js for polling
-          if ($scope.classificationStatus === 'RUNNING') {
-            $rootScope.$broadcast('reloadClassification', $scope.classificationId);
-          }
+          // broadcast task update to application to capture classification change
+          $rootScope.$broadcast('reloadTask');
+
         });
       };
       /**
