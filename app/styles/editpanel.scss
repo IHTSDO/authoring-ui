@@ -1051,29 +1051,101 @@ button.fsn-title-button{width:100%}
 .col-md-1.role-group-drag{float:right}
 .left-of-edit.col-md-11{    width: 94.66667%; padding:2px 0px!important;}
 .edits-row .col-md-1{width: 4.33333%;}
+/* role groups highlighting */
 .edits-row.color_0,
 .edits-row.color_2,
 .edits-row.color_4,
 .edits-row.color_6
-
-{     background-color: #424242;}
+{  background-color: #424242;}
 .edits-row.color_1,
 .edits-row.color_3,
 .edits-row.color_5,
 .edits-row.color_7
 {background-color: #757575;}
-
-
 .color_0.role-group-drag,
 .color_2.role-group-drag,
 .color_4.role-group-drag,
 .color_6.role-group-drag
-{    background-color: #212121;}
+{background-color: #212121;}
 .color_1.role-group-drag,
 .color_3.role-group-drag,
 .color_5.role-group-drag,
 .color_7.role-group-drag
 {background-color: #616161;}
+/*role groups & diff highlighting */
+.edits-row.color_0,
+.edits-row.color_2,
+.edits-row.color_4,
+.edits-row.color_6
+{  background-color: #424242;}
+.edits-row.color_1,
+.edits-row.color_3,
+.edits-row.color_5,
+.edits-row.color_7
+{background-color: #757575;}
+/*Diff highlighting */
+.tealhl .color_0.role-group-drag,
+.tealhl .color_2.role-group-drag,
+.tealhl .color_4.role-group-drag,
+.tealhl .color_6.role-group-drag
+{background-color: #00695c;}
+.tealhl .color_1.role-group-drag,
+.tealhl .color_3.role-group-drag,
+.tealhl .color_5.role-group-drag,
+.tealhl .color_7.role-group-drag
+{background-color: #00695c;}
+.bluehl .color_0.role-group-drag,
+.bluehl .color_2.role-group-drag,
+.bluehl .color_4.role-group-drag,
+.bluehl .color_6.role-group-drag
+{    background-color: #1565C0;}
+.bluehl .color_1.role-group-drag,
+.bluehl .color_3.role-group-drag,
+.bluehl .color_5.role-group-drag,
+.bluehl .color_7.role-group-drag
+{background-color: #1565C0;}
+.redhl .color_0.role-group-drag,
+.redhl .color_2.role-group-drag,
+.redhl .color_4.role-group-drag,
+.redhl .color_6.role-group-drag
+{    background-color: #C62828;}
+.redhl .color_1.role-group-drag,
+.redhl .color_3.role-group-drag,
+.redhl .color_5.role-group-drag,
+.redhl .color_7.role-group-drag
+{background-color: #C62828;}
+
+.bluehl .grey.darken-3 {
+	background-color: #0091d7
+}
+
+.bluehl .grey.darken-3 {
+
+}
+.bluehl  .grey.darken-3  {
+	background-color: #0091d7!important;
+		border-top: 2px solid #0091d7;
+	border-bottom: 2px solid #0091d7;
+}
+
+
+.tealhl .grey.darken-3 {
+	background-color: #00a39b
+}
+.tealhl {
+	 background-color: #00a39b!important;
+	border-top: 2px solid #00a39b;
+	border-bottom: 2px solid #00a39b
+}
+
+.redhl .grey.darken-3 {
+	background-color: #ff6755
+}
+.redlhl {
+	border-top: 2px solid #ff6755;
+	border-bottom: 2px solid #ff6755;
+	
+}
 
 .p-4{padding:4px;}
 .btn-round {
