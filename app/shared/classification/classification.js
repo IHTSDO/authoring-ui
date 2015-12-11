@@ -181,7 +181,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.startSavingClassificationPolling();
 
                 // broadcast reload notification to edit.js
-                $rootScope.$broadcast('reloadClassification');
+                $rootScope.$broadcast('reloadTask');
               }
             });
           };
@@ -200,20 +200,20 @@ angular.module('singleConceptAuthoringApp')
                   console.debug('status', response.status);
                   if (response.status === 'SAVED') {
 
-                    // broadcast reload notification to edit.js
-                    $rootScope.$broadcast('reloadClassification');
+                    // broadcast reloadTask event to capture new classificaiton status
+                    $rootScope.$broadcast('reloadTask');
 
                     // stop the polling
                     $interval.cancel(savingClassificationPoll);
 
-                    // save the ui state based on current parameters
-                    scope.saveClassificationUiState();
+                    // save the ui state based on response status
+                    scope.saveClassificationUiState(response.status);
                   }
                 });
               }
             }, 5000);
           };
-          scope.saveClassificationUiState = function () {
+          scope.saveClassificationUiState = function (status) {
             // cancel the poll
             if (savingClassificationPoll) {
               $interval.cancel(savingClassificationPoll);
@@ -223,7 +223,7 @@ angular.module('singleConceptAuthoringApp')
             scaService.saveUiStateForUser(
               'classification-' + scope.classificationContainer.id,
               {
-                status: scope.classificationContainer.status,
+                status: status,
                 timestamp: (new Date()).getTime()
               });
           };
@@ -267,7 +267,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // if no ui state for this classification id, save one
                 if (!response) {
-                  scope.saveClassificationUiState();
+                  scope.saveClassificationUiState(scope.classificationContainer.status);
                 }
               })
             }
