@@ -89,8 +89,11 @@ angular.module('singleConceptAuthoringApp')
     $scope.deleteTask = function() {
       $scope.msgSuccess = 'Deleting task...';
       $scope.disabled = true;
-      $scope.task.status = 'DELETED';
-      scaService.updateTask($scope.task.projectKey, $scope.task.key, $scope.task).then(function (response) {
+
+      var taskUpdate = {};
+      taskUpdate.status = 'DELETED';
+
+      scaService.updateTask($scope.task.projectKey, $scope.task.key, taskUpdate).then(function (response) {
         $modalInstance.close('DELETED');
       }, function (error) {
         $scope.disabled = false;

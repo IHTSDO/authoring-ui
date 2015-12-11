@@ -170,8 +170,10 @@ angular.module('singleConceptAuthoringApp')
             };
           }());
 
-          scope.saveClassification = function () {
-            notificationService.sendMessage('Saving classification....', 0);
+          /**
+           * Helper function called after saveClassification determines whether task/project eligible
+           */
+          function saveClassificationHelper() {
             snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
               if (!data) {
                 notificationService.sendError('Saving classification unexpectedly failed', 0);
@@ -184,6 +186,34 @@ angular.module('singleConceptAuthoringApp')
                 $rootScope.$broadcast('reloadTask');
               }
             });
+          };
+
+          /**
+           * Scope function called when user clicks Accept Classification Results
+           */
+          scope.saveClassification = function () {
+            notificationService.sendMessage('Saving classification....', 0);
+
+            // perform quick check to ensure task or project are not diverged
+            // TODO This is inelegant, should reconsider
+            var canSave = true;
+            if ($routeParams.taskKey) {
+              scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                if (response.branchState === 'DIVERGED' || response.branchState === 'BEHIND' || response.branchState === 'STALE') {
+                  notificationService.sendError('Task is not up to date (' + response.branchState + '); accept merges and pull in changes');
+                } else {
+                  saveClassificationHelper();
+                }
+              });
+            } else {
+              scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+                if (response.branchState === 'DIVERGED' || response.branchState === 'BEHIND' || response.branchState === 'STALE') {
+                  notificationService.sendError('Task is not up to date (' + response.branchState + '); accept merges and pull in changes');
+                } else {
+                  saveClassificationHelper();
+                }
+              });
+            }
           };
 
           var savingClassificationPoll = null;
@@ -200,7 +230,8 @@ angular.module('singleConceptAuthoringApp')
                   console.debug('status', response.status);
                   if (response.status === 'SAVED') {
 
-                    // broadcast reloadTask event to capture new classificaiton status
+                    // broadcast reloadTask event to capture new classificaiton
+                    // status
                     $rootScope.$broadcast('reloadTask');
 
                     // stop the polling
@@ -213,6 +244,11 @@ angular.module('singleConceptAuthoringApp')
               }
             }, 5000);
           };
+
+          /**
+           * Saves the given status with the current timestamp
+           * @param status
+           */
           scope.saveClassificationUiState = function (status) {
             // cancel the poll
             if (savingClassificationPoll) {
@@ -228,12 +264,19 @@ angular.module('singleConceptAuthoringApp')
               });
           };
 
+          /**
+           * Shorthand function to get the classification ui state (if saved)
+           * @returns {*}
+           */
           scope.getClassificationUiState = function () {
             return scaService.getUiStateForUser('classification-' + scope.classificationContainer.id).then(function (response) {
               return response;
             })
           };
 
+          /**
+           * Function to download classification as a csv file
+           */
           scope.downloadClassification = function () {
 
             snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
@@ -244,7 +287,7 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          // process the classification object
+          // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
 
             console.debug('classification container changed',
