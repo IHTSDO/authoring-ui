@@ -44,6 +44,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
        * @returns {*|promise}
        */
       function checkPromotionRequirements() {
+
+        console.log('Checking Promotion requirements');
         var deferred = $q.defer();
 
         // the set of warning flags returned after checking requirements
@@ -70,13 +72,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               message: 'Classification was not started for this task. Promote only if you are sure your changes will not affect future classifications.',
               value: false
             });
+
+            deferred.resolve(flags);
           } else {
 
             // get the ui state for classiifcation saving timestamp and status
             // information
             scaService.getUiStateForUser('classification-' + $scope.task.latestClassificationJson.id).then(function (classificationStatus) {
 
-               // get the branch details
+              // get the branch details
               snowowlService.getBranch('MAIN/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '')).then(function (branchStatus) {
 
                 /////////////////////////////////////////
@@ -85,7 +89,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
                 // declare the flags relevant to promotion with their
                 // user-displayed messages
-             flags.push({
+                flags.push({
                   key: 'Classification Completed',
                   message: 'Classification run did not complete for this task. Promote only if you are sure your changes will not affect future classifications.',
                   value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationJson.status === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationJson.status === 'SAVED'
@@ -148,10 +152,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
             if ($scope.task.branchState === 'UP_TO_DATE') {
               notificationService.sendWarning('Cannot promote task -- already up to date');
+              return;
             }
 
             // check promotion requirements and proceed accordingly
             checkPromotionRequirements().then(function (response) {
+
+              console.log('Promotion flags: ', response);
 
               var flags = response;
 
@@ -199,9 +206,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
                 modalInstance.result.then(function (proceed) {
                   if (proceed) {
-                    notificationService.sendMessage('Promoting task... [TODO RENABLE PROMOTE IN TASKDETAIL.JS]');
+                    notificationService.sendMessage('Promoting task...');
                     scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                       notificationService.sendMessage('Task successfully promoted', 5000);
+                      $rootScope.$broadcast('reloadTask');
                     })
                   }
                 }, function () {
@@ -262,10 +270,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         modalInstance.result.then(function (response) {
-          // broadcast reload task event
-          // NOTE:  Not necessary to broadcast as of 12/11, but in place in case further task revision scenarios require app-wide reload
-          // NOTE:  Also triggers up-to-date task reload here
-          $rootScope.$broadcast('reloadTask');
+
+          // check for task deletion
+          if (response === 'DELETED') {
+            $location.url('#/home');
+          } else {
+            // broadcast reload task event
+            // NOTE:  Not necessary to broadcast as of 12/11, but in place in
+            // case further task revision scenarios require app-wide reload
+            // NOTE:  Also triggers up-to-date task reload here
+            $rootScope.$broadcast('reloadTask');
+          }
         }, function () {
         });
       };

@@ -215,6 +215,10 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.getTreeNodeIcon = function (node, collapsed) {
+
+          if (!node) {
+            return;
+          }
           if (node.isLeafInferred) {
             return 'glyphicon glyphicon-minus';
           } else if (collapsed) {

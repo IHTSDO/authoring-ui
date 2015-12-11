@@ -3,7 +3,7 @@
     <div class="col-md-12 green classification-header" style="vertical-align: middle">
       <div class="p-5">Classification Report: {{getStatusText()}}
 
-        <button ng-if="relationshipChanges.length > 0"
+        <button ng-if="classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
                 class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
                 ng-click="downloadClassification()" style="text-transform: none">
           <span>Download Classification Results</span>

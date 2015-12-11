@@ -1875,6 +1875,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function resetConceptHistory() {
           scope.conceptHistory = [JSON.parse(JSON.stringify(scope.concept))];
           scope.conceptHistoryPtr = 0;
+
+          scope.computeRelationshipGroups();
         }
 
         /**
@@ -1887,6 +1889,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // console.debug('undo results', scope.concept);
 
             saveModifiedConcept();
+
+            scope.computeRelationshipGroups();
           }
         };
 
@@ -1899,6 +1903,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
 
             saveModifiedConcept();
+
+            scope.computeRelationshipGroups();
           }
         };
 
@@ -1914,6 +1920,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept = objectService.getNewConcept(scope.branch);
             scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
             scope.isModified = false;
+            scope.computeRelationshipGroups();
 
           } else {
             notificationService.sendMessage('Reverting concept...');
