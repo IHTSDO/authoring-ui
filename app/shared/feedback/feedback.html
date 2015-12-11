@@ -59,8 +59,8 @@
         <div ng-if="role === 'REVIEWER'" class="switch p-r-10 ">
           <label>
             Review in Progress
-            <input ng-disabled="role != 'REVIEWER' || reviewComplete" type="checkbox" ng-model="reviewComplete"
-                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
+            <input type="checkbox" ng-model="reviewComplete"
+                   ng-disabled="task.status !== 'Review_Completed'"
                    ng-change="changeReviewStatus(reviewComplete)">
             <span class="lever"></span>
             Review Complete
@@ -371,7 +371,7 @@
       <!-- Feedback messages -->
       <div class="col-md-4 feedback-chat p-10">
 
-        <div class="no-feedback-yet"ng-show="viewedFeedback.length === 0">
+        <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0">
          No Feedback added yet...
         </div>
 
@@ -423,10 +423,10 @@
     </div>
 
   </div>
-  </div>
+ 
 
 
   <!-- Extra padding just in case -->
-  <div class="m-b-50">&nbsp</div>
+  <div class="m-b-50">&nbsp </div>
 
 </section>
