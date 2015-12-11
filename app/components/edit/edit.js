@@ -259,6 +259,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $routeParams.mode = 'validation';
           //  view starts with no concepts
           $scope.concepts = [];
+          $scope.canCreateConcept = false;
           break;
         case 'feedback':
           $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -266,15 +267,18 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           //  view starts with no concepts
           $scope.concepts = [];
+          $scope.canCreateConcept = false;
           break;
         case 'classification':
           $rootScope.pageTitle = 'Classification/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'classification';
           $scope.getClassificationEditPanel();
+          $scope.canCreateConcept = false;
           break;
         case 'conflicts':
           $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
           $routeParams.mode = 'conflicts';
+          $scope.canCreateConcept = false;
 
           //  view starts with no concepts
           $scope.concepts = [];
@@ -282,6 +286,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'edit-default':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
+          $scope.canCreateConcept = true;
 
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
@@ -291,6 +296,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'edit-no-sidebar':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
+          $scope.canCreateConcept = true;
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
@@ -299,6 +305,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'edit-no-model':
           $rootScope.pageTitle = 'Edit Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'edit';
+          $scope.canCreateConcept = true;
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
@@ -306,6 +313,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           break;
         default:
           $rootScope.pageTitle = 'Invalid View Requested';
+          $scope.canCreateConcept = false;
           break;
       }
 
@@ -355,6 +363,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canRebase = false;
     $scope.canPromote = false;
     $scope.canConflict = false;
+    $scope.canCreateConcept = false;
 
     // on load, set the initial view based on classify/validate parameters
     if ($routeParams.mode === 'classify') {
@@ -794,7 +803,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             else {
               var key = item.equivalentConcepts[0];
               angular.forEach(item.equivalentConcepts, function (equivalence) {
-               // console.log(item);
+                // console.log(item);
                 if (equivalence !== key) {
                   var newEq = [];
                   newEq.push(key);
@@ -829,6 +838,16 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
       }
     };
+
+    // on classification reload notification, reload latest classification
+    $scope.$on('reloadClassification', function (event, data) {
+      $scope.classificationContainer = null;
+
+      // add a short time out to ensure don't retrieve previous classification
+      $timeout(function () {
+        $scope.getLatestClassification();
+      }, 2000);
+    });
 
 //////////////////////////////////////////
     // Latest Validation
@@ -888,19 +907,25 @@ angular.module('singleConceptAuthoringApp.edit', [
         var styleObj = {};
 
         if (!concept.effectiveTime) {
-         // do nothing
+          // do nothing
         } else {
 
           angular.forEach(concept.descriptions, function (description) {
             console.debug('checking description', description.effectiveTime);
             if (description.effectiveTime === undefined) {
               console.debug('--> modified');
-              styleObj[description.descriptionId] = {message: null, style: 'tealhl'};
+              styleObj[description.descriptionId] = {
+                message: null,
+                style: 'tealhl'
+              };
             }
           });
           angular.forEach(concept.relationships, function (relationship) {
             if (!relationship.effectiveTime) {
-              styleObj[relationship.relationshipId] = {message: null, style: 'tealhl'};
+              styleObj[relationship.relationshipId] = {
+                message: null,
+                style: 'tealhl'
+              };
             }
           });
         }
@@ -910,204 +935,204 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     };
 
-      //////////////////////////////////////////
-      // Conflict Report & Controls
-      //////////////////////////////////////////
+    //////////////////////////////////////////
+    // Conflict Report & Controls
+    //////////////////////////////////////////
 
-      // Get latest conflict report
-      $scope.mergeReviewCurrent = null;
-      $scope.getLatestConflictsReport = function () {
+    // Get latest conflict report
+    $scope.mergeReviewCurrent = null;
+    $scope.getLatestConflictsReport = function () {
 
-        if (!$scope.taskKey) {
-          // scaService.getConflictReportForProject($routeParams.projectKey).then(function
-          // (response) { $scope.conflictsContainer.conflicts = response ?
-          // response : {}; });
-        } else {
+      if (!$scope.taskKey) {
+        // scaService.getConflictReportForProject($routeParams.projectKey).then(function
+        // (response) { $scope.conflictsContainer.conflicts = response ?
+        // response : {}; });
+      } else {
 
-          /* TODO Removed 11/19, would prefer to have merge-review status as part of task info
+        /* TODO Removed 11/19, would prefer to have merge-review status as part of task info
 
-           snowowlService.getMergeReviewForBranches($scope.parentBranch, $scope.branch).then(function (response) {
+         snowowlService.getMergeReviewForBranches($scope.parentBranch, $scope.branch).then(function (response) {
 
-           if (!response || response.status !== 'CURRENT') {
-           console.debug('No current merge review');
-           $scope.mergeReviewCurrent = false;
-           }
+         if (!response || response.status !== 'CURRENT') {
+         console.debug('No current merge review');
+         $scope.mergeReviewCurrent = false;
+         }
 
-           else if (response.status === 'CURRENT') {
-           console.debug('Current merge review');
-           $scope.mergeReviewCurrent = true;
-           }
-           })*/
-        }
-      };
+         else if (response.status === 'CURRENT') {
+         console.debug('Current merge review');
+         $scope.mergeReviewCurrent = true;
+         }
+         })*/
+      }
+    };
 
-      // Listen for Branch Divergence in order to trigger a conflicts rpoert
-      // refresh,  triggered from taskDetail.js on either (a) initialization
-      // where a task is in DIVERGED state, or (b) notification of task state
-      // change to DIVERGED
+    // Listen for Branch Divergence in order to trigger a conflicts rpoert
+    // refresh,  triggered from taskDetail.js on either (a) initialization
+    // where a task is in DIVERGED state, or (b) notification of task state
+    // change to DIVERGED
 //
-      $rootScope.$on('branchDiverged', function (event) {
+    $rootScope.$on('branchDiverged', function (event) {
 
-        $scope.getLatestConflictsReport();
-      });
+      $scope.getLatestConflictsReport();
+    });
 
-      /**
-       * Set page functionality based on branch state
-       */
-      function setBranchFunctionality(branchState) {
+    /**
+     * Set page functionality based on branch state
+     */
+    function setBranchFunctionality(branchState) {
 
-        console.debug('setBranchFunctionality', branchState, $scope.task);
+      console.debug('setBranchFunctionality', branchState, $scope.task);
 
-        // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
-        // status
-        if (!branchState) {
-          branchState = $scope.task.status === 'New' ? 'UP_TO_DATE' : $scope.task.status;
-        }
-
-        switch (branchState) {
-          case 'FORWARD':
-            $scope.canPromote = $scope.isOwnTask;
-            $scope.canConflict = false;
-            break;
-          case 'UP_TO_DATE':
-            $scope.canPromote = false;
-            $scope.canConflict = false;
-            break;
-          case 'BEHIND':
-            $scope.canPromote = false;
-            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
-            break;
-          case 'STALE':
-            $scope.canPromote = false;
-            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
-            break;
-          case 'DIVERGED':
-            /**
-             * Notes on DIVERGED special handling
-             *
-             * Conflicts are re-generated through branchDiverged
-             * notification sent from taskDetail.js
-             *
-             * Ability to rebase is dependent on state of resolved conflicts,
-             * test is made in ng-disabled attribute of rebase button.  The
-             * conflicts container must have been initialized in
-             * conflicts.js,
-             * and the conceptsToResolve list must be empty (i.e. all
-             * conflicts moved to conceptsResolved)
-             *
-             */
-            $scope.canPromote = false;
-            $scope.canConflict =  $scope.isOwnTask && $scope.task.status !== 'Promoted';
-            break;
-          default:
-            notificationService.sendError('Error:  Cannot determine branch state. Conflict, rebase, and promote functions disabled');
-            $scope.canPromote = false;
-            $scope.canConflict = false;
-        }
+      // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
+      // status
+      if (!branchState) {
+        branchState = $scope.task.status === 'New' ? 'UP_TO_DATE' : $scope.task.status;
       }
 
-      // watch for task updates
-      // NOTE This is duplicated in taskDetail.js, propagate any changes
-      // TODO: Chris Swires -- no changes should be needed here, but this is
-      // the trigger for branch state changes, data is the entirely of the
-      // notification object processed in scaService.js
-      $scope.$on('notification.branchState', function (event, data) {
+      switch (branchState) {
+        case 'FORWARD':
+          $scope.canPromote = $scope.isOwnTask;
+          $scope.canConflict = false;
+          break;
+        case 'UP_TO_DATE':
+          $scope.canPromote = false;
+          $scope.canConflict = false;
+          break;
+        case 'BEHIND':
+          $scope.canPromote = false;
+          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted';
+          break;
+        case 'STALE':
+          $scope.canPromote = false;
+          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted';
+          break;
+        case 'DIVERGED':
+          /**
+           * Notes on DIVERGED special handling
+           *
+           * Conflicts are re-generated through branchDiverged
+           * notification sent from taskDetail.js
+           *
+           * Ability to rebase is dependent on state of resolved conflicts,
+           * test is made in ng-disabled attribute of rebase button.  The
+           * conflicts container must have been initialized in
+           * conflicts.js,
+           * and the conceptsToResolve list must be empty (i.e. all
+           * conflicts moved to conceptsResolved)
+           *
+           */
+          $scope.canPromote = false;
+          $scope.canConflict = $scope.isOwnTask && $scope.task.status !== 'Promoted';
+          break;
+        default:
+          notificationService.sendError('Error:  Cannot determine branch state. Conflict, rebase, and promote functions disabled');
+          $scope.canPromote = false;
+          $scope.canConflict = false;
+      }
+    }
 
-        // check if notification matches this branch
-        if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
-          setBranchFunctionality(data ? data.event : null);
+    // watch for task updates
+    // NOTE This is duplicated in taskDetail.js, propagate any changes
+    // TODO: Chris Swires -- no changes should be needed here, but this is
+    // the trigger for branch state changes, data is the entirely of the
+    // notification object processed in scaService.js
+    $scope.$on('notification.branchState', function (event, data) {
+
+      // check if notification matches this branch
+      if (data.project === $routeParams.projectKey && data.task === $routeParams.taskKey) {
+        setBranchFunctionality(data ? data.event : null);
+      }
+    });
+
+    ////////////////////////////////////
+    // Project Promotion
+    /////////////////////////////////////
+
+    $scope.promoteProject = function () {
+      notificationService.sendMessage('Promoting project....', 0);
+      scaService.promoteProject($routeParams.projectKey).then(function (response) {
+        if (response !== null) {
+          notificationService.sendMessage('Project successfully promoted', 10000);
+        } else {
+          notificationService.sendError('Error promoting project', 10000);
         }
       });
+    };
 
-      ////////////////////////////////////
-      // Project Promotion
-      /////////////////////////////////////
-
-      $scope.promoteProject = function () {
-        notificationService.sendMessage('Promoting project....', 0);
-        scaService.promoteProject($routeParams.projectKey).then(function (response) {
-          if (response !== null) {
-            notificationService.sendMessage('Project successfully promoted', 10000);
-          } else {
-            notificationService.sendError('Error promoting project', 10000);
-          }
-        });
-      };
-
-      // infinite scroll function -- TODO Relocate
-      $scope.isLast = function (check) {
-        var cssClass = check ? 'last' : null;
-        return cssClass;
-      };
+    // infinite scroll function -- TODO Relocate
+    $scope.isLast = function (check) {
+      var cssClass = check ? 'last' : null;
+      return cssClass;
+    };
 
 //////////////////////////////////////////
-      // Initialization
+    // Initialization
 //////////////////////////////////////////
 
-      // if a task, get the task for assigned user information
+    // if a task, get the task for assigned user information
+    if ($routeParams.taskKey) {
+      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        $scope.task = response;
+        $rootScope.currentTask = response;
+        $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
+        setBranchFunctionality($scope.task.branchState);
+      });
+    }
+
+    // start monitoring of task
+    scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
+
+    // TODO: Chris Swires -- delete this once the monitorTask functionality
+    // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
+    snowowlService.getBranch($scope.targetBranch).then(function (response) {
+      setBranchFunctionality(response ? response.state : null);
+    });
+
+    // initialize the container objects
+    $scope.classificationContainer = {
+      id: null,
+      status: 'Loading...',       // NOTE: Overwritten by validation field
+      equivalentConcepts: [],
+      relationshipChanges: []
+    };
+    $scope.validationContainer = {
+      executionStatus: 'Loading...',       // NOTE: Overwritten by validation
+                                           // field
+      report: null
+    };
+    $scope.feedbackContainer = {
+      review: null,
+      feedback: null
+    };
+
+    // initialize with empty concepts list
+    // but do not initialize conflictsToResolve, conflictsResolved
+    $scope.conflictsContainer = {
+      conflicts: null
+    };
+
+    $scope.viewReview = function () {
+      $scope.getLatestReview();
+      $scope.setView('feedback');
+    };
+
+    $scope.$on('reloadTask', function (event, data) {
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
           $rootScope.currentTask = response;
-          $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
+
+          $scope.getLatestClassification();
+          $scope.getLatestValidation();
+
           setBranchFunctionality($scope.task.branchState);
         });
       }
-
-      // start monitoring of task
-      scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
-
-      // TODO: Chris Swires -- delete this once the monitorTask functionality
-      // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
-      snowowlService.getBranch($scope.targetBranch).then(function (response) {
-        setBranchFunctionality(response ? response.state : null);
-      });
-
-      // initialize the container objects
-      $scope.classificationContainer = {
-        id: null,
-        status: 'Loading...',       // NOTE: Overwritten by validation field
-        equivalentConcepts: [],
-        relationshipChanges: []
-      };
-      $scope.validationContainer = {
-        executionStatus: 'Loading...',       // NOTE: Overwritten by validation
-                                             // field
-        report: null
-      };
-      $scope.feedbackContainer = {
-        review: null,
-        feedback: null
-      };
-
-      // initialize with empty concepts list
-      // but do not initialize conflictsToResolve, conflictsResolved
-      $scope.conflictsContainer = {
-        conflicts: null
-      };
-
-      $scope.viewReview = function () {
-        $scope.getLatestReview();
-        $scope.setView('feedback');
-      };
-
-      $scope.$on('reloadTask', function (event, data) {
-        if ($routeParams.taskKey) {
-          scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-            $scope.task = response;
-            $rootScope.currentTask = response;
-
-            $scope.getLatestClassification();
-            $scope.getLatestValidation();
-
-            setBranchFunctionality($scope.task.branchState);
-          });
-        }
-      });
-
-      // populate the container objects
-      $scope.getLatestClassification();
-      $scope.getLatestValidation();
-      $scope.getLatestConflictsReport();
-
     });
+
+    // populate the container objects
+    $scope.getLatestClassification();
+    $scope.getLatestValidation();
+    $scope.getLatestConflictsReport();
+
+  });

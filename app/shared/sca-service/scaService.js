@@ -13,7 +13,7 @@ angular.module('singleConceptAuthoringApp')
       /////////////////////////////////////
 
       // get a project by key
-      getProjectForKey: function(projectKey) {
+      getProjectForKey: function (projectKey) {
         if (!projectKey) {
           return null;
         }
@@ -321,40 +321,40 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
 
             /*
-              TODO Finish implementing this
-            console.debug('autosave response', response);
+             TODO Finish implementing this
+             console.debug('autosave response', response);
 
-            // update the modified list
-            $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (responseIds) {
+             // update the modified list
+             $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (responseIds) {
 
-              var conceptIds = responseIds;
-              console.debug('modified list response', conceptIds);
+             var conceptIds = responseIds;
+             console.debug('modified list response', conceptIds);
 
-              if (!conceptIds || !Array.isArray(conceptIds)) {
-                console.debug('bad response');
-              }
+             if (!conceptIds || !Array.isArray(conceptIds)) {
+             console.debug('bad response');
+             }
 
-              var index = conceptIds.indexOf(concept.conceptId);
-              if (index === -1) {
-                $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds.concat(concept.conceptId)).then(function (response) {
-                  // do nothing
-                }, function (error) {
-                  // do nothing
-                })
-              }
-            }, function (error) {
-              console.debug(' modified list error', error);
+             var index = conceptIds.indexOf(concept.conceptId);
+             if (index === -1) {
+             $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds.concat(concept.conceptId)).then(function (response) {
+             // do nothing
+             }, function (error) {
+             // do nothing
+             })
+             }
+             }, function (error) {
+             console.debug(' modified list error', error);
 
-              // if a 404 error, do not throw error
-              if (error.status === 404) {
-                console.debug('creating new modified list');
-                $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', [ conceptId ]).then(function (response) {
-                  // do nothing
-                }, function (error) {
-                  // do nothing
-                })
-              }
-            });*/
+             // if a 404 error, do not throw error
+             if (error.status === 404) {
+             console.debug('creating new modified list');
+             $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', [ conceptId ]).then(function (response) {
+             // do nothing
+             }, function (error) {
+             // do nothing
+             })
+             }
+             });*/
 
             return response.data;
           }, function (error) {
@@ -383,18 +383,18 @@ angular.module('singleConceptAuthoringApp')
         return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
           function (response) {
 
-           /* // update the modified list
-            $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (conceptIds) {
-              var index = conceptIds.indexOf(conceptId);
-              if (index === -1) {
-                conceptIds.splice(index, 1);
-                $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds).then(function (response) {
-                  // do nothing
-                }, function (error) {
-                  notificationService.sendError('Unexpected error updating the list of modified concepts for this task');
-                })
-              }
-            });*/
+            /* // update the modified list
+             $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (conceptIds) {
+             var index = conceptIds.indexOf(conceptId);
+             if (index === -1) {
+             conceptIds.splice(index, 1);
+             $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds).then(function (response) {
+             // do nothing
+             }, function (error) {
+             notificationService.sendError('Unexpected error updating the list of modified concepts for this task');
+             })
+             }
+             });*/
 
             return response.data;
           }, function (error) {
@@ -571,7 +571,7 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
         });
       },
-        
+
       markTaskReviewComplete: function (projectKey, taskKey, object) {
         $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
           notificationService.sendMessage('Task ' + taskKey + ' Review marked as Complete');
@@ -726,13 +726,13 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/tasks/{taskKey}/promote
 // Promote the task to the Project
       promoteTask: function (projectKey, taskKey) {
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
-          notificationService.sendMessage('Task Promoted Successfully', 10000);
-          return response.data;
+        var deferred = $q.defer();
+        $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
+          deferred.resolve(response.data);
         }, function (error) {
-          notificationService.sendError('Error promoting task', 10000);
-          return null;
+          deferred.reject(error.message);
         });
+        return deferred.promise;
       },
 // GET /projects/{projectKey}/tasks/{taskKey}/rebase
 // Generate the conflicts report between the Task and the Project

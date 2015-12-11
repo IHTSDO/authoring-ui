@@ -2,6 +2,7 @@
   <div class="row no-padding no-gutter">
     <div class="col-md-12 green classification-header" style="vertical-align: middle">
       <div class="p-5">Classification Report: {{getStatusText()}}
+
         <button ng-disabled="relationshipChanges.length === 0"
                 class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
                 ng-click="downloadClassification()" style="text-transform: none">
