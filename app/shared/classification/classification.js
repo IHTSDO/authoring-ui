@@ -176,7 +176,12 @@ angular.module('singleConceptAuthoringApp')
               if (!data) {
                 notificationService.sendError('Saving classification unexpectedly failed', 0);
               } else {
-                notificationService.sendMessage('Classification saved', 5000);
+
+                // start polling
+                scope.startSavingClassificationPolling();
+
+                // broadcast reload notification to edit.js
+                $rootScope.$broadcast('reloadClassification');
               }
             });
           };
@@ -187,7 +192,11 @@ angular.module('singleConceptAuthoringApp')
               if ($routeParams.taskKey) {
                 snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
                   if (response.status === 'SAVED') {
-                    scope.classificationContainer = response;
+
+                    // broadcast reload notification to edit.js
+                    $rootScope.$broadcast('reloadClassification');
+
+                    // save the ui state based on current parameters
                     scope.saveClassificationUiState();
                   }
                 });

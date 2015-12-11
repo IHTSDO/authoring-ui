@@ -21,6 +21,10 @@ angular.module('singleConceptAuthoringApp')
     // Modal control buttons
     /////////////////////////////////////////
 
+    $scope.promote = function() {
+
+    };
+
     $scope.cancel = function () {
       $modalInstance.dismiss();
     };
