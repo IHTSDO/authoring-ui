@@ -502,9 +502,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if inactive, simply set active and autoSave
           if (!scope.concept.active) {
-           if (!scope.errors) {
-             scope.errors = [];
-           }
+            if (!scope.errors) {
+              scope.errors = [];
+            }
             scope.errors.push('Reactivating concepts is not currently supported');
           }
 
@@ -1461,45 +1461,112 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // get the max group id and increment by one (or set to zero if no
-          // groups defined)
-          var maxGroup = -1;
-          angular.forEach(scope.concept.relationships, function (rel) {
-            if (parseInt(rel.groupId) > maxGroup) {
-              maxGroup = parseInt(rel.groupId);
+          scope.validateMrcmRulesForRelationshipGroup(relGroup).then(function (response) {
+
+            // if no validation errors, continue
+            if (response.length === 0) {
+
+              // get the max group id and increment by one (or set to zero if no
+              // groups defined)
+              var maxGroup = -1;
+              angular.forEach(scope.concept.relationships, function (rel) {
+                if (parseInt(rel.groupId) > maxGroup) {
+                  maxGroup = parseInt(rel.groupId);
+                }
+              });
+              var newGroupId = maxGroup + 1;
+
+              //   console.debug('new group id ', newGroupId);
+
+              // strip identifying information from each relationship and push
+              // to relationships with new group id
+              angular.forEach(relGroup, function (rel) {
+                if (rel.active === true) {
+                  var copy = angular.copy(rel);
+
+                  // set the group id based on whether it is an isa relationship
+                  if (metadataService.isIsaRelationship(copy.type.conceptId)) {
+                    copy.groupId = 0;
+                  } else {
+                    copy.groupId = newGroupId;
+                  }
+
+                  // clear the effective time and source information
+                  delete copy.sourceId;
+                  delete copy.effectiveTime;
+                  delete copy.relationshipId;
+
+                  // push to relationships
+                  scope.concept.relationships.push(copy);
+                }
+              });
+
+              // recompute the relationship groups
+              scope.computeRelationshipGroups();
+
+              autoSave();
+            } else {
+              scope.warnings = response;
+              scope.warnings.splice(0, 0, 'Could not drop role group:');
             }
+          }, function (error) {
+            scope.warnings = ['Could not drop relationship group:  unexpected error validating type/value pairs'];
           });
-          var newGroupId = maxGroup + 1;
+        };
 
-          //   console.debug('new group id ', newGroupId);
+        scope.validateMrcmRulesForRelationshipGroup = function (relGroup) {
+          var deferred = $q.defer();
 
-          // strip identifying information from each relationship and push to
-          // relationships with new group id
+          var errors = [];
+          var relsChecked = 0;
           angular.forEach(relGroup, function (rel) {
-            if (rel.active === true) {
-              var copy = angular.copy(rel);
-
-              // set the group id based on whether it is an isa relationship
-              if (metadataService.isIsaRelationship(copy.type.conceptId)) {
-                copy.groupId = 0;
-              } else {
-                copy.groupId = newGroupId;
+            scope.validateMrcmRulesForTypeAndValue(rel.type.fsn, rel.target.fsn).then(function (response) {
+              errors = errors.concat(response);
+              if (++relsChecked === relGroup.length) {
+                deferred.resolve(errors);
               }
-
-              // clear the effective time and source information
-              delete copy.sourceId;
-              delete copy.effectiveTime;
-              delete copy.relationshipId;
-
-              // push to relationships
-              scope.concept.relationships.push(copy);
-            }
+            }, function (error) {
+              deferred.reject('Could not validate type and value pairs');
+            })
           });
 
-          // recompute the relationship groups
-          scope.computeRelationshipGroups();
+          return deferred.promise;
+        };
 
-          autoSave();
+        /**
+         * Function taking names of concepts and determining if they are valid
+         * as type/value
+         * @param type
+         * @param value
+         */
+        scope.validateMrcmRulesForTypeAndValue = function (type, value) {
+
+          var deferred = $q.defer();
+
+          var errors = [];
+          // check type (if not blank)
+          if (type) {
+            if (scope.getConceptsForAttributeTypeahead(type).length === 0) {
+              errors.push('Attribute type ' + type + ' is disallowed.');
+              deferred.resolve(errors);
+            } else {
+              // check target (if not blank)
+              if (value) {
+                scope.getConceptsForValueTypeahead(type, value).then(function (response) {
+                  if (response.length === 0) {
+                    errors.push('Attribute value ' + value + ' is disallowed for attribute type ' + type + '.');
+                  }
+                  deferred.resolve(errors);
+                })
+              } else {
+                deferred.resolve(errors);
+              }
+            }
+          } else {
+            deferred.resolve(errors);
+          }
+
+          return deferred.promise;
         };
 
         scope.getDragImageForConcept = function (fsn) {
@@ -2004,6 +2071,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
         scope.getConceptsForValueTypeahead = function (attributeId, searchStr) {
           return snowowlService.getAttributeValues(scope.branch, attributeId, searchStr).then(function (response) {
+
+            if (!response) {
+              return [];
+            }
+
             // remove duplicates
             for (var i = 0; i < response.length; i++) {
               var status = 'FD';

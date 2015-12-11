@@ -2,7 +2,7 @@
 
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
-    <button type="button" class="close" ng-click="errors = null">×</button>
+    <button class="btn btn-default md md-close pull-right white" ng-click="errors = []" style="background: transparent" tabindex="0"></button>
     <h4>Error!</h4>
 
     <div ng-repeat="error in errors">
@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="alert alert-dismissible alert-warning validation" ng-show="warnings.length > 0">
-    <button type="button" class="close" ng-click="warnings = null">×</button>
+    <button class="btn btn-default md md-close pull-right white" ng-click="warnings = []" style="background: transparent" tabindex="0"></button>
     <h4>Warning!</h4>
 
     <div ng-repeat="warning in warnings">
