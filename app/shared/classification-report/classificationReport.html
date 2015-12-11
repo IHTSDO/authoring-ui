@@ -34,9 +34,7 @@
         <td data-title="'Group'" sortable="'group'">
           {{result.group}}
         </td>
-        <td data-title="'Characteristic Type'" sortable="'characteristicTypeId'">
-          {{parseCharacteristic(result.characteristicTypeId)}}
-        </td>
+     
         <td>
           <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
