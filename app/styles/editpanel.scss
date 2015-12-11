@@ -820,12 +820,26 @@ button.fsn-title-button {
     margin-bottom: 10px;
     text-transform: none
 }
-.task-details .iconbase {
+
+.inactivation-button-modal{padding: 0px;
+    margin: 0px;
+    width: 100%;
+    margin-bottom: 10px;
+    text-transform: none;}
+	.task-details .iconbase,
+.inactivation-button-modal .iconbase {
     width: 40px;
     height: 40px;
     padding: 6px 8px;
     float: left;
     font-size: 18px;
+}
+.inactivation-button-modal:hover{background-color: #ff8f00;}
+
+.inactivation-button-modal .button-link {
+    padding: 8px 15px;
+    float: left;
+    font-weight: 500;
 }
 .review.btn-default:hover {
     background-color: #c2185b;

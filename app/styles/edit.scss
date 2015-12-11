@@ -2,12 +2,20 @@
 .concept-headers:first-child {
   padding-top: 15px;
 }
+
 a .side-text{color:#666}
 .side-text {
     line-height: 22px;
     margin-left: 4px;
     font-size: 11px;
 }
+.green.btn-default:active{    background-color: #43A047;
+    color: #474747;}
+.deep-purple.btn-default:active{    background-color: #512da8;
+    color: #474747;}
+.pink1.btn-default:active{background-color: #c2185b; color: #474747;}
+.blue.darken-1.btn-default:active{background-color: #1976D2; color:#474747}
+.amber.btn-default:active, .amber.btn-default:hover {background-color: #ff8f00;}
 .lower-case{text-transform:lowercase}
 .description textarea, 
 .description input,
