@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', 'notificationService', '$timeout',
-    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, notificationService, $timeout) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval',
+    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, notificationService, $timeout, $interval) {
       return {
         restrict: 'A',
         transclude: false,
@@ -180,6 +180,45 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
+          var savingClassificationPoll = null;
+          scope.startSavingClassificationPolling = function () {
+            savingClassificationPoll = $interval(function () {
+              if ($routeParams.taskKey) {
+                snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
+                  if (response.status === 'SAVED') {
+                    scope.classificationContainer = response;
+                    scope.registerSaveEvent();
+                  }
+                });
+              }
+
+              /*
+               TODO Project Handling
+               else {
+               snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
+               if (response.status === 'SAVED') {
+               scope.classificationContainer = response;
+               scope.registerSaveEvent
+               }
+               });
+               }*/
+            }, 5000);
+          };
+          scope.registerSaveEvent = function () {
+            // cancel the poll
+            if (savingClassificationPoll) {
+              $interval.cancel(savingClassificationPoll);
+            }
+
+            // persist this classification id and current time in milliseconds
+            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey,
+              'classification-saved',
+              {
+                id: scope.id,
+                timestamp: Date.now().getTime()
+              });
+          };
+
           scope.downloadClassification = function () {
 
             snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
@@ -199,6 +238,11 @@ angular.module('singleConceptAuthoringApp')
             if (!scope.classificationContainer || !scope.classificationContainer.id) {
               //console.debug('Either container or its id is null');
               return;
+            }
+
+            // if the status of the classification is saving, start polling
+            if (scope.classificationContainer.status === 'SAVING_IN_PROGRESS') {
+              scope.startSavingClassificationPolling();
             }
 
             // get relationship changes
@@ -233,7 +277,7 @@ angular.module('singleConceptAuthoringApp')
 
             // get equivalent concepts
             if (scope.classificationContainer.equivalentConceptsFound) {
-               var equivalentConcepts = [];
+              var equivalentConcepts = [];
 
               // convert equivalent concepts into format usable by ng-table
               angular.forEach(scope.classificationContainer.equivalentConcepts, function (concept) {

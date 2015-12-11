@@ -13,8 +13,10 @@ angular.module('singleConceptAuthoringApp')
     function createConcept(project, task, concept) {
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+        //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
+       // console.debug('createConcept failure', error);
         deferred.reject(error.message);
       });
       return deferred.promise;
@@ -25,8 +27,10 @@ angular.module('singleConceptAuthoringApp')
     function updateConcept(project, task, concept) {
       var deferred = $q.defer();
       $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
+        //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
+        //console.debug('createConcept failure', error);
         deferred.reject(error.message);
       });
       return deferred.promise;
@@ -35,7 +39,7 @@ angular.module('singleConceptAuthoringApp')
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
 
-     // console.debug('cleaning concept', concept);
+      console.debug('cleaning concept', concept);
 
       // strip unknown tags
       var allowableProperties = [
@@ -94,7 +98,7 @@ angular.module('singleConceptAuthoringApp')
       if (limit > 200) {
         limit = 200;
       }
-      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function (response) {
+      $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/descendants?expand=fsn()&' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit) + '&direct=false').then(function (response) {
         deferred.resolve(response.data);
       }).then(function (error) {
         deferred.reject(error);
@@ -117,16 +121,16 @@ angular.module('singleConceptAuthoringApp')
 
     // get a specific classification result for projectKey, taskKey, and
     // classifierId
-    function getClassificationForTask(projectKey, taskKey, classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
+    function getClassificationForTask(projectKey, taskKey, classifierId) {
+      return $http.get(apiEndpoint + 'MAIN' + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
         return response;
       });
     }
 
     // get a specific classification result for project id, classifier id, and
     // branch
-    function getClassificationForProject(projectKey, classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
+    function getClassificationForProject(projectKey, classifierId) {
+      return $http.get(apiEndpoint + 'MAIN' + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
       });
     }
@@ -941,7 +945,7 @@ angular.module('singleConceptAuthoringApp')
       $http.post(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/apply').then(function(response) {
         deferred.resolve(response.data);
       }, function(error) {
-        deferred.reject(error.statusText);
+        deferred.reject(error.message);
       });
       return deferred.promise;
     }
