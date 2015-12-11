@@ -502,8 +502,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if inactive, simply set active and autoSave
           if (!scope.concept.active) {
-            scope.concept.active = true;
-            scope.saveConcept();
+           if (!scope.errors) {
+             scope.errors = [];
+           }
+            scope.errors.push('Reactivating concepts is not currently supported');
           }
 
           // otherwise, open a select reason modal
