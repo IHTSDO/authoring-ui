@@ -74,7 +74,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         var flags = [];
 
-
         console.debug('task', $scope.task);
 
         ////////////////////////////
@@ -89,46 +88,44 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             value: false
           });
           deferred.resolve(flags);
-        }
-
-        if (!$scope.task.latestClassificationJson) {
+        } else if (!$scope.task.latestClassificationJson) {
           flags.push({
             key: 'Classification Found',
             message: 'ERROR: Could not retrieve classification information for this task. You may promote, but exercise extreme caution.',
             value: false
           });
           deferred.resolve(flags);
+        } else {
+
+          /////////////////////////////////////////
+          // Normal checks
+          /////////////////////////////////////////
+
+          // declare the flags relevant to promotion with their user-displayed
+          // messages
+          flags.push({
+            key: 'Classification Run',
+            message: 'Classification was not run for this task. Promote only if you are sure your changes will not affect future classifications.',
+            value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationStatus === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationStatus === 'SAVED'
+          });
+
+          // check if classification current
+          flags.push({
+            key: 'Classification Current',
+            message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
+            value: $scope.task.latestClassificationJson && $scope.task.latestClassificationJson
+          });
+
+          // check if classification saved
+          flags.push({
+            key: 'Classification Accepted',
+            message: 'Classification was run for this task, but was not accepted. Promoting may dramatically impact the experience of other users.',
+            value: $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'SAVED'
+          });
+
+          deferred.resolve(flags);
+
         }
-
-        /////////////////////////////////////////
-        // Normal checks
-        // Resolve all
-        /////////////////////////////////////////
-
-        // declare the flags relevant to promotion with their user-displayed
-        // messages
-        flags.push({
-          key: 'Classification Run',
-          message: 'Classification was not run for this task. Promote only if you are sure your changes will not affect future classifications.',
-          value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationStatus === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationStatus === 'SAVED'
-        });
-
-
-        // check if classification current
-        flags.push({
-          key: 'Classification Current',
-          message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-          value: $scope.task.latestClassificationJson && $scope.task.latestClassificationJson
-        });
-
-        // check if classification saved
-        flags.push({
-          key: 'Classification Accepted',
-          message: 'Classification was run for this task, but was not accepted. Promoting may dramatically impact the experience of other users.',
-          value: $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'SAVED'
-        });
-
-        deferred.resolve(flags);
 
         return deferred.promise;
       };
