@@ -42,7 +42,7 @@
         ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj"
         drop-channel="NA" drag-image="getDragImageForConcept(concept.fsn)"></button>
 
-      <button ng-click="saveConcept()" type="button"
+      <button type="button"
               class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-left tooltips-light normal-case "
               ng-click="saveConcept()"
               ng-if="isMerge"><span> Accept Merged Version </span></button>
@@ -84,7 +84,7 @@
       </div>
     </div>
     <div class="pull-right no-margin edits concept-title col-md-4 no-padding">
-      <button ng-click="saveConcept()" type="button"
+      <button type="button"
               class="btn-default save-button small-buttons deep-purple lighten-2 md md-save tooltips-left tooltips-light normal-case "
               ng-click="saveConcept()"
               ng-if="isModified && !isStatic"><span> Save Concept </span></button>
@@ -174,7 +174,7 @@
                   class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
-                  ng-click="populateDescriptionMore(description)" popover-append-to-body="true">
+                  popover-append-to-body="true">
             <span>More details</span></button>
 
           <button
@@ -350,12 +350,12 @@
 
               <!-- relationship group -->
               <div class="pull-left rolegroup">
-            <textarea class="msd-elastic"
+            <textarea 
                       ng-disabled="isStatic"
                       ng-model="relationship.groupId"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-change="updateRelationship(relationship)"
-                      class="form-control color_{{relationship.groupId}}" type="text" placeholder="#"
+                      class=" msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
                       ui-on-drop="dropNullOp()">
             </textarea>
               </div>

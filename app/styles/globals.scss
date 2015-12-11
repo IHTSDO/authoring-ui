@@ -4,6 +4,11 @@ html {
 	  -ms-text-size-adjust: 100%; 
   -webkit-text-size-adjust: 100%; 
 }
+
+.classification-header .btn[disabled],
+.tab-content .btn[disabled]
+ {
+    cursor: not-allowed!important; pointer-events: none!important;}
 .sidebar-bg .sidebar-grey{background-color: #ececec;}
 
 .saved.blue{background-color: #00a4e4!important;}
@@ -55,7 +60,7 @@ td textarea, td input, td select {
     margin-left: 20px;
     margin-right: 20px;
     margin-top: 5px;
-    padding: 5px;
+    ping: 5px;
     line-height: 13px;
     font-size: 12px;
 }
@@ -71,10 +76,10 @@ td textarea, td input, td select {
     font-size: 16px;
     line-height: 24px;
 }
-.identity-services{    padding-left: 5px;
-    padding-right: 5px;}
+.identity-services{    ping-left: 5px;
+    ping-right: 5px;}
 .navbar-nav.navbar-left .small-buttons {
-    padding: 0%!important;
+    ping: 0%!important;
     font-size: 25px!important;
     margin-top: 10px;}
 .modal-body .tab-content>.active{height:50vh!important;}
@@ -86,7 +91,7 @@ td textarea, td input, td select {
  .Available.badge {
     background-color: #00b0ff;
     font-size: 13px;
-    padding: 6px 10px;
+    ping: 6px 10px;
     margin: 0px;
     line-height: 13px;
   }
@@ -94,7 +99,7 @@ td textarea, td input, td select {
   .Claimed.badge {
     background-color: grey;
     font-size: 13px;
-    padding: 6px 10px;
+    ping: 6px 10px;
     margin: 0px;
     line-height: 13px;
   }
@@ -131,40 +136,15 @@ td textarea, td input, td select {
     line-height: 18px;
 	    background-color: #F44336;
 }
- .bluehl {
-      border-bottom: 5px solid #0091d7
-    }
-
-    .bluehl .grey.darken-3 {
-      background-color: #0091d7
-    }
-
-    .redhl {
-      border-style: solid;
-      border-width: 5px;
-      border-color: red;
-    }
-
-    .tealhl {
-
-      border-bottom: 5px solid #00a39b
-    }
-
-    .tealhl .grey.darken-3 {
-      background-color: #00a39b
-    }
-
-    .redhl .grey.darken-3 {
-      background-color: #ff6755
-    }
+ 
 
     .validation {
       margin-left: 20px;
       margin-right: 20px;
       margin-top: 5px;
-      padding: 5px;
+      ping: 5px;
     }
-   .md-playlist-add[disabled]{    color: #7c7c7c!important;
+   .md-playlist-[disabled]{    color: #7c7c7c!important;
     background-color: #494949!important;}
 /* drag targets */
     .sca-relgroup-drag-hover {
@@ -182,4 +162,42 @@ td textarea, td input, td select {
       visibility: visible;
     }
     
+/* HR styles */
+.top-modal{background: #fff;    position: relative;
+    padding: 20px 0px !important}
+.top-modal::before,
+.top-modal::after {
+	position: absolute;
+	content: '';
+	pointer-events: none;
+	
+}
 
+/* Triangles */
+.add-color {
+	background: #f5f5f5;
+}
+
+.add-triangles-top, .add-triangles-bottom,{position: relative;
+    padding: 20px 0px!important;}
+.add-triangles-top::before,
+.add-triangles-bottom::after,
+.add-triangles-top::after,
+.add-triangles-bottom::before {
+	left: 50%;
+	width: 16px;
+	height: 16px;
+	-webkit-transform: translateX(-50%) rotate(45deg);
+	transform: translateX(-50%) rotate(45deg);
+}
+
+.add-triangles-top::before {
+	top: -8px;
+	background: #fff;
+}
+
+.add-triangles-bottom::after {
+	bottom: -8px;
+	z-index: 10;
+	background: inherit;
+}

@@ -12,10 +12,13 @@
         <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
                 class="btn btn-default green pull-right"
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
-
+                    <button ng-disabled="classificationContainer.status === 'SAVED'"
+                class="btn btn-default green darken-3 pull-right" style="text-transform: none"
+                 ng-show="classificationContainer.status === 'SAVED'" ><i class="md md-check m-r-10"></i>Classification Results Are Saved
+        </button>
         <button ng-if=" classificationContainer.status === 'COMPLETED'"
                 class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
+                 ng-hide="classificationContainer.status === 'SAVED'" ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
         </button>
 
         <button ng-if=" classificationContainer.status === 'SAVING_IN_PROGRESS'"
@@ -44,7 +47,7 @@
                                                                    aria-controls="home" role="tab"
                                                                    data-toggle="tab"> Classification Results</a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Redundant Stated Relationships</a>
+                                                       data-toggle="tab">Redundant Relationships</a>
           </li>
           <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
                                                   data-toggle="tab">Inferred
