@@ -123,7 +123,7 @@ angular.module('singleConceptAuthoringApp')
     // classifierId
     function getClassificationForTask(projectKey, taskKey, classifierId) {
       return $http.get(apiEndpoint + 'MAIN' + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
-        return response;
+        return response.data;
       });
     }
 

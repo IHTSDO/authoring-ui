@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp')
     /////////////////////////////////////////
 
     $scope.promote = function() {
-
+      $modalInstance.close(true);
     };
 
     $scope.cancel = function () {
