@@ -4,6 +4,11 @@ html {
 	  -ms-text-size-adjust: 100%; 
   -webkit-text-size-adjust: 100%; 
 }
+
+.classification-header .btn[disabled],
+.tab-content .btn[disabled]
+ {
+    cursor: not-allowed!important; pointer-events: none!important;}
 .sidebar-bg .sidebar-grey{background-color: #ececec;}
 
 .saved.blue{background-color: #00a4e4!important;}

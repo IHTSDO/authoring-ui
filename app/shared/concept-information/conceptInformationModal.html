@@ -113,16 +113,18 @@
                 <thead>
                 <th>Type</th>
                 <th>Term</th>
-                <th>Acceptability (US)</th>
+                <th>ACPT (US)</th>
+                 <th>ACPT (GB)</th>
                 </thead>
                 <tbody>
                 <!-- TODO sorting on acceptability map second not working -->
                 <tr
-                  ng-repeat="description in fullConcept.descriptions | orderBy: ['-active', 'type', '-description.acceptabilityMap[900000000000509007]']"
+                  ng-repeat="description in fullConcept.descriptions | orderBy: ['-active', 'type', '-description.acceptabilityMap[900000000000509007]', '-description.acceptabilityMap[900000000000508004]']"
                   ng-class="[{'text-muted': !description.active}]">
                   <td>{{description.type}}</td>
                   <td>{{description.term}}</td>
                   <td>{{description.acceptabilityMap['900000000000509007']}}</td>
+                   <td>{{description.acceptabilityMap['900000000000508004']}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -168,5 +170,4 @@
   <div class="modal-footer">
     <!-- Intentionally left blank -->
   </div>
-</div>
 </div>
