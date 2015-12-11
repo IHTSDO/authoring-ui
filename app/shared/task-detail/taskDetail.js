@@ -1,13 +1,14 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'accountService', 'scaService', 'snowowlService', 'notificationService',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, notificationService) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'accountService', 'scaService', 'snowowlService', 'notificationService', '$q',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, notificationService, $q) {
 
       $scope.task = null;
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
 
-      // set the parent concept for initial taxonomy load (null -> SNOMEDCT root)
+      // set the parent concept for initial taxonomy load (null -> SNOMEDCT
+      // root)
       $scope.taxonomyConcept = null;
 
       $scope.classify = function () {
@@ -39,8 +40,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
       $scope.promote = function () {
 
-        notificationService.sendMessage('Promoting task...', 0);
-
         // force refresh of task status
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           if (response) {
@@ -55,14 +54,112 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               notificationService.sendWarning('Cannot promote task -- already up to date');
             }
 
-            scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-              $rootScope.$broadcast('reloadTask');
-            });
+            $scope.openPromoteModal();
+            /* scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+             $rootScope.$broadcast('reloadTask');
+             });*/
           } else {
             notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion', 0);
           }
         });
+      };
 
+      /**
+       * Function to check a task for any promotion requirements not fulfilled
+       * TODO Move this to scaService or some such place
+       * @returns {*|promise}
+       */
+      function checkPromotionRequirements() {
+        var deferred = $q.defer();
+
+        var flags = [];
+
+
+        console.debug('task', $scope.task);
+
+        ////////////////////////////
+        // ERRORS
+        // Resolve immediately
+        ////////////////////////////
+
+        if (!$scope.task) {
+          flags.push({
+            key: 'Task Verified',
+            message: 'ERROR: Could not retrieve task status.  You may promote, but exercise extreme caution.',
+            value: false
+          });
+          deferred.resolve(flags);
+        }
+
+        if (!$scope.task.latestClassificationJson) {
+          flags.push({
+            key: 'Classification Found',
+            message: 'ERROR: Could not retrieve classification information for this task. You may promote, but exercise extreme caution.',
+            value: false
+          });
+          deferred.resolve(flags);
+        }
+
+        /////////////////////////////////////////
+        // Normal checks
+        // Resolve all
+        /////////////////////////////////////////
+
+        // declare the flags relevant to promotion with their user-displayed
+        // messages
+        flags.push({
+          key: 'Classification Run',
+          message: 'Classification was not run for this task. Promote only if you are sure your changes will not affect future classifications.',
+          value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationStatus === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationStatus === 'SAVED'
+        });
+
+
+        // check if classification current
+        flags.push({
+          key: 'Classification Current',
+          message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
+          value: $scope.task.latestClassificationJson && $scope.task.latestClassificationJson
+        });
+
+        // check if classification saved
+        flags.push({
+          key: 'Classification Accepted',
+          message: 'Classification was run for this task, but was not accepted. Promoting may dramatically impact the experience of other users.',
+          value: $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'SAVED'
+        });
+
+        deferred.resolve(flags);
+
+        return deferred.promise;
+      };
+
+      $scope.openPromoteModal = function () {
+
+        checkPromotionRequirements().then(function (response) {
+          console.debug('checked promotion requirements', response);
+
+          var modalInstance = $modal.open({
+            templateUrl: 'shared/promote-modal/promoteModal.html',
+            controller: 'promoteModalCtrl',
+            resolve: {
+              task: function () {
+                return $scope.task;
+              },
+              project: function () {
+                return null;
+              },
+              flags: function () {
+                return response;
+              }
+            }
+          });
+
+          modalInstance.result.then(function (response) {
+          }, function () {
+          });
+        }, function (error) {
+
+        });
       };
 
       $scope.startValidation = function () {
@@ -77,23 +174,23 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.submitForReview = function () {
         notificationService.sendMessage('Submitting task for review...');
         var updateObj = {
-              'reviewer': {
-                'username': ''
-              }
-            };
-            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
-              scaService.updateTask(
-              $routeParams.projectKey, $routeParams.taskKey,
-              {
-                'status': 'IN_REVIEW'
-              }).then(function (response) {
-                notificationService.sendMessage('Task submitted for review');
-                $scope.task = response;
-              }, function (error) {
-                notificationService.sendError('Error submitting task for review');
-              });
+          'reviewer': {
+            'username': ''
+          }
+        };
+        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+          scaService.updateTask(
+            $routeParams.projectKey, $routeParams.taskKey,
+            {
+              'status': 'IN_REVIEW'
+            }).then(function (response) {
+              notificationService.sendMessage('Task submitted for review');
+              $scope.task = response;
+            }, function (error) {
+              notificationService.sendError('Error submitting task for review');
             });
-        
+        });
+
       };
 
       $scope.updateTask = function () {
@@ -105,7 +202,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               console.debug('resolved task', $scope.task);
               return $scope.task;
             },
-            canDelete: function() {
+            canDelete: function () {
               return true;
             }
           }
@@ -146,17 +243,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         initialize();
       });
 
-      // re-initialize if branch state changes
+// re-initialize if branch state changes
       $scope.$on('notification.branchState', function (event, data) {
         initialize();
       });
 
-      // re-initialize if concept change occurs and task is new
+// re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptChange', function (event, data) {
         initialize();
       });
 
-      // re-initialize if concept change occurs and task is new
+// re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptModified', function (event, data) {
         console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
         if ($scope.task.status === 'Review Completed') {

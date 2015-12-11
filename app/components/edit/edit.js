@@ -815,19 +815,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
-      if (!$scope.taskKey) {
-        snowowlService.getClassificationsForProject($routeParams.projectKey, $scope.targetBranch).then(function (response) {
-          if (!response || response.length === 0) {
-            $scope.classificationContainer = {status: 'No classification found'};
-          } else {
-            // assign results to the classification container (note,
-            // chronological order, use last value)
-            $scope.classificationContainer = response[response.length - 1];
-            $scope.setClassificationComponents();
-          }
-        });
+      if ($scope.taskKey) {
 
-      } else {
         snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.targetBranch).then(function (response) {
           if (!response || response.length === 0) {
             $scope.classificationContainer = {status: 'No classification found'};

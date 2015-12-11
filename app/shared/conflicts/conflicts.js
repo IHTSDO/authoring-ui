@@ -356,7 +356,7 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.startMergeReviewPoll = function () {
             viewedMergePoll = $interval(function () {
-              snowowlService.getMergeReview(review.id).then(function (response) {
+              snowowlService.getMergeReview(scope.id).then(function (response) {
                 if (response.status !== 'CURRENT') {
                   viewedMergePoll = $interval.cancel(viewedMergePoll);
                   scope.badStateDetected = true;

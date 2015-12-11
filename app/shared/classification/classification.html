@@ -12,9 +12,22 @@
                 class="btn btn-default green pull-right"
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
-        <button ng-disabled="relationshipChanges.length === 0"
+        <button ng-if=" classificationContainer.status === 'COMPLETED'"
+                disabled
                 class="btn btn-default green darken-4 pull-right" style="text-transform: none"
                 ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
+        </button>
+
+        <button ng-if=" classificationContainer.status === 'SAVING_IN_PROGRESS'"
+                disabled
+                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
+        </button>
+
+        <button ng-if=" classificationContainer.status === 'SAVED'"
+                disabled
+                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Classification Saved
         </button>
 
       </div>
