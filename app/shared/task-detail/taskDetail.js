@@ -270,10 +270,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         modalInstance.result.then(function (response) {
+          console.debug('UPDATE TASK:', response);
 
           // check for task deletion
           if (response === 'DELETED') {
-            $location.url('#/home');
+            $location.url('home');
           } else {
             // broadcast reload task event
             // NOTE:  Not necessary to broadcast as of 12/11, but in place in
