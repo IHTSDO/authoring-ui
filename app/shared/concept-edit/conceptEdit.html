@@ -132,7 +132,7 @@
               class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-left tooltips-light normal-case"
               ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span></button>
       <div ng-repeat="field in concept.additionalFields">
-            <textarea class="msd-elastic resizable-text form-control"
+            <textarea class="msd-elastic resizable-text"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="field.value" type="text"
                       placeholder="{{field}}">
@@ -288,7 +288,7 @@
           </div>
 
           <div ng-if="description.additionalFields" ng-repeat="field in description.additionalFields">
-                <textarea class="msd-elastic resizable-text form-control"
+                <textarea class="msd-elastic resizable-text "
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">
@@ -371,7 +371,7 @@
             <textarea type="text"
                       ng-model="relationship.type.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
-                      typeahead-focus
+                     
                       class="msd-elastic resizable-text "
                       typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                       typeahead-focus-first="false"
@@ -440,7 +440,7 @@
 
             </div>
             <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
-                <textarea class="msd-elastic resizable-text form-control"
+                <textarea class="msd-elastic resizable-text"
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">

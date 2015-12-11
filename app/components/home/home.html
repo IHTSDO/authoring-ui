@@ -68,11 +68,13 @@
                   <button ng-show="task.latestClassificationJson != null"
                           type="button"
                           ng-class="[{blue : task.latestClassificationJson.status === 'RUNNING'},
+                         
                           {green : task.latestClassificationJson.status === 'COMPLETED'},
                           {red : task.latestClassificationJson.equivalentConceptsFound === true || task.latestClassification.status === 'FAILED'},
+                           {blue : task.latestClassificationJson.status === 'SAVED'},
                            {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
                            {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
-                          class="btn btn-round btn-default lighten-2 pull-left tooltips-right normalcase" >
+                          class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase" >
                     <div class="md md-notifications "></div>
                     <span clas="normalcase"> Classification is {{task.latestClassificationJson.status}}</span>
                   </button> <div class="side-text pull-left">{{task.latestClassificationJson.status}}</div> 
