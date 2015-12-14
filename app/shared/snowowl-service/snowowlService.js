@@ -30,8 +30,8 @@ angular.module('singleConceptAuthoringApp')
         //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
-        //console.debug('createConcept failure', error);
-        deferred.reject(error.message);
+        console.debug('updateConcept failure', error);
+        deferred.reject(error.data.message);
       });
       return deferred.promise;
     }
