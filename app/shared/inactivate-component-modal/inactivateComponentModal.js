@@ -95,7 +95,7 @@ angular.module('singleConceptAuthoringApp')
         $modalInstance.close(results);
       }
     };
-/*
+
     $scope.tableLimit = 200;
 
 // on load, retrieve children and descendants if concept specified
@@ -156,7 +156,7 @@ angular.module('singleConceptAuthoringApp')
       $scope.tableParamsChildren.reload();
       $scope.tableParamsInboundRelationships.reload();
 
-    });*/
+    });
 
 // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({

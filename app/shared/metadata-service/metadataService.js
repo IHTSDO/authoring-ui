@@ -13,20 +13,43 @@ angular.module('singleConceptAuthoringApp')
     var isaRelationshipId = '116680003';
 
     // component inactivation metadata
-    var componentInactivationReasons = [];
+    var conceptInactivationReasons = [];
     // var inactivationParent = '900000000000481005';
+    
     var associationInactivationReasons = [];
     // var associationInactivationParent = '900000000000522004';
+
+    // description inactivation metadata
+    var descriptionInactivationReasons = [];
+
+    function setDescriptionInactivationReasons() {
+      snowowlService.getConceptChildren(descriptionInactivationParent, 'MAIN').then(function(response) {
+
+        // for each child
+        angular.forEach(response, function(child) {
+
+          // strip semantic tag
+          var term = child.substring(0, child.lastIndexOf('('));
+
+          // trim whitespace
+          term.trim();
+
+          // add to list
+
+
+        })
+      })
+    }
 
     /**
      * Sets the static array of concept inactivation reasons
      */
-    function setInactivationReasons() {
+    function setConceptInactivationReasons() {
 
 
       // set the inactivation reasons with combination of enum values and
       // preferred terms
-      componentInactivationReasons = [
+      conceptInactivationReasons = [
         {id: 'AMBIGUOUS', text: 'Ambiguous component'},
         {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
         {id: 'DUPLICATE', text: 'Duplicate component'},
@@ -36,16 +59,13 @@ angular.module('singleConceptAuthoringApp')
         {id: 'PENDING_MOVE', text: 'Pending move'},
         {id: 'RETIRED', text: 'Reason not stated'}
       ];
+    }
 
-      /*
-       NOTE: Cannot use this, as SnowOwl does not use SNOMEDCT concept, but rather abbreviation
-       snowowlService.getConceptRelationshipsInbound(inactivationParent, branch, 0, -1).then(function (items) {
-       items.inboundRelationships.filter(function (item) {
-       return item.characteristicType === 'STATED_RELATIONSHIP' && item.type.id === isaRelationshipId;
-       }).map(function(item) {
-       componentInactivationReasons.push({conceptId : item.source.id, fsn : item.source.fsn});
-       })
-       }); */
+    function setDescriptionInactivationReasons() {
+
+      descriptionInactivationReasons = {
+
+      }
     }
 
     /**
@@ -122,8 +142,8 @@ angular.module('singleConceptAuthoringApp')
        * Gets the concept inactivation reasons.
        * @returns {Array} the concept inactivation reasons
        */
-      getComponentInactivationReasons: function () {
-        return componentInactivationReasons;
+      getConceptInactivationReasons: function () {
+        return conceptInactivationReasons;
       },
 
       /**
@@ -132,6 +152,14 @@ angular.module('singleConceptAuthoringApp')
        */
       getAssociationInactivationReasons: function () {
         return associationInactivationReasons;
+      },
+
+      /**
+       * Get the description inactivation reasons
+       * @returns {Array}
+       */
+      getDescriptionInactivationReasons: function() {
+        return descriptionInactivationReasons;
       },
 
       getProjects: function() {
@@ -150,8 +178,9 @@ angular.module('singleConceptAuthoringApp')
        */
       initialize: function (branchName) {
         branch = branchName;
-        setInactivationReasons();
+        setConceptInactivationReasons();
         setAssociationInactivationReasons();
+        setDescriptionInactivationReasons();
       }
 
     };

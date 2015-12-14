@@ -256,11 +256,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         ];
 
         // Retrieve inactivation reasons from metadata service
-        var inactivateComponentReasons = metadataService.getComponentInactivationReasons();
+        var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
+        var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
 
-        // console.debug('conceptEdit inactivateComponentReasons',
-        // inactivateComponentReasons, inactivateAssociationReasons);
+        // console.debug('conceptEdit inactivateConceptReasons',
+        // inactivateConceptReasons, inactivateAssociationReasons);
 
         scope.removeConcept = function (concept) {
           $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -510,7 +511,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise, open a select reason modal
           else {
-            selectInactivationReason('Concept', inactivateComponentReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+            selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
               notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
               // console.debug(scope.branch, scope.concept.conceptId, reason,
@@ -967,51 +968,67 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
-// languages available
 
-// toggles the acceptability map entry based on dialect name
-// if no value, sets to PREFERRED
+        /*
+          Function to cycle acceptability map for a description & dialect through acceptable values
+          Preferred -> Acceptable -> Not Acceptable -> Preferred
+        */
         scope.toggleAcceptability = function (description, dialectName) {
 
           if (!description.acceptabilityMap) {
             description.acceptabilityMap = {};
           }
 
-          description.acceptabilityMap[scope.dialects[dialectName]] =
-            description.acceptabilityMap[scope.dialects[dialectName]] === 'PREFERRED' ?
-              'ACCEPTABLE' : 'PREFERRED';
+          switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+
+            // if preferred, switch to acceptable
+            case 'PREFERRED':
+              description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
+              break;
+
+            // if acceptable, switch to not acceptable (i.e. clear the dialect key)
+            case 'ACCEPTABLE':
+              delete description.acceptabilityMap[scope.dialects[dialectName]];
+              break;
+
+            // if neither of the above, or blank, set to preferred
+            default:
+              description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+              break;
+          }
 
           autoSave();
         };
 
-        /*
+        scope.getAcceptabilityTooltipText = function (description, dialectName) {
+          if (!description || !dialectName) {
+            return null;
+          }
+          var dialectId = scope.dialects[dialectName];
 
-         conceptEdit.js:536
-         en-gb
-         900000000000509004
-         undefined
-         Object {900000000000509007: "ACCEPTABLE", 900000000000508004: "PREFERRED"}
-         undefined
-         undefined
-         undefined
+          // if no acceptability map specified, return 'N' for Not Acceptable
+          if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
+            return 'Not Acceptable';
+          }
 
-         /*
+          return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
+        }
 
          // returns the display abbreviation for a specified dialect
-         */
         scope.getAcceptabilityDisplayText = function (description, dialectName) {
           if (!description || !dialectName) {
             return null;
           }
           var dialectId = scope.dialects[dialectName];
 
-          // if no acceptability map specified, return null
+          // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
-            return null;
+            return 'N';
           }
 
           // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
+
           //If the desciption is an FSN then set to PREFERRED and
           // continue.Simplest place in execution to catch the creation of
           // new FSN's and update acceptability
@@ -1020,6 +1037,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               description.acceptabilityMap[dialectId] = 'PREFERRED';
             }
           }
+
+          // return the specified abbreviation, or 'N' for Not Acceptable if no abbreviation found
+          var displayText = scope.acceptabilityAbbrs[acceptability];
+          return displayText ? displayText : 'N';
+
           return scope.acceptabilityAbbrs[acceptability];
         };
 
