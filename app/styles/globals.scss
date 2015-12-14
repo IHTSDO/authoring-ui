@@ -4,7 +4,22 @@ html {
 	  -ms-text-size-adjust: 100%; 
   -webkit-text-size-adjust: 100%; 
 }
-
+.timeline-title p {
+    font-size: 13px;
+    margin: 0;
+    font-weight: 400;
+    color: #444!important;
+	background-color:transparent!important;
+	padding-bottom:6px
+}
+.timeline-title p a {
+    
+    color: #444!important;
+	background-color:transparent!important;
+	text-decoration:none!important;
+	font-weight:500;
+	
+}
 .classification-header .btn[disabled],
 .tab-content .btn[disabled]
  {
