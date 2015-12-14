@@ -348,7 +348,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 deferred.reject(response.message);
               }
-            });
+            },
+          function(error) {
+
+            deferred.reject(error);
+          });
 
           return deferred.promise;
         }
@@ -463,6 +467,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
 
               }, function (error) {
+                notificationService.sendError('Error saving concept: ' + error);
               });
             }
 

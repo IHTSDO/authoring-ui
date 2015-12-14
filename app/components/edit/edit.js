@@ -690,9 +690,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           delete relationship.target.moduleId;
           delete relationship.target.active;
           delete relationship.target.definitionStatus;
-          delete relationship.target.characteristicType;
 
-          if (relationship.active === false) {
+          if (relationship.active === false || relationship.characteristicType === 'INFERRED_RELATIONSHIP') {
             clonedConcept.relationships.splice(j, 1);
           }
         }
