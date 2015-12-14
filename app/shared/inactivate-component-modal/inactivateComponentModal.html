@@ -45,7 +45,7 @@
       <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
         <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
           <div class="col-md-12 ">
-            <label> Inactivation Reason </label>
+            <label> Select Inactivation Reason </label>
           </div>
           <div class="col-md-12">
             <select id="taskProject" name="select-reason" class="form-control"
@@ -102,7 +102,7 @@
 <div class="row col-md-12 no-padding top-modal">
         <button type="button" class="btn btn-default amber inactivation-button-modal m-t-20"
                 ng-click="selectReason()"> <span class="md md-settings-power  amber darken-3 iconbase"></span>
-        <span class="button-link">Continue with Inactivation of Concept</span>
+        <span class="button-link">Inactivate {{componentType}}</span>
         </button>
 </div>
 
@@ -153,6 +153,8 @@
               </td>
           </tr>
         </table>
+
+        <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
 
       </div>
     </div>
