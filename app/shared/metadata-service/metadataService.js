@@ -22,23 +22,23 @@ angular.module('singleConceptAuthoringApp')
     // description inactivation metadata
     var descriptionInactivationReasons = [];
 
-    function setDescriptionInactivationReasons() {
-      snowowlService.getConceptChildren(descriptionInactivationParent, 'MAIN').then(function (response) {
-
-        // for each child
-        angular.forEach(response, function (child) {
-
-          // strip semantic tag
-          var term = child.substring(0, child.lastIndexOf('('));
-
-          // trim whitespace
-          term.trim();
-
-          // add to list
-
-        });
-      });
-    }
+//    function setDescriptionInactivationReasons() {
+//      snowowlService.getConceptChildren(descriptionInactivationParent, 'MAIN').then(function (response) {
+//
+//        // for each child
+//        angular.forEach(response, function (child) {
+//
+//          // strip semantic tag
+//          var term = child.substring(0, child.lastIndexOf('('));
+//
+//          // trim whitespace
+//          term.trim();
+//
+//          // add to list
+//
+//        });
+//      });
+//    }
 
     /**
      * Sets the static array of concept inactivation reasons
