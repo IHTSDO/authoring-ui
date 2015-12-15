@@ -1870,6 +1870,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          // In order to ensure proper term-server behavior
+          // if this description is unpublished, but has an SCTID
+          // remove the id to allow proper deletion and update
+          // Otherwise, changes 'revert' to previously saved values
+          if (!description.effectiveTime) {
+            delete description.descriptionId;
+          }
+
           autoSave();
         };
 
@@ -1880,7 +1888,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          // if this relationship is unpublished, but has an SCTID
+          // remove the id to allow proper deletion and update
+          // Otherwise, changes 'revert' to previously saved values
+          if (!relationship.effectiveTime) {
+            delete relationship.relationshipId;
+          }
+
           scope.computeRelationshipGroups();
+
+          console.debug(scope.concept.relationships, scope.relationshipGroups);
+
 
           autoSave(relationship);
 
