@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch, $routeParams) {
+  .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch, $routeParams, $q) {
 
     // required arguments
     $scope.componentType = componentType;
@@ -110,53 +110,94 @@ angular.module('singleConceptAuthoringApp')
         $scope.tableParamsDescendants.reload();
 
         // convert the term into a top-level attribute for ng-table sorting
-        angular.forEach($scope.descendants.items, function(descendant) {
+        angular.forEach($scope.descendants.items, function (descendant) {
           descendant.sortableName = descendant.fsn.term;
         })
       });
     }
 
+    /**
+     * Helper function to get and set a page of, or all, inbound relationships
+     * @param conceptId
+     * @param branch
+     * @param startIndex
+     * @param maxResults
+     */
+    function getInboundRelationships(conceptId, branch, startIndex, maxResults) {
+      var deferred = $q.defer();
+
+      // get the concept relationships again (all)
+      snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
+
+        $scope.inboundRelationshipsLoading = true;
+
+        // temporary array for preventing duplicate children
+        var childrenIds = [];
+
+        // initialize the arrays
+        $scope.inboundRelationships = [];
+        $scope.children = []
+        $scope.inboundRelationshipsTotal = response2.total;
+
+        $scope.statedChildFound = false;
+
+        // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
+        // make top-level properties
+        angular.forEach(response2.inboundRelationships, function (item) {
 
 
-    // get the concept relationships again (all)
-    snowowlService.getConceptRelationshipsInbound($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response2) {
 
-      // temporary array for preventing duplicate children
-      var childrenIds = [];
+          console.debug('checking relationship', item.active, item);
 
-      // initialize the arrays
-      $scope.inboundRelationships = [];
-      $scope.children = []
-      $scope.inboundRelationshipsTotal = response2.total;
+          if (item.active) {
+            item.sourceFsn = item.source.fsn;
+            item.typeFsn = item.type.fsn;
 
-      // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
-      // make top-level properties
-      angular.forEach(response2.inboundRelationships, function (item) {
-
-        console.debug('checking relationship', item.active, item);
-
-        if (item.active) {
-          item.sourceFsn = item.source.fsn;
-          item.typeFsn = item.type.fsn;
-
-          // if a child, and not already added (i.e. prevent STATED/INFERRED
-          // duplication), push to children
-          if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
-            childrenIds.push(item.source.id);
-            $scope.children.push(item);
+            // push to inbound relationships
             $scope.inboundRelationships.push(item);
-          } else {
-            $scope.inboundRelationships.push(item);
+
+            // if a child, and not already added (i.e. prevent STATED/INFERRED
+            // duplication), push to children
+            if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
+              childrenIds.push(item.source.id);
+              $scope.children.push(item);
+
+            } else {
+              // check if this is a stated-relationship child
+              if (item.characteristicType === 'STATED_RELATIONSHIP') {
+                $scope.statedChildFound = true;
+
+                // find the existing item and replace it with the STATED_RELATIONSHIP
+                angular.forEach($scope.children, function(childRel) {
+                  if (childRel.sourceId === item.sourceId) {
+                    childRel = item;
+                  }
+                });
+              }
+            }
           }
-        }
+        });
+
+        $scope.inboundRelationshipsLoading = false;
+
+        $scope.tableParamsChildren.reload();
+        $scope.tableParamsInboundRelationships.reload();
+
+        deferred.resolve(true);
+
       });
 
-      $scope.inboundRelationshipsLoading = false;
+      return deferred.promise;
+    }
 
-      $scope.tableParamsChildren.reload();
-      $scope.tableParamsInboundRelationships.reload();
+    // get the limited number of inbound relationships for display
+    getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function() {
 
-    });
+      // detect case where no stated parent-child relationship was found, but more results may exist
+      if ($scope.statedChildFound = false && $scope.inboundRelationships.length === $scope.tableLimit) {
+        getInboundRelationships($scope.conceptId, $scope.branch, -1, -1);
+      }
+    }) ;
 
 // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
@@ -263,9 +304,11 @@ angular.module('singleConceptAuthoringApp')
     $scope.associations = [];
     $scope.addAssociation();
 
-    // loading flags
+    // display flags
     $scope.descendantsLoading = true;
     $scope.inboundRelationshipsLoading = true;
 
+    // flag for whether a stated parent-child relationship exists for this concept (disable inactivation)
+    $scope.statedChildFound = false;
   })
 ;
