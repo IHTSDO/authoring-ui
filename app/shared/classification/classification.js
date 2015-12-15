@@ -191,7 +191,7 @@ angular.module('singleConceptAuthoringApp')
            * Scope function called when user clicks Accept Classification Results
            */
           scope.saveClassification = function () {
-            notificationService.sendMessage('Saving classification....', 0);
+            notificationService.sendMessage('Saving classification....', 10000);
 
             // perform quick check to ensure task or project are not diverged
             // TODO This is inelegant, should reconsider
