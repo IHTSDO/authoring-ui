@@ -980,7 +980,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     function setBranchFunctionality(branchState) {
 
-      console.debug('setBranchFunctionality', branchState, $scope.task);
+    //  console.debug('setBranchFunctionality', branchState, $scope.task);
 
       // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
       // status
@@ -1073,7 +1073,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
         $rootScope.currentTask = response;
-        $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
+
+        // put in a slight timeout to ensure that account details have been retrieved
+        // This fixes a problem on reload of application while in edit view
+        $timeout(function() {
+          $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
+        }, 1000);
+
         setBranchFunctionality($scope.task.branchState);
       });
     }
