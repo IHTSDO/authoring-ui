@@ -6745,11 +6745,12 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
   left: -14px;
   right: auto;
 }
-.timeline-title {
+.timeline-title, .timeline-title p, .timeline-title i,  .timeline-title em, .timeline-title span {
   font-size: 13px;
   margin: 0;
   font-weight: 400;
-  color:#444;
+  color:#444!important;
+  background-color:transparent!important
 }
 .timeline-body {
   line-height: 17px;
