@@ -64,7 +64,6 @@ angular.module('singleConceptAuthoringApp')
               case 'SAVED':
                 var endTime = scope.classificationContainer.completionDate;
                 return status + ', finished ' + endTime;
-                break;
               default:
                 var startTime = scope.classificationContainer.creationDate;
                 return status + ', started ' + startTime;
@@ -186,7 +185,7 @@ angular.module('singleConceptAuthoringApp')
                 $rootScope.$broadcast('reloadTask');
               }
             });
-          };
+          }
 
           /**
            * Scope function called when user clicks Accept Classification Results
@@ -271,7 +270,7 @@ angular.module('singleConceptAuthoringApp')
           scope.getClassificationUiState = function () {
             return scaService.getUiStateForUser('classification-' + scope.classificationContainer.id).then(function (response) {
               return response;
-            })
+            });
           };
 
           /**
@@ -313,7 +312,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.saveClassificationUiState(scope.classificationContainer.status);
                 }
               })
-            }
+            };
 
             // get relationship changes
             snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {

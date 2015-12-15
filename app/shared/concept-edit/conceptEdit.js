@@ -1019,7 +1019,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
-        }
+        };
 
          // returns the display abbreviation for a specified dialect
         scope.getAcceptabilityDisplayText = function (description, dialectName) {
@@ -1556,7 +1556,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             }, function (error) {
               deferred.reject('Could not validate type and value pairs');
-            })
+            });
           });
 
           return deferred.promise;
@@ -1586,7 +1586,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     errors.push('Attribute value ' + value + ' is disallowed for attribute type ' + type + '.');
                   }
                   deferred.resolve(errors);
-                })
+                });
               } else {
                 deferred.resolve(errors);
               }
