@@ -191,7 +191,7 @@ angular.module('singleConceptAuthoringApp')
            * Scope function called when user clicks Accept Classification Results
            */
           scope.saveClassification = function () {
-            notificationService.sendMessage('Saving classification....', 10000);
+            notificationService.sendMessage('Saving classification....');
 
             // perform quick check to ensure task or project are not diverged
             // TODO This is inelegant, should reconsider
@@ -228,6 +228,8 @@ angular.module('singleConceptAuthoringApp')
                 snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
                   console.debug('status', response.status);
                   if (response.status === 'SAVED') {
+
+                    notificationService.sendMessage('Classification saved', 5000);
 
                     // broadcast reloadTask event to capture new classificaiton
                     // status
