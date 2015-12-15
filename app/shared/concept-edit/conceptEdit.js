@@ -823,19 +823,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // List of acceptable reasons for inactivating a description
 // TODO:  More metadata to be retrieved on init and stored
-        var inactivateDescriptionReasons = [
-
-          {id: '', text: 'No reason'},
-          {id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere'},
-          {id: 'CONCEPT_NON_CURRENT', text: 'Concept not current'},
-          {id: 'DUPLICATE', text: 'Duplicate concept'},
-          {id: 'ERRONEOUS', text: 'Erroneous concept'},
-          {id: 'INAPPROPRIATE', text: 'Inappropriate concept'},
-          {id: 'LIMITED', text: 'Limited concept'},
-          {id: 'OUTDATED', text: 'Outdated concept'},
-          {id: 'PENDING_MOVE', text: 'Pending move'}
-
-        ];
+//        var inactivateDescriptionReasons = [
+//
+//          {id: '', text: 'No reason'},
+//          {id: 'MOVED_ELSEWHERE', text: 'Concept moved elsewhere'},
+//          {id: 'CONCEPT_NON_CURRENT', text: 'Concept not current'},
+//          {id: 'DUPLICATE', text: 'Duplicate concept'},
+//          {id: 'ERRONEOUS', text: 'Erroneous concept'},
+//          {id: 'INAPPROPRIATE', text: 'Inappropriate concept'},
+//          {id: 'LIMITED', text: 'Limited concept'},
+//          {id: 'OUTDATED', text: 'Outdated concept'},
+//          {id: 'PENDING_MOVE', text: 'Pending move'}
+//
+//        ];
 
 // get viewed descriptions
         scope.getDescriptions = function () {
@@ -1049,7 +1049,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var displayText = scope.acceptabilityAbbrs[acceptability];
           return displayText ? displayText : 'N';
 
-          return scope.acceptabilityAbbrs[acceptability];
+          //return scope.acceptabilityAbbrs[acceptability];
         };
 
         ////////////////////////////////

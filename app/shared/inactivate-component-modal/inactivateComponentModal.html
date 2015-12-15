@@ -117,7 +117,7 @@
           <button type="button"
                   class="btn btn-default amber inactivation-button-modal m-t-20"
                   ng-click="selectReason()"
-                  ng-if="!inboundRelationshipsLoading && !statedChildrenFound"><span
+                  ng-if="!inboundRelationshipsLoading && !statedChildrenFound || componentType !== 'Concept'"><span
             class="md md-settings-power  amber darken-3 iconbase"></span>
 
             <span class="button-link">Inactivate {{componentType}}</span>
