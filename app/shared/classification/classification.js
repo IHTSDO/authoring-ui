@@ -182,7 +182,11 @@ angular.module('singleConceptAuthoringApp')
                 scope.startSavingClassificationPolling();
 
                 // broadcast reload notification to edit.js
-                $rootScope.$broadcast('reloadTask');
+                if ($routeParams.taskKey) {
+                  $rootScope.$broadcast('reloadTask');
+                } else {
+                  $rootScope.$broadcast('reloadProject');
+                }
               }
             });
           }
@@ -248,6 +252,25 @@ angular.module('singleConceptAuthoringApp')
                     // save the ui state based on response status
                     scope.saveClassificationUiState(response.status);
                   }
+                });
+              } else {
+                snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
+               //   console.debug('status', response.status);
+                  if (response.status === 'SAVED') {
+
+                    notificationService.sendMessage('Classification saved', 5000);
+
+                    // broadcast reloadTask event to capture new classificaiton
+                    // status
+                    $rootScope.$broadcast('reloadTask');
+
+                    scope.stopSavingClassificationPolling();
+
+                    // save the ui state based on response status
+                    scope.saveClassificationUiState(response.status);
+                  }
+
+               //   console.debug('response not saved');
                 });
               }
             }, 5000);
