@@ -200,7 +200,6 @@ angular.module('singleConceptAuthoringApp')
       angular.forEach($scope.children, function (item) {
         if (item.characteristicType === 'STATED_RELATIONSHIP') {
           $scope.statedChildrenFound = true;
-          $scope.actionTab = 2;
         }
       });
     }

@@ -10,7 +10,7 @@
 
     <!-- Display if concept cannot be activated due to stated parent condition -->
     <div class="alert alert-warning p-10" ng-if="statedChildrenFound">
-      Cannot inactivate concept:  Concept is a stated parent.
+      Warning:  Concept is a stated parent. Inactivation will reassign children to the nearest proximal concept.
     </div>
 
     <div class="row classification-report ">
@@ -117,7 +117,7 @@
           <button type="button"
                   class="btn btn-default amber inactivation-button-modal m-t-20"
                   ng-click="selectReason()"
-                  ng-if="!inboundRelationshipsLoading && !statedChildrenFound || componentType !== 'Concept'"><span
+                  ng-disabled="inboundRelationshipsLoading'"><span
             class="md md-settings-power  amber darken-3 iconbase"></span>
 
             <span class="button-link">Inactivate {{componentType}}</span>
