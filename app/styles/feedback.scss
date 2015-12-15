@@ -3,8 +3,8 @@
 .feedback-report input[type=checkbox]:after {
     content: "";
     display: block;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     margin-top: -2px;
     margin-right: 5px;
     border: 1px solid #DBDBDB;
@@ -20,10 +20,10 @@ label input[type=checkbox] {
     width: 10%;
 }
 .feedback .col-concept {
-    width: 60%;
+    width: 70%;
 }
 .feedback .col-controls{
-    width: 30%;
+    width: 10%;
     padding-right: 0px;
 }
 .h-45 {
@@ -83,17 +83,26 @@ section thead input {
     line-height: 23px;
     position: relative;
 }
-.feedback-view input[type=checkbox]:after {
+.feedback-view input[type=checkbox]:after,
+.feedback-view.table-full thead tr > th input[type=checkbox]:after{
     width: 16px!important;
     height: 16px!important;
     margin: 0px!important;
     font-size: 14px!important;
 }
+.table-full thead tr > th input[type=checkbox]{ margin-top: 5px!important;margin-left: 3px!important;margin-right: 0px!important;margin-bottom: 0px!important;}
+.table-full thead tr > th input[type=checkbox]:after {
+    width: 16px;
+    height: 16px;
+  margin: 0px!important;
+    font-size: 14px!important;
+}
+.table > thead > tr > th{ padding: 4px 2px!important;   vertical-align: middle !important;line-height:12px}
 .feedback-view .table > thead > tr > th,
 .feedback-view .table > thead > tr > td {
     padding: 5px;
     line-height: 12px;
-    vertical-align: middle;
+   
     border-top: 1px solid #F0F0F0;
     vertical-align: middle !important;
     border-bottom: 2px solid #F0F0F0;
