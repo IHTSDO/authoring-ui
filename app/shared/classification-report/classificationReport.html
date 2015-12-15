@@ -17,6 +17,11 @@
     </div>
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
+      <tr ng-if="$data.length === 0">
+        <td class="no-table-data">
+              No Results
+        </td>
+        </tr>
       <tr ng-repeat="result in $data">
         <td data-title="'Differences'" sortable="'changeNature'">
           <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
@@ -54,9 +59,14 @@
     </div>
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
+      <tr ng-if="$data.length === 0">
+        <td class="no-table-data">
+              No Results
+        </td>
+        </tr>
       <tr ng-repeat="result in $data">
 
-
+        
         <td data-title="'Concept'" sortable="'leftConceptLabel'">
           {{result.leftConceptLabel}}
         </td>
