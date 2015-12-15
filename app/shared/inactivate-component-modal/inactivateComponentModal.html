@@ -8,35 +8,48 @@
 
   <div class="modal-body">
 
+    <!-- Display if concept cannot be activated due to stated parent condition -->
+    <div class="alert alert-warning p-10" ng-if="statedChildrenFound">
+      Cannot inactivate concept:  Concept is a stated parent.
+    </div>
+
     <div class="row classification-report ">
-      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
 
-        <li role="presentation" class="active"><a style="margin: 0px" ng-click="actionTab=1"
-                                                  aria-controls="home" role="tab"
-                                                  data-toggle="tab"> Inactivation Reason</a></li>
-        <li role="presentation" ng-show="conceptId" class=""><a ng-click="actionTab=2" aria-controls="home"
-                                                                role="tab"
-                                                                data-toggle="tab">Children
-                                                                                  ({{!inboundRelationshipsLoading ?
-                                                                                  children.length : 'Loading'}})</a>
-        </li>
+      <li role="presentation" ng-class="{active : actionTab === 1}" class=""><a style="margin: 0px"
+                                                                                ng-click="actionTab=1"
+                                                                                aria-controls="home" role="tab"
+                                                                                data-toggle="tab"> Inactivation
+                                                                                                   Reason</a></li>
+      <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 2}" class=""><a
+        ng-click="actionTab=2" aria-controls="home"
+        role="tab"
+        data-toggle="tab">Children
+                          ({{!inboundRelationshipsLoading ?
+                          children.length : 'Loading'}})</a>
+      </li>
 
-        <li role="presentation" ng-show="conceptId" class=""><a ng-click="actionTab=3" aria-controls="home"
-                                                                role="tab"
-                                                                data-toggle="tab">Descendants ({{!descendantsLoading
-                                                                                  ? descendants.total :
-                                                                                  'Loading'}})</a>
-        </li>
+      <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 3}" class=""><a
+        ng-click="actionTab=3" aria-controls="home"
+        role="tab"
+        data-toggle="tab">Descendants ({{!descendantsLoading
+                          ? descendants.total :
+                          'Loading'}})</a>
+      </li>
 
-        <li role="presentation" ng-show="conceptId" class=""><a ng-click="actionTab=4" aria-controls="home"
-                                                                role="tab"
-                                                                data-toggle="tab">All Incoming
-                                                                                  ({{!inboundRelationshipsLoading
-                                                                                  ? inboundRelationshipsTotal :
-                                                                                  'Loading'}})</a>
-        </li>
+      <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 4}" class=""><a
+        ng-click="actionTab=4" aria-controls="home"
+        role="tab"
+        data-toggle="tab">All Incoming
+                          ({{!inboundRelationshipsLoading
+                          ? inboundRelationshipsTotal :
+                          'Loading'}})</a>
+      </li>
       </ul>
     </div>
+
+
+
 
     <!-- Tab panes -->
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
@@ -44,6 +57,8 @@
       <!-- reasons select -->
       <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
         <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
+
+
           <div class="col-md-12 ">
             <label> Select Inactivation Reason </label>
           </div>
@@ -56,16 +71,15 @@
           </div>
         </div>
 
-        <div class= "col-sm-12 no-padding  add-color" ng-if="componentType === 'Concept'">
-    
+        <div class="col-sm-12 no-padding  add-color" ng-if="componentType === 'Concept'">
 
 
           <div class="row p-t-10">
             <div class="col-md-4">
-            <label>   Association Type    </label>
+              <label> Association Type </label>
             </div>
             <div class="col-md-6">
-             <label>   Concept</label>
+              <label> Concept</label>
             </div>
           </div>
 
@@ -99,15 +113,18 @@
             </div>
           </div>
         </div>
-<div class="row col-md-12 no-padding top-modal">
-        <button type="button"
-                class="btn btn-default amber inactivation-button-modal m-t-20"
-                ng-click="selectReason()"
-                ng-disabled="inboundRelationshipsLoading|| statedChildFound"> <span class="md md-settings-power  amber darken-3 iconbase"></span>
+        <div class="row col-md-12 no-padding top-modal">
+          <button type="button"
+                  class="btn btn-default amber inactivation-button-modal m-t-20"
+                  ng-click="selectReason()"
+                  ng-if="!inboundRelationshipsLoading && !statedChildrenFound"><span
+            class="md md-settings-power  amber darken-3 iconbase"></span>
 
-        <span class="button-link">Inactivate {{componentType}}</span>
-        </button>
-</div>
+            <span class="button-link">Inactivate {{componentType}}</span>
+          </button>
+
+        </div>
+
 
       </div>
 
@@ -117,19 +134,21 @@
         <table ng-table="tableParamsChildren" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
-            <td data-title="'FSN'" sortable="'sourceFsn'">
-              {{item.sourceFsn}}
-              </td>
-            <td data-title="'Type'" sortable = "'characteristicType'">
+            <td data-title="'Characteristic Type'" sortable="'characteristicType'">
               {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}
             </td>
+            <td data-title="'FSN'" sortable="'sourceFsn'">
+              {{item.sourceFsn}}
+            </td>
+
           </tr>
         </table>
       </div>
 
       <!-- descendants -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
-        <div ng-show="descendants.total > 200" class="alert alert-info">Limiting displayed results to {{tableLimit}} items
+        <div ng-show="descendants.total > 200" class="alert alert-info">Limiting displayed results to {{tableLimit}}
+                                                                        items
         </div>
         <table ng-table="tableParamsDescendants" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
@@ -143,26 +162,29 @@
 
       <!-- all inbound relationships -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
-        <div ng-show="inboundRelationshipsTotal > 200" class="alert alert-info">Limiting displayed results to {{tableLimit}} items
+        <div ng-show="inboundRelationshipsTotal > 200" class="alert alert-info">Limiting displayed results to
+                                                                                {{tableLimit}} items
         </div>
         <table ng-table="tableParamsInboundRelationships" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
-            <td data-title="'characteristicType'" sortable="'characteristicType'">
+            <td data-title="'Characteristic Type'" sortable="'characteristicType'">
               {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}
             </td>
-            <td data-title="'type'" sortable="'typeFsn'">
+            <td data-title="'Type'" sortable="'typeFsn'">
               {{item.typeFsn}}
             </td>
             <td data-title="'FSN'" sortable="'sourceFsn'">
               {{item.sourceFsn}}
-              </td>
+            </td>
           </tr>
         </table>
 
         <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
 
       </div>
+
+
     </div>
 
   </div>
