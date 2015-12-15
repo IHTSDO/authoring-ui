@@ -159,27 +159,25 @@
         <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review">
           <!--Concepts To Review -->
           <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1">
+           
+
             <table show-filter="false" ng-table="conceptsToReviewTableParams"
                    template-pagination="utilities/data-table-pager.html"
                    class="table table-full table-full-small feedback-table" drop-channel="feedbackConcept">
 
-
-              <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
-              <tr>
-                <td></td>
-                <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"
+<div class="m-10 "><input class=" input-filter form-control ng-scope ng-valid ng-touched"
                            placeholder="Filter concepts"
                            ng-model="conceptsToReviewSearchStr"
                            ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
-                           ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
-                <td></td>
-              </tr>
-
+                           ng-model-options="{debounce: 500}" ui-on-drop="null"></div>
+              <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
+             
 
               <tr ng-repeat="concept in conceptsToReviewViewed">
 
                 <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxToReview.html'">
                   <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
+                  
                 </td>
 
                 <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
@@ -262,20 +260,15 @@
           <div role="tabpanel" ng-if="actionTab === 2">
             <table show-filter="false" ng-table="conceptsReviewedTableParams"
                    template-pagination="utilities/data-table-pager.html"
-                   class="table table-full table-full-small" drop-channel="feedbackConcept">
+                   class="table table-full table-full-small feedback-table" drop-channel="feedbackConcept">
 
-
-              <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
-              <tr>
-                <td></td>
-                <td><input class=" input-filter form-control ng-scope ng-valid ng-touched"
+<div class="m-10 "><input class=" input-filter form-control ng-scope ng-valid ng-touched"
                            placeholder="Filter concepts"
-                           ng-model="conceptsReviewedSearchStr"
-                           ng-change="reloadConceptsReviewed(conceptsReviewedSearchStr)"
-                           ng-model-options="{debounce: 500}" ui-on-drop="null"></td>
-                <td></td>
-              </tr>
-
+                           ng-model="conceptsToReviewSearchStr"
+                           ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
+                           ng-model-options="{debounce: 500}" ui-on-drop="null"></div>
+              <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
+              
 
               <tr ng-repeat="concept in conceptsReviewedViewed">
 
