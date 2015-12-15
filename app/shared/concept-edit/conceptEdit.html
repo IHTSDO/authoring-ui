@@ -161,10 +161,10 @@
 
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions()"
-         ng-class="getComponentStyle(description.descriptionId, null, '')">
+         ng-class="getComponentStyle(description.descriptionId, null, '')" >
 
-      <div class="row darken-3 p-t-5 grey">
-        <div class="col-md-12 no-padding color_{{relationship.groupId}}"
+      <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}}">
+        <div class="col-md-12 no-padding color_{{relationship.groupId}} "
              drop-channel="descriptionObj"
              ui-on-drop="dropDescription(description, $data)"
              drag-enter-class="sca-drag-target"
@@ -310,8 +310,8 @@
     </div>
 
     <!-- rows: Relationships -->
-    <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
-
+    <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups" >
+<div class="role_group_divider_top_{{groupId}}"></div>
       <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
            ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
@@ -474,6 +474,7 @@
           </div>
         </div>
       </div>
+      <div class="role_group_divider_bottom_{{groupId}}"></div>
     </div>
     <div class="clearfix"></div>
   </div>
