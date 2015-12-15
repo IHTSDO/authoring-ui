@@ -319,6 +319,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 sortDescriptions();
                 sortRelationships();
 
+                scope.computeRelationshipGroups();
+
                 // broadcast event to any listeners (currently task detail,
                 // conflict/feedback resolved lists)
                 $rootScope.$broadcast('conceptEdit.conceptChange', {
