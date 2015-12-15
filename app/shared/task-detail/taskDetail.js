@@ -128,13 +128,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 }
 
                 deferred.resolve(flags);
-              })
+              });
             });
           }
 
         }
         return deferred.promise;
-      };
+      }
 
       $scope.promote = function () {
 
@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.sendMessage('Promoting task...');
                 scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   notificationService.sendMessage('Task successfully promoted', 5000);
-                })
+                });
               } else {
 
                 // cloear the preparation notification
@@ -210,7 +210,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                       notificationService.sendMessage('Task successfully promoted', 5000);
                       $rootScope.$broadcast('reloadTask');
-                    })
+                    });
                   }
                 }, function () {
                 });

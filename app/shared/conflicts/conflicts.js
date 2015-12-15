@@ -430,7 +430,7 @@ angular.module('singleConceptAuthoringApp')
 
             // check if FAILED
             if (review.status === 'FAILED') {
-              notificationService.sendError('ERROR: Merge review generation failed.')
+              notificationService.sendError('ERROR: Merge review generation failed.');
             }
 
             // intiialize the list of conflicts for tabular display

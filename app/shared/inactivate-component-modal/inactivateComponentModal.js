@@ -115,7 +115,7 @@ angular.module('singleConceptAuthoringApp')
         // convert the term into a top-level attribute for ng-table sorting
         angular.forEach($scope.descendants.items, function (descendant) {
           descendant.sortableName = descendant.fsn.term;
-        })
+        });
       });
     }
 
@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp')
 
         // initialize the arrays
         $scope.inboundRelationships = [];
-        $scope.children = []
+        $scope.children = [];
         $scope.inboundRelationshipsTotal = response2.total;
 
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
@@ -212,11 +212,11 @@ angular.module('singleConceptAuthoringApp')
 
       // detect case where no stated parent-child relationship was found, but
       // more results may exist
-      if ($scope.statedChildrenFound = false && $scope.inboundRelationships.length === $scope.tableLimit) {
+      if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
 
         getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
           checkStatedChildren();
-        })
+        });
       }
     });
 

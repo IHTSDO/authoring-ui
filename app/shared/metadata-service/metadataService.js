@@ -36,8 +36,8 @@ angular.module('singleConceptAuthoringApp')
 
           // add to list
 
-        })
-      })
+        });
+      });
     }
 
     /**
