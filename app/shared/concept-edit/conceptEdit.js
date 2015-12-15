@@ -1549,7 +1549,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var errors = [];
           var relsChecked = 0;
           angular.forEach(relGroup, function (rel) {
-            scope.validateMrcmRulesForTypeAndValue(rel.type.fsn, rel.target.fsn).then(function (response) {
+            scope.validateMrcmRulesForTypeAndValue(rel.type.id, rel.target.fsn).then(function (response) {
               errors = errors.concat(response);
               if (++relsChecked === relGroup.length) {
                 deferred.resolve(errors);
