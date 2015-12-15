@@ -1,5 +1,9 @@
 <section class="tables-data feedback">
- 
+ <style>
+ .feedback-initial {min-height:480px;  }
+  .feedback-initial .text{padding-right:100px; padding-left:100px; font-weight: 300; text-align:center; font-size:18px; font-family: 'Roboto', sans-serif; color: #d81b60;}
+ .feedback-initial .icon-alert{ margin: 0 auto!important; padding-top:70px; font-size:86px; width:86px;color: #f06292;}
+ </style>
   <!-- for ng-table checkboxes -->
   <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
   resulting in elements being placed outside of the table (i.e. position: fixed)
@@ -317,9 +321,11 @@
 
 
       </div>
-
+   
+<div ng-hide="subjectConcepts.length > 0" class=" col-md-8 no-padding pink lighten-4 feedback-initial"> 
+<div class="icon-alert"><i class="md md-announcement"></i></div><div class="text">No concepts have been selected for feedback. Please select one or more concepts to begin reviewing. </div></div>
       <!-- Feedback editor -->
-      <div class="col-md-4 add-shadow">
+      <div class="col-md-4 add-shadow" ng-show="subjectConcepts.length > 0">
 
         <div class="no-padding concept-filter ">
           <input type="text" class="feedback-search " placeholder="Search concepts..."
@@ -366,7 +372,7 @@
       </div>
 
       <!-- Feedback messages -->
-      <div class="col-md-4 feedback-chat p-10">
+      <div class="col-md-4 feedback-chat p-10" ng-show="subjectConcepts.length > 0">
 
         <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0">
          No Feedback added yet...
