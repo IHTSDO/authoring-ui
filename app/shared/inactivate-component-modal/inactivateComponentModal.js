@@ -3,6 +3,9 @@
 angular.module('singleConceptAuthoringApp')
   .controller('inactivateComponentModalCtrl', function ($scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch, $routeParams, $q) {
 
+    // the selected tab
+    $scope.actionTab = 1;
+
     // required arguments
     $scope.componentType = componentType;
     $scope.reasons = reasons;
@@ -116,6 +119,8 @@ angular.module('singleConceptAuthoringApp')
       });
     }
 
+    $scope.statedChildFound = false;
+
     /**
      * Helper function to get and set a page of, or all, inbound relationships
      * @param conceptId
@@ -139,13 +144,9 @@ angular.module('singleConceptAuthoringApp')
         $scope.children = []
         $scope.inboundRelationshipsTotal = response2.total;
 
-        $scope.statedChildFound = false;
-
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
         angular.forEach(response2.inboundRelationships, function (item) {
-
-
 
           console.debug('checking relationship', item.active, item);
 
@@ -163,14 +164,16 @@ angular.module('singleConceptAuthoringApp')
               $scope.children.push(item);
 
             } else {
+
               // check if this is a stated-relationship child
               if (item.characteristicType === 'STATED_RELATIONSHIP') {
-                $scope.statedChildFound = true;
 
-                // find the existing item and replace it with the STATED_RELATIONSHIP
-                angular.forEach($scope.children, function(childRel) {
-                  if (childRel.sourceId === item.sourceId) {
-                    childRel = item;
+
+                // find the existing item and replace it with the
+                // STATED_RELATIONSHIP
+                angular.forEach($scope.children, function (childRel) {
+                  if (childRel.source.id === item.source.id) {
+                    childRel.characteristicType = 'STATED_RELATIONSHIP';
                   }
                 });
               }
@@ -183,27 +186,48 @@ angular.module('singleConceptAuthoringApp')
         $scope.tableParamsChildren.reload();
         $scope.tableParamsInboundRelationships.reload();
 
-        deferred.resolve(true);
+        deferred.resolve();
 
       });
 
       return deferred.promise;
     }
 
-    // get the limited number of inbound relationships for display
-    getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function() {
+    // check for existence of stated IsA relationships
+    $scope.statedChildrenFound = null;
+    function checkStatedChildren() {
+      $scope.statedChildrenFound = false;
+      angular.forEach($scope.children, function (item) {
+        if (item.characteristicType === 'STATED_RELATIONSHIP') {
+          $scope.statedChildrenFound = true;
+          $scope.actionTab = 2;
+        }
+      });
+    }
 
-      // detect case where no stated parent-child relationship was found, but more results may exist
-      if ($scope.statedChildFound = false && $scope.inboundRelationships.length === $scope.tableLimit) {
-        getInboundRelationships($scope.conceptId, $scope.branch, -1, -1);
+    // get the limited number of inbound relationships for display
+    getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren, $scope) {
+
+      checkStatedChildren();
+
+      // detect case where no stated parent-child relationship was found, but
+      // more results may exist
+      if ($scope.statedChildrenFound = false && $scope.inboundRelationships.length === $scope.tableLimit) {
+
+        getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
+          checkStatedChildren();
+        })
       }
-    }) ;
+    });
 
 // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {sourceFsn: 'asc'},
+        sorting: {
+          characteristicType: 'desc',
+          sourceFsn: 'asc'
+        },
         orderBy: 'sourceFsn'
       },
       {
@@ -228,8 +252,10 @@ angular.module('singleConceptAuthoringApp')
     $scope.tableParamsDescendants = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {fsn: 'asc'},
-        orderBy: 'fsn'
+        sorting: {
+          sortableName: 'asc'
+        },
+        orderBy: 'sortableName'
       },
       {
         total: $scope.descendants ? $scope.descendants.items.length : 0, // length
@@ -257,7 +283,10 @@ angular.module('singleConceptAuthoringApp')
     $scope.tableParamsInboundRelationships = new ngTableParams({
         page: 1,
         count: 10,
-        sorting: {sourceFsn: 'asc'},
+        sorting: {
+          characteristicType: 'desc',
+          sourceFsn: 'asc'
+        },
         orderBy: 'sourceFsn'
       },
       {
@@ -308,7 +337,8 @@ angular.module('singleConceptAuthoringApp')
     $scope.descendantsLoading = true;
     $scope.inboundRelationshipsLoading = true;
 
-    // flag for whether a stated parent-child relationship exists for this concept (disable inactivation)
+    // flag for whether a stated parent-child relationship exists for this
+    // concept (disable inactivation)
     $scope.statedChildFound = false;
   })
 ;
