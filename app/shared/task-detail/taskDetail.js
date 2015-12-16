@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'accountService', 'scaService', 'snowowlService', 'notificationService', '$q',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, notificationService, $q) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'notificationService', '$q',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, promotionService, notificationService, $q) {
 
       $scope.task = null;
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
@@ -38,205 +38,59 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         });
       };
-      /**
-       *
-       * Function to check a task for any promotion requirements not fulfilled
-       * @returns {*|promise}
-       */
-      function checkPromotionRequirements() {
 
-        console.log('Checking Promotion requirements');
-        var deferred = $q.defer();
-
-        // the set of warning flags returned after checking requirements
-        var flags = [];
-
-        ////////////////////////////
-        // Items Blocking Promotion
-        ////////////////////////////
-
-        // if task not defined, cannot promote
-        if (!$scope.task) {
-          flags.push({
-            key: 'Task Verified',
-            message: 'ERROR: Could not retrieve task status.  You may promote, but exercise extreme caution.',
-            value: false
-          });
-          deferred.resolve(flags);
-
-        } else {
-
-          if (!$scope.task.latestClassificationJson) {
-            flags.push({
-              key: 'Classification Run',
-              message: 'Classification was not started for this task. Promote only if you are sure your changes will not affect future classifications.',
-              value: false
-            });
-
-            deferred.resolve(flags);
-          } else {
-
-            // get the ui state for classiifcation saving timestamp and status
-            // information
-            scaService.getUiStateForUser('classification-' + $scope.task.latestClassificationJson.id).then(function (classificationStatus) {
-
-              // get the branch details
-              snowowlService.getBranch('MAIN/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '')).then(function (branchStatus) {
-
-                  /////////////////////////////////////////
-                  // Perform Checks
-                  /////////////////////////////////////////
-
-                  // declare the flags relevant to promotion with their
-                  // user-displayed messages
-                  flags.push({
-                    key: 'Classification Completed',
-                    message: 'Classification run did not complete for this task. Promote only if you are sure your changes will not affect future classifications.',
-                    value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationJson.status === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationJson.status === 'SAVED'
-                  });
-
-                  // check if classification saved
-                  flags.push({
-                    key: 'Classification Accepted',
-                    message: 'Classification was run for this task, but was not accepted. Promoting may dramatically impact the experience of other users.',
-                    value: $scope.task.latestClassificationJson.status === 'SAVED'
-                  });
-
-
-                  // if classification report is completed, but not accepted, check that results are current relative to task modification
-                  // does not require ui state, can use timestamp on classification status
-                  if ($scope.task.latestClassificationJson.status === 'COMPLETED') {
-                    flags.push({
-                      key: 'Classification Current',
-                      message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                      value: (new Date($scope.task.latestClassificationJson.completionDate)).getTime() > branchStatus.headTimestamp
-                    });
-                  }
-
-                  // if classification results were accepted, check that the
-                  // results are current relative to task modifications
-                  if ($scope.task.latestClassificationJson.status === 'SAVED') {
-
-                    // if no classification status saved or saved state was not
-                    // captured by application
-                    if (!classificationStatus || classificationStatus.status === 'SAVING_IN_PROGRESS') {
-                      flags.push({
-                        key: 'Classification Current',
-                        message: 'Classification was run, but could not determine if modifications were made after saving classification.  Promote only if you are sure no modifications were made after saving classification results.',
-                        value: false
-                      });
-                    }
-
-                    // otherwise compare the head timestamp of the branch to the
-                    // saved timestamp of classification results acceptance
-                    else {
-                      flags.push({
-                        key: 'Classification Current',
-                        message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                        value: classificationStatus.timestamp > branchStatus.headTimestamp
-                      });
-                    }
-                  }
-
-                  deferred.resolve(flags);
-                },
-                function (error) {
-                  deferred.reject('Could not determine branch state');
-                });
-            });
-          }
-
-        }
-        return deferred.promise;
-      }
 
       $scope.promote = function () {
 
         notificationService.sendMessage('Preparing for task promotion...');
 
-        // force refresh of task status to ensure proper handling
-        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          if (response) {
-            $scope.task = response;
+        promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
 
-            if ($scope.task.branchState === 'BEHIND' || $scope.task.branchState === 'DIVERGED' || $scope.task.branchState === 'STALE') {
-              notificationService.sendError('Error promoting task -- rebase required first');
-              return;
+          console.debug('promotion flags', flags);
+
+          // detect whether any user warnings were detected
+          var warningsFound = false;
+          angular.forEach(flags, function (flag) {
+            if (flag.checkWarning) {
+              warningsFound = true;
             }
+          });
 
-            if ($scope.task.branchState === 'UP_TO_DATE') {
-              notificationService.sendWarning('Cannot promote task -- already up to date');
-              return;
-            }
-
-            // check promotion requirements and proceed accordingly
-            checkPromotionRequirements().then(function (response) {
-
-              console.log('Promotion flags: ', response);
-
-              var flags = response;
-
-              // if no response at all, indicates serious error
-              if (!flags) {
-                flags = [{
-                  key: 'Promotion Requirements Checked',
-                  message: 'Unexpected errors checking promotion requirements. This may indicate severe problems with the application. You may promote, but exercise extreme caution',
-                  value: false
-                }];
-              }
-
-              var falseFlagsFound = false;
-              angular.forEach(flags, function (flag) {
-                if (!flag.value) {
-                  falseFlagsFound = true;
-                }
-              });
-
-              // if response contains no flags, simply promote
-              if (!falseFlagsFound) {
-                notificationService.sendMessage('Promoting task...');
-                scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                  notificationService.sendMessage('Task successfully promoted', 5000);
-                });
-              } else {
-
-                // cloear the preparation notification
-
-                var modalInstance = $modal.open({
-                  templateUrl: 'shared/promote-modal/promoteModal.html',
-                  controller: 'promoteModalCtrl',
-                  resolve: {
-                    task: function () {
-                      return $scope.task;
-                    },
-                    project: function () {
-                      return null;
-                    },
-                    flags: function () {
-                      return flags;
-                    }
-                  }
-                });
-
-                modalInstance.result.then(function (proceed) {
-                  if (proceed) {
-                    notificationService.sendMessage('Promoting task...');
-                    scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                      notificationService.sendMessage('Task successfully promoted', 5000);
-                      $rootScope.$broadcast('reloadTask');
-                    });
-                  }
-                }, function () {
-                });
-              }
-            }, function (error) {
-              notificationService.sendError('Unexpected error preparing for promotion: ' + error);
-            });
+          // if response contains no flags, simply promote
+          if (!warningsFound) {
+            notificationService.sendMessage('Promoting task...');
+            /*scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              notificationService.sendMessage('Task successfully promoted', 5000);
+            });*/
           } else {
-            notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion');
+
+            // cloear the preparation notification
+
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/promote-modal/promoteModal.html',
+              controller: 'promoteModalCtrl',
+              resolve: {
+                flags: function () {
+                  return flags;
+                }
+              }
+            });
+
+            modalInstance.result.then(function (proceed) {
+              if (proceed) {
+                notificationService.sendMessage('Promoting task...');
+               /* scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                  notificationService.sendMessage('Task successfully promoted', 5000);
+                  $rootScope.$broadcast('reloadTask');
+                });*/
+              }
+            }, function () {
+            });
           }
+        }, function (error) {
+          notificationService.sendError('Unexpected error preparing for promotion: ' + error);
         });
-      };
+      }
 
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
@@ -305,7 +159,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.task = response;
 
           // get role for task
-          accountService.getRoleForTask($scope.task).then(function(role) {
+          accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
 

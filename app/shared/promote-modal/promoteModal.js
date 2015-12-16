@@ -1,13 +1,14 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('promoteModalCtrl', function ($scope, $modalInstance, project, task, flags) {
+  .controller('promoteModalCtrl', function ($scope, $modalInstance, flags) {
 
-    $scope.project = project;
-    $scope.task = task;
+    /**
+     * The flags reported from promotionService, in array of objects of format
+     * { checkTitle, checkWarning, blocksPromotion }
+     * If not supplied, indicates checks not performed or fatal error in performing checks
+     */
     $scope.flags = flags;
-
-    console.debug('promote modal', project, task, flags);
 
 
     /////////////////////////////////////////

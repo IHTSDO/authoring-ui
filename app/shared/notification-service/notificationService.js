@@ -9,6 +9,7 @@
 // - scaService (ihtsdo-sca)
 //
 ///////////////////////////////////////////////////////////////////////////////
+
 angular.module('singleConceptAuthoringApp')
   .service('notificationService', ['$rootScope', function ($rootScope) {
 

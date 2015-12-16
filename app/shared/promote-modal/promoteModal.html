@@ -7,18 +7,32 @@
 
 
   <div class="modal-body">
-    <div ng-if="falseFlagsFound" class="row alert alert-warning">Issues detected with classification of this {{task ? 'Task' : 'Project'}}:
+
+    <div class="row p-b-10 alert alert-warning" ng-if="!flags">
+      Checking prerequisites either was not performed or experienced unexpected errors. You may promote, but exercise
+      extreme caution.
     </div>
+
     <div class="row p-b-10" ng-repeat="flag in flags">
       <div class="col-md-1"></div>
       <div class="col-md-1">
-        <button class="btn-default btn-round md"
-                ng-class="[{'md-done green' : flag.value}, {'md-clear red' : !flag.value}]"></button>
+        <h4>
+          <span class="md md-warning orange p-5" ng-if="flag.checkWarning && !flag.blocksPromotion"></span>
+          <span class="md md-close red p-5" ng-if="flag.checkWarning && flag.blocksPromotion"></span>
+          <span class="md md-done green p-5" ng-if="!flag.checkWarning"></span>
+        </h4>
+
+
       </div>
       <div class="col-md-9">
 
-        <div class="col-md-12"><h4>Check: {{flag.key}}</h4></div>
-        <div class="col-md-12" ng-if="!flag.value">{{flag.message}}</div>
+        <div class="col-md-12">
+          <h4>
+
+            {{flag.checkTitle}}
+          </h4>
+        </div>
+        <div class="col-md-12" ng-if="!flag.value">{{flag.checkWarning}}</div>
       </div>
       <div class="col-md-1"></div>
     </div>
