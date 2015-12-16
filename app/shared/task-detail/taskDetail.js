@@ -102,6 +102,17 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     value: $scope.task.latestClassificationJson.status === 'SAVED'
                   });
 
+
+                  // if classification report is completed, but not accepted, check that results are current relative to task modification
+                  // does not require ui state, can use timestamp on classification status
+                  if ($scope.task.latestClassificationJson.status === 'COMPLETED') {
+                    flags.push({
+                      key: 'Classification Current',
+                      message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
+                      value: (new Date($scope.task.latestClassificationJson.completionDate)).getTime() > branchStatus.headTimestamp
+                    });
+                  }
+
                   // if classification results were accepted, check that the
                   // results are current relative to task modifications
                   if ($scope.task.latestClassificationJson.status === 'SAVED') {

@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject();
 
-      $scope.$on('reloadProject', function(event, data) {
+      $scope.$on('reloadProject', function (event, data) {
         $scope.getProject();
       });
 
@@ -101,7 +101,7 @@ angular.module('singleConceptAuthoringApp.project', [
           notificationService.sendMessage('Classification running', 10000);
           $scope.classificationContainer = response;
           $rootScope.classificationRunning = true;
-          $timeout(function() {
+          $timeout(function () {
             $scope.getProject();
           }, 2000)
         }, function (error) {
@@ -123,7 +123,7 @@ angular.module('singleConceptAuthoringApp.project', [
           notificationService.sendMessage('Validation running');
           $scope.validationContainer.status = response;
           $rootScope.validationRunning = true;
-          $timeout(function() {
+          $timeout(function () {
             $scope.getProject();
           }, 2000)
         }, function (error) {
@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // rebase the project -- simply route to merge/rebase view
       $scope.mergeAndRebase = function () {
-       $location.url('projects/project/{{project.key}}/conflicts');
+        $location.url('projects/project/{{project.key}}/conflicts');
       };
 
       /**
@@ -200,33 +200,42 @@ angular.module('singleConceptAuthoringApp.project', [
                     message: 'Classification was run for this project, but was not accepted. Promoting may dramatically impact the experience of other users.',
                     value: $scope.project.latestClassificationJson.status === 'SAVED'
                   });
-                  /*
 
-                   // if classification results were accepted, check that the
-                   // results are current relative to project modifications
-                   if ($scope.project.latestClassificationJson.status === 'SAVED') {
-                   */
-
-                  // if no classification status saved or saved state was not
-                  // captured by application
-                  if (!classificationStatus || classificationStatus.status === 'SAVING_IN_PROGRESS') {
-                    flags.push({
-                      key: 'Classification Current',
-                      message: 'Classification was run, but could not determine if modifications were made after saving classification.  Promote only if you are sure no modifications were made after saving classification results.',
-                      value: false
-                    });
-                  }
-
-                  // otherwise compare the head timestamp of the branch to the
-                  // saved timestamp of classification results acceptance
-                  else {
+                  // if classification report is completed, but not accepted, check that results are current relative to project modification
+                  // does not require ui state, can use timestamp on classification status
+                  if ($scope.project.latestClassificationJson.status === 'COMPLETED') {
                     flags.push({
                       key: 'Classification Current',
                       message: 'Classification was run, but modifications were made to the project afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                      value: classificationStatus.timestamp > branchStatus.headTimestamp
+                      value: (new Date($scope.project.latestClassificationJson.completionDate)).getTime() > branchStatus.headTimestamp
                     });
                   }
-                  // }
+
+                  // if classification results were accepted, check that the
+                  // results are current relative to project modifications
+                  if ($scope.project.latestClassificationJson.status === 'SAVED') {
+
+
+                    // if no classification status saved or saved state was not
+                    // captured by application
+                    if (!classificationStatus || classificationStatus.status === 'SAVING_IN_PROGRESS') {
+                      flags.push({
+                        key: 'Classification Current',
+                        message: 'Classification was run, but could not determine if modifications were made after saving classification.  Promote only if you are sure no modifications were made after saving classification results.',
+                        value: false
+                      });
+                    }
+
+                    // otherwise compare the head timestamp of the branch to the
+                    // saved timestamp of classification results acceptance
+                    else {
+                      flags.push({
+                        key: 'Classification Current',
+                        message: 'Classification was run, but modifications were made to the project afterwards.  Promote only if you are sure those changes will not affect future classifications.',
+                        value: classificationStatus.timestamp > branchStatus.headTimestamp
+                      });
+                    }
+                  }
 
                   deferred.resolve(flags);
                 },
@@ -284,10 +293,10 @@ angular.module('singleConceptAuthoringApp.project', [
 
               // if response contains no flags, simply promote
               if (!falseFlagsFound) {
-                notificationService.sendMessage('Promoting project...');
-                scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
-                  notificationService.sendMessage('Project successfully promoted', 5000);
-                });
+                notificationService.sendMessage('Promoting project... TODO RENABLE AFTER DEV WORK');
+                /* scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
+                 notificationService.sendMessage('Project successfully promoted', 5000);
+                 });*/
               } else {
 
                 // cloear the preparation notification
@@ -319,6 +328,7 @@ angular.module('singleConceptAuthoringApp.project', [
                     notificationService.clear();
                   }
                 }, function () {
+                  notificationService.clear();
                 });
               }
             }, function (error) {
