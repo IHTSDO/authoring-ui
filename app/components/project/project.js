@@ -293,10 +293,10 @@ angular.module('singleConceptAuthoringApp.project', [
 
               // if response contains no flags, simply promote
               if (!falseFlagsFound) {
-                notificationService.sendMessage('Promoting project... TODO RENABLE AFTER DEV WORK');
-                /* scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
+                notificationService.sendMessage('Promoting project...');
+                scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
                  notificationService.sendMessage('Project successfully promoted', 5000);
-                 });*/
+                 });
               } else {
 
                 // cloear the preparation notification
@@ -319,11 +319,11 @@ angular.module('singleConceptAuthoringApp.project', [
 
                 modalInstance.result.then(function (proceed) {
                   if (proceed) {
-                    notificationService.sendMessage('Promoting project... TODO ENABLE PROMOTION AFTER DEV WORK');
-                    /* scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
+                    notificationService.sendMessage('Promoting project...');
+                     scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
                      notificationService.sendMessage('Project successfully promoted', 5000);
                      $rootScope.$broadcast('reloadProject');
-                     });*/
+                     });
                   } else {
                     notificationService.clear();
                   }
