@@ -18,8 +18,7 @@
 
         <div class="p-10 pull-right">
           <button class="btn btn-border tooltips-left normal-case"
-                  ng-click="promote()"
-                  ng-disabled="project.branchState !== 'FORWARD'">
+                  ng-click="promote()">
             <div
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>
@@ -30,8 +29,8 @@
         </div>
         <div class="p-10 pull-right">
           <button class="btn btn-success btn-border tooltips-left normal-case"
-                  ng-click="rebase()"
-                  ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND'">
+                  ng-click="mergeAndRebase()"
+                  ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'">
             <div
               class="project-icon yellow darken-2 pull-left">
               <div class="md md-autorenew"></div>
@@ -43,7 +42,7 @@
       
         <div class="p-10 pull-right ">
           <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()"
-            ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status !== 'COMPLETED'">
+            ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED'">
             <div
               class="project-icon green pull-left">
               <div class="md md-notifications"></div>
@@ -103,7 +102,7 @@
         <div class="card-header">
           <div class="card-title">
             <button
-              ng-disabled="project.latestClassificationJson.status && project.latestClassificationJson.status !== 'COMPLETED'"
+              ng-disabled="!project.latestClassificationJson.status"
               ng-init="classificationCollapsed = true"
               ng-click="classificationCollapsed = !classificationCollapsed" type="button"
               ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : classificationCollapsed, 'md-keyboard-arrow-down' : !classificationCollapsed}]">
@@ -133,7 +132,6 @@
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <!--ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'" -->
             <a ng-href="#/projects/project/{{project.key}}/conflicts">
             <button
               ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'"

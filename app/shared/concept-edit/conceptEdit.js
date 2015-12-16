@@ -351,10 +351,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 deferred.reject(response.message);
               }
             },
-          function(error) {
+            function (error) {
 
-            deferred.reject(error);
-          });
+              deferred.reject(error);
+            });
 
           return deferred.promise;
         }
@@ -975,11 +975,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
-
         /*
-          Function to cycle acceptability map for a description & dialect through acceptable values
-          Preferred -> Acceptable -> Not Acceptable -> Preferred
-        */
+         Function to cycle acceptability map for a description & dialect through acceptable values
+         Preferred -> Acceptable -> Not Acceptable -> Preferred
+         */
         scope.toggleAcceptability = function (description, dialectName) {
 
           if (!description.acceptabilityMap) {
@@ -993,7 +992,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
               break;
 
-            // if acceptable, switch to not acceptable (i.e. clear the dialect key)
+            // if acceptable, switch to not acceptable (i.e. clear the dialect
+            // key)
             case 'ACCEPTABLE':
               delete description.acceptabilityMap[scope.dialects[dialectName]];
               break;
@@ -1021,7 +1021,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
-         // returns the display abbreviation for a specified dialect
+        // returns the display abbreviation for a specified dialect
         scope.getAcceptabilityDisplayText = function (description, dialectName) {
           if (!description || !dialectName) {
             return null;
@@ -1045,7 +1045,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
 
-          // return the specified abbreviation, or 'N' for Not Acceptable if no abbreviation found
+          // return the specified abbreviation, or 'N' for Not Acceptable if no
+          // abbreviation found
           var displayText = scope.acceptabilityAbbrs[acceptability];
           return displayText ? displayText : 'N';
 
@@ -1872,6 +1873,44 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          // if this is the FSN, check if a matching PT should be generated
+          if (description.type === 'FSN') {
+
+            console.debug('is fsn');
+
+            // check if a semantic tag is defined
+            if (description.term.match(/.*\(.*\)/g)) {
+
+              var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
+
+              console.debug('has semantic tag');
+
+              // locate the en-US preferred term
+              var pt = null;
+              angular.forEach(scope.concept.descriptions, function(d) {
+                console.debug(d, d.type === 'SYNONYM', d.acceptabilityMap['900000000000509007'] === 'PREFERRED')
+                if ( d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+                  d.term = ptText;
+                  pt = d;
+                }
+              });
+
+              // if no preferred term found for this concept, add it
+              if (!pt) {
+                pt = objectService.getNewPt();
+                pt.term = ptText;
+                scope.concept.descriptions.push(pt);
+              }
+
+              console.debug('final pt', pt, scope.concept);
+
+            } else {
+              // do nothing -- only populate PT if FSN fully specified with semantic tag
+            }
+          } else {
+            // do nothing -- only process FSNS
+          }
+
           // In order to ensure proper term-server behavior
           // if this description is unpublished, but has an SCTID
           // remove the id to allow proper deletion and update
@@ -1879,6 +1918,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.effectiveTime) {
             delete description.descriptionId;
           }
+
+          console.debug('concept after description update', scope.concept);
 
           autoSave();
         };
@@ -1900,7 +1941,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeRelationshipGroups();
 
           console.debug(scope.concept.relationships, scope.relationshipGroups);
-
 
           autoSave(relationship);
 

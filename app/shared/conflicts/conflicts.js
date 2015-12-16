@@ -52,7 +52,7 @@ angular.module('singleConceptAuthoringApp')
                   return !conflict.accepted;
                 });
 
-                console.debug('conflictsTableParams getData', concepts);
+             //   console.debug('conflictsTableParams getData', concepts);
 
                 if (!concepts) {
                   $defer.resolve([]);
@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
                   params.total(concepts.length);
                   concepts = params.sorting() ? $filter('orderBy')(concepts, params.orderBy()) : concepts;
                   concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  console.debug('concepts to review page', concepts);
+                //  console.debug('concepts to review page', concepts);
 
                   if (concepts.length === 0 && scope.conflicts.length !== 0) {
                     scope.actionTab = 2; // switch to conflicts resolved
@@ -95,7 +95,7 @@ angular.module('singleConceptAuthoringApp')
                   return conflict.accepted;
                 });
 
-                console.debug('conflictsTableParams getData', concepts);
+             //   console.debug('conflictsTableParams getData', concepts);
 
                 if (!concepts) {
                   $defer.resolve([]);
@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
                   params.total(concepts.length);
                   concepts = params.sorting() ? $filter('orderBy')(concepts, params.orderBy()) : concepts;
                   concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  console.debug('concepts accepted page', concepts);
+              //    console.debug('concepts accepted page', concepts);
 
                   $defer.resolve(concepts);
                 }
@@ -114,7 +114,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.$on('acceptMerge', function (event, data) {
 
-            console.debug('acceptMerge event', data);
+         //   console.debug('acceptMerge event', data);
 
             if (!data.concept) {
               console.error('AcceptMerge event must have concept attached');
@@ -257,7 +257,7 @@ angular.module('singleConceptAuthoringApp')
            */
           function highlightChanges(merge) {
 
-            console.debug('highlighting merge changes for ', merge.fsn);
+           // console.debug('highlighting merge changes for ', merge.fsn);
 
             // create blank styling object
             var styles = {
@@ -351,10 +351,17 @@ angular.module('singleConceptAuthoringApp')
           // local variable containing the merge poll variable
           var viewedMergePoll = null;
 
+          // on location changes, cancel the poll
+          scope.$on('$locationChangeStart', function() {
+            console.log('Cancelling viewed merge polling');
+            scope.stopMergeReviewPoll();
+          });
+
           /**
            * Starts polling merge review to detect status changes
            */
           scope.startMergeReviewPoll = function () {
+            console.log('Starting viewed merge polling');
             viewedMergePoll = $interval(function () {
               snowowlService.getMergeReview(scope.id).then(function (response) {
                 if (response.status !== 'CURRENT') {
@@ -381,7 +388,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewConflict = function (conflict) {
 
-            console.debug('viewing conflict', conflict);
+            //console.debug('viewing conflict', conflict);
 
             // if viewed, do not add
             if (!conflict.viewed) {
@@ -417,6 +424,9 @@ angular.module('singleConceptAuthoringApp')
           });
 
           function initializeMergeReview(review) {
+
+            console.log('Initializing merge review with id' + review.id);
+
             // set the ui state -- note, have to add apostrophes to prevent
             // javascript interpreting as mathematical operation (due to UUID
             // idstructure)
@@ -448,9 +458,9 @@ angular.module('singleConceptAuthoringApp')
               conflict.styles = highlightChanges(conflict);
             });
 
-            console.debug('viewedMerges', scope.viewedMerges);
-            console.debug('conflicts', scope.conflicts);
-            console.debug('styles', scope.styles);
+            //console.debug('viewedMerges', scope.viewedMerges);
+            //console.debug('conflicts', scope.conflicts);
+            //console.debug('styles', scope.styles);
 
             // get previously accepted merges, if they exist, and apply to
             // conflicts
@@ -495,7 +505,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function rebase() {
-            console.debug('Rebasing');
+            console.log('Rebasing ' + ($routeParams.taskKey ? 'task':'project') + '.');
             scope.rebaseRunning = true;
 
             if ($routeParams.taskKey) {
@@ -539,21 +549,21 @@ angular.module('singleConceptAuthoringApp')
             // if ui-state has merge review id from previous visit
             if (mergeReviewId) {
 
-              console.debug('Previous merge-review exists with id: ' + mergeReviewId);
+              //console.debug('Previous merge-review exists with id: ' + mergeReviewId);
 
               snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
 
                 // Previous review is current and has concepts,
                 // initialize from this review
                 if (mergeReview && mergeReview.length > 0) {
-                  console.debug('Previous merge-review is current');
+                  //console.debug('Previous merge-review is current');
                   initializeMergeReview(mergeReview);
                 }
 
                 // Previous review is not current, generate new review
                 // and initialize from new review
                 else {
-                  console.debug('Previous merge-review is not current, generating new merge-review');
+                  //console.debug('Previous merge-review is not current, generating new merge-review');
                   snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                     if (newReview && newReview.length > 0) {
@@ -576,7 +586,7 @@ angular.module('singleConceptAuthoringApp')
             // if no review or review not current, generate new merge
             // review
             else {
-              console.debug('No review ui-state, generating new merge-review');
+            //  console.debug('No review ui-state, generating new merge-review');
               snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                 // DIVERGED, but no merges to resolve
@@ -625,7 +635,7 @@ angular.module('singleConceptAuthoringApp')
 
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
-              console.debug(error);
+          //    console.debug(error);
 
               // send a temporary notification while waiting for BE
               // notification of merge review invalid
