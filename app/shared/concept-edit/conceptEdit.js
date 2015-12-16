@@ -1873,6 +1873,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          // if this is a TEXT_DEFINITION, ensure acceptability and case sensitivity is correctly set
+          if (description.type === 'TEXT_DEFINITION') {
+            description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
+            description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+            description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
+          }
+
           // if this is the FSN, check if a matching PT should be generated
           if (description.type === 'FSN') {
 

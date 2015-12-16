@@ -305,8 +305,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.task = response;
 
           // get role for task
-          $scope.role = accountService.getRoleForTask($scope.task);
-          console.debug('ROLE', $scope.role);
+          accountService.getRoleForTask($scope.task).then(function(role) {
+            $scope.role = role;
+          });
 
           // set button flags
           if ($scope.task && $scope.task.latestClassificationJson) {
