@@ -57,8 +57,11 @@ angular.module('singleConceptAuthoringApp')
               scope.task = task;
               scope.reviewComplete = task.status === 'REVIEW_COMPLETED';
               console.debug('review complete', scope.reviewComplete);
-              scope.role = accountService.getRoleForTask(task);
-              console.debug('Role found: ', scope.role);
+                accountService.getRoleForTask(task).then(function(role){
+                    scope.role = role;
+                    console.debug('Role found: ', scope.role);
+                });
+                
 
               if (scope.role === 'UNDEFINED') {
                 notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
