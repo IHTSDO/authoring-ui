@@ -1140,20 +1140,24 @@ border-bottom:1px solid #8e8e8e
 .redhl .color_7.role-group-drag
 {background-color: #C62828;}
 
-.bluehl .grey.darken-3 {
-	background-color: #0091d7
+.bluehl .grey.darken-3, .bluehl .edits-row  {
+	background-color: #0091d7!important
 }
-
-.bluehl .grey.darken-3 {
-
+.conflicts .nav-tabs > li {
+    width: 50%!important;
+    text-align: center;
 }
+.conflicts .edits button {
+    font-size: 12px;
+	text-align:left;}
+	button-link
 .bluehl  .grey.darken-3  {
 	background-color: #0091d7!important;
 		border-top: 2px solid #0091d7;
 	border-bottom: 2px solid #0091d7;
 }
 
-
+.merges-button .button-link{font-size:12px;}
 .tealhl .grey.darken-3 {
 	background-color: #00a39b
 }
@@ -1179,3 +1183,4 @@ border-bottom:1px solid #8e8e8e
     font-size: 14px;
     line-height: 24px;}
 	.model-header-sca{min-height:35px!important;}
+	

@@ -1,5 +1,12 @@
 /* Scss Document */
-
+@media (max-width: 1450px) {
+    nav > li > a {
+        position: relative;
+        display: block;
+        font-size: 10px!important;
+        padding: 10px 5px;
+    }
+}
 @media (max-width: 1350px) {
     .brand-logo {
         font-size: 13px;
@@ -40,18 +47,127 @@
     .angular-ui-tree-nodes {
         font-size: 11px;
     }
+	.conflicts .drag-button-width {
+    width: 13px;
+	
 }
+.conflicts .button-width {
+    width: 3.5%;
+}
+
+.conflicts .edits button {text-align:center;}
+.conflicts .editing-form textarea, .conflicts .editing-form select {
+ 
+    padding: 2px 2px !important; }
+	.conflicts .edits-button {padding: 5px 0px 5px 2px;}
+	.conflicts .editing-form .sourcename {
+    width: 47%;
+    padding-left: .5%;
+}
+.conflicts .badge.alert-warning {
+    font-weight: normal;
+    font-size: 14px !important;
+    text-align: center;
+    padding: 0px 0px 4px 3px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    border-radius: 50%;
+    margin: 0px;
+}
+.conflicts .fa.fa-power-off.green, .conflicts .fa.fa-power-off.red {
+    font-size: 10px !important;
+}.conflicts .button-width-plus, .conflicts .add-buttons {
+    width: 8px;
+    padding: 0px !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 8px !important;
+    margin-left: 0px;
+    margin-right: 1px;
+    color: #fff !important;
+}
+	}
 @media (max-width: 1450px) {
-    nav > li > a {
-        position: relative;
-        display: block;
-        font-size: 10px!important;
-        padding: 10px 5px;
-    }
+   
+	.conflicts .drag-button-width {
+    width: 13px;
+	
 }
-@media only screen and (-webkit-min-device-pixel-ratio: 1.25),
-only screen and ( min-device-pixel-ratio: 1.25),
-only screen and ( min-resolution: 200dpi),
-only screen and ( min-resolution: 1.25dppx) {
-    -webkit-font-smoothing: subpixel-antialiased;
+.conflicts .button-width {
+    width: 3.5%;
+}
+
+.conflicts .edits button {text-align:center;}
+.conflicts .editing-form textarea, .conflicts .editing-form select {
+ 
+    padding: 2px 2px !important; }
+	.conflicts .edits-button {padding: 5px 0px 5px 2px;}
+	.conflicts .editing-form .sourcename {
+    width: 47%;
+    padding-left: .5%;
+}
+.conflicts .badge.alert-warning {
+    font-weight: normal;
+    font-size: 14px !important;
+    text-align: center;
+    padding: 0px 0px 4px 3px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    border-radius: 50%;
+    margin: 0px;
+}
+.conflicts .fa.fa-power-off.green, .conflicts .fa.fa-power-off.red {
+    font-size: 10px !important;
+}.conflicts .button-width-plus, .conflicts .add-buttons {
+    width: 8px;
+    padding: 0px !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 8px !important;
+    margin-left: 0px;
+    margin-right: 1px;
+    color: #fff !important;
+}
+	}
+
+@media (max-width: 1300px){
+		.title-text {
+    font-size: 11px;
+    max-width: 190px;
+    text-align: left;
+}
+.edits button {
+    font-size: 11px;}
+		.add-buttons {
+    background-color: transparent !important;
+    padding: 1px 0px !important;
+    color: #dcdcdc !important;
+    font-size: 10px !important;
+}
+.drag-button-width {
+    width: 13px;
+    font-size: 11px !important;
+    text-align: left;}
+.button-width {
+    width: 3.5%;
+    margin-right: .5%;
+    padding: 0.5% !important;
+    float: left;
+    height: 100%;
+    min-height: 30px;
+    font-size: 12px !important;	text-align:center;
+}
+.more-button-width {
+    width: 12px;	text-align:center;
+}
+.text-center {
+   
+    font-size:10px;}
+.button-width-plus {
+  
+    text-align: right;}
 }
