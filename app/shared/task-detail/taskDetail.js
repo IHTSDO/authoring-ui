@@ -83,52 +83,66 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               // get the branch details
               snowowlService.getBranch('MAIN/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '')).then(function (branchStatus) {
 
-                /////////////////////////////////////////
-                // Perform Checks
-                /////////////////////////////////////////
+                  /////////////////////////////////////////
+                  // Perform Checks
+                  /////////////////////////////////////////
 
-                // declare the flags relevant to promotion with their
-                // user-displayed messages
-                flags.push({
-                  key: 'Classification Completed',
-                  message: 'Classification run did not complete for this task. Promote only if you are sure your changes will not affect future classifications.',
-                  value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationJson.status === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationJson.status === 'SAVED'
-                });
+                  // declare the flags relevant to promotion with their
+                  // user-displayed messages
+                  flags.push({
+                    key: 'Classification Completed',
+                    message: 'Classification run did not complete for this task. Promote only if you are sure your changes will not affect future classifications.',
+                    value: $scope.task.latestClassificationJson.status === 'COMPLETED' || $scope.task.latestClassificationJson.status === 'SAVING_IN_PROGRESS' || $scope.task.latestClassificationJson.status === 'SAVED'
+                  });
 
-                // check if classification saved
-                flags.push({
-                  key: 'Classification Accepted',
-                  message: 'Classification was run for this task, but was not accepted. Promoting may dramatically impact the experience of other users.',
-                  value: $scope.task.latestClassificationJson.status === 'SAVED'
-                });
+                  // check if classification saved
+                  flags.push({
+                    key: 'Classification Accepted',
+                    message: 'Classification was run for this task, but was not accepted. Promoting may dramatically impact the experience of other users.',
+                    value: $scope.task.latestClassificationJson.status === 'SAVED'
+                  });
 
-                // if classification results were accepted, check that the
-                // results are current relative to task modifications
-                if ($scope.task.latestClassificationJson.status === 'SAVED') {
 
-                  // if no classification status saved or saved state was not
-                  // captured by application
-                  if (!classificationStatus || classificationStatus.status === 'SAVING_IN_PROGRESS') {
-                    flags.push({
-                      key: 'Classification Current',
-                      message: 'Classification was run, but could not determine if modifications were made after saving classificationt.  Promote only if you are sure no modifications were made after saving classification results.',
-                      value: false
-                    });
-                  }
-
-                  // otherwise compare the head timestamp of the branch to the
-                  // saved timestamp of classification results acceptance
-                  else {
+                  // if classification report is completed, but not accepted, check that results are current relative to task modification
+                  // does not require ui state, can use timestamp on classification status
+                  if ($scope.task.latestClassificationJson.status === 'COMPLETED') {
                     flags.push({
                       key: 'Classification Current',
                       message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                      value: classificationStatus.timestamp > branchStatus.headTimestamp
+                      value: (new Date($scope.task.latestClassificationJson.completionDate)).getTime() > branchStatus.headTimestamp
                     });
                   }
-                }
 
-                deferred.resolve(flags);
-              });
+                  // if classification results were accepted, check that the
+                  // results are current relative to task modifications
+                  if ($scope.task.latestClassificationJson.status === 'SAVED') {
+
+                    // if no classification status saved or saved state was not
+                    // captured by application
+                    if (!classificationStatus || classificationStatus.status === 'SAVING_IN_PROGRESS') {
+                      flags.push({
+                        key: 'Classification Current',
+                        message: 'Classification was run, but could not determine if modifications were made after saving classification.  Promote only if you are sure no modifications were made after saving classification results.',
+                        value: false
+                      });
+                    }
+
+                    // otherwise compare the head timestamp of the branch to the
+                    // saved timestamp of classification results acceptance
+                    else {
+                      flags.push({
+                        key: 'Classification Current',
+                        message: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
+                        value: classificationStatus.timestamp > branchStatus.headTimestamp
+                      });
+                    }
+                  }
+
+                  deferred.resolve(flags);
+                },
+                function (error) {
+                  deferred.reject('Could not determine branch state');
+                });
             });
           }
 
@@ -216,7 +230,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 });
               }
             }, function (error) {
-              notificationService.sendError('Unexpected error preparing for promotion');
+              notificationService.sendError('Unexpected error preparing for promotion: ' + error);
             });
           } else {
             notificationService.sendError('Error promoting task: Could not verify task was eligible for promotion');

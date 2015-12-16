@@ -71,9 +71,9 @@ angular.module('singleConceptAuthoringApp')
           };
 
           $rootScope.$on('stopEditing', function (event, data) {
-            console.debug('classification received stopEditing event', data.concept);
+         //   console.debug('classification received stopEditing event', data.concept);
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
-              console.debug('comparing', scope.viewedConcepts[i].conceptBefore.conceptId, data.concept.conceptId);
+           //   console.debug('comparing', scope.viewedConcepts[i].conceptBefore.conceptId, data.concept.conceptId);
               if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
 
                 scope.viewedConcepts.splice(i, 1);
@@ -114,7 +114,7 @@ angular.module('singleConceptAuthoringApp')
                 conceptModelObj.conceptAfter = secondResponse;
 
                 scope.viewedConcepts.push(conceptModelObj);
-                console.debug('conceptPairObj', conceptModelObj);
+            //    console.debug('conceptPairObj', conceptModelObj);
                 notificationService.clear();
 
                 // after a slight delay, broadcast a draw event
@@ -182,7 +182,11 @@ angular.module('singleConceptAuthoringApp')
                 scope.startSavingClassificationPolling();
 
                 // broadcast reload notification to edit.js
-                $rootScope.$broadcast('reloadTask');
+                if ($routeParams.taskKey) {
+                  $rootScope.$broadcast('reloadTask');
+                } else {
+                  $rootScope.$broadcast('reloadProject');
+                }
               }
             });
           }
@@ -216,6 +220,11 @@ angular.module('singleConceptAuthoringApp')
           };
 
           var savingClassificationPoll = null;
+
+          scope.$on('$locationChangeStart', function() {
+            scope.stopSavingClassificationPolling();
+          });
+
           scope.startSavingClassificationPolling = function () {
 
             // if poll already started, do nothing
@@ -223,10 +232,13 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
+            console.log('Starting saving classification polling');
+
+
             savingClassificationPoll = $interval(function () {
               if ($routeParams.taskKey) {
                 snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
-                  console.debug('status', response.status);
+                  //console.debug('status', response.status);
                   if (response.status === 'SAVED') {
 
                     notificationService.sendMessage('Classification saved', 5000);
@@ -235,16 +247,43 @@ angular.module('singleConceptAuthoringApp')
                     // status
                     $rootScope.$broadcast('reloadTask');
 
-                    // stop the polling
-                    $interval.cancel(savingClassificationPoll);
+                   scope.stopSavingClassificationPolling();
 
                     // save the ui state based on response status
                     scope.saveClassificationUiState(response.status);
                   }
                 });
+              } else {
+                snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
+               //   console.debug('status', response.status);
+                  if (response.status === 'SAVED') {
+
+                    notificationService.sendMessage('Classification saved', 5000);
+
+                    // broadcast reloadTask event to capture new classificaiton
+                    // status
+                    $rootScope.$broadcast('reloadTask');
+
+                    scope.stopSavingClassificationPolling();
+
+                    // save the ui state based on response status
+                    scope.saveClassificationUiState(response.status);
+                  }
+
+               //   console.debug('response not saved');
+                });
               }
             }, 5000);
           };
+
+          scope.stopSavingClassificationPolling = function() {
+            if (savingClassificationPoll) {
+              console.log('Stopping saving classification polling');
+              $interval.cancel(savingClassificationPoll);
+            }
+          };
+
+
 
           /**
            * Saves the given status with the current timestamp
@@ -291,8 +330,8 @@ angular.module('singleConceptAuthoringApp')
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
 
-            console.debug('classification container changed',
-              scope.classificationContainer);
+            //console.debug('classification container changed',
+             // scope.classificationContainer);
 
             if (!scope.classificationContainer || !scope.classificationContainer.id) {
               //console.debug('Either container or its id is null');
@@ -369,7 +408,7 @@ angular.module('singleConceptAuthoringApp')
           }, true);
 
           scope.viewConceptInTaxonomy = function (concept) {
-            console.debug('broadcasting viewTaxonomy event to taxonomy.js', concept);
+           // console.debug('broadcasting viewTaxonomy event to taxonomy.js', concept);
             $rootScope.$broadcast('viewTaxonomy', {
               concept: {
                 conceptId: concept.conceptId,

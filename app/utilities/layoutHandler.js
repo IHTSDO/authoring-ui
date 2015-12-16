@@ -7,7 +7,6 @@ angular.module('singleConceptAuthoringApp')
  */
   .service('layoutHandler', function ($rootScope) {
 
-    console.debug('entered layout handler');
 
     // the layout variable (initialized blank)
     $rootScope.layout = {};

@@ -10,13 +10,15 @@ angular.module('singleConceptAuthoringApp')
 
     var userPreferences = null;
 
-    function getAccount(imsUrl) {
+    function getAccount() {
+
+      var deferred = $q.defer();
 
       if (accountDetails !== null) {
-        return accountDetails;
+        deferred.resolve(accountDetails);
       }
       else {
-        return $http.get('/ims-api/account', {withCredentials: true}).
+        $http.get('/ims-api/account', {withCredentials: true}).
           success(function (data, status) {
 
             console.log('Account details retrieved');
@@ -27,29 +29,43 @@ angular.module('singleConceptAuthoringApp')
             $rootScope.accountDetails = data;
             $rootScope.loggedIn = true;
             accountDetails = data;
+
+            deferred.resolve(accountDetails);
           }).
           error(function (data, status) {
             console.error('Could not retrieve account details');
             $rootScope.accountDetails = [];
             $rootScope.loggedIn = false;
+
+            deferred.reject('Could not retrieve account details');
           });
       }
+
+      return deferred.promise;
     }
 
     function getRoleForTask(task) {
 
-      // check reviewer first
-      if (task.reviewer && accountDetails.login === task.reviewer.username) {
-        return 'REVIEWER';
-      }
+      var deferred = $q.defer();
 
-      // check assignee second
-      if (accountDetails.login === task.assignee.username) {
-        return 'AUTHOR';
-      }
+      getAccount().then(function(accountDetails) {
 
-      return 'UNDEFINED';
+        // check reviewer first
+        if (task.reviewer && accountDetails.login === task.reviewer.username) {
+          deferred.resolve('REVIEWER');
+        }
 
+        // check assignee second
+        else if (accountDetails.login === task.assignee.username) {
+          deferred.resolve('AUTHOR');
+        }
+
+        else {
+          deferred.reject('UNKNOWN');
+        }
+      });
+
+      return deferred.promise;
 
     }
 
