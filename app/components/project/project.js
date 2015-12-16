@@ -432,17 +432,19 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.viewTask = function (task) {
 
         // determine destination based on role
-        switch (accountService.getRoleForTask(task)) {
-          case 'REVIWER':
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
-            break;
-          case 'AUTHOR':
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
-            break;
-          default:
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
-            break;
-        }
+        accountService.getRoleForTask(task).then(function(role) {
+          switch (role) {
+            case 'REVIWER':
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+              break;
+            case 'AUTHOR':
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              break;
+            default:
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              break;
+          }
+        });
       };
 
       initialize();
