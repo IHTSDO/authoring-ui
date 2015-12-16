@@ -63,7 +63,7 @@
                 </a>
               </td>
 
-              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
+              <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                   <button ng-show="task.latestClassificationJson != null"
                           type="button"
@@ -85,7 +85,7 @@
 
               </td>
 
-              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+              <td data-title="'Validation'" sortable="'latestValidationStatus'">
                <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                         type="button"
@@ -124,6 +124,7 @@
                 <div ng-if="task.status === 'IN_REVIEW' && task.reviewer" class="badge {{task.status}}"> {{task.status}} </div>
                 <div ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </div>
               </td>
+            
             </tr>
           </table>
 
@@ -184,7 +185,7 @@
               <td data-title="'Last Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
-              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
+              <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
                   <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                   <button ng-show="task.latestClassificationJson != null"
                           type="button"
@@ -204,7 +205,7 @@
 
               </td>
 
-              <td data-title="'Validation Results'" sortable="'latestValidationStatus'">
+              <td data-title="'Validation'" sortable="'latestValidationStatus'">
                <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                         type="button"
@@ -238,6 +239,7 @@
                   </button>
                 </a>
               </td>
+             
             </tr>
           </table>
 

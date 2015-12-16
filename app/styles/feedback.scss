@@ -90,14 +90,14 @@ section thead input {
     margin: 0px!important;
     font-size: 14px!important;
 }
-.table-full thead tr > th input[type=checkbox]{ margin-top: 5px!important;margin-left: 3px!important;margin-right: 0px!important;margin-bottom: 0px!important;}
-.table-full thead tr > th input[type=checkbox]:after {
+.feedback.table-full thead tr > th input[type=checkbox]{ margin-top: 5px!important;margin-left: 3px!important;margin-right: 0px!important;margin-bottom: 0px!important;}
+.feedback .table-full thead tr > th input[type=checkbox]:after {
     width: 16px;
     height: 16px;
   margin: 0px!important;
     font-size: 14px!important;
 }
-.table > thead > tr > th{ padding: 4px 2px!important;   vertical-align: middle !important;line-height:12px}
+.feedback .table > thead > tr > th{ padding: 4px 2px!important;   vertical-align: middle !important;line-height:12px}
 .feedback-view .table > thead > tr > th,
 .feedback-view .table > thead > tr > td {
     padding: 5px;
@@ -302,3 +302,7 @@ section thead input {
   .tab-content > .active {
     height: auto;
   }
+  
+  .feedback-initial {min-height:480px!important;  }
+  .feedback-initial .text{padding-right:100px; padding-left:100px; font-weight: 300; text-align:center; font-size:18px; font-family: 'Roboto', sans-serif; color: #d81b60;}
+ .feedback-initial .icon-alert{ margin: 0 auto!important; padding-top:70px; font-size:86px; width:86px;color: #f06292;}
