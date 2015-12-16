@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if a locally assigned UUID, strip
         if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
-          relationship.relationshipId = null;
+          delete relationship.relationshipId;
         }
       });
     }

@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp')
         'type': 'SYNONYM',
         'term': null,
         'lang': 'en',
-        'caseSignificance': 'ENTIRE_TERM_CASE_SENSITIVE',
+        'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
         'conceptId': conceptId,
         'acceptabilityMap': {
           '900000000000509007': 'ACCEPTABLE',
