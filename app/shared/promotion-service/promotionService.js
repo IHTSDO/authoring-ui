@@ -39,8 +39,8 @@ angular.module('singleConceptAuthoringApp')
 
         if (!latestClassificationJson) {
           flags.push({
-            checkTitle: 'Classification Report Not Specified',
-            checkWarning: 'Classification report not provided to promotion verification service. This is a fatal error: contact an administrator',
+            checkTitle: 'Classification Not Run',
+            checkWarning: 'No classifications were run on this branch. Promote only if you are sure your changes will not affect future classification.',
             blocksPromotion: true
           });
 
@@ -83,8 +83,8 @@ angular.module('singleConceptAuthoringApp')
                 } else {
                   console.debug('classification run -- NO');
                   flags.push({
-                    checkTitle: 'Classification Not Run',
-                    checkWarning: 'No classifications were run on this branch',
+                    checkTitle: 'Classification Not Completed',
+                    checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
                     blocksPromotion: false
                   });
                 }
