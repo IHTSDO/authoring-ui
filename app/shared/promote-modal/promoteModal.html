@@ -2,23 +2,36 @@
 
   <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4 class="modal-title">Promote {{task ? 'Task' : 'Project'}}</h4>
+    <h4 class="modal-title">Promote {{isTask ? 'Task' : 'Project'}}</h4>
   </div>
 
 
   <div class="modal-body">
-    <div ng-if="falseFlagsFound" class="row alert alert-warning">Issues detected with classification of this {{task ? 'Task' : 'Project'}}:
+
+    <div class="row p-b-10 alert alert-danger" ng-if="!flags || fatalErrorFound">
+      Checking prerequisites <span ng-if="!flags">was not performed</span><span ng-if="fatalErrorFound">experienced unexpected errors</span>. You may promote, but exercise
+      extreme caution.
     </div>
+
     <div class="row p-b-10" ng-repeat="flag in flags">
       <div class="col-md-1"></div>
       <div class="col-md-1">
-        <button class="btn-default btn-round md"
-                ng-class="[{'md-done green' : flag.value}, {'md-clear red' : !flag.value}]"></button>
+        <h4>
+          <span class="md md-warning orange p-5" ng-if="flag.checkWarning && !flag.blocksPromotion"></span>
+          <span class="md md-close red p-5" ng-if="flag.checkWarning && flag.blocksPromotion"></span>
+          <span class="md md-done green p-5" ng-if="!flag.checkWarning"></span>
+        </h4>
+
+
       </div>
       <div class="col-md-9">
 
-        <div class="col-md-12"><h4>Check: {{flag.key}}</h4></div>
-        <div class="col-md-12" ng-if="!flag.value">{{flag.message}}</div>
+        <div class="col-md-12">
+          <h4>
+            {{flag.checkTitle}}
+          </h4>
+        </div>
+        <div class="col-md-12" ng-if="!flag.value">{{flag.checkWarning}}</div>
       </div>
       <div class="col-md-1"></div>
     </div>
@@ -30,7 +43,7 @@
     <div class="row no-padding no-gutter">
       <!-- If has a key, option to delete task -->
       <div class="col-md-4">
-        <button type="button" class="col-md-12 btn btn-warning no-margin" ng-if="task"
+        <button type="button" class="col-md-12 btn btn-warning no-margin" ng-if="isTask"
                 ng-click="promote()">Promote Anyway
         </button>
       </div>
@@ -40,7 +53,7 @@
       <!-- Cancel always appears -->
       <div class="col-md-4">
         <button type="button" class=" col-md-12 btn btn-info no-margin"
-                ng-click="cancel()">Return to {{task ? 'Task' : 'Project'}}
+                ng-click="cancel()">Return to {{isTask ? 'Task' : 'Project'}}
         </button>
       </div>
     </div>

@@ -13,8 +13,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', '$q',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, $q) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp.project', [
           $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED';
 
           // get the latest classification for this project (if exists)
-          if ($scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'COMPLETED') {
+          if ($scope.project.latestClassificationJson) {
             snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
               console.log(response);
               $scope.classificationContainer = response;
@@ -50,14 +50,11 @@ angular.module('singleConceptAuthoringApp.project', [
           }
 
           // get the latest validation for this project (if exists)
-          if ($scope.project.validationStatus && $scope.project.validationStatus === 'COMPLETED') {
+          if ($scope.project.validationStatus !== 'FAILED') {
             scaService.getValidationForProject($scope.project.key).then(function (response) {
               $scope.validationContainer = response;
             });
           }
-
-          // TODO Retrieve rebase/conflicts report
-
         });
       };
 
@@ -133,210 +130,61 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // rebase the project -- simply route to merge/rebase view
       $scope.mergeAndRebase = function () {
-        $location.url('projects/project/{{project.key}}/conflicts');
+        $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
       };
 
-      /**
-       *
-       * Function to check a project for any promotion requirements not
-       * fulfilled
-       * @returns {*|promise}
-       */
-      function checkPromotionRequirements() {
-
-        console.log('Checking Promotion requirements');
-        var deferred = $q.defer();
-
-        // the set of warning flags returned after checking requirements
-        var flags = [];
-
-        ////////////////////////////
-        // Items Blocking Promotion
-        ////////////////////////////
-
-        // if project not defined, cannot promote
-        if (!$scope.project) {
-          flags.push({
-            key: 'Project Verified',
-            message: 'ERROR: Could not retrieve project status.  You may promote, but exercise extreme caution.',
-            value: false
-          });
-          deferred.resolve(flags);
-
-        } else {
-
-          if (!$scope.project.latestClassificationJson) {
-            flags.push({
-              key: 'Classification Run',
-              message: 'Classification was not started for this project. Promote only if you are sure your changes will not affect future classifications.',
-              value: false
-            });
-
-            deferred.resolve(flags);
-          } else {
-
-            // get the ui state for classiifcation saving timestamp and status
-            // information
-            scaService.getUiStateForUser('classification-' + $scope.project.latestClassificationJson.id).then(function (classificationStatus) {
-
-              // get the branch details
-              snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function (branchStatus) {
-
-                  /////////////////////////////////////////
-                  // Perform Checks
-                  /////////////////////////////////////////
-
-                  // declare the flags relevant to promotion with their
-                  // user-displayed messages
-                  flags.push({
-                    key: 'Classification Completed',
-                    message: 'Classification run did not complete for this project. Promote only if you are sure your changes will not affect future classifications.',
-                    value: $scope.project.latestClassificationJson.status === 'COMPLETED' || $scope.project.latestClassificationJson.status === 'SAVING_IN_PROGRESS' || $scope.project.latestClassificationJson.status === 'SAVED'
-                  });
-
-                  // check if classification saved
-                  flags.push({
-                    key: 'Classification Accepted',
-                    message: 'Classification was run for this project, but was not accepted. Promoting may dramatically impact the experience of other users.',
-                    value: $scope.project.latestClassificationJson.status === 'SAVED'
-                  });
-
-                  // if classification report is completed, but not accepted, check that results are current relative to project modification
-                  // does not require ui state, can use timestamp on classification status
-                  if ($scope.project.latestClassificationJson.status === 'COMPLETED') {
-                    flags.push({
-                      key: 'Classification Current',
-                      message: 'Classification was run, but modifications were made to the project afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                      value: (new Date($scope.project.latestClassificationJson.completionDate)).getTime() > branchStatus.headTimestamp
-                    });
-                  }
-
-                  // if classification results were accepted, check that the
-                  // results are current relative to project modifications
-                  if ($scope.project.latestClassificationJson.status === 'SAVED') {
 
 
-                    // if no classification status saved or saved state was not
-                    // captured by application
-                    if (!classificationStatus || classificationStatus.status === 'SAVING_IN_PROGRESS') {
-                      flags.push({
-                        key: 'Classification Current',
-                        message: 'Classification was run, but could not determine if modifications were made after saving classification.  Promote only if you are sure no modifications were made after saving classification results.',
-                        value: false
-                      });
-                    }
-
-                    // otherwise compare the head timestamp of the branch to the
-                    // saved timestamp of classification results acceptance
-                    else {
-                      flags.push({
-                        key: 'Classification Current',
-                        message: 'Classification was run, but modifications were made to the project afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                        value: classificationStatus.timestamp > branchStatus.headTimestamp
-                      });
-                    }
-                  }
-
-                  deferred.resolve(flags);
-                },
-                function (error) {
-                  deferred.reject('Could not determine branch state');
-                });
-            });
-          }
-
-        }
-        return deferred.promise;
-      }
-
-      // promote the project
       $scope.promote = function () {
-        notificationService.sendMessage('Preparing for project promotion....');
 
-        // force refresh of project status to ensure proper handling
-        scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-          if (response) {
-            $scope.project = response;
+        notificationService.sendMessage('Preparing for project promotion...');
 
-            if ($scope.project.branchState === 'BEHIND' || $scope.project.branchState === 'DIVERGED' || $scope.project.branchState === 'STALE') {
-              notificationService.sendError('Error promoting project -- rebase required first');
-              return;
+        promotionService.checkPrerequisitesForProject($routeParams.projectKey).then(function (flags) {
+
+          console.debug('promotion flags', flags);
+
+          // detect whether any user warnings were detected
+          var warningsFound = false;
+          angular.forEach(flags, function (flag) {
+            if (flag.checkWarning) {
+              warningsFound = true;
             }
+          });
 
-            if ($scope.project.branchState === 'UP_TO_DATE') {
-              notificationService.sendWarning('Cannot promote project -- already up to date');
-              return;
-            }
-
-            // check promotion requirements and proceed accordingly
-            checkPromotionRequirements().then(function (response) {
-
-              console.log('Promotion flags: ', response);
-
-              var flags = response;
-
-              // if no response at all, indicates serious error
-              if (!flags) {
-                flags = [{
-                  key: 'Promotion Requirements Checked',
-                  message: 'Unexpected errors checking promotion requirements. This may indicate severe problems with the application. You may promote, but exercise extreme caution',
-                  value: false
-                }];
-              }
-
-              var falseFlagsFound = false;
-              angular.forEach(flags, function (flag) {
-                if (!flag.value) {
-                  falseFlagsFound = true;
-                }
-              });
-
-              // if response contains no flags, simply promote
-              if (!falseFlagsFound) {
-                notificationService.sendMessage('Promoting project...');
-                scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
-                 notificationService.sendMessage('Project successfully promoted', 5000);
-                 });
-              } else {
-
-                // cloear the preparation notification
-
-                var modalInstance = $modal.open({
-                  templateUrl: 'shared/promote-modal/promoteModal.html',
-                  controller: 'promoteModalCtrl',
-                  resolve: {
-                    project: function () {
-                      return $scope.project;
-                    },
-                    task: function () {
-                      return null;
-                    },
-                    flags: function () {
-                      return flags;
-                    }
-                  }
-                });
-
-                modalInstance.result.then(function (proceed) {
-                  if (proceed) {
-                    notificationService.sendMessage('Promoting project...');
-                     scaService.promoteProject($routeParams.projectKey, $routeParams.projectKey).then(function (response) {
-                     notificationService.sendMessage('Project successfully promoted', 5000);
-                     $rootScope.$broadcast('reloadProject');
-                     });
-                  } else {
-                    notificationService.clear();
-                  }
-                }, function () {
-                  notificationService.clear();
-                });
-              }
-            }, function (error) {
-              notificationService.sendError('Unexpected error preparing for promotion');
-            });
+          // if response contains no flags, simply promote
+          if (!warningsFound) {
+            notificationService.sendMessage('Promoting project...');
+         /*   scaService.promoteProject($routeParams.projectKey).then(function (response) {
+              notificationService.sendMessage('Project successfully promoted', 5000);
+            });*/
           } else {
-            notificationService.sendError('Error promoting project: Could not verify project was eligible for promotion');
+
+            var modalInstance = $modal.open({
+              templateUrl: 'shared/promote-modal/promoteModal.html',
+              controller: 'promoteModalCtrl',
+              resolve: {
+                flags: function () {
+                  return flags;
+                },
+                isTask: function () {
+                  return false;
+                }
+              }
+            });
+
+            modalInstance.result.then(function (proceed) {
+              if (proceed) {
+                notificationService.sendMessage('Promoting project...');
+                /*scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                  notificationService.sendMessage('Project successfully promoted', 5000);
+                  $rootScope.$broadcast('reloadProject');
+                });*/
+              }
+            }, function () {
+            });
           }
+        }, function (error) {
+          notificationService.sendError('Unexpected error preparing for promotion: ' + error);
         });
       };
 
@@ -432,17 +280,19 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.viewTask = function (task) {
 
         // determine destination based on role
-        switch (accountService.getRoleForTask(task)) {
-          case 'REVIWER':
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
-            break;
-          case 'AUTHOR':
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
-            break;
-          default:
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
-            break;
-        }
+        accountService.getRoleForTask(task).then(function (role) {
+          switch (role) {
+            case 'REVIWER':
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+              break;
+            case 'AUTHOR':
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              break;
+            default:
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              break;
+          }
+        });
       };
 
       initialize();
