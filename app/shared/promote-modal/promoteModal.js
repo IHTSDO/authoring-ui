@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .controller('promoteModalCtrl', function ($scope, $modalInstance, flags) {
+  .controller('promoteModalCtrl', function ($scope, $modalInstance, flags, isTask) {
 
     /**
      * The flags reported from promotionService, in array of objects of format
@@ -9,7 +9,14 @@ angular.module('singleConceptAuthoringApp')
      * If not supplied, indicates checks not performed or fatal error in performing checks
      */
     $scope.flags = flags;
+    $scope.isTask = isTask;
 
+    // determine if any fatal errors were detected
+    angular.forEach($scope.flags, function(flag) {
+      if (flag.blocksPromotion) {
+        $scope.fatalErrorFound = true;
+      }
+    });
 
     /////////////////////////////////////////
     // Modal control buttons

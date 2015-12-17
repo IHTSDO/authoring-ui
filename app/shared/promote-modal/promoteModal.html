@@ -2,14 +2,14 @@
 
   <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4 class="modal-title">Promote {{task ? 'Task' : 'Project'}}</h4>
+    <h4 class="modal-title">Promote {{isTask ? 'Task' : 'Project'}}</h4>
   </div>
 
 
   <div class="modal-body">
 
-    <div class="row p-b-10 alert alert-warning" ng-if="!flags">
-      Checking prerequisites either was not performed or experienced unexpected errors. You may promote, but exercise
+    <div class="row p-b-10 alert alert-danger" ng-if="!flags || fatalErrorFound">
+      Checking prerequisites <span ng-if="!flags">was not performed</span><span ng-if="fatalErrorFound">experienced unexpected errors</span>. You may promote, but exercise
       extreme caution.
     </div>
 
@@ -28,7 +28,6 @@
 
         <div class="col-md-12">
           <h4>
-
             {{flag.checkTitle}}
           </h4>
         </div>
@@ -44,7 +43,7 @@
     <div class="row no-padding no-gutter">
       <!-- If has a key, option to delete task -->
       <div class="col-md-4">
-        <button type="button" class="col-md-12 btn btn-warning no-margin" ng-if="task"
+        <button type="button" class="col-md-12 btn btn-warning no-margin" ng-if="isTask"
                 ng-click="promote()">Promote Anyway
         </button>
       </div>
@@ -54,7 +53,7 @@
       <!-- Cancel always appears -->
       <div class="col-md-4">
         <button type="button" class=" col-md-12 btn btn-info no-margin"
-                ng-click="cancel()">Return to {{task ? 'Task' : 'Project'}}
+                ng-click="cancel()">Return to {{isTask ? 'Task' : 'Project'}}
         </button>
       </div>
     </div>

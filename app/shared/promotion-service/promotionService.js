@@ -56,7 +56,7 @@ angular.module('singleConceptAuthoringApp')
             // get the branch details
             snowowlService.getBranch(branch).then(function (branchStatus) {
 
-                console.debug('branch', branch);
+                console.debug('branch', branchStatus);
 
                 if (!branchStatus) {
                   flags.push({
@@ -74,12 +74,14 @@ angular.module('singleConceptAuthoringApp')
 
                 if (latestClassificationJson.status === 'COMPLETED' || latestClassificationJson.status === 'SAVING_IN_PROGRESS' || latestClassificationJson.status === 'SAVED') {
 
+                  console.debug('classification run -- YES');
                   flags.push({
                     checkTitle: 'Classification Run',
                     checkWarning: null,
                     blocksPromotion: false
                   });
                 } else {
+                  console.debug('classification run -- NO');
                   flags.push({
                     checkTitle: 'Classification Not Run',
                     checkWarning: 'No classifications were run on this branch',
@@ -96,11 +98,20 @@ angular.module('singleConceptAuthoringApp')
                 // modification does not require ui state, can use timestamp on
                 // classification status
                 if (latestClassificationJson.status === 'COMPLETED') {
-                  flags.push({
-                    checkTitle: 'Classification Current',
-                    checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                    blocksPromotion: false
-                  });
+
+                  if ((new Date(latestClassificationJson.creationDate)).getTime() >= branchStatus.headTimestamp) {
+                    flags.push({
+                      checkTitle: 'Classification Current',
+                      checkWarning: null,
+                      blocksPromotion: false
+                    });
+                  } else {
+                    flags.push({
+                      checkTitle: 'Classification Not Current',
+                      checkWarning: 'Classification was run, but modifications were made after the classifier was initiated.  Promote only if you are sure any changes will not affect future classification.',
+                      blocksPromotion: false
+                    })
+                  }
                 }
 
                 // Case 2: if classification results were accepted, use the
@@ -155,6 +166,8 @@ angular.module('singleConceptAuthoringApp')
                   });
                 }
 
+                console.debug('resolving');
+
                 deferred.resolve(flags);
               },
               function (error) {
@@ -195,12 +208,12 @@ angular.module('singleConceptAuthoringApp')
         }
 
         checkClassificationPrerequisites(branch, task.latestClassificationJson).then(function (flags) {
-          $q.resolve(flags);
+          deferred.resolve(flags);
         }, function (error) {
-          $q.reject(error);
+          deferred.reject(error);
         });
       }, function (error) {
-        $q.reject('Could not retrieve task details: ' + error);
+        deferred.reject('Could not retrieve task details: ' + error);
       });
 
       return deferred.promise;
@@ -232,12 +245,12 @@ angular.module('singleConceptAuthoringApp')
         }
 
         checkClassificationPrerequisites(branch, project.latestClassificationJson).then(function (flags) {
-          $q.resolve(flags);
+          deferred.resolve(flags);
         }, function (error) {
-          $q.reject(error);
+          deferred.reject(error);
         });
       }, function (error) {
-        $q.reject('Could not retrieve task details: ' + error);
+        deferred.reject('Could not retrieve task details: ' + error);
       });
 
       return deferred.promise;
