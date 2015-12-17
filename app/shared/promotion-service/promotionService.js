@@ -41,7 +41,7 @@ angular.module('singleConceptAuthoringApp')
           flags.push({
             checkTitle: 'Classification Not Run',
             checkWarning: 'No classifications were run on this branch. Promote only if you are sure your changes will not affect future classification.',
-            blocksPromotion: true
+            blocksPromotion: false
           });
 
           deferred.resolve(flags);
