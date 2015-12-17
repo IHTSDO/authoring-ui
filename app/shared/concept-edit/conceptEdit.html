@@ -2,7 +2,8 @@
 
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
-    <button class="btn btn-default md md-close pull-right white" ng-click="errors = []" style="background: transparent" tabindex="0"></button>
+    <button class="btn btn-default md md-close pull-right white" ng-click="errors = []" style="background: transparent"
+            tabindex="0"></button>
     <h4>Error!</h4>
 
     <div ng-repeat="error in errors">
@@ -10,7 +11,8 @@
     </div>
   </div>
   <div class="alert alert-dismissible alert-warning validation" ng-show="warnings.length > 0">
-    <button class="btn btn-default md md-close pull-right white" ng-click="warnings = []" style="background: transparent" tabindex="0"></button>
+    <button class="btn btn-default md md-close pull-right white" ng-click="warnings = []"
+            style="background: transparent" tabindex="0"></button>
     <h4>Warning!</h4>
 
     <div ng-repeat="warning in warnings">
@@ -161,7 +163,7 @@
 
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions()"
-         ng-class="getComponentStyle(description.descriptionId, null, '')" >
+         ng-class="getComponentStyle(description.descriptionId, null, '')">
 
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}}">
         <div class="col-md-12 no-padding color_{{relationship.groupId}} "
@@ -250,7 +252,8 @@
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
-                    title="{{getAcceptabilityTooltipText(description, 'en-us')}} US" ng-click="toggleAcceptability(description, 'en-us')">
+                    title="{{getAcceptabilityTooltipText(description, 'en-us')}} US"
+                    ng-click="toggleAcceptability(description, 'en-us')">
               <div
                 class="md col-md-12 no-padding text-center">us:
                                                             {{getAcceptabilityDisplayText(description,
@@ -261,7 +264,8 @@
             <!-- en-gb acceptability -->
             <button type="button" class=" blue accent-2 button-width-acceptability custom-button"
                     ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
-                    title="{{getAcceptabilityTooltipText(description, 'en-gb')}} GB" ng-click="toggleAcceptability(description, 'en-gb')">
+                    title="{{getAcceptabilityTooltipText(description, 'en-gb')}} GB"
+                    ng-click="toggleAcceptability(description, 'en-gb')">
               <div
                 class="md col-md-12 no-padding text-center">gb:
                                                             {{getAcceptabilityDisplayText(description,
@@ -310,8 +314,8 @@
     </div>
 
     <!-- rows: Relationships -->
-    <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups" >
-<div class="role_group_divider_top_{{groupId}}"></div>
+    <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
+      <div class="role_group_divider_top_{{groupId}}"></div>
       <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
            ng-class="getComponentStyle(relationship.relationshipId, null, '')">
 
@@ -349,13 +353,13 @@
 
               <!-- relationship group -->
               <div class="pull-left rolegroup">
-            <textarea 
-                      ng-disabled="isStatic"
-                      ng-model="relationship.groupId"
-                      ng-model-options="{updateOn: 'blur'}"
-                      ng-change="updateRelationship(relationship)"
-                      class=" msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
-                      ui-on-drop="dropNullOp()">
+            <textarea
+              ng-disabled="isStatic"
+              ng-model="relationship.groupId"
+              ng-model-options="{updateOn: 'blur'}"
+              ng-change="updateRelationship(relationship)"
+              class=" msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
+              ui-on-drop="dropNullOp()">
             </textarea>
               </div>
 
@@ -370,7 +374,7 @@
             <textarea type="text"
                       ng-model="relationship.type.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
-                     
+
                       class="msd-elastic resizable-text "
                       typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                       typeahead-focus-first="false"
@@ -425,8 +429,7 @@
               <div ng-if="!isStatic">
 
                 <button type="button" ng-click="addRelationship(groupId, relationship)"
-                        class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-left tooltips-light normal-case"
-                        title="Add New Relationship"></button>
+                        class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-left tooltips-light normal-case"><span>Add New Relationship</span></button>
 
                 <button type="button" ng-click="removeRelationship(relationship)"
                         ng-if="!relationship.effectiveTime"
@@ -457,6 +460,9 @@
                     ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
                     drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
               <span>Drag Relationship Group</span></button>
+            <button ng-if="$index === 0"
+                    class="btn-default md-exposure-plus-1 role-group-buttons tooltips-left tooltips-light normal-case "
+                    ng-click="addRelationshipGroup()"><span>Add Relationship Group</span></button>
           </div>
         </div>
 

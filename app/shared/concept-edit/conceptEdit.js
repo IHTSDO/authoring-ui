@@ -306,6 +306,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 console.debug('Save concept successful');
 
+                /*
+                 TODO Removed after discussion of this functionality on 12/17 -- limited scope of unsaved work only (not more comprehensive work list) indicates combinining this functionality with modified-concept UI-state
+
+                 // get the unsaved work list
+                scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function (unsavedWork) {
+
+                  if (!unsavedWork) {
+                    unsavedWork = [];
+                  }
+
+                  // filter out this concept's id (if it exists)
+                  unsavedWork = unsavedWork.filter(function (id) {
+                    if (scope.concept.conceptId) {
+                      return id !== scope.concept.conceptId;
+                    } else {
+                      return id !== 'unsaved';
+                    }
+                  });
+
+                  console.debug('removed concept from unsaved work list', unsavedWork);
+
+                  // update the unsaved work list
+                  scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', newUnsavedList);
+                });
+                */
+
                 // set concept and unmodified state
                 scope.concept = response;
                 scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
@@ -1479,6 +1505,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeRelationshipGroups();
         };
 
+        scope.addRelationshipGroup = function() {
+
+          var groupIds = scope.concept.relationships.map(function(rel) {
+            return parseInt(rel.groupId);
+          });
+
+          // push two new relationships
+          var rel = objectService.getNewAttributeRelationship();
+          rel.groupId = Math.max.apply(null, groupIds) + 1;
+          scope.concept.relationships.push(rel);
+          scope.concept.relationships.push(angular.copy(rel));
+
+          // recompute relationship groups
+          scope.computeRelationshipGroups();
+        };
+
         scope.dropRelationshipGroup = function (relGroup) {
 
           //      console.debug('dropped relationship group', relGroup);
@@ -1873,7 +1915,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // if this is a TEXT_DEFINITION, ensure acceptability and case sensitivity is correctly set
+          // if this is a TEXT_DEFINITION, ensure acceptability and case
+          // sensitivity is correctly set
           if (description.type === 'TEXT_DEFINITION') {
             description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
             description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
@@ -1894,9 +1937,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // locate the en-US preferred term
               var pt = null;
-              angular.forEach(scope.concept.descriptions, function(d) {
+              angular.forEach(scope.concept.descriptions, function (d) {
                 console.debug(d, d.type === 'SYNONYM', d.acceptabilityMap['900000000000509007'] === 'PREFERRED')
-                if ( d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+                if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
                   d.term = ptText;
                   pt = d;
                 }
@@ -1912,7 +1955,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               console.debug('final pt', pt, scope.concept);
 
             } else {
-              // do nothing -- only populate PT if FSN fully specified with semantic tag
+              // do nothing -- only populate PT if FSN fully specified with
+              // semantic tag
             }
           } else {
             // do nothing -- only process FSNS
@@ -2005,8 +2049,33 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // store the modified concept in ui-state
             scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
-              // do nothing
+
             });
+            /*
+             TODO Removed after discussion of this functionality on 12/17 -- limited scope of unsaved work only (not more comprehensive work list) indicates combinining this functionality with modified-concept UI-state
+
+
+             // get the unsaved work list
+             scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function(unsavedWork) {
+
+             if (!unsavedWork) {
+             unsavedWork = [];
+             }
+
+             if (scope.concept.conceptId && unsavedWork.indexOf(scope.conceptId) === -1) {
+             unsavedWork.push(scope.concept.conceptId);
+             } else if (!scope.concept.conceptId && unsavedWork.indexOf('unsaved') === -1) {
+             unsavedWork.push('unsaved');
+             }
+
+             console.debug('added concept to unsaved work list', unsavedWork);
+
+             // update the unsaved work list
+             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', unsavedWork);
+             });
+
+             */
+
           } else {
             scope.isModified = false;
           }
@@ -2023,8 +2092,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
             scope.conceptHistoryPtr++;
-
-            // console.debug('autosave', scope.conceptHistory);
 
             // save the modified concept
             saveModifiedConcept();
