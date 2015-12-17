@@ -42,18 +42,18 @@
 
           <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
                                                                    aria-controls="home" role="tab"
-                                                                   data-toggle="tab"> Classification Results</a></li>
+                                                                   data-toggle="tab"> Classification Results ({{isClassificationLoaded() ? relationshipChanges.length : '-'}})</a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Redundant Relationships</a>
+                                                       data-toggle="tab">Redundant Relationships ({{isClassificationLoaded() ? redundantStatedRelationships.length : '-'}})</a>
           </li>
           <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
                                                   data-toggle="tab">Inferred
                                                                     Not
                                                                     Previously
-                                                                    Stated</a>
+                                                                    Stated ({{isClassificationLoaded() ? inferredNotPreviouslyStated.length : '-'}})</a>
           </li>
           <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
-                                                         data-toggle="tab">Equivalency Errors</a></li>
+                                                         data-toggle="tab">Equivalency Errors ({{isClassificationLoaded() ? equivalentConcepts.length : '-'}})</a></li>
         </ul>
       </div>
 
