@@ -388,7 +388,7 @@ angular.module('singleConceptAuthoringApp')
             // get equivalent concepts
             if (scope.classificationContainer.equivalentConceptsFound) {
               var equivalentConcepts = [];
-
+              snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
               // convert equivalent concepts into format usable by ng-table
               angular.forEach(scope.classificationContainer.equivalentConcepts, function (concept) {
 
@@ -400,6 +400,7 @@ angular.module('singleConceptAuthoringApp')
                 };
                 equivalentConcepts.push(equivalentConcept);
               });
+            };
               scope.equivalentConcepts = equivalentConcepts;
             } else {
               scope.equivalenConcepts = [];
