@@ -116,7 +116,7 @@ angular.module('singleConceptAuthoringApp')
 
         // on data change, update the table
         scope.$watch('items', function () {
-          scope.tableParams.reload(); 
+          scope.tableParams.reload();
         });
 
       }

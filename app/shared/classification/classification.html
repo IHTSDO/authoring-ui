@@ -34,7 +34,7 @@
     </div>
 
     <!-- Classification Report Contents -->
-    <div ng-show="!isCollapsed">
+    <div ng-show="!isCollapsed && classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'">
 
       <!-- Nav tabs -->
       <div class="row classification-report">
