@@ -48,7 +48,8 @@ angular.module('singleConceptAuthoringApp')
         // scope function to broadcast element to edit panel
         scope.editEquivalentConcept = function (id) {
           // issue notification of edit concept request
-          $rootScope.$broadcast('viewCLassificationConcept', {conceptId: id});
+          console.log(id);
+          $rootScope.$broadcast('viewClassificationConcept', {conceptId: id});
 
         };
 

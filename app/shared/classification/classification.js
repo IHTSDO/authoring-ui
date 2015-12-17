@@ -387,23 +387,32 @@ angular.module('singleConceptAuthoringApp')
 
             // get equivalent concepts
             if (scope.classificationContainer.equivalentConceptsFound) {
-              var equivalentConcepts = [];
+              var equivalentConceptsArray = [];
               snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
-              // convert equivalent concepts into format usable by ng-table
-              angular.forEach(scope.classificationContainer.equivalentConcepts, function (concept) {
-
-                var equivalentConcept = {
-                  leftConceptId: concept[0].id,
-                  leftConceptLabel: concept[0].label,
-                  rightConceptId: concept[1].id,
-                  rightConceptLabel: concept[1].label
-                };
-                equivalentConcepts.push(equivalentConcept);
+              equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
+              scope.equivalentConcepts = [];
+              angular.forEach(equivalentConcepts, function (item) {
+                //console.log(item.equivalentConcepts);
+                if (item.equivalentConcepts.length === 2) {
+                  scope.equivalentConcepts.push(item.equivalentConcepts);
+                }
+                else {
+                  var key = item.equivalentConcepts[0];
+                  angular.forEach(item.equivalentConcepts, function (equivalence) {
+                    // console.log(item);
+                    if (equivalence !== key) {
+                      var newEq = [];
+                      newEq.push(key);
+                      newEq.push(equivalence);
+                      scope.equivalentConcepts.push(newEq);
+                    }
+                  });
+                }
               });
+              console.log(scope.equivalentConcepts);
             });
-              scope.equivalentConcepts = equivalentConcepts;
             } else {
-              scope.equivalenConcepts = [];
+              scope.equivalentConcepts = [];
             }
 
           }, true);
