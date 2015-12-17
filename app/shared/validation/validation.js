@@ -37,8 +37,8 @@ angular.module('singleConceptAuthoringApp')
           console.debug('entered validation.js', scope.validationContainer);
 
           // local variables for ng-table population
-          var assertionsFailed = [];
-          var failures = [];
+          scope.assertionsFailed = [];
+          scope.failures = [];
 
           // Allow broadcasting of new validation results
           // e.g. from server-side notification of work complete
@@ -89,14 +89,14 @@ angular.module('singleConceptAuthoringApp')
             },
             {
               filterDelay: 50,
-              total: assertionsFailed ? assertionsFailed.length : 0,
+              total: scope.assertionsFailed ? scope.assertionsFailed.length : 0,
               getData: function ($defer, params) {
 
-                if (!assertionsFailed || assertionsFailed.length === 0) {
+                if (!scope.assertionsFailed || scope.assertionsFailed.length === 0) {
                   $defer.resolve([]);
                 } else {
 
-                  var orderedData = assertionsFailed;
+                  var orderedData = scope.assertionsFailed;
 
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
@@ -115,13 +115,13 @@ angular.module('singleConceptAuthoringApp')
               orderBy: 'userModified'
             },
             {
-              total: failures ? failures.length : 0,
+              total: scope.failures ? scope.failures.length : 0,
               getData: function ($defer, params) {
 
-                if (!failures || failures.length === 0) {
+                if (!scope.failures || scope.failures.length === 0) {
                   $defer.resolve([]);
                 } else {
-                  var orderedData = failures;
+                  var orderedData = scope.failures;
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('validationContainer changed - report:', scope.validationContainer.report);
 
             // extract the failed assertions
-            assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
+            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
             // reset view to full report
             scope.viewTop = true;
@@ -173,7 +173,7 @@ angular.module('singleConceptAuthoringApp')
                 };
                 objArray.push(obj);
               });
-              failures = objArray;
+              scope.failures = objArray;
               scope.failureTableParams.reload();
             }
 
@@ -197,7 +197,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                     });
                     objArray.push(obj);
-                    failures = objArray;
+                    scope.failures = objArray;
 
                     scope.failureTableParams.reload();
                   });
@@ -221,7 +221,7 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   objArray.push(obj);
-                  failures = objArray;
+                  scope.failures = objArray;
 
                     scope.failureTableParams.reload();
                 });
@@ -230,14 +230,14 @@ angular.module('singleConceptAuthoringApp')
             }
 
 
-            // set failures to trigger watch
-            failures = objArray;
+            // set scope.failures to trigger watch
+            scope.failures = objArray;
 
             scope.failureTableParams.reload();
           };
 
           scope.selectAll = function (selectAllActive) {
-            angular.forEach(failures.firstNInstances, function (failure) {
+            angular.forEach(scope.failures.firstNInstances, function (failure) {
               failure.selected = selectAllActive;
             });
           };
@@ -281,18 +281,18 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Constructing task from project validation...');
 
-            console.debug('failures.firstNInstances', failures, failures.firstNInstances);
+            console.debug('scope.failures.firstNInstances', scope.failures, scope.failures.firstNInstances);
 
             // attempt to construct the edit list from user selections
             var editList = [];
-            angular.forEach(failures, function (failure) {
+            angular.forEach(scope.failures, function (failure) {
               if (editList.selected && editList.indexOf(failure.errorMessage.conceptId) === -1) {
                 editList.push(failure.errorMessage.conceptId);
               }
             });
 
             // if edit list is empty, use all failure instances
-            angular.forEach(failures, function (failure) {
+            angular.forEach(scope.failures, function (failure) {
               if (editList.indexOf(failure.errorMessage.conceptId === -1)) {
                 editList.push(failure.errorMessage.conceptId);
               }
@@ -303,7 +303,7 @@ angular.module('singleConceptAuthoringApp')
             // temporary restriction on number of items to prevent giant server
             // load
             if (editList.length > 10) {
-              notificationService.sendWarning('No more than 20 failures can be put into a task at this time');
+              notificationService.sendWarning('No more than 20 scope.failures can be put into a task at this time');
               return;
             }
 
@@ -342,7 +342,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // construct the saved list and task details
                   var taskDetails = 'Error Type: ' + scope.assertionFailureViewed + '\n\n';
-                  angular.forEach(failures, function (failure) {
+                  angular.forEach(scope.failures, function (failure) {
                     // if this concept was encountered, add it to details
                     if (idConceptMap[failure.errorMessage.conceptId]) {
                       taskDetails += 'Concept: ' + idConceptMap[failure.errorMessage.conceptId] + ', Error: ' + failure.errorMessage.detail + '\n';

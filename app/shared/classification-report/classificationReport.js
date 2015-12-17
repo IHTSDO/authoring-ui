@@ -113,40 +113,10 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
-        // function to set flags on whether concepts can be edited
-        // also reloads ng-table
-        function updateTable() {
-
-          if (scope.editable) {
-
-            // get the current editing ui state
-            scaService.getUiStateForTask(
-              $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
-              .then(function (uiState) {
-
-                if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-                  scope.editPanelUiState = [];
-                }
-                else {
-                  scope.editPanelUiState = uiState;
-                }
-
-                // flag the relationships in data
-//                angular.forEach(scope.items, function (item) {
-//                  item.isLoaded = scope.editPanelUiState.indexOf(item.sourceId) !== -1;
-//                });
-
-                // reload the table
-                scope.tableParams.reload();
-              });
-          } else {
-            scope.tableParams.reload();
-          }
-        }
 
         // on data change, update the table
         scope.$watch('items', function () {
-          updateTable();
+          scope.tableParams.reload(); 
         });
 
       }
