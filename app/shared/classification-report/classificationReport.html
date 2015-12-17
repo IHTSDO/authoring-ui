@@ -10,9 +10,14 @@
     }
   </style>
 
-  <div ng-if="type != 'equivalence'" class="table-responsive white">
+  <!-- No results display banner -->
+  <div class="ng-table-no-results" ng-if="items && items.length === 0">
+    No results.
+  </div>
+
+  <div ng-if="type != 'equivalence' && items.length > 0" class="table-responsive white">
     <div class="table-search">
-        <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
+      <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
              placeholder="Search Results" autofocus/>
     </div>
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
@@ -34,7 +39,7 @@
         <td data-title="'Group'" sortable="'group'">
           {{result.group}}
         </td>
-     
+
         <td>
           <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
@@ -47,9 +52,10 @@
     </table>
 
   </div>
-  <div ng-if="type === 'equivalence'" class="table-responsive white">
+
+  <div ng-if="type === 'equivalence' && items.length > 0" class="table-responsive white">
     <div class="table-search">
-        <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
+      <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
              placeholder="Search Results" autofocus/>
     </div>
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"

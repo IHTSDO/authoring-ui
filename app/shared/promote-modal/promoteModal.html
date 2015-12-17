@@ -8,11 +8,6 @@
 
   <div class="modal-body">
 
-    <div class="row p-b-10 alert alert-danger" ng-if="!flags || fatalErrorFound">
-      Checking prerequisites <span ng-if="!flags">was not performed</span><span ng-if="fatalErrorFound">experienced unexpected errors</span>. You may promote, but exercise
-      extreme caution.
-    </div>
-
     <div class="row p-b-10" ng-repeat="flag in flags">
       <div class="col-md-1"></div>
       <div class="col-md-1">
@@ -43,7 +38,7 @@
     <div class="row no-padding no-gutter">
       <!-- If has a key, option to delete task -->
       <div class="col-md-4">
-        <button type="button" class="col-md-12 btn btn-warning no-margin" ng-if="isTask"
+        <button type="button" class="col-md-12 btn btn-warning no-margin" ng-if="isTask && !blockPromotion"
                 ng-click="promote()">Promote Anyway
         </button>
       </div>

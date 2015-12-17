@@ -61,7 +61,11 @@
   <div class="card m-10 validation-report">
     <div role="tabpanel" class="">
 
-      <div class="table-responsive white" style="margin-right:0px;" ng-if="viewTop">
+      <div class="ng-table-no-results" ng-if="viewTop && assertionsFailed.length === 0">
+        No validation results to display
+      </div>
+
+      <div class="table-responsive white" style="margin-right:0px;" ng-if="viewTop && assertionsFailed.length > 0">
         <table
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
@@ -103,7 +107,11 @@
           </div>-->
         </div>
 
-        <table
+        <div class="ng-table-no-results" ng-if="failures.length === 0">
+          No validation results to display
+        </div>
+
+        <table ng-if="failures.length > 0"
           ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">

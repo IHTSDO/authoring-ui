@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp')
     // determine if any fatal errors were detected
     angular.forEach($scope.flags, function(flag) {
       if (flag.blocksPromotion) {
-        $scope.fatalErrorFound = true;
+        $scope.blockPromotion = true;
       }
     });
 
