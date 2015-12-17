@@ -980,7 +980,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     function setBranchFunctionality(branchState) {
 
-    //  console.debug('setBranchFunctionality', branchState, $scope.task);
+      console.debug('setBranchFunctionality', branchState, $scope.task, $scope.isOwnTask);
 
       // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
       // status
@@ -1074,24 +1074,17 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.task = response;
         $rootScope.currentTask = response;
 
-        // put in a slight timeout to ensure that account details have been retrieved
-        // This fixes a problem on reload of application while in edit view
-        $timeout(function() {
-          $scope.isOwnTask = accountService.getRoleForTask(response) === 'AUTHOR';
-        }, 1000);
+        accountService.getRoleForTask(response).then(function (role) {
+          console.debug(response, role);
+          $scope.isOwnTask = role === 'AUTHOR';
+          setBranchFunctionality($scope.task.branchState);
+        });
 
-        setBranchFunctionality($scope.task.branchState);
       });
     }
 
     // start monitoring of task
     scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
-
-    // TODO: Chris Swires -- delete this once the monitorTask functionality
-    // complete INAPPROPRIATE CALL TO GET BRANCH INFORMATION
-    snowowlService.getBranch($scope.targetBranch).then(function (response) {
-      setBranchFunctionality(response ? response.state : null);
-    });
 
     // initialize the container objects
     $scope.classificationContainer = {
