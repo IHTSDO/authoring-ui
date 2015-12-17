@@ -33,8 +33,10 @@ angular.module('singleConceptAuthoringApp')
           // local concept-edit and model list
           scope.viewedConcepts = [];
 
+          scope.statusText = 'Loading...';
+
           // function to get formatted summary tex
-          scope.getStatusText = function () {
+          scope.setStatusText = function () {
 
             // check required elements
             if (!scope.classificationContainer) {
@@ -44,29 +46,21 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            // get the human-readable execution status
-            var status = scope.classificationContainer.status.toLowerCase().replace(/\w\S*/g, function (txt) {
-              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            }).replace(/_/g, ' ');
+            console.debug(scope.classificationContainer.status);
 
-            // if loading, return loading text
-            if (status === 'Loading...') {
-              return status;
-            }
-
-            if (!scope.classificationContainer.status) {
-              return 'Could not determine classification status';
-            }
-
-            var endTime = scope.classificationContainer.completionDate;
             switch (scope.classificationContainer.status) {
               case 'COMPLETED':
               case 'SAVING_IN_PROGRESS':
               case 'SAVED':
-                return 'Classifier finished at ' + endTime;
+                scope.statusText = 'Classifier finished at ' + scope.classificationContainer.completionDate;
+                break;
+              case 'RUNNING':
+                scope.statusText = 'Running...';
+                break;
               default:
-                var startTime = scope.classificationContainer.creationDate;
-                return status + ', started ' + startTime;
+                scope.statusText =  scope.classificationContainer.status.toLowerCase().replace(/\w\S*/g, function (txt) {
+                  return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }).replace(/_/g, ' ');
             }
           };
 
@@ -337,6 +331,9 @@ angular.module('singleConceptAuthoringApp')
               //console.debug('Either container or its id is null');
               return;
             }
+
+            // set the display status text
+            scope.setStatusText();
 
             // if the status of the classification is saving, start polling
             if (scope.classificationContainer.status === 'SAVING_IN_PROGRESS') {

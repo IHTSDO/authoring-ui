@@ -93,7 +93,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function (error) {
           notificationService.sendError('Unexpected error preparing for promotion: ' + error);
         });
-      }
+      };
 
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
