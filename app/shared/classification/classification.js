@@ -47,7 +47,7 @@ angular.module('singleConceptAuthoringApp')
             // get the human-readable execution status
             var status = scope.classificationContainer.status.toLowerCase().replace(/\w\S*/g, function (txt) {
               return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            });
+            }).replace(/_/g, ' ');
 
             // if loading, return loading text
             if (status === 'Loading...') {
@@ -58,12 +58,12 @@ angular.module('singleConceptAuthoringApp')
               return 'Could not determine classification status';
             }
 
+            var endTime = scope.classificationContainer.completionDate;
             switch (scope.classificationContainer.status) {
               case 'COMPLETED':
               case 'SAVING_IN_PROGRESS':
               case 'SAVED':
-                var endTime = scope.classificationContainer.completionDate;
-                return status + ', finished ' + endTime;
+                return 'Classifier finished at ' + endTime;
               default:
                 var startTime = scope.classificationContainer.creationDate;
                 return status + ', started ' + startTime;

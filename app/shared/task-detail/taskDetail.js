@@ -59,9 +59,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // if response contains no flags, simply promote
           if (!warningsFound) {
             notificationService.sendMessage('Promoting task...');
-            /*scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               notificationService.sendMessage('Task successfully promoted', 5000);
-            });*/
+            });
           } else {
 
             // cloear the preparation notification
@@ -72,6 +72,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               resolve: {
                 flags: function () {
                   return flags;
+                },
+                isTask: function() {
+                  return true;
                 }
               }
             });
@@ -79,10 +82,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 notificationService.sendMessage('Promoting task...');
-               /* scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   notificationService.sendMessage('Task successfully promoted', 5000);
                   $rootScope.$broadcast('reloadTask');
-                });*/
+                });
               }
             }, function () {
             });
