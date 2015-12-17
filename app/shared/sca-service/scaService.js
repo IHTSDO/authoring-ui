@@ -900,10 +900,14 @@ angular.module('singleConceptAuthoringApp')
                       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                     });
                     msg = 'Validation ' + event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
-                    if (newNotification.task) {
-                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
-                    } else {
-                      url = '#/projects/project/' + newNotification.project + '/validate';
+
+                    // do not supply a url (button link) for FAILED status
+                    if (event !== 'FAILED') {
+                      if (newNotification.task) {
+                        url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
+                      } else {
+                        url = '#/projects/project/' + newNotification.project + '/validate';
+                      }
                     }
                     // broadcast validation complete to taskDetail
                     $rootScope.$broadcast('reloadTask');
