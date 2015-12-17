@@ -166,6 +166,17 @@ angular.module('singleConceptAuthoringApp')
                   });
                 }
 
+                ////////////////////////////////////////////////////////////
+                // CHECK:  Does the classification report equivalencies?
+                ////////////////////////////////////////////////////////////
+                if (latestClassificationJson.equivalentConceptsFound) {
+                  flags.push({
+                    checkTitle: 'Equivalencies Found',
+                    checkWarning: 'Classification reports equivalent concepts on this branch. You may not promote until these are resolved',
+                    blocksPromotion: true
+                  });
+                }
+
                 console.debug('resolving');
 
                 deferred.resolve(flags);
@@ -194,7 +205,6 @@ angular.module('singleConceptAuthoringApp')
             checkWarning: 'The task and project are not synchronized. Pull in changes from the project before promotion.',
             blocksPromotion: true
           }]);
-          return;
         }
 
         if (task.branchState === 'UP_TO_DATE') {
@@ -203,8 +213,6 @@ angular.module('singleConceptAuthoringApp')
             checkWarning: 'The task is up to date with respect to the project. No changes to promote.',
             blocksPromotion: true
           }]);
-
-          return;
         }
 
         checkClassificationPrerequisites(branch, task.latestClassificationJson).then(function (flags) {
