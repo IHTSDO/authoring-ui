@@ -736,8 +736,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (!data.concept.conceptId && data.concept !== objectService.getNewConcept()) {
           if (window.confirm('This concept is unsaved; removing it will destroy your work.  Continue?')) {
             scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
+          } else {
+            return;
           }
         }
+        
 
         // remove the concept
         var editIndex = $scope.concepts.indexOf(data.concept);
