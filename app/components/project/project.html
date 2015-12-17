@@ -18,7 +18,8 @@
 
         <div class="p-10 pull-right">
           <button class="btn btn-border tooltips-left normal-case"
-                  ng-click="promote()">
+                  ng-click="promote()"
+                  ng-disabled="project.branchState !== 'FORWARD'">
             <div
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>

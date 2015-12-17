@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // set button flags
           if ($scope.task && $scope.task.latestClassificationJson) {
-            $rootScope.classificationRunning = $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
+            $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
           }
           if ($scope.task) {
             $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';

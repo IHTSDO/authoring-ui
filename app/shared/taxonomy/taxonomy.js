@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
   .controller('taxonomyPanelCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService',
     function taxonomyPanelCtrl($scope, $rootScope, $location, $routeParams) {
 
-      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branch = 'MAIN/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
 
       // initialize with root concept (triggers rendering of full SNOMEDCT hierarchy)
       $scope.rootConcept = null;

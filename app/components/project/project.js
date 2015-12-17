@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           $scope.project = response;
 
-          $rootScope.classificationRunning = $scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status !== 'COMPLETED';
+          $rootScope.classificationRunning = $scope.project.latestClassificationJson && $scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'BUILDING';
           $rootScope.validationRunning = $scope.project.validationStatus && $scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED';
 
           // get the latest classification for this project (if exists)
@@ -154,9 +154,11 @@ angular.module('singleConceptAuthoringApp.project', [
           // if response contains no flags, simply promote
           if (!warningsFound) {
             notificationService.sendMessage('Promoting project...');
-         /*   scaService.promoteProject($routeParams.projectKey).then(function (response) {
+            scaService.promoteProject($routeParams.projectKey).then(function (response) {
               notificationService.sendMessage('Project successfully promoted', 5000);
-            });*/
+              $scope.getProject();
+            });
+
           } else {
 
             var modalInstance = $modal.open({
@@ -175,10 +177,10 @@ angular.module('singleConceptAuthoringApp.project', [
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 notificationService.sendMessage('Promoting project...');
-                /*scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                scaService.promoteProject($routeParams.projectKey).then(function (response) {
                   notificationService.sendMessage('Project successfully promoted', 5000);
-                  $rootScope.$broadcast('reloadProject');
-                });*/
+                  $scope.getProject();
+                });
               }
             }, function () {
             });

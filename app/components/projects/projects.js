@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.projects', [
       });
   })
 
-  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q) {
+  .controller('ProjectsCtrl', function ProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, $timeout, $q, notificationService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -126,6 +126,8 @@ angular.module('singleConceptAuthoringApp.projects', [
     // Initialization:  get projects
     function initialize() {
 
+      notificationService.sendMessage('Loading projects...');
+
       $scope.projects = [];
 
       // get projects from all projects and append sample data
@@ -136,6 +138,8 @@ angular.module('singleConceptAuthoringApp.projects', [
         }
 
         $scope.projects = response;
+
+        notificationService.sendMessage('Projects loaded.', 5000);
 
       }, function (error) {
         // TODO Handle errors
