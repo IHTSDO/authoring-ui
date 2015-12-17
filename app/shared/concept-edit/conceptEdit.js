@@ -1915,25 +1915,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // if this is a TEXT_DEFINITION, ensure acceptability and case
+          // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
-          if (description.type === 'TEXT_DEFINITION') {
+          if (description.type === 'TEXT_DEFINITION' && !description.term) {
             description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
             description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           }
 
-          // if this is the FSN, check if a matching PT should be generated
-          if (description.type === 'FSN') {
+          // if a new description (determined by blank term), ensure sensitivity
+          // do not modify acceptability map
+          else if (description.type === 'SYNONYM' && !description.term) {
+            description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+          }
 
-            console.debug('is fsn');
+          // if this is the FSN, apply defaults (if new) and check if a matching PT should be generated
+          else if (description.type === 'FSN') {
 
-            // check if a semantic tag is defined
+            // if a new FSN (determined by blank term)
+            if (!description.term) {
+              description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
+              description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+              description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+            }
+
+              // check if a semantic tag is defined
             if (description.term.match(/.*\(.*\)/g)) {
 
               var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
-
-              console.debug('has semantic tag');
 
               // locate the en-US preferred term
               var pt = null;
@@ -1952,14 +1961,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.concept.descriptions.push(pt);
               }
 
-              console.debug('final pt', pt, scope.concept);
-
             } else {
               // do nothing -- only populate PT if FSN fully specified with
               // semantic tag
             }
-          } else {
-            // do nothing -- only process FSNS
           }
 
           // In order to ensure proper term-server behavior
