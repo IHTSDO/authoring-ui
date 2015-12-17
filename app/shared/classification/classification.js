@@ -400,7 +400,7 @@ angular.module('singleConceptAuthoringApp')
                 };
                 equivalentConcepts.push(equivalentConcept);
               });
-            };
+            });
               scope.equivalentConcepts = equivalentConcepts;
             } else {
               scope.equivalenConcepts = [];
