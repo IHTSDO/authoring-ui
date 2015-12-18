@@ -49,7 +49,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       }
     };
     
-    $scope.$on('savedListRemove', function (event, data) {
+    /*$scope.$on('savedListRemove', function (event, data) {
       if (!data || !data.conceptId) {
         return;
       }
@@ -58,7 +58,7 @@ angular.module('singleConceptAuthoringApp.search', [])
         $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");   
     }
 
-    });
+    });*/
 
     $scope.findItem = function (id) {
       if (!$scope.results) {
