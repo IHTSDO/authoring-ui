@@ -740,7 +740,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             return;
           }
         }
-        
+
 
         // remove the concept
         var editIndex = $scope.concepts.indexOf(data.concept);

@@ -81,7 +81,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //        }
         additionalFields: '=?',
 
-        saveFunction: '&?'
+        // a function specified to save the concept with, if any
+        saveFunction: '&?',
+
+        // whether to initially display inactive descriptions and relationships
+        showInactive: '@?'
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -100,7 +104,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return;
         }
 
-        // convert static flag from string to boolean
+        //////////////////////////////////////////////////////////////
+        // Convert all string booleans into scope boolean values
+        /////////////////////////////////////////////////////////////
         if (scope.static === 'true') {
           scope.isStatic = true;
         } else {
@@ -118,6 +124,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         } else {
           scope.isMerge = false;
         }
+
+        if (scope.showInactive === 'true') {
+          scope.hideInactive = false;
+        } else {
+          scope.hideInactive = true;
+        }
+
+        console.log('hiding inactive: ', scope.showInactive, scope.hideInactive);
+
+        //////////////////////////////////////////////////////////////
+        // Handle additional fields, if required
+        /////////////////////////////////////////////////////////////
 
         if (angular.isDefined(scope.additionalFields)) {
           scope.additionalFieldsDeclared = true;
@@ -159,7 +177,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        // console.debug('entered conceptEdit.js');
+        /////////////////////////////////////////////////////////////////
+        // Autosaving and Modified Concept Storage Initialization
+        /////////////////////////////////////////////////////////////////
 
         // initialize the last saved version of this concept
         scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
@@ -237,9 +257,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.languages = snowowlService.getLanguages();
         scope.dialects = snowowlService.getDialects();
         scope.allowedAttributes = [];
-
-        // flag for viewing active components only. Defaults to true.
-        scope.hideInactive = true;
 
         scope.toggleHideInactive = function () {
           scope.hideInactive = !scope.hideInactive;
@@ -1929,7 +1946,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
           }
 
-          // if this is the FSN, apply defaults (if new) and check if a matching PT should be generated
+          // if this is the FSN, apply defaults (if new) and check if a
+          // matching PT should be generated
           else if (description.type === 'FSN') {
 
             // if a new FSN (determined by blank term)
