@@ -275,6 +275,8 @@
           <div class="col-md-4 task-header"><h4>Task Version</h4></div>
         </div>
 
+
+
         <div class="row no-padding no-gutter" ng-repeat="merge in viewedMerges">
 
           <div class="col-md-4 conflict-concept-column">
@@ -283,6 +285,7 @@
                  branch="sourceBranch"
                  static="true"
                  autosave="false"
+                 show-inactive="{{merge.showInactive.source}}"
                  component-styles="merge.styles.source">
             </div>
           </div>
@@ -294,6 +297,7 @@
                  static="false"
                  autosave="false"
                  merge="true"
+                 show-inactive="{{merge.showInactive.merged}}"
                  component-styles="merge.styles.merged"
                  save-function="conceptUpdateFunction(project, task, concept)"></div>
 
@@ -304,6 +308,7 @@
                  branch="targetBranch"
                  static="true"
                  autosave="false"
+                 show-inactive="{{merge.showInactive.target}}"
                  component-styles="merge.styles.target">
             </div>
           </div>
