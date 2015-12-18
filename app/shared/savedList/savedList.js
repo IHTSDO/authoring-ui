@@ -51,6 +51,20 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     };
 
+    $scope.addToFavorites = function(item) {
+      $scope.favorites.items.push(item);
+      scaService.saveUiStateForTask(
+        $routeParams.projectKey, $routeParams.taskKey, 'my-favorites', $scope.favorites
+      );
+    };
+
+    $scope.isInFavorites = function(item) {
+      if (!$scope.favorites || !Array.isArray($scope.favorites.items)) {
+        return false;
+      }
+      return $scope.favorites.items.indexOf(item) !== -1;
+    };
+
     $scope.isEdited = function(item) {
       return $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
