@@ -185,8 +185,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       );
 
       // get favorite list
-      scaService.getUiStateForTask(
-        $routeParams.projectKey, $routeParams.taskKey, 'my-favorites')
+      scaService.getUiStateForUser(
+        'my-favorites')
         .then(function (uiState) {
 
           console.debug('saved-list:', uiState);

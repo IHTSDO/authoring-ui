@@ -327,27 +327,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                  TODO Removed after discussion of this functionality on 12/17 -- limited scope of unsaved work only (not more comprehensive work list) indicates combinining this functionality with modified-concept UI-state
 
                  // get the unsaved work list
-                scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function (unsavedWork) {
+                 scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function (unsavedWork) {
 
-                  if (!unsavedWork) {
-                    unsavedWork = [];
-                  }
+                 if (!unsavedWork) {
+                 unsavedWork = [];
+                 }
 
-                  // filter out this concept's id (if it exists)
-                  unsavedWork = unsavedWork.filter(function (id) {
-                    if (scope.concept.conceptId) {
-                      return id !== scope.concept.conceptId;
-                    } else {
-                      return id !== 'unsaved';
-                    }
-                  });
+                 // filter out this concept's id (if it exists)
+                 unsavedWork = unsavedWork.filter(function (id) {
+                 if (scope.concept.conceptId) {
+                 return id !== scope.concept.conceptId;
+                 } else {
+                 return id !== 'unsaved';
+                 }
+                 });
 
-                  console.debug('removed concept from unsaved work list', unsavedWork);
+                 console.debug('removed concept from unsaved work list', unsavedWork);
 
-                  // update the unsaved work list
-                  scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', newUnsavedList);
-                });
-                */
+                 // update the unsaved work list
+                 scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', newUnsavedList);
+                 });
+                 */
 
                 // set concept and unmodified state
                 scope.concept = response;
@@ -559,42 +559,89 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.errors.push('Reactivating concepts is not currently supported');
           }
 
-          // otherwise, open a select reason modal
+          // otherwise, proceed with checks and inactivation reason persistence
           else {
-            selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
-              notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
-              // console.debug(scope.branch, scope.concept.conceptId, reason,
-              // associationTarget);
+            // mimic actual inactivation
+            var conceptCopy = angular.copy(scope.concept);
+            conceptCopy.isLeafInferred = true;
 
-              snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+            conceptCopy.active = false;
+            angular.forEach(conceptCopy.relationships, function (relationship) {
+              relationship.active = false;
+            });
 
-                scope.concept.active = false;
+            // special case:  do not allow inactivation of fully defined concepts
+            if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
+              scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
+              return;
+            }
 
-                // if reason is selected, deactivate all descriptions and
-                // relationships
-                if (results.reason) {
+            // validate the concept
+            snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
 
-                  // straightforward inactivation of relationships
-                  // NOTE: Descriptions stay active so a FSN can still be
-                  // found
-                  angular.forEach(scope.concept.relationships, function (relationship) {
-                    relationship.active = false;
-                  });
+              console.log('Validating concept prior to inactivation');
 
-                  // save concept but bypass validation checks
-                  saveHelper().then(function () {
-                    notificationService.sendMessage('Concept inactivated');
-                  }, function (error) {
-                    notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                  });
-                }
-              }, function () {
-                notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+              // check for errors -- NOTE: Currently unused, but errors are printed to log if detected
+              var errors = validationResults.filter(
+                function (result) {
+                  return result.type === 'ERROR'
+                });
+
+              if (errors.length > 0) {
+               console.log('Detected errors in concept when inactivating', errors);
+              } else {
+                console.log('No errors detected');
+              }
+
+              /*    if (errors.length > 0) {
+
+               if (!scope.errors) {
+               scope.errors = [];
+               }
+               scope.errors.push('Cannot inactivate concept:');
+               errors.map(function (error) {
+               scope.errors.push(error.message)
+               });
+               } else {
+               notificationService.sendMessage('passed', 5000);*/
+
+              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+
+                notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
+
+                snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+
+                  scope.concept.active = false;
+
+                  // if reason is selected, deactivate all descriptions and
+                  // relationships
+                  if (results.reason) {
+
+                    // straightforward inactivation of relationships
+                    // NOTE: Descriptions stay active so a FSN can still be
+                    // found
+                    angular.forEach(scope.concept.relationships, function (relationship) {
+                      relationship.active = false;
+                    });
+
+                    // save concept but bypass validation checks
+                    saveHelper().then(function () {
+                      notificationService.sendMessage('Concept inactivated');
+                    }, function (error) {
+                      notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                    });
+                  }
+                }, function () {
+                  notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+                });
+
               });
 
             });
+
           }
+
         };
 
         /**
@@ -1522,9 +1569,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeRelationshipGroups();
         };
 
-        scope.addRelationshipGroup = function() {
+        scope.addRelationshipGroup = function () {
 
-          var groupIds = scope.concept.relationships.map(function(rel) {
+          var groupIds = scope.concept.relationships.map(function (rel) {
             return parseInt(rel.groupId);
           });
 
@@ -1957,7 +2004,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }
 
-              // check if a semantic tag is defined
+            // check if a semantic tag is defined
             if (description.term.match(/.*\(.*\)/g)) {
 
               var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
