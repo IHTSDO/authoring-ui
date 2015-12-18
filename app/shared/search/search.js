@@ -51,6 +51,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       };
 
+      console.debug('saved list in search', $scope.savedList);
+
       /**
        * Helper function to manipulate displayed concepts
        */
@@ -205,8 +207,40 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         if (!$scope.savedList || !$scope.savedList.items) {
           return false;
         }
+
         for (var i = 0, len = $scope.savedList.items.length; i < len; i++) {
           if ($scope.savedList.items[i].concept.conceptId === id) {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      $scope.addItemToFavorites = function (item) {
+
+        if (!item) {
+          return;
+        }
+
+        // if not already in saved list
+        if ($scope.findItemInFavorites(item) === false) {
+          // push component on list and update ui state
+          $scope.favorites.items.push(item);
+          scaService.saveUiStateForUser('my-favorites', $scope.favorites);
+        }
+      };
+
+      /**
+       * Determine if an item is in the saved list
+       * @param id the SCTID of the concept checked
+       * @returns {boolean} true: exists, false: does not exist
+       */
+      $scope.findItemInFavorites = function (id) {
+        if (!$scope.favorites || !$scope.favorites.items) {
+          return false;
+        }
+        for (var i = 0, len = $scope.favorites.items.length; i < len; i++) {
+          if ($scope.favorites.items[i].concept.conceptId === id) {
             return true;
           }
         }

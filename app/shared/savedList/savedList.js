@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     };
 
-    $scope.removeItem = function (item) {
+    $scope.removeItemFromSavedList = function (item) {
       if (item) {
         var index = $scope.savedList.items.indexOf(item);
         if (index !== -1) {
@@ -32,6 +32,20 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
           scaService.saveUiStateForTask(
             $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
+          );
+        }
+      }
+    };
+
+    $scope.removeItemFromFavorites = function (item) {
+      if (item) {
+        var index = $scope.favorites.items.indexOf(item);
+        if (index !== -1) {
+          $scope.favorites.items.splice(index, 1);
+
+
+          scaService.saveUiStateForTask(
+            $routeParams.projectKey, $routeParams.taskKey, 'my-favorites', $scope.favorites
           );
         }
       }

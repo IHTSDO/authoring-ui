@@ -183,7 +183,26 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         }
       );
+
+      // get favorite list
+      scaService.getUiStateForTask(
+        $routeParams.projectKey, $routeParams.taskKey, 'my-favorites')
+        .then(function (uiState) {
+
+          console.debug('saved-list:', uiState);
+
+          if (!uiState) {
+            $scope.favorites = {items: []};
+          }
+          else {
+            $scope.favorites = uiState;
+          }
+
+        }
+      );
     };
+    
+   
 
     $scope.getEditPanel = function () {
       scaService.getUiStateForTask(
