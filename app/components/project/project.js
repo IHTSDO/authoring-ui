@@ -181,6 +181,8 @@ angular.module('singleConceptAuthoringApp.project', [
                   notificationService.sendMessage('Project successfully promoted', 5000);
                   $scope.getProject();
                 });
+              } else {
+                notificationService.clear();
               }
             }, function () {
             });
