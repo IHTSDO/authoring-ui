@@ -66,18 +66,18 @@
         </div>
 
         <!-- redundant stated relationships -->
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+        <div role="tabpanel" ng-if="actionTab===2">
           <div classification-report items="redundantStatedRelationships" type="'redundant'"
                editable="editable"></div>
         </div>
 
         <!-- inferred not previously stated -->
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+        <div role="tabpanel" ng-if="actionTab===3">
           <div classification-report items="inferredNotPreviouslyStated" type="'inferred'" editable="editable"></div>
         </div>
 
         <!-- equivalent concept errors -->
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
+        <div role="tabpanel" ng-if="actionTab===4">
           <div classification-report items="equivalentConcepts" type="'equivalence'" editable="editable"></div>
         </div>
 
