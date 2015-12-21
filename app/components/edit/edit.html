@@ -1,5 +1,3 @@
-
-
 <!-- Hide container until view is selected -->
 <div class="sca-container" ng-if="thisView" style="">
 
@@ -96,50 +94,50 @@
 
       <!-- models & concepts-->
       <div ng-class="getLayoutWidths('modelsAndConcepts')"
-           class="no-padding  hide-scroll" sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+           class="no-padding  hide-scroll" sca-infinite-scroll="addMoreItems()"
+           sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
-    
 
-          <!-- model & concept data-->
-          <div class="row-fluid no-gutter" style="display: -webkit-box;
+
+        <!-- model & concept data-->
+        <div class="row-fluid no-gutter" style="display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
-               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
-               ng-class="isLast($last)"
-               repeat-complete callback="renderingComplete()">
+             ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+             ng-class="isLast($last)"
+             repeat-complete callback="renderingComplete()">
 
-            <!-- model -->
-            <div class="no-gutter " style="height: 100%" ng-class="getLayoutWidths('models')">
-              <div draw-model-sca concept="concept"></div>
-            </div>
-
-            <!-- concept -->
-            <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')"
-                 style="margin-right:0px;">
-              <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
-                   save-function="conceptUpdateFunction(project, task, concept)"
-                >
-              </div>
-            </div>
-
+          <!-- model -->
+          <div class="no-gutter " style="height: 100%" ng-class="getLayoutWidths('models')">
+            <div draw-model-sca concept="concept"></div>
           </div>
-          <div class="row-fluid no-gutter" style="display: -webkit-box;
+
+          <!-- concept -->
+          <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')"
+               style="margin-right:0px;">
+            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
+                 branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
+                 save-function="conceptUpdateFunction(project, task, concept)"
+              >
+            </div>
+          </div>
+
+        </div>
+        <div class="row-fluid no-gutter" style="display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
-            <div class="no-gutter" ng-class="getLayoutWidths('models')">
-              <div class="modelScrollBox"></div>
-            </div>
-
-            <!-- concept -->
-            <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')"
-                 style="margin-right:0px;">
-            </div>
+          <div class="no-gutter" ng-class="getLayoutWidths('models')">
+            <div class="modelScrollBox"></div>
           </div>
 
-   
+          <!-- concept -->
+          <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')"
+               style="margin-right:0px;">
+          </div>
+        </div>
+
 
       </div>
 
@@ -153,43 +151,66 @@
 
 
         <!-- model & concept data-->
-        <div class="row no-gutter" style="display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)"
+        <div class="row no-padding no-gutter hide-scroll"
              sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
              sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
 
-          <!-- model -->
-          <div class="no-gutter col-sm-7 col-md-7 col-lg-7" >
-            <div draw-model-sca class="" concept="concept"></div>
-          </div>
+          <!-- model & concept data-->
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;"
+               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+               ng-class="isLast($last)"
+               repeat-complete callback="renderingComplete()">
 
-          <!-- concept -->
-          <div class="no-gutter col-sm-5 col-md-5 col-lg-5  grey darken-3 panel-height" style="margin-right:0px;">
-            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}"
-                 branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)"
-              >
+            <!-- model -->
+            <div class="no-gutter col-md-7" style="height: 100%">
+              <div draw-model-sca concept="concept"></div>
             </div>
-          </div>
 
-        </div>
-        <div class="row-fluid no-gutter" style="display: -webkit-box;
+            <!-- concept -->
+            <div class="no-gutter grey darken-3 panel-height col-md-5"
+                 style="margin-right:0px;">
+              <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
+                   branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
+                   save-function="conceptUpdateFunction(project, task, concept)"
+                >
+              </div>
+            </div>
+
+          </div>
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
-          <div class="no-gutter col-sm-7 col-md-7 col-lg-7">
-            <div class="modelScrollBox"></div>
-          </div>
+            <div class="no-gutter col-md-7">
+              <div class="modelScrollBox"></div>
+            </div>
 
-          <!-- concept -->
-          <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3" fill-height style="margin-right:0px;">
+            <!-- concept -->
+            <div class="no-gutter grey darken-3 col-md-5" fill-height
+                 style="margin-right:0px;">
+            </div>
+
+          </div>
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+            <div class="no-gutter col-sm-7 col-md-7 col-lg-7">
+              <div class="modelScrollBox"></div>
+            </div>
+
+            <!-- concept -->
+            <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3" fill-height style="margin-right:0px;">
+            </div>
           </div>
         </div>
+
+
       </div>
-
-
     </div>
 
     <!-- Edit view with no model -->
@@ -200,23 +221,28 @@
            ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- concepts-->
-      <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9   no-padding"
-           sca-infinite-scroll="addMoreItems()" sca-infinite-scroll-disabled="conceptsRendering"
+      <div class="col-lg-9 col-md-9 col-sm-9 no-padding hide-scroll"
+           sca-infinite-scroll="addMoreItems()"
+           sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
 
-        <!-- model & concept data-->
-        <div class="row no-gutter" style="display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;" ng-repeat-start="concept in concepts" ng-class="isLast($last)">
+        <!-- concept data-->
+        <div class="row-fluid no-gutter" style="display: -webkit-box;
+          display: -webkit-flex;
+          display: -ms-flexbox;
+          display: flex;"
+             ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+             ng-class="isLast($last)"
+             repeat-complete callback="renderingComplete()">
+
 
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 panel-height no-padding darken-3 grey"
+          <div class="no-gutter grey darken-3 panel-height col-md-12"
                style="margin-right:0px;">
-             
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                 branch="targetBranch" static="false" save-function="conceptUpdateFunction(project, task, concept)"
+                 branch="targetBranch" static="false" ui-state-update-fn="updateEditListUiState()"
+                 save-function="conceptUpdateFunction(project, task, concept)"
               >
             </div>
           </div>
@@ -227,9 +253,12 @@
           display: -ms-flexbox;
           display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
           <!-- concept -->
-          <div class="no-gutter col-sm-12 col-md-12 col-lg-12 " fill-height style="margin-right:0px;">
+          <div class="no-gutter grey darken-3 col-md-12" fill-height
+               style="margin-right:0px;">
           </div>
         </div>
+
+
       </div>
 
     </div>
