@@ -30,6 +30,7 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
 
           scope.viewedConcepts = [];
+          scope.isCollapsed = false;
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
@@ -251,10 +252,23 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.selectAll = function (selectAllActive) {
-            angular.forEach(scope.failures.firstNInstances, function (failure) {
+            angular.forEach(scope.failures, function (failure) {
               failure.selected = selectAllActive;
             });
           };
+
+          /**
+           * Remove concepts from viewed list on stopEditing events from
+           * conceptEdit
+           */
+          scope.$on('stopEditing', function (event, data) {
+            for (var i = 0; i < scope.viewedConcepts.length; i++) {
+              if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
+                scope.viewedConcepts.splice(i, 1);
+                return;
+              }
+            }
+          });
 
           /**
            * Function to add a concept by id to the list
@@ -279,47 +293,61 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.editConcept = function (conceptId) {
-            notificationService.sendMessage('Loading concept...');
-            editConceptHelper(conceptId).then(function (response) {
-              notificationService.sendMessage('Concept loaded', 5000);
-            }, function (error) {
-              notificationService.sendError('Error loading concept', 5000);
-            })
+
+            var existingIds = scope.viewedConcepts.map(function (viewed) {
+              return viewed.conceptId;
+            });
+
+            console.debug('existingIds', existingIds, conceptId, existingIds.indexOf(conceptId.toString()))
+
+            // NOTE: Requires string conversion based on RVF format
+            if (existingIds.indexOf(conceptId.toString()) !== -1) {
+              notificationService.sendWarning('Concept already loaded', 5000);
+            } else {
+
+              notificationService.sendMessage('Loading concept...');
+              editConceptHelper(conceptId).then(function (response) {
+                notificationService.sendMessage('Concept loaded', 5000);
+              }, function (error) {
+                notificationService.sendError('Error loading concept', 5000);
+              });
+            }
           };
 
           scope.editSelectedConcepts = function () {
             var nConcepts = 0;
             notificationService.sendMessage('Loading concepts...');
 
+            console.debug(scope.failures);
+
             // construct array of concept ids for previously loaded concepts
             var existingIds = scope.viewedConcepts.map(function (viewed) {
-              return viewed.id
+              return viewed.conceptId;
+            });
+
+            var conceptsToAdd = [];
+            angular.forEach(scope.failures, function (failure) {
+              if (failure.selected && existingIds.indexOf(failure.errorMessage.conceptId.toString()) === -1) {
+                conceptsToAdd.push(failure.errorMessage.conceptId);
+              }
             });
 
             console.debug('existing ids', existingIds);
 
             // cycle over all failures
-            angular.forEach(scope.failures.firstNInstances, function (failure) {
+            var conceptsLoaded = 0;
+            angular.forEach(conceptsToAdd, function (conceptId) {
 
-              // if selected and not already added
-              if (failure.selected &&
-                existingIds.indexOf(failure.errorMessage.conceptId) === -1) {
-                console.debug('loading concept ', failure.errorMessage.conceptId);
+              console.debug('loading concept ', conceptId);
 
-                // increment the concepts-to-load counter
-                nConcepts++;
-
-                // add the concept
-                scope.editConceptHelper(failure.errorMessage.conceptId).then(function () {
-
-                  // if all concepts loaded, send notification
-                  if (scope.viewedConcepts.length === nConcepts) {
-                    notificationService.sendMessage('All concepts loaded', 5000);
-                  }
-                }, function (error) {
-                  notificationService.sendError('Error loading at least one concept');
-                });
-              }
+              // add the concept
+              editConceptHelper(conceptId).then(function () {
+                if (++conceptsLoaded === conceptsToAdd) {
+                  notificationService.sendMessage('Concepts loaded.', 5000);
+                }
+              }, function (error) {
+                notificationService.sendError('Error loading at least one concept');
+              });
             });
           };
 
