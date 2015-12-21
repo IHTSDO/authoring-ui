@@ -460,7 +460,7 @@
                     ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
                     drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
               <span>Drag Relationship Group</span></button>
-            <button ng-if="$index === 0"
+            <button ng-if="$index === 0 && !isStatic"
                     class="btn-default md-exposure-plus-1 role-group-buttons tooltips-left tooltips-light normal-case "
                     ng-click="addRelationshipGroup()"><span>Add Relationship Group</span></button>
           </div>
