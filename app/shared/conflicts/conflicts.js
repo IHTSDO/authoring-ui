@@ -31,6 +31,7 @@ angular.module('singleConceptAuthoringApp')
           scope.comparingText = $routeParams.taskKey ? 'Comparing task to project, please wait just a moment...' : 'Comparing project to mainline content, please wait just a moment...';
           scope.rebasingText = $routeParams.taskKey ? 'Task and project can be merged without issues, pulling changes in from project...' : 'Project can be merged with mainline content without issues, pulling changes in from mainline content...';
           scope.badStateText = ($routeParams.taskKey ? 'Project ' + $routeParams.projectKey : 'The mainline content') + ' has changed; the merge review is no longer complete.  Click to regenerate the merge review.';
+          scope.isTask = $routeParams.taskKey;
 
           /**
            * Conflict ngTable parameters
