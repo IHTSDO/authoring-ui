@@ -268,11 +268,11 @@
             <h4>
               <button ng-show="hideSidebar" ng-click="toggleSidebar()" type="button"
                       class="md md-keyboard-arrow-right pull-left show-conflict-list " title="Show Sidebar"></button>
-              Project Version
+              {{isTask ? 'Project' : 'Mainline'}} Version
             </h4>
           </div>
           <div class="col-md-4 merged-header"><h4>Merged Version</h4></div>
-          <div class="col-md-4 task-header"><h4>Task Version</h4></div>
+          <div class="col-md-4 task-header"><h4>{{isTask ? 'Task' : 'Project'}} Version</h4></div>
         </div>
 
 
