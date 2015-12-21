@@ -8,10 +8,21 @@
   </script>
 
   <script type="text/ng-template" id="editheader.html">
-    <button ng-if="editable" type="button" class="btn btn-round btn-default blue"><span class="md md-edit"></span>
+    <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
+            class="btn btn-round btn-default blue"><span
+      class="md md-edit"></span>
     </button>
   </script>
   <style>
+
+    .table > tbody > tr > td,
+    .table > tbody > tr > th {
+      padding: 0px;
+      line-height: 1.846;
+      vertical-align: top;
+      border-top: 1px solid #F0F0F0;
+    }
+
     .validation-report-header {
     }
 
@@ -100,20 +111,18 @@
           <div class="col-md-6 p-10">
             <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
           </div>
-   <!--       <div class="col-md-6 p-10">
-            <button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
-               Create Task From Failures
-            </button>
-          </div>-->
+          <!--       <div class="col-md-6 p-10">
+                   <button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
+                      Create Task From Failures
+                   </button>
+                 </div>-->
         </div>
 
-        <div class="ng-table-no-results" ng-if="failures.length === 0">
-          No validation results to display
-        </div>
+        <div ng-if="failures.length === 0">Loading cases...</div>
 
-        <table ng-if="failures.length > 0"
-          ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
-          class="table table-full table-full-small">
+        <table ng-show="failures.length > 0"
+               ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
+               class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">
             <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
               <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
@@ -131,7 +140,8 @@
             </td>
 
             <td ng-if="editable" data-header="'editheader.html'">
-              <button type="button" class="btn btn-round btn-default blue" ng-click="editConcept(failure.errorMessage.conceptId)">
+              <button type="button" class="btn btn-round btn-default blue"
+                      ng-click="editConcept(failure.errorMessage.conceptId)">
                 <span class="md md-edit"></span>
               </button>
             </td>
@@ -139,6 +149,35 @@
         </table>
       </div>
     </div>
+  </div>
+
+  <!-- Taxonomy, models, and concepts -->
+  Length: {{viewedConcepts.length}}
+  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
+
+    <!-- Taxonomy -->
+    <div class="col-md-4">
+      <div>
+        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+
+      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
+        <div class="col-md-6">
+
+          <div draw-model-sca concept="concept"></div>
+        </div>
+        <div class="col-md-6">
+          <div concept-edit concept="concept" branch="branch" static="true" component-styles="styles[concept.conceptId]"
+               autosave="false"></div>
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 </section>
 

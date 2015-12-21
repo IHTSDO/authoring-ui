@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $filter, NgTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -28,6 +28,8 @@ angular.module('singleConceptAuthoringApp')
           scope.viewTop = true;
           scope.displayStatus = '';
           scope.taskKey = $routeParams.taskKey;
+
+          scope.viewedConcepts = [];
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
@@ -118,12 +120,20 @@ angular.module('singleConceptAuthoringApp')
               total: scope.failures ? scope.failures.length : 0,
               getData: function ($defer, params) {
 
+                console.debug('getData failures', scope.failures);
+
+                // clear the loading variable on reload
+                scope.failuresLoading = false;
+
                 if (!scope.failures || scope.failures.length === 0) {
                   $defer.resolve([]);
                 } else {
+
                   var orderedData = scope.failures;
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+
+                  console.debug('getData failures orderedData', orderedData);
                   $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
@@ -159,6 +169,8 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionFailureViewed = assertionFailure.assertionText;
             scope.viewTop = false;
 
+            scope.failuresLoading = true;
+
             var objArray = [];
 
             // different handling for projects and tasks
@@ -182,6 +194,8 @@ angular.module('singleConceptAuthoringApp')
 
               // convert instances into table objects
               if (!scope.changedList) {
+                console.debug(assertionFailure.firstNInstances);
+
                 scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   scope.changedList = response;
                   angular.forEach(assertionFailure.firstNInstances, function (instance) {
@@ -197,15 +211,17 @@ angular.module('singleConceptAuthoringApp')
                       }
                     });
                     objArray.push(obj);
-                    scope.failures = objArray;
-
-                    scope.failureTableParams.reload();
                   });
+
+                  scope.failures = objArray;
+                  scope.failureTableParams.reload();
                 });
 
               }
 
               else {
+
+                console.debug(assertionFailure.firstNInstances);
                 angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
                   var obj = {
@@ -219,16 +235,14 @@ angular.module('singleConceptAuthoringApp')
                       obj.userModified = true;
                     }
                   });
-
                   objArray.push(obj);
-                  scope.failures = objArray;
-
-                    scope.failureTableParams.reload();
                 });
+
+                scope.failures = objArray;
+                scope.failureTableParams.reload();
               }
               // TODO Set edit enable/disable for edit panel
             }
-
 
             // set scope.failures to trigger watch
             scope.failures = objArray;
@@ -242,9 +256,71 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          // TODO Decide how to represent concepts and implement
+          /**
+           * Function to add a concept by id to the list
+           * Used by single editConcept or multiple editSelectedConcept methods
+           * @param conceptId
+           * @returns {*|promise}
+           */
+          function editConceptHelper(conceptId) {
+            var deferred = $q.defer();
+
+            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+              if (!scope.viewedConcepts || !Array.isArray(scope.viewedConcepts)) {
+                scope.viewedConcepts = [];
+              }
+              scope.viewedConcepts.push(response);
+              deferred.resolve(true);
+            }, function (error) {
+              deferred.reject(); // no error passing, for count purposes only
+            });
+
+            return deferred.promise;
+          };
+
           scope.editConcept = function (conceptId) {
-            $rootScope.$broadcast('editConcept', {conceptId: conceptId});
+            notificationService.sendMessage('Loading concept...');
+            editConceptHelper(conceptId).then(function (response) {
+              notificationService.sendMessage('Concept loaded', 5000);
+            }, function (error) {
+              notificationService.sendError('Error loading concept', 5000);
+            })
+          };
+
+          scope.editSelectedConcepts = function () {
+            var nConcepts = 0;
+            notificationService.sendMessage('Loading concepts...');
+
+            // construct array of concept ids for previously loaded concepts
+            var existingIds = scope.viewedConcepts.map(function (viewed) {
+              return viewed.id
+            });
+
+            console.debug('existing ids', existingIds);
+
+            // cycle over all failures
+            angular.forEach(scope.failures.firstNInstances, function (failure) {
+
+              // if selected and not already added
+              if (failure.selected &&
+                existingIds.indexOf(failure.errorMessage.conceptId) === -1) {
+                console.debug('loading concept ', failure.errorMessage.conceptId);
+
+                // increment the concepts-to-load counter
+                nConcepts++;
+
+                // add the concept
+                scope.editConceptHelper(failure.errorMessage.conceptId).then(function () {
+
+                  // if all concepts loaded, send notification
+                  if (scope.viewedConcepts.length === nConcepts) {
+                    notificationService.sendMessage('All concepts loaded', 5000);
+                  }
+                }, function (error) {
+                  notificationService.sendError('Error loading at least one concept');
+                });
+              }
+            });
           };
 
           scope.openCreateTaskModal = function (task, editList, savedList) {
@@ -256,8 +332,8 @@ angular.module('singleConceptAuthoringApp')
                 task: function () {
                   return task;
                 },
-              canDelete: function() {
-                return false;
+                canDelete: function () {
+                  return false;
                 }
               }
             });
@@ -268,9 +344,8 @@ angular.module('singleConceptAuthoringApp')
 
               console.debug('Task created', task.projectKey, task.key);
 
-
-              scaService.saveUiStateForTask(task.projectKey, task.key, 'edit-panel', editList).then(function(response) {
-                scaService.saveUiStateForTask(task.projectKey, task.key, 'saved-list', { items : savedList }) ; // TODO Seriously rethink the saved list
+              scaService.saveUiStateForTask(task.projectKey, task.key, 'edit-panel', editList).then(function (response) {
+                scaService.saveUiStateForTask(task.projectKey, task.key, 'saved-list', {items: savedList}); // TODO Seriously rethink the saved list
               });
 
             }, function () {
