@@ -9,7 +9,7 @@
 
   <script type="text/ng-template" id="editheader.html">
     <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
-            class="btn btn-round btn-default blue"><span
+            class="btn btn-round btn-default blue" title="View/Edit Selected Concepts"><span
       class="md md-edit"></span>
     </button>
   </script>
@@ -57,19 +57,31 @@
       margin-left: -33px;
     }
   </style>
-  <div class="row validation-report-header ">
-    <div class="col-md-6">
-      <div class="p-t-15 "><strong>Validation Report: </strong> {{getStatusText()}}</div>
+
+  <div class="row purple deep-purple lighten-1" style="vertical-align: middle">
+    <div class="col-md-12 classification-header">Validation Report: {{getStatusText()}}
+
+      <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+              class="btn btn-default deep-purple pull-right"
+              ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+
 
     </div>
-    <div class="col-md-6 p-t-10 ">
-      <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true">
-        <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
-      </button>
-    </div>
-
   </div>
-  <div class="card m-10 validation-report">
+  <!--
+    <div class="row validation-report-header ">
+      <div class="col-md-6">
+        <div class="p-t-15 "><strong>Validation Report: </strong> {{getStatusText()}}</div>
+
+      </div>
+      <div class="col-md-6 p-t-10 ">
+        <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true">
+          <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
+        </button>
+      </div>
+
+    </div>-->
+  <div class="card m-10 validation-report" ng-show="!isCollapsed">
     <div role="tabpanel" class="">
 
       <div class="ng-table-no-results" ng-if="viewTop && assertionsFailed.length === 0">
@@ -108,8 +120,14 @@
 
         <div class="row">
 
-          <div class="col-md-6 p-10">
+          <div class="col-md-10 p-10">
             <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
+
+          </div>
+          <div class="col-md-2 p-10">
+            <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true">
+              <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
+            </button>
           </div>
           <!--       <div class="col-md-6 p-10">
                    <button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
@@ -141,7 +159,8 @@
 
             <td ng-if="editable" data-header="'editheader.html'">
               <button type="button" class="btn btn-round btn-default blue"
-                      ng-click="editConcept(failure.errorMessage.conceptId)">
+                      ng-click="editConcept(failure.errorMessage.conceptId)"
+                title="View/Edit Concept">
                 <span class="md md-edit"></span>
               </button>
             </td>
@@ -152,7 +171,6 @@
   </div>
 
   <!-- Taxonomy, models, and concepts -->
-  Length: {{viewedConcepts.length}}
   <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
 
     <!-- Taxonomy -->
@@ -170,7 +188,8 @@
           <div draw-model-sca concept="concept"></div>
         </div>
         <div class="col-md-6">
-          <div concept-edit concept="concept" branch="branch" static="true" component-styles="styles[concept.conceptId]"
+          <div concept-edit concept="concept" branch="branch" static="false"
+               component-styles="styles[concept.conceptId]"
                autosave="false"></div>
         </div>
 
