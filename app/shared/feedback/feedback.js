@@ -225,6 +225,7 @@ angular.module('singleConceptAuthoringApp')
                 'reviewer': null
               };
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
+                $rootScope.$broadcast('reloadTask');
               });
             }
           };
