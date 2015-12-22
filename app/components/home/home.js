@@ -27,6 +27,10 @@ angular.module('singleConceptAuthoringApp.home', [
     $scope.projects = [];
     $scope.browserLink = '..';
 
+    // flags for displaying promoted tasks
+    $scope.showPromotedTasks = false;
+    $scope.showPromotedReviews = false;
+
     // declare table parameters
     $scope.tableParams = new ngTableParams({
         page: 1,
@@ -45,6 +49,8 @@ angular.module('singleConceptAuthoringApp.home', [
             var searchStr = params.filter().search;
             var mydata = [];
 
+
+
             if (searchStr) {
               mydata = $scope.tasks.filter(function (item) {
                 return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
@@ -54,6 +60,13 @@ angular.module('singleConceptAuthoringApp.home', [
             } else {
               mydata = $scope.tasks;
             }
+
+            if (!$scope.showPromotedTasks) {
+              mydata = mydata.filter(function (item) {
+                return item.status !== 'Promoted';
+              });
+            }
+
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
@@ -63,6 +76,11 @@ angular.module('singleConceptAuthoringApp.home', [
         }
       }
     );
+
+    $scope.toggleShowPromotedTasks = function() {
+      $scope.showPromotedTasks = !$scope.showPromotedTasks;
+      $scope.tableParams.reload();
+    };
 
     // declare table parameters
     $scope.reviewTableParams = new ngTableParams({
@@ -94,6 +112,14 @@ angular.module('singleConceptAuthoringApp.home', [
             } else {
               mydata = $scope.reviewTasks;
             }
+
+            if (!$scope.showPromotedReviews) {
+              mydata = mydata.filter(function (item) {
+                return item.status !== 'Promoted';
+              });
+            }
+
+
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
 
@@ -103,6 +129,11 @@ angular.module('singleConceptAuthoringApp.home', [
         }
       }
     );
+
+    $scope.toggleShowPromotedReviews = function() {
+      $scope.showPromotedReviews = !$scope.showPromotedReviews;
+      $scope.reviewTableParams.reload();
+    };
 
     // TODO Workaround to capture full review functionality
     // Replace with loadAllTasks when endpoints are complete
