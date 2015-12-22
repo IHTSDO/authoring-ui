@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp')
         {id: 'PENDING_MOVE', text: 'Pending move'},
         {id: '', text: 'Reason not stated'}
 
-      ]
+      ];
     }
 
     /**

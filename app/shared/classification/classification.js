@@ -433,9 +433,8 @@ angular.module('singleConceptAuthoringApp')
                 if (!response) {
                   scope.saveClassificationUiState(scope.classificationContainer.status);
                 }
-              })
+              });
             }
-            ;
 
             // get relationship changes
             snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {

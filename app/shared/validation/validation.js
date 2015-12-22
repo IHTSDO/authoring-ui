@@ -166,7 +166,8 @@ angular.module('singleConceptAuthoringApp')
 
           scope.setViewTop = function() {
             scope.viewTop = true;
-          }
+          };
+          
           scope.viewFailures = function (assertionFailure) {
 
             console.debug('assertionFailure', assertionFailure);

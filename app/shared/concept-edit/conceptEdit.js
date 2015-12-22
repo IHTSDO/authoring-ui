@@ -571,7 +571,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.active = false;
             });
 
-            // special case:  do not allow inactivation of fully defined concepts
+            // special case:  do not allow inactivation of fully defined
+            // concepts
             if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
               scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
               return;
@@ -582,14 +583,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               console.log('Validating concept prior to inactivation');
 
-              // check for errors -- NOTE: Currently unused, but errors are printed to log if detected
+              // check for errors -- NOTE: Currently unused, but errors are
+              // printed to log if detected
               var errors = validationResults.filter(
                 function (result) {
                   return result.type === 'ERROR';
                 });
 
               if (errors.length > 0) {
-               console.log('Detected errors in concept when inactivating', errors);
+                console.log('Detected errors in concept when inactivating', errors);
               } else {
                 console.log('No errors detected');
               }
@@ -1158,7 +1160,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!scope.hideInactive) {
             return true;
           }
-          var activeRels = relGroup.filter(function(item) { return item.active });
+          var activeRels = relGroup.filter(function (item) {
+            return item.active;
+          });
           return activeRels.length > 0;
         };
 
@@ -2505,14 +2509,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-
         // on load, check task status
         scope.checkPromotedStatus();
 
-        // on task reload notifications, reload task and set static flag if necessary
-       /* scope.$on('reloadTask', function () {
-          scope.checkPromotedStatus();
-        });*/
+        // on task reload notifications, reload task and set static flag if
+        // necessary
+        /* scope.$on('reloadTask', function () {
+         scope.checkPromotedStatus();
+         });*/
 
         // watch for classification completion request to reload concepts
         // will not affect modified concept data
@@ -2525,7 +2529,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise, re-retrieve the concept
           else {
-            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(concept) {
+            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (concept) {
               scope.concept = concept;
             });
           }
