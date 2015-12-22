@@ -110,7 +110,7 @@ angular.module('singleConceptAuthoringApp')
                       checkTitle: 'Classification Not Current',
                       checkWarning: 'Classification was run, but modifications were made after the classifier was initiated.  Promote only if you are sure any changes will not affect future classification.',
                       blocksPromotion: false
-                    })
+                    });
                   }
                 }
 
