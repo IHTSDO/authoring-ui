@@ -1153,6 +1153,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return !scope.hideInactive || rel.active;
         };
 
+        scope.filterRelationshipGroups = function (relGroup) {
+          if (!scope.hideInactive) {
+            return true;
+          }
+          var activeRels = relGroup.filter(function(item) { return item.active });
+          return activeRels.length > 0;
+        };
+
         // function compute the relationship groups
         scope.computeRelationshipGroups = function () {
 

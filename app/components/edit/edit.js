@@ -164,6 +164,11 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.loadEditPanelConcepts = function () {
 
+      // function only relevant for tasks
+      if (!$routeParams.taskKey) {
+        return;
+      }
+
       console.debug('edit.js: task detected', $scope.taskKey);
       $scope.getEditPanel();
 
@@ -186,10 +191,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // get favorite list
       scaService.getUiStateForUser(
-        'my-favorites')
+        'my-favorites-' + $routeParams.projectKey)
         .then(function (uiState) {
 
-          console.debug('saved-list:', uiState);
+          console.debug('my project favorites', uiState);
 
           if (!uiState) {
             $scope.favorites = {items: []};
@@ -201,8 +206,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       );
     };
-    
-   
 
     $scope.getEditPanel = function () {
       scaService.getUiStateForTask(
@@ -487,55 +490,36 @@ angular.module('singleConceptAuthoringApp.edit', [
         // get the concept and add it to the stack
         snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
 
-          // console.debug('Response received for ' + conceptId, response);
-          if (!response) {
-            return;
-          }
-
-          $scope.concepts.push(response);
-          console.log($routeParams);
-          if ($routeParams.mode === 'classification') {
-            if ($scope.classificationEditList.indexOf(conceptId) === -1) {
-              $scope.updateClassificationEditListUiState();
+            // console.debug('Response received for ' + conceptId, response);
+            if (!response) {
+              return;
             }
-          } else if ($routeParams.mode === 'validation') {
-            if ($scope.validationEditList.indexOf(conceptId) === -1) {
-              $scope.updateValidationEditListUiState();
+
+            $scope.concepts.push(response);
+            console.log($routeParams);
+            if ($scope.editList.indexOf(conceptId) === -1) {
+              console.debug('updating');
+              $scope.updateEditListUiState();
+              // update edited item flagging
             }
-          } else if ($scope.editList.indexOf(conceptId) === -1) {
-            console.debug('updating');
-            $scope.updateEditListUiState();
-            // update edited item flagging
-          }
-        }, function (error) {
 
-          // if an error, remove from edit list (if exists)
-          if ($scope.editList.indexOf(conceptId) !== -1) {
-            console.debug('updating');
-            $scope.updateEditListUiState();      // force update the ui state
-
-          }
-
-        }).finally(function () {
-          // send loading notification
-          if ($routeParams.mode === 'classification') {
-            if ($scope.concepts.length === $scope.classificationEditList.length) {
+            if ($scope.concepts.length === $scope.editList.length) {
               notificationService.sendMessage('All concepts loaded', 10000, null);
-              $scope.updateClassificationEditListUiState();
+              $scope.updateEditListUiState();
             } else {
               // send loading notification for user display
               notificationService.sendMessage('Loading concepts...', 10000, null);
             }
-          }
-          else if ($scope.concepts.length === $scope.editList.length) {
-            notificationService.sendMessage('All concepts loaded', 10000, null);
-            $scope.updateEditListUiState();
-          } else {
-            // send loading notification for user display
-            notificationService.sendMessage('Loading concepts...', 10000, null);
-          }
 
-        });
+          }, function (error) {
+            console.log('Error retrieving concept', error);
+            if (error.status === 404) {
+              notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
+            } else {
+              notificationService.sendError('Unexpected error retrieving concept');
+            }
+          });
+
       }
 
     };
@@ -759,7 +743,6 @@ angular.module('singleConceptAuthoringApp.edit', [
             return;
           }
         }
-
 
         // remove the concept
         var editIndex = $scope.concepts.indexOf(data.concept);
