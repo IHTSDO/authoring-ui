@@ -333,7 +333,7 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.isClassificationLoaded = function() {
             return scope.relationshipChanges && scope.redundantStatedRelationships && scope.inferredNotPreviouslyStated && scope.equivalentConcepts;
-          }
+          };
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
@@ -366,8 +366,8 @@ angular.module('singleConceptAuthoringApp')
                 if (!response) {
                   scope.saveClassificationUiState(scope.classificationContainer.status);
                 }
-              })
-            };
+              });
+            }
 
             // get relationship changes
             snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {
