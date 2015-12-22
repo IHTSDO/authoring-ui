@@ -222,11 +222,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           return;
         }
 
-        // if not already in saved list
+        // if not already in favorites list for this project, add it
         if ($scope.findItemInFavorites(item) === false) {
           // push component on list and update ui state
           $scope.favorites.items.push(item);
-          scaService.saveUiStateForUser('my-favorites', $scope.favorites);
+          scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
         }
       };
 

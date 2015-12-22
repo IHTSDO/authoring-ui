@@ -485,7 +485,7 @@ angular.module('singleConceptAuthoringApp')
         // console.debug('snowowl', response.data);
         deferred.resolve(concept);
       }, function (error) {
-        deferred.reject(concept);
+        deferred.reject(error);
       });
       return deferred.promise;
       //return concept;

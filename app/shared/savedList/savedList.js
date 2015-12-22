@@ -44,8 +44,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
           $scope.favorites.items.splice(index, 1);
 
 
-          scaService.saveUiStateForTask(
-            $routeParams.projectKey, $routeParams.taskKey, 'my-favorites', $scope.favorites
+          scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites
           );
         }
       }
@@ -53,8 +52,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
     $scope.addToFavorites = function(item) {
       $scope.favorites.items.push(item);
-      scaService.saveUiStateForTask(
-        $routeParams.projectKey, $routeParams.taskKey, 'my-favorites', $scope.favorites
+      scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites
       );
     };
 
