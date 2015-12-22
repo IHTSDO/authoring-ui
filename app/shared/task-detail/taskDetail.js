@@ -86,8 +86,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   notificationService.sendMessage('Task successfully promoted', 5000);
                   $rootScope.$broadcast('reloadTask');
                 });
+              } else {
+                notificationService.clear();
               }
             }, function () {
+              notificationService.clear();
             });
           }
         }, function (error) {
