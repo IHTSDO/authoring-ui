@@ -61,6 +61,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.getProject();
 
       $scope.$on('reloadProject', function (event, data) {
+        console.debug('Received reload project request, current project: ', $scope.project);
         $scope.getProject();
       });
 

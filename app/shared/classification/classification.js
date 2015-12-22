@@ -90,7 +90,7 @@ angular.module('singleConceptAuthoringApp')
            * Add concept to viewed list
            * @param conceptId
            */
-          scope.viewConcept = function(conceptId) {
+          scope.viewConcept = function (conceptId) {
 
             // check if concept already exists in list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
@@ -206,12 +206,14 @@ angular.module('singleConceptAuthoringApp')
                 // start polling
                 scope.startSavingClassificationPolling();
 
-                // broadcast reload notification to edit.js
-                if ($routeParams.taskKey) {
-                  $rootScope.$broadcast('reloadTask');
-                } else {
-                  $rootScope.$broadcast('reloadProject');
-                }
+                // broadcast reload notification to edit.js after short timeout
+                $timeout(function () {
+                  if ($routeParams.taskKey) {
+                    $rootScope.$broadcast('reloadTask');
+                  } else {
+                    $rootScope.$broadcast('reloadProject');
+                  }
+                }, 500);
               }
             });
           }
@@ -280,7 +282,7 @@ angular.module('singleConceptAuthoringApp')
                     // clear the viewed list
                     scope.viewedConcepts = [];
 
-                    angular.forEach(conceptsToReload, function(conceptId) {
+                    angular.forEach(conceptsToReload, function (conceptId) {
                       scope.viewConcept(conceptId);
                     });
 
@@ -310,7 +312,7 @@ angular.module('singleConceptAuthoringApp')
                       return concept.conceptId;
                     });
 
-                    angular.forEach(conceptsToReload, function(conceptId) {
+                    angular.forEach(conceptsToReload, function (conceptId) {
                       scope.view
                     })
 
