@@ -1,5 +1,5 @@
 <section class="tables-data feedback">
- 
+
   <!-- for ng-table checkboxes -->
   <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
   resulting in elements being placed outside of the table (i.e. position: fixed)
@@ -27,7 +27,7 @@
       <!-- Title section -->
 
       <div class="p-l-20 p-t-10 col-md-4">
-       
+
         <div ng-show="role === 'REVIEWER'">Task Author: {{task.assignee.displayName}}</div>
         <div ng-show="role === 'AUTHOR' && task.reviewer">Task Reviewer: {{task.reviewer.displayName}}</div>
         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
@@ -57,7 +57,7 @@
 
         <!-- Review In Progress / Review Complete toggle -->
         <div ng-if="role === 'REVIEWER'" class="p-5 switch">
-          <label class="switch"  ng-hide="task.status === 'Review Completed'">
+          <label class="switch" ng-hide="task.status === 'Review Completed'">
             Review in Progress
             <input type="checkbox" ng-model="reviewComplete"
                    ng-disabled="task.status === 'Review Completed'"
@@ -65,10 +65,10 @@
             <span class="lever"></span>
             Review Complete
           </label>
-           <button  ng-disabled="task.status === 'Review Completed'"
-                class="btn btn-default pink darken-1 pull-right" style="text-transform: none"
-                 ng-show="task.status === 'Review Completed'" ><i class="md md-check m-r-10"></i>Review is Complete
-        </button>
+          <button ng-disabled="task.status === 'Review Completed'"
+                  class="btn btn-default pink darken-1 pull-right" style="text-transform: none"
+                  ng-show="task.status === 'Review Completed'"><i class="md md-check m-r-10"></i>Review is Complete
+          </button>
         </div>
 
       </div>
@@ -159,25 +159,33 @@
         <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review">
           <!--Concepts To Review -->
           <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1">
-           
+
+            <!-- No results display banner -->
+            <div class="ng-table-no-results"
+                 ng-if="feedbackContainer.review && feedbackContainer.review.conceptsToReview.length === 0">
+              No concepts to review
+            </div>
+
 
             <table show-filter="false" ng-table="conceptsToReviewTableParams"
+                   ng-show="feedbackContainer.review.conceptsToReview.length > 0"
                    template-pagination="utilities/data-table-pager.html"
                    class="table table-full table-full-small feedback-table" drop-channel="feedbackConcept">
 
-<div class="m-10 "><input class=" input-filter form-control ng-scope ng-valid ng-touched"
-                           placeholder="Filter concepts"
-                           ng-model="conceptsToReviewSearchStr"
-                           ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
-                           ng-model-options="{debounce: 500}" ui-on-drop="null"></div>
+              <div class="m-10 "><input class=" input-filter form-control ng-scope ng-valid ng-touched"
+                                        placeholder="Filter concepts"
+                                        ng-show="feedbackContainer.review.conceptsToReview.length > 0"
+                                        ng-model="conceptsToReviewSearchStr"
+                                        ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
+                                        ng-model-options="{debounce: 500}" ui-on-drop="null"></div>
               <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
-             
+
 
               <tr ng-repeat="concept in conceptsToReviewViewed">
 
                 <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxToReview.html'">
                   <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
-                  
+
                 </td>
 
                 <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
@@ -256,19 +264,29 @@
 
           </div>
 
-          <!--Concepts To Review -->
+          <!--Concepts Reviewed-->
           <div role="tabpanel" ng-if="actionTab === 2">
+
+            <!-- No results display banner -->
+            <div class="ng-table-no-results"
+                 ng-if="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length === 0">
+              No reviewed concepts.
+            </div>
+
+
             <table show-filter="false" ng-table="conceptsReviewedTableParams"
+                   ng-show="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length > 0"
                    template-pagination="utilities/data-table-pager.html"
                    class="table table-full table-full-small feedback-table" drop-channel="feedbackConcept">
 
-<div class="m-10 "><input class=" input-filter form-control ng-scope ng-valid ng-touched"
-                           placeholder="Filter concepts"
-                           ng-model="conceptsToReviewSearchStr"
-                           ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
-                           ng-model-options="{debounce: 500}" ui-on-drop="null"></div>
+              <div class="m-10 "><input class=" input-filter form-control ng-scope ng-valid ng-touched"
+                                        placeholder="Filter concepts"
+                                        ng-model="conceptsReviewedSearchStr"
+                                        ng-show="feedbackContainer.review.conceptsReviewed.length > 0"
+                                        ng-change="reloadConceptsToReview(conceptsReviewedSearchStr)"
+                                        ng-model-options="{debounce: 500}" ui-on-drop="null"></div>
               <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
-              
+
 
               <tr ng-repeat="concept in conceptsReviewedViewed">
 
@@ -277,7 +295,7 @@
                 </td>
 
                 <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
-                     filter="{ 'term': 'text' }"
+                    filter="{ 'term': 'text' }"
                     ui-draggable="true" drag="concept"
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                     ui-on-drop="dropConcept(concept, $data, actionTab)">
@@ -317,9 +335,13 @@
 
 
       </div>
-   
-<div ng-hide="subjectConcepts.length > 0" class=" col-md-8 no-padding pink lighten-4 feedback-initial"> 
-<div class="icon-alert"><i class="md md-announcement"></i></div><div class="text">No concepts have been selected for feedback. Please select one or more concepts to begin reviewing. </div></div>
+
+      <div ng-hide="subjectConcepts.length > 0" class=" col-md-8 no-padding pink lighten-4 feedback-initial">
+        <div class="icon-alert"><i class="md md-announcement"></i></div>
+        <div class="text">No concepts have been selected for feedback. Please select one or more concepts to begin
+                          reviewing.
+        </div>
+      </div>
       <!-- Feedback editor -->
       <div class="col-md-4 add-shadow" ng-show="subjectConcepts.length > 0">
 
@@ -335,7 +357,9 @@
         </div>
 
 
-        <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept" ng-model="$parent.htmlVariable" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+        <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
+                      ng-model="$parent.htmlVariable"
+                      ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
 
 
         <div class="col-md-12 no-padding p-10 m-t-10">
@@ -371,12 +395,12 @@
       <div class="col-md-4 feedback-chat p-10" ng-show="subjectConcepts.length > 0">
 
         <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0">
-         No Feedback added yet...
+          No Feedback added yet...
         </div>
 
         <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
 
-          <div class="feedback-header" >
+          <div class="feedback-header">
             <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
                     ng-show="feedback.feedbackRequested">
               <div
@@ -422,10 +446,9 @@
     </div>
 
   </div>
- 
 
 
   <!-- Extra padding just in case -->
-  <div class="m-b-50">&nbsp </div>
+  <div class="m-b-50">&nbsp</div>
 
 </section>

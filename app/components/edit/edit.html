@@ -23,7 +23,7 @@
     <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
 
-            ng-disabled="!task.feedbackMessagesStatus !== 'none'"
+            ng-disabled="task.feedbackMessagesStatus === 'none' && isOwnTask"
             ng-click="viewReview()">
       <div class="md md-email"></div>
       <span>Switch to Feedback View</span></button>
