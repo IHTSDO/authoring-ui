@@ -1,3 +1,10 @@
+<style>
+  .promoted-check-box {
+    color: #9B9B9B;
+    padding-top: 15px;
+  }
+</style>
+
 <div class="row no-gutter sca-container ">
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
@@ -9,16 +16,24 @@
       <div class="card">
 
         <div class="row" style="margin-right:0px;">
-          <div class="col-md-4 no-padding">
+          <div class="col-md-3 no-padding">
             <h3 class="table-title p-20">My Tasks</h3>
           </div>
           <div class="col-md-6">
             <div class="table-search">
               <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
                      placeholder="Search My Tasks" autofocus/>
+
             </div>
+
           </div>
-          <div class="col-md-2">
+          <div class="col-md-2 promoted-check-box">
+            <button class="btn btn-default form-control"
+                    ng-class="[{'md-check-box' : showPromotedTasks}, {'md-check-box-outline-blank' : !showPromotedTasks}]"
+                    ng-click="toggleShowPromotedTasks()" style="background: transparent">
+              <span class="promoted-check-box">Show Promoted</span></button>
+          </div>
+          <div class="col-md-1">
             <div class="pull-right p-t-20">
               <button type="button" class="btn btn-round btn-info ng-scope tooltips-left tooltips-light normal-case">
                 <div> {{tasks.length}}</div>
@@ -153,7 +168,7 @@
       <div class="card">
 
         <div class="row" style="margin-right:0px;">
-          <div class="col-md-4 no-padding">
+          <div class="col-md-3 no-padding">
             <h3 class="table-title p-20">Review Tasks</h3>
           </div>
           <div class="col-md-6">
@@ -162,10 +177,15 @@
                      placeholder="Search Available Review Tasks" autofocus/>
             </div>
           </div>
-          <div class="col-md-2">
+          <div class="col-md-2 promoted-check-box">
+            <button class="btn btn-default form-control"
+                    ng-class="[{'md-check-box' : showPromotedReviews}, {'md-check-box-outline-blank' : !showPromotedReviews}]"
+                    ng-click="toggleShowPromotedReviews()" style="background: transparent">
+              <span class="promoted-check-box">Show Promoted</span></button>
+          </div>
+          <div class="col-md-1">
               <span class="pull-right p-t-20">
-                  <button type="button" class="btn btn-round btn-info ng-scope tooltips-left tooltips-light normal-case"
-                    >
+                  <button type="button" class="btn btn-round btn-info ng-scope tooltips-left tooltips-light normal-case">
                     {{reviewTasks.length}}
                     <span> {{reviewTasks.length}} reviews are in progress</span>
                   </button>
@@ -192,7 +212,7 @@
                 {{task.assignee.displayName}}
               </td>
               <td data-title="'Review Status'" sortable="'reviewer'">
-                <div ng-if="task.reviewer" class="badge Claimed"> Claimed</div>
+                <div ng-if="task.reviewer" class="badge {{task.status}}">{{task.status}}</div>
                 <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
               </td>

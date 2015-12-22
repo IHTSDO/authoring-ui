@@ -2016,6 +2016,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
                   d.term = ptText;
                   pt = d;
+                  delete pt.descriptionId;
                 }
               });
 
