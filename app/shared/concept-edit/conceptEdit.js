@@ -2510,9 +2510,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // will not affect modified concept data
         scope.$on('reloadConcepts', function () {
 
-          // TODO Remove once classification saving is functional again, see WRP-1940
-          return;
-
           // if modified, do nothing
           if (scope.isModified) {
             // do nothing
