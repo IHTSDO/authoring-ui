@@ -585,7 +585,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // check for errors -- NOTE: Currently unused, but errors are printed to log if detected
               var errors = validationResults.filter(
                 function (result) {
-                  return result.type === 'ERROR'
+                  return result.type === 'ERROR';
                 });
 
               if (errors.length > 0) {
@@ -2012,7 +2012,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // locate the en-US preferred term
               var pt = null;
               angular.forEach(scope.concept.descriptions, function (d) {
-                console.debug(d, d.type === 'SYNONYM', d.acceptabilityMap['900000000000509007'] === 'PREFERRED')
                 if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
                   d.term = ptText;
                   pt = d;

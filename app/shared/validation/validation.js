@@ -290,15 +290,13 @@ angular.module('singleConceptAuthoringApp')
             });
 
             return deferred.promise;
-          };
+          }
 
           scope.editConcept = function (conceptId) {
 
             var existingIds = scope.viewedConcepts.map(function (viewed) {
               return viewed.conceptId;
             });
-
-            console.debug('existingIds', existingIds, conceptId, existingIds.indexOf(conceptId.toString()))
 
             // NOTE: Requires string conversion based on RVF format
             if (existingIds.indexOf(conceptId.toString()) !== -1) {

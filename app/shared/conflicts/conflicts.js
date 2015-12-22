@@ -353,15 +353,15 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             return fields.length > 0;
-          };
+          }
 
           function checkForInactiveMergedElements(merge) {
             merge.showInactive = {
               source: hasInactiveMergedElements(merge.sourceConcept, merge.styles.source),
               target: hasInactiveMergedElements(merge.targetConcept, merge.styles.target),
               merged: hasInactiveMergedElements(merge.autoMergedConcept, merge.styles.merged)
-            }
-          };
+            };
+          }
 
           /////////////////////////////////////////////////////
           // Initialization of merge-review functionality
