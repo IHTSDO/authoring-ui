@@ -2497,13 +2497,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-// on task reload notifications, reload task and set flag
-        scope.$on('reloadTask', function () {
+
+        // on load, check task status
+        scope.checkPromotedStatus();
+
+        // on task reload notifications, reload task and set static flag if necessary
+       /* scope.$on('reloadTask', function () {
           scope.checkPromotedStatus();
+        });*/
+
+        // watch for classification completion request to reload concepts
+        // will not affect modified concept data
+        scope.$on('reloadConcepts', function () {
+
+          // TODO Remove once classification saving is functional again, see WRP-1940
+          return;
+
+          // if modified, do nothing
+          if (scope.isModified) {
+            // do nothing
+          }
+
+          // otherwise, re-retrieve the concept
+          else {
+            snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(concept) {
+              scope.concept = concept;
+            });
+          }
         });
 
-// on initialization, check task status
-        scope.checkPromotedStatus();
       }
     }
       ;

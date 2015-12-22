@@ -171,6 +171,7 @@ angular.module('singleConceptAuthoringApp')
            * task/project eligible
            */
           function saveClassificationHelper() {
+            console.debug('saveClassificationHelper');
             snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
               if (!data) {
                 notificationService.sendError('Saving classification unexpectedly failed', 0);
@@ -244,6 +245,9 @@ angular.module('singleConceptAuthoringApp')
                     // broadcast reloadTask event to capture new classificaiton
                     // status
                     $rootScope.$broadcast('reloadTask');
+
+                    // broadcast reloadConcepts event to refresh currently viewed concepts
+                    $rootScope.$broadcast('reloadConcepts');
 
                     scope.stopSavingClassificationPolling();
 
