@@ -355,7 +355,8 @@ angular.module('singleConceptAuthoringApp')
 
               // add the concept
               editConceptHelper(conceptId).then(function () {
-                if (++conceptsLoaded === conceptsToAdd) {
+
+                if (++conceptsLoaded === conceptsToAdd.length) {
                   notificationService.sendMessage('Concepts loaded.', 5000);
                 }
               }, function (error) {
