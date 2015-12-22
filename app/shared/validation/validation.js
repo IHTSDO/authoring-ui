@@ -288,7 +288,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.viewedConcepts = [];
               }
               scope.viewedConcepts.push(response);
-              deferred.resolve(true);
+              deferred.resolve(response);
             }, function (error) {
               deferred.reject(); // no error passing, for count purposes only
             });
@@ -312,6 +312,15 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendMessage('Loading concept...');
               editConceptHelper(conceptId).then(function (response) {
                 notificationService.sendMessage('Concept loaded', 5000);
+
+                $timeout(function () {
+                  $rootScope.$broadcast('viewTaxonomy', {
+                    concept: {
+                      conceptId: response.conceptId,
+                      fsn: response.fsn
+                    }
+                  });
+                }, 500);
               }, function (error) {
                 notificationService.sendError('Error loading concept', 5000);
               });
