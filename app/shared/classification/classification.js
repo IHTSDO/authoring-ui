@@ -295,6 +295,13 @@ angular.module('singleConceptAuthoringApp')
                     // save the ui state based on response status
                     scope.saveClassificationUiState(response.status);
                   }
+                  else if (response.status === 'SAVE_FAILED') {
+                    notificationService.sendError('Saving classification failed');
+
+                    scope.stopSavingClassificationPolling();
+
+                    scope.saveClassificationUiState(response.status);
+                  }
                 });
               } else {
                 snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
@@ -303,18 +310,27 @@ angular.module('singleConceptAuthoringApp')
 
                     notificationService.sendMessage('Classification saved', 5000);
 
-                    // broadcast reloadTask event to capture new classification
-                    // status
-                    $rootScope.$broadcast('reloadTask');
+                    scope.classificationContainer.status = response.status;
+
+                    $timeout(function () {
+                      $rootScope.$broadcast('reloadProject');
+                    }, 1000);
 
                     // refresh the viewed list
                     var conceptsToReload = scope.viewedConcepts.map(function (concept) {
                       return concept.conceptId;
                     });
 
+                    // clear the viewed list
+                    scope.viewedConcepts = [];
+
                     angular.forEach(conceptsToReload, function (conceptId) {
-                      scope.view
-                    })
+                      scope.viewConcept(conceptId);
+                    });
+
+                    // broadcast reloadConcepts event to refresh currently
+                    // viewed concepts
+                    $rootScope.$broadcast('reloadConcepts');
 
                     scope.stopSavingClassificationPolling();
 

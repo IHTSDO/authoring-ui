@@ -163,6 +163,10 @@ angular.module('singleConceptAuthoringApp')
 
           }, true); // make sure to check object inequality, not reference!
 
+
+          scope.setViewTop = function() {
+            scope.viewTop = true;
+          }
           scope.viewFailures = function (assertionFailure) {
 
             console.debug('assertionFailure', assertionFailure);
