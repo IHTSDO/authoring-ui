@@ -102,7 +102,7 @@ angular.module('singleConceptAuthoringApp.project', [
           $rootScope.classificationRunning = true;
           $timeout(function () {
             $scope.getProject();
-          }, 2000)
+          }, 2000);
         }, function (error) {
           notificationService.sendError('Error starting classification: ' + error);
         });
@@ -124,7 +124,7 @@ angular.module('singleConceptAuthoringApp.project', [
           $rootScope.validationRunning = true;
           $timeout(function () {
             $scope.getProject();
-          }, 2000)
+          }, 2000);
         }, function (error) {
           notificationService.sendError('Error starting validation: ' + error);
         });

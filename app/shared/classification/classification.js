@@ -400,7 +400,7 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.isClassificationLoaded = function () {
             return scope.relationshipChanges && scope.redundantStatedRelationships && scope.inferredNotPreviouslyStated && scope.equivalentConcepts;
-          }
+          };
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
