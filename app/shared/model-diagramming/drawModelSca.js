@@ -14,13 +14,23 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: {
         concept: '=',
-        conceptAfter : '=?'
+        conceptAfter : '=?',
+        classificationSaved: '@?'
       },
       templateUrl: 'shared/model-diagramming/drawModelSca.html',
 
       link: function (scope, element, attrs, linkCtrl, snowowlService) {
 
-    //    console.debug('entered drawModelSca', scope.concept, scope.conceptAfter)
+
+        // convert string to boolean value
+        if (scope.classificationSaved === 'true') {
+          scope.isClassificationSaved = true;
+        } else {
+          scope.isClassificationSaved = false;
+        }
+
+
+        console.debug('entered drawModelSca', scope.classificationSaved, scope.concept, scope.conceptAfter)
 
         // broadcast taxonomy request
         scope.viewConceptInTaxonomy = function (concept) {

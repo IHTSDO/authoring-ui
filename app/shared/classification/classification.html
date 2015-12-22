@@ -34,7 +34,7 @@
     </div>
 
     <!-- Classification Report Contents -->
-    <div ng-show="!isCollapsed && classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'">
+    <div ng-show="!isCollapsed && (classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED')">
 
       <!-- Nav tabs -->
       <div class="row classification-report">
@@ -100,23 +100,11 @@
       <div ng-repeat="conceptPair in viewedConcepts">
 
         <div class="row no-padding  grey darken-3 no-gutter">
-          <div concept-edit concept="conceptPair.conceptAfter" branch="branch" static="true" autosave="false"></div>
+          <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true" autosave="false"></div>
         </div>
 
-
         <div class="row grey darken-3">
-
-          <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"></div>
-          <!--
-                    &lt;!&ndash; Model Before &ndash;&gt;
-                    <div class="col-md-6 no-padding no-guttery">
-                      <div draw-model class="modelScrollBox" concept="conceptPair.conceptBefore" title="Concept Model Before Classification" view="viewInferred"></div>
-                    </div>
-
-                    &lt;!&ndash; Model After &ndash;&gt;
-                    <div class="col-md-6 no-padding no-gutter">
-                      <div draw-model class="modelScrollBox" concept="conceptPair.conceptAfter" title="Concept Model After Classification" view="viewInferred"></div>
-                    </div>-->
+          <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter" classification-saved="{{classificationContainer.status === 'SAVED'}}"></div>
         </div>
       </div>
 
