@@ -23,14 +23,19 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
+          // sets view to top and clears viewed concept list
+          scope.setViewTop = function() {
+            scope.viewTop = true;
+            scope.viewedConcepts = [];
+          };
+
+
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
-          scope.viewTop = true;
           scope.displayStatus = '';
           scope.taskKey = $routeParams.taskKey;
-
-          scope.viewedConcepts = [];
           scope.isCollapsed = false;
+          scope.setViewTop();
 
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
@@ -164,10 +169,6 @@ angular.module('singleConceptAuthoringApp')
           }, true); // make sure to check object inequality, not reference!
 
 
-          scope.setViewTop = function() {
-            scope.viewTop = true;
-          };
-          
           scope.viewFailures = function (assertionFailure) {
 
             console.debug('assertionFailure', assertionFailure);
