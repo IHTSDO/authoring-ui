@@ -865,13 +865,17 @@ angular.module('singleConceptAuthoringApp')
                    */
                   case 'Classification':
                     msg = newNotification.event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
+
+                    // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
                       url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                      $rootScope.$broadcast('reloadTask');
                     } else {
                       url = '#/projects/project/' + newNotification.project + '/classify';
+                      $rootScope.$broadcast('reloadProject');
                     }
-                    // broadcast classification complete to taskDetail
-                    $rootScope.$broadcast('reloadTask');
+
+
                     break;
 
                   /*
