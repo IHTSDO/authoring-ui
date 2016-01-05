@@ -585,27 +585,6 @@ background-color:transparent!important;
         width: 22%;
     }
 	
-    .classification-report .editing-form .typeid {
-        width: 6%;
-        padding-left: 1%;
-    }
-    .classification-report .editing-form .description {
-        width: 54%;
-    }
-    .classification-report .editing-form .acceptability {
-        width: 22%;
-    }
-	
-	.classification-report .editing-form .rolegroup {
-    width: 2.5%;
-    padding-left: 0px;
-}
-.classification-report .editing-form .is_a{    width: 25.5%;
-    padding-left: .25%;
-}
-.classification-report .editing-form .sourcename{    width: 60%;
-    padding-left: .25%;
-}
 .white-text{color:#fff}
     .nav > li > a {
         position: relative;
@@ -769,15 +748,6 @@ button.fsn-title-button {
 .blue.darken-4 {
     background-color: #0D47A1;
     color: #fff;
-}
-.classification-report {
-    border-bottom: #ddd solid 2px;
-    background-color: #fafafa;
-    margin-top: 5px;
-    border-top: 1px solid #F0F0F0;
-}
-.classification-report .nav-tabs li a {
-    padding: 10px 15px;
 }
 .nav-tabs li.redundant a:focus:hover,
 .nav-tabs li.redundant a:hover,
