@@ -834,7 +834,12 @@ button.fsn-title-button {
 }
 .promote.btn-default:hover {
     background-color: #1976D2;
-    ;
+
+    color: #fff;
+}
+.editingtask.btn-default:hover {
+    background-color: #0097a7;
+
     color: #fff;
 }
 .task-details .button-link {

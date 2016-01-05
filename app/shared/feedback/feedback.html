@@ -117,7 +117,13 @@
                                                                             data-toggle="tab">Concepts
                                                                                               Reviewed</a>
           </li>
-
+ <li role="presentation" class="" ><a style="margin: 0"
+                                                                            ng-click="actionTab=3"
+                                                                            aria-controls="home"
+                                                                            role="tab"
+                                                                            data-toggle="tab">Task Details
+                                                                                              </a>
+          </li>
           <!-- only appears if author row -->
           <div class="pull-right p-5" ng-if="role === 'AUTHOR'">
             <button class="btn btn-round btn-default pink lighten-2" title="Hide/show concepts without feedback"
@@ -333,7 +339,13 @@
           </div>
         </div>
 
-
+  <!--Tab panes -->
+        <div class="tab-content col-sm-12 col-md-12 no-padding" >
+          <!--Concepts To Review -->
+          <div role="tabpanel" ng-init="actionTab = 3" ng-if="actionTab === 3">
+       <div ng-include="'shared/task-detail/taskDetail-feedback.html'"></div>
+</div>
+</div>
       </div>
 
       <div ng-hide="subjectConcepts.length > 0" class=" col-md-8 no-padding pink lighten-4 feedback-initial">
