@@ -39,6 +39,21 @@
     border-right: 8px solid #e6e6e6;
     
 }
+
+.sca-light .classification-btn .btn-default {
+ 
+
+   
+    border: 1px #e6e6e6 solid !important;
+}
+.sca-light .cyan.darken-1 {
+    color: #00acc1;
+    background-color: #fff;
+}
+.sca-light .cyan.darken-2 {
+    color: #0097a7;
+    background-color: #fff;
+}
 .sca-light .classification-btn .btn-default[disabled] span{    background-color: transparent !important;}
 .sca-light .role-group-buttons {color:#474747!important}
 .sca-light .dashboard-sidebar {
@@ -314,9 +329,7 @@ color: #ba68c8;
 .sca-light .task-details .green {
     background-color: transparent;
 }
-.sca-light .classification-btn .btn-default {
-    border: 1px transparent solid!important;
-}
+
 .sca-light .classification-btn .btn-default:hover {
     color: #737373;
     background-color: transparent;
