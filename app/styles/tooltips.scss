@@ -12,7 +12,18 @@ a.tooltips-left, button.tooltips-left, button[disabled].tooltips-left {
    content: "Entire term case insensitive";
 }
  button.tooltips-left.normal-case span, button.tooltips-right.normal-case span{text-transform:none!important}
-
+.tab-pane .btn-round.btn[disabled] {
+    pointer-events: visibleFill!important;
+    opacity: 1.0;
+}
+.tab-pane .btn-round.btn[disabled] {
+    pointer-events: visibleFill;
+    opacity: 1.0;
+}
+.tab-pane .btn-round.btn[disabled]:hover {
+    background-color: #EF5350;
+    color: #fff;
+}
 a.tooltips-left span, button.tooltips-left span, button[disabled].tooltips-left span {
   position: absolute;
   width:auto;
