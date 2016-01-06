@@ -10,6 +10,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
       $scope.taxonomyConcept = null;
+      $scope.reviewClicked = false;
 
       $scope.classify = function () {
 
@@ -64,7 +65,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             });
           } else {
 
-            // cloear the preparation notification
+            // clear the preparation notification
 
             var modalInstance = $modal.open({
               templateUrl: 'shared/promote-modal/promoteModal.html',
@@ -121,6 +122,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               'status': 'IN_REVIEW'
             }).then(function (response) {
               notificationService.sendMessage('Task submitted for review');
+              $scope.reviewClicked = true;
               $scope.task = response;
             }, function (error) {
               notificationService.sendError('Error submitting task for review');
