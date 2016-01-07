@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, objectService, notificationService, $routeParams, metadataService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -221,7 +221,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // if unsaved, and no modified data found, simply replace with
               // blank concept
               if (scope.concept.conceptId === 'unsaved') {
-                scope.concept = objectService.getNewConcept(scope.branch);
+                scope.concept = componentAuthoringUtil.getNewConcept(scope.branch);
               }
 
               // if an actual unsaved concept (no fsn assigned), mark as
@@ -505,8 +505,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // save concept
               saveHelper().then(function () {
                 // recompute validation warnings
-                scope.validateConcept().then(function () {
-                  notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                    scope.validateConcept().then(function () {
+                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                 });
@@ -953,7 +953,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // after
         scope.addDescription = function (afterIndex) {
 
-          var description = objectService.getNewDescription(null);
+          var description = componentAuthoringUtil.getNewDescription(null);
 
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
@@ -1005,7 +1005,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             description.active = false;
 
             // ensure all minimum fields are present
-            objectService.applyMinimumFields(scope.concept);
+            componentAuthoringUtil.applyMinimumFields(scope.concept);
 
             autoSave();
           }
@@ -1203,7 +1203,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           console.debug('adding relationship', relGroup, relationshipBefore);
 
-          var relationship = objectService.getNewAttributeRelationship(null);
+          var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
 
           // set role group if specified
           if (relGroup) {
@@ -1243,7 +1243,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
-          objectService.applyMinimumFields(scope.concept);
+          componentAuthoringUtil.applyMinimumFields(scope.concept);
           scope.getDomainAttributes();
           autoSave();
         };
@@ -1512,7 +1512,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // console.debug(target,
-          // objectService.getNewDescription(scope.concept.conceptId));
+          // componentAuthoringUtil.getNewDescription(scope.concept.conceptId));
 
           // if target not blank, add afterward
           if (target.term) {
@@ -1589,7 +1589,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
 
           // push two new relationships
-          var rel = objectService.getNewAttributeRelationship();
+          var rel = componentAuthoringUtil.getNewAttributeRelationship();
           rel.groupId = Math.max.apply(null, groupIds) + 1;
           scope.concept.relationships.push(rel);
           scope.concept.relationships.push(angular.copy(rel));
@@ -2016,33 +2016,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }
-
-            // check if a semantic tag is defined
-            if (description.term.match(/.*\(.*\)/g)) {
-
-              var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
-
-              // locate the en-US preferred term
-              var pt = null;
-              angular.forEach(scope.concept.descriptions, function (d) {
-                if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
-                  d.term = ptText;
-                  pt = d;
-                  delete pt.descriptionId;
-                }
-              });
-
-              // if no preferred term found for this concept, add it
-              if (!pt) {
-                pt = objectService.getNewPt();
-                pt.term = ptText;
-                scope.concept.descriptions.push(pt);
-              }
-
-            } else {
-              // do nothing -- only populate PT if FSN fully specified with
-              // semantic tag
-            }
+            componentAuthoringUtil.ptFromFsnAutomation(scope.concept, description);
           }
 
           // In order to ensure proper term-server behavior
@@ -2230,7 +2204,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if no previously published state, get a new (blank) concept
           if (scope.concept.conceptId === 'unsaved' || !scope.concept.conceptId) {
 
-            scope.concept = objectService.getNewConcept(scope.branch);
+            scope.concept = componentAuthoringUtil.getNewConcept(scope.branch);
             scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
             scope.isModified = false;
             scope.computeRelationshipGroups();

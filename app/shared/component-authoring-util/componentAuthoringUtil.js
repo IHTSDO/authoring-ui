@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('objectService', function () {
+  .service('componentAuthoringUtil', function () {
 
     /////////////////////////////////////
     // calls to return JSON objects
@@ -361,6 +361,43 @@ angular.module('singleConceptAuthoringApp')
         return false;
       }
     }
+    
+    function ptFromFsnAutomation (concept, description) {
+        if (description.term.match(/.*\(.*\)/g)) {
+              var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
+              var pt = null;
+              angular.forEach(concept.descriptions, function (d) {
+                if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+                  if(d.effectiveTime && d.effectiveTime !== '' &&  d.effectiveTime !== null)
+                  {
+                      console.log('creating new pt');
+                          d.active = false;
+                          pt = getNewPt();
+                          pt.term = ptText;
+                          concept.descriptions.push(pt);
+                          return concept;
+                  }
+                  else{
+                      d.term = ptText;
+                      pt = d;
+                      delete pt.descriptionId;
+                      return concept;
+                  }
+                    
+                }
+              });
+
+              // if no preferred term found for this concept, add it
+              if (!pt) {
+                pt = getNewPt();
+                pt.term = ptText;
+                concept.descriptions.push(pt);
+                return concept;
+              }
+            } else {
+              return concept;
+            }   
+    }
 
     return {
       getNewConcept: getNewConcept,
@@ -375,7 +412,8 @@ angular.module('singleConceptAuthoringApp')
       isComponentsEqual: isComponentsEqual,
       isConceptsEqual: isConceptsEqual,
       isDescriptionsEqual: isDescriptionsEqual,
-      isRelationshipsEqual: isRelationshipsEqual
+      isRelationshipsEqual: isRelationshipsEqual,
+      ptFromFsnAutomation: ptFromFsnAutomation
 
     };
 

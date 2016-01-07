@@ -5,8 +5,8 @@
  */
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .service('qaTestGroupRelationships', ['$q', 'snowowlService', 'scaService', 'objectService',
-    function ($q, snowowlService, scaService, objectService) {
+  .service('qaTestGroupRelationships', ['$q', 'snowowlService', 'scaService', 'componentAuthoringUtil',
+    function ($q, snowowlService, scaService, componentAuthoringUtil) {
 
       // test package name
       var name = 'Relationships';
@@ -33,15 +33,15 @@ angular.module('singleConceptAuthoringApp')
        * @returns the test concept
        */
       function getTestConcept(fsn, pt) {
-        var concept = objectService.getNewConcept();
+        var concept = componentAuthoringUtil.getNewConcept();
 
         // clear descriptions and reset
         concept.descriptions = [];
-        var fsnDesc = objectService.getNewFsn(null);
+        var fsnDesc = componentAuthoringUtil.getNewFsn(null);
         fsnDesc.term = fsn;
         concept.descriptions.push(fsnDesc);
 
-        var ptDesc = objectService.getNewPt(null);
+        var ptDesc = componentAuthoringUtil.getNewPt(null);
         ptDesc.term = pt;
         concept.descriptions.push(ptDesc);
 
@@ -72,7 +72,7 @@ angular.module('singleConceptAuthoringApp')
           expectedError: 'The system has detected a contradiction of the following convention: an "Is-a" relationships must not be grouped.',
           testFn: function test() {
             var concept = getTestConcept('Rel Test02 concept (body structure)', 'Rel Test02 concept');
-            var rel = objectService.getNewIsaRelationship();
+            var rel = componentAuthoringUtil.getNewIsaRelationship();
             rel.groupId = 1;
             rel.target.conceptId = '900000000000487009';
             rel.target.fsn = 'Component moved elsewhere (foundation metadata concept)';
@@ -103,7 +103,7 @@ angular.module('singleConceptAuthoringApp')
             concept.relationships[0].target.fsn = 'Body structure (body structure)';
 
             // add Laterality domain attribute
-            var rel = objectService.getNewAttributeRelationship();
+            var rel = componentAuthoringUtil.getNewAttributeRelationship();
             rel.type.conceptId = '272741003';
             rel.type.fsn = 'Laterality (attribute)';
             rel.target.conceptId = '24028007';
@@ -156,7 +156,7 @@ angular.module('singleConceptAuthoringApp')
           testFn: function test() {
             var concept = getTestConcept('Rel Test05 concept (body structure)', 'Rel Test05 concept');
 
-            var rel = objectService.getNewAttributeRelationship();
+            var rel = componentAuthoringUtil.getNewAttributeRelationship();
             rel.type.conceptId = '272741003';
             rel.type.fsn = 'Laterality (attribute)';
             rel.target.conceptId = '24028007';

@@ -64,7 +64,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, objectService, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
 
     // clear task-related information
     $rootScope.validationRunning = false;
@@ -736,7 +736,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
       else {
 
-        if (!data.concept.conceptId && data.concept !== objectService.getNewConcept()) {
+        if (!data.concept.conceptId && data.concept !== componentAuthoringUtil.getNewConcept()) {
           if (window.confirm('This concept is unsaved; removing it will destroy your work.  Continue?')) {
             scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
           } else {
@@ -763,7 +763,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
-      var concept = objectService.getNewConcept($scope.targetBranch);
+      var concept = componentAuthoringUtil.getNewConcept($scope.targetBranch);
 
       $scope.concepts.unshift(concept);
       $scope.updateEditListUiState();
