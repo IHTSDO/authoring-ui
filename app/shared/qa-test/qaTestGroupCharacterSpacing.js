@@ -5,8 +5,8 @@
  */
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .service('qaTestGroupCharacterSpacing', ['$q', 'snowowlService', 'scaService', 'objectService',
-    function ($q, snowowlService, scaService, objectService) {
+  .service('qaTestGroupCharacterSpacing', ['$q', 'snowowlService', 'scaService', 'componentAuthoringUtil',
+    function ($q, snowowlService, scaService, componentAuthoringUtil) {
 
       // test package name
       var name = 'Character Spacing';
@@ -30,15 +30,15 @@ angular.module('singleConceptAuthoringApp')
        * @returns the test concept
        */
       function getTestConcept(fsn, pt) {
-        var concept = objectService.getNewConcept();
+        var concept = componentAuthoringUtil.getNewConcept();
 
         // clear descriptions and reset
         concept.descriptions = [];
-        var fsnDesc = objectService.getNewFsn(null);
+        var fsnDesc = componentAuthoringUtil.getNewFsn(null);
         fsnDesc.term = fsn;
         concept.descriptions.push(fsnDesc);
 
-        var ptDesc = objectService.getNewPt(null);
+        var ptDesc = componentAuthoringUtil.getNewPt(null);
         ptDesc.term = pt;
         concept.descriptions.push(ptDesc);
 

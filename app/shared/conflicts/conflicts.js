@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'objectService', 'snowowlService', 'notificationService', '$q',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, objectService, snowowlService, notificationService, $q) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q) {
       return {
         restrict: 'A',
         transclude: false,
@@ -304,7 +304,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // Case 2b: Component present in target, but not equal -->
                 // Modified by merge Modified by target
-                else if (!objectService.isComponentsEqual(c.source, c.merged)) {
+                else if (!componentAuthoringUtil.isComponentsEqual(c.source, c.merged)) {
                   //     console.debug('key -> case 2b');
                   styles.source[key] = {message: null, style: 'bluehl'};
                   styles.merged[key] = {message: null, style: 'bluehl'};
@@ -332,7 +332,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // Case 4b: Component present in target, but not equal -->
                 // Modified by merge Modified by target
-                else if (!objectService.isComponentsEqual(c.target, c.merged)) {
+                else if (!componentAuthoringUtil.isComponentsEqual(c.target, c.merged)) {
                   //    console.debug('key -> case 4b');
                   styles.target[key] = {message: null, style: 'tealhl'};
                   styles.merged[key] = {message: null, style: 'tealhl'};
