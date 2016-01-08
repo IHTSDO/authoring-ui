@@ -371,21 +371,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   conceptId: scope.concept.conceptId
                 });
 
-                // validate the concept
-                scope.validateConcept();
-
                 // if ui state update function specified, call it (after a
                 // moment to let binding update)
                 $timeout(function () {
 
                   if (scope.uiStateUpdateFn) {
-                    // console.debug('ui state update fn specified');
                     scope.uiStateUpdateFn();
                   }
                 }, 3000);
 
                 deferred.resolve();
-
               }
 
               // handle error
@@ -2300,13 +2295,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (response[i].definitionStatus === 'PRIMITIVE') {
                 status = 'P';
               }
-              response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-              // console.debug('checking for duplicates', i, response[i]);
-              for (var j = response.length - 1; j > i; j--) {
-                if (response[j].id === response[i].id) {
-                  response.splice(j, 1);
-                  j--;
-                }
+              if(response[i].fsn)
+              {
+                  response[i].tempFsn = response[i].fsn.term + ' - ' + status;
+                  // console.debug('checking for duplicates', i, response[i]);
+                  for (var j = response.length - 1; j > i; j--) {
+                    if (response[j].id === response[i].id) {
+                      response.splice(j, 1);
+                      j--;
+                    }
+                  }
               }
             }
             return response;
