@@ -205,19 +205,22 @@ angular.module('singleConceptAuthoringApp')
     }
 
     // get the limited number of inbound relationships for display
-    getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren, $scope) {
+    if($scope.componentType === 'Concept')
+    {
+        getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren, $scope) {
 
-      checkStatedChildren();
-
-      // detect case where no stated parent-child relationship was found, but
-      // more results may exist
-      if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
-
-        getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
           checkStatedChildren();
+
+          // detect case where no stated parent-child relationship was found, but
+          // more results may exist
+          if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
+
+            getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
+              checkStatedChildren();
+            });
+          }
         });
-      }
-    });
+    }
 
 // declare table parameters
     $scope.tableParamsChildren = new ngTableParams({
