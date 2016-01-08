@@ -20,7 +20,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       // user controls
       $scope.userOptions = {
-        groupByConcept: true
+        groupByConcept: true,
+        searchType: 0
       };
 
       // $scope.options from searchPlugin.js ( not all used)
@@ -44,11 +45,32 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         taskSet: false,
         taskKey: null
       };
+        
+      $scope.searchType = 'Active and Inactive';
 
       $scope.toggleGroupByConcept = function () {
         $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
         $scope.processResults();
 
+      };
+      
+      $scope.toggleSearchType = function (){
+        if($scope.searchType === 'Active and Inactive')
+        {
+            $scope.searchType = 'Active Only'; 
+            $scope.userOptions.searchType = 1;
+        }
+        else if($scope.searchType === 'Active Only')
+        {
+            $scope.searchType = 'Inactive Only';
+            $scope.userOptions.searchType = 2;
+        }
+        else
+        {
+            $scope.searchType = 'Active and Inactive';   
+            $scope.userOptions.searchType = 0;
+        }
+        $scope.processResults();
       };
 
       console.debug('saved list in search', $scope.savedList);
@@ -95,7 +117,20 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
         }
 
-        $scope.results = displayedResults;
+        if($scope.userOptions.searchType === 1){
+            $scope.results = displayedResults.filter(function (item) {
+              return item.concept.active === true;
+            });
+        }
+        else if($scope.userOptions.searchType === 2){
+            $scope.results = displayedResults.filter(function (item) {
+              return item.concept.active === false;
+            });
+        }
+        else{
+            $scope.results = displayedResults;
+        }
+        
 
         // user cue for status
         if ($scope.results.length === 0) {
