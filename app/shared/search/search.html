@@ -20,6 +20,15 @@
     </div>
 
   </div>
+  <div class="row no-padding">
+    <div class="col-md-8">
+        <button type="button" class="blue accent-2 custom-button ng-click-active" title="Search Type" ng-click="toggleSearchType()">
+              <div class="md col-md-12 no-padding text-center ng-binding">
+                  {{searchType}}
+              </div>
+            </button>  
+    </div>  
+  </div>
 
 
   <div class="col-md-12 no-padding" ng-if="searchStatus">{{searchStatus}}</div>
