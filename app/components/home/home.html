@@ -69,7 +69,7 @@
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
               </td>
-              <td data-title="'Key'" sortable="'taskKey'" filter="{ 'key': 'text' }">
+              <td data-title="'Task Id'" sortable="'taskKey'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
               <td data-title="'Last Modified'" sortable="'updated'">
@@ -211,7 +211,9 @@
               <td data-title="'Project'" sortable="'projectKey'" filter="{ 'project': 'text' }">
                 {{task.projectKey}}
               </td>
-
+   <td data-title="'Task Id'" sortable="'taskKey'" filter="{ 'key': 'text' }">
+                {{task.key}}
+              </td>
               <td data-title="'Author'" sortable="'assignee.displayName'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
               </td>
