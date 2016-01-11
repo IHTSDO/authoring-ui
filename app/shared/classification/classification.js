@@ -295,6 +295,13 @@ angular.module('singleConceptAuthoringApp')
                     // save the ui state based on response status
                     scope.saveClassificationUiState(response.status);
                   }
+                  else if (response.status === 'STALE') {
+                    notificationService.sendWarning('Report Stale, please re-classify and save.');
+
+                    scope.stopSavingClassificationPolling();
+
+                    scope.saveClassificationUiState(response.status);
+                  }
                   else if (response.status === 'SAVE_FAILED') {
                     notificationService.sendError('Saving classification aborted');
 
