@@ -19,15 +19,15 @@ angular.module('singleConceptAuthoringApp')
       link: function (scope, element, attrs, linkCtrl, snowowlService) {
         //scope.view = true;
         var idSequence = 0;
-        $timeout(function () {
+        setTimeout(function () {
                 element.append($("<div></div>").addClass('modelContainer'));
                 drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-            }, 500);
+            }, 100);
         scope.$watch('concept', function (newVal, oldVal) {
-            $timeout(function () {
+            setTimeout(function () {
                 element.append($("<div></div>").addClass('modelContainer'));
                 drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-            }, 500);
+            }, 100);
             
         }, true);
         scope.$watch('view', function(newVal, oldVal){
