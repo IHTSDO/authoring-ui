@@ -11,6 +11,7 @@ angular.module('singleConceptAuthoringApp')
           elem.css('overflow-x', 'hidden');
           elem.css('height', 'inherit');
           scrollDistance = 0;
+          console.log('infinite');
           //attr checking is used to detect the infinite scroll params
           if (attrs.scaInfiniteScrollDistance !== null) {
             scope.$watch(attrs.scaInfiniteScrollDistance, function (value) {
@@ -36,6 +37,7 @@ angular.module('singleConceptAuthoringApp')
             elem.animate({scrollTop: '0'});
           });
           handler = function () {
+            console.log('scroll');
             var shouldScroll;
             shouldScroll = ($(document).height() - $(window).height()) - $(window).scrollTop() < 400;
             if (shouldScroll && scrollEnabled) {
