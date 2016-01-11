@@ -200,7 +200,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug('saveClassificationHelper');
             snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
               if (!data) {
-                notificationService.sendError('Saving classification unexpectedly failed', 0);
+                notificationService.sendError('Saving classification aborted', 0);
               } else {
 
                 // start polling
@@ -296,7 +296,7 @@ angular.module('singleConceptAuthoringApp')
                     scope.saveClassificationUiState(response.status);
                   }
                   else if (response.status === 'SAVE_FAILED') {
-                    notificationService.sendError('Saving classification failed');
+                    notificationService.sendError('Saving classification aborted');
 
                     scope.stopSavingClassificationPolling();
 

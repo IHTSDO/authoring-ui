@@ -106,16 +106,16 @@ td textarea, td input, td select {
 
  .Available.badge {
     background-color: #00b0ff;
-    font-size: 13px;
-    ping: 6px 10px;
+    font-size: 12px;
+    padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
   }
 
   .Claimed.badge {
     background-color: grey;
-    font-size: 13px;
-    ping: 6px 10px;
+    font-size: 12px;
+    padding: 6px 10px;
     margin: 0px;
     line-height: 13px;
   }
@@ -216,4 +216,12 @@ td textarea, td input, td select {
 	bottom: -8px;
 	z-index: 10;
 	background: inherit;
+}
+
+
+.md-playlist-add.btn-round[disabled] {
+    color: #7c7c7c!important;
+	cursor: not-allowed !important;
+    pointer-events: none !important;
+    background-color: #494949!important;
 }
