@@ -144,7 +144,7 @@ select.primitive  {
     border-color: transparent;
 }
 .editing-form button:focus, .editing-form button:active {
-    background-color: transparent;
+    background-color: transparent!important;
     border-color: transparent;
 }
 .editing-form input[type=button]:active,
@@ -155,7 +155,7 @@ select.primitive  {
 }
 .editing-form button:active {
     color: #66bbfd;
-	 background-color: transparent;
+	 background-color: transparent!important;
     border-color: transparent;
 }
 .editing-form input[type=submit] {
