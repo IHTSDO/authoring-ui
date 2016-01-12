@@ -871,7 +871,7 @@ angular.module('singleConceptAuthoringApp')
                       url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                       $rootScope.$broadcast('reloadTask');
                     } else {
-                      url = '#/projects/project/' + newNotification.project + '/classify';
+                      url = '#/project/' + newNotification.project;
                       $rootScope.$broadcast('reloadProject');
                     }
 
