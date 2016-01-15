@@ -106,6 +106,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
     }, true);
 
+
     function loadProjects(projectKeys) {
       console.debug('load projects', projectKeys);
       $scope.projects = [];
