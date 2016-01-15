@@ -68,10 +68,9 @@
                 {{project.key}}
               </td>
 
-              <td data-title="'Project Lead'" sortable="'projectLead.displayName'" filter="{ 'lead': 'text' }">
-                {{project.projectLead.displayName}}
+              <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
+               {{project.projectLead.displayname}}
               </td>
-
               <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/project/{{project.key}}">
                   <button ng-show="project.latestClassificationJson != null"
@@ -85,9 +84,7 @@
                   </button>
                 </a>
 
-                <div class="ripple-wrapper"></div>
-                </button>
-
+            
               </td>
               <td data-title="'Validation Results'" sortable="'validationStatus'">
                 <a ng-href="#/project/{{project.key}}">
@@ -101,7 +98,7 @@
                     <span class="md md-school"></span>
                   </button>
                 </a>
-                </button>
+            
 
               </td>
               <!--
