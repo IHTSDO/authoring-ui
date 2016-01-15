@@ -113,15 +113,18 @@ angular
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
-    var env = $location.host().split(/[.]/)[0];
-    if(env === 'local' || env === 'dev-term')
-    {
-        $rootScope.development = true;   
-    }
-    else if(env === 'uat-term')
-    {
-        $rootScope.uat = true;   
-    }
+    $timeout(function () {
+            var env = $location.host().split(/[.]/)[0];
+            if(env === 'local' || env === 'dev-term')
+            {
+                $rootScope.development = true;   
+            }
+            else if(env === 'uat-term')
+            {
+                $rootScope.uat = true;   
+            }
+          }, 1000);
+    
 
     // begin polling the sca endpoint at 10s intervals
     scaService.startPolling(10000);

@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     //////////////////////////////
     // Infinite Scroll
     //////////////////////////////
-    $scope.conceptsDisplayed = 20;
+    $scope.conceptsDisplayed = 5;
     $scope.conceptsRendering = false;
     $scope.addMoreItems = function () {
       if ($scope.conceptsDisplayed < $scope.concepts.length) {
