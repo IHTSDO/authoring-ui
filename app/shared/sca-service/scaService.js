@@ -19,6 +19,7 @@ angular.module('singleConceptAuthoringApp')
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey).then(
           function (response) {
+            console.log(response);
             return response.data;
           }, function (error) {
             // TODO Handle errors
