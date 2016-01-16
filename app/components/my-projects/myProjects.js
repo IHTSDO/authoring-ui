@@ -105,21 +105,36 @@ angular.module('singleConceptAuthoringApp.myProjects', [
       }
 
     }, true);
+    
+    function relatesToUser(project)
+    {
+        
+    }
 
 
-    function loadProjects(projectKeys) {
-      console.debug('load projects', projectKeys);
+    function loadProjects() {
       $scope.projects = [];
-
-      angular.forEach(projectKeys, function(projectKey) {
-        scaService.getProjectForKey(projectKey).then(function(project) {
-          $scope.projects.push(project);
-
-          if ($scope.projects.length === projectKeys.length) {
-            notificationService.sendMessage('Projects loaded', 5000);
-          }
-        });
+      scaService.getProjects().then(function(results){
+          angular.forEach($scope.projectKeys, function(projectKey) {
+                angular.forEach(results, function(result) {
+                    if(result.key === projectKey)
+                    {
+                        $scope.projects.push(result);   
+                    }
+                });
+            });
+          notificationService.sendMessage('Projects loaded', 5000);
       });
+
+//      angular.forEach(projectKeys, function(projectKey) {
+//        scaService.getProjectForKey(projectKey).then(function(project) {
+//          $scope.projects.push(project);
+//
+//          if ($scope.projects.length === projectKeys.length) {
+//            notificationService.sendMessage('Projects loaded', 5000);
+//          }
+//        });
+//      });
     }
 
     // Initialization:  get projects
@@ -127,35 +142,35 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
       notificationService.sendMessage('Loading projects...');
 
-      var projectKeys = [];
+      $scope.projectKeys = [];
       var tasksDone = false;
       var reviewTasksDone = false;
 
       scaService.getTasks().then(function (response) {
         angular.forEach(response, function (task) {
-          if (projectKeys.indexOf(task.projectKey) === -1) {
-            projectKeys.push(task.projectKey);
+          if ($scope.projectKeys.indexOf(task.projectKey) === -1) {
+            $scope.projectKeys.push(task.projectKey);
           }
 
         });
         tasksDone = true;
 
         if (reviewTasksDone) {
-          loadProjects(projectKeys)
+          loadProjects()
         }
         ;
       });
 
       scaService.getReviewTasks().then(function (response) {
         angular.forEach(response, function (task) {
-          if (projectKeys.indexOf(task.projectKey) === -1) {
-            projectKeys.push(task.projectKey);
+          if ($scope.projectKeys.indexOf(task.projectKey) === -1) {
+            $scope.projectKeys.push(task.projectKey);
           }
         });
         reviewTasksDone = true;
 
         if (tasksDone) {
-          loadProjects(projectKeys);
+          loadProjects();
         }
 
       });
