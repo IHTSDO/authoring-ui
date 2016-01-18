@@ -1,40 +1,43 @@
 <style>
-  .auto-grow-textarea {
-    overflow: hidden;
-    padding: 4px;
-  }
-
-  .task-color-black {
-    color: black;
-  }
+.auto-grow-textarea {
+	overflow: hidden;
+	padding: 4px;
+}
+.task-color-black {
+	color: black;
+}
+.modal-footer .btn-danger:disabled, .modal-footer .btn-info:disabled {
+	background-color: #fff !important;
+	border: 1px solid #eee !important;
+	background-color: #eee;
+	color: #7c7c7c !important;
+}
 </style>
 
 <div id="taskModal">
+  <div class="modal-header clearfix">
 
-  <div class="modal-header">
-  
-   <button type="button" class=" close btn"
-               ng-click="close()"><i class="md md-close"></i>
-        </button>
+   
+    <button type="button" class="close" ng-click="close()">&times;</button>
     <h4 class="modal-title" ng-if="!task.key">Create New Task</h4>
     <h4 class="modal-title" ng-if="task.key">Update Task</h4>
+
   </div>
-
-
   <div class="modal-body">
-
     <div class="col-md-12 no-padding">
-
       <form class="form-floating">
-
+        <div class="alert alert-success" ng-show="task.status === 'Promoted'">
+          <h4>No Further Changes Permitted!</h4>
+          <strong>This task is promoted</strong> and therefore cannot be modified or deleted. </div>
         <!-- TODO Fix formatting on control-label, causing absolute positioning and overlap -->
         <div class="form-group">
           <label for="taskTitle">Task title</label>
-          <input id="taskTitle" ng-model="task.summary" ng-change="clearMessages()" type="text" class="form-control"
+          <p ng-show="task.status === 'Promoted'">{{task.summary}}</p>
+          <div ng-hide="task.status === 'Promoted'">
+            <input id="taskTitle" ng-model="task.summary" ng-disabled="task.status === 'Promoted'" ng-change="clearMessages()" type="text" class="form-control"
                  placeholder="Enter task title">
-
-          <br>
-
+            <br>
+          </div>
           <div ng-if="!task.key">
             <label for="taskProject">Select Project:</label>
             <select id="taskProject" name="select-choice" class="form-control"
@@ -42,78 +45,63 @@
                     ng-model="task.projectKey"
                     ng-class="[{'task-color-black': task.key}] "
                     ng-change="clearMessages()"
+                    ng-disabled="task.status === 'Promoted'"
               >
             </select>
           </div>
           <div ng-if="task.key">
             <label for="taskProject">Project:</label>
-
             <div class="">{{task.projectKey}}</div>
           </div>
           <br>
           <label for="textArea">Task Details</label>
-<!--
+          <!--
           <textarea ng-change="clearMessages()" sca-auto-expand="" class="form-control vertical auto-grow-textarea"
                     rows="3" id="textArea"
                      placeholder="Enter task details"></textarea>
 -->
-            
-          <text-angular ng-model="task.description" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
-
-          <br>
-
-          <!--
-                    <div ng-if="task.key">
-                      <label for="taskAssignee">Assigned User</label>
-                      <input id="taskAssignee" ng-model="task.assignee.username" ng-change="clearMessages()" type="text"
-                             class="form-control"
-                             placeholder="Enter assignee's user name">
-                    </div>
-          -->
-
+          <p compile-html="task.description" ng-show="task.status === 'Promoted'"></p>
+          <div ng-hide="task.status === 'Promoted'">
+            <text-angular ng-model="task.description" class="no-shawdows" ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
+          </div>
         </div>
-
-
       </form>
-
-
       <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
       <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
     </div>
-
-    <div class="modal-footer no-padding">
-
+  </div>
+  <div class="modal-footer clearfix">
+  <div class="card-action clearfix" ng-show="task.status === 'Promoted'">
+  <hr>
+          <div class="pull-right">
+            <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-info no-margin"
+                ng-click="close()">Close Task Details </button>
+          </div>
+        </div>
+    <div class="col-md-12 no-padding" ng-hide="task.status === 'Promoted'"> 
       <!-- Display create only if no task supplied -->
       <div ng-if="!task.key" class="col-md-6">
         <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
-                ng-click="createTask()">Create Task
-        </button>
+                ng-click="createTask()">Create Task </button>
       </div>
-
+      
       <!-- If has a task key, replace Create with Update -->
       <div ng-if="task.key" class="" ng-class="[{'col-md-4' : canDelete}, {'col-md-6' : !canDelete}]">
-        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin"
-                ng-click="updateTask()">Save Changes
-        </button>
+        <button type="button" ng-disabled="task.status === 'Promoted'" class="col-md-12 btn btn-info no-margin"
+                ng-click="updateTask()">Save Changes </button>
       </div>
-
+      
       <!-- Cancel always appears -->
       <div class="" ng-class="[{'col-md-6' : !task.key}, {'col-md-4' : task.key}]">
         <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-warning no-margin"
-                ng-click="close()">Cancel
-        </button>
+                ng-click="close()">Cancel </button>
       </div>
-
+      
       <!-- If has a key, option to delete task -->
       <div ng-if="canDelete" class="col-md-4">
-        <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-danger no-margin"
-                ng-click="deleteTask()">Delete Task
-        </button>
+        <button type="button" ng-disabled="task.status === 'Promoted'" class="col-md-12 btn btn-danger no-margin"
+                ng-click="deleteTask()">Delete Task </button>
       </div>
-
     </div>
-
   </div>
-
-
 </div>
