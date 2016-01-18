@@ -738,69 +738,6 @@ button.fsn-title-button {
     background-color: #4527a0;
     color: #fff
 }
-.task-details .btn {
-    padding: 0px;
-    margin: 0px;
-    width: 100%;
-    margin-bottom: 10px;
-    text-transform: none
-}
-
-.inactivation-button-modal{padding: 0px;
-    margin: 0px;
-    width: 100%;
-    margin-bottom: 10px;
-    text-transform: none;}
-	.task-details .iconbase,
-.inactivation-button-modal .iconbase {
-    width: 40px;
-    height: 40px;
-    padding: 6px 8px;
-    float: left;
-    font-size: 18px;
-}
-.inactivation-button-modal:hover{background-color: #ff8f00;}
-
-.inactivation-button-modal .button-link {
-    padding: 8px 15px;
-    float: left;
-    font-weight: 500;
-}
-.review.btn-default:hover {
-    background-color: #c2185b;
-    color: #fff;
-}
-.review.btn-default[disabled]{
-    background-color: rgb(233, 30, 99);
-}
-.button-nav .review.btn-default[disabled],
-.button-nav .btn-default[disabled]
-{   background-color: #494949!important; color:#7c7c7c;border-bottom:1px #7c7c7c solid;}
-.Classify.btn-default[disabled]{
-    background-color: rgb(76, 175, 80);
-}
-.validate.btn-default[disabled]{
-    background-color: rgb(103, 58, 183);
-}
-.validate.btn-default:hover {
-    background-color: #512da8;
-    color: #fff;
-}
-.promote.btn-default:hover {
-    background-color: #1976D2;
-
-    color: #fff;
-}
-.editingtask.btn-default:hover {
-    background-color: #0097a7;
-
-    color: #fff;
-}
-.task-details .button-link {
-    padding: 8px 15px;
-    float: left;
-    font-weight: 500
-}
 .pink1 {
     background-color: #e91e63;
     color: #fff;

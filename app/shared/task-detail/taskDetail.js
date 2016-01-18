@@ -116,12 +116,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
         };
         scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+			
           scaService.updateTask(
             $routeParams.projectKey, $routeParams.taskKey,
             {
               'status': 'IN_REVIEW'
             }).then(function (response) {
               notificationService.sendMessage('Task submitted for review');
+			   $rootScope.$broadcast('reloadTask');
               $scope.reviewClicked = true;
               $scope.task = response;
             }, function (error) {
@@ -130,7 +132,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
       };
+  // cancel review
+          $scope.cancelReview = function () {
+            var confirmation = window.confirm('Return this branch to In Progress?');
 
+            console.debug('confirmation', confirmation);
+            if (confirmation) {
+              var taskObj = {
+                'status': 'IN_PROGRESS',
+                'reviewer': null
+              };
+              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
+                $rootScope.$broadcast('reloadTask');
+              });
+            }
+          };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
           templateUrl: 'shared/task/task.html',
