@@ -214,8 +214,9 @@
                       ng-disabled="isStatic || description.effectiveTime"
                       maxlength="255"
                       ng-model="description.term"
-                      class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
-                      placeholder="Description">
+                      class="color_{{relationship.groupId}} msd-elastic" 
+                      type="text"
+                      placeholder="Description" >
             </textarea>
 
             <textarea ng-if="description.type === 'SYNONYM'" ng-change="updateDescription(description)"
@@ -223,16 +224,18 @@
                       ng-disabled="isStatic || description.effectiveTime"
                       maxlength="255"
                       ng-model="description.term"
-                      class=" msd-elastic resizable-text form-control color_{{relationship.groupId}}" type="text"
+                      class="color_{{relationship.groupId}} msd-elastic" type="text"
                       placeholder="Description">
             </textarea>
-            <textarea ng-if="description.type === 'TEXT_DEFINITION'" style=""
-                      class="msd-elastic resizable-text form-control color_{{relationship.groupId}}"
+            <textarea ng-if="description.type === 'TEXT_DEFINITION'" 
+                      
                       ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="description.effectiveTime || isStatic"
-                      ng-model="description.term" type="text"
-                      placeholder="Description">
+                     
+                      ng-model="description.term" 
+                      type="text"
+                      placeholder="Description"
+                      class="color_{{relationship.groupId}} msd-elastic">
             </textarea>
           </div>
 
@@ -291,7 +294,8 @@
           </div>
 
           <div ng-if="description.additionalFields" ng-repeat="field in description.additionalFields">
-                <textarea class="msd-elastic resizable-text "
+                <textarea 
+               class="msd-elastic resizable-text "
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">

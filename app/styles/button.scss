@@ -110,3 +110,11 @@ button.fsn-title-button{width:100%;}
     border-color: #d8d8d8 !important;
     color: #737373 !important;
 }
+
+.description .form-control[disabled]{
+    cursor:default!important;
+	overflow:hidden!important;
+	max-height:60px;
+	height:auto;
+	word-wrap:break-word!important;
+}
