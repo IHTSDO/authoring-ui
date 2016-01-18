@@ -158,12 +158,12 @@
 
 
   <!-- Toggle-able collapsed concept elements -->
-  <div ng-show="!isCollapsed" class="editHeightSelector">
+  <div ng-show="!isCollapsed" class="editHeightSelector ">
 
 
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions()"
-         ng-class="getComponentStyle(description.descriptionId, null, '')">
+         ng-class="getComponentStyle(description.descriptionId, null, '')" class="{{concept.definitionStatus}}">
 
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}}">
         <div class="col-md-12 no-padding color_{{relationship.groupId}} "
@@ -316,9 +316,9 @@
     <!-- rows: Relationships -->
     <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
       <div ng-if="showRelationshipGroup(relationshipGroup)">
-        <div class="role_group_divider_top_{{groupId}}"></div>
+        <div class="role_group_divider_top_{{groupId}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
-             ng-class="getComponentStyle(relationship.relationshipId, null, '')">
+             ng-class="getComponentStyle(relationship.relationshipId, null, '')" class="{{concept.definitionStatus}}">
 
 
           <div class="row darken-3 edits-row color_{{relationship.groupId}} "
