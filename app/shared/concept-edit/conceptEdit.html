@@ -165,8 +165,8 @@
     <div ng-repeat="description in getDescriptions()"
          ng-class="getComponentStyle(description.descriptionId, null, '')" class="">
 
-      <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}}">
-        <div class="col-md-12 no-padding color_{{relationship.groupId}} "
+      <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
+        <div class="col-md-12 no-padding color_{{relationship.groupId}} def_{{concept.definitionStatus}} "
              drop-channel="descriptionObj"
              ui-on-drop="dropDescription(description, $data)"
              drag-enter-class="sca-drag-target"
@@ -363,7 +363,7 @@
               ng-model="relationship.groupId"
               ng-model-options="{updateOn: 'blur'}"
               ng-change="updateRelationship(relationship)"
-              class=" msd-elastic form-control color_{{relationship.groupId}}" type="text" placeholder="#"
+              class=" msd-elastic form-control rg" type="text" placeholder="#"
               ui-on-drop="dropNullOp()">
             </textarea>
                 </div>
@@ -409,7 +409,7 @@
             <textarea type="text"
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
-                      class="msd-elastic resizable-text "
+                      class="msd-elastic resizable-text relationship"
                       typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                       typeahead-loading="targetTypeaheadLoading"
                       typeahead-focus-first="false"

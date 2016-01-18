@@ -25,12 +25,14 @@ angular.module('singleConceptAuthoringApp')
 
     // TODO Consider relaxing jshint to allow functions to be called pre
     // declaration
-    initialize();
-
-    // closes the modal instance (if applicable)
+	
+	   // closes the modal instance (if applicable)
     $scope.close = function () {
       $modalInstance.close();
     };
+    initialize();
+
+ 
 
     // Creates a task from modal form
     $scope.createTask = function () {
@@ -93,7 +95,7 @@ angular.module('singleConceptAuthoringApp')
       var taskUpdate = {};
       taskUpdate.status = 'DELETED';
 
-      scaService.updateTask($scope.task.projectKey, $scope.task.key, taskUpdate).then(function (response) {
+      scaService.updateTask($scope.task.projectKey, $scope.task.key, taskUpdate).then(function () {
         $modalInstance.close('DELETED');
       }, function (error) {
         $scope.disabled = false;

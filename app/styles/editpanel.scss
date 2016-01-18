@@ -1060,9 +1060,7 @@ border-bottom:1px solid #8e8e8e
 
 }
 
-.is_a input, .is_a textarea, .is_a select {
-    background-color: #ffffdb ;
-}
+
 
 .editing-form .PRIMITIVE .sourcename .drag-button-width {
     background-color: #b7dbff !important;
@@ -1072,3 +1070,18 @@ border-bottom:1px solid #8e8e8e
     background-color: #dbdbff !important;
     color: #474747 !important;
 }
+
+ .PRIMITIVE textarea.relationship,  .PRIMITIVE textarea.rg, .PRIMITIVE select, .PRIMITIVE .custom-button {
+    background-color: #b7dbff !important;
+    color: #474747 !important;
+}
+
+.is_a input, .is_a textarea, .is_a select {
+    background-color: #ffffdb !important;
+}
+
+.def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button{    background-color: #b7dbff !important;
+    color: #474747 !important;}
+	
+	.def_FULLY_DEFINED textarea, .def_FULLY_DEFINED select, .def_FULLY_DEFINED .custom-button{    background-color: #dbdbff !important;
+    color: #474747 !important;}
