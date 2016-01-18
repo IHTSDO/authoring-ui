@@ -29,7 +29,7 @@
           </button>
         </div>
         <div class="p-10 pull-right">
-          <button class="btn btn-success btn-border tooltips-left normal-case"
+          <button class="btn btn-border tooltips-left normal-case"
                   ng-click="mergeAndRebase()"
                   ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'">
             <div
@@ -42,8 +42,8 @@
         </div>
       
         <div class="p-10 pull-right ">
-          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="classify()"
-            ng-disabled="project.latestClassificationJson.status && (project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
+          <button class="btn btn-border tooltips-left normal-case" ng-click="classify()"
+            ng-disabled="project.latestClassificationJson.status && (project.latestClassificationJson.status === 'RUNNING' && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
             <div
               class="project-icon green pull-left">
               <div class="md md-notifications"></div>
@@ -53,7 +53,7 @@
           </button>
         </div>
         <div class="p-10 pull-right ">
-          <button class="btn btn-success btn-border tooltips-left normal-case" ng-click="validate()"
+          <button class="btn btn-border tooltips-left normal-case" ng-click="validate()"
             ng-disabled="validationRunning">
             <div
               class="project-icon deep-purple lighten-1 pull-left">
