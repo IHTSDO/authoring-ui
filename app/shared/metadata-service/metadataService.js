@@ -49,14 +49,14 @@ angular.module('singleConceptAuthoringApp')
       // set the inactivation reasons with combination of enum values and
       // preferred terms
       conceptInactivationReasons = [
-        {id: 'AMBIGUOUS', text: 'Ambiguous component'},
-        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
-        {id: 'DUPLICATE', text: 'Duplicate component'},
-        {id: 'ERRONEOUS', text: 'Erroneous component'},
-        {id: 'LIMITED', text: 'Limited component'},
-        {id: 'OUTDATED', text: 'Outdated component'},
-        {id: 'PENDING_MOVE', text: 'Pending move'},
-        {id: 'RETIRED', text: 'Reason not stated'}
+        {id: 'AMBIGUOUS', text: 'Ambiguous component', display : [4]},
+        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display : [7]},
+        {id: 'DUPLICATE', text: 'Duplicate component', display : [7]},
+        {id: 'ERRONEOUS', text: 'Erroneous component', display : [6, 9]},
+        {id: 'LIMITED', text: 'Limited component', display : [9]},
+        {id: 'OUTDATED', text: 'Outdated component', display : [6, 9]},
+        {id: 'PENDING_MOVE', text: 'Pending move', display : [3]},
+        {id: 'RETIRED', text: 'Reason not stated' , display : [6, 9]}
       ];
     }
 
@@ -92,39 +92,48 @@ angular.module('singleConceptAuthoringApp')
         [
           {
             id: 'ALTERNATIVE',
-            text: 'ALTERNATIVE association reference set'
+            text: 'ALTERNATIVE association reference set',
+            display: 1
           },
           {
             id: 'MOVED_FROM',
-            text: 'MOVED FROM association reference set'
+            text: 'MOVED FROM association reference set',
+            display: 2
           },
           {
             id: 'MOVED_TO',
-            text: 'MOVED TO association reference set'
+            text: 'MOVED TO association reference set',
+            display: 3
           },
           {
             id: 'POSSIBLY_EQUIVALENT_TO',
-            text: 'POSSIBLY EQUIVALENT TO association reference set'
+            text: 'POSSIBLY EQUIVALENT TO association reference set',
+            display: 4
           },
           {
             id: 'REFERS_TO',
-            text: 'REFERS TO concept association reference set'
+            text: 'REFERS TO concept association reference set',
+            display: 5
           },
           {
             id: 'REPLACED_BY',
-            text: 'REPLACED BY association reference set'
+            text: 'REPLACED BY association reference set',
+            display: 6
           },
           {
             id: 'SAME_AS',
-            text: 'SAME AS association reference set'
+            text: 'SAME AS association reference set',
+            display: 7
           },
           {
             id: 'SIMILAR_TO',
-            text: 'SIMILAR TO association reference set'
+            text: 'SIMILAR TO association reference set',
+            display: 8
           },
           {
             id: 'WAS_A',
-            text: 'WAS A association reference set'
+            text: 'WAS A association reference set',
+            display: 9
           }
         ];
 
