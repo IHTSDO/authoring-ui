@@ -1,0 +1,43 @@
+.addButton.btn-round {
+    width: 20px;
+    height: 20px;
+    font-size: 14px !important;
+    line-height: 20px;
+    position: relative;
+}
+.primitive-buttons, .primitive-buttons:hover, .primitive-buttons[disabled], .primitive-buttons:focus, .primitive-buttons:active
+{    padding: 0px!important; background-color:transparent!important;}
+button.fsn-title-button{width:100%;}
+
+.editpanel .darkbuttons {
+    font-size: 20px;
+    padding: 10px 10px 5px 3px !important;
+    box-shadow: none !important;
+    line-height: 1.8 !important;
+}
+
+.editpanel .icon-color {
+    width: 35px;
+    height: 35px;
+    font-size: 20px !important;
+    line-height: 35px !important;
+}
+.editpanel .btn:hover {
+    box-shadow: none;
+}
+.editbuttons {
+    font-size: 14px;
+    padding: 0px 2px;
+    box-shadow: none !important;
+}
+.edits button {
+    font-size: 14px;
+    padding: 5px 4px;
+    line-height: 14px;
+    box-shadow: none !important;
+}
+.morebuttons {
+    font-size: 20px;
+    box-shadow: none !important;
+	margin-right:0px!important;
+}
