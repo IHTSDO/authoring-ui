@@ -163,7 +163,7 @@
 
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions()"
-         ng-class="getComponentStyle(description.descriptionId, null, '')" class="{{concept.definitionStatus}}">
+         ng-class="getComponentStyle(description.descriptionId, null, '')" class="">
 
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}}">
         <div class="col-md-12 no-padding color_{{relationship.groupId}} "
@@ -318,7 +318,7 @@
       <div ng-if="showRelationshipGroup(relationshipGroup)">
         <div class="role_group_divider_top_{{groupId}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
-             ng-class="getComponentStyle(relationship.relationshipId, null, '')" class="{{concept.definitionStatus}}">
+             ng-class="getComponentStyle(relationship.relationshipId, null, '')" class="{{relationship.target.definitionStatus}}">
 
 
           <div class="row darken-3 edits-row color_{{relationship.groupId}} "
