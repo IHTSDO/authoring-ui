@@ -5,6 +5,22 @@ angular.module('singleConceptAuthoringApp')
 
     // the selected tab
     $scope.actionTab = 1;
+    
+    $scope.filterByInactivationReason = function () {
+        return function (item) {
+            if ($scope.reason.display.indexOf(item.display) !== -1)
+            {
+                return true;
+            }
+            else{
+                return false;
+            }
+        };
+    };
+    
+    $scope.updateAssociations = function () {
+        $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
+    }
 
     // required arguments
     $scope.componentType = componentType;
@@ -15,7 +31,8 @@ angular.module('singleConceptAuthoringApp')
     $scope.conceptId = conceptId;
     $scope.branch = branch;
     $scope.associationTargets = associationTargets;
-
+    $scope.originalAssocs = associationTargets;
+    
     // check requirements
     if ($scope.conceptId && !$scope.branch) {
       $scope.error = 'Branch was not specified';
