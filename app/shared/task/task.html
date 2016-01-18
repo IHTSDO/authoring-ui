@@ -12,7 +12,10 @@
 <div id="taskModal">
 
   <div class="modal-header">
-    <button type="button" class="close" ng-click="close()">&times;</button>
+  
+   <button type="button" class=" close btn"
+               ng-click="close()"><i class="md md-close"></i>
+        </button>
     <h4 class="modal-title" ng-if="!task.key">Create New Task</h4>
     <h4 class="modal-title" ng-if="task.key">Update Task</h4>
   </div>
