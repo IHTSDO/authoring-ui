@@ -123,7 +123,11 @@ angular
             {
                 $rootScope.uat = true;   
             }
-          }, 1000);
+            else{
+                $rootScope.uat = false;
+                $rootScope.development = false;
+            }
+          }, 3000);
     
 
     // begin polling the sca endpoint at 10s intervals
