@@ -65,7 +65,7 @@
           <div class="col-md-12">
             <select id="taskProject" name="select-reason" class="form-control"
                     ng-options="reason as reason.text for reason in reasons"
-                    ng-model="reason">
+                    ng-model="reason" ng-change="updateAssociations()">
               <option value="disabled">- Select a reason (required) -</option>
             </select>
           </div>
@@ -86,7 +86,7 @@
           <div class="row" style="border-top:grey solid 1px;" ng-repeat="association in associations">
             <div class="col-md-4">
               <select class="form-control"
-                      ng-options="type as type.text for type in associationTargets | filter:{display : 'reason.display'}"
+                      ng-options="type as type.text for type in associationTargets"
                       ng-model="association.type">
                 <option value="disabled">- Select an Association Type (optional) -</option>
               </select>
