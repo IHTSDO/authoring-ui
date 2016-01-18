@@ -526,7 +526,7 @@ background-color:transparent!important;
     }
 
     .editing-form .sourcename .drag-button-width {
-      background-color: #dedeff !important;
+      background-color: #CCCCFF !important;
       color: #474747 !important;
       width: 8.75% !important;
       float: left;
@@ -671,45 +671,45 @@ button.fsn-title-button {
 .color_ textarea,
 .color_ select,
 .color_ .custom-button {
-    background-color: #c3e1ff !important;
+    background-color: #99CCFF !important;
     color: #474747 !important;
 }
 .color_0 input,
 .color_0 textarea,
 .color_0 select,
 .color_0 .custom-button {
-    background-color: #dedeff !important;
+    background-color: #CCCCFF;
     color: #474747 !important;
 }
 .color_1 input,
 .color_1 textarea,
 .color_1 select,
 .color_1 .custom-button {
-    background-color: #dedeff !important;
+    background-color: #CCCCFF !important;
     color: #474747 !important;
 }
 .color_2 input,
 .color_2 textarea,
 .color_2 select,
 .color_2 .custom-button {
-    background-color: #dedeff !important;
+    background-color: #CCCCFF !important;
     color: #474747 !important;
 }
 .color_3 input,
 .color_3 textarea,
 .color_3 select {
-    background-color: #dedeff !important;
+    background-color: #CCCCFF !important;
     color: #474747 !important;
 }
 .color_4 input,
 .color_4 textarea,
 .color_4 select {
-    background-color: #dedeff !important;
+    background-color: #CCCCFF !important;
 }
 .color_5 input,
 .color_5 textarea,
 .color_5 select {
-    background-color: #dedeff !important;
+    background-color: #CCCCFF !important;
     color: #474747 !important;
 }
 .color_6 {
@@ -868,21 +868,21 @@ button.fsn-title-button {
 
 
 .color_ input, .color_ textarea, .color_ select { 
-    background-color: #303030 !important;  color: #c3e1ff !important;
+    background-color: #303030 !important;  color: #99CCFF !important;
 }
 
 .color_0 input, .color_0 textarea, .color_0 select { 
-    background-color: #303030 !important;  color: #dedeff !important;
+    background-color: #303030 !important;  color: #CCCCFF !important;
 }
 .color_1 input, .color_1 textarea, .color_1 select{ 
-    background-color: #303030 !important;  color: #dedeff !important;
+    background-color: #303030 !important;  color: #CCCCFF !important;
 }
 
 .color_2 input, .color_2 textarea, .color_2 select{  
-    background-color: #303030 !important;  color: #dedeff !important;
+    background-color: #303030 !important;  color: #CCCCFF !important;
 }
 .color_3 input, .color_3 textarea, .color_3 select{ 
-    background-color: #303030 !important; color: #dedeff !important;
+    background-color: #303030 !important; color: #CCCCFF !important;
 }
 .is_a input, .is_a textarea, .is_a select{ 
     background-color: #303030 !important; color: #fffde7 !important;
@@ -1162,4 +1162,22 @@ border-bottom:1px solid #8e8e8e
 	.editing-form button.green:focus, .editing-form button.green:active{background-color: #4CAF50;}
 	
 	.color_ .custom-button:focus {
-    background-color: #c3e1ff !important;}
+    background-color: #99CCFF !important;}
+	
+	.PRIMITIVE .color_0 input, .PRIMITIVE .color_0 textarea, .PRIMITIVE .color_0 select, .PRIMITIVE .color_0 .custom-button {
+    background-color: #99CCFF ;
+
+}
+
+.is_a input, .is_a textarea, .is_a select {
+    background-color: #fffde7 ;
+}
+
+.editing-form .PRIMITIVE .sourcename .drag-button-width {
+    background-color: #99CCFF !important;
+}
+
+.FULLY_DEFINED .color_ input, .FULLY_DEFINED .color_ textarea, .FULLY_DEFINED .color_ select, .FULLY_DEFINED .color_ .custom-button {
+    background-color: #CCCCFF !important;
+    color: #474747 !important;
+}
