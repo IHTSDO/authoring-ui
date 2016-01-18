@@ -85,14 +85,21 @@
         <span class="md md-school deep-purple darken-2 iconbase"></span>
         <span class="button-link">Validate</span>
       </button>
-
-      <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'"
+<div ng-show="task.status !== 'In Review' && task.status !== 'Review Completed'"
+>      <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'"
               class="btn btn-default pink1 review" style="text-transform: none"
               ng-click="submitForReview()">
         <span class="md md-forum pink darken-2 iconbase"></span>
         <span class="button-link">Submit For Review</span>
       </button>
+</div>
 
+   <button class="btn btn-default pink1 review" style="text-transform: none"
+                  ng-if="task.status === 'In Review'"
+                
+                  ng-click="cancelReview()"> <span class="md md-forum pink darken-2 iconbase"></span>
+        <span class="button-link">Cancel This Review</span>
+          </button>
 
       <button ng-if="editable !== 'false'"
               ng-disabled="task.status === 'New' || task.status === 'In Review' || task.status === 'Promoted' || role === 'REVIEWER' || reviewClicked === true"
