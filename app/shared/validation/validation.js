@@ -37,6 +37,13 @@ angular.module('singleConceptAuthoringApp')
           scope.isCollapsed = false;
           scope.setViewTop();
 
+          scope.conceptUpdateFunction = function (project, task, concept) {
+              var deferred = $q.defer();
+              snowowlService.updateConcept(project, task, concept).then(function (response) {
+                deferred.resolve(response);
+              });
+              return deferred.promise;
+            };
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
             scope.validationContainer = {executionStatus: '', report: ''};
