@@ -135,7 +135,7 @@ color:#fff;
 }
 .sca-light .saved, .sca-light .fa-close {color:#fff;}
 
-.sca-dark .project-icon.deep-purple.lighten-1{    background-color: #7e57c2;
+.sca-dark .project-icon.deep-purple.lighten-1{    background-color: #ba68c8;
     color: #fff;}
 	
 	.sca-dark .project-icon.green {
@@ -144,7 +144,7 @@ color:#fff;
 }
 	
 	.sca-dark .project-icon.red {
-    background-color: #e92848;
+    background-color: #ff5555;
     color: #fff;
 }
 	
@@ -215,7 +215,7 @@ color:#fff;
    background-color: transparent;
 }
 .sca-dark .red {
-    color: #e92848;
+    color: #ff5555;
     background-color: transparent;
 }
 .sca-dark .green.lighten-2 {
@@ -224,7 +224,7 @@ color:#fff;
 }
 .sca-dark .pink.darken-2 {
     background-color: transparent;
-    color: #d81b60
+    color: #f9428b
 }
 .sca-dark .deep-purple {
     color: #8b72b7;
@@ -232,7 +232,7 @@ color:#fff;
 }
 .sca-dark .pink.darken-1 {
     background-color: transparent;
-    color: #d81b60
+    color: #f9428b
 }
 .sca-dark .red.lighten-2 {
     background-color: transparent;
@@ -254,7 +254,7 @@ color:#fff;
 .sca-dark .In.Progress.badge {
     background-color: transparent;
    
-    color: #db207e;
+    color: #f06292;
 }
 .sca-dark .In.Review.badge {
     background-color: transparent;
@@ -458,7 +458,7 @@ color:#fff;
  
 }
 .sca-dark .pink1.feedback-header-main {
-    background-color: #d81b60;
+    background-color: #f9428b;
     color: #fff;
 }
 .sca-dark .feedback-header-main .pink.darken-2 {
@@ -481,21 +481,25 @@ color:#fff;
 
 .sca-dark .blue.green.btn-round, {background-color: transparent!important; color:#42A5F5}
 .sca-dark .blue.green.btn-round:hover {color: #fff!important; background-color:#42A5F5!important}
-.sca-dark .red.btn-round {background-color: transparent; color:#e92848}
-.sca-dark .red.btn-round:hover {color: #fff; background-color:#e92848}
+.sca-dark .red.btn-round {background-color: transparent; color:#ff5555}
+.sca-dark .red.btn-round:hover {color: #fff; background-color:#ff5555}
 .sca-dark .amber.btn-round {background-color: transparent; color:#ffca28}
 .sca-dark .amber.btn-round:hover {color: #fff; background-color:#ffca28}
-.sca-dark .pink.darken-1.btn-round {background-color: transparent; color:#d81b60}
-.sca-dark .pink.darken-1.btn-round:hover {color: #fff; background-color:#d81b60}
+.sca-dark .pink.darken-1.btn-round {background-color: transparent; color:#f9428b}
+.sca-dark .pink.darken-1.btn-round:hover {color: #fff; background-color:#f9428b}
 .sca-dark .pink.lighten-2.btn-round {background-color: transparent; color:#f06292}
 .sca-dark .pink.lighten-2.btn-round:hover {color: #fff; background-color:#f06292}
-.sca-dark .purple.lighten-1.btn-round {background-color:transparent; color:#ab47bc}
-.sca-dark .purple.lighten-1.btn-round:hover {color: #fff; background-color:#ab47bc}
+.sca-dark .purple.lighten-1.btn-round {background-color:transparent; color:#ba68c8}
+.sca-dark .purple.lighten-1.btn-round:hover {color: #fff; background-color:#ba68c8}
 
-.sca-dark .purple.lighten-2.btn-round {background-color:transparent; color:#d81b60}
+.sca-dark .purple.lighten-2.btn-round {background-color:transparent; color:#ba68c8}
 .sca-dark .purple.lighten-2.btn-round:hover {color: #fff; background-color:#ba68c8}
-.sca-dark .purple.darken-1.btn-round {background-color:transparent; color:#8e24aa}
-.sca-dark .purple.darken-1.btn-round:hover {color: #fff; background-color:#8e24aa}
+.sca-dark .purple.darken-1.btn-round {background-color:transparent; color:#ba68c8}
+.sca-dark .purple.darken-1.btn-round:hover {color: #fff; background-color:#ba68c8}
 .sca-dark a .side-text {
     color: #eee;
 }
+
+.sca-dark section thead input{background-color: transparent!important;}
+.sca-dark .highlight{color:#474747}
+.sca-dark .taxonomy-list h4{color:#fff;}
