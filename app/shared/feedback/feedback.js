@@ -216,10 +216,6 @@ angular.module('singleConceptAuthoringApp')
 
           // cancel review
           scope.cancelReview = function () {
-            var confirmation = window.confirm('Return this branch to In Progress?');
-
-            console.debug('confirmation', confirmation);
-            if (confirmation) {
               var taskObj = {
                 'status': 'IN_PROGRESS',
                 'reviewer': null
@@ -227,7 +223,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                 $rootScope.$broadcast('reloadTask');
               });
-            }
+            
           };
 
           // controls to allow author to view only concepts with feedeback
