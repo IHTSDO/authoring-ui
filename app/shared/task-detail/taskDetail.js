@@ -134,10 +134,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
   // cancel review
           $scope.cancelReview = function () {
-            var confirmation = window.confirm('Return this branch to In Progress?');
-
-            console.debug('confirmation', confirmation);
-            if (confirmation) {
               var taskObj = {
                 'status': 'IN_PROGRESS',
                 'reviewer': null
@@ -145,7 +141,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                 $rootScope.$broadcast('reloadTask');
               });
-            }
+            
           };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
