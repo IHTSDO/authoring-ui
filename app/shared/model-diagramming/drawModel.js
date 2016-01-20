@@ -68,8 +68,8 @@ angular.module('singleConceptAuthoringApp')
 
           parentDiv.svg({
             settings: {
-              height: '1000px',
-              width: '2000px',
+              height: '1250px',
+              width: '2500px',
               id: 'svg-' + concept.conceptId
             }
           });
