@@ -719,9 +719,14 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendMessage('Project Rebased Successfully', 10000);
           return response.data;
         }, function (error) {
-          console.error('Error rebasing project ' + projectKey);
-          notificationService.sendError('Error rebasing project', 10000);
-          return null;
+          if(error.status === 504){
+              notificationService.sendWarning('The system is experiencing heavy load. Please try to rebase again in a few minutes.');
+              return null;
+          }
+          else{
+            notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
+            return null;
+          }
         });
       },
 // POST /projects/{projectKey}/tasks/{taskKey}/promote
@@ -754,10 +759,16 @@ angular.module('singleConceptAuthoringApp')
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
           deferred.resolve(response);
         }, function (error) {
-          console.error('Error rebasing task ' + projectKey + ', task ' + taskKey);
-          deferred.reject(error.message);
+          if(error.status === 504){
+              notificationService.sendWarning('The system is experiencing heavy load. Please try to rebase again in a few minutes.');
+              deferred.reject(null);
+          }
+          else{
+            notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
+            deferred.reject(null);
+          }
         });
-        //return deferred.promise;
+        return deferred.promise;
       },
 
 //////////////////////////////////////////
