@@ -81,8 +81,8 @@
                   <button
                     ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'"
                     title="Attention Needed: {{task.branchState}}" type="button"
-                    class="btn btn-round btn-default lighten-1 red tooltips-left">
-                    <div class="md md-sync-problem "></div>
+                    class="btn btn-round btn-default lighten-1 amber tooltips-left">
+                    <div class="md md-sync "></div>
                     <span>Click to pull in changes from project</span>
                   </button>
                 </a>
