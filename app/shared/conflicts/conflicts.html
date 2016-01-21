@@ -127,9 +127,9 @@
     </div>
 
     <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
-    <div ng-if="!badStateDetected && conflicts && rebaseRunning" class="loading-merges red">
+    <div ng-if="!badStateDetected && conflicts && rebaseRunning" class="loading-merges amber">
       <div class="all-done">
-        <div class="md md-sync-problem"></div>
+        <div class="md md-sync"></div>
       </div>
       <h3>Unexpected error: Attempt to pull in changes while merges remain unresolved. Contact the administrator.</h3>
 
