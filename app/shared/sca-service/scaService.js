@@ -720,7 +720,7 @@ angular.module('singleConceptAuthoringApp')
           return response.data;
         }, function (error) {
           if(error.status === 504){
-              notificationService.sendWarning('Your Rebase operation is taking a while. Please work on other tasks and return to the dashboard to check the status in a few minutes.');
+              notificationService.sendWarning('Your rebase operation is taking longer than expected. Please work on other tasks and return to the dashboard to check the status in a few minutes.');
               return null;
           }
           else if(error.status === 409){
@@ -764,7 +764,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.resolve(response);
         }, function (error) {
           if(error.status === 504){
-              notificationService.sendWarning('Your Rebase operation is taking a while. Please work on other tasks and return to the dashboard to check the status in a few minutes.');
+              notificationService.sendWarning('Your rebase operation is taking longer than expected. Please work on other tasks and return to the dashboard to check the status in a few minutes.');
               deferred.reject(null);
           }
           else if(error.status === 409){
