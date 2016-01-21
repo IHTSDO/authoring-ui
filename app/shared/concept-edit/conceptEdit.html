@@ -7,7 +7,7 @@
     <h4>Error!</h4>
 
     <div ng-repeat="error in errors">
-      {{error}}
+      <div ng-bind="error"></div>
     </div>
   </div>
   <div class="alert alert-dismissible alert-warning validation" ng-show="warnings.length > 0">
@@ -16,7 +16,7 @@
     <h4>Warning!</h4>
 
     <div ng-repeat="warning in warnings">
-      {{warning}}
+      <div ng-bind="warning"></div>
     </div>
   </div>
 
@@ -146,13 +146,12 @@
   <div class="row">
     <div class="validation red" ng-repeat="error in validation.errors[concept.conceptId]"><strong>Convention
                                                                                                   Error:</strong>
-      {{error}}
+      <div ng-bind="error"></div>
     </div>
   </div>
   <div class="row">
-    <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[concept.conceptId]"><strong>Convention
-                                                                                                                  Warning:</strong>
-      {{warning}}
+    <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[concept.conceptId]"><strong>Convention Warning:</strong>
+      <div ng-bind="warning"></div>
     </div>
   </div>
 
@@ -307,12 +306,12 @@
       <div class="row">
         <div class="validation red" ng-repeat="error in validation.errors[description.descriptionId]"><strong>Convention
                                                                                                               Error:</strong>
-          {{error}}
+          <div ng-bind="error"></div>
         </div>
       </div>
       <div class="row">
         <div class="validation orange darken-1" ng-repeat="warning in validation.warnings[description.descriptionId]">
-          <strong>Convention Warning:</strong> {{warning}}
+          <strong>Convention Warning:</strong> <div ng-bind="warning"></div>
         </div>
       </div>
     </div>
@@ -478,13 +477,13 @@
           <div class="row">
             <div class="validation red" ng-repeat="error in validation.errors[relationship.relationshipId]"><strong>Convention
                                                                                                                     Error:</strong>
-              {{error}}
+              <div ng-bind="error"></div>
             </div>
           </div>
           <div class="row">
             <div class="validation orange darken-1"
                  ng-repeat="warning in validation.warnings[relationship.relationshipId]">
-              <strong>Convention Warning:</strong> {{warning}}
+              <strong>Convention Warning:</strong> <div ng-bind="warning"></div>
             </div>
           </div>
         </div>

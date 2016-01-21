@@ -531,12 +531,18 @@ angular.module('singleConceptAuthoringApp')
 
             if ($routeParams.taskKey) {
               scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                scope.rebaseRunning = false;
-                scope.rebaseComplete = true;
+                if(response !== null){  
+                    scope.rebaseRunning = false;
+                    scope.rebaseComplete = true;
 
-                // broadcast reload task to any current listeners, to pull in
-                // new branch state
-                $rootScope.$broadcast('reloadTask');
+                    // broadcast reload task to any current listeners, to pull in
+                    // new branch state
+                    $rootScope.$broadcast('reloadTask');
+                }
+                  else{
+                      scope.rebaseRunning = false;
+                      scope.rebaseComplete = false;
+                  }
 
               }, function (error) {
                 scope.rebaseRunning = false;

@@ -397,13 +397,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         }
 
-        scope.$watch('validation', function () {
-          console.log('validation changed', scope.validation);
-        });
-
         // function to validate concept and display any errors or warnings
         scope.validateConcept = function () {
-
           var deferred = $q.defer();
           snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
 
@@ -415,7 +410,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             };
 
             angular.forEach(validationResults, function (validationResult) {
-              console.debug(validationResult);
               if (validationResult.severity === 'WARNING') {
                 results.hasWarnings = true;
                 if (!results.warnings[validationResult.componentId]) {
@@ -433,7 +427,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
 
             scope.validation = results;
-            deferred.resolve();
+            deferred.resolve(results);
           }, function (error) {
             notificationService.sendError('Unexpected error validating concept prior to save');
             scope.validation = {};
@@ -501,7 +495,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               saveHelper().then(function () {
                 // recompute validation warnings
                     scope.validateConcept().then(function () {
-                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                        notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                 });
@@ -525,6 +519,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             notificationService.sendError('Fatal error: Could not validate concept');
           });
         };
+        
 
         // function to toggle active status of concept
         // cascades to children components
