@@ -44,9 +44,11 @@ angular.module('singleConceptAuthoringApp')
           });
         };
         scope.getSNF = function(){
+            scope.loading = true;
             scope.snfFunction({conceptId : scope.concept.conceptId}).then(function(response) {
                 scope.conceptSNF = response;
-                scope.view = 'snf'
+                scope.view = 'snf';
+                scope.loading = false;
             });
         }
 

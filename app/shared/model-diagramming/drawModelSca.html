@@ -38,27 +38,32 @@
   <div class="row">
 
     <!-- Model Before -->
-    <div class="no-padding no-gutter"
-         ng-class="[{'col-md-12' : !conceptAfter && !classificationSaved}, {'col-md-6' : conceptAfter || classificationSaved}]">
-      <div draw-model class="modelScrollBox" concept="concept" view="view" concept-snf="conceptSNF"></div>
-    </div>
-
-    <!-- Model After -->
-    <div class="col-md-6 no-padding no-gutter">
-      <div ng-if="conceptAfter && !isClassificationSaved"
-           draw-model
-           class="modelScrollBox"
-           concept="conceptAfter"
-           view="view"></div>
-      <div ng-if="isClassificationSaved">
-        <h4>No Model Diagram Preview Available:</h4>
-        <h4>Classification Has Been Saved</h4>
+      <div ng-if="loading">
+          <div class="model-loader">Loading...</div>
       </div>
-    </div>
+    <div ng-if="!loading">
+        <div class="no-padding no-gutter"
+             ng-class="[{'col-md-12' : !conceptAfter && !classificationSaved}, {'col-md-6' : conceptAfter || classificationSaved}]">
+          <div draw-model class="modelScrollBox" concept="concept" view="view" concept-snf="conceptSNF"></div>
+        </div>
+
+        <!-- Model After -->
+        <div class="col-md-6 no-padding no-gutter">
+          <div ng-if="conceptAfter && !isClassificationSaved"
+               draw-model
+               class="modelScrollBox"
+               concept="conceptAfter"
+               view="view"></div>
+          <div ng-if="isClassificationSaved">
+            <h4>No Model Diagram Preview Available:</h4>
+            <h4>Classification Has Been Saved</h4>
+          </div>
+        </div>
 
     <!-- Display text showing no preview when in classify view and classification has been accepted -->
 
-  </div>
+   </div>
+</div>
 
 
 </div>
