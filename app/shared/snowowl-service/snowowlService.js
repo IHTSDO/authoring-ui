@@ -214,6 +214,17 @@ angular.module('singleConceptAuthoringApp')
       });
 
     }
+      
+    // Retrieve Concept Short Normal Form
+    // GET {path}/concepts/{conceptId}?representationalForm=short-normal
+    function getConceptSNF(conceptId, branch) {
+      return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId +'?representationalForm=short-normal').then(function (response) {
+        return response.data;
+      }, function (error) {
+        // TODO Handle error
+      });
+
+    }
 
     // Retrieve Concept preferred term
     // GET {path}/concepts/{conceptId}
@@ -1000,6 +1011,7 @@ angular.module('singleConceptAuthoringApp')
     return {
 
       getConceptProperties: getConceptProperties,
+      getConceptSNF: getConceptSNF,
       getDescriptionProperties: getDescriptionProperties,
       getRelationshipProperties: getRelationshipProperties,
       getConceptPreferredTerm: getConceptPreferredTerm,

@@ -938,6 +938,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
     };
+    
+    $scope.getSNF = function(id){
+      var deferred = $q.defer();
+      snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
+        deferred.resolve(response);
+      });
+      return deferred.promise;
+        
+    };
 
     //////////////////////////////////////////
     // Conflict Report & Controls
