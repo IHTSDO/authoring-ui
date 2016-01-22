@@ -12,6 +12,7 @@ angular.module('singleConceptAuthoringApp')
       replace: true,
       scope: {
         concept: '=',
+        conceptSnf : '=',
         view: '=?'   // false to view stated, true to view inferred
       },
       templateUrl: 'shared/model-diagramming/drawModel.html',
@@ -33,7 +34,13 @@ angular.module('singleConceptAuthoringApp')
         scope.$watch('view', function(newVal, oldVal){
           console.debug('drawModel view changed');
             element.append($("<div></div>").addClass('modelContainer'));
-            drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+            if(scope.view == 'snf')
+            {
+                drawConceptDiagram(scope.conceptSnf, element.find('.modelContainer'), {});
+            }
+            else{
+                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+            }
         }, true);
 
 
@@ -41,7 +48,7 @@ angular.module('singleConceptAuthoringApp')
         function drawConceptDiagram(concept, div, options) {
           var svgIsaModel = [];
           var svgAttrModel = [];
-          if (scope.view == false) {
+          if (scope.view == 'stated') {
             $.each(concept.relationships, function (i, field) {
               if (field.active == true && field.characteristicType == "STATED_RELATIONSHIP") {
                 if (field.type.conceptId == 116680003) {
@@ -51,7 +58,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               }
             });
-          } else {
+          } else if (scope.view == 'inferred'){
             if (concept.relationships) {
               $.each(concept.relationships, function (i, field) {
                 if (field.active == true && field.characteristicType == "INFERRED_RELATIONSHIP") {
@@ -64,6 +71,18 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           }
+          else if (scope.view == 'snf') {
+            $.each(concept.relationships, function (i, field) {
+              if (field.active == true && field.formRepresentation == "SHORT_NORMAL") {
+                if (field.type.conceptId == 116680003) {
+                  svgIsaModel.push(field);
+                } else {
+                  svgAttrModel.push(field);
+                }
+              }
+            });
+          }
+        
           var parentDiv = div;
 
           parentDiv.svg({

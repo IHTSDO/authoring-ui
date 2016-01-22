@@ -15,7 +15,8 @@ angular.module('singleConceptAuthoringApp')
       scope: {
         concept: '=',
         conceptAfter : '=?',
-        classificationSaved: '@?'
+        classificationSaved: '@?',
+        snfFunction : '&?'
       },
       templateUrl: 'shared/model-diagramming/drawModelSca.html',
 
@@ -42,6 +43,12 @@ angular.module('singleConceptAuthoringApp')
             }
           });
         };
+        scope.getSNF = function(){
+            scope.snfFunction({conceptId : scope.concept.conceptId}).then(function(response) {
+                scope.conceptSNF = response;
+                scope.view = 'snf'
+            });
+        }
 
         // on open image requests, broadcast concept id to drawModel.js
         scope.openImage = function() {
