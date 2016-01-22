@@ -39,10 +39,7 @@
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}"
               popover-trigger="click: click" popover-append-to-body="true"><span>More details</span></button>
 
-      <button
-        class="btn btn-default morebuttons grey darken-4 md md-open-with normal-case drag-button-width "
-        ui-draggable="true" drag="getConceptIdNamePair(concept)" drag-channel="conceptPropertiesObj"
-        drop-channel="NA" drag-image="getDragImageForConcept(concept.fsn)"></button>
+
 
       <button type="button"
               class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-left tooltips-light normal-case "
@@ -52,7 +49,7 @@
     </div>
 
     <!-- concept name -->
-    <div class="pull-left col-md-6 no-padding title-text">
+    <div class="pull-left col-md-6 no-padding title-text" style="margin-left:-25px;">
       <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
         <span class="fsn p-t-5">{{concept.fsn}}</span>
 
@@ -178,10 +175,7 @@
                   popover-append-to-body="true">
             <span>More details</span></button>
 
-          <button
-            class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
-            ui-draggable="true" drag="description" drag-channel="descriptionObj"
-            drag-image="getDragImageForDescription(description)"></button>
+      
 
           <!-- Active/Inactive -->
           <button type="button"
