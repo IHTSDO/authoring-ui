@@ -534,6 +534,7 @@ angular.module('singleConceptAuthoringApp')
                 if(response !== null){  
                     scope.rebaseRunning = false;
                     scope.rebaseComplete = true;
+                    scope.warning = false;
 
                     // broadcast reload task to any current listeners, to pull in
                     // new branch state
@@ -542,21 +543,36 @@ angular.module('singleConceptAuthoringApp')
                   else{
                       scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
+                      scope.warning = true;
                   }
 
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
+                scope.warning = true;
                 notificationService.sendError('Error pulling changes from project: ' + error);
               });
             } else {
 
               scaService.rebaseProject($routeParams.projectKey).then(function (response) {
-                scope.rebaseRunning = false;
-                scope.rebaseComplete = true;
+                if(response !== null){  
+                    scope.rebaseRunning = false;
+                    scope.rebaseComplete = true;
+                    scope.warning = false;
+
+                    // broadcast reload task to any current listeners, to pull in
+                    // new branch state
+                    $rootScope.$broadcast('reloadTask');
+                }
+                  else{
+                      scope.rebaseRunning = false;
+                      scope.rebaseComplete = false;
+                      scope.warning = true;
+                  }
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
+                scope.warning = true;
                 notificationService.sendError('Error pulling changes from mainline content: ' + error);
               });
             }
@@ -669,7 +685,7 @@ angular.module('singleConceptAuthoringApp')
 
               // send a temporary notification while waiting for BE
               // notification of merge review invalid
-              notificationService.sendError('Unexpected error finalizing merges');
+              notificationService.sendError('Unexpected error finalizing merges', 5000);
 
               // convenient flag to indicate a bad state was detected
               scope.badStateDetected = true;
