@@ -58,7 +58,7 @@
       </div>
     </div>
     
-    <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete" class="loading-merges blue darken-1">
+    <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete && !warning" class="loading-merges blue darken-1">
 
    
         <div class="clock">
@@ -88,7 +88,7 @@
 
 
     </div>
-    <div ng-if="!badStateDetected && !conflicts && rebaseRunning" class="loading-merges green">
+    <div ng-if="!badStateDetected && !conflicts && rebaseRunning && !warning" class="loading-merges green">
 
   
         <div class="clock">
@@ -117,7 +117,14 @@
       </div>
 
     <!-- Displayed after merges complete -->
-    <div class="loading-merges green" ng-if="!badStateDetected && rebaseComplete">
+    <div ng-if="warning" class="loading-merges amber">
+      <div class="all-done">
+        <div class="md md-sync"></div>
+      </div>
+      <h3>Your merge is not yet complete or cannot be completed at this time.</h3>
+
+    </div>
+    <div class="loading-merges green" ng-if="!badStateDetected && rebaseComplete && !warning">
       <div class="all-done">
         <div class="md md-done"></div>
       </div>
@@ -127,7 +134,7 @@
     </div>
 
     <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
-    <div ng-if="!badStateDetected && conflicts && rebaseRunning" class="loading-merges amber">
+    <div ng-if="!badStateDetected && conflicts && rebaseRunning && !warning" class="loading-merges amber">
       <div class="all-done">
         <div class="md md-sync"></div>
       </div>

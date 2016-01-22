@@ -759,24 +759,22 @@ angular.module('singleConceptAuthoringApp')
 // POST /projects/{projectKey}/tasks/{taskKey}/rebase
 // Rebase the task from the project
       rebaseTask: function (projectKey, taskKey) {
-        var deferred = $q.defer();
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
-          deferred.resolve(response);
+          return response;
         }, function (error) {
           if(error.status === 504){
               notificationService.sendWarning('Your rebase operation is taking longer than expected. Please work on other tasks and return to the dashboard to check the status in a few minutes.');
-              deferred.reject(null);
+              return null;
           }
           else if(error.status === 409){
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              deferred.reject(null);
+              return null
           }
           else{
             notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
-            deferred.reject(null);
+            return null;
           }
         });
-        return deferred.promise;
       },
 
 //////////////////////////////////////////
