@@ -42,6 +42,10 @@ angular.module('singleConceptAuthoringApp')
                 element.append($("<div></div>").addClass('modelContainer'));
                 drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
             }
+            else if(scope.conceptSnf && scope.conceptSnf.relationships){
+                element.append($("<div></div>").addClass('modelContainer'));
+                drawConceptDiagram(scope.conceptSnf, element.find('.modelContainer'), {});
+            }
         }, true);
         scope.$watch('conceptSnf', function(newVal, oldVal){
             if(scope.conceptSnf && scope.conceptSnf.relationships)
