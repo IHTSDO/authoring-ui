@@ -134,7 +134,7 @@
             <textarea class="msd-elastic resizable-text"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="field.value" type="text"
-                      placeholder="{{field}}">
+                      placeholder="{{field}}" autofocus>
             </textarea>
       </div>
     </div>
@@ -205,23 +205,23 @@ drag-image="getDragImageForDescription(description)"></button>
 
 
 
-            <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
+            <textarea  ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="isStatic || description.effectiveTime"
                       maxlength="255"
                       ng-model="description.term"
-                      class="color_{{relationship.groupId}} msd-elastic" 
+                      class="color_{{relationship.groupId}} form-control msd-elastic: \n;" 
                       type="text"
                       placeholder="Description" >
             </textarea>
 
-            <textarea ng-if="description.type === 'SYNONYM'" ng-change="updateDescription(description)"
+            <textarea autofocus ng-if="description.type === 'SYNONYM'" ng-change="updateDescription(description)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-disabled="isStatic || description.effectiveTime"
                       maxlength="255"
                       ng-model="description.term"
-                      class="color_{{relationship.groupId}} msd-elastic" type="text"
-                      placeholder="Description">
+                      class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
+                      placeholder="Description" >
             </textarea>
             <textarea ng-if="description.type === 'TEXT_DEFINITION'" 
                       
@@ -231,7 +231,7 @@ drag-image="getDragImageForDescription(description)"></button>
                       ng-model="description.term" 
                       type="text"
                       placeholder="Description"
-                      class="color_{{relationship.groupId}} msd-elastic">
+                      class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus="focus">
             </textarea>
           </div>
 
@@ -291,7 +291,7 @@ drag-image="getDragImageForDescription(description)"></button>
 
           <div ng-if="description.additionalFields" ng-repeat="field in description.additionalFields">
                 <textarea 
-               class="msd-elastic resizable-text "
+               class="resizable-text msd-elastic: \n;"
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">
@@ -359,7 +359,7 @@ drag-image="getDragImageForDescription(description)"></button>
               ng-model="relationship.groupId"
               ng-model-options="{updateOn: 'blur'}"
               ng-change="updateRelationship(relationship)"
-              class=" msd-elastic form-control rg" type="text" placeholder="#"
+              class="form-control rg msd-elastic: \n;" type="text" placeholder="#"
               ui-on-drop="dropNullOp()">
             </textarea>
                 </div>
@@ -376,7 +376,7 @@ drag-image="getDragImageForDescription(description)"></button>
                       ng-model="relationship.type.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
 
-                      class="msd-elastic resizable-text "
+                      class="resizable-text form-control msd-elastic: \n;"
                       typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                       typeahead-focus-first="false"
                       typeahead-loading="typeTypeaheadLoading"
@@ -405,7 +405,7 @@ drag-image="getDragImageForDescription(description)"></button>
             <textarea type="text"
                       ng-model="relationship.target.fsn"
                       ng-disabled="relationship.effectiveTime || isStatic"
-                      class="msd-elastic resizable-text relationship"
+                      class="resizable-text relationship msd-elastic: \n;"
                       typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                       typeahead-loading="targetTypeaheadLoading"
                       typeahead-focus-first="false"
@@ -444,7 +444,7 @@ drag-image="getDragImageForDescription(description)"></button>
 
               </div>
               <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
-                <textarea class="msd-elastic resizable-text"
+                <textarea class="resizable-text msd-elastic: \n;"
                           ng-model-options="{updateOn: 'blur'}"
                           ng-model="field.value" type="text"
                           placeholder="{{field}}">
@@ -463,7 +463,7 @@ drag-image="getDragImageForDescription(description)"></button>
                       drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
                 <span>Drag Relationship Group</span></button>
 
-              <button ng-if="$index === 0 && !isStatic"
+              <button 
                       ng-if="!isStatic"
                       class="btn-default md-exposure-plus-1 role-group-buttons tooltips-left tooltips-light normal-case "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span></button>
