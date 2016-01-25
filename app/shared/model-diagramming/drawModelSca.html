@@ -25,7 +25,7 @@
                 ng-class="[{'grey darken-2' : view !== 'stated'}, {'blue' : view === 'stated'}]"
                 ng-click="view = 'stated'">Stated
         </button>
-        <button ng-if="getSNF" class="btn btn-default pull-right model-buttons-toggle m-r-5"
+        <button ng-if="displaySnf" class="btn btn-default pull-right model-buttons-toggle m-r-5"
                 ng-class="[{'grey darken-2' : view !== 'snf'}, {'blue' : view === 'snf'}]"
                 ng-click="getSNF(concept.conceptId);">Short Normal
         </button>
