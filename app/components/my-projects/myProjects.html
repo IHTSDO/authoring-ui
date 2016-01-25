@@ -67,7 +67,7 @@
                           ng-class="[{gray : project.validationStatus === 'SCHEDULED'},
                           {red : project.validationStatus === 'FAILED'},
                           {gray : project.validationStatus === 'BUILDING'},
-                          {green : project.validationStatus === 'COMPLETED'}]"
+                          {purple : project.validationStatus === 'COMPLETED'}]"
                               class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase">
                       <div class="md md-school "></div>
                     <span clas="normalcase"> Validation is {{project.validationStatus}}</span>
