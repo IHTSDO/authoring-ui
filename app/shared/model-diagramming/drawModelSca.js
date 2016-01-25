@@ -46,12 +46,18 @@ angular.module('singleConceptAuthoringApp')
         };
         scope.getSNF = function(){
             scope.loading = true;
-            scope.snfFunction({conceptId : scope.concept.conceptId}).then(function(response) {
-                scope.conceptSNF = response;
-                console.log(response);
+            if(scope.conceptSNF === null || scope.conceptSNF === undefined)
+            {
+                scope.snfFunction({conceptId : scope.concept.conceptId}).then(function(response) {
+                    scope.conceptSNF = response;
+                    scope.view = 'snf';
+                    scope.loading = false;
+                });
+            }
+            else{
                 scope.view = 'snf';
                 scope.loading = false;
-            });
+            }
         }
 
         // on open image requests, broadcast concept id to drawModel.js

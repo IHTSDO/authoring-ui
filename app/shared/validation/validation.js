@@ -39,7 +39,7 @@ angular.module('singleConceptAuthoringApp')
             
           scope.getSNF = function(id){
               var deferred = $q.defer();
-              snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
+              snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
                 deferred.resolve(response);
               });
               return deferred.promise; 
