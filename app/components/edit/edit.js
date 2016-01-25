@@ -944,8 +944,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
       });
-      return deferred.promise;
-        
+      return deferred.promise; 
     };
 
     //////////////////////////////////////////

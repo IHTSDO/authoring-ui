@@ -16,7 +16,8 @@ angular.module('singleConceptAuthoringApp')
         concept: '=',
         conceptAfter : '=?',
         classificationSaved: '@?',
-        snfFunction : '&?'
+        snfFunction : '&?',
+        displaySnf : '=?'
       },
       templateUrl: 'shared/model-diagramming/drawModelSca.html',
 

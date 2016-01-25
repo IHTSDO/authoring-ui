@@ -36,6 +36,14 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
           scope.setViewTop();
+            
+          scope.getSNF = function(id){
+              var deferred = $q.defer();
+              snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
+                deferred.resolve(response);
+              });
+              return deferred.promise; 
+            };
 
           scope.conceptUpdateFunction = function (project, task, concept) {
               var deferred = $q.defer();
