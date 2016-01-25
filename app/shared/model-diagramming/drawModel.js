@@ -20,32 +20,40 @@ angular.module('singleConceptAuthoringApp')
       link: function (scope, element, attrs, linkCtrl, snowowlService) {
         //scope.view = true;
         var idSequence = 0;
-        setTimeout(function () {
-                element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-            }, 100);
-        scope.$watch('concept', function (newVal, oldVal) {
+        if(scope.view !== 'snf')
+        {
             setTimeout(function () {
-                element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
-            }, 100);
-            
+                    element.append($("<div></div>").addClass('modelContainer'));
+                    drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+                }, 100);
+        }
+        scope.$watch('concept', function (newVal, oldVal) {
+            if(scope.view !== 'snf')
+            {
+                setTimeout(function () {
+                    element.append($("<div></div>").addClass('modelContainer'));
+                    drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+                }, 100);
+            }
         }, true);
         scope.$watch('view', function(newVal, oldVal){
-          console.debug('drawModel view changed');
-            element.append($("<div></div>").addClass('modelContainer'));
-            if(scope.view == 'snf')
+            if(scope.view !== 'snf')
             {
-                drawConceptDiagram(scope.conceptSnf, element.find('.modelContainer'), {});
-            }
-            else{
+                element.append($("<div></div>").addClass('modelContainer'));
                 drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
             }
         }, true);
-
+        scope.$watch('conceptSnf', function(newVal, oldVal){
+            if(scope.conceptSnf && scope.conceptSnf.relationships)
+            {
+                element.append($("<div></div>").addClass('modelContainer'));
+                drawConceptDiagram(scope.conceptSnf, element.find('.modelContainer'), {});
+            }
+        }, true);
 
 
         function drawConceptDiagram(concept, div, options) {
+          console.log('drawing');
           var svgIsaModel = [];
           var svgAttrModel = [];
           if (scope.view == 'stated') {
@@ -73,13 +81,14 @@ angular.module('singleConceptAuthoringApp')
           }
           else if (scope.view == 'snf') {
             $.each(concept.relationships, function (i, field) {
-              if (field.active == true && field.formRepresentation == "SHORT_NORMAL") {
+              if (field.active == true && field.formRepresentation === "SHORT_NORMAL") {
                 if (field.type.conceptId == 116680003) {
                   svgIsaModel.push(field);
                 } else {
                   svgAttrModel.push(field);
                 }
               }
+              
             });
           }
         
