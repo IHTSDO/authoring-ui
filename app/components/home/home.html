@@ -13,7 +13,7 @@
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
-  <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right">
+  <div class="sca-content dash-tables col-lg-9 col-md-9 col-sm-9 pull-right">
 
     <!-- Author Tasks -->
     <section class="tables-data row no-gutter">
@@ -72,7 +72,7 @@
               <td data-title="'Task Id'" sortable="'taskKey'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
-              <td data-title="'Last Modified'" sortable="'updated'">
+              <td data-title="'Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
 
@@ -156,7 +156,11 @@
                 </div>
                 <div ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
+<td data-title="'Review Status'" sortable="'reviewer'">
+                <div ng-if="task.reviewer" class="badge {{task.status}}">{{task.status}}</div>
+                <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
+              </td>
             </tr>
           </table>
 
@@ -213,17 +217,14 @@
    <td data-title="'Task Id'" sortable="'taskKey'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
+                <td data-title="'Modified'" sortable="'updated'">
+                {{task.updated | date: "yyyy-MM-dd"}}
+              </td>
               <td data-title="'Author'" sortable="'assignee.displayName'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
               </td>
-              <td data-title="'Review Status'" sortable="'reviewer'">
-                <div ng-if="task.reviewer" class="badge {{task.status}}">{{task.status}}</div>
-                <div ng-if="!task.reviewer" class="badge Available">Available</div>
-
-              </td>
-              <td data-title="'Last Modified'" sortable="'updated'">
-                {{task.updated | date: "yyyy-MM-dd"}}
-              </td>
+            
+            
               <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                   <button ng-show="task.latestClassificationJson != null"
@@ -282,7 +283,11 @@
                   </button>
                 </a>
               </td>
+  <td data-title="'Review Status'" sortable="'reviewer'">
+                <div ng-if="task.reviewer" class="badge {{task.status}}">{{task.status}}</div>
+                <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
+              </td>
             </tr>
           </table>
 
