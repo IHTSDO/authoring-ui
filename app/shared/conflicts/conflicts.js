@@ -540,6 +540,11 @@ angular.module('singleConceptAuthoringApp')
                     // new branch state
                     $rootScope.$broadcast('reloadTask');
                 }
+                  else if(response === 1){
+                      scope.rebaseRunning = false;
+                      scope.rebaseComplete = false;
+                      scope.warning = false;
+                  }
                   else{
                       scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
@@ -564,6 +569,11 @@ angular.module('singleConceptAuthoringApp')
                     // new branch state
                     $rootScope.$broadcast('reloadTask');
                 }
+                  else if(response === 1){
+                      scope.rebaseRunning = false;
+                      scope.rebaseComplete = false;
+                      scope.warning = false;
+                  }
                   else{
                       scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
