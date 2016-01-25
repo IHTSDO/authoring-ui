@@ -124,13 +124,12 @@ angular.module('singleConceptAuthoringApp')
       // limit the number of descendants retrieved to prevent overload
       snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response) {
         console.debug('descendants', response);
-
         $scope.descendants = response;
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
 
         // convert the term into a top-level attribute for ng-table sorting
-        angular.forEach($scope.descendants.items, function (descendant) {
+        angular.forEach($scope.descendants.descendants.items, function (descendant) {
           descendant.sortableName = descendant.fsn.term;
         });
       });
@@ -224,7 +223,7 @@ angular.module('singleConceptAuthoringApp')
     // get the limited number of inbound relationships for display
     if($scope.componentType === 'Concept')
     {
-        getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren, $scope) {
+        getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren) {
 
           checkStatedChildren();
 
@@ -277,17 +276,17 @@ angular.module('singleConceptAuthoringApp')
         orderBy: 'sortableName'
       },
       {
-        total: $scope.descendants ? $scope.descendants.items.length : 0, // length
+        total: $scope.descendants ? $scope.descendants.descendants.items.length : 0, // length
                                                                          // of
         // data
         getData: function ($defer, params) {
 
-          if (!$scope.descendants || $scope.descendants.length === 0) {
+          if (!$scope.descendants || $scope.descendants.descendants.length === 0) {
             $defer.resolve([]);
           } else {
 
-            params.total($scope.descendants.items.length);
-            var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
+            params.total($scope.descendants.descendants.items.length);
+            var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.descendants.items, params.orderBy()) : $scope.descendants.descendants.items;
 
             console.debug(descendantsDisplayed);
 
