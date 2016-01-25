@@ -60,9 +60,9 @@
                   <button ng-show="project.validationStatus != null"
                           title="{{project.validationStatus}}" type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
-                          {gray : project.validationStatus === 'SCHEDULED'},
+                          {blue : project.validationStatus === 'SCHEDULED'},
                           {red : project.validationStatus === 'FAILED'},
-                          {gray : project.validationStatus === 'BUILDING'},
+                          {blue : project.validationStatus === 'BUILDING'},
                           {green : project.validationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase">
                       <div class="md md-school "></div>
