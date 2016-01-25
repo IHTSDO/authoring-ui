@@ -174,7 +174,10 @@
                   popover-placement="{{popoverDirection}}"
                   popover-append-to-body="true">
             <span>More details</span></button>
-
+<button
+class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
+ui-draggable="true" drag="description" drag-channel="descriptionObj"
+drag-image="getDragImageForDescription(description)"></button>
       
 
           <!-- Active/Inactive -->
