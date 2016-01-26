@@ -28,7 +28,31 @@
             <span>Promote this project</span>
           </button>
         </div>
-        <div class="p-10 pull-right">
+       
+       
+        <div class="p-10 pull-right ">
+          <button class="btn btn-border tooltips-left normal-case" ng-click="validate()"
+            ng-disabled="validationRunning">
+            <div
+              class="project-icon deep-purple lighten-1 pull-left">
+              <div class="md md-school"></div>
+            </div>
+            Validate
+            <span>Run validation against this project</span>
+          </button>
+        </div>
+         <div class="p-10 pull-right ">
+          <button class="btn btn-border tooltips-left normal-case" ng-click="classify()"
+            ng-disabled="project.latestClassificationJson.status && (project.latestClassificationJson.status === 'RUNNING' && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
+            <div
+              class="project-icon green pull-left">
+              <div class="md md-notifications"></div>
+            </div>
+            Classify
+            <span>Run classification against this project</span>
+          </button>
+        </div>
+         <div class="p-10 pull-right">
           <button class="btn btn-border tooltips-left normal-case"
                   ng-click="mergeAndRebase()"
                   ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'">
@@ -41,61 +65,36 @@
           </button>
         </div>
       
-        <div class="p-10 pull-right ">
-          <button class="btn btn-border tooltips-left normal-case" ng-click="classify()"
-            ng-disabled="project.latestClassificationJson.status && (project.latestClassificationJson.status === 'RUNNING' && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
-            <div
-              class="project-icon green pull-left">
-              <div class="md md-notifications"></div>
-            </div>
-            Classify
-            <span>Run classification against this project</span>
-          </button>
-        </div>
-        <div class="p-10 pull-right ">
-          <button class="btn btn-border tooltips-left normal-case" ng-click="validate()"
-            ng-disabled="validationRunning">
-            <div
-              class="project-icon deep-purple lighten-1 pull-left">
-              <div class="md md-school"></div>
-            </div>
-            Validate
-            <span>Run validation against this project</span>
-          </button>
-        </div>
       </div>
 </div>
     
     
     <div class="row project-page">
-
-      <!--- Validation Results -->
-      <div class="card">
-
+      <!-- Conflict Report Results -->
+      <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'  || !project.validationStatus"
-                    ng-init="validationCollapsed = false"
-                    ng-click="validationCollapsed = !validationCollapsed"
-                    type="button"
-                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : validationCollapsed, 'md-keyboard-arrow-right' : !validationCollapsed}]">
-              <span class="project-subtitle" ng-class="{'report-text' : project.validationStatus && project.validationStatus === 'COMPLETED'}">Validation Results</span>
+            <a ng-href="#/projects/project/{{project.key}}/conflicts">
+            <button
+              ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'"
+              ng-init="conflictsCollapsed = true"
+              type="button"
+              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
+              <span class="project-subtitle"
+                ng-class="{'report-text' : project.branchState === 'DIVERGED' || project.branchState === 'BEHIND' || project.branchState === 'STALE'}">Pull changes from Mainline Content</span>
             </button>
+            </a>
 
-            <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-school"></span></span>
-            <span class="arrow-purple pull-right"></span>
+            <span class="project-icon amber pull-right"><span class="md md-sync"></span></span>
+            <span class="arrow-amber pull-right"></span>
 
             <div class="clearfix"></div>
+
           </div>
         </div>
-        <div ng-show="validationCollapsed === true">
-          <!-- TODO ng-if here because the damn two-way binding IS NOT WORKING -->
-          <div class="card-content clearfix">
-            <div validation validation-container="validationContainer" branch="branch"
-                 editable="false" show-title="false"></div>
-          </div>
-        </div>
+
       </div>
+
 
 
       <!-- Classification Results -->
@@ -128,31 +127,34 @@
         </div>
 
       </div>
+      <!--- Validation Results -->
+      <div class="card">
 
-      <!-- Conflict Report Results -->
-      <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <a ng-href="#/projects/project/{{project.key}}/conflicts">
-            <button
-              ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'"
-              ng-init="conflictsCollapsed = true"
-              type="button"
-              ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-right' : conflictsCollapsed, 'md-keyboard-arrow-down' : !conflictsCollapsed}]">
-              <span class="project-subtitle"
-                ng-class="{'report-text' : project.branchState === 'DIVERGED' || project.branchState === 'BEHIND' || project.branchState === 'STALE'}">Pull changes from Mainline Content</span>
+            <button ng-disabled="project.validationStatus && project.validationStatus !== 'COMPLETED'  || !project.validationStatus"
+                    ng-init="validationCollapsed = false"
+                    ng-click="validationCollapsed = !validationCollapsed"
+                    type="button"
+                    ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'project-buttons', md, {'md-keyboard-arrow-down' : validationCollapsed, 'md-keyboard-arrow-right' : !validationCollapsed}]">
+              <span class="project-subtitle" ng-class="{'report-text' : project.validationStatus && project.validationStatus === 'COMPLETED'}">Validation Results</span>
             </button>
-            </a>
 
-            <span class="project-icon amber pull-right"><span class="md md-sync"></span></span>
-            <span class="arrow-amber pull-right"></span>
+            <span class="project-icon deep-purple lighten-1 pull-right"><span class="md md-school"></span></span>
+            <span class="arrow-purple pull-right"></span>
 
             <div class="clearfix"></div>
-
           </div>
         </div>
-
+        <div ng-show="validationCollapsed === true">
+          <!-- TODO ng-if here because the damn two-way binding IS NOT WORKING -->
+          <div class="card-content clearfix">
+            <div validation validation-container="validationContainer" branch="branch"
+                 editable="false" show-title="false"></div>
+          </div>
+        </div>
       </div>
+
 
       <div class="card">
         <!-- Tasks in project -->
@@ -225,12 +227,12 @@
                           ng-class="[{blue : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {blue : task.latestValidationStatus === 'BUILDING'},
-                          {purple : task.latestValidationStatus === 'COMPLETED'}]"
+                          {green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2 pull-left " >
                     <div class="md md-school "></div>  <span ng-class="[{blue : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {blue : task.latestValidationStatus === 'BUILDING'},
-                          {purple : task.latestValidationStatus === 'COMPLETED'}]">Validation {{task.latestValidationStatus}}</span>
+                          {green : task.latestValidationStatus === 'COMPLETED'}]">Validation {{task.latestValidationStatus}}</span>
                   </button>
                    <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'" class="side-text pull-left">{{task.latestValidationStatus}}</div>
                 </a>
