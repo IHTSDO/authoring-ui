@@ -170,7 +170,7 @@ angular.module('singleConceptAuthoringApp')
       // console.debug('downloadClassification', classifierId, branch);
       return $http({
         'method': 'GET',
-        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes',
+        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn',
         'headers': {
           'Accept': 'text/csv'
         }
@@ -271,7 +271,7 @@ angular.module('singleConceptAuthoringApp')
      */
     function inactivateConcept(branch, conceptId, inactivationIndicator, associationTargets) {
 
-      console.debug('deactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
+      console.debug('inactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
 
       var deferred = $q.defer();
 
