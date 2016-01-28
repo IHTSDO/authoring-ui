@@ -541,7 +541,7 @@ angular.module('singleConceptAuthoringApp')
                     $rootScope.$broadcast('reloadTask');
                 }
                   else if(response === 1){
-                      scope.rebaseRunning = false;
+                      scope.rebaseRunning = true;
                       scope.rebaseComplete = false;
                       scope.warning = false;
                   }
