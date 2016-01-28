@@ -121,7 +121,13 @@
       <div class="all-done">
         <div class="md md-sync"></div>
       </div>
-      <h3>Your merge is not yet complete or cannot be completed at this time.</h3>
+      <h3>Your merge cannot be completed at this time as there is another opration in progress.</h3>
+      <div style="width: 100%; text-align: center">
+      <button ng-click="reinitialize()"
+              class="btn btn-default blue lighten-2 "><span
+        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Try Again</span>
+      </button>
+      </div>
 
     </div>
     <div class="loading-merges green" ng-if="!badStateDetected && rebaseComplete && !warning">
