@@ -541,7 +541,7 @@ angular.module('singleConceptAuthoringApp')
                     $rootScope.$broadcast('reloadTask');
                 }
                   else if(response === 1){
-                      scope.rebaseRunning = false;
+                      scope.rebaseRunning = true;
                       scope.rebaseComplete = false;
                       scope.warning = false;
                   }
@@ -549,6 +549,7 @@ angular.module('singleConceptAuthoringApp')
                       scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
                       scope.warning = true;
+                      $rootScope.canConflict = true;
                   }
 
               }, function (error) {
@@ -570,7 +571,7 @@ angular.module('singleConceptAuthoringApp')
                     $rootScope.$broadcast('reloadTask');
                 }
                   else if(response === 1){
-                      scope.rebaseRunning = false;
+                      scope.rebaseRunning = true;
                       scope.rebaseComplete = false;
                       scope.warning = false;
                   }
