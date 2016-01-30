@@ -57,7 +57,6 @@ angular.module('singleConceptAuthoringApp')
 
 
         function drawConceptDiagram(concept, div, options) {
-          console.log('drawing');
           var svgIsaModel = [];
           var svgAttrModel = [];
           if (scope.view == 'stated') {
@@ -309,7 +308,6 @@ angular.module('singleConceptAuthoringApp')
 
           idSequence++;
           $('rect').click(function (evt) {
-            console.log(evt.target);
           });
 
           return rect;
@@ -561,7 +559,6 @@ angular.module('singleConceptAuthoringApp')
         }
 
         scope.$on('openDrawModelConceptImage', function(event, data) {
-          console.debug('openImage request', data.conceptId, data.pageTitle);
           if (scope.concept.conceptId === data.conceptId || (!scope.concept.conceptId && !data.conceptId)) {
             scope.openImage(data.conceptId);
           }
