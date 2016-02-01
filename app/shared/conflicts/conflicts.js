@@ -535,6 +535,7 @@ angular.module('singleConceptAuthoringApp')
                     scope.rebaseRunning = false;
                     scope.rebaseComplete = true;
                     scope.warning = false;
+                    scope.fiveOFour = false;
 
                     // broadcast reload task to any current listeners, to pull in
                     // new branch state
@@ -544,18 +545,21 @@ angular.module('singleConceptAuthoringApp')
                       scope.rebaseRunning = true;
                       scope.rebaseComplete = false;
                       scope.warning = false;
+                      scope.fiveOFour = true;
                   }
                   else{
                       scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
                       scope.warning = true;
                       $rootScope.canConflict = true;
+                      scope.fiveOFour = false;
                   }
 
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
                 scope.warning = true;
+                scope.fiveOFour = false;
                 notificationService.sendError('Error pulling changes from project: ' + error);
               });
             } else {
