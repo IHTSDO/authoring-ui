@@ -117,6 +117,13 @@
       </div>
 
     <!-- Displayed after merges complete -->
+    <div ng-if="fiveOFour" class="loading-merges amber">
+      <div class="all-done">
+        <div class="md md-sync"></div>
+      </div>
+      <h3>Your merge will complete successfully but is taking longer than usual. Please navigate away and continue working on other tasks. The dashboard will update when your merge completes.</h3>
+    </div>
+      
     <div ng-if="warning" class="loading-merges amber">
       <div class="all-done">
         <div class="md md-sync"></div>
