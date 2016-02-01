@@ -370,12 +370,12 @@ angular.module('singleConceptAuthoringApp')
                 if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
                   if(d.effectiveTime && d.effectiveTime !== '' &&  d.effectiveTime !== null)
                   {
-                      console.log('creating new pt');
-                          d.active = false;
-                          pt = getNewPt();
-                          pt.term = ptText;
-                          concept.descriptions.push(pt);
-                          return concept;
+//                      console.log('creating new pt');
+//                          d.active = false;
+//                          pt = getNewPt();
+//                          pt.term = ptText;
+//                          concept.descriptions.push(pt);
+//                          return concept;
                   }
                   else{
                       d.term = ptText;
