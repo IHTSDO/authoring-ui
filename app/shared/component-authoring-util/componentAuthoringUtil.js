@@ -368,7 +368,7 @@ angular.module('singleConceptAuthoringApp')
               var pt = null;
               angular.forEach(concept.descriptions, function (d) {
                 if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
-                  if(d.effectiveTime && d.effectiveTime !== '' &&  d.effectiveTime !== null)
+                  if(d.term && d.term !== '' &&  d.term !== null)
                   {
 //                      console.log('creating new pt');
 //                          d.active = false;
@@ -376,6 +376,7 @@ angular.module('singleConceptAuthoringApp')
 //                          pt.term = ptText;
 //                          concept.descriptions.push(pt);
 //                          return concept;
+                      pt = d;
                   }
                   else{
                       d.term = ptText;
