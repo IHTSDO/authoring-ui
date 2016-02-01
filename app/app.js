@@ -124,6 +124,7 @@ angular
                 $rootScope.uat = true;   
             }
             else{
+                $rootscope.notProd = false;
                 $rootScope.uat = false;
                 $rootScope.development = false;
             }

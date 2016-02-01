@@ -44,10 +44,10 @@
                        to improve your experience.</p>
 <![endif]-->
 
-
+<div ng-if="notProd">
   <div ng-if="development" class="development" ng-cloak=""></div>
   <div ng-if="uat" class="uat" ng-cloak=""></div>
-
+</div>
 
 <style>
   .ng-table-no-results {
