@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q, $window) {
       return {
         restrict: 'A',
         transclude: false,
@@ -702,7 +702,10 @@ angular.module('singleConceptAuthoringApp')
               scope.badStateDetected = true;
             });
           };
-
+            
+          scope.reloadRoute = function() {
+           window.location.reload();
+        };
           // Clears the current review state and
           scope.reinitialize = function () {
 
