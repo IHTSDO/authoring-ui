@@ -531,7 +531,7 @@ angular.module('singleConceptAuthoringApp')
 
             if ($routeParams.taskKey) {
               scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                if(response !== null){  
+                if(response !== null && response !== 1){  
                     scope.rebaseRunning = false;
                     scope.rebaseComplete = true;
                     scope.warning = false;
@@ -542,7 +542,8 @@ angular.module('singleConceptAuthoringApp')
                     $rootScope.$broadcast('reloadTask');
                 }
                   else if(response === 1){
-                      scope.rebaseRunning = true;
+                      console.log('1');
+                      scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
                       scope.warning = false;
                       scope.fiveOFour = true;
@@ -565,29 +566,33 @@ angular.module('singleConceptAuthoringApp')
             } else {
 
               scaService.rebaseProject($routeParams.projectKey).then(function (response) {
-                if(response !== null){  
+                if(response !== null && response !== 1){  
                     scope.rebaseRunning = false;
                     scope.rebaseComplete = true;
                     scope.warning = false;
+                    scope.fiveOFour = false;
 
                     // broadcast reload task to any current listeners, to pull in
                     // new branch state
                     $rootScope.$broadcast('reloadTask');
                 }
                   else if(response === 1){
-                      scope.rebaseRunning = true;
+                      scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
                       scope.warning = false;
+                      scope.fiveOFour = true;
                   }
                   else{
                       scope.rebaseRunning = false;
                       scope.rebaseComplete = false;
                       scope.warning = true;
+                      scope.fiveOFour = false;
                   }
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
                 scope.warning = true;
+                  scope.fiveOFour = false;
                 notificationService.sendError('Error pulling changes from mainline content: ' + error);
               });
             }
