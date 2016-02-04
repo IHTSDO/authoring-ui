@@ -170,7 +170,7 @@ angular.module('singleConceptAuthoringApp')
       // console.debug('downloadClassification', classifierId, branch);
       return $http({
         'method': 'GET',
-        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn',
+        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes',
         'headers': {
           'Accept': 'text/csv'
         }
