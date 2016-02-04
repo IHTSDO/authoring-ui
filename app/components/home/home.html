@@ -157,8 +157,8 @@
                 <div ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
 <td data-title="'Review Status'" sortable="'reviewer'">
-                <div ng-if="task.reviewer" class="badge {{task.status}}">{{task.status}}</div>
-                <div ng-if="!task.reviewer" class="badge Available">Available</div>
+                <div ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}">{{task.status}}</div>
+                <div ng-if="task.status === 'In Review' && !task.reviewer" class="badge Available">Available</div>
 
               </td>
             </tr>
