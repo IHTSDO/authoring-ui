@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.home', [
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService) {
+  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -242,14 +242,15 @@ angular.module('singleConceptAuthoringApp.home', [
       $scope.reviewTasks = [];
 
       // get all projects for task creation
-      scaService.getProjects().then(function (response) {
-        if (!response || response.length == 0) {
-          $scope.projects = [];
-          return;
-        } else {
-          $scope.projects = response;
-        }
-      });
+//      scaService.getProjects().then(function (response) {
+//        if (!response || response.length == 0) {
+//          $scope.projects = [];
+//          return;
+//        } else {
+//          $scope.projects = response;
+//        }
+//      });
+      $scope.projects = metadataService.getProjects();
 
       // temporary workaround, restricting to WRPAS tasks
       // and getting
