@@ -113,15 +113,18 @@ angular
     $routeProvider.otherwise({
       redirectTo: '/home'
     });
+    $rootScope.notProd = false;
     $timeout(function () {
             var env = $location.host().split(/[.]/)[0];
             if(env === 'local' || env === 'dev-term')
             {
-                $rootScope.development = true;   
+                $rootScope.development = true;  
+                $rootScope.notProd = true;
             }
             else if(env === 'uat-term')
             {
-                $rootScope.uat = true;   
+                $rootScope.uat = true; 
+                $rootScope.notProd = true;
             }
             else{
                 $rootScope.notProd = false;
