@@ -24,7 +24,7 @@ angular.module('singleConceptAuthoringApp')
         {
             setTimeout(function () {
                     element.append($("<div></div>").addClass('modelContainer'));
-                    drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+                    drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
                 }, 100);
         }
         scope.$watch('concept', function (newVal, oldVal) {
@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp')
             {
                 setTimeout(function () {
                     element.append($("<div></div>").addClass('modelContainer'));
-                    drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+                    drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
                 }, 100);
             }
         }, true);
@@ -40,23 +40,23 @@ angular.module('singleConceptAuthoringApp')
             if(scope.view !== 'snf')
             {
                 element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {});
+                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
             }
             else if(scope.conceptSnf && scope.conceptSnf.relationships){
                 element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.conceptSnf, element.find('.modelContainer'), {});
+                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, scope.conceptSnf);
             }
         }, true);
         scope.$watch('conceptSnf', function(newVal, oldVal){
-            if(scope.conceptSnf && scope.conceptSnf.relationships)
+            if(scope.conceptSnf && scope.conceptSnf.concepts)
             {
                 element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.conceptSnf, element.find('.modelContainer'), {});
+                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, scope.conceptSnf);
             }
         }, true);
 
 
-        function drawConceptDiagram(concept, div, options) {
+        function drawConceptDiagram(concept, div, options, snfConcept) {
           var svgIsaModel = [];
           var svgAttrModel = [];
           if (scope.view == 'stated') {
@@ -83,16 +83,74 @@ angular.module('singleConceptAuthoringApp')
             }
           }
           else if (scope.view == 'snf') {
-            $.each(concept.relationships, function (i, field) {
-              if (field.active == true && field.formRepresentation === "SHORT_NORMAL") {
+             concept.relationships = [];
+             $.each(snfConcept.concepts, function (i, field) {
+                 field.target = {};
+                 if(field.primative === true)
+                 {
+                     field.target.definitionStatus = 'PRIMITIVE';
+                 }
+                 else{
+                     field.target.definitionStatus = 'FULLY_DEFINED';
+                 }
+                 field.type = {};
+                 field.type.conceptId = 116680003;
+                 field.target.fsn = field.term;
+                 field.target.conceptId = field.id;
+                 concept.relationships.push(field);
+              });
+              if(snfConcept.attributes){
+                  $.each(snfConcept.attributes, function (i, field) {
+                     field.type.conceptId = field.type.id;
+                     field.type.fsn = field.type.term;
+                     field.target = {};
+                     field.groupId = 0;
+                     if(field.value.id)
+                     {
+                        field.target.conceptId = field.value.id;
+                        field.target.fsn = field.value.term;
+                        if(field.value.primative)
+                        {
+                            field.target.definitionStatus = 'PRIMITIVE';   
+                        }
+                        else{
+                            field.target.definitionStatus = 'FULLY_DEFINED';
+                        }
+                     }
+                     concept.relationships.push(field);
+                  });
+              }
+              if(snfConcept.groups){
+                  $.each(snfConcept.groups, function (i, group) {
+                     $.each(group.attributes, function (j, field) {
+                         field.type.conceptId = field.type.id;
+                         field.type.fsn = field.type.term;
+                         field.target = {};
+                         field.groupId = i + 1;
+                         if(field.value.id)
+                         {
+                            field.target.conceptId = field.value.id;
+                            field.target.fsn = field.value.term;
+                            if(field.value.primative)
+                            {
+                                field.target.definitionStatus = 'PRIMITIVE';   
+                            }
+                            else{
+                                field.target.definitionStatus = 'FULLY_DEFINED';
+                            }
+                         }
+                         concept.relationships.push(field);
+                     });
+                  });
+              }
+              $.each(concept.relationships, function (i, field) {
                 if (field.type.conceptId == 116680003) {
                   svgIsaModel.push(field);
                 } else {
                   svgAttrModel.push(field);
                 }
-              }
-              
-            });
+              });
+              console.log(concept);
           }
         
           var parentDiv = div;
