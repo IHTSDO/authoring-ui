@@ -99,7 +99,8 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             if (node.conceptId === scope.concept.conceptId) {
-              node.isCollapsed = true;
+              node.isCollapsed = false;
+              scope.getAndSetChildren(node);
             }
         });
 
@@ -289,6 +290,10 @@ angular.module('singleConceptAuthoringApp')
           }
 
         }, true);
+          
+        scope.setRootConcept = function(node){
+            scope.concept = node;
+        }
 
         scope.openConceptInformationModal = function (node) {
           var modalInstance = $modal.open({
