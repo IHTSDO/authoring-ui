@@ -57,6 +57,10 @@ angular.module('singleConceptAuthoringApp')
                 drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
             }
         }, true);
+          
+        function computeNesting(concept, snfConcept, x, y, parentNode){
+            
+        };
 
 
         function drawConceptDiagram(concept, div, options, snfConcept) {
@@ -248,49 +252,49 @@ angular.module('singleConceptAuthoringApp')
             sctClass = "sct-defined-concept";
                 }
             if (relationship.groupId == 0) {
-              if(relationship.nest){
-                  var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
-                  connectElements(svg, circle2, rectAttr, 'center', 'left');
-                  x = x + rectAttr.getBBox().width + 25;
-                  y = y + rectAttr.getBBox().height/2;
-                  var circle3 = drawConjunctionNode(svg, x, y);
-                  connectElements(svg, rectAttr, circle3, 'right', 'left', 'LineMarker');
-                  y = y - rectAttr.getBBox().height/2;
-                  x = x - 100;
-                  var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
-                  x = x + 100;
-                  connectElements(svg, circle3, rectTarget, 'right', 'left');
-                  y = y + rectTarget.getBBox().height + 25;
-                  maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
-              }
-              else{
+//              if(relationship.nest){
+//                  var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+//                  connectElements(svg, circle2, rectAttr, 'center', 'left');
+//                  x = x + rectAttr.getBBox().width + 25;
+//                  y = y + rectAttr.getBBox().height/2;
+//                  var circle3 = drawConjunctionNode(svg, x, y);
+//                  connectElements(svg, rectAttr, circle3, 'right', 'left', 'LineMarker');
+//                  y = y - rectAttr.getBBox().height/2;
+//                  x = x - 100;
+//                  var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+//                  x = x + 100;
+//                  connectElements(svg, circle3, rectTarget, 'right', 'left');
+//                  y = y + rectTarget.getBBox().height + 25;
+//                  maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+//              }
+//              else{
                   var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
                   connectElements(svg, circle2, rectAttr, 'center', 'left');
                   var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
                   connectElements(svg, rectAttr, rectTarget, 'right', 'left');
                   y = y + rectTarget.getBBox().height + 25;
                   maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
-                }
+//                }
             } else {
               if (relationship.groupId > maxRoleNumber) {
                 maxRoleNumber = relationship.groupId;
               }
             }
-            if(relationship.nest){
-                  if (relationship.nest[0].target.definitionStatus == "PRIMITIVE") {
-                        sctClass = "sct-primitive-concept";
-                    } else {
-                sctClass = "sct-defined-concept";
-                    }
-                  y = y + 25;
-                  x = x + 50;
-                  var rectAttrNest = drawSctBox(svg, x, y, relationship.nest[0].type.fsn, relationship.nest[0].type.conceptId, "sct-attribute");
-                  connectElements(svg, circle3, rectAttrNest, 'center', 'left');
-                  var rectTargetNest = drawSctBox(svg, x + rectAttrNest.getBBox().width + 50, y, relationship.nest[0].target.fsn, relationship.nest[0].target.conceptId, sctClass);
-                  connectElements(svg, rectAttrNest, rectTargetNest, 'right', 'left');
-                  y = y + rectTarget.getBBox().height + 25;
-                  maxX = ((maxX < x + rectAttrNest.getBBox().width + 50 + rectTargetNest.getBBox().width + 50) ? x + rectAttrNest.getBBox().width + 50 + rectTargetNest.getBBox().width + 50 : maxX);
-            }
+//            if(relationship.nest){
+//                  if (relationship.nest[0].target.definitionStatus == "PRIMITIVE") {
+//                        sctClass = "sct-primitive-concept";
+//                    } else {
+//                sctClass = "sct-defined-concept";
+//                    }
+//                  y = y + 25;
+//                  x = x + 50;
+//                  var rectAttrNest = drawSctBox(svg, x, y, relationship.nest[0].type.fsn, relationship.nest[0].type.conceptId, "sct-attribute");
+//                  connectElements(svg, circle3, rectAttrNest, 'center', 'left');
+//                  var rectTargetNest = drawSctBox(svg, x + rectAttrNest.getBBox().width + 50, y, relationship.nest[0].target.fsn, relationship.nest[0].target.conceptId, sctClass);
+//                  connectElements(svg, rectAttrNest, rectTargetNest, 'right', 'left');
+//                  y = y + rectTarget.getBBox().height + 25;
+//                  maxX = ((maxX < x + rectAttrNest.getBBox().width + 50 + rectTargetNest.getBBox().width + 50) ? x + rectAttrNest.getBBox().width + 50 + rectTargetNest.getBBox().width + 50 : maxX);
+//            }
           });
           y = y + 15;
           for (var i = 1; i <= maxRoleNumber; i++) {
