@@ -37,12 +37,13 @@ angular.module('singleConceptAuthoringApp')
             }
         }, true);
         scope.$watch('view', function(newVal, oldVal){
+            console.log(scope.view);
             if(scope.view !== 'snf')
             {
                 element.append($("<div></div>").addClass('modelContainer'));
                 drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
             }
-            else if(scope.conceptSnf && scope.conceptSnf.relationships){
+            else if(scope.conceptSnf && scope.conceptSnf.concepts){
                 scope.conceptToModify = angular.copy(scope.concept);
                 element.append($("<div></div>").addClass('modelContainer'));
                 drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
