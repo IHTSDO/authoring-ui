@@ -43,15 +43,17 @@ angular.module('singleConceptAuthoringApp')
                 drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
             }
             else if(scope.conceptSnf && scope.conceptSnf.relationships){
+                scope.conceptToModify = angular.copy(scope.concept);
                 element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, scope.conceptSnf);
+                drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
             }
         }, true);
         scope.$watch('conceptSnf', function(newVal, oldVal){
             if(scope.conceptSnf && scope.conceptSnf.concepts)
             {
+                scope.conceptToModify = angular.copy(scope.concept);
                 element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, scope.conceptSnf);
+                drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
             }
         }, true);
 
@@ -117,6 +119,38 @@ angular.module('singleConceptAuthoringApp')
                             field.target.definitionStatus = 'FULLY_DEFINED';
                         }
                      }
+                     else if (field.value.concepts)
+                     {
+                        field.target.conceptId = field.value.concepts[0].id;
+                        field.target.fsn = field.value.concepts[0].term;
+                        if(field.value.concepts[0].primative)
+                        {
+                            field.target.definitionStatus = 'PRIMITIVE';   
+                        }
+                        else{
+                            field.target.definitionStatus = 'FULLY_DEFINED';
+                        }
+                         field.nest = [];
+                        $.each(field.value.attributes, function (i, innerField) {
+                             innerField.type.conceptId = innerField.type.id;
+                             innerField.type.fsn = innerField.type.term;
+                             innerField.target = {};
+                             innerField.groupId = 0;
+                             if(innerField.value.id)
+                             {
+                                innerField.target.conceptId = innerField.value.id;
+                                innerField.target.fsn = innerField.value.term;
+                                if(innerField.value.primative)
+                                {
+                                    innerField.target.definitionStatus = 'PRIMITIVE';   
+                                }
+                                else{
+                                    innerField.target.definitionStatus = 'FULLY_DEFINED';
+                                }
+                             }
+                             field.nest.push(innerField);
+                        });
+                      }
                      concept.relationships.push(field);
                   });
               }
@@ -150,7 +184,6 @@ angular.module('singleConceptAuthoringApp')
                   svgAttrModel.push(field);
                 }
               });
-              console.log(concept);
           }
         
           var parentDiv = div;
@@ -214,16 +247,48 @@ angular.module('singleConceptAuthoringApp')
             sctClass = "sct-defined-concept";
                 }
             if (relationship.groupId == 0) {
-              var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
-              connectElements(svg, circle2, rectAttr, 'center', 'left');
-              var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
-              connectElements(svg, rectAttr, rectTarget, 'right', 'left');
-              y = y + rectTarget.getBBox().height + 25;
-              maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+              if(relationship.nest){
+                  var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+                  connectElements(svg, circle2, rectAttr, 'center', 'left');
+                  x = x + rectAttr.getBBox().width + 25;
+                  y = y + rectAttr.getBBox().height/2;
+                  var circle3 = drawConjunctionNode(svg, x, y);
+                  connectElements(svg, rectAttr, circle3, 'right', 'left', 'LineMarker');
+                  y = y - rectAttr.getBBox().height/2;
+                  x = x - 100;
+                  var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+                  x = x + 100;
+                  connectElements(svg, circle3, rectTarget, 'right', 'left');
+                  y = y + rectTarget.getBBox().height + 25;
+                  maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+              }
+              else{
+                  var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
+                  connectElements(svg, circle2, rectAttr, 'center', 'left');
+                  var rectTarget = drawSctBox(svg, x + rectAttr.getBBox().width + 50, y, relationship.target.fsn, relationship.target.conceptId, sctClass);
+                  connectElements(svg, rectAttr, rectTarget, 'right', 'left');
+                  y = y + rectTarget.getBBox().height + 25;
+                  maxX = ((maxX < x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50) ? x + rectAttr.getBBox().width + 50 + rectTarget.getBBox().width + 50 : maxX);
+                }
             } else {
               if (relationship.groupId > maxRoleNumber) {
                 maxRoleNumber = relationship.groupId;
               }
+            }
+            if(relationship.nest){
+                  if (relationship.nest[0].target.definitionStatus == "PRIMITIVE") {
+                        sctClass = "sct-primitive-concept";
+                    } else {
+                sctClass = "sct-defined-concept";
+                    }
+                  y = y + 25;
+                  x = x + 50;
+                  var rectAttrNest = drawSctBox(svg, x, y, relationship.nest[0].type.fsn, relationship.nest[0].type.conceptId, "sct-attribute");
+                  connectElements(svg, circle3, rectAttrNest, 'center', 'left');
+                  var rectTargetNest = drawSctBox(svg, x + rectAttrNest.getBBox().width + 50, y, relationship.nest[0].target.fsn, relationship.nest[0].target.conceptId, sctClass);
+                  connectElements(svg, rectAttrNest, rectTargetNest, 'right', 'left');
+                  y = y + rectTarget.getBBox().height + 25;
+                  maxX = ((maxX < x + rectAttrNest.getBBox().width + 50 + rectTargetNest.getBBox().width + 50) ? x + rectAttrNest.getBBox().width + 50 + rectTargetNest.getBBox().width + 50 : maxX);
             }
           });
           y = y + 15;
