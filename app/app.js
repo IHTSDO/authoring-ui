@@ -116,12 +116,12 @@ angular
     $rootScope.notProd = false;
     $timeout(function () {
             var env = $location.host().split(/[.]/)[0];
-            if(env === 'local' || env === 'dev-term')
+            if(env === 'local' || env === 'dev-term' || env === 'dev-authoring')
             {
                 $rootScope.development = true;  
                 $rootScope.notProd = true;
             }
-            else if(env === 'uat-term')
+            else if(env === 'uat-term' || env === 'uat-authoring')
             {
                 $rootScope.uat = true; 
                 $rootScope.notProd = true;
