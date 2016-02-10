@@ -93,7 +93,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       {
 
         //    console.debug('conceptEdit styles', scope.componentStyles);
-
+        scope.saving = false;
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
           return;
@@ -460,6 +460,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           snowowlService.cleanConcept(scope.concept);
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
+          scope.saving = true;
 
           // special case -- don't want save notifications in merge view, all
           // handling done in conflicts.js
@@ -484,6 +485,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if errors, notify and do not save
             else if (scope.validation && scope.validation.hasErrors) {
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
+              scope.saving = false;
             }
 
             // if no errors but warnings, save, results will be displayed
@@ -496,12 +498,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // recompute validation warnings
                     scope.validateConcept().then(function () {
                         notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                        scope.saving = false;
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
+                        scope.saving = false;
                 });
 
               }, function (error) {
                 notificationService.sendError('Error saving concept: ' + error);
+                scope.saving = false;
               });
             }
 
@@ -510,13 +515,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else {
               saveHelper(scope.concept).then(function () {
                 notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
+                scope.saving = false;
               }, function (error) {
                 notificationService.sendError('Error saving concept: ' + error);
+                scope.saving = false;
               });
             }
 
           }, function (error) {
             notificationService.sendError('Fatal error: Could not validate concept');
+            scope.saving = false;
           });
         };
         
