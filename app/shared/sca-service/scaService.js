@@ -728,7 +728,7 @@ angular.module('singleConceptAuthoringApp')
               return null;
           }
           else{
-            notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
+            notificationService.sendError('Error rebasing Task: ' + projectKey);
             return null;
           }
         });
@@ -768,7 +768,7 @@ angular.module('singleConceptAuthoringApp')
           }
           else if(error.status === 409){
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null
+              return null;
           }
           else{
             notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
@@ -906,6 +906,29 @@ angular.module('singleConceptAuthoringApp')
                       //$rootScope.$broadcast('branchDiverged');
                       $rootScope.$broadcast('notification.branchState', newNotification);
                     }
+                    break;
+                        
+                  /*
+                   Rebase Complete object structure
+                   project: "WRPAS"
+                   task: "WRPAS-98" (omitted for project)
+                   entityType: "Rebase"
+                   event: "Rebase from MAIN to ORPHANET completed without conflicts in 0:15:11.882"
+                   */
+                  case 'Rebase':
+                    msg = newNotification.event;
+
+                    // set url and broadcast classification complete to taskDetail.js or project.js
+                    if (newNotification.task) {
+                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                      $rootScope.$broadcast('reloadTask');
+                      $rootScope.$broadcast('rebaseComplete');
+                    } else {
+                      url = '#/project/' + newNotification.project;
+                      $rootScope.$broadcast('reloadProject');
+                    }
+
+
                     break;
 
                   /*
