@@ -39,13 +39,6 @@
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}"
               popover-trigger="click: click" popover-append-to-body="true"><span>More details</span></button>
 
-
-
-      <button type="button"
-              class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-left tooltips-light normal-case "
-              ng-click="saveConcept()"
-              ng-if="isMerge"><span> Accept Merged Version </span></button>
-
     </div>
 
     <!-- concept name -->
@@ -87,6 +80,10 @@
               class="btn-default save-button small-buttons deep-purple lighten-2 md md-save tooltips-left tooltips-light normal-case"
               ng-click="saveConcept()"
               ng-if="isModified && !isStatic" ng-disabled="saving"><span> Save Concept </span></button>
+      <button type="button"
+              class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-left tooltips-light normal-case "
+              ng-click="saveConcept()"
+              ng-if="isMerge" style="margin-bottom: -2px;"><span> Accept Merged Version </span></button>
       <!-- Revert button only appears if parent is specified -->
       <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
         Revert
