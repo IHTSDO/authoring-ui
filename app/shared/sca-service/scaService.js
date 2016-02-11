@@ -726,6 +726,7 @@ angular.module('singleConceptAuthoringApp')
           else if(error.status === 409){
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
               return null;
+              
           }
           else{
             notificationService.sendError('Error rebasing Task: ' + projectKey);

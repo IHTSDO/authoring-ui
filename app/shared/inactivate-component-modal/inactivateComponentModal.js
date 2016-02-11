@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
     
     $scope.updateAssociations = function () {
         $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
-    }
+    };
 
     // required arguments
     $scope.componentType = componentType;
