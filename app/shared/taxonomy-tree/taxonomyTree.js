@@ -293,7 +293,7 @@ angular.module('singleConceptAuthoringApp')
           
         scope.setRootConcept = function(node){
             scope.concept = node;
-        }
+        };
 
         scope.openConceptInformationModal = function (node) {
           var modalInstance = $modal.open({
