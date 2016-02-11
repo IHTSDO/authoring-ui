@@ -955,9 +955,21 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/apply').then(function(response) {
         deferred.resolve(response.data);
-      }, function(error) {
-        deferred.reject(error.message);
-      });
+      }, function (error) {
+          if(error.status === 504){
+              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
+              return 1;
+          }
+          else if(error.status === 409){
+              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+              return null;
+              
+          }
+          else{
+            notificationService.sendError('Error rebasing Task: ' + projectKey);
+            return null;
+          }
+        });
       return deferred.promise;
     }
 
