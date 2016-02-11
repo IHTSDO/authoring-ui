@@ -701,14 +701,28 @@ angular.module('singleConceptAuthoringApp')
 
               $rootScope.$broadcast('reloadTask');
             }, function (error) {
-              //    console.debug(error);
+              if(error !== null && error !== 1){  
+                    scope.rebaseRunning = false;
+                    scope.rebaseComplete = true;
+                    scope.warning = false;
+                    scope.fiveOFour = false;
 
-              // send a temporary notification while waiting for BE
-              // notification of merge review invalid
-              notificationService.sendError('Unexpected error finalizing merges', 5000);
-
-              // convenient flag to indicate a bad state was detected
-              scope.badStateDetected = true;
+                    // broadcast reload task to any current listeners, to pull in
+                    // new branch state
+                    $rootScope.$broadcast('reloadTask');
+                }
+                  else if(error === 1){
+                      scope.rebaseRunning = false;
+                      scope.rebaseComplete = false;
+                      scope.warning = false;
+                      scope.fiveOFour = true;
+                  }
+                  else{
+                      scope.rebaseRunning = false;
+                      scope.rebaseComplete = false;
+                      scope.warning = true;
+                      scope.fiveOFour = false;
+                  }
             });
           };
             
