@@ -158,6 +158,10 @@ angular.module('singleConceptAuthoringApp.home', [
       });
 
     };
+    
+    $scope.$watch('rebaseComplete', function () {
+      $scope.tableParams.reload();
+    }, true);
 
     // on successful set, reload table parameters
     $scope.$watch('tasks', function () {
