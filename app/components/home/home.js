@@ -169,7 +169,6 @@ angular.module('singleConceptAuthoringApp.home', [
                 notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 3000);
             }
         });
-        
     };
     
     $scope.$watch('rebaseComplete', function () {
