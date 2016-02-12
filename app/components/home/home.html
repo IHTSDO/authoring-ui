@@ -77,14 +77,12 @@
               </td>
 
               <td data-title="'Project Changes'">
-                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/conflicts">
                   <button
-                    ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'" type="button"
+                    ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'" type="button" ng-click="goToConflicts(task)"
                     class="btn btn-round btn-default lighten-1 amber tooltips-left">
                     <div class="md md-sync "></div>
                     <span>Click to pull in changes from project</span>
                   </button>
-                </a>
               </td>
 
               <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
