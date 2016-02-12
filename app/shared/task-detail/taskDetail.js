@@ -6,6 +6,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.task = null;
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branchLocked = false;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -182,6 +183,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
+          });
+        snowowlService.getBranch($routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+            if(response.metadata)
+            {
+                $scope.branchLocked = true;   
+            }
           });
 
           // set button flags
