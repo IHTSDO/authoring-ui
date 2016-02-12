@@ -159,6 +159,19 @@ angular.module('singleConceptAuthoringApp.home', [
 
     };
     
+    $scope.goToConflicts = function(task){
+        snowowlService.getBranch(task.projectKey).then(function(response){
+            if(!response.metadata)
+            {
+                $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
+            }
+            else{
+                notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 3000);
+            }
+        });
+        
+    };
+    
     $scope.$watch('rebaseComplete', function () {
       $scope.tableParams.reload();
     }, true);
