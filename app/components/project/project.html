@@ -202,33 +202,37 @@
               </td>
               <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
                  <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                  <button ng-show="task.latestClassificationJson != null"
+                    <button ng-show="task.latestClassificationJson != null"
                           type="button"
                           ng-class="[{blue : task.latestClassificationJson.status === 'RUNNING'},
+                         
                           {green : task.latestClassificationJson.status === 'COMPLETED'},
+                          {red : task.latestClassificationJson.status === 'FAILED'},
                           {red : task.latestClassificationJson.equivalentConceptsFound === true || task.latestClassification.status === 'FAILED'},
+                           {blue : task.latestClassificationJson.status === 'SAVED'},
+                            {amber : task.latestClassificationJson.status === 'STALE'},
                            {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
                            {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
-                          class="btn btn-round btn-default lighten-2 pull-left tooltips-right normalcase" >
+                          class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase">
                     <div class="md md-notifications "></div>
                     <span clas="normalcase"> Classification is {{task.latestClassificationJson.status}}</span>
                   </button> <div class="side-text pull-left">{{task.latestClassificationJson.status}}</div> 
                 </a>
 
-                <div class="ripple-wrapper"></div>
-                </button>
+          
 
               </td>
 
               <td data-title="'Validation'" sortable="'latestValidationStatus'">
                  <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
-                        type="button"
+                          type="button"
                           ng-class="[{blue : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
+                          {blue : task.latestValidationStatus === 'VALIDATING'},
                           {blue : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]"
-                          class="btn btn-round btn-default lighten-2 pull-left " >
+                          class="btn btn-round btn-default lighten-2 pull-left ">
                     <div class="md md-school "></div>  <span ng-class="[{blue : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
                           {blue : task.latestValidationStatus === 'BUILDING'},
