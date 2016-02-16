@@ -95,6 +95,7 @@
                           {red : task.latestClassificationJson.status === 'FAILED'},
                           {red : task.latestClassificationJson.equivalentConceptsFound === true || task.latestClassification.status === 'FAILED'},
                            {blue : task.latestClassificationJson.status === 'SAVED'},
+                            {amber : task.latestClassificationJson.status === 'STALE'},
                            {amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
                            {green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase">
@@ -109,10 +110,11 @@
 
               <td data-title="'Validation'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                 <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
                           ng-class="[{blue : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
+                          {blue : task.latestValidationStatus === 'VALIDATING'},
                           {blue : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2 pull-left ">
@@ -245,10 +247,11 @@
 
               <td data-title="'Validation'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+               <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
                           ng-class="[{blue : task.latestValidationStatus === 'SCHEDULED'},
                           {red : task.latestValidationStatus === 'FAILED'},
+                          {blue : task.latestValidationStatus === 'VALIDATING'},
                           {blue : task.latestValidationStatus === 'BUILDING'},
                           {green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2 pull-left ">
