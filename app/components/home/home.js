@@ -160,7 +160,7 @@ angular.module('singleConceptAuthoringApp.home', [
     };
     
     $scope.goToConflicts = function(task){
-        snowowlService.getBranch(task.projectKey).then(function(response){
+        snowowlService.getBranch('MAIN' + task.projectKey).then(function(response){
             if(!response.metadata)
             {
                 $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
