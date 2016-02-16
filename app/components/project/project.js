@@ -135,7 +135,7 @@ angular.module('singleConceptAuthoringApp.project', [
         $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
       };
       $scope.mergeAndRebase = function(task){
-        snowowlService.getBranch('MAIN' + $routeParams.projectKey).then(function(response){
+        snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
             if(!response.metadata)
             {
                 snowowlService.getBranch().then(function(response){

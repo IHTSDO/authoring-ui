@@ -184,7 +184,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
-        snowowlService.getBranch($routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+        snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
             if(response.metadata)
             {
                 $scope.branchLocked = true;   
