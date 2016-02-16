@@ -98,10 +98,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         snowowlService.getBranch($scope.projectKey).then(function(response){
             if(!response.metadata)
             {
-                $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
+                $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
             }
             else{
-                notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 3000);
+                notificationService.sendWarning('Unable to start rebase on task ' + $scope.taskKey + ' as the project branch is locked due to ongoing changes.', 3000);
             }
         });
     };
