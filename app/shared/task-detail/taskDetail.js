@@ -6,7 +6,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.task = null;
       $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-      $scope.branchLocked = false;
+      $rootScope.branchLocked = false;
 
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
@@ -175,6 +175,19 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
         });
       };
+        
+      $scope.pollStatus = function() {
+            snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+            if(response.metadata)
+            {
+                $timeout($scope.pollStatus, 4000);
+            }
+            else{
+                $rootScope.branchLocked = false;
+            }
+          });
+                        
+                };
 
       function initialize() {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -187,7 +200,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
             if(response.metadata)
             {
-                $scope.branchLocked = true;   
+                $rootScope.branchLocked = true;
+                $scope.pollStatus();
             }
           });
 
