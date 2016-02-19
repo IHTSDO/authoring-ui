@@ -54,7 +54,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         parentBranch: '=?',
 
         // whether to display as static (not editable) (not required)
-        static: '@?',
+        static: '=?',
 
         // whether this display is part of the merge view, triggers display
         // changes TODO These parameters are getting ridiculous, need to clean
@@ -91,6 +91,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
       {
+        scope.$watch(function() {
+        return $rootScope.branchLocked;
+        }, function() {
+          scope.isStatic = $rootScope.branchLocked;
+    }, true);
 
         //    console.debug('conceptEdit styles', scope.componentStyles);
         scope.saving = false;
