@@ -218,7 +218,7 @@ angular.module('singleConceptAuthoringApp')
     // Retrieve Concept Short Normal Form
     // GET {path}/concepts/{conceptId}?representationalForm=short-normal
     function getConceptSNF(conceptId, branch) {
-      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId +'/short-normal-form').then(function (response) {
+      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId +'/short-normal-form?normaliseAttributeValues=false').then(function (response) {
         return response.data;
       }, function (error) {
         // TODO Handle error
