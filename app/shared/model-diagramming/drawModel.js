@@ -88,7 +88,7 @@ angular.module('singleConceptAuthoringApp')
              concept.relationships = [];
              $.each(snfConcept.concepts, function (i, field) {
                  field.target = {};
-                 if(field.primative === true)
+                 if(field.primitive === true)
                  {
                      field.target.definitionStatus = 'PRIMITIVE';
                  }
@@ -111,7 +111,7 @@ angular.module('singleConceptAuthoringApp')
                      {
                         field.target.conceptId = field.value.id;
                         field.target.fsn = field.value.term;
-                        if(field.value.primative)
+                        if(field.value.primitive)
                         {
                             field.target.definitionStatus = 'PRIMITIVE';   
                         }
@@ -123,7 +123,7 @@ angular.module('singleConceptAuthoringApp')
                      {
                         field.target.conceptId = field.value.concepts[0].id;
                         field.target.fsn = field.value.concepts[0].term;
-                        if(field.value.concepts[0].primative)
+                        if(field.value.concepts[0].primitive)
                         {
                             field.target.definitionStatus = 'PRIMITIVE';   
                         }
@@ -140,7 +140,7 @@ angular.module('singleConceptAuthoringApp')
                              {
                                 innerField.target.conceptId = innerField.value.id;
                                 innerField.target.fsn = innerField.value.term;
-                                if(innerField.value.primative)
+                                if(innerField.value.primitive)
                                 {
                                     innerField.target.definitionStatus = 'PRIMITIVE';   
                                 }
@@ -165,7 +165,7 @@ angular.module('singleConceptAuthoringApp')
                          {
                             field.target.conceptId = field.value.id;
                             field.target.fsn = field.value.term;
-                            if(field.value.primative)
+                            if(field.value.primitive)
                             {
                                 field.target.definitionStatus = 'PRIMITIVE';   
                             }
