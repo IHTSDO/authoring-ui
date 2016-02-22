@@ -43,7 +43,7 @@
     -->
     <button type="button"
             class="btn btn-default widget-toolbar amber lighten-1 conflicts tooltips-right tooltips-light normal-case"
-            ng-disabled="!canConflict"
+            ng-disabled="!canConflict || branchLocked"
             ng-click="goToConflicts()">
       <div class="md md-sync"></div>
       <span>Pull new changes from project</span></button>

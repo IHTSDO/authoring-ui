@@ -653,16 +653,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Function to toggle the definition status of the displayed concept,
          * with autosave
          */
-        scope.toggleConceptDefinitionStatus = function () {
-          if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
-            scope.concept.definitionStatus = 'PRIMITIVE';
+        scope.toggleConceptDefinitionStatus = function (isStatic) {
+          if(!isStatic)
+          {
+              if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
+                scope.concept.definitionStatus = 'PRIMITIVE';
+              }
+              else {
+                scope.concept.definitionStatus = 'FULLY_DEFINED';
+              }
+              // only action required is autosave, value is changed via select
+              // (unlike toggle buttons)
+              autoSave();
           }
-          else {
-            scope.concept.definitionStatus = 'FULLY_DEFINED';
-          }
-          // only action required is autosave, value is changed via select
-          // (unlike toggle buttons)
-          autoSave();
+          
         };
 
 // function to apply cascade changes when concept module id changes

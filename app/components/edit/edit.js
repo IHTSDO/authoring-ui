@@ -1088,6 +1088,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       var cssClass = check ? 'last' : null;
       return cssClass;
     };
+    
+    $scope.$watch(function() {
+        return $rootScope.branchLocked;
+        }, function() {
+            setBranchFunctionality($scope.task.branchState);
+    }, true);
 
 //////////////////////////////////////////
     // Initialization
