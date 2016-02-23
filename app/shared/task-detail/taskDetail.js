@@ -178,11 +178,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         
       $scope.pollStatus = function() {
             snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+                
             if(response.metadata)
             {
                 $timeout($scope.pollStatus, 4000);
             }
             else{
+                
                 $rootScope.branchLocked = false;
             }
           });
@@ -202,6 +204,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             {
                 $rootScope.branchLocked = true;
                 $scope.pollStatus();
+            }
+            else if(response.status === 404)
+            {
+                notificationService.sendWarning('Task initializing');
+                snowowlService.createBranch('MAIN/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                    notificationService.sendWarning('Task initialization complete', 3000);
+                    $rootScope.$broadcast('reloadTaxonomy');
+              });
             }
           });
 

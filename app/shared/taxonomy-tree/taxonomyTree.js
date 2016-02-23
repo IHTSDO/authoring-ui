@@ -290,6 +290,10 @@ angular.module('singleConceptAuthoringApp')
           }
 
         }, true);
+        
+        scope.$on('reloadTaxonomy', function(event, data) {
+            initialize();
+        });
           
         scope.setRootConcept = function(node){
             scope.concept = node;

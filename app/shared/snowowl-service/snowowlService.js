@@ -780,8 +780,19 @@ angular.module('singleConceptAuthoringApp')
     function getBranch(branch) {
       return $http.get(apiEndpoint + '/branches/' + branch).then(function (response) {
         return response.data;
-      }, function (error) {
-        return null;
+      }, function (response) {
+        return response;
+      });
+    }
+      
+    function createBranch(parent, task) {
+       return $http.post(apiEndpoint + 'branches', {
+            parent: parent,
+            name: task
+            }).then(function (response) {
+            return response.data;
+        }, function (error) {
+            return null;
       });
     }
 
@@ -1060,6 +1071,7 @@ angular.module('singleConceptAuthoringApp')
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
       getBranch: getBranch,
+      createBranch: createBranch,
       getDomainAttributes: getDomainAttributes,
       getAttributeValues: getAttributeValues,
 
