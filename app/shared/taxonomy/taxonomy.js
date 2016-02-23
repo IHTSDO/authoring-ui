@@ -21,22 +21,10 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
 
       // watch for viewTaxonomy events
       $scope.$on('viewTaxonomy', function(event, data) {
-        console.debug('taxonomy.js received viewTaxonomy event, changing root concept to ', data.concept);
          $scope.rootConcept = data.concept;
-         console.debug('root concept', $scope.rootConcept);
       });
 
       $scope.clearConcept = function() {
-        console.debug('Resetting root concept to SNOMEDCT root');
         $scope.rootConcept = null;
-       /* {
-          active: true,
-          conceptId: '138875005',
-          definitionStatus: 'PRIMITIVE',
-          fsn: 'SNOMED CT Concept',
-          isLeafInferred: false,
-          isLeafStated: false
-        };*/
-        console.debug('root concept', $scope.rootConcept);
       };
     }]);
