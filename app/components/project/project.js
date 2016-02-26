@@ -141,7 +141,7 @@ angular.module('singleConceptAuthoringApp.project', [
                $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
             }
             else{
-                notificationService.sendWarning('Unable to start rebase on project as the MAIN is locked due to ongoing changes.', 3000);
+                notificationService.sendWarning('Unable to start rebase on project as the MAIN is locked due to ongoing changes.', 7000);
             }
          });
     };
@@ -166,6 +166,27 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
+            snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+            if(!response.metadata)
+            {
+                snowowlService.getBranch('MAIN/').then(function(response){
+                    if(!response.metadata)
+                    {
+                        notificationService.sendMessage('Promoting project...');
+                        scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                          notificationService.sendMessage('Project successfully promoted', 5000);
+                          $scope.getProject();
+                        });
+                    }
+                    else{
+                        notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
+                    }
+                });
+            }
+            else{
+                notificationService.sendWarning('Unable to start rebase as the project branch is locked due to ongoing changes.', 7000);
+            }
+        });
             notificationService.sendMessage('Promoting project...');
             scaService.promoteProject($routeParams.projectKey).then(function (response) {
               notificationService.sendMessage('Project successfully promoted', 5000);
