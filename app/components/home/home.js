@@ -169,12 +169,12 @@ angular.module('singleConceptAuthoringApp.home', [
                         $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
                     }
                     else{
-                        notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 3000);
+                        notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
                     }
                 });
             }
             else{
-                notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 3000);
+                notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
             }
         });
     };
