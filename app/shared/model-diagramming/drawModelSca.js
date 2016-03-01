@@ -46,9 +46,10 @@ angular.module('singleConceptAuthoringApp')
         };
         scope.getSNF = function(){
             scope.loading = true;
-            if(scope.conceptSNF === null || scope.conceptSNF === undefined)
+            if(scope.conceptSNF === null || scope.conceptSNF === undefined || angular.equals({}, scope.conceptSNF))
             {
                 scope.snfFunction({conceptId : scope.concept.conceptId}).then(function(response) {
+                    console.log(response);
                     scope.conceptSNF = response;
                     scope.view = 'snf';
                     scope.loading = false;
