@@ -187,11 +187,6 @@ angular.module('singleConceptAuthoringApp.project', [
                 notificationService.sendWarning('Unable to start rebase as the project branch is locked due to ongoing changes.', 7000);
             }
         });
-            notificationService.sendMessage('Promoting project...');
-            scaService.promoteProject($routeParams.projectKey).then(function (response) {
-              notificationService.sendMessage('Project successfully promoted', 5000);
-              $scope.getProject();
-            });
 
           } else {
 
@@ -210,10 +205,26 @@ angular.module('singleConceptAuthoringApp.project', [
 
             modalInstance.result.then(function (proceed) {
               if (proceed) {
-                notificationService.sendMessage('Promoting project...');
-                scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                  notificationService.sendMessage('Project successfully promoted', 5000);
-                  $scope.getProject();
+                snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+                if(!response.metadata)
+                {
+                    snowowlService.getBranch('MAIN/').then(function(response){
+                        if(!response.metadata)
+                        {
+                            notificationService.sendMessage('Promoting project...');
+                            scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                              notificationService.sendMessage('Project successfully promoted', 5000);
+                              $scope.getProject();
+                            });
+                        }
+                        else{
+                            notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
+                        }
+                    });
+                }
+                else{
+                    notificationService.sendWarning('Unable to start rebase as the project branch is locked due to ongoing changes.', 7000);
+                }
                 });
               } else {
                 notificationService.clear();
