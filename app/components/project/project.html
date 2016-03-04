@@ -216,7 +216,8 @@
                            {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default pull-left tooltips-right normalcase ">
                     <div class="md md-notifications "></div>
-                    <span clas="normalcase"> Classification is {{task.latestClassificationJson.status}}</span>
+                                                              <span > <div class="message_classification_{{project.latestClassificationJson.status}}"> </div></span>
+
                   </button>
                   <div class="side-text pull-left">{{task.latestClassificationJson.status}}</div>
                   </a>
@@ -229,13 +230,14 @@
                  <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                    <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
-                          ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
+                          ng-class="[
+                          {indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
                           {indicator_red : task.latestValidationStatus === 'FAILED'},
                           {indicator_blue : task.latestValidationStatus === 'VALIDATING'},
                           {indicator_blue : task.latestValidationStatus === 'BUILDING'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2 pull-left ">
-                    <div class="md md-school "></div>  <span> Validation {{task.latestValidationStatus}}</span>
+                    <div class="md md-school "></div>    <span > <div class="message_validation_{{project.validationStatus}}"> </div></span>
                   </button>
                   <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                        class="side-text pull-left">{{task.latestValidationStatus}}
