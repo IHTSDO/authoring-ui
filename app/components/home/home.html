@@ -101,7 +101,7 @@
                            {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default pull-left tooltips-right normalcase ">
                     <div class="md md-notifications "></div>
-                    <span clas="normalcase"> Classification is {{task.latestClassificationJson.status}}</span>
+                                        <span > <div class="message_classification_{{task.latestClassificationJson.status}}"> </div></span>
                   </button>
                   <div class="side-text pull-left">{{task.latestClassificationJson.status}}</div>
                 </a>
@@ -119,7 +119,8 @@
                           {indicator_blue : task.latestValidationStatus === 'BUILDING'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2 pull-left ">
-                    <div class="md md-school "></div>  <span> Validation {{task.latestValidationStatus}}</span>
+                    <div class="md md-school "></div>  
+                      <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>
                   <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                        class="side-text pull-left">{{task.latestValidationStatus}}
@@ -239,7 +240,8 @@
                            {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default pull-left tooltips-right normalcase ">
                     <div class="md md-notifications "></div>
-                    <span clas="normalcase"> Classification is {{task.latestClassificationJson.status}}</span>
+                                        <span > <div class="message_classification_{{task.latestClassificationJson.status}}"> </div></span>
+
                   </button>
                   <div class="side-text pull-left">{{task.latestClassificationJson.status}}</div>
                 </a>
@@ -257,7 +259,10 @@
                           {indicator_blue : task.latestValidationStatus === 'BUILDING'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default lighten-2 pull-left ">
-                    <div class="md md-school "></div>  <span> Validation {{task.latestValidationStatus}}</span>
+                                     
+
+                    <div class="md md-school "></div> 
+                      <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>
                   <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                        class="side-text pull-left">{{task.latestValidationStatus}}
