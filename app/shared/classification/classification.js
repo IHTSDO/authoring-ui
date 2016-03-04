@@ -231,7 +231,8 @@ angular.module('singleConceptAuthoringApp')
             if ($routeParams.taskKey) {
               scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 if (response.branchState === 'DIVERGED' || response.branchState === 'BEHIND') {
-                  notificationService.sendError('Task is not up to date (' + response.branchState + '); accept merges and pull in changes');
+//                  notificationService.sendError('Task is not up to date (' + response.branchState + '); accept merges and pull in changes');
+                    saveClassificationHelper();
                 } else {
                   saveClassificationHelper();
                 }
@@ -239,7 +240,8 @@ angular.module('singleConceptAuthoringApp')
             } else {
               scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
                 if (response.branchState === 'DIVERGED' || response.branchState === 'BEHIND') {
-                  notificationService.sendError('Task is not up to date (' + response.branchState + '); accept merges and pull in changes');
+//                  notificationService.sendError('Task is not up to date (' + response.branchState + '); accept merges and pull in changes');
+                    saveClassificationHelper();
                 } else {
                   saveClassificationHelper();
                 }
