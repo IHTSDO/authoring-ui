@@ -43,17 +43,19 @@
           
                   <button ng-show="project.latestClassificationJson != null"
                           type="button"
-                          ng-class="[{blue : project.latestClassificationJson.status === 'RUNNING'},
+                          ng-class="[
+                          {green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false},
+                          {indicator_blue : project.latestClassificationJson.status === 'RUNNING'},
                          
-                          {green : project.latestClassificationJson.status === 'COMPLETED'},
-                          {red : project.latestClassificationJson.status === 'FAILED'},
-                          {red : project.latestClassificationJson.equivalentConceptsFound === true || project.latestClassification.status === 'FAILED'},
-                           {blue : project.latestClassificationJson.status === 'SAVED'},
-                            {amber : project.latestClassificationJson.status === 'STALE'},
-                           {amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true},
-                           {green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false}]"
-                          class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase">
-                    <div class="md md-notifications "></div>
+                          {indicator_green : project.latestClassificationJson.status === 'COMPLETED'},
+                          {indicator_red : project.latestClassificationJson.status === 'FAILED'},
+                          {indicator_red : project.latestClassificationJson.equivalentConceptsFound === true || project.latestClassification.status === 'FAILED'},
+                           {indicator_green : project.latestClassificationJson.status === 'SAVED'},
+                            {indicator_grey : project.latestClassificationJson.status === 'STALE'},
+                           {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true},
+                           ]"
+  class="btn btn-round btn-default pull-left tooltips-right normalcase ">
+                      <div class="md md-notifications "></div>
                     <span clas="normalcase"> Classification is {{project.latestClassificationJson.status}}</span>
                   </button>
                     <div class="side-text pull-left">{{project.latestClassificationJson.status}}</div>
@@ -67,12 +69,12 @@
                   <button ng-show="project.validationStatus != null"
                           title="{{project.validationStatus}}" type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
-                          {blue : project.validationStatus === 'SCHEDULED'},
-                           {blue : project.validationStatus === 'VALIDATING'},
-                          {red : project.validationStatus === 'FAILED'},
-                          {blue : project.validationStatus === 'BUILDING'},
+                          {indicator_blue : project.validationStatus === 'SCHEDULED'},
+                           {indicator_blue : project.validationStatus === 'VALIDATING'},
+                          {indicator_red : project.validationStatus === 'FAILED'},
+                          {indicator_blue : project.validationStatus === 'BUILDING'},
                        
-                          {green : project.validationStatus === 'COMPLETED'}]"
+                          {indicator_green : project.validationStatus === 'COMPLETED'}]"
                           class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase">
                       <div class="md md-school "></div>
                     <span clas="normalcase"> Validation is {{project.validationStatus}}</span>
