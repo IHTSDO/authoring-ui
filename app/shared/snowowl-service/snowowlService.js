@@ -160,7 +160,7 @@ angular.module('singleConceptAuthoringApp')
     // GET /{path}/classifications/{classificationId}/relationship-changes
     // get relationship changes reported for a classifier id
     function getRelationshipChanges(classifierId, branch) {
-      return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn').then(function (response) {
+      return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=1000').then(function (response) {
         return response.data.items;
       });
     }
@@ -170,7 +170,7 @@ angular.module('singleConceptAuthoringApp')
       // console.debug('downloadClassification', classifierId, branch);
       return $http({
         'method': 'GET',
-        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes',
+        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
         'headers': {
           'Accept': 'text/csv'
         }
@@ -214,7 +214,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
     }
-      
+
     // Retrieve Concept Short Normal Form
     // GET {path}/concepts/{conceptId}?representationalForm=short-normal
     function getConceptSNF(conceptId, branch) {
@@ -784,7 +784,7 @@ angular.module('singleConceptAuthoringApp')
         return response;
       });
     }
-      
+
     function createBranch(parent, task) {
        return $http.post(apiEndpoint + 'branches', {
             parent: parent,
@@ -974,7 +974,7 @@ angular.module('singleConceptAuthoringApp')
           else if(error.status === 409){
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
               return null;
-              
+
           }
           else{
             notificationService.sendError('Error rebasing Task: ' + projectKey);
