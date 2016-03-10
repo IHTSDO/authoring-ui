@@ -239,3 +239,21 @@ td textarea, td input, td select {
     pointer-events: none !important;
     background-color: #494949!important;
 }
+/* temp for wrp-2269 */
+.dashboard-sidebar button {
+    width: 100%;
+    padding: 15px;
+    font-size: 14px;
+    text-transform: none;
+    color: #fff;
+    text-align: left;
+}
+.dashboard-sidebar {
+
+    width: 13%!important;
+}
+
+.dash-tables {
+    width: 86.5% !important;
+}
+.pager .btn {padding: 1px 8px;}

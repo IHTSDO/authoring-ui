@@ -66,6 +66,15 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     $scope.isEdited = function(item) {
       return $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
+	  $scope.viewConceptInTaxonomy = function (item) {
+        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+        $rootScope.$broadcast('viewTaxonomy', {
+          concept: {
+            conceptId: item.concept.conceptId,
+            fsn: item.concept.fsn
+          }
+        });
+      };
 
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.concept.fsn};

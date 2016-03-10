@@ -41,24 +41,31 @@
               <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
                {{project.projectLead.displayName}}
               </td>
-              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
+           <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/project/{{project.key}}">
+          
                   <button ng-show="project.latestClassificationJson != null"
-                          title="{{project.latestClassificationJson.status}}" type="button"
-                          ng-class="[{gray : project.latestClassificationJson.status === 'RUNNING'},
-                          {red : project.latestClassificationJson.equivalentConceptsFound === true},
-                           {amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true},
-                           {green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false}]"
-                        
-                       class="btn btn-round btn-default pull-left lighten-1 tooltips-right normalcase">
-                    <div class="md md-notifications "></div>
-                    <span clas="normalcase"> Classification is {{project.latestClassificationJson.status}}</span>
+                          type="button"
+                          ng-class="[
+                          {green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false},
+                          {indicator_blue : project.latestClassificationJson.status === 'RUNNING'},
+                         
+                          {indicator_green : project.latestClassificationJson.status === 'COMPLETED'},
+                          {indicator_red : project.latestClassificationJson.status === 'FAILED'},
+                          {indicator_red : project.latestClassificationJson.equivalentConceptsFound === true || project.latestClassification.status === 'FAILED'},
+                           {indicator_green : project.latestClassificationJson.status === 'SAVED'},
+                            {indicator_grey : project.latestClassificationJson.status === 'STALE'},
+                           {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true},
+                           ]"
+  class="btn btn-round btn-default pull-left tooltips-right normalcase ">
+                      <div class="md md-notifications "></div>
+                                            <span > <div class="message_classification_{{project.latestClassificationJson.status}}"> </div></span>
+
                   </button>
                     <div class="side-text pull-left">{{project.latestClassificationJson.status}}</div>
                 </a>
-              
+               
 
-            
               </td>
               <td data-title="'Validation Results'" sortable="'validationStatus'">
                 <a ng-href="#/project/{{project.key}}">
