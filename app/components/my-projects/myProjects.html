@@ -28,7 +28,7 @@
 
           <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
-            <tr ng-repeat="project in $data">
+            <tr ng-repeat="project in $data" class="clickable-row">
 
               <td data-title="'Project Name'" sortable="'title'" filter="{ 'title': 'text' }"><a class="tooltips-right"
                 ng-href="#/project/{{project.key}}">{{project.title}} <span>View Project Details</span></a>
