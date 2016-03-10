@@ -201,26 +201,14 @@
 .sca-light .In.Review.badge {
     background-color: transparent;
     color: #32ae1a;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .sca-light .Available.badge {
     background-color: transparent;
     color: #00b0ff;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 .sca-light .Claimed.badge {
     background-color: white;
     color: gray;
-    font-size: 13px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
 }
 /* Edit View */
 
@@ -493,3 +481,30 @@ color: #ba68c8;
 
 
 .sca-light .sca-footer{background-color:#fff;}
+.sca-light .indicator_grey{    color:#666!important; background-color:transparent!important;}
+.sca-light .indicator_grey:hover{     color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_green{    color: #81C784!important; background-color:transparent!important;}
+.sca-light .indicator_green:hover{     color: #66BB6A!important; background-color:transparent!important;}
+.sca-light .indicator_grey.sca-light .indicator_grey{    color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_grey.sca-light .indicator_grey:hover{    color:#666!important;background-color:transparent!important;}
+
+.sca-light .indicator_blue{   color: #00a4e4!important; background-color:transparent!important;}
+.sca-light .indicator_blue:hover{     color: #0d8aee!important; background-color:transparent!important;}
+.sca-light .indicator_amber{    color: #ffca28; background-color:transparent!important;}
+.sca-light .indicator_amber:hover{     color: #ff8f00; background-color:transparent!important;}
+.sca-light .indicator_red{    color: #EF5350; background-color:transparent!important;}
+.sca-light .indicator_red:hover{     color: #d44a47; background-color:transparent!important;}
+
+.sca-light button[disabled] .project-icon {
+    background-color: #e7e7e7!important;
+	color:#333!important
+}
+.sca-light .feedback .switch{color:#4d4d4d!important}
+
+.sca-light .edits-row.color_0 .add-buttons,
+.sca-light .edits-row.color_1 .add-buttons,
+.sca-light .edits-row.color_2 .add-buttons,
+.sca-light .edits-row.color_3 .add-buttons,
+.sca-light .edits-row.color_4 .add-buttons,
+.sca-light .edits-row.color_5 .add-buttons,
+.sca-light .edits-row.color_6 .add-buttons {color:#4d4d4d!important}

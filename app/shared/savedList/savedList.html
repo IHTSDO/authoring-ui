@@ -3,8 +3,9 @@
   <div ng-show="savedList.items.length > 0">
 
     <div class="row">
-      <div class="col-md-12 grey lighten-2 p-l-10 m-b-10">
-        <h4>Task Saved List</h4>
+      <div class="p-l-5 m-t-10 m-b-10">
+      <label class="control-label">Task Saved List</label>
+    
       </div>
     </div>
     <!--
@@ -19,8 +20,13 @@
 
     <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items" style="margin-bottom: 15px;">
 
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>
-
+    <!--  <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>-->
+    
+       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> <span class="badge alert-warning" ng-show="item.concept.definitionStatus === 'PRIMITIVE'" title="Primitive"
+                 >&nbsp;</span>
+          <span class="badge alert-warning" ng-show="item.concept.definitionStatus !== 'PRIMITIVE'"
+                title="Fully Defined"
+                >≡&nbsp;</span></div>
       <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
       </div>
@@ -35,6 +41,15 @@
       </div>-->
       <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
 
+
+          <button type="button"
+                  ng-click="viewConceptInTaxonomy(item)"
+                  ng-disabled="!item.concept.active"
+                  class="tn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                  ng-class="[{'fa fa-book purple' : item.concept.active}, {'fa fa-power-off red' : !item.concept.active }]">
+            <span ng-if="item.concept.active">View Concept in Taxonomy</span>
+            <span ng-if="!item.concept.active">Inactive Concept</span>
+          </button>
 
         <button type="button"
                 class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
@@ -68,8 +83,9 @@
   <div ng-show="favorites.items.length > 0">
 
     <div class="row">
-      <div class="col-md-12 grey lighten-2 p-l-10 m-b-10">
-        <h4>Project Favorites</h4>
+      <div class="p-l-5 m-t-10 m-b-10">
+      <label class="control-label">Project Favorites</label>
+    
       </div>
     </div>
     <!--
@@ -81,7 +97,11 @@
         </div>-->
 
     <div class="col-md-12 saved-list no-padding  " ng-repeat="item in favorites.items" style="margin-bottom: 15px;">
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> <span class="badge alert-warning" ng-show="item.concept.definitionStatus === 'PRIMITIVE'" title="Primitive"
+                 >&nbsp;</span>
+          <span class="badge alert-warning" ng-show="item.concept.definitionStatus !== 'PRIMITIVE'"
+                title="Fully Defined"
+                >≡&nbsp;</span></div>
       <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
       </div>
@@ -95,7 +115,14 @@
         </button>
       </div>-->
       <div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4">
-
+ <button type="button"
+                  ng-click="viewConceptInTaxonomy(item)"
+                  ng-disabled="!item.concept.active"
+                  class="tn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                  ng-class="[{'fa fa-book purple' : item.concept.active}, {'fa fa-power-off red' : !item.concept.active }]">
+            <span ng-if="item.concept.active">View Concept in Taxonomy</span>
+            <span ng-if="!item.concept.active">Inactive Concept</span>
+          </button>
         <button type="button"
                 class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
                 title="Edit"

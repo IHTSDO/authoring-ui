@@ -278,7 +278,9 @@ table th[class*=col-] {
   }
 }
 
-.no-table-data{
-    cursor: none;
-    text-align:center;
+.table tr.clickable-row:hover {
+  background-color: #e5f7fd!important;
+}
+.table tr.clickable-row:hover td.review-columns {
+  background-color: #e4e4e4!important;
 }
