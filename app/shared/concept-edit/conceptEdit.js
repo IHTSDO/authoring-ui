@@ -544,8 +544,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // console.debug(scope.concept, scope.unmodifiedConcept);
-
           // if active, ensure concept is fully saved prior to inactivation
           // don't want to persist the inactivation reason without a forced
           // save
@@ -556,10 +554,33 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if inactive, simply set active and autoSave
           if (!scope.concept.active) {
-            if (!scope.errors) {
-              scope.errors = [];
-            }
-            scope.errors.push('Reactivating concepts is not currently supported');
+            scope.warnings = ['Please select which relationships you would like to activate along with the concept, or create a new Is A and click save.'];
+              if(!scope.concept.relationships)
+              {
+                  console.log('here');
+                  scope.concept.relationships = [];
+                  scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
+                  autoSave();
+                  scope.computeRelationshipGroups();
+              }
+              else
+              {
+                  var stated = false;
+                  angular.forEach(scope.concept.relationships, function (relationship) {
+                      if(relationship.characteristicType === 'STATED_RELATIONSHIP')
+                      {
+                          stated = true;
+                      }
+                    });
+                  if(stated === false)
+                  {
+                      scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
+                      autoSave();
+                      scope.computeRelationshipGroups();
+                  }
+              }
+              scope.concept.active = true;
+              scope.toggleHideInactive();
           }
 
           // otherwise, proceed with checks and inactivation reason persistence

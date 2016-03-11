@@ -57,7 +57,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           scope.initializeWindowSize();
         });
         scope.$on('repeatComplete', function (event, data) {
-          console.log('here');
           scope.initializeWindowSize();
         });
       }
