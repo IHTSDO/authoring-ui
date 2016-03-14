@@ -193,7 +193,7 @@ angular.module('singleConceptAuthoringApp')
       });
       if (!elementFound) {
         console.debug('Concept does not have IsA relationship');
-        concept.relationships.push(getNewIsaRelationship());
+        //concept.relationships.push(getNewIsaRelationship());
       }
 
       return concept;
