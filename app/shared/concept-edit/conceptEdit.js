@@ -519,6 +519,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // otherwise, just save
             else {
               saveHelper(scope.concept).then(function () {
+                //scope.validateConcept();
                 notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
                 scope.saving = false;
               }, function (error) {
@@ -1252,6 +1253,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
           relationship.active = !relationship.active;
+          relationship.effectiveTime = null;
           componentAuthoringUtil.applyMinimumFields(scope.concept);
           scope.getDomainAttributes();
           autoSave();
