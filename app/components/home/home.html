@@ -297,8 +297,8 @@
                           title="View Feedback (Unread)">
                     <div class="md md-email"></div>
                     <span>New Feedback </span>
-                  </button>
-                {{task.updated | date: "MM-dd  'at' h:mma"}} - {{task.reviewer.username}}
+                  </button> username - date of last feedback
+               {{feedback.creationDate | date: "MM-dd  'at' h:mma"}} - {{feedback.fromUsername}} 
                 </a>
               </td>
                
