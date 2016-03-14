@@ -459,9 +459,9 @@ color: #ba68c8;
 
 .sca-light .blue.green.btn-round, {background-color: transparent!important; color:#42A5F5}
 .sca-light .blue.green.btn-round:hover {color: #fff!important; background-color:#42A5F5!important}
-.sca-light .red.btn-round {background-color: transparent; color:#e92848}
+.sca-light .red.btn-round {background-color: transparent; color:#e92848!important}
 .sca-light .red.btn-round:hover {color: #fff; background-color:#e92848}
-.sca-light .amber.btn-round {background-color: transparent; color:#ffca28}
+.sca-light .amber.btn-round {background-color: transparent; color:#ffca28!important}
 .sca-light .amber.btn-round:hover {color: #fff; background-color:#ffca28}
 .sca-light .pink.darken-1.btn-round {background-color: transparent; color:#d81b60}
 .sca-light .pink.darken-1.btn-round:hover {color: #fff; background-color:#d81b60}
@@ -481,15 +481,20 @@ color: #ba68c8;
 .sca-light .indicator_grey:hover{     color:#666!important;background-color:transparent!important;}
 .sca-light .indicator_green{    color: #81C784!important; background-color:transparent!important;}
 .sca-light .indicator_green:hover{     color: #66BB6A!important; background-color:transparent!important;}
-.sca-light .indicator_grey.indicator_grey{    color:#666!important;background-color:transparent!important;}
-.sca-light .indicator_grey.indicator_grey:hover{    color:#666!important;background-color:transparent!important;}
 
 .sca-light .indicator_blue{   color: #00a4e4!important; background-color:transparent!important;}
 .sca-light .indicator_blue:hover{     color: #0d8aee!important; background-color:transparent!important;}
-.sca-light .indicator_amber{    color: #ffca28; background-color:transparent!important;}
-.sca-light .indicator_amber:hover{     color: #ff8f00; background-color:transparent!important;}
-.sca-light .indicator_red{    color: #EF5350; background-color:transparent!important;}
-.sca-light .indicator_red:hover{     color: #d44a47; background-color:transparent!important;}
+.sca-light .indicator_amber{    color: #ffca28!important;; background-color:transparent!important;}
+.sca-light .indicator_amber:hover{     color: #ff8f00!important;; background-color:transparent!important;}
+.sca-light .indicator_red{    color: #EF5350!important; background-color:transparent!important;}
+.sca-light .indicator_red:hover{     color: #d44a47!important; background-color:transparent!important;}
+.sca-light .indicator_grey.indicator_grey{    color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_grey.indicator_grey:hover{    color:#666!important;background-color:transparent!important;}
+
+.sca-light .indicator_grey.indicator_red{    color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_grey.indicator_red:hover{    color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_grey.indicator_amber{    color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_grey.indicator_amber:hover{    color:#666!important;background-color:transparent!important;}
 
 .sca-light button[disabled] .project-icon {
     background-color: #e7e7e7!important;
