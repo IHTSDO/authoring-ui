@@ -184,16 +184,16 @@ angular.module('singleConceptAuthoringApp')
         concept.descriptions.push(getNewPt());
       }
 
-      // check one IsA relationship exists
+      // check one relationship exists
       elementFound = false;
       angular.forEach(concept.relationships, function (relationship) {
-        if (relationship.type.conceptId === '116680003' && relationship.active) {
+        if (relationship.active) {
           elementFound = true;
         }
       });
       if (!elementFound) {
         console.debug('Concept does not have IsA relationship');
-        //concept.relationships.push(getNewIsaRelationship());
+        concept.relationships.push(getNewIsaRelationship());
       }
 
       return concept;
