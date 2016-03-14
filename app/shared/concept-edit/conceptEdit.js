@@ -539,11 +539,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // NOTE: This function hard-saves the concept, to prevent sync errors
         // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function () {
-
           if (scope.isStatic) {
             return;
           }
-
           // if active, ensure concept is fully saved prior to inactivation
           // don't want to persist the inactivation reason without a forced
           // save
@@ -551,7 +549,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             window.alert('You must save your changes to the concept before ' + (scope.concept.active ? 'inactivation.' : 'reactivation.'));
             return;
           }
-
           // if inactive, simply set active and autoSave
           if (!scope.concept.active) {
             scope.warnings = ['Please select which relationships you would like to activate along with the concept, or create a new Is A and click save.'];
@@ -579,13 +576,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       scope.computeRelationshipGroups();
                   }
               }
+              scope.getDomainAttributes();
               scope.concept.active = true;
               scope.toggleHideInactive();
           }
 
           // otherwise, proceed with checks and inactivation reason persistence
           else {
-
             // mimic actual inactivation
             var conceptCopy = angular.copy(scope.concept);
             conceptCopy.isLeafInferred = true;
@@ -601,12 +598,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
               return;
             }
-
             // validate the concept
             snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
-
-              console.log('Validating concept prior to inactivation');
-
               // check for errors -- NOTE: Currently unused, but errors are
               // printed to log if detected
               var errors = validationResults.filter(
@@ -619,18 +612,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               } else {
                 console.log('No errors detected');
               }
-
-              /*    if (errors.length > 0) {
-
-               if (!scope.errors) {
-               scope.errors = [];
-               }
-               scope.errors.push('Cannot inactivate concept:');
-               errors.map(function (error) {
-               scope.errors.push(error.message)
-               });
-               } else {
-               notificationService.sendMessage('passed', 5000);*/
 
               selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
