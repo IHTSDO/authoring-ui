@@ -2051,9 +2051,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this relationship is unpublished, but has an SCTID
           // remove the id to allow proper deletion and update
           // Otherwise, changes 'revert' to previously saved values
-          if (!relationship.effectiveTime) {
-            delete relationship.relationshipId;
-          }
+//          if (!relationship.effectiveTime) {
+//            delete relationship.relationshipId;
+//          }
 
           scope.computeRelationshipGroups();
 
