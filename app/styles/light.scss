@@ -179,10 +179,7 @@
    color: #0091d7;
     background-color: transparent;
 }
-.sca-light .Promoted.badge {
-    background-color: transparent;
-    color: #43a047;
-}
+
 .sca-light .New.badge {
     background-color: transparent;
     color: #43a047;
@@ -485,8 +482,8 @@ color: #ba68c8;
 .sca-light .indicator_grey:hover{     color:#666!important;background-color:transparent!important;}
 .sca-light .indicator_green{    color: #81C784!important; background-color:transparent!important;}
 .sca-light .indicator_green:hover{     color: #66BB6A!important; background-color:transparent!important;}
-.sca-light .indicator_grey.sca-light .indicator_grey{    color:#666!important;background-color:transparent!important;}
-.sca-light .indicator_grey.sca-light .indicator_grey:hover{    color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_grey.indicator_grey{    color:#666!important;background-color:transparent!important;}
+.sca-light .indicator_grey.indicator_grey:hover{    color:#666!important;background-color:transparent!important;}
 
 .sca-light .indicator_blue{   color: #00a4e4!important; background-color:transparent!important;}
 .sca-light .indicator_blue:hover{     color: #0d8aee!important; background-color:transparent!important;}
