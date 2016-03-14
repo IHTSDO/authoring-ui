@@ -59,7 +59,6 @@
                                             <span > <div class="message_classification_{{project.latestClassificationJson.status}}"> </div></span>
 
                   </button>
-                    <div class="side-text pull-left">{{project.latestClassificationJson.status}}</div>
                 </a>
                
 
@@ -79,9 +78,7 @@
                       <div class="md md-school "></div>
                     <span > <div class="message_validation_{{project.validationStatus}}"> </div></span>
                   </button>
-                    <div ng-show="project.validationStatus != null && project.validationStatus !== 'NOT_TRIGGERED'"
-                       class="side-text pull-left">{{project.validationStatus}}
-                  </div>  
+                 
                 </a>
             
 

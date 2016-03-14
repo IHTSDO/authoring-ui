@@ -7,9 +7,13 @@
   .Available.badge {
     margin: 3px 3px 3px 3px;
   }
-  .review-columns{background-color:#f2f2f2; border-top-color:#e3e3e3!important;}
+  
   .not_in_review {
     background-color: #e5e5e5;
+	color:#a3a3a3;
+}
+.sca-light   .not_in_review {
+    background-color: #fff;
 	color:#a3a3a3;
 }
  .not_in_review.btn-round  {
@@ -48,13 +52,13 @@
           </div>
           <div class="col-md-1">
             <div class="pull-right p-t-20">
-              <button type="button" class="btn btn-round   btn-info ng-scope tooltips-left tooltips-light normal-case">
+              <button type="button" class="btn btn-round   btn-info ng-scope tooltips-left tooltips-light ">
                 <div> {{tasks.length}}</div>
                 <span>{{tasks.length}} tasks are assigned to you </span>
 
                 <div class="ripple-wrapper"></div>
               </button>
-              <button type="button" class="btn btn-round   btn-default tooltips-left tooltips-light normal-case"
+              <button type="button" class="btn btn-round   btn-default tooltips-left tooltips-light "
                       title="Create New Task"
                       ng-click="openCreateTaskModal()">
                 <div class="md md-add"></div>
@@ -99,16 +103,19 @@
                           ng-class="[{
                           indicator_blue: task.latestClassificationJson.status === 'RUNNING'},
                          
-                          {indicator_green : task.latestClassificationJson.status === 'COMPLETED'},
+                          {indicator_green : task.latestClassificationJson.status === 'COMPLETED' && task.latestClassificationJson.equivalentConceptsFound === false},
+                          {indicator_green :  task.latestClassificationJson.status === 'COMPLETED' && task.latestClassificationJson.redundantStatedRelationshipsFound === false},
                           {indicator_red : task.latestClassificationJson.status === 'FAILED'},
-                          {indicator_red : task.latestClassificationJson.equivalentConceptsFound === true || task.latestClassification.status === 'FAILED'},
-                           {indicator_green : task.latestClassificationJson.status === 'SAVED'},
+                         
+                          {indicator_grey : task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassification.status === 'STALE'},
+                           {indicator_green : task.latestClassificationJson.status === 'SAVED' && task.latestClassification.status !== 'STALE'},
                             {indicator_grey : task.latestClassificationJson.status === 'STALE'},
                            {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
-                           {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
+                            {indicator_red : task.latestClassificationJson.equivalentConceptsFound === true}
+                           ]"
                           class="btn btn-round   btn-default pull-left tooltips-right normalcase  ">
-                    <div class="md md-notifications "></div>
-                                        <span > <div class="message_classification_{{task.latestClassificationJson.status}}"> </div></span>
+                    <div class="md md-notifications "></div> 
+                                        <span > <div class="message_classification_{{task.latestClassificationJson.status}}"><div ng-if="task.latestClassificationJson.equivalentConceptsFound === true"> but equivalent relationships were found </div> </div></span>
                   </button>
                 </a>
 
@@ -143,25 +150,25 @@
                 </div>
                 <div ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
-              <td data-title="'Review'" sortable="'reviewer'" class="review-columns">
+              <td data-title="'Review'" sortable="'reviewer'" >
                 <div ng-if="task.status === 'In Review'" class="badge {{task.status}}">{{task.status}}</div>
                
                  <div ng-show="task.status !== 'In Review'" class="badge not_in_review">Not In Review
         </div>
 
               </td>
-              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" class="review-columns">
+              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light normal-case"
+                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
                     >
                     <div class="md md-drafts"></div>
                     <span>View Feedback</span>
 
                   </button>
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light normal-case"
+                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
                           title="View Feedback (Unread)">
                     <div class="md md-email"></div>
                     <span>New Feedback </span>
@@ -202,7 +209,7 @@
           </div>
           <div class="col-md-1">
               <span class="pull-right p-t-20">
-                  <button type="button" class="btn btn-round   btn-info ng-scope tooltips-left tooltips-light normal-case">
+                  <button type="button" class="btn btn-round   btn-info ng-scope tooltips-left tooltips-light ">
                     {{reviewTasks.length}}
                     <span> {{reviewTasks.length}} reviews are in progress</span>
                   </button>
@@ -247,7 +254,7 @@
                             {indicator_grey : task.latestClassificationJson.status === 'STALE'},
                            {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
                            {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
-                          class="btn btn-round   btn-default pull-left tooltips-right normalcase ">
+                          class="btn btn-round   btn-default pull-left tooltips-right">
                     <div class="md md-notifications "></div>
                                         <span > <div class="message_classification_{{task.latestClassificationJson.status}}"> </div></span>
 
@@ -276,29 +283,28 @@
               </td>
 
             
-  <td data-title="'Review Status'" sortable="'reviewer'"  class="review-columns">
+  <td data-title="'Review Status'" sortable="'reviewer'"  >
                 <div ng-if="task.reviewer" class="badge {{task.status}}">{{task.status}}</div>
                 <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
               </td>
                       
-              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" class="review-columns">
+              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light normal-case"
+                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
                     >
                     <div class="md md-drafts"></div>
                     <span>View Feedback</span>
 
                   </button>
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light normal-case"
+                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
                           title="View Feedback (Unread)">
                     <div class="md md-email"></div>
                     <span>New Feedback </span>
-                  </button> username - date of last feedback
-               {{feedback.creationDate | date: "MM-dd  'at' h:mma"}} - {{feedback.fromUsername}} 
+                  </button> 
                 </a>
               </td>
    

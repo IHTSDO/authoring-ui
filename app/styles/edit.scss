@@ -668,14 +668,18 @@ select.primitive {
   color: #bebebe;
   box-shadow: none;
   color: #009cd7;
+  margin-top: 3px;
 
 }
 
 .sidebar-tabs.nav > li {
-  width: 25%;
+  width: 20%;
 
 }
-
+.sidebar-tabs.nav-tabs > li > a {
+    line-height: 1.846;
+    border-radius: 0px ;
+}
 .sidebar-bg {
   background-color: #ececec;
 }

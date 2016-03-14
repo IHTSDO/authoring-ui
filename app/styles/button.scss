@@ -118,56 +118,63 @@ button.fsn-title-button{width:100%;}
 	height:auto;
 	word-wrap:break-word!important;
 }
-
+<!--.review-columns{background-color:#f2f2f2; border-top-color:#e3e3e3!important;}-->
 .indicator_grey{    background-color: #f2f2f2!important; color:#666!important;}
 .indicator_grey:hover{    background-color: #dddddd!important; color:#666!important;}
 .indicator_green{    background-color: #81C784!important; color:#fff!important;}
 .indicator_green:hover{     background-color: #66BB6A!important; color:#fff!important;}
+.indicator_red{    background-color: #EF5350!important; color:#fff;}
+.indicator_red:hover{     background-color: #d44a47!important; color:#fff;}
+
 .indicator_grey.indicator_grey{    background-color: #f2f2f2!important; color:#666!important;}
 .indicator_grey.indicator_grey:hover{    background-color: #dddddd!important; color:#666!important;}
+.indicator_grey.indicator_red{    background-color: #f2f2f2!important; color:#666!important;}
+.indicator_grey.indicator_red:hover{    background-color: #dddddd!important; color:#666!important;}
+.indicator_grey.indicator_grey{    background-color: #f2f2f2!important; color:#666!important;}
+.indicator_grey.indicator_grey:hover{    background-color: #dddddd!important; color:#666!important;}
+.indicator_grey.indicator_amber{    background-color: #f2f2f2!important; color:#666!important;}
+.indicator_grey.indicator_amber:hover{    background-color: #dddddd!important; color:#666!important;}
 
 .indicator_blue{   background-color: #00a4e4!important; color:#fff!important;}
 .indicator_blue:hover{     background-color: #0d8aee!important; color:#fff!important;}
 .indicator_amber{    background-color: #ffca28; color:#fff;}
 .indicator_amber:hover{     background-color: #ff8f00; color:#fff;}
-.indicator_red{    background-color: #EF5350; color:#fff;}
-.indicator_red:hover{     background-color: #d44a47; color:#fff;}
 
 .message_validation_COMPLETED::before {
-    content: "Validation successfully completed.";
+    content: "Validation successfully completed";
 }
 .message_validation_VALIDATING::before {
-    content: "Validation is in progress.";
+    content: "Validation is in progress";
 }
 .message_validation_FAILED::before {
-    content: "Validation has failed.";
+    content: "Validation has failed";
 }
 .message_validation_SCHEDULED::before {
-    content: "Validation has been scheduled.";
+    content: "Validation has been scheduled";
 }
 .message_validation_BUILDING::before {
-    content: "Validation Report is building.";
+    content: "Validation Report is building";
 }
 
 
 .message_classification_COMPLETED::before {
-    content: "Classification successfully completed.";
+    content: "Classification successfully completed";
 }
 .message_classification_RUNNING::before {
-    content: "Classification is in progress.";
+    content: "Classification is in progress";
 }
 .message_classification_FAILED::before {
-    content: "classification has failed.";
+    content: "classification has failed";
 }
 .message_classification_SCHEDULED::before {
-    content: "Classification has been scheduled.";
+    content: "Classification has been scheduled";
 }
 .message_classification_BUILDING::before {
-    content: "Classification Report is building.";
+    content: "Classification Report is building";
 }
 .message_classification_SAVED::before {
-    content: "Classification has been saved.";
+    content: "Classification has been saved";
 }
 .message_classification_STALE::before {
-    content: "Classification has gone stale.";
+    content: "Classification has gone stale";
 }

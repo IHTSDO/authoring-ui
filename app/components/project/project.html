@@ -216,10 +216,10 @@
                            {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
                           class="btn btn-round btn-default pull-left tooltips-right normalcase ">
                     <div class="md md-notifications "></div>
-                                                              <span > <div class="message_classification_{{task.latestClassificationJson.status}}"> </div></span>
+                                                             <span > <div class="message_classification_{{task.latestClassificationJson.status}}"><div ng-if="task.latestClassificationJson.equivalentConceptsFound === true"> but equivalent relationships were found </div> </div></span>
 
                   </button>
-                  <div class="side-text pull-left">{{task.latestClassificationJson.status}}</div>
+               
                   </a>
 
           
@@ -239,9 +239,7 @@
                           class="btn btn-round btn-default lighten-2 pull-left ">
                     <div class="md md-school "></div>    <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>
-                  <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
-                       class="side-text pull-left">{{task.latestValidationStatus}}
-                  </div>
+                  
                 
                 </a>
               </td>
