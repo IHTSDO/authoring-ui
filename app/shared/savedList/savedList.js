@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.savedList', [])
 
-  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', 'scaService', 'snowowlService', '$routeParams', function savedListCtrl($scope, $rootScope, $location, scaService, snowowlService, $routeParams) {
+  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', '$modal', 'scaService', 'snowowlService', '$routeParams', function savedListCtrl($scope, $rootScope, $location, $modal, scaService, snowowlService, $routeParams) {
 
     // name of the panel for the Saved List
     var panelId = 'saved-list';
@@ -79,6 +79,28 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.concept.fsn};
     };
+      
+    $scope.openConceptInformationModal = function (result) {
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/concept-information/conceptInformationModal.html',
+          controller: 'conceptInformationModalCtrl',
+          resolve: {
+            conceptId: function () {
+              return result.concept.conceptId;
+            },
+            branch: function () {
+              return $scope.branch;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (response) {
+          // do nothing
+        }, function () {
+          // do nothing
+        });
+      };
+      
     $scope.$on('stopEditing', function (event, data) {
           if (!data || !data.concept) {
             console.error('Cannot handle stop editing event: concept must be supplied');
