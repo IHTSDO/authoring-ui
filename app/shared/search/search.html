@@ -68,10 +68,10 @@
         </div>
         <div class="col-md-1 no-padding">
            <span class="badge alert-warning" ng-show="result.concept.definitionStatus === 'PRIMITIVE'" title="Primitive"
-                 ng-click="openConceptInformationModal">&nbsp;</span>
+                 ng-click="openConceptInformationModal(result)">&nbsp;</span>
           <span class="badge alert-warning" ng-show="result.concept.definitionStatus !== 'PRIMITIVE'"
                 title="Fully Defined"
-                ng-click="openConceptInformationModal">≡&nbsp;</span>
+                ng-click="openConceptInformationModal(result)">≡&nbsp;</span>
         </div>
         <div class="no-padding"
              ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
