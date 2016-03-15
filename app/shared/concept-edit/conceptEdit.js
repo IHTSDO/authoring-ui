@@ -1252,11 +1252,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
-          relationship.active = !relationship.active;
-          relationship.effectiveTime = null;
-          componentAuthoringUtil.applyMinimumFields(scope.concept);
-          scope.getDomainAttributes();
-          autoSave();
+          if(scope.concept.active === true)
+          {
+              relationship.active = !relationship.active;
+              relationship.effectiveTime = null;
+              componentAuthoringUtil.applyMinimumFields(scope.concept);
+              scope.getDomainAttributes();
+              autoSave();
+          }
+          else{
+            scope.warnings = ['You must activate the concept before its components.'];   
+          }
         };
 
         scope.getConceptsForTypeahead = function (searchStr) {
@@ -2053,9 +2059,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this relationship is unpublished, but has an SCTID
           // remove the id to allow proper deletion and update
           // Otherwise, changes 'revert' to previously saved values
-//          if (!relationship.effectiveTime) {
-//            delete relationship.relationshipId;
-//          }
+          if (!relationship.effectiveTime) {
+            delete relationship.relationshipId;
+          }
 
           scope.computeRelationshipGroups();
 
