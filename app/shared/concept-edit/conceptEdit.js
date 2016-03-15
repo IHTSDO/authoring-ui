@@ -579,7 +579,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
               scope.getDomainAttributes();
               scope.concept.active = true;
-              scope.toggleHideInactive();
+              scope.hideInactive = false;
           }
 
           // otherwise, proceed with checks and inactivation reason persistence
