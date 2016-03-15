@@ -357,7 +357,7 @@ drag-image="getDragImageForDescription(description)"></button>
               ng-disabled="isStatic"
               ng-model="relationship.groupId"
               ng-model-options="{updateOn: 'blur'}"
-              ng-change="updateRelationship(relationship)"
+              ng-change="updateRelationship(relationship, true)"
               class="form-control rg msd-elastic: \n;" type="text" placeholder="#"
               ui-on-drop="dropNullOp()">
             </textarea>

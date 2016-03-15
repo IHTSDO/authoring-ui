@@ -1302,7 +1302,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.type.conceptId = item.concept.conceptId;
           relationship.type.fsn = item.concept.fsn;
 
-          scope.updateRelationship(relationship);
+          scope.updateRelationship(relationship, false);
         };
 
         /**
@@ -1322,7 +1322,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.target.conceptId = item.concept.conceptId;
           relationship.target.fsn = item.concept.fsn;
 
-          scope.updateRelationship(relationship);
+          scope.updateRelationship(relationship, false);
         };
 
 ////////////////////////////////
@@ -1438,7 +1438,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
                 scope.warnings = null;
-                scope.updateRelationship(relationship);
+                scope.updateRelationship(relationship, false);
               }
 
               // notify user of inappropriate relationship target by MRCM
@@ -1454,7 +1454,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.target.conceptId = data.id;
             relationship.target.fsn = data.name;
             scope.warnings = null;
-            scope.updateRelationship(relationship);
+            scope.updateRelationship(relationship, false);
           }
         };
 
@@ -1489,7 +1489,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
             scope.warnings = null;
-            scope.updateRelationship(relationship);
+            scope.updateRelationship(relationship, false);
           }
 
           // notify user of rules violation
@@ -2050,7 +2050,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 // function to update relationship and autoSave if indicated
-        scope.updateRelationship = function (relationship) {
+        scope.updateRelationship = function (relationship, roleGroupOnly) {
           scope.getDomainAttributes();
           if (!relationship) {
             return;
@@ -2059,7 +2059,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this relationship is unpublished, but has an SCTID
           // remove the id to allow proper deletion and update
           // Otherwise, changes 'revert' to previously saved values
-          if (!relationship.effectiveTime) {
+          if (!relationship.effectiveTime && !roleGroupOnly) {
             delete relationship.relationshipId;
           }
 
@@ -2344,7 +2344,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
 
-          scope.updateRelationship(relationship);
+          scope.updateRelationship(relationship, false);
         };
 
         scope.setRelationshipTargetConceptFromMrcm = function (relationship, item) {
@@ -2358,7 +2358,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.target.fsn = item.fsn.term;
           relationship.target.definitionStatus = item.definitionStatus;
 
-          scope.updateRelationship(relationship);
+          scope.updateRelationship(relationship, false);
         };
 
 //////////////////////////////////////////////
