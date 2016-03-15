@@ -1,0 +1,257 @@
+
+  
+  <!-- for ng-table checkboxes --> 
+  <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
+  resulting in elements being placed outside of the table (i.e. position: fixed)
+  --> 
+  <script type="text/ng-template" id="checkboxheader.html">
+    <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
+  </script> 
+  <script type="text/ng-template" id="filterHeader.html">
+    <input type="text" ng-model="filter">
+
+  </script> 
+  <script type="text/ng-template" id="ng-table/filters/hasFeedback.html">
+    <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value=""/> None
+    <br/>
+    <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
+  </script>
+  
+  <style>
+  
+  </style>
+  <div class="row m-l-10 m-t-15 "> 
+    <!-- Title section -->
+    
+    <div>
+      <label class="control-label">Task Author: </label>
+      <h4 class="timeline-title">{{task.assignee.displayName}}</h4>
+      <div ng-if="role === 'AUTHOR'" class="pull-left p-5">
+      <a
+                  ng-if="task.status === 'In Review'"
+                  ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
+                  ng-click="cancelReview()">Cancel Review </a>
+    </div>
+    </div>
+        <div>
+      <label class="control-label">Task Reviewer: </label>
+      <h4 class="timeline-title">{{task.reviewer.displayName}}</h4>
+         <!-- Cancel/Unclaim Review button -->
+    
+    <div  ng-if="role === 'REVIEWER'" class="pull-left col-md-12  no-padding">
+      <a 
+                  ng-hide="task.status === 'Review Completed'"
+                  ng-click="unclaimReview()">Unclaim Review </a>
+    </div>
+         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
+      reviewer </div>
+    <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status !== 'In Review'">Task not submitted for
+      review </div>
+    </div>
+
+ 
+ 
+ 
+   
+  </div>
+  
+  
+  <style>
+  .worklist {background-color:#fff; border:#f5f5f5 1px solid }
+ </style>
+  <div class="col-md-12 no-padding feedback-lists worklist" ng-if="feedbackContainer.review">
+    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist"
+            ng-init="actionTab=1">
+      <li role="presentation" class="active"> <a style="margin: 0"
+               ng-click="actionTab=1"
+               aria-controls="home"
+               role="tab"
+               data-toggle="tab"> Concepts to Review</a> {{feedbackContainer.review.conceptsReviewed.length}}</li>
+      <li role="presentation" class="" ng-show="role === 'REVIEWER'"><a style="margin: 0"
+                                                                            ng-click="actionTab=2"
+                                                                            aria-controls="home"
+                                                                            role="tab"
+                                                                            data-toggle="tab">Approved  <button type="button" class="btn btn-round   btn-info ng-scope tooltips-left tooltips-light ">
+                <div> {{feedbackContainer.review.conceptsReviewed.length}}</div>
+                <span>{{feedbackContainer.review.conceptsReviewed.length}} </span>
+
+                <div class="ripple-wrapper"></div>
+              </button>
+        </a> </li>
+ 
+      <!-- only appears if author row -->
+      <div class="pull-right p-5" ng-if="role === 'AUTHOR'">
+        <button class="btn btn-round btn-default pink lighten-2" title="Hide/show concepts without feedback"
+                    ng-click="toggleViewOnlyConceptsWithFeedback()"><span class="md md-email "></span> </button>
+      </div>
+      
+      
+    </ul>
+    
+    <!--Tab panes -->
+    <div class="tab-content col-sm-12 col-md-12 no-padding" ng-if="feedbackContainer.review"> 
+      <!--Concepts To Review -->
+      <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1"> 
+        
+        <!-- No results display banner -->
+        <div class="ng-table-no-results"
+                 ng-if="feedbackContainer.review && feedbackContainer.review.conceptsToReview.length === 0"> No concepts to review </div>
+        <table show-filter="false" ng-table="conceptsToReviewTableParams"
+                   ng-show="feedbackContainer.review.conceptsToReview.length > 0"
+                   template-pagination="utilities/data-table-pager.html"
+                   class="table table-full table-full-small feedback-table" drop-channel="feedbackConcept">
+          <div class="col-md-7 no-padding">
+            <input class=" input-filter form-control ng-scope ng-valid ng-touched"
+                                        placeholder="Filter concepts"
+                                         ng-show="feedbackContainer.review.conceptsToReview.length > 0"
+                                        ng-model="conceptsToReviewSearchStr"
+                                        ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
+                                        ng-model-options="{debounce: 500}" ui-on-drop="null">
+          </div>
+          
+              <div class="col-md-5 no-padding ">
+              <!-- Only appears if reviewer role -->
+      <div class="pull-right p-5" ng-if="role === 'REVIEWER'">
+        <button class="btn btn-round btn-default black tooltips-left tooltips-light normal-case"
+                    ng-click="groupSelectedConcepts(actionTab)">
+        <div class="md md-layers "></div>
+        <span>Group selected concepts</span> </button>
+        <button class="btn btn-round btn-default pink lighten-2 tooltips-left tooltips-light normal-case"
+                    title="Add feedback to selected concepts"
+                    ng-click="selectConceptsForFeedback()">
+        <div class="md md-forum "></div>
+        <span>Add feedback to selected concepts</span> </button>
+        <button class="btn btn-round btn-default green lighten-2 tooltips-left tooltips-light normal-case"
+                    title="Mark selected as reviewed"
+                    ng-click="moveMultipleToOtherList(actionTab)">
+        <div
+                class="md md-playlist-add "></div>
+        <span>Mark selected as reviewed</span></button>
+        <button class="btn btn-round btn-default blue lighten-2 tooltips-left tooltips-light normal-case"
+                    title="Show selected in edit panel"
+                    ng-click="addMultipleToEdit(actionTab)">
+        <div class="md md-edit "></div>
+        <span>Show selected in edit panel</span> </button>
+      </div>
+              </div>
+          <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
+          
+          <tr ng-repeat="concept in conceptsToReviewViewed">
+            <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxToReview.html'"><input type="checkbox" ng-model="concept.selected" ui-on-drop=""></td>
+            <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
+                    filter="{ 'term': 'text' }"
+                    ui-draggable="true" drag="concept"
+                    drag-channel="feedbackConcept" drop-channel="feedbackConcept"
+                    ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
+            
+            <!--Author Controls -->
+            <td ng-if="role === 'AUTHOR'" class=" col-controls col-md-3 no-padding"
+                    data-title="'Read/Unread'" sortable="'read'"><div class="pull-right ">
+                <button
+                      class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
+                      title="Flagged for follow-up"
+                      ng-show="concept.requestFollowup">
+                <div
+                        class="md md-flag"></div>
+                <span>Flagged for follow-up</span></button>
+                <button ng-show="concept.messages.length > 0"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-left tooltips-light normal-case"
+
+                            ng-click="selectConceptForFeedback(concept)">
+                <div
+                        ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "><span> View/submit feedback for concept</span> </div>
+                </button>
+                <button
+                      class="btn btn-round btn-default blue m-r-5 lighten-2 tooltips-left tooltips-light normal-case"
+                      ng-click="addToEdit(concept)"
+                      ng-disabled="concept.viewed">
+                <div
+                        class="md md-edit "><span>Add to Edit Panel</span></div>
+                </button>
+              </div></td>
+            
+            <!--Reviewer Controls -->
+            <td ng-if="role === 'REVIEWER'" class="col-controls col-md-4 no-padding">
+              <button
+                    class="btn btn-round pull-right btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
+                    ng-click="addToReviewed(concept)">
+              <div
+                      class="md md-thumb-up "></div>
+              <span>Approve</span></button>
+              <button
+                    class="btn pull-right btn-round btn-default blue lighten-2 tooltips-left tooltips-light normal-case"
+                    ng-click="addToEdit(concept)"
+                    ng-disabled="concept.viewed">
+              <div
+                      class="md md-edit "></div>
+              <span>Add to Edit Panel</span> </button></td>
+          </tr>
+        </table>
+        <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
+              <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)"
+                     id="select_all_to_review"
+                     name="filter-checkbox" value=""/>
+            </script> 
+      </div>
+      
+      <!--Concepts Reviewed-->
+      <div role="tabpanel" ng-if="actionTab === 2"> 
+        
+        <!-- No results display banner -->
+        <div class="ng-table-no-results"
+                 ng-if="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length === 0"> No reviewed concepts. </div>
+        <table show-filter="false" ng-table="conceptsReviewedTableParams"
+                   ng-show="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length > 0"
+                   template-pagination="utilities/data-table-pager.html"
+                   class="table table-full table-full-small feedback-table" drop-channel="feedbackConcept">
+          <div class="m-10 ">
+            <input class=" input-filter form-control ng-scope ng-valid ng-touched"
+                                        placeholder="Filter concepts"
+                                        ng-model="conceptsReviewedSearchStr"
+                                        ng-show="feedbackContainer.review.conceptsReviewed.length > 0"
+                                        ng-change="reloadConceptsToReview(conceptsReviewedSearchStr)"
+                                        ng-model-options="{debounce: 500}" ui-on-drop="null">
+          </div>
+          <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
+          
+          <tr ng-repeat="concept in conceptsReviewedViewed">
+            <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxReviewed.html'"><input type="checkbox" ng-model="concept.selected"></td>
+            <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
+                    filter="{ 'term': 'text' }"
+                    ui-draggable="true" drag="concept"
+                    drag-channel="feedbackConcept" drop-channel="feedbackConcept"
+                    ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
+            <td class="col-controls col-md-4 no-padding"><button
+                    class="btn btn-round btn-default purple lighten-2 pull-right tooltips-left tooltips-light normal-case"
+                    ng-click="returnToReview(concept)">
+              <div
+                      class="md md-thumb-down"></div>
+              <span>Unapprove</span></button></td>
+          </tr>
+        </table>
+        <script type="text/ng-template" id="ng-table/headers/checkboxReviewed.html">
+              <input type="checkbox" ng-model="checkedReviewed"
+                     ng-change="selectAll(actionTab, checkedReviewed)"
+                     id="select_all_reviewed"
+                     name="filter-checkbox" value=""/>
+            </script> 
+        <script type="text/ng-template" id="ng-table/headers/searchReviewed.html">
+              <input type="text" ng-model="conceptsReviewedTableParams.filter()['search']" class="form-control"
+                     placeholder="Search" autofocus/>
+            </script> 
+      </div>
+    </div>
+     </div>
+    <!-- Review In Progress / Review Complete toggle -->
+    <div ng-if="role === 'REVIEWER'" class="p-5 switch">
+      <label class="switch" ng-hide="task.status === 'Review Completed'"> Review in Progress
+        <input type="checkbox" ng-model="reviewComplete"
+                   ng-disabled="task.status === 'Review Completed'"
+                   ng-change="changeReviewStatus(reviewComplete)">
+        <span class="lever"></span> Review Complete </label>
+      <button ng-disabled="task.status === 'Review Completed'"
+                  class="btn btn-default pink darken-1 pull-right" style="text-transform: none"
+                  ng-show="task.status === 'Review Completed'"><i class="md md-check m-r-10"></i>Review is Complete </button>
+    </div>
+ 
+

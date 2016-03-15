@@ -53,11 +53,7 @@ input.feedback-search {
 .feedback .ta-scroll-window {
     margin-left: 0px;
 }
-.feedback-header {
-    background-color: #eee;
-    border:none;
-    color:#474747
-}
+
 .feedback-tabs {
     background-color: #fafafa;
 }
@@ -190,7 +186,7 @@ section thead input {
 
 .feedback .nav > li > a {
  
-    padding: 9px 5px 5px 5px;
+    padding: 4px;
 }
 .feedback-chat{padding:10px!important}
 .white{background-color:#fff;}
@@ -283,11 +279,17 @@ section thead input {
   }
 
   .feedback-header {
-    width: 100%;
+   left:25px;
     float: left;
 
 
-  }
+    background-color: transparent;
+    border:none;
+    color:#474747
+}
+
+  .feedback-window{border:1px #ececec solid;
+  background-color:#fff;}
 
   .feedback-header .username {
     font-weight: 500;
