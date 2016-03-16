@@ -19,20 +19,7 @@
     <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
   </script>
   <style>
-  .ta-editor.form-control.myform2-height, .ta-scroll-window.form-control.myform2-height  {
-    height: 100px;
-    min-height: 100px;
-    overflow: auto;
-    font-family: inherit;
-    font-size: 100%;
-	display:block;
-}
-.form-control.myform2-height > .ta-bind {
-    min-height: 95px;
-    padding: 6px 12px;
-}
-.clear-button{background-color:transparent}
-.clear-button:hover{background-color:transparent}
+
   </style>
 
     <!-- sidebar -->
@@ -45,19 +32,18 @@
 
   <!-- Taxonomy, models, and concepts -->
   <div class="col-md-9 no-padding" ng-if="viewedConcepts.length > 0">
-
+  <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
+              <div class="m-10">Loading review...</div>
+            </div>
 
     <div class="">
 
-      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
+      <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
         <div class="col-md-6">
 
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-          <a
-                    class=" pull-right clear-button tooltips-left tooltips-light normal-case m-r-5 "
-                    ng-click="selectConceptForFeedback(concept)">
-              <div class="md md-forum "> Leave Feedback</div>
-              <span>View/submit feedback for concept</span> </a>
+          
+       
         </div>
         <div class="col-md-6">
           <div concept-edit concept="concept" branch="branch" static="true" component-styles="styles[concept.conceptId]"
@@ -66,44 +52,31 @@
         <div class="col-md-12 row-fluid no-padding no-gutter" style="display: flex;"  ng-show="!isCollapsed">
             <div class="col-md-6 no-padding no-gutter">
             <!-- Loading placeholder -->
-            <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
-              <div class="m-10">Loading review...</div>
-            </div>
+          
 
             <!-- Main report and feedback content (once loaded) -->
             <div class="row m-l-10 no-gutter" ng-if="feedbackContainer.review">
 
               <!-- Review report (concept list) -->
 
-
-              <div class="col-md-12 feedback-window" ng-show="subjectConcepts.length > 0">
-
-
-
+<div class="col-md-12 light_greys no-padding">
+    <div class=" pull-left clear-button tooltips-left tooltips-light normal-case m-l-5 "
+                    ng-click="selectConceptForFeedback(concept)">
+           {{viewedFeedback.length}} Total Comments </div>
+          <a
+                    class=" pull-right clear-button tooltips-left tooltips-light normal-case m-r-5 "
+                    ng-click="selectConceptForFeedback(concept)">
+              <div class="md md-forum "> Leave Feedback</div>
+              <span>View/submit feedback for concept</span> </a>
+</div>
+              <div class="col-md-12 " ng-show="subjectConcepts.length > 0">
+<div class="feedback-window row">
                 <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
                               ng-model="$parent.htmlVariable"
                                 ta-text-editor-class="form-control myform2-height" ta-html-editor-class="form-control myform2-height"
                               ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
-
-
-                <div class="col-md-12 no-padding m-t-10">
-                  <div class="col-md-6 no-padding">
-                  <div class="pull-left follow-up" ng-show="role === 'REVIEWER'"><span
-                    class="pull-left p-t-10"> Request follow-up </span><span
-                    class="pull-left p-5"><input type="checkbox" ng-model="requestFollowup"></span>
-                  </div>
-
-                  <div class="pull-right follow-up-right ">
-                    <button class="btn btn-default grey classify-buttons submit-review"
-                            ng-click="submitFeedback(requestFollowup)"
-                            style="text-transform: none">Submit Feedback
-                    </button>
-                    <button class="btn btn-default amber classify-buttons submit-validation" ng-click="htmlVariable = ''"
-                            style="text-transform: none">Clear
-                    </button>
-
-                  </div>
-                  </div>
+                                <div class="col-md-12 no-padding">
+                 
                      <div class="col-md-6 no-padding concept-filter ">
                   <input type="text" class="feedback-search " placeholder="Search concepts..."
                          ui-on-drop=""
@@ -114,44 +87,34 @@
                          typeahead-on-select="addConceptToFeedback($item)"
                          typeahead-editable="false" typeahead-min-length="3">
                 </div>
+ <div class="col-md-6 no-padding">
+                  <div class="pull-left follow-up" ng-show="role === 'REVIEWER'"><span
+                    class="pull-left p-t-10"> Request follow-up </span><span
+                    class="pull-left p-5"><input type="checkbox" ng-model="requestFollowup"></span>
+                  </div>
 
+                  <div class="pull-right follow-up-right ">
+                    <a class="pull-right clear-button tooltips-left tooltips-light normal-case m-r-5"
+                            ng-click="submitFeedback(requestFollowup)"
+                            style="text-transform: none"> <div class="md md-forum ">Send</div>
+                    </a>
+                     <a ng-if="role === 'REVIEWER'" class="pull-right clear-button tooltips-left tooltips-light normal-case m-r-5" ng-click="addToReviewed(concept)" style="text-transform: none"><div class="md md-thumb-up ">Approve</div>
+                    </a>
+                      <a class="pull-right clear-button tooltips-left tooltips-light normal-case m-r-5" ng-click="htmlVariable = ''"
+                            style="text-transform: none"><div class="md md-send ">Clear</div>
+                    </a>
+
+                  </div>
+                  </div>
                 </div>
 
+</div>
+
+              
 
 
               </div>
-        <style>
-        .triangle-isosceles {
-            position: relative;
-            padding: 7px;
-            margin: 1em 0 3em;
-            color: #000;
-            background: #f3961c;
-            background: -webkit-gradient(linear, 0 0, 0 100%, from(#ececec), to(#ececec));
-            background: -moz-linear-gradient(#ececec, #ececec);
-            background: -o-linear-gradient(#ececec, #ececec);
-            background: linear-gradient(#ececec, #ececec);
-            -webkit-border-radius: 2px;
-            -moz-border-radius: 2px;
-            border-radius: 2px;
-        }
-        /* THE TRIANGLE
-        ------------------------------------------------------------------------------------------------------------------------------- */
-
-        /* creates triangle */
-        .triangle-isosceles:after {
-          content:"";
-          position:absolute;
-          bottom:-7px; /* value = - border-top-width - border-bottom-width */
-          left:20px; /* controls horizontal position */
-          border-width:7px 7px 0; /* vary these values to change the angle of the vertex */
-          border-style:solid;
-          border-color:#ececec transparent;
-          /* reduce the damage in FF3.0 */
-          display:block;
-          width:0;
-        }
-        </style>
+       
               <!-- Feedback messages -->
               <div class="col-md-12 feedback-chat p-10" ng-show="subjectConcepts.length > 0">
 
@@ -162,15 +125,22 @@
                 <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
 
 
-                 <p compile-html="feedback.messageHtml" class="triangle-isosceles col-md-12 " style="word-break: break-all; margin: 0px"></p>
+                 <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 " style="word-break: break-all; margin: 0px" 
+                 ng-class="[{
+                          author_feedback_chat : task.assignee.username  === feedback.fromUsername
+                          }]"
+                          
+                          ></p>
                     <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
-                            ng-show="feedback.feedbackRequested">
+                            ng-show="feedback.feedbackRequested" >
                       <div
                         class="md md-flag"></div>
                       <span>Reviewer requested follow-up</span></button>
-                         <div class="feedback-header">
+                         <div class="feedback-header" ng-class="[{
+                          pull_right : task.assignee.username  === feedback.fromUsername
+                          }]">
                     <span class="username">{{feedback.fromUsername}} </span>
-                    <span class="date">{{feedback.creationDate | date:"MM/dd/yyyy 'at' h:mma"}}</span>
+                    <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span>
                     <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span>
                   </div>
 
@@ -181,7 +151,7 @@
               </div>
             </div>
           </div>
-            <div class="col-md-6 no-gutter no-padding" style="background-color:#2d2d2d;"></div> 
+            <div class="col-md-6 no-gutter no-padding darken-3 grey" ></div> 
           </div>
 
       </div>
