@@ -29,9 +29,7 @@ label input[type=checkbox] {
 .h-45 {
     height: 45px;
 }
-.feedback table {
-   
-}
+ul.sidebar-tabs{background-color: #d1d1d1;}
 .add-shadow {
      box-shadow: 
 	0 4px 5px -2px rgba(0, 0, 0, 0.2), 0 2px 16px 1px rgba(0, 0, 0, 0.10);
@@ -138,6 +136,8 @@ section thead input {
     font-size: 12px;
 }
 .btn-default.green.darken-4:hover{background-color: #2E7D32;}
+
+/*
 .feedback-chat{overflow-x:hidden; overflow-y: scroll;}
 .feedback-chat p{width:100%;float:left;}
 
@@ -176,7 +176,7 @@ section thead input {
 .feedback-chat::-webkit-scrollbar-corner, .ta-scroll-window.form-control::-webkit-scrollbar-corner {
   background: transparent;
 }
-
+*/
 .feedback-lists .table > tbody > tr > td, 
 .feedback-lists .table > tbody > tr > th{
 	padding:0px!important;
@@ -184,10 +184,6 @@ section thead input {
 }
 
 
-.feedback .nav > li > a {
- 
-    padding: 4px;
-}
 .feedback-chat{padding:10px!important}
 .white{background-color:#fff;}
 .feedback-header-main {color:#fff;height: 48px;margin:0px;padding:0px;border:none}
@@ -196,7 +192,17 @@ section thead input {
 .review-button-list{background-color:#880e4f; border-radius:2px}
 .review-button-list[disabled], .review-button-list[disabled]:hover{background-color:#880e4f; border-radius:2px}
 .review-button-list:hover{background-color:#ad1457}
+.feedback-window{margin:10px; border:1px #eaeaea solid!important; border-radius:3px;}
+.feedback-window .btn-group .btn{    padding: 3px 10px;}
+.ta-root.focussed .ta-scroll-window.form-control{
+  border-color: transparent;
+  outline: 0;
+  -webkit-box-shadow: none!important;
+}
 
+
+
+ .ta-toolbar.form-control {    box-shadow: none;}
 .transparent,
 .transparent:hover,
 .transparent:active,
@@ -290,6 +296,19 @@ section thead input {
 
   .feedback-window{border:1px #ececec solid;
   background-color:#fff;}
+.feedback-window{margin:10px!important; border:1px #eaeaea solid!important; border-radius:3px;}
+.feedback-window .btn-group .btn{    padding: 3px 10px;}
+.ta-root.focussed .ta-scroll-window.form-control{
+  border-color: transparent!important;
+  outline: 0!important;
+  -webkit-box-shadow: none!important;
+}
+
+
+.pink-links a{color:#d53072}
+
+ .ta-editor.form-control {    box-shadow: none;}
+
 
   .feedback-header .username {
     font-weight: 500;
@@ -308,3 +327,77 @@ section thead input {
   .feedback-initial {min-height:480px!important;  }
   .feedback-initial .text{padding-right:100px; padding-left:100px; font-weight: 300; text-align:center; font-size:18px; font-family: 'Roboto', sans-serif; color: #d81b60;}
  .feedback-initial .icon-alert{ margin: 0 auto!important; padding-top:70px; font-size:86px; width:86px;color: #f06292;}
+ 
+   .ta-editor.form-control.myform2-height, .ta-scroll-window.form-control.myform2-height  {
+    height: 100px;
+    min-height: 100px;
+    overflow: auto;
+    font-family: inherit;
+    font-size: 100%;
+	display:block;
+}
+.form-control.myform2-height > .ta-bind {
+    min-height: 95px;
+    padding: 6px 12px;
+}
+.clear-button{background-color:transparent}
+.clear-button:hover{background-color:transparent}
+.pull_right{float:right;right:15px;}
+.reviewer-feedback-chat p{    color: #474747; font-size:12px;}
+.reviewer-feedback-chat {
+   
+        
+	    padding-left: 10px!important;
+		    padding-right: 10px!important;
+            margin: 1em 0 3em;
+            color: #000;
+            background-color: #ececec;
+	height: auto;
+	width:100%;
+}
+
+
+.author_feedback_chat {
+   
+      padding-left: 10px!important;
+		    padding-right: 10px!important;
+            margin: 1em 0 3em;
+            color: #000;
+            background-color: #ffe7f0;
+	height: auto;
+	width:100%;
+}
+
+
+
+.reviewer-feedback-chat:after{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: 0px;
+  right: auto;
+  top: auto;
+	bottom: -10px;
+	border: 12px solid;
+	border-color: transparent transparent transparent #ececec;
+}
+
+
+
+
+.author_feedback_chat:after{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+  left: auto;
+	right: 0px;
+	bottom: -10px;
+	border: 12px solid;
+	border-color: #ffe7f0 #ffe7f0 transparent transparent;
+}
+
+
+
+.light_greys{background-color: #ececec;}
