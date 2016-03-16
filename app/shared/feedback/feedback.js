@@ -414,6 +414,15 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           };
+          scope.viewConceptInTaxonomy = function (concept) {
+            console.log(concept);
+            $rootScope.$broadcast('viewTaxonomy', {
+              concept: {
+                conceptId: concept.id,
+                fsn: concept.term
+              }
+            });
+          };
 
           // additional function to add based on concept id alone
           scope.addToEditFromConceptId = function(conceptId) {
