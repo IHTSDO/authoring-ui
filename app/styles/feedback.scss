@@ -137,8 +137,8 @@ section thead input {
 }
 .btn-default.green.darken-4:hover{background-color: #2E7D32;}
 
-/*
-.feedback-chat{overflow-x:hidden; overflow-y: scroll;}
+
+.feedback-chat{overflow-x:hidden; overflow-y: scroll;max-height:175px;}
 .feedback-chat p{width:100%;float:left;}
 
 
@@ -176,7 +176,7 @@ section thead input {
 .feedback-chat::-webkit-scrollbar-corner, .ta-scroll-window.form-control::-webkit-scrollbar-corner {
   background: transparent;
 }
-*/
+
 .feedback-lists .table > tbody > tr > td, 
 .feedback-lists .table > tbody > tr > th{
 	padding:0px!important;
@@ -184,7 +184,7 @@ section thead input {
 }
 
 
-.feedback-chat{padding:10px!important}
+.feedback-chat{padding:10px 10px 10px 0px!important}
 .white{background-color:#fff;}
 .feedback-header-main {color:#fff;height: 48px;margin:0px;padding:0px;border:none}
 .feedback-header-main label {color:#fff!important; font-weight:400; margin-top:-5px;}
@@ -192,7 +192,7 @@ section thead input {
 .review-button-list{background-color:#880e4f; border-radius:2px}
 .review-button-list[disabled], .review-button-list[disabled]:hover{background-color:#880e4f; border-radius:2px}
 .review-button-list:hover{background-color:#ad1457}
-.feedback-window{margin:10px; border:1px #eaeaea solid!important; border-radius:3px;}
+.feedback-window{border:1px #eaeaea solid!important; border-radius:3px;}
 .feedback-window .btn-group .btn{    padding: 3px 10px;}
 .ta-root.focussed .ta-scroll-window.form-control{
   border-color: transparent;
@@ -287,7 +287,7 @@ section thead input {
   .feedback-header {
    left:25px;
     float: left;
-
+    padding-right: 10px;
 
     background-color: transparent;
     border:none;
@@ -295,8 +295,8 @@ section thead input {
 }
 
   .feedback-window{border:1px #ececec solid;
-  background-color:#fff;}
-.feedback-window{margin:10px!important; border:1px #eaeaea solid!important; border-radius:3px;}
+  }
+.feedback-window{ border:1px #eaeaea solid!important; border-radius:3px;background-color:#fff;}
 .feedback-window .btn-group .btn{    padding: 3px 10px;}
 .ta-root.focussed .ta-scroll-window.form-control{
   border-color: transparent!important;
@@ -340,10 +340,11 @@ section thead input {
     min-height: 95px;
     padding: 6px 12px;
 }
+strong{font-weight:700;}
 .clear-button{background-color:transparent}
 .clear-button:hover{background-color:transparent}
 .pull_right{float:right;right:15px;}
-.reviewer-feedback-chat p{    color: #474747; font-size:12px;}
+.reviewer-feedback-chat p{  margin:0 0 0em;  color: #474747; font-size:12px;}
 .reviewer-feedback-chat {
    
         

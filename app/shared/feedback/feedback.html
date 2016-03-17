@@ -19,7 +19,16 @@
     <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
   </script>
   <style>
-
+.col-md-12.feedback-area{padding-left:10px;padding-right:10px}
+.angular-ui-tree-nodes .angular-ui-tree-nodes {
+    padding-left: 0px;
+}
+.feedback ol {
+    margin-top: 0;
+    margin-bottom: 1px;
+    -webkit-padding-start: 0px;
+    margin-left: 11px;
+}
   </style>
 
     <!-- sidebar -->
@@ -59,18 +68,60 @@
 
               <!-- Review report (concept list) -->
 
-<div class="col-md-12 light_greys no-padding">
-    <div class=" pull-left clear-button tooltips-left tooltips-light normal-case m-l-5 "
+
+       
+              <!-- Feedback messages -->
+            </div>
+          </div>
+            <div class="col-md-6 no-gutter no-padding darken-3 grey" ></div> 
+          </div>
+
+      </div>
+             
+              <div class="col-md-12 light_greys no-padding"  ng-show="subjectConcepts.length > 0">
+
+    <div class=" pull-left clear-button tooltips-left tooltips-light normal-case p-l-10 " 
                     ng-click="selectConceptForFeedback(concept)">
-           {{viewedFeedback.length}} Total Comments </div>
-          <a
-                    class=" pull-right clear-button tooltips-left tooltips-light normal-case m-r-5 "
-                    ng-click="selectConceptForFeedback(concept)">
-              <div class="md md-forum "> Leave Feedback</div>
-              <span>View/submit feedback for concept</span> </a>
+          <strong> {{viewedFeedback.length}} </strong>Total Comments for  <span ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}</span></div>
+        
 </div>
-              <div class="col-md-12 " ng-show="subjectConcepts.length > 0">
-<div class="feedback-window row">
+   <div class="col-md-12 feedback-area">
+                            <div class="col-md-6 no-padding feedback-chat " ng-show="subjectConcepts.length > 0">
+
+                <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0">
+                  No Feedback added yet...
+                </div>
+
+                <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
+
+
+                 <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 " style="word-break: break-all; margin: 0px" 
+                 ng-class="[{
+                          author_feedback_chat : task.assignee.username  === feedback.fromUsername
+                          }]"
+                          
+                          ></p>
+                    <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
+                            ng-show="feedback.feedbackRequested" >
+                      <div
+                        class="md md-flag"></div>
+                      <span>Reviewer requested follow-up</span></button>
+                         <div class="feedback-header" ng-class="[{
+                          pull_right : task.assignee.username  === feedback.fromUsername
+                          }]">
+                    <span class="username">{{feedback.fromUsername}} </span>
+                    <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span>
+                    <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span>
+                  </div>
+
+
+
+                </div>
+
+              </div>
+
+<div class="feedback-window col-md-6 no-padding m-t-10">
+
                 <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
                               ng-model="$parent.htmlVariable"
                                 ta-text-editor-class="form-control myform2-height" ta-html-editor-class="form-control myform2-height"
@@ -107,56 +158,14 @@
                   </div>
                   </div>
                 </div>
-
+</div>
 </div>
 
               
 
 
               </div>
-       
-              <!-- Feedback messages -->
-              <div class="col-md-12 feedback-chat p-10" ng-show="subjectConcepts.length > 0">
 
-                <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0">
-                  No Feedback added yet...
-                </div>
-
-                <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
-
-
-                 <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 " style="word-break: break-all; margin: 0px" 
-                 ng-class="[{
-                          author_feedback_chat : task.assignee.username  === feedback.fromUsername
-                          }]"
-                          
-                          ></p>
-                    <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
-                            ng-show="feedback.feedbackRequested" >
-                      <div
-                        class="md md-flag"></div>
-                      <span>Reviewer requested follow-up</span></button>
-                         <div class="feedback-header" ng-class="[{
-                          pull_right : task.assignee.username  === feedback.fromUsername
-                          }]">
-                    <span class="username">{{feedback.fromUsername}} </span>
-                    <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span>
-                    <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span>
-                  </div>
-
-
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-            <div class="col-md-6 no-gutter no-padding darken-3 grey" ></div> 
-          </div>
-
-      </div>
-
-    </div>
 
   </div>
 
