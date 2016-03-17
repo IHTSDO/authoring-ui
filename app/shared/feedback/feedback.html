@@ -37,15 +37,71 @@
  
 
 
+
   <!-- Report, feedback editor, and concept feedback -->
+  <div class="col-md-9 no-padding white no-gutter">
+    <div class="col-md-12 feedback-header-main" style="vertical-align: middle">
+
+      <!-- Title section -->
+
+      <div class="p-l-20 p-t-5 col-md-4">
+
+        <div ng-show="role === 'REVIEWER'">Task Author: {{task.assignee.displayName}}</div>
+        <div ng-show="role === 'AUTHOR' && task.reviewer">Task Reviewer: {{task.reviewer.displayName}}</div>
+        <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
+                                                                                          reviewer
+        </div>
+        <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status !== 'In Review'">Task not submitted for
+                                                                                          review
+        </div>
+      </div>
+
+
+      <div class="col-md-7">
+        <!-- Cancel/Unclaim Review button -->
+        <div ng-if="role === 'AUTHOR'" class="switch pull-right p-5">
+          <button class="btn btn-default pink darken-2 review-button-list " style="text-transform: none"
+                  ng-if="task.status === 'In Review'"
+                  ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
+                  ng-click="cancelReview()">Cancel Review
+          </button>
+        </div>
+        <div ng-if="role === 'REVIEWER'" class="pull-right p-5">
+          <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
+                  ng-hide="task.status === 'Review Completed'"
+                  ng-click="unclaimReview()">Unclaim Review
+          </button>
+        </div>
+
+        <!-- Review In Progress / Review Complete toggle -->
+        <div ng-if="role === 'REVIEWER'" class="p-5 switch">
+          <label class="switch" ng-hide="task.status === 'Review Completed'">
+            Review in Progress
+            <input type="checkbox" ng-model="reviewComplete"
+                   ng-disabled="task.status === 'Review Completed'"
+                   ng-change="changeReviewStatus(reviewComplete)">
+            <span class="lever"></span>
+            Review Complete
+          </label>
+          <button ng-disabled="task.status === 'Review Completed'"
+                  class="btn btn-default pink darken-1 pull-right" style="text-transform: none"
+                  ng-show="task.status === 'Review Completed'"><i class="md md-check m-r-10"></i>Review is Complete
+          </button>
+        </div>
+
+      </div>
+
+      <div class="col-md-1">
+        <!-- Report collapsible control -->
+      </div>
+
+    </div>
+  </div>
 
   <!-- Taxonomy, models, and concepts -->
-  <div class="col-md-9 no-padding" ng-if="viewedConcepts.length > 0">
-  <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
-              <div class="m-10">Loading review...</div>
-            </div>
-
-    <div class="">
+  <div class="col-md-9 no-padding" >
+ 
+    <div ng-if="viewedConcepts.length > 0">
 
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
         <div class="col-md-6">
@@ -149,7 +205,8 @@
                             ng-click="submitFeedback(requestFollowup)"
                             style="text-transform: none"> <div class="md md-forum ">Send</div>
                     </a>
-                  
+                tgab      <a href="	"></a>
+
                   </div>
                   </div>
                 </div>

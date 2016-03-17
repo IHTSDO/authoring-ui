@@ -186,9 +186,10 @@ section thead input {
 
 .feedback-chat{padding:10px 10px 10px 0px!important}
 .white{background-color:#fff;}
-.feedback-header-main {color:#fff;height: 48px;margin:0px;padding:0px;border:none}
+.feedback-header-main {color:#fff;height: 33px;margin:0px;padding:0px;border:none;background-color:#e55f88}
 .feedback-header-main label {color:#fff!important; font-weight:400; margin-top:-5px;}
 .feedback-header-main input{height: 24px!important}
+.feedback-header-main .btn{padding:0px 12px!important;}
 .review-button-list{background-color:#880e4f; border-radius:2px}
 .review-button-list[disabled], .review-button-list[disabled]:hover{background-color:#880e4f; border-radius:2px}
 .review-button-list:hover{background-color:#ad1457}
