@@ -39,7 +39,7 @@ a.tooltips-left span, button.tooltips-left span, button[disabled].tooltips-left 
   color: #FFFFFF;
   background: #000000;
 padding:10px;
-font-size:12px;
+font-size:11px;
   line-height: 12px;
   text-align: center;
   visibility: hidden;
@@ -47,7 +47,7 @@ font-size:12px;
       font-family: 'Roboto', sans-serif;
 	  
 }
-
+.tooltips-left.feedbacktooltips span{  min-width:50px;padding:3px;}
 .lowercase{text-transform:lowercase; float:left;}
 .tooltips-left span.green{background-color: #81C784!important;}
 .tooltips-left span.red{background-color: #E57373!important;}
@@ -80,8 +80,12 @@ a:hover.tooltips-left span, button:hover.tooltips-left span, button[disabled]:ho
   right: 100%;
   top: 50%;
   margin-top: -15px;
-  margin-right: 15px;
-  z-index: 999;
+  margin-right: 5px;
+
+}
+a.tooltips-left, button.tooltips-left, button[disabled]:hover.tooltips-left{
+  position: relative;
+  display: inline;
 }
 
 a.tooltips-right, button.tooltips-right, button[disabled]:hover.tooltips-right{
@@ -94,7 +98,7 @@ a.tooltips-right span, button.tooltips-right span, button[disabled].tooltips-rig
   color: #FFFFFF;
   background: #474747;
   padding:10px;
-  font-size:12px;
+  font-size:11px;
   line-height: 12px;
   text-align: center;
   visibility: hidden;
@@ -128,7 +132,7 @@ a.tooltips-btm, button.tooltips-btm {
 }
 a.tooltips-btm span, button.tooltips-btm span {
   position: absolute;
- font-size:12px;
+ font-size:11px;
   color: #FFFFFF;
   background: #000000;
  

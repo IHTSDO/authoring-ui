@@ -158,23 +158,25 @@
 
               </td>
               <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
-                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                <a class="tooltips-left feedbacktooltips" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
+                          class="btn btn-round   btn-default  pink darken-1  "
                     >
                     <div class="md md-drafts"></div>
-                    <span>View Feedback</span>
+                    <span>View <br>Feedback</span>
 
                   </button>
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
-                          title="View Feedback (Unread)">
+                          class="btn btn-round   btn-default   pink darken-1  "
+                          >
                     <div class="md md-email"></div>
-                    <span>New Feedback </span>
+                    <span>New <br>Feedback </span>
                   </button>
                 
                 </a>
+              
               </td>
                
 
@@ -293,14 +295,14 @@
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
+                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light pull-left"
                     >
                     <div class="md md-drafts"></div>
                     <span>View Feedback</span>
 
                   </button>
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light "
+                          class="btn btn-round   btn-default pink darken-1 tooltips-right tooltips-light pull-left"
                           title="View Feedback (Unread)">
                     <div class="md md-email"></div>
                     <span>New Feedback </span>
