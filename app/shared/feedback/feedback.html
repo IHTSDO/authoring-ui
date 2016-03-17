@@ -29,6 +29,7 @@
     -webkit-padding-start: 0px;
     margin-left: 11px;
 }
+.switch input{    min-height: 25px !important;}
   </style>
 
     <!-- sidebar -->
@@ -44,10 +45,25 @@
 
       <!-- Title section -->
 
-      <div class="p-l-20 p-t-5 col-md-4">
+      <div class="p-l-20 p-t-5 col-md-6">
 
         <div ng-show="role === 'REVIEWER'">Task Author: {{task.assignee.displayName}}</div>
-        <div ng-show="role === 'AUTHOR' && task.reviewer">Task Reviewer: {{task.reviewer.displayName}}</div>
+        <div ng-show="role === 'AUTHOR' && task.reviewer">Task Reviewer: {{task.reviewer.displayName}}
+       <div class="switch pull-right p-l-10">
+          <button class="btn btn-default pink darken-2 review-button-list " style="text-transform: none"
+                  ng-if="task.status === 'In Review'"
+                  ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
+                  ng-click="cancelReview()">Cancel Review
+          </button>
+        </div> <div class="pull-right ">
+          <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
+                  ng-hide="task.status === 'Review Completed'"
+                  ng-click="unclaimReview()">Unclaim Review
+          </button>
+        </div>
+          
+        
+        </div>
         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
                                                                                           reviewer
         </div>
@@ -57,24 +73,12 @@
       </div>
 
 
-      <div class="col-md-7">
+      <div class="col-md-6">
         <!-- Cancel/Unclaim Review button -->
-        <div ng-if="role === 'AUTHOR'" class="switch pull-right p-5">
-          <button class="btn btn-default pink darken-2 review-button-list " style="text-transform: none"
-                  ng-if="task.status === 'In Review'"
-                  ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
-                  ng-click="cancelReview()">Cancel Review
-          </button>
-        </div>
-        <div ng-if="role === 'REVIEWER'" class="pull-right p-5">
-          <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
-                  ng-hide="task.status === 'Review Completed'"
-                  ng-click="unclaimReview()">Unclaim Review
-          </button>
-        </div>
+      
 
         <!-- Review In Progress / Review Complete toggle -->
-        <div ng-if="role === 'REVIEWER'" class="p-5 switch">
+        <div class="switch pull-right">
           <label class="switch" ng-hide="task.status === 'Review Completed'">
             Review in Progress
             <input type="checkbox" ng-model="reviewComplete"
@@ -91,9 +95,7 @@
 
       </div>
 
-      <div class="col-md-1">
-        <!-- Report collapsible control -->
-      </div>
+      
 
     </div>
   </div>
@@ -205,8 +207,7 @@
                             ng-click="submitFeedback(requestFollowup)"
                             style="text-transform: none"> <div class="md md-forum ">Send</div>
                     </a>
-                tgab      <a href="	"></a>
-
+                  
                   </div>
                   </div>
                 </div>
