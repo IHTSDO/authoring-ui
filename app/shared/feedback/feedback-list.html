@@ -22,10 +22,7 @@
   
     <label class="control-label m-l-10 ">Task Author: </label>
     <h4 class="timeline-title m-l-10 ">{{task.assignee.displayName}}</h4>
-    <div ng-if="role === 'AUTHOR'" class="pink-links m-l-10"> <a
-                  ng-if="task.status === 'In Review'"
-                  ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
-                  ng-click="cancelReview()">Cancel Review </a> </div>
+  
   </div>
   <div class="row no-padding">
     <label class="control-label m-l-10 ">Task Reviewer: </label>
@@ -35,18 +32,22 @@
     <div  ng-if="role === 'REVIEWER'" class=" pink-links m-l-10"> <a 
                            ng-show="task.status === 'In Review'"
                   ng-click="unclaimReview()">Unclaim Review </a> </div>
-    <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
+    <div class="row timeline-title m-l-10" ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
       reviewer </div>
-    <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status !== 'In Review'">Task not submitted for
+    <div class="row timeline-title m-l-10" ng-show="role === 'AUTHOR' && !task.reviewer && task.status !== 'In Review'">Task not submitted for
       review </div>
       <!-- Review In Progress / Review Complete toggle -->
 <div class="p-5 switch">
 <div class="row no-padding"   ng-show="task.status === 'In Review'">
     <label class="control-label m-l-10 ">Review Status: </label>
-   <h4 class="timeline-title m-l-10 ">{{task.status}}<a
+   <h4 class="timeline-title m-l-10 ">{{task.status}}</h4>
+   <div class="row no-padding timeline-title m-l-10"  ><a class="pink-links"
               
                  
-                  ng-click="cancelReview()">Cancel Review </a></h4>
+                 ng-model="reviewComplete"
+                   ng-hide="task.status === 'Review Completed'"
+                   ng-click="changeReviewStatus(reviewComplete)"> Complete Review </a></div>
+                     
     <!-- Cancel/Unclaim Review button -->
     </div>
 </div>
