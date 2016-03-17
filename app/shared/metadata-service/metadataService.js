@@ -50,7 +50,7 @@ angular.module('singleConceptAuthoringApp')
       // preferred terms
       conceptInactivationReasons = [
         {id: 'AMBIGUOUS', text: 'Ambiguous component', display : [4]},
-        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display : [7]},
+        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display : [3]},
         {id: 'DUPLICATE', text: 'Duplicate component', display : [7]},
         {id: 'ERRONEOUS', text: 'Erroneous component', display : [6, 9]},
         {id: 'LIMITED', text: 'Limited component', display : [9]},
