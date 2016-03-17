@@ -33,12 +33,23 @@
     <!-- Cancel/Unclaim Review button -->
     
     <div  ng-if="role === 'REVIEWER'" class=" pink-links m-l-10"> <a 
-                  ng-hide="task.status === 'Review Completed'"
+                           ng-show="task.status === 'In Review'"
                   ng-click="unclaimReview()">Unclaim Review </a> </div>
     <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
       reviewer </div>
     <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status !== 'In Review'">Task not submitted for
       review </div>
+      <!-- Review In Progress / Review Complete toggle -->
+<div class="p-5 switch">
+<div class="row no-padding"   ng-show="task.status === 'In Review'">
+    <label class="control-label m-l-10 ">Review Status: </label>
+   <h4 class="timeline-title m-l-10 ">{{task.status}}<a
+              
+                 
+                  ng-click="cancelReview()">Cancel Review </a></h4>
+    <!-- Cancel/Unclaim Review button -->
+    </div>
+</div>
   </div>
 </div>
 <style>
@@ -104,7 +115,7 @@ pading:8px;
                    template-pagination="utilities/data-table-pager.html"
                    class="table table-full table-full-small feedback-table" drop-channel="feedbackConcept">
         <div class="col-md-7 no-padding">
-          <input class=" input-filter form-control ng-scope ng-valid ng-touched"
+          <input class=" m-l-10 input-filter form-control ng-scope ng-valid ng-touched"
                                         placeholder="Filter concepts"
                                          ng-show="feedbackContainer.review.conceptsToReview.length > 0"
                                         ng-model="conceptsToReviewSearchStr"
@@ -123,11 +134,11 @@ pading:8px;
                     ng-click="selectConceptsForFeedback()">
             <div class="md md-forum "></div>
             <span>Add feedback to selected concepts</span> </button>
-            <button class="btn btn-round btn-default green lighten-2 tooltips-left tooltips-light normal-case"
-                    title="Mark selected as reviewed"
+            <button class="btn btn-round btn-default  purple lighten-2  tooltips-left tooltips-light normal-case"
+                    title="Mark as approved"
                     ng-click="moveMultipleToOtherList(actionTab)">
             <div
-                class="md md-playlist-add "></div>
+                class="md md-thumb-up "></div>
             <span>Mark selected as reviewed</span></button>
             <button class="btn btn-round btn-default blue lighten-2 tooltips-left tooltips-light normal-case"
                     title="Show selected in edit panel"
@@ -163,6 +174,7 @@ pading:8px;
               <div
                         ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "><span> View/submit feedback for concept</span> </div>
               </button>
+              
               <button
                       class="btn btn-round btn-default blue m-r-5 lighten-2 tooltips-left tooltips-light normal-case"
                         ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
@@ -173,12 +185,27 @@ pading:8px;
             </div></td>
           
           <!--Reviewer Controls -->
-          <td ng-if="role === 'REVIEWER'" class="col-controls col-md-4 no-padding"><button
+          <td ng-if="role === 'REVIEWER'" class="col-controls col-md-4 no-padding">
+            <button
+                      class="pull-right btn btn-round btn-default blue m-r-5 lighten-2 tooltips-left tooltips-light normal-case"
+                        ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+                      
+              <div
+                        class="md md-edit "><span>Add to Edit Panel</span></div>
+              </button>
+            
+          <button
                     class="btn btn-round pull-right btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
                     ng-click="addToReviewed(concept)">
             <div
                       class="md md-thumb-up "></div>
             <span>Approve</span></button>
+              <button
+                    class=" pull-right btn btn-round btn-default pink lighten-2 tooltips-left tooltips-light normal-case m-r-5 "
+                    ng-click="selectConceptForFeedback(concept)">
+                    <div class="md md-forum "></div>
+                    <span>View/submit feedback for concept</span>
+                  </button>
           </td>
         </tr>
       </table>
@@ -248,14 +275,4 @@ pading:8px;
   </div>
 
 </div>
-<!-- Review In Progress / Review Complete toggle -->
-<div ng-if="role === 'REVIEWER'" class="p-5 switch">
-  <label class="switch" ng-hide="task.status === 'Review Completed'"> Review in Progress
-    <input type="checkbox" ng-model="reviewComplete"
-                   ng-disabled="task.status === 'Review Completed'"
-                   ng-change="changeReviewStatus(reviewComplete)">
-    <span class="lever"></span> Review Complete </label>
-  <button ng-disabled="task.status === 'Review Completed'"
-                  class="btn btn-default pink darken-1 pull-right" style="text-transform: none"
-                  ng-show="task.status === 'Review Completed'"><i class="md md-check m-r-10"></i>Review is Complete </button>
-</div>
+
