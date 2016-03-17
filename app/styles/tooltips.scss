@@ -123,7 +123,7 @@ a:hover.tooltips-right span, button:hover.tooltips-right span, button[disabled]:
   top: 50%;
   margin-top: -15px;
   margin-left: 40px;
-
+  z-index: 999;
 }
 /* bottom */
 a.tooltips-btm, button.tooltips-btm {
