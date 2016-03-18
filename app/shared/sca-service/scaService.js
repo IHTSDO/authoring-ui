@@ -241,6 +241,54 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
+  // save the UI state for a project, task, and panel triplet
+       // get the UI state for a project, task, and panel triplet
+      getUiStateForReviewTask: function (projectKey, taskKey, panelId) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to get UI state');
+          return null;
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to get UI state');
+          return null;
+        }
+        if (!panelId) {
+          console.error('Must specify panelId to get UI state');
+          return null;
+        }
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/shared-ui-state/' + panelId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
+      saveUiStateForReviewTask: function (projectKey, taskKey, panelId, uiState) {
+        if (!projectKey) {
+          console.error('Must specify projectKey to save UI state');
+          return {};
+        }
+        if (!taskKey) {
+          console.error('Must specify taskKey to save UI state');
+          return {};
+        }
+        if (!panelId) {
+          console.error('Must specify panelId to save UI state');
+          return {};
+        }
+        if (!uiState) {
+          console.error('Must supply ui state in order to save it');
+          return {};
+        }
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/shared-ui-state/' + panelId, uiState).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
 
       // get the UI state for a project, task, and panel triplet
       deleteUiStateForTask: function (projectKey, taskKey, panelId) {
