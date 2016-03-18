@@ -52,7 +52,7 @@ pading:8px;
                ng-click="actionTab=1"
                aria-controls="home"
                role="tab"
-               data-toggle="tab"> Concepts to Review <div class="badge pull-right pink darken-1 ">{{feedbackContainer.review.concepts.length}}</div></a> </li>
+               data-toggle="tab"> Concepts to Review <div class="badge pull-right pink darken-1 ">{{feedbackContainer.review.conceptsToReview.length }}</div></a> </li>
                
     <li role="presentation"><a style="margin: 0"
                                                                             ng-click="actionTab=2"
@@ -60,7 +60,7 @@ pading:8px;
                                                                             role="tab"
                                                                             data-toggle="tab">Approved
 
-  <div class="badge pull-right pink darken-1 ">{{conceptsReviewedViewed.length}}</div>
+  <div class="badge pull-right pink darken-1 ">{{feedbackContainer.review.conceptsReviewed.length}}</div>
    
       </a> </li>
     
