@@ -45,25 +45,31 @@
 
       <!-- Title section -->
 
-      <div class="p-l-20 p-t-5 col-md-6">
+      <div class="p-l-20 col-md-8">
 
-        <div ng-show="role === 'REVIEWER'">Task Author: {{task.assignee.displayName}}</div>
-        <div ng-show="role === 'AUTHOR' && task.reviewer">Task Reviewer: {{task.reviewer.displayName}}
-       <div class="switch pull-right p-l-10">
+        <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
+          <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
           <button class="btn btn-default pink darken-2 review-button-list " style="text-transform: none"
                   ng-if="task.status === 'In Review'"
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review
           </button>
-        </div> <div class="pull-right ">
+    </div>
+      
+        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}    </div>  
+            <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
           <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
                   ng-hide="task.status === 'Review Completed'"
                   ng-click="unclaimReview()">Unclaim Review
           </button>
         </div>
+     
+            <div class="switch pull-right p-l-10">
+        
           
         
         </div>
+   
         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'">Task not claimed by a
                                                                                           reviewer
         </div>
@@ -73,12 +79,12 @@
       </div>
 
 
-      <div class="col-md-6">
+      <div class="col-md-4">
         <!-- Cancel/Unclaim Review button -->
       
 
         <!-- Review In Progress / Review Complete toggle -->
-        <div class="switch pull-right">
+        <div ng-if="role === 'REVIEWER'" class="switch pull-right">
           <label class="switch" ng-hide="task.status === 'Review Completed'">
             Review in Progress
             <input type="checkbox" ng-model="reviewComplete"
@@ -186,7 +192,7 @@
                               ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
                                 <div class="col-md-12 no-padding">
                  
-                     <div class="col-md-6 no-padding concept-filter ">
+                     <div class="col-md-6 no-padding concept-filter m-b-10 ">
                   <input type="text" class="feedback-search " placeholder="Search concepts..."
                          ui-on-drop=""
                          ng-model="conceptFilter"
