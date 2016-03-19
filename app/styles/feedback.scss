@@ -186,7 +186,7 @@ section thead input {
 
 .feedback-chat{padding:10px 10px 10px 0px!important}
 .white{background-color:#fff;}
-.feedback-header-main {color:#fff;height: 33px;margin:0px;padding:0px;border:none;background-color:#e55f88}
+.feedback-header-main {color:#fff;height: 33px;margin:0px;padding:0px;border:none;background-color:#e55f88;line-height: 30px;}
 .feedback-header-main label {color:#fff!important; font-weight:400; margin-top:-5px;}
 .feedback-header-main input{height: 24px!important}
 .feedback-header-main .btn{padding:0px 12px!important;}
@@ -201,7 +201,14 @@ section thead input {
   -webkit-box-shadow: none!important;
 }
 
-
+.ta-editor ul {
+   
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 8px;
+}
 
  .ta-toolbar.form-control {    box-shadow: none;}
 .transparent,

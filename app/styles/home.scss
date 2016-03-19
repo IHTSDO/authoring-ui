@@ -46,12 +46,18 @@
 }
 
 .modal-body .ta-scroll-window .ta-bind{min-height:150px;max-height:150px;box-shadow:none!important; outline:none; border: 1px #ddd solid}
-.timeline-heading ol, .feedback ol
-{
+.timeline-heading ol{
     margin-top: 0;
     margin-bottom: 10px;
 	-webkit-padding-start: 0px;
 	       margin-left: 20px;
+}
+.feedback ol
+{
+    margin-top: 0;
+    margin-bottom: 10px;
+	-webkit-padding-start: 0px;
+	       margin-left: 15px;
 }
 .timeline-heading ul, .feedback-chat ul {
     list-style: none; /* Remove list bullets */
