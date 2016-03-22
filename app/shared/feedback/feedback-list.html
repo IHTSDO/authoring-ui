@@ -41,6 +41,12 @@ pading:8px;
     box-shadow: none;
 	color:#d53072;
 }
+
+
+.feedback-lists .btn-round.btn[disabled]:hover {
+    color: #7c7c7c!important;
+    background-color: #494949!important;
+}
  </style>
 <div class="row work-list-tabs feedback-lists" ng-if="feedbackContainer.review">
   <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
@@ -98,11 +104,11 @@ pading:8px;
                     ng-click="groupSelectedConcepts(actionTab)">
             <div class="md md-layers "></div>
             <span>Group selected concepts</span> </button>
-            <button class="btn btn-round btn-default pink lighten-2 tooltips-left tooltips-light normal-case"
+         <!--   <button class="btn btn-round btn-default pink lighten-2 tooltips-left tooltips-light normal-case"
                     title="Add feedback to selected concepts"
                     ng-click="selectConceptsForFeedback()">
             <div class="md md-forum "></div>
-            <span>Add feedback to selected concepts</span> </button>
+            <span>Add feedback to selected concepts</span> </button>-->
             <button class="btn btn-round btn-default  purple lighten-2  tooltips-left tooltips-light normal-case"
                     title="Mark as approved"
                     ng-click="moveMultipleToOtherList(actionTab)">
@@ -171,9 +177,15 @@ pading:8px;
             <span>Approve</span></button>
               <button
                     class="  btn btn-round btn-default pink lighten-2 tooltips-left tooltips-light normal-case m-r-5 "
-                    ng-click="selectConceptForFeedback(concept)">
+                    ng-click="selectConceptForFeedback(concept)"     ng-show="subjectConcepts.length > 0 ">
                     <div class="md md-forum "></div>
                     <span>View/submit feedback for concept</span>
+                  </button>
+                   <button
+                    class="  btn btn-round btn-default grey darken-2 lighten-2 tooltips-left tooltips-light normal-case m-r-5 "
+                      ng-hide="subjectConcepts.length > 0 " disabled="disabled">
+                    <div class="md md-forum "></div>
+                    <span>Please select a concept</span>
                   </button>
           </td>
         </tr>

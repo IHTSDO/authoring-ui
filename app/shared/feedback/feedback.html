@@ -93,9 +93,9 @@
             <span class="lever"></span>
             Review Complete
           </label>
-          <button ng-disabled="task.status === 'Review Completed'"
+          <button ng-disabled="task.status !== 'Review Completed'"
                   class="btn btn-default pink darken-1 pull-right" style="text-transform: none"
-                  ng-show="task.status === 'Review Completed'"><i class="md md-check m-r-10"></i>Review is Complete
+                  ng-show="task.status === 'Review Completed'" ><i class="md md-check m-r-10"></i>Review is Complete
           </button>
         </div>
 

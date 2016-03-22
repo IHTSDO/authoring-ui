@@ -4,7 +4,7 @@
   <div role="tabpanel no-padding">
 
     <!-- Nav tabs -->
-    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs sidebar-tabs col-md-12 no-padding"
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs sidebar-tabs col-md-12 no-padding"
         role="tablist">
       <li role="presentation" ng-class="{'active' : actionTab === 1}"><a style="margin: 0px" ng-click="actionTab=1" aria-controls="home"
                                  role="tab"
@@ -25,11 +25,13 @@
         <div class="fa fa-info-circle"></div>
         <span>Task Details</span></a></li>
         
-           <li role="presentation" ng-hide="thisView === 'edit-default'"  ng-class="{'active' : actionTab === 5}"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab"
-                                                class="tooltips-btm tooltips-light normal-case">
+           <li role="presentation" ><a ng-if="taskKey"      ng-disabled="task.feedbackMessagesStatus === 'none' && isOwnTask" 
+                                               ng-click="viewReview()"  class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-envelope"></div>
-        <span>Feedback list</span></a></li>
+        <span>Switch to Feedback View</span></a></li>
+        
+         
         
     </ul>
     <!-- Tab panes -->
