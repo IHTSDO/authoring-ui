@@ -88,7 +88,7 @@
         <span class="md md-school deep-purple darken-2 iconbase"></span>
         <span class="button-link">Validate</span>
       </button>
-<div ng-show="task.status !== 'In Review'"
+<div ng-show="task.status !== 'In Review' && role === 'AUTHOR'"
 >      <button ng-disabled="task.status !== 'In Progress' "
               class="btn btn-default pink1 review" style="text-transform: none"
               ng-click="submitForReview()">
@@ -97,7 +97,7 @@
       </button>
 </div>
 
-   <button ng-show="task.status === 'In Review'" class="btn btn-default pink1 review" style="text-transform: none"
+   <button ng-show="task.status === 'In Review' && role === 'AUTHOR'" class="btn btn-default pink1 review" style="text-transform: none"
                   
                 
                   ng-click="cancelReview()"> <span class="md md-forum pink darken-2 iconbase"></span>
