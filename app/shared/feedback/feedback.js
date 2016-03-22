@@ -317,6 +317,14 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.viewedConcepts = [];
+        // if not already in saved list
+    
+      /**
+       * Determine if an item is in the saved list
+       * @param id the SCTID of the concept checked
+       * @returns {boolean} true: exists, false: does not exist
+       */
+  
 
           /**
            * On stop editing events, deselect viewed element (both lists)
