@@ -88,7 +88,7 @@
         <span class="md md-school deep-purple darken-2 iconbase"></span>
         <span class="button-link">Validate</span>
       </button>
-<div ng-show="task.status !== 'In Review' && task.status !== 'Review Completed'"
+<div ng-show="task.status !== 'In Review'"
 >      <button ng-disabled="task.status !== 'In Progress' "
               class="btn btn-default pink1 review" style="text-transform: none"
               ng-click="submitForReview()">
