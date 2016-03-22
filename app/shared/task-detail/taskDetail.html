@@ -97,7 +97,7 @@
       </button>
 </div>
 
-   <button class="btn btn-default pink1 review" style="text-transform: none"
+   <button ng-show="task.status === 'In Review'" class="btn btn-default pink1 review" style="text-transform: none"
                   
                 
                   ng-click="cancelReview()"> <span class="md md-forum pink darken-2 iconbase"></span>
