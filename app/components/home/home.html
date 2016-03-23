@@ -52,13 +52,13 @@
           </div>
           <div class="col-md-1">
             <div class="pull-right p-t-20">
-              <button type="button" class="btn btn-round   btn-info ng-scope tooltips-left tooltips-light ">
+              <button type="button" class="btn btn-round   btn-info ng-scope tooltips-left ">
                 <div> {{tasks.length}}</div>
                 <span>{{tasks.length}} tasks are assigned to you </span>
 
                 <div class="ripple-wrapper"></div>
               </button>
-              <button type="button" class="btn btn-round   btn-default tooltips-left tooltips-light "
+              <button type="button" class="btn btn-round   btn-default tooltips-left "
                       title="Create New Task"
                       ng-click="openCreateTaskModal()">
                 <div class="md md-add"></div>
@@ -113,7 +113,7 @@
                            {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
                             {indicator_red : task.latestClassificationJson.equivalentConceptsFound === true}
                            ]"
-                          class="btn btn-round   btn-default pull-left tooltips-right normalcase  ">
+                          class="btn btn-round   btn-default pull-left tooltips-left normalcase  ">
                     <div class="md md-notifications "></div> 
                                         <span > <div class="message_classification_{{task.latestClassificationJson.status}}"><div ng-if="task.latestClassificationJson.equivalentConceptsFound === true"> but equivalent relationships were found </div> </div></span>
                   </button>
@@ -139,7 +139,27 @@
                 </a>
               </td>
 
+ <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
+        
+                <a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
+                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
+                          class="btn btn-round   btn-default  pink darken-1  "
+                    >
+                    <div class="md md-drafts"></div>
+                    <span>View feedback</span>
+
+                  </button>
+                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
+                          class="btn btn-round   btn-default   pink darken-1  "
+                          >
+                    <div class="md md-email"></div>
+                    <span>New feedback is available </span>
+                  </button>
+                
+                </a>
+              
+              </td>
               
               <td data-title="'Status'" sortable="'status'">
                 <div ng-if="task.status === 'IN_REVIEW' && !task.reviewer" class="badge {{task.status}}"> Ready for
@@ -156,27 +176,7 @@
                 <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
               </td>
-              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a class="tooltips-left feedbacktooltips" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
-
-                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
-                          class="btn btn-round   btn-default  pink darken-1  "
-                    >
-                    <div class="md md-drafts"></div>
-                    <span>View <br>Feedback</span>
-
-                  </button>
-                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round   btn-default   pink darken-1  "
-                          >
-                    <div class="md md-email"></div>
-                    <span>New <br>Feedback </span>
-                  </button>
-                
-                </a>
-              
-              </td>
+             
                
 
             </tr>
@@ -255,7 +255,7 @@
                             {indicator_grey : task.latestClassificationJson.status === 'STALE'},
                            {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true},
                            {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false}]"
-                          class="btn btn-round   btn-default pull-left tooltips-right">
+                          class="btn btn-round   btn-default pull-left tooltips-left">
                     <div class="md md-notifications "></div>
                                         <span > <div class="message_classification_{{task.latestClassificationJson.status}}"> </div></span>
 
@@ -283,7 +283,27 @@
                 </a>
               </td>
 
-            
+            <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
+               
+                <a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
+
+                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
+                          class="btn btn-round   btn-default  pink darken-1  "
+                    >
+                    <div class="md md-drafts"></div>
+                    <span>View feedback</span>
+
+                  </button>
+                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
+                          class="btn btn-round   btn-default   pink darken-1  "
+                          >
+                    <div class="md md-email"></div>
+                    <span>New feedback is available </span>
+                  </button>
+                
+                </a>
+              </td>
+    
   <td data-title="'Review Status'" sortable="'reviewer'"  >
            <div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
                 <div ng-if="!task.reviewer" class="badge Available">Available</div>
@@ -291,27 +311,7 @@
 
               </td>
                       
-              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
-                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a class="tooltips-left feedbacktooltips" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
-
-                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
-                          class="btn btn-round   btn-default  pink darken-1  "
-                    >
-                    <div class="md md-drafts"></div>
-                    <span>View <br>Feedback</span>
-
-                  </button>
-                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round   btn-default   pink darken-1  "
-                          >
-                    <div class="md md-email"></div>
-                    <span>New <br>Feedback </span>
-                  </button>
-                
-                </a>
-              </td>
-   
+             
             </tr>
           </table>
 
