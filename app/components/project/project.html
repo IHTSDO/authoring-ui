@@ -16,7 +16,35 @@
    </div>
       <div class="col-md-9  project-main-buttons">
 
-        <div class="p-10 pull-right">
+        <div class="btn-group pull-right p-t-10 p-r-10">
+         <button class="btn btn-border tooltips-left normal-case"
+                  ng-click="mergeAndRebase()"
+                  ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'">
+            <div
+              class="project-icon yellow darken-2 pull-left">
+              <div class="md md-autorenew"></div>
+            </div>
+            Pull in Mainline Changes
+            <span>Pull in changes from the mainline into this project</span>
+          </button>
+        <button class="btn btn-border tooltips-left normal-case" ng-click="classify()"
+            ng-disabled="project.latestClassificationJson.status && (project.latestClassificationJson.status === 'RUNNING' && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
+            <div
+              class="project-icon green pull-left">
+              <div class="md md-notifications"></div>
+            </div>
+            Classify
+            <span>Run classification against this project</span>
+          </button>
+           <button class="btn btn-border tooltips-left normal-case m-l-5" ng-click="validate()"
+            ng-disabled="validationRunning">
+            <div
+              class="project-icon deep-purple lighten-1 pull-left">
+              <div class="md md-school"></div>
+            </div>
+            Validate
+            <span>Run validation against this project</span>
+          </button>
           <button class="btn btn-border tooltips-left normal-case"
                   ng-click="promote()"
                   ng-disabled="project.branchState !== 'FORWARD'">
@@ -27,43 +55,13 @@
             Promote This Project to the Mainline
             <span>Promote this project</span>
           </button>
-        </div>
+    
        
        
-        <div class="p-10 pull-right ">
-          <button class="btn btn-border tooltips-left normal-case" ng-click="validate()"
-            ng-disabled="validationRunning">
-            <div
-              class="project-icon deep-purple lighten-1 pull-left">
-              <div class="md md-school"></div>
-            </div>
-            Validate
-            <span>Run validation against this project</span>
-          </button>
+      
+         
         </div>
-         <div class="p-10 pull-right ">
-          <button class="btn btn-border tooltips-left normal-case" ng-click="classify()"
-            ng-disabled="project.latestClassificationJson.status && (project.latestClassificationJson.status === 'RUNNING' && project.latestClassificationJson.status !== 'COMPLETED' && project.latestClassificationJson.status !== 'SAVED' && project.latestClassificationJson.status !== 'SAVE_FAILED')">
-            <div
-              class="project-icon green pull-left">
-              <div class="md md-notifications"></div>
-            </div>
-            Classify
-            <span>Run classification against this project</span>
-          </button>
-        </div>
-         <div class="p-10 pull-right">
-          <button class="btn btn-border tooltips-left normal-case"
-                  ng-click="mergeAndRebase()"
-                  ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'">
-            <div
-              class="project-icon yellow darken-2 pull-left">
-              <div class="md md-autorenew"></div>
-            </div>
-            Pull in Mainline Changes
-            <span>Pull in changes from the mainline into this project</span>
-          </button>
-        </div>
+        
       
       </div>
 </div>
