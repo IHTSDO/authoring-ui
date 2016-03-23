@@ -50,8 +50,8 @@ angular.module('singleConceptAuthoringApp')
                     ////////////////////////////////////////////////////////////
                     if (branchStatus.feedbackMessagesStatus === 'none') {
                       flags.push({
-                        checkTitle: 'No feedback on concepts',
-                        checkWarning: 'No feedback has been left against edited concepts, has this task been reviewed?',
+                        checkTitle: 'No review completed',
+                        checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
                         blocksPromotion: false
                       });
                     }
@@ -219,8 +219,8 @@ angular.module('singleConceptAuthoringApp')
                     ////////////////////////////////////////////////////////////
                     if (branchStatus.feedbackMessagesStatus === 'none') {
                       flags.push({
-                        checkTitle: 'No feedback on concepts',
-                        checkWarning: 'No feedback has been left against edited concepts, has this task been reviewed?',
+                        checkTitle: 'No review completed',
+                        checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
                         blocksPromotion: false
                       });
                     }
