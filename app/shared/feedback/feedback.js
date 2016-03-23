@@ -703,31 +703,36 @@ angular.module('singleConceptAuthoringApp')
           scope.changeReviewStatus = function (reviewComplete) {
             if (reviewComplete !== null && reviewComplete !== undefined) {
               var status = '';
-              var assigneeTrigger = false;
               if(scope.task.status === 'In Review')
               {
                   status = 'Complete.';
+                  if(scope.conceptsToReviewViewed.length === 0)
+                  {
+                      scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function(response){
+                          scope.task.status = response.data.status;
+                      });
+                  }
               }
               else {
                  status = 'In Review.'; 
-                 assigneeTrigger = true;
-              }
-              scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function(response){
-                  scope.task.status = response.data.status;
-                  if(assigneeTrigger){
-                      var updateObj = {
-                          "reviewer": {
-                            "email": $rootScope.accountDetails.email,
-                            "avatarUrl": "",
-                            "username": $rootScope.accountDetails.login,
-                            "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
-                          }
-                        };
+                 scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function(response){
+                      scope.task.status = response.data.status;
+                      if(assigneeTrigger){
+                          var updateObj = {
+                              "reviewer": {
+                                "email": $rootScope.accountDetails.email,
+                                "avatarUrl": "",
+                                "username": $rootScope.accountDetails.login,
+                                "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+                              }
+                            };
 
-                        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
-                        });
-                  }
-              });
+                            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+                            });
+                      }
+                  });
+              }
+              
             }
           };
 
