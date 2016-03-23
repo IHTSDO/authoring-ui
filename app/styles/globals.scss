@@ -33,6 +33,7 @@ html {
 	font-weight:500;
 	
 }
+.promoted-check-box{font-family: Roboto, sans-serif!important; color:#666!important}
 .table-full thead tr > th {font-size:11px;}
 .classification-header .btn[disabled],
 .tab-content .btn[disabled]
@@ -93,7 +94,7 @@ td textarea, td input, td select {
     line-height: 13px;
     font-size: 12px;
 }
-.breadcrumb{font-family: 'Roboto-Regular', sans-serif; font-size:12px; font-weight:400;}
+.breadcrumb{font-family: Roboto, 'Helvetica Neue', sans-serif; font-size:12px; font-weight:400;}
 .red {
     background-color: #c13244;
     color: #fff;
@@ -117,21 +118,7 @@ td textarea, td input, td select {
 .dashboard-sidebar,
 .full-height{height:100vh!important;}
 
- .Available.badge {
-    background-color: #00b0ff;
-    font-size: 12px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-  }
 
-  .Claimed.badge {
-    background-color: grey;
-    font-size: 12px;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-  }
   .sidebar-spacer{height:100vh!important;}
   .dashboard-sidebar{    position: fixed!important;
     top: 64px;

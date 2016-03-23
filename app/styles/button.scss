@@ -178,3 +178,48 @@ button.fsn-title-button{width:100%;}
 .message_classification_STALE::before {
     content: "Classification has gone stale";
 }
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    color: #FFF;
+    vertical-align: center;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 10px;
+	  font-weight: normal;
+  font-size: 13px;
+  padding: 6px 10px;
+  margin: 0px;
+  line-height: 13px;
+}
+
+
+.In.Progress.badge {
+  background-color: #E68FBB;
+}
+
+.Promoted.badge {
+  background-color: #0091d7;
+}
+
+.New.badge {
+  background-color: #F3CB67;
+}
+
+.In.Review.badge {
+  background-color: #8bc34a;
+}
+
+.Review.Completed.badge {
+  background-color: #610a98;
+}
+
+ .Available.badge {
+    background-color: #00b0ff;
+  
+  }
+
+  .Claimed.badge {
+    background-color: grey;
+  
+  }
