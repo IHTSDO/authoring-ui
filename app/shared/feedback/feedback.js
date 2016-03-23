@@ -228,12 +228,17 @@ angular.module('singleConceptAuthoringApp')
           };
 
           // controls to allow author to view only concepts with feedeback
-          scope.viewOnlyConceptsWithFeedback = false;
+          scope.viewOnlyConceptsWithFeedback = true;
           scope.toggleViewOnlyConceptsWithFeedback = function () {
             scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
             scope.conceptsToReviewTableParams.reload();
           };
-
+     // controls to allow author to view only concepts with feedeback
+          scope.viewOnlyConceptsWithFeedback = false;
+          scope.toggleOnlyConceptsWithFeedback = function () {
+            scope.viewOnlyConceptsWithFeedback = !scope.viewOnlyConceptsWithFeedback;
+            scope.conceptsToReviewTableParams.reload();
+          };
           function updateReviewedListUiState() {
             var conceptIds = [];
             angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {

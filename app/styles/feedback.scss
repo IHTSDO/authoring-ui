@@ -11,6 +11,13 @@
     border-radius: 2px;
     transition: 240ms;
 }
+
+.feedback-lists  .btn-round {
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    line-height: 22px;
+}
 .checkbox input[type=checkbox],
 .checkbox-inline input[type=checkbox],
 label input[type=checkbox] {
@@ -340,6 +347,8 @@ section thead input {
     height: 100px;
     min-height: 100px;
     overflow: auto;
+	width:99%;
+	float:right;
     font-family: inherit;
     font-size: 100%;
 	display:block;
@@ -410,3 +419,10 @@ strong{font-weight:700;}
 
 
 .light_greys{background-color: #ececec;}
+.feedback .pager .btn {
+    padding: 1px 6px;
+}
+@media screen and (min-width: 1844px) {
+.feedback .pager .btn {
+    padding: 1px 6.5px;
+}}
