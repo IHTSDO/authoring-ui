@@ -33,8 +33,9 @@ html {
 	font-weight:500;
 	
 }
+ .project-main-buttons .btn-group .btn{margin-left:5px!important;}
 .m-r-2{margin-righ:2px;}
-.promoted-check-box{font-family: Roboto, sans-serif!important; color:#666!important}
+.promoted-check-box, .project-subtitle{font-family: Roboto, sans-serif!important; color:#666!important}
 .table-full thead tr > th {font-size:11px;}
 .classification-header .btn[disabled],
 .tab-content .btn[disabled]
@@ -126,7 +127,7 @@ td textarea, td input, td select {
     height: 100%;
 	    width: 21%;
 }
-.dash-tables{width:78%!important;}
+
 .alert-warning {
     color: #fff;
     font-weight: 500;
@@ -238,10 +239,10 @@ td textarea, td input, td select {
 }
 .dashboard-sidebar {
 
-    width: 13%!important;
+    width: 9%!important;
 }
 
 .dash-tables {
-    width: 86.5% !important;
+    width: 90.5% !important;
 }
 .pager .btn {padding: 1px 8px;}

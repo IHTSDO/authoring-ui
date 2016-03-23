@@ -78,10 +78,7 @@ pading:8px;
     <!--Concepts To Review -->
     <div role="tabpanel" ng-init="actionTab = 1" ng-if="actionTab === 1"> 
         <!-- only appears if author row -->
-    <div class="row p-5" >
-      <button class="btn btn-round btn-default pink lighten-2" title="Hide/show concepts without feedback"
-                    ng-click="toggleViewOnlyConceptsWithFeedback()"><span class="md md-email "></span> </button>
-    </div>
+    
       <!-- No results display banner -->
       <div class="ng-table-no-results"
                  ng-if="feedbackContainer.review && feedbackContainer.review.conceptsToReview.length === 0"> No concepts to review </div>

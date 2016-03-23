@@ -192,8 +192,8 @@
                               ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
                                 <div class="col-md-12 no-padding">
                  
-                     <div class="col-md-6 no-padding concept-filter m-b-10 ">
-                  <input type="text" class="feedback-search " placeholder="Search concepts..."
+                     <div class="col-md-6 no-padding concept-filter ">
+                  <input type="text" class="feedback-search m-b-5  " placeholder="Search concepts..."
                          ui-on-drop=""
                          ng-model="conceptFilter"
                          typeahead="suggestion as suggestion.concept.fsn for suggestion in getConceptsForTypeahead($viewValue)"
@@ -209,10 +209,10 @@
                   </div>
 
                   <div class="pull-right follow-up-right ">
-                    <a class="pull-right clear-button tooltips-left tooltips-light normal-case m-r-5"
+                    <button class="pull-right btn btn-default  m-r-5"
                             ng-click="submitFeedback(requestFollowup)"
-                            style="text-transform: none"> <div class="md md-forum ">Send</div>
-                    </a>
+                            style="text-transform: none"> <span class="md md-forum "></span>Send Feedback
+                    </button>
                   
                   </div>
                   </div>
