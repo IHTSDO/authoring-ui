@@ -270,6 +270,27 @@ angular.module('singleConceptAuthoringApp')
 
           // move item from ToReview to Reviewed
           scope.addToReviewed = function (item, stopUiStateUpdate) {
+            var id = [];
+            id.push(item.id);
+            var feedbackStr = '<p>Approved by: ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '</p>';
+              scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, id, false).then(function (response) {
+
+              notificationService.sendMessage('Feedback submitted', 5000, null);
+              // clear the htmlVariable and requestFolllowUp flag
+              //scope.htmlVariable = '';
+              //scope.requestFollowup = false;
+
+              // re-retrieve the review
+              // TODO For some reason getting duplicate entries on simple push
+              // of feedback into list.... for now, just retrieving, though
+              // this is inefficient
+//                      scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+//                        scope.feedbackContainer.review = response;
+//                        scope.conceptsToReviewTableParams.reload();
+//                      });
+            }, function () {
+              notificationService.sendError('Error submitting feedback', 5000, null);
+            });
             item.selected = false;
             scope.feedbackContainer.review.conceptsReviewed.push(item);
             var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
@@ -502,15 +523,15 @@ angular.module('singleConceptAuthoringApp')
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true) {
-                  console.debug('adding to reviewed list', item);
-                  scope.addToReviewed(item, true);
+                    
+                    scope.addToReviewed(item, true);
                 }
               });
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 console.debug('checking item', item);
                 if (item.selected === true) {
-                  console.debug('adding to to review list', item);
+                  
                   scope.returnToReview(item, true);
                 }
               });
