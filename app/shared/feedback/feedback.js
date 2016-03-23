@@ -844,7 +844,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.subjectConcepts, function (concept) {
               conceptIds.push(concept.id);
             });
-
+              
             // cycle over all currently displayed concepts
             angular.forEach(scope.conceptsToReviewViewed, function (concept) {
 
@@ -855,6 +855,28 @@ angular.module('singleConceptAuthoringApp')
                   // multiple concept feedbacks are viewed
                   message.conceptName = concept.term;
                   viewedFeedback.push(message);
+                    console.log(viewedFeedback);
+                });
+
+                // mark read if unread is indicated
+                if (!concept.read) {
+                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
+                    concept.read = true;
+
+                  });
+                }
+              }
+            });
+            angular.forEach(scope.conceptsReviewedViewed, function (concept) {
+
+              // if concept is in selected list and has messages, add them
+              if (conceptIds.indexOf(concept.id) !== -1 && concept.messages && concept.messages.length > 0) {
+                angular.forEach(concept.messages, function (message) {
+                  // attach the concept name to the message for display when
+                  // multiple concept feedbacks are viewed
+                  message.conceptName = concept.term;
+                  viewedFeedback.push(message);
+                    console.log(viewedFeedback);
                 });
 
                 // mark read if unread is indicated
@@ -881,6 +903,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.selectConceptForFeedback = function (concept) {
+            console.log(concept);
             scope.subjectConcepts = [concept];
             getViewedFeedback();
           };
