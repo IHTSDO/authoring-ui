@@ -43,8 +43,44 @@ angular.module('singleConceptAuthoringApp')
             checkWarning: 'No classifications were run on this branch. Promote only if you are sure your changes will not affect future classification.',
             blocksPromotion: false
           });
+          scaService.getTaskForProject(project, task).then(function (branchStatus) {
+                    console.log(branchStatus);
+                    ////////////////////////////////////////////////////////////
+                    // CHECK:  Has the Task been reviewed?
+                    ////////////////////////////////////////////////////////////
+                    if (branchStatus.feedbackMessagesStatus === 'none') {
+                      flags.push({
+                        checkTitle: 'No feedback on concepts',
+                        checkWarning: 'No feedback has been left against edited concepts, has this task been reviewed?',
+                        blocksPromotion: false
+                      });
+                    }
 
-          deferred.resolve(flags);
+                    ////////////////////////////////////////////////////////////
+                    // CHECK:  Is the task still in Review?
+                    ////////////////////////////////////////////////////////////
+                    if (branchStatus.status === 'In Review') {
+                      flags.push({
+                        checkTitle: 'Task is still in Review',
+                        checkWarning: 'The task Review has not been marked as complete.',
+                        blocksPromotion: false
+                      });
+                    }
+
+                    ////////////////////////////////////////////////////////////
+                    // CHECK:  Unread Review messages?
+                    ////////////////////////////////////////////////////////////
+                    if (branchStatus.feedbackMessagesStatus === 'unread') {
+                      flags.push({
+                        checkTitle: 'Review contains unread feedback',
+                        checkWarning: 'All feedback against concepts within this task has not been read',
+                        blocksPromotion: false
+                      });
+                    }
+                    console.debug('resolving');
+
+                    deferred.resolve(flags);
+                });
         } else {
 
           // get the ui state for classiifcation saving timestamp and status
