@@ -621,11 +621,13 @@ angular.module('singleConceptAuthoringApp')
         });
       },
 
-      markTaskReviewComplete: function (projectKey, taskKey, object) {
-        $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-          notificationService.sendMessage('Task ' + taskKey + ' Review marked as Complete');
+      markTaskReviewComplete: function (projectKey, taskKey, status, object) {
+        return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          notificationService.sendMessage('Task ' + taskKey + ' marked as: ' + status, 3000);
+          return response;
         }, function (error) {
-          notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+          notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 3000);
+            return null;
         });
       },
 
