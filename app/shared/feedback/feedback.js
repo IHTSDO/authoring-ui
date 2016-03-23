@@ -55,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
               scope.task = task;
-              scope.reviewComplete = task.status === 'REVIEW_COMPLETED';
+              scope.reviewComplete = task.status !== 'In Review';
               console.debug('review complete', scope.reviewComplete);
                 accountService.getRoleForTask(task).then(function(role){
                     scope.role = role;
@@ -100,8 +100,6 @@ angular.module('singleConceptAuthoringApp')
                 scope.feedbackContainer.review.conceptsToReview.length : 0,
 
               getData: function ($defer, params) {
-
-                console.debug('getdata');
 
                 var myData = [];
 
@@ -704,11 +702,32 @@ angular.module('singleConceptAuthoringApp')
 
           scope.changeReviewStatus = function (reviewComplete) {
             if (reviewComplete !== null && reviewComplete !== undefined) {
-              scaService.markTaskReviewComplete(
-                $routeParams.projectKey, $routeParams.taskKey,
-                {
-                  'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'
-                });
+              var status = '';
+              var assigneeTrigger = false;
+              if(scope.task.status === 'In Review')
+              {
+                  status = 'Complete.';
+              }
+              else {
+                 status = 'In Review.'; 
+                 assigneeTrigger = true;
+              }
+              scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function(response){
+                  scope.task.status = response.data.status;
+                  if(assigneeTrigger){
+                      var updateObj = {
+                          "reviewer": {
+                            "email": $rootScope.accountDetails.email,
+                            "avatarUrl": "",
+                            "username": $rootScope.accountDetails.login,
+                            "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+                          }
+                        };
+
+                        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+                        });
+                  }
+              });
             }
           };
 
