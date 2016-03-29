@@ -724,11 +724,11 @@ angular.module('singleConceptAuthoringApp')
                       scope.task.status = response.data.status;
                       if(assigneeTrigger){
                           var updateObj = {
-                              "reviewer": {
-                                "email": $rootScope.accountDetails.email,
-                                "avatarUrl": "",
-                                "username": $rootScope.accountDetails.login,
-                                "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+                              'reviewer': {
+                                'email': $rootScope.accountDetails.email,
+                                'avatarUrl': '',
+                                'username': $rootScope.accountDetails.login,
+                                'displayName': $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
                               }
                             };
 

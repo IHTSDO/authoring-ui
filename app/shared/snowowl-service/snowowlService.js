@@ -16,6 +16,9 @@ angular.module('singleConceptAuthoringApp')
         //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
+        if(error.status === 504){
+              notificationService.sendWarning('Your save operation is taking longer than expected, and is still running. You may work on other concepts while your save completes and refresh the page in a few minutes to confirm your save has succeeded.', 10000);
+          }
        // console.debug('createConcept failure', error);
         deferred.reject(error.message);
       });
@@ -30,6 +33,9 @@ angular.module('singleConceptAuthoringApp')
         //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
+        if(error.status === 504){
+              notificationService.sendWarning('Your save operation is taking longer than expected, and is still running. You may work on other concepts while your save completes and refresh the page in a few minutes to confirm your save has succeeded.', 10000);
+          }
         console.debug('updateConcept failure', error);
         deferred.reject(error.data.message);
       });
