@@ -86,7 +86,7 @@ pading:8px;
                    ng-show="feedbackContainer.review.conceptsToReview.length > 0"
                    template-pagination="utilities/data-table-pager.html"
                    class="table feedback-table" drop-channel="feedbackConcept">
-        <div class="col-md-7 no-padding">
+        <div class="col-md-7 no-padding" ng-if="role === 'REVIEWER'">
           <input class=" m-l-10 input-filter form-control ng-scope ng-valid ng-touched"
                                         placeholder="Filter concepts"
                                          ng-show="feedbackContainer.review.conceptsToReview.length > 0"
@@ -94,9 +94,17 @@ pading:8px;
                                         ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
                                         ng-model-options="{debounce: 500}" ui-on-drop="null">
         </div>
-        <div class="col-md-5 no-padding "> 
+         <div class="col-md-11 no-padding" ng-if="role === 'AUTHOR'">
+          <input class=" m-10 input-filter form-control ng-scope ng-valid ng-touched"
+                                        placeholder="Filter concepts"
+                                         ng-show="feedbackContainer.review.conceptsToReview.length > 0"
+                                        ng-model="conceptsToReviewSearchStr"
+                                        ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
+                                        ng-model-options="{debounce: 500}" ui-on-drop="null">
+        </div>
+        <div class="col-md-5 no-padding " ng-if="role === 'REVIEWER'"> 
           <!-- Only appears if reviewer role -->
-          <div class="pull-right p-5" ng-if="role === 'REVIEWER'">
+          <div class="pull-right p-5" >
             <button class="btn btn-round btn-default black tooltips-left  normal-case"
                     ng-click="groupSelectedConcepts(actionTab)">
             <div class="md md-layers "></div>
@@ -232,7 +240,7 @@ pading:8px;
                                         placeholder="Filter concepts"
                                         ng-model="conceptsReviewedSearchStr"
                                         ng-show="feedbackContainer.review.conceptsReviewed.length > 0"
-                                        ng-change="reloadConceptsToReview(conceptsReviewedSearchStr)"
+                                        ng-change="reloadConceptsReviewed(conceptsReviewedSearchStr)"
                                         ng-model-options="{debounce: 500}" ui-on-drop="null">
         </div>
         <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
