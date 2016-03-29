@@ -277,8 +277,8 @@ angular.module('singleConceptAuthoringApp')
             id.push(item.id);
             var feedbackStr = '<p>Approved by: ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '</p>';
               scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, id, false).then(function (response) {
-
-              notificationService.sendMessage('Feedback submitted', 5000, null);
+              console.log(item);
+              notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
               // clear the htmlVariable and requestFolllowUp flag
               //scope.htmlVariable = '';
               //scope.requestFollowup = false;
