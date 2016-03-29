@@ -293,7 +293,9 @@ a:hover.tooltips-btm span, button:hover.tooltips-btm span {
   }
 
   .wordbreak {
-    word-wrap: break-word
+    word-wrap: break-word;
+	display:block!important;
+	line-height:13px;
   }
 /* warnings */
 .text-center, .text-center p {text-align:center; margin-bottom:0px; }

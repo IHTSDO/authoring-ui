@@ -66,12 +66,14 @@
         <div class="col-md-3 no-padding text-muted" ng-if="!userOptions.groupByConcept">
           <div class="p-5 wordbreak">{{result.term}}</div>
         </div>
-        <div class="col-md-1 no-padding">
+        <div class=" col-md-1 no-padding">
+        <div class="p-t-5">
            <span class="badge alert-warning" ng-show="result.concept.definitionStatus === 'PRIMITIVE'" title="Primitive"
                  ng-click="openConceptInformationModal(result)">&nbsp;</span>
           <span class="badge alert-warning" ng-show="result.concept.definitionStatus !== 'PRIMITIVE'"
                 title="Fully Defined"
                 ng-click="openConceptInformationModal(result)">≡&nbsp;</span>
+        </div>
         </div>
         <div class="no-padding"
              ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
