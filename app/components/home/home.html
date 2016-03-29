@@ -162,13 +162,13 @@
               </td>
              
               <td data-title="'Status'" sortable="'status'">
-                <div ng-if="task.status === 'IN_REVIEW' && !task.reviewer" class="badge {{task.status}}"> Ready for
+                <div ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for
                                                                                                           Review
                 </div>
-                <div ng-if="task.status === 'IN_REVIEW' && task.reviewer" class="badge {{task.status}}">
+                <div ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}">
                   {{task.status}}
                 </div>
-                <div ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}}</div>
+                <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
                     
      <td data-title="'Review'" sortable="'reviewer'"  >
