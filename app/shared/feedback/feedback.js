@@ -325,6 +325,13 @@ angular.module('singleConceptAuthoringApp')
             if (!stopUiStateUpdate) {
               updateReviewedListUiState();
             }
+              console.log(scope.task);
+              if(scope.task.status === 'Review Completed')
+              {
+                  scope.reviewComplete = false;
+                  scope.changeReviewStatus(scope.reviewComplete);
+                  scope.reviewComplete = false;
+              }
           };
 
           scope.selectAll = function (actionTab, isChecked) {
@@ -722,7 +729,6 @@ angular.module('singleConceptAuthoringApp')
                  status = 'In Review.'; 
                  scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function(response){
                       scope.task.status = response.data.status;
-                      if(assigneeTrigger){
                           var updateObj = {
                               'reviewer': {
                                 'email': $rootScope.accountDetails.email,
@@ -734,7 +740,6 @@ angular.module('singleConceptAuthoringApp')
 
                             scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
                             });
-                      }
                   });
               }
               
