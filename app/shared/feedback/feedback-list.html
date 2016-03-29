@@ -122,7 +122,8 @@ pading:8px;
         <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
         
         <tr ng-repeat="concept in conceptsToReviewViewed">
-          <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxToReview.html'"><input type="checkbox" ng-model="concept.selected" ui-on-drop=""></td>
+          <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxToReview.html'"   ><input type="checkbox" ng-model="concept.selected" ui-on-drop="" ng-show="role === 'REVIEWER'"></td>
+          
           <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
                     filter="{ 'term': 'text' }"
                     ui-draggable="true" drag="concept"
@@ -130,10 +131,10 @@ pading:8px;
                     ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
           
           <!--Author Controls -->
-          <td ng-if="role === 'AUTHOR'" class=" col-controls col-md-3 no-padding"
-                    data-title="'Read/Unread'" sortable="'read'"><div class="pull-right ">
+          <td ng-if="role === 'AUTHOR'" class="  col-md-3 no-padding"
+                    data-title="'Read/Unread'" sortable="'read'"><div class="pull-right m-3 ">
               <button
-                      class="btn btn-round btn-default green base tooltips-left  normal-case"
+                      class="btn btn-round btn-default green base  tooltips-left  normal-case"
                       title="Flagged for follow-up"
                       ng-show="concept.requestFollowup">
               <div
@@ -157,7 +158,7 @@ pading:8px;
             </div></td>
           
           <!--Reviewer Controls -->
-          <td ng-if="role === 'REVIEWER'" class="col-controls col-md-4 no-padding">
+          <td ng-if="role === 'REVIEWER'" class=" col-md-4 no-padding">
             <button
                       class=" btn btn-round btn-default blue m-r-2 lighten-2 tooltips-left  normal-case"
                         ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
@@ -198,10 +199,22 @@ pading:8px;
         </tr>
       </table>
       <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
-              <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)"
+              <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)" ng-show="role === 'REVIEWER'"
                      id="select_all_to_review"
                      name="filter-checkbox" value=""/>
             </script> 
+              <div class="no-padding m-b-10 paging col-md-12 ">
+  <ul class="pager">
+<!--      <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default pull-left">&laquo; Previous</button>-->
+      <li >
+   
+        <button ng-if="role === 'AUTHOR'" type="button"  ng-click="toggleViewOnlyConceptsWithFeedback()" class="btn btn-default"><span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span><span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span></button>
+          <button ng-if="role === 'REVIEWER'" type="button"  ng-click="toggleOnlyConceptsWithFeedback()" class="btn btn-default"><span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span><span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span></button>
+       
+      </li>
+
+  </ul>
+</div>
     </div>
     
     <!--Concepts Reviewed-->
@@ -224,14 +237,14 @@ pading:8px;
         </div>
         <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
         
-        <tr ng-repeat="concept in conceptsReviewedViewed">
-          <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxReviewed.html'"><input type="checkbox" ng-model="concept.selected"></td>
-          <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
+        <tr ng-repeat="concept in conceptsReviewedViewed" >
+          <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxReviewed.html'" ><input type="checkbox" ng-model="concept.selected" ng-show="role === 'REVIEWER'" ></td>
+          <td class="col-concept " data-title="'Concept'" sortable="'term'"
                     filter="{ 'term': 'text' }"
                     ui-draggable="true" drag="concept"
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                    ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
-          <td ng-if="role === 'REVIEWER'" class="col-controls col-md-4 no-padding"><button
+                    ui-on-drop="dropConcept(concept, $data, actionTab)" ><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
+          <td ng-if="role === 'REVIEWER'" class=" col-md-4 no-padding"><button
                     class="btn btn-round btn-default green base pull-right tooltips-left  normal-case"
                     ng-click="returnToReview(concept)">
             <div
@@ -239,39 +252,28 @@ pading:8px;
             <span>Unapprove</span></button>
             
             </td>
-            <td ng-if="role === 'AUTHOR'" class="col-controls col-md-4 no-padding">
-              <button
+            <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding">
+             <div class="m-3"> <button
                     class="btn pull-right btn-round btn-default blue lighten-2 tooltips-left  normal-case"
                       ng-click="selectConceptForFeedback(concept); addToEdit(concept)"
                     ng-disabled="concept.viewed">
             <div
                       class="md md-edit "></div>
-            <span>Add to Edit Panel</span> </button></td>
+            <span>Add to Edit Panel</span> </button></div></td>
         </tr>
       </table>
       <script type="text/ng-template" id="ng-table/headers/checkboxReviewed.html">
               <input type="checkbox" ng-model="checkedReviewed"
                      ng-change="selectAll(actionTab, checkedReviewed)"
                      id="select_all_reviewed"
-                     name="filter-checkbox" value=""/>
+                     name="filter-checkbox" value="" ng-show="role === 'REVIEWER'"/>
             </script> 
       <script type="text/ng-template" id="ng-table/headers/searchReviewed.html">
               <input type="text" ng-model="conceptsReviewedTableParams.filter()['search']" class="form-control"
                      placeholder="Search" autofocus/>
             </script> 
     </div>
-    <div class="no-padding m-b-10 paging col-md-12 ">
-  <ul class="pager">
-<!--      <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default pull-left">&laquo; Previous</button>-->
-      <li >
-   
-        <button ng-if="role === 'AUTHOR'" type="button"  ng-click="toggleViewOnlyConceptsWithFeedback()" class="btn btn-default"><span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span><span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span></button>
-          <button ng-if="role === 'REVIEWER'" type="button"  ng-click="toggleOnlyConceptsWithFeedback()" class="btn btn-default"><span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span><span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span></button>
-       
-      </li>
-
-  </ul>
-</div>
+  
   </div>
 
 </div>
