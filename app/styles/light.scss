@@ -517,3 +517,11 @@ color: #ba68c8;
 .sca-light .edits-row.color_4 .add-buttons,
 .sca-light .edits-row.color_5 .add-buttons,
 .sca-light .edits-row.color_6 .add-buttons {color:#4d4d4d!important}
+
+.sca-light .md-playlist-add.btn-round[disabled], .sca-light .md-playlist-add.btn-round[disabled]:hover {
+    color: #666!important;
+
+    background-color: transparent!important;
+}
+.sca-light .nav-tabs .badge.pink.darken-1 {   color: #fff;
+    background-color: #d81b60;}
