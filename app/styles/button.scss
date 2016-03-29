@@ -224,7 +224,7 @@ button.fsn-title-button{width:100%;}
   
   }
   
-  
+  .btn-default:focus, .btn-default:active, .btn-default:hover, .btn-default:visited, .btn-default{outline-offset:0px!important; box-shadow: none!important;}
   .btn-default.blue:hover,
 .btn-default.blue:active {
   background-color: #097fda;
