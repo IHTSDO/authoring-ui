@@ -510,7 +510,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 });
 
               }, function (error) {
-                notificationService.sendError('Error saving concept: ' + error);
+                  if(error.status === 504)
+                  {
+                  notificationService.sendWarning('Your save operation is taking longer than expected, and is still running. You may work on other concepts while your save completes and refresh the page in a few minutes to confirm your save has succeeded.', 10000);
+                  }
+                  else{
+                    notificationService.sendError('Error saving concept: ' + error.statusText);
+                  }
                 scope.saving = false;
               });
             }
@@ -523,7 +529,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
                 scope.saving = false;
               }, function (error) {
-                notificationService.sendError('Error saving concept: ' + error);
+                  console.log(error);
+                if(error.status === 504)
+                  {
+                  notificationService.sendWarning('Your save operation is taking longer than expected, and is still running. You may work on other concepts while your save completes and refresh the page in a few minutes to confirm your save has succeeded.', 10000);
+                  }
+                  else{
+                    notificationService.sendError('Error saving concept: ' + error.statusText);
+                  }
                 scope.saving = false;
               });
             }
