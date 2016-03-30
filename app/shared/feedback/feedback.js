@@ -257,20 +257,20 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // cycle over resolved list
-            for (var i = 0; i < scope.feedbackContainer.review.conceptsResolved.length; i++) {
-
-              // declaration for convenience
-              var concept = scope.feedbackContainer.review.conceptsResolved[i];
-
-              // if this concept is present, move it from Resolved to To Resolve
-              if (concept.id === data.conceptId) {
-                scope.feedbackContainer.review.conceptsResolved.splice(i);
-                scope.feedbackContainer.review.conceptsToResolve.push(concept);
-              }
-
-              // update the ui state
-              updateReviewedListUiState();
-            }
+//            for (var i = 0; i < scope.feedbackContainer.review.conceptsResolved.length; i++) {
+//
+//              // declaration for convenience
+//              var concept = scope.feedbackContainer.review.conceptsResolved[i];
+//
+//              // if this concept is present, move it from Resolved to To Resolve
+//              if (concept.id === data.conceptId) {
+//                scope.feedbackContainer.review.conceptsResolved.splice(i);
+//                scope.feedbackContainer.review.conceptsToResolve.push(concept);
+//              }
+//
+//              // update the ui state
+//              updateReviewedListUiState();
+//            }
           });
 
           // move item from ToReview to Reviewed
