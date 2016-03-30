@@ -216,7 +216,9 @@ angular.module('singleConceptAuthoringApp')
           scope.cancelReview = function () {
               var taskObj = {
                 'status': 'IN_PROGRESS',
-                'reviewer': null
+                'reviewer': {
+                    'username': ''
+                  }
               };
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                 notificationService.sendMessage('Review Cancelled', 2000);
@@ -279,18 +281,6 @@ angular.module('singleConceptAuthoringApp')
               scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, id, false).then(function (response) {
               console.log(item);
               notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
-              // clear the htmlVariable and requestFolllowUp flag
-              //scope.htmlVariable = '';
-              //scope.requestFollowup = false;
-
-              // re-retrieve the review
-              // TODO For some reason getting duplicate entries on simple push
-              // of feedback into list.... for now, just retrieving, though
-              // this is inefficient
-//                      scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-//                        scope.feedbackContainer.review = response;
-//                        scope.conceptsToReviewTableParams.reload();
-//                      });
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
