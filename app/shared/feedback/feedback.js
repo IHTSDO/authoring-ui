@@ -302,26 +302,30 @@ angular.module('singleConceptAuthoringApp')
 
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {
-            item.selected = false;
-            scope.feedbackContainer.review.conceptsToReview.push(item);
-            var elementPos = scope.feedbackContainer.review.conceptsReviewed.map(function (x) {
-              return x.id;
-            }).indexOf(item.id);
-            scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
-            scope.conceptsReviewedTableParams.reload();
-            scope.conceptsToReviewTableParams.reload();
-
-            // if stop request not indicated (or not supplied), update ui state
-            if (!stopUiStateUpdate) {
-              updateReviewedListUiState();
-            }
+            
               console.log(scope.task);
-              if(scope.task.status === 'Review Completed')
-              {
-                  scope.reviewComplete = false;
-                  scope.changeReviewStatus(scope.reviewComplete);
-                  scope.reviewComplete = false;
-              }
+              scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+                scope.task = task;
+                if(scope.task.status === 'Review Completed')
+                  {
+                    scope.reviewComplete = false;
+                    scope.changeReviewStatus(scope.reviewComplete);
+                    scope.reviewComplete = false;
+                }
+                item.selected = false;
+                scope.feedbackContainer.review.conceptsToReview.push(item);
+                var elementPos = scope.feedbackContainer.review.conceptsReviewed.map(function (x) {
+                  return x.id;
+                }).indexOf(item.id);
+                scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
+                scope.conceptsReviewedTableParams.reload();
+                scope.conceptsToReviewTableParams.reload();
+
+                // if stop request not indicated (or not supplied), update ui state
+                if (!stopUiStateUpdate) {
+                  updateReviewedListUiState();
+                }
+              });
           };
 
           scope.selectAll = function (actionTab, isChecked) {
