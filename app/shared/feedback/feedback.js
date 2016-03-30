@@ -222,7 +222,22 @@ angular.module('singleConceptAuthoringApp')
               };
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                 notificationService.sendMessage('Review Cancelled', 2000);
-                $rootScope.$broadcast('reloadTask');
+                scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+                    if (task) {
+                      scope.task = task;
+                      scope.reviewComplete = task.status !== 'In Review';
+                      console.debug('review complete', scope.reviewComplete);
+                        accountService.getRoleForTask(task).then(function(role){
+                            scope.role = role;
+                            console.debug('Role found: ', scope.role);
+                        });
+
+
+                      if (scope.role === 'UNDEFINED') {
+                        notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
+                      }
+                    }
+                  });
               });
             
           };
@@ -257,20 +272,20 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // cycle over resolved list
-//            for (var i = 0; i < scope.feedbackContainer.review.conceptsResolved.length; i++) {
-//
-//              // declaration for convenience
-//              var concept = scope.feedbackContainer.review.conceptsResolved[i];
-//
-//              // if this concept is present, move it from Resolved to To Resolve
-//              if (concept.id === data.conceptId) {
-//                scope.feedbackContainer.review.conceptsResolved.splice(i);
-//                scope.feedbackContainer.review.conceptsToResolve.push(concept);
-//              }
-//
-//              // update the ui state
-//              updateReviewedListUiState();
-//            }
+            for (var i = 0; i < scope.feedbackContainer.review.conceptsResolved.length; i++) {
+
+              // declaration for convenience
+              var concept = scope.feedbackContainer.review.conceptsResolved[i];
+
+              // if this concept is present, move it from Resolved to To Resolve
+              if (concept.id === data.conceptId) {
+                scope.feedbackContainer.review.conceptsResolved.splice(i);
+                scope.feedbackContainer.review.conceptsToResolve.push(concept);
+              }
+
+              // update the ui state
+              updateReviewedListUiState();
+            }
           });
 
           // move item from ToReview to Reviewed
