@@ -47,6 +47,7 @@ pading:8px;
     color: #7c7c7c!important;
     background-color: #494949!important;
 }
+.feedback-table{width:98%;margin:1%}
  </style>
 <div class="row work-list-tabs feedback-lists p-b-20" ng-if="feedbackContainer.review">
   <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
@@ -246,18 +247,18 @@ pading:8px;
         <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
         
         <tr ng-repeat="concept in conceptsReviewedViewed" >
-          <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxReviewed.html'" ><input type="checkbox" ng-model="concept.selected" ng-show="role === 'REVIEWER'" ></td>
+          
           <td class="col-concept " data-title="'Concept'" sortable="'term'"
                     filter="{ 'term': 'text' }"
-                    ui-draggable="true" drag="concept"
+                    ui-draggable="true" drag="concept" 
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                     ui-on-drop="dropConcept(concept, $data, actionTab)" ><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
-          <td ng-if="role === 'REVIEWER'" class=" col-md-4 no-padding"><button
+          <td ng-if="role === 'REVIEWER'" class=" col-md-4 no-padding">  <div class="m-3"> <button
                     class="btn btn-round btn-default green base pull-right tooltips-left  normal-case"
                     ng-click="returnToReview(concept)">
             <div
                       class="md md-thumb-down"></div>
-            <span>Unapprove</span></button>
+            <span>Unapprove</span></button></div>
             
             </td>
             <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding">
@@ -270,16 +271,8 @@ pading:8px;
             <span>Add to Edit Panel</span> </button></div></td>
         </tr>
       </table>
-      <script type="text/ng-template" id="ng-table/headers/checkboxReviewed.html">
-              <input type="checkbox" ng-model="checkedReviewed"
-                     ng-change="selectAll(actionTab, checkedReviewed)"
-                     id="select_all_reviewed"
-                     name="filter-checkbox" value="" ng-show="role === 'REVIEWER'"/>
-            </script> 
-      <script type="text/ng-template" id="ng-table/headers/searchReviewed.html">
-              <input type="text" ng-model="conceptsReviewedTableParams.filter()['search']" class="form-control"
-                     placeholder="Search" autofocus/>
-            </script> 
+   
+     
     </div>
   
   </div>
