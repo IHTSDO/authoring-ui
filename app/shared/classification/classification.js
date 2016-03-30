@@ -566,6 +566,7 @@ angular.module('singleConceptAuthoringApp')
                     {
                       'status': 'IN_REVIEW'
                     }).then(function (response) {
+                      scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
                       // whether success or fail, disable button
                     });
                 }

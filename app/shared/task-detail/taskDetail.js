@@ -124,6 +124,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               'status': 'IN_REVIEW'
             }).then(function (response) {
               notificationService.sendMessage('Task submitted for review');
+              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
 			   $rootScope.$broadcast('reloadTask');
               $scope.reviewClicked = true;
               $scope.task = response;
