@@ -411,7 +411,29 @@ angular.module('singleConceptAuthoringApp.edit', [
       } else {
 
         scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.feedbackContainer.review = response ? response : {};
+            snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+                if(response && traceability)
+                {
+                    var idList = [];
+                    var review = {};
+                    review.reviewId = response.reviewId;
+                    review.concepts = [];
+                    angular.forEach(traceability.content, function (change) {
+                            angular.forEach(change.conceptChanges, function (concept) {
+                                idList.push(concept.conceptId.toString());
+                            });
+                    });
+                    angular.forEach(response.concepts, function (concept) {
+                        angular.forEach(idList, function (id) {
+                            if(id === concept.id)
+                            {
+                                review.concepts.push(concept);
+                            }
+                        });
+                    });
+                }
+              $scope.feedbackContainer.review = review ? review : {};
+            });
         });
       }
       $scope.setView('feedback');
@@ -906,7 +928,29 @@ angular.module('singleConceptAuthoringApp.edit', [
       } else {
 
         scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.feedbackContainer.review = response ? response : {};
+          snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+                if(response && traceability)
+                {
+                    var idList = [];
+                    var review = {};
+                    review.reviewId = response.reviewId;
+                    review.concepts = [];
+                    angular.forEach(traceability.content, function (change) {
+                            angular.forEach(change.conceptChanges, function (concept) {
+                                idList.push(concept.conceptId.toString());
+                            });
+                    });
+                    angular.forEach(response.concepts, function (concept) {
+                        angular.forEach(idList, function (id) {
+                            if(id === concept.id)
+                            {
+                                review.concepts.push(concept);
+                            }
+                        });
+                    });
+                }
+              $scope.feedbackContainer.review = review ? review : {};
+            });
         });
       }
     };
