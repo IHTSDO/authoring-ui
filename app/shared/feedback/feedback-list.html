@@ -87,7 +87,7 @@ pading:8px;
                    ng-show="feedbackContainer.review.conceptsToReview.length > 0"
                    template-pagination="utilities/data-table-pager.html"
                    class="table feedback-table" drop-channel="feedbackConcept">
-        <div class="col-md-7 no-padding" ng-if="role === 'REVIEWER'">
+        <div class="col-md-7 no-padding" ng-if="role === 'REVIEWER' && task.status === 'In Review'">
           <input class=" m-l-10 input-filter form-control ng-scope ng-valid ng-touched"
                                         placeholder="Filter concepts"
                                          ng-show="feedbackContainer.review.conceptsToReview.length > 0"
@@ -103,7 +103,7 @@ pading:8px;
                                         ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
                                         ng-model-options="{debounce: 500}" ui-on-drop="null">
         </div>
-        <div class="col-md-5 no-padding " ng-if="role === 'REVIEWER'"> 
+        <div class="col-md-5 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'"> 
           <!-- Only appears if reviewer role -->
           <div class="pull-right p-5" >
             <button class="btn btn-round btn-default black tooltips-left  normal-case"
@@ -131,7 +131,7 @@ pading:8px;
         <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings -->
         
         <tr ng-repeat="concept in conceptsToReviewViewed">
-          <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxToReview.html'"   ><input type="checkbox" ng-model="concept.selected" ui-on-drop="" ng-show="role === 'REVIEWER'"></td>
+          <td class="col-checkbox col-md-1 no-padding" header="'ng-table/headers/checkboxToReview.html'"   ><input type="checkbox" ng-model="concept.selected" ui-on-drop="" ng-show="role === 'REVIEWER' && task.status === 'In Review'"></td>
           
           <td class="col-concept col-md-7" data-title="'Concept'" sortable="'term'"
                     filter="{ 'term': 'text' }"
@@ -167,7 +167,7 @@ pading:8px;
             </div></td>
           
           <!--Reviewer Controls -->
-          <td ng-if="role === 'REVIEWER'" class=" col-md-4 no-padding">
+          <td ng-if="role === 'REVIEWER' && task.status === 'In Review'" class=" col-md-4 no-padding">
             <button
                       class=" btn btn-round btn-default blue m-r-2 lighten-2 tooltips-left  normal-case"
                         ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
@@ -208,7 +208,7 @@ pading:8px;
         </tr>
       </table>
       <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
-              <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)" ng-show="role === 'REVIEWER'"
+              <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)" ng-show="role === 'REVIEWER' && task.status === 'In Review'"
                      id="select_all_to_review"
                      name="filter-checkbox" value=""/>
             </script> 
@@ -218,7 +218,7 @@ pading:8px;
       <li >
    
         <button ng-if="role === 'AUTHOR'" type="button"  ng-click="toggleViewOnlyConceptsWithFeedback()" class="btn btn-default"><span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span><span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span></button>
-          <button ng-if="role === 'REVIEWER'" type="button"  ng-click="toggleOnlyConceptsWithFeedback()" class="btn btn-default"><span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span><span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span></button>
+          <button ng-if="role === 'REVIEWER' && task.status === 'In Review'" type="button"  ng-click="toggleOnlyConceptsWithFeedback()" class="btn btn-default"><span ng-if="viewOnlyConceptsWithFeedback === true">View All Concepts</span><span ng-if="viewOnlyConceptsWithFeedback === false">Show Only Concepts With Feedback</span></button>
        
       </li>
 
@@ -253,7 +253,7 @@ pading:8px;
                     ui-draggable="true" drag="concept" 
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                     ui-on-drop="dropConcept(concept, $data, actionTab)" ><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
-          <td ng-if="role === 'REVIEWER'" class=" col-md-4 no-padding">  <div class="m-3"> <button
+          <td ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'" class=" col-md-4 no-padding">  <div class="m-3"> <button
                     class="btn btn-round btn-default green base pull-right tooltips-left  normal-case"
                     ng-click="returnToReview(concept)">
             <div
