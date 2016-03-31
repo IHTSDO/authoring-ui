@@ -420,7 +420,10 @@ angular.module('singleConceptAuthoringApp.edit', [
                     review.concepts = [];
                     angular.forEach(traceability.content, function (change) {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                idList.push(concept.conceptId.toString());
+                                if(idList.indexOf(concept.conceptId.toString()) == -1)
+                                {
+                                    idList.push(concept.conceptId.toString());
+                                }
                             });
                     });
                     angular.forEach(response.concepts, function (concept) {
@@ -936,14 +939,19 @@ angular.module('singleConceptAuthoringApp.edit', [
                     review.reviewId = response.reviewId;
                     review.concepts = [];
                     angular.forEach(traceability.content, function (change) {
+                        
                             angular.forEach(change.conceptChanges, function (concept) {
-                                idList.push(concept.conceptId.toString());
+                                if(idList.indexOf(concept.conceptId.toString()) == -1)
+                                {
+                                    idList.push(concept.conceptId.toString());
+                                }
                             });
                     });
                     angular.forEach(response.concepts, function (concept) {
                         angular.forEach(idList, function (id) {
                             if(id === concept.id)
                             {
+                                
                                 review.concepts.push(concept);
                             }
                         });
