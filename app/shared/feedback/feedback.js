@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location', '$interval',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location, $interval) {
       return {
         restrict: 'A',
         transclude: false,
@@ -68,6 +68,37 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           });
+            
+          //Function to poll for the review status to check if the author cancels the review and subsequently lock down the review functions for the reviewer.
+            
+          var poll = null;
+            
+          scope.startTaskPoll = function () {
+            poll = $interval(function () {
+                var oldStatus = scope.task.status;
+                scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+                    if (task) {
+                      scope.task = task;
+                      scope.reviewComplete = task.status !== 'In Review';
+                        accountService.getRoleForTask(task).then(function(role){
+                            scope.role = role;
+                            console.debug('Role found: ', scope.role);
+                        });
+                        console.log(oldStatus);
+                      if(oldStatus === 'In Review' && task.status === 'In Progress')
+                      {
+                          scope.reloadConceptsToReview('');
+                          scope.reloadConceptsReviewed('');
+                      }
+                    }
+                  });
+            }, 10000);
+          };
+            
+          if(scope.role === 'REVIEWER')
+          {
+              scope.startTaskPoll();
+          }
 
           // declare viewed arrays for ng-table
           scope.conceptsToReviewViewed = [];

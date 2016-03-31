@@ -57,7 +57,7 @@
     </div>
       
         <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}    </div>  
-            <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
+            <div ng-if="role === 'REVIEWER' && task.status === 'In Review'" class="pull-left p-l-15 ">
           <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
                   ng-hide="task.status === 'Review Completed'"
                   ng-click="unclaimReview()">Unclaim Review
@@ -73,7 +73,7 @@
         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'"> &nbsp;Task not claimed by a
                                                                                           reviewer
         </div>
-        <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
+        <div ng-show="!task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
                                                                                           review
         </div>
       </div>
@@ -84,7 +84,7 @@
       
 
         <!-- Review In Progress / Review Complete toggle -->
-        <div ng-if="role === 'REVIEWER'" class="switch pull-right">
+        <div ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'" class="switch pull-right">
           <label class="switch">
             Review in Progress
             <input type="checkbox" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"

@@ -97,14 +97,16 @@ angular.module('singleConceptAuthoringApp')
           else {
 
             var projects = metadataService.getProjects();
-
-            var matchingProjects = projects.filter(function (el) {
-              return el.key === titleSection;
-            });
-            if (matchingProjects.length > 0) {
-              return matchingProjects[0].title;
-            } else {
-              return null;
+            if(projects)
+            {
+                var matchingProjects = projects.filter(function (el) {
+                  return el.key === titleSection;
+                });
+                if (matchingProjects.length > 0) {
+                  return matchingProjects[0].title;
+                } else {
+                  return null;
+                }
             }
           }
         };
