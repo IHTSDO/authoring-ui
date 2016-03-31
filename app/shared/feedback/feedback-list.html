@@ -258,7 +258,15 @@ pading:8px;
                     ng-click="returnToReview(concept)">
             <div
                       class="md md-thumb-down"></div>
-            <span>Unapprove</span></button></div>
+            <span>Unapprove</span></button>
+             
+                      <button ng-show="concept.messages.length > 0"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-left  normal-case"
+
+                            ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+              <div
+                        ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "><span> View/submit feedback for concept</span> </div>
+              </button></div>
             
             </td>
             <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding">
@@ -268,7 +276,15 @@ pading:8px;
                     ng-disabled="concept.viewed">
             <div
                       class="md md-edit "></div>
-            <span>Add to Edit Panel</span> </button></div></td>
+            <span>Add to Edit Panel</span> </button>
+             
+                      <button ng-show="concept.messages.length > 0"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-left  normal-case"
+
+                            ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+              <div
+                        ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "><span> View/submit feedback for concept</span> </div>
+              </button></div></td>
         </tr>
       </table>
    
