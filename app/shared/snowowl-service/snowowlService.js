@@ -767,6 +767,21 @@ angular.module('singleConceptAuthoringApp')
         return null;
       });
     }
+      
+    ////////////////////////////////
+    // Traceability Functions
+    ////////////////////////////////
+
+    // Get traceability log for branch
+    // GET /traceability-service/activities?onBranch=
+    function getTraceabilityForBranch(projectKey, taskKey) {
+        return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey + '&activityType=content_change').then(function (response) {
+          return response.data;
+        }, function (error) {
+            console.error('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, error);
+            notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
+        });
+      }
 
     //////////////////////////////////////////////////////
     // Branch Functions
@@ -1069,6 +1084,7 @@ angular.module('singleConceptAuthoringApp')
       downloadClassification: downloadClassification,
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
+      getTraceabilityForBranch: getTraceabilityForBranch,
       getBranch: getBranch,
       createBranch: createBranch,
       getDomainAttributes: getDomainAttributes,
