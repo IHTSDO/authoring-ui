@@ -95,10 +95,7 @@ angular.module('singleConceptAuthoringApp')
             }, 10000);
           };
             
-          if(scope.role === 'REVIEWER')
-          {
-              scope.startTaskPoll();
-          }
+          scope.startTaskPoll();
 
           // declare viewed arrays for ng-table
           scope.conceptsToReviewViewed = [];
