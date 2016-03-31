@@ -1120,7 +1120,7 @@ angular.module('singleConceptAuthoringApp')
             var feedbackStr = scope.htmlVariable.replace(/<img [^>]* id="(\d+)-(.*?(?=-endConceptLink"))[^>]*>/g, '<a ng-click="addToEditFromConceptId($1)" style="cursor:pointer">$2</a>');
             console.debug(feedbackStr);
 
-            notificationService.sendMessage('Submitting feedback...', 10000, null);
+            notificationService.sendMessage('Submitting feedback...', null);
 
             // extract the subject concept ids
             var subjectConceptIds = [];
@@ -1131,7 +1131,7 @@ angular.module('singleConceptAuthoringApp')
 
             scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, subjectConceptIds, requestFollowup).then(function (response) {
 
-              notificationService.sendMessage('Feedback submitted', 5000, null);
+              
               // clear the htmlVariable and requestFolllowUp flag
               scope.htmlVariable = '';
               scope.requestFollowup = false;
@@ -1143,6 +1143,7 @@ angular.module('singleConceptAuthoringApp')
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.feedbackContainer.review = response;
                 scope.conceptsToReviewTableParams.reload();
+                notificationService.sendMessage('Feedback submitted', 5000, null);
               });
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
