@@ -327,6 +327,10 @@ angular.module('singleConceptAuthoringApp')
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
+            scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.id).then(function (response) {
+                    concept.read = true;
+
+                  });
             item.selected = false;
             scope.feedbackContainer.review.conceptsReviewed.push(item);
             var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
