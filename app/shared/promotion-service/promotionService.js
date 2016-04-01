@@ -70,13 +70,13 @@ angular.module('singleConceptAuthoringApp')
                     ////////////////////////////////////////////////////////////
                     // CHECK:  Unread Review messages?
                     ////////////////////////////////////////////////////////////
-                    if (branchStatus.feedbackMessagesStatus === 'unread') {
-                      flags.push({
-                        checkTitle: 'Review contains unread feedback',
-                        checkWarning: 'All feedback against concepts within this task has not been read',
-                        blocksPromotion: false
-                      });
-                    }
+//                    if (branchStatus.feedbackMessagesStatus === 'unread') {
+//                      flags.push({
+//                        checkTitle: 'Review contains unread feedback',
+//                        checkWarning: 'All feedback against concepts within this task has not been read',
+//                        blocksPromotion: false
+//                      });
+//                    }
                     console.debug('resolving');
 
                     deferred.resolve(flags);
@@ -239,13 +239,13 @@ angular.module('singleConceptAuthoringApp')
                     ////////////////////////////////////////////////////////////
                     // CHECK:  Unread Review messages?
                     ////////////////////////////////////////////////////////////
-                    if (branchStatus.feedbackMessagesStatus === 'unread') {
-                      flags.push({
-                        checkTitle: 'Review contains unread feedback',
-                        checkWarning: 'All feedback against concepts within this task has not been read',
-                        blocksPromotion: false
-                      });
-                    }
+//                    if (branchStatus.feedbackMessagesStatus === 'unread') {
+//                      flags.push({
+//                        checkTitle: 'Review contains unread feedback',
+//                        checkWarning: 'All feedback against concepts within this task has not been read',
+//                        blocksPromotion: false
+//                      });
+//                    }
                     console.debug('resolving');
 
                     deferred.resolve(flags);
