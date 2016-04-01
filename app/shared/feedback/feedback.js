@@ -322,15 +322,12 @@ angular.module('singleConceptAuthoringApp')
             id.push(item.id);
             var feedbackStr = '<p>Approved by: ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '</p>';
               scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, id, false).then(function (response) {
-              console.log(item);
+              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.id).then(function (response) {});
               notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
-            scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.id).then(function (response) {
-                    concept.read = true;
-
-                  });
+            
             item.selected = false;
             scope.feedbackContainer.review.conceptsReviewed.push(item);
             var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
@@ -1151,7 +1148,7 @@ angular.module('singleConceptAuthoringApp')
                     review.concepts = [];
                     angular.forEach(traceability.content, function (change) {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(idList.indexOf(concept.conceptId.toString()) == -1)
+                                if(idList.indexOf(concept.conceptId.toString()) === -1)
                                 {
                                     idList.push(concept.conceptId.toString());
                                 }
@@ -1165,8 +1162,8 @@ angular.module('singleConceptAuthoringApp')
                             }
                         });
                     });
+                    scope.feedbackContainer.review = review ? review : {};
                 }
-              $scope.feedbackContainer.review = review ? review : {};
             });
                 
               });
