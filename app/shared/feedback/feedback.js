@@ -322,11 +322,12 @@ angular.module('singleConceptAuthoringApp')
             id.push(item.id);
             var feedbackStr = '<p>Approved by: ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '</p>';
               scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, id, false).then(function (response) {
-              console.log(item);
+              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.id).then(function (response) {});
               notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
+            
             item.selected = false;
             scope.feedbackContainer.review.conceptsReviewed.push(item);
             var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
@@ -1138,9 +1139,33 @@ angular.module('singleConceptAuthoringApp')
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                scope.feedbackContainer.review = response;
-                scope.conceptsToReviewTableParams.reload();
-                notificationService.sendMessage('Feedback submitted', 5000, null);
+                snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+                if(response && traceability)
+                {
+                    var idList = [];
+                    var review = {};
+                    review.reviewId = response.reviewId;
+                    review.concepts = [];
+                    angular.forEach(traceability.content, function (change) {
+                            angular.forEach(change.conceptChanges, function (concept) {
+                                if(idList.indexOf(concept.conceptId.toString()) === -1)
+                                {
+                                    idList.push(concept.conceptId.toString());
+                                }
+                            });
+                    });
+                    angular.forEach(response.concepts, function (concept) {
+                        angular.forEach(idList, function (id) {
+                            if(id === concept.id)
+                            {
+                                review.concepts.push(concept);
+                            }
+                        });
+                    });
+                    scope.feedbackContainer.review = review ? review : {};
+                }
+            });
+                
               });
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
