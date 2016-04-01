@@ -81,6 +81,11 @@ http {
         location /ims-api {
 			proxy_pass https://dev-ims.ihtsdotools.org/api;
 		}
+        
+        location /traceability-service {
+			proxy_pass https://dev-term.ihtsdotools.org/traceability-service;
+            proxy_cookie_domain localhost dev-term.ihtsdotools.org;
+		}
 	}
 }
 ```
