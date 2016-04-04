@@ -1162,10 +1162,10 @@ angular.module('singleConceptAuthoringApp')
               // this is inefficient
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+                var review = {};
                 if(response && traceability)
                 {
                     var idList = [];
-                    var review = {};
                     review.reviewId = response.reviewId;
                     review.concepts = [];
                     angular.forEach(traceability.content, function (change) {
@@ -1184,6 +1184,11 @@ angular.module('singleConceptAuthoringApp')
                             }
                         });
                     });
+                    scope.feedbackContainer.review = review ? review : {};
+                }
+                else if(response && !traceability)
+                {
+                    review = response;
                     scope.feedbackContainer.review = review ? review : {};
                 }
             });

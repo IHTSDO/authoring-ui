@@ -778,8 +778,15 @@ angular.module('singleConceptAuthoringApp')
         return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey + '&activityType=content_change').then(function (response) {
           return response.data;
         }, function (error) {
-            console.error('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, error);
-            notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
+            console.log(error);
+            console.log(error.data.message.indexOf('404'));
+            if(error.status === 404 || error.status === 500 && error.data.message.indexOf('404') === 0)
+            {
+                
+            }
+            else{
+                notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
+            }
         });
       }
 
