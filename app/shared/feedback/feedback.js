@@ -315,25 +315,46 @@ angular.module('singleConceptAuthoringApp')
               updateReviewedListUiState();
             }
           });
+            
+          scope.moveItemToReviewed = function (item){
+                item.selected = false;
+                scope.feedbackContainer.review.conceptsReviewed.push(item);
+                var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
+                  return x.id;
+                }).indexOf(item.id);
+                scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
+          };
 
           // move item from ToReview to Reviewed
-          scope.addToReviewed = function (item, stopUiStateUpdate) {
-            var id = [];
-            id.push(item.id);
+          scope.addToReviewed = function (item, stopUiStateUpdate, itemList) {
+            console.log(itemList);
+            var idList = [];
             var feedbackStr = '<p>Approved by: ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '</p>';
-              scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, id, false).then(function (response) {
-              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.id).then(function (response) {});
-              notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
-            }, function () {
-              notificationService.sendError('Error submitting feedback', 5000, null);
-            });
+            if(itemList){
+                angular.forEach(itemList, function(item){
+                    idList.push(item.id);
+                });
+                  scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, idList, false).then(function (response) {
+                  notificationService.sendMessage('Multiple concepts marked as approved.', 5000, null);
+                }, function () {
+                  notificationService.sendError('Error submitting feedback', 5000, null);
+                });
+                angular.forEach(itemList, function(item){
+                    scope.moveItemToReviewed(item);   
+                });
+                
+            }
+            else{
+                idList.push(item.id);
+                  scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, idList, false).then(function (response) {
+                  notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
+                }, function () {
+                  notificationService.sendError('Error submitting feedback', 5000, null);
+                });
+                scope.moveItemToReviewed(item);
+            }
             
-            item.selected = false;
-            scope.feedbackContainer.review.conceptsReviewed.push(item);
-            var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
-              return x.id;
-            }).indexOf(item.id);
-            scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
+            
             scope.conceptsToReviewTableParams.reload();
             scope.conceptsReviewedTableParams.reload();
 
@@ -569,12 +590,13 @@ angular.module('singleConceptAuthoringApp')
           // NOTE:  Apply stopUiUpdate flag
           scope.moveMultipleToOtherList = function (actionTab) {
             if (actionTab === 1) {
+              var itemList = [];
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 if (item.selected === true) {
-                    
-                    scope.addToReviewed(item, true);
+                    itemList.push(item);
                 }
               });
+              scope.addToReviewed({}, true, itemList);
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 console.debug('checking item', item);
