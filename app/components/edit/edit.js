@@ -967,13 +967,14 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 review.concepts.push(concept);
                                 response.concepts.pop(concept);
                             }
-//                            else if(review.conceptsClassified.indexOf(concept) === -1)
-//                            {
-//                                review.conceptsClassified.push(concept);   
-//                            }
                         });
                     });
-                    review.conceptsClassified = response.concepts;
+                    angular.forEach(response.concepts, function (concept) {
+                            if(review.concepts.indexOf(concept) === -1)
+                            {
+                                review.conceptsClassified.push(concept);
+                            }
+                        });
                 }
                 else if(response && !traceability)
                 {

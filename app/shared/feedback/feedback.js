@@ -1233,12 +1233,14 @@ angular.module('singleConceptAuthoringApp')
                             {
                                 review.concepts.push(concept);
                             }
-                            else if(review.conceptsClassified.indexOf(concept) === -1)
-                            {
-                                review.conceptsClassified.push(concept);   
-                            }
                         });
                     });
+                    angular.forEach(response.concepts, function (concept) {
+                            if(review.concepts.indexOf(concept) === -1)
+                            {
+                                review.conceptsClassified.push(concept);
+                            }
+                        });
                     scope.feedbackContainer.review = review ? review : {};
                     notificationService.sendMessage('Feedback Submitted', 5000, null);
                 }
