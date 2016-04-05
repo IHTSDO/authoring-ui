@@ -418,6 +418,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                     var idList = [];
                     review.reviewId = response.reviewId;
                     review.concepts = [];
+                    review.conceptsClassified = [];
                     angular.forEach(traceability.content, function (change) {
                             angular.forEach(change.conceptChanges, function (concept) {
                                 if(idList.indexOf(concept.conceptId.toString()) === -1)
@@ -431,9 +432,15 @@ angular.module('singleConceptAuthoringApp.edit', [
                             if(id === concept.id)
                             {
                                 review.concepts.push(concept);
+                                response.concepts.pop(concept);
                             }
+//                            else if(review.conceptsClassified.indexOf(concept) === -1)
+//                            {
+//                                review.conceptsClassified.push(concept);   
+//                            }
                         });
                     });
+                    review.conceptsClassified = response.concepts;
                 }
                 else if(response && !traceability)
                 {
@@ -942,6 +949,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                     var idList = [];
                     review.reviewId = response.reviewId;
                     review.concepts = [];
+                    review.conceptsClassified = [];
                     angular.forEach(traceability.content, function (change) {
                         
                             angular.forEach(change.conceptChanges, function (concept) {
@@ -955,11 +963,16 @@ angular.module('singleConceptAuthoringApp.edit', [
                         angular.forEach(idList, function (id) {
                             if(id === concept.id)
                             {
-                                
                                 review.concepts.push(concept);
+                                response.concepts.pop(concept);
                             }
+//                            else if(review.conceptsClassified.indexOf(concept) === -1)
+//                            {
+//                                review.conceptsClassified.push(concept);   
+//                            }
                         });
                     });
+                    review.conceptsClassified = response.concepts;
                 }
                 else if(response && !traceability)
                 {
