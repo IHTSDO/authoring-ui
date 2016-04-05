@@ -50,11 +50,11 @@ button.fsn-title-button{width:100%;}
     text-transform: none
 }
 
-.inactivation-button-modal{padding: 0px;
+.inactivation-button-modal{padding:5px 5px;
     margin: 0px;
     width: 100%;
     margin-bottom: 10px;
-    text-transform: none;}
+    text-transform: none; color:#fff; text-align:center!important;}
 	.task-details .iconbase,
 .inactivation-button-modal .iconbase {
     width: 40px;
@@ -63,7 +63,8 @@ button.fsn-title-button{width:100%;}
     float: left;
     font-size: 18px;
 }
-.inactivation-button-modal:hover{background-color: #ff8f00;}
+.inactivation-button-modal:hover, 
+.inactivation-button-modal:focus{background-color: #388E3C; color:#fff;}
 
 .inactivation-button-modal .button-link {
     padding: 8px 15px;
