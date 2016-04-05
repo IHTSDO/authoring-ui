@@ -432,15 +432,16 @@ angular.module('singleConceptAuthoringApp.edit', [
                             if(id === concept.id)
                             {
                                 review.concepts.push(concept);
-                                response.concepts.pop(concept);
                             }
-//                            else if(review.conceptsClassified.indexOf(concept) === -1)
-//                            {
-//                                review.conceptsClassified.push(concept);   
-//                            }
                         });
                     });
-                    review.conceptsClassified = response.concepts;
+                    angular.forEach(response.concepts, function (concept) {
+                            if(review.concepts.indexOf(concept) === -1)
+                            {
+                                review.conceptsClassified.push(concept);
+                            }
+                        });
+                    //review.conceptsClassified = response.concepts;
                 }
                 else if(response && !traceability)
                 {
