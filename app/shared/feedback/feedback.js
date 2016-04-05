@@ -1240,11 +1240,13 @@ angular.module('singleConceptAuthoringApp')
                         });
                     });
                     scope.feedbackContainer.review = review ? review : {};
+                    notificationService.sendMessage('Feedback Submitted', 5000, null);
                 }
                 else if(response && !traceability)
                 {
                     review = response;
                     scope.feedbackContainer.review = review ? review : {};
+                    notificationService.sendMessage('Feedback Submitted', 5000, null);
                 }
             });
                 
