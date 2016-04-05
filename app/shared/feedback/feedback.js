@@ -89,6 +89,7 @@ angular.module('singleConceptAuthoringApp')
                       {
                           scope.reloadConceptsToReview('');
                           scope.reloadConceptsReviewed('');
+                          scope.reloadConceptsClassified('');
                       }
                     }
                   });
@@ -183,6 +184,47 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+            
+          scope.conceptsClassifiedTableParams = new NgTableParams({
+              page: 1,
+              count: 10,
+              sorting: {term: 'asc'},
+              orderBy: 'term'
+            },
+            {
+              filterDelay: 50,
+              total: scope.feedbackContainer && scope.feedbackContainer.review && scope.feedbackContainer.review.conceptsClassified ?
+                scope.feedbackContainer.review.conceptsClassified.length : 0,
+
+              getData: function ($defer, params) {
+
+                var myData = [];
+
+                if (!scope.feedbackContainer || !scope.feedbackContainer.review || !scope.feedbackContainer.review.conceptsClassified || scope.feedbackContainer.review.conceptsClassified.length === 0) {
+                  scope.conceptsClassified = [];
+                } else {
+
+                  var searchStr = scope.conceptsClassifiedSearchStr;
+
+                  if (searchStr) {
+                    myData = scope.feedbackContainer.review.conceptsClassified.filter(function (item) {
+                      return item.term.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.id.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                    });
+                  } else {
+                    myData = scope.feedbackContainer.review.conceptsClassified;
+                  }
+                  // hard set the new total
+
+                  myData = params.sorting() ? $filter('orderBy')(myData, params.orderBy()) : myData;
+
+                  params.total(myData.length);
+                  // extract the paged results
+                  scope.conceptsClassified = (myData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  $defer.resolve(scope.conceptsClassified);
+                }
+              }
+            }
+          );
 
           // declare table parameters
           scope.conceptsReviewedTableParams = new NgTableParams({
@@ -238,6 +280,10 @@ angular.module('singleConceptAuthoringApp')
           scope.reloadConceptsReviewed = function (searchStr) {
             scope.conceptsReviewedSearchStr = searchStr;
             scope.conceptsReviewedTableParams.reload();
+          };
+          scope.reloadConceptsClassified = function (searchStr) {
+            scope.conceptsClassifiedSearchStr = searchStr;
+            scope.conceptsClassifiedTableParams.reload();
           };
 
           // cancel review
@@ -357,6 +403,8 @@ angular.module('singleConceptAuthoringApp')
             
             scope.conceptsToReviewTableParams.reload();
             scope.conceptsReviewedTableParams.reload();
+            scope.conceptsClassifiedTableParams.reload();
+            
 
             // if stop request not indicated (or not supplied), update ui state
             if (!stopUiStateUpdate) {
@@ -385,6 +433,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
                 scope.conceptsReviewedTableParams.reload();
                 scope.conceptsToReviewTableParams.reload();
+                scope.conceptsClassifiedTableParams.reload();
 
                 // if stop request not indicated (or not supplied), update ui state
                 if (!stopUiStateUpdate) {
@@ -902,6 +951,7 @@ angular.module('singleConceptAuthoringApp')
                 // manual
                 scope.conceptsToReviewTableParams.reload();
                 scope.conceptsReviewedTableParams.reload();
+                scope.conceptsClassifiedTableParams.reload();
 
                 // load currently viewed feedback (on reload)
                 getViewedFeedback();
@@ -1168,6 +1218,7 @@ angular.module('singleConceptAuthoringApp')
                     var idList = [];
                     review.reviewId = response.reviewId;
                     review.concepts = [];
+                    review.conceptsClassified = [];
                     angular.forEach(traceability.content, function (change) {
                             angular.forEach(change.conceptChanges, function (concept) {
                                 if(idList.indexOf(concept.conceptId.toString()) === -1)
@@ -1181,6 +1232,10 @@ angular.module('singleConceptAuthoringApp')
                             if(id === concept.id)
                             {
                                 review.concepts.push(concept);
+                            }
+                            else if(review.conceptsClassified.indexOf(concept) === -1)
+                            {
+                                review.conceptsClassified.push(concept);   
                             }
                         });
                     });
