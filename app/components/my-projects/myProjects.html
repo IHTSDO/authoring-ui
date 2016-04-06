@@ -43,26 +43,21 @@
               </td>
            <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/project/{{project.key}}">
-          
-                  <button ng-show="project.latestClassificationJson != null"
+             <button ng-show="project.latestClassificationJson != null"
                           type="button"
                           ng-class="[
-                          {green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false},
+                          {indicator_green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
+                           {indicator_green : project.latestClassificationJson.status === 'COMPLETED' && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
+                            {indicator_green : project.latestClassificationJson.status === 'SAVED' && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
                           {indicator_blue : project.latestClassificationJson.status === 'RUNNING'},
-                         
-                          {indicator_green : project.latestClassificationJson.status === 'COMPLETED'},
-                          {indicator_red : project.latestClassificationJson.status === 'FAILED'},
-                          {indicator_red : project.latestClassificationJson.equivalentConceptsFound === true || project.latestClassification.status === 'FAILED'},
-                           {indicator_green : project.latestClassificationJson.status === 'SAVED'},
+                          {indicator_red : project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE' || project.latestClassification.status === 'FAILED' && project.latestClassificationJson.status !== 'STALE'},
                             {indicator_grey : project.latestClassificationJson.status === 'STALE'},
-                           {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true},
+                           {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.status !== 'STALE'},
                            ]"
   class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                      <div class="md md-notifications "></div>
-                                            <span > <div class="message_classification_{{project.latestClassificationJson.status}}"> </div></span>
-
+                    <div class="md md-notifications "></div> 
+                                        <span > <div class="message_classification_{{project.latestClassificationJson.status}}"><div ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
                   </button>
-                  
                     
                 </a>
                
