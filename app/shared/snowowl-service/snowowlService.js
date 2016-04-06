@@ -775,7 +775,7 @@ angular.module('singleConceptAuthoringApp')
     // Get traceability log for branch
     // GET /traceability-service/activities?onBranch=
     function getTraceabilityForBranch(projectKey, taskKey) {
-        return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey + '&activityType=content_change').then(function (response) {
+        return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey).then(function (response) {
           return response.data;
         }, function (error) {
             console.log(error);

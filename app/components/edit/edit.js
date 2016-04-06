@@ -404,53 +404,53 @@ angular.module('singleConceptAuthoringApp.edit', [
     } else if ($routeParams.mode === 'validate') {
       $scope.setView('validation');
     } else if ($routeParams.mode === 'feedback') {
-      if (!$scope.taskKey) {
-        scaService.getReviewForProject($routeParams.projectKey).then(function (response) {
-          $scope.feedbackContainer.review = response ? response : {};
-        });
-      } else {
-
-        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-            snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-                var review = {};
-                if(response && traceability)
-                {
-                    var idList = [];
-                    review.reviewId = response.reviewId;
-                    review.concepts = [];
-                    review.conceptsClassified = [];
-                    angular.forEach(traceability.content, function (change) {
+        snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+            var review = {};
+            if(traceability)
+            {
+                review.concepts = [];
+                review.conceptsClassified = [];
+                angular.forEach(traceability.content, function (change) {
+                        if(change.activityType === 'CONTENT_CHANGE')
+                        {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(idList.indexOf(concept.conceptId.toString()) === -1)
+                                if(review.concepts.indexOf(concept) === -1)
                                 {
-                                    idList.push(concept.conceptId.toString());
+                                    snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
+                                        if(result[0]){
+                                            concept.term = result[0].concept.fsn;
+                                        }
+                                    }, function (error) {
+                                        concept.term = 'Error retreiving term';
+                                    });
+                                    review.concepts.push(concept);
                                 }
                             });
-                    });
-                    angular.forEach(response.concepts, function (concept) {
-                        angular.forEach(idList, function (id) {
-                            if(id === concept.id)
-                            {
-                                review.concepts.push(concept);
-                            }
-                        });
-                    });
-                    angular.forEach(response.concepts, function (concept) {
-                            if(review.concepts.indexOf(concept) === -1)
-                            {
-                                review.conceptsClassified.push(concept);
-                            }
-                        });
-                    //review.conceptsClassified = response.concepts;
-                }
-                else if(response && !traceability)
-                {
-                    review = response;
-                }
-              $scope.feedbackContainer.review = review ? review : {};
-            });
+                        }
+                        else if(change.activityType === 'CLASSIFICATION_SAVE')
+                        {
+                            angular.forEach(change.conceptChanges, function (concept) {
+                                if(review.conceptsClassified.indexOf(concept) === -1)
+                                {
+                                    snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
+                                        if(result[0]){
+                                            concept.term = result[0].concept.fsn;
+                                        }
+                                    }, function (error) {
+                                        concept.term = 'Error retreiving term';
+                                    });
+                                    review.conceptsClassified.push(concept);
+                                }
+                            });
+                        }
+                });
+            }
+            else if(!traceability)
+            {
+                review = {};
+            }
+          $scope.feedbackContainer.review = review ? review : {};
         });
-      }
       $scope.setView('feedback');
     } else if ($routeParams.mode === 'conflicts') {
       $scope.setView('conflicts');
@@ -935,55 +935,54 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // get latest review
     $scope.getLatestReview = function () {
-      // if no task specified, retrieve for project
-      if (!$scope.taskKey) {
-        scaService.getReviewForProject($routeParams.projectKey).then(function (response) {
-          $scope.feedbackContainer.review = response ? response : {};
-        });
-      } else {
-
-        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-                var review = {};
-                if(response && traceability)
-                {
-                    var idList = [];
-                    review.reviewId = response.reviewId;
-                    review.concepts = [];
-                    review.conceptsClassified = [];
-                    angular.forEach(traceability.content, function (change) {
-                        
+      snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+            var review = {};
+            if(traceability)
+            {
+                review.concepts = [];
+                review.conceptsClassified = [];
+                angular.forEach(traceability.content, function (change) {
+                        if(change.activityType === 'CONTENT_CHANGE')
+                        {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(idList.indexOf(concept.conceptId.toString()) == -1)
+                                if(review.concepts.indexOf(concept) === -1)
                                 {
-                                    idList.push(concept.conceptId.toString());
+                                    snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
+                                        if(result[0]){
+                                            concept.term = result[0].concept.fsn;
+                                        }
+                                    }, function (error) {
+                                        concept.term = 'Error retreiving term';
+                                    });
+                                    review.concepts.push(concept);
                                 }
                             });
-                    });
-                    angular.forEach(response.concepts, function (concept) {
-                        angular.forEach(idList, function (id) {
-                            if(id === concept.id)
-                            {
-                                review.concepts.push(concept);
-                                response.concepts.pop(concept);
-                            }
-                        });
-                    });
-                    angular.forEach(response.concepts, function (concept) {
-                            if(review.concepts.indexOf(concept) === -1)
-                            {
-                                review.conceptsClassified.push(concept);
-                            }
-                        });
-                }
-                else if(response && !traceability)
-                {
-                    review = response;
-                }
-              $scope.feedbackContainer.review = review ? review : {};
-            });
+                        }
+                        else if(change.activityType === 'CLASSIFICATION_SAVE')
+                        {
+                            angular.forEach(change.conceptChanges, function (concept) {
+                                if(review.conceptsClassified.indexOf(concept) === -1)
+                                {
+                                    snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
+                                        if(result[0]){
+                                            concept.term = result[0].concept.fsn;
+                                        }
+                                    }, function (error) {
+                                        concept.term = 'Error retreiving term';
+                                    });
+                                    review.conceptsClassified.push(concept);
+                                }
+                            });
+                        }
+                });
+            }
+            else if(!traceability)
+            {
+                review = {};
+            }
+          $scope.feedbackContainer.review = review ? review : {};
+          console.log(scope.feedbackContainer.review);
         });
-      }
     };
 
     var feedbackStyles = {};

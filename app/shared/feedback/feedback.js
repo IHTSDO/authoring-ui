@@ -97,7 +97,6 @@ angular.module('singleConceptAuthoringApp')
           };
             
           scope.startTaskPoll();
-
           // declare viewed arrays for ng-table
           scope.conceptsToReviewViewed = [];
           scope.conceptsReviewedViewed = [];
@@ -160,7 +159,7 @@ angular.module('singleConceptAuthoringApp')
 
                       // set viewed flag based on current viewed list
                       angular.forEach(scope.viewedConcepts, function (viewedConcept) {
-                        if (viewedConcept.conceptId === item.id) {
+                        if (viewedConcept.conceptId === item.conceptId) {
                           item.viewed = true;
                         } else {
                           item.viewed = false;
@@ -331,7 +330,7 @@ angular.module('singleConceptAuthoringApp')
           function updateReviewedListUiState() {
             var conceptIds = [];
             angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {
-              conceptIds.push(concept.id);
+              conceptIds.push(concept.conceptId);
             });
             scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', conceptIds);
           }
@@ -352,7 +351,7 @@ angular.module('singleConceptAuthoringApp')
               var concept = scope.feedbackContainer.review.conceptsResolved[i];
 
               // if this concept is present, move it from Resolved to To Resolve
-              if (concept.id === data.conceptId) {
+              if (concept.conceptId === data.conceptId) {
                 scope.feedbackContainer.review.conceptsResolved.splice(i);
                 scope.feedbackContainer.review.conceptsToResolve.push(concept);
               }
@@ -366,8 +365,8 @@ angular.module('singleConceptAuthoringApp')
                 item.selected = false;
                 scope.feedbackContainer.review.conceptsReviewed.push(item);
                 var elementPos = scope.feedbackContainer.review.conceptsToReview.map(function (x) {
-                  return x.id;
-                }).indexOf(item.id);
+                  return x.conceptId;
+                }).indexOf(item.conceptId);
                 scope.feedbackContainer.review.conceptsToReview.splice(elementPos, 1);
           };
 
@@ -378,7 +377,7 @@ angular.module('singleConceptAuthoringApp')
             var feedbackStr = '<p>Approved by: ' + $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName + '</p>';
             if(itemList){
                 angular.forEach(itemList, function(item){
-                    idList.push(item.id);
+                    idList.push(item.conceptId);
                 });
                   scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, idList, false).then(function (response) {
                   notificationService.sendMessage('Multiple concepts marked as approved.', 5000, null);
@@ -391,7 +390,7 @@ angular.module('singleConceptAuthoringApp')
                 
             }
             else{
-                idList.push(item.id);
+                idList.push(item.conceptId);
                   scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, idList, false).then(function (response) {
                   notificationService.sendMessage('Concept: ' + item.term + ' marked as approved.', 5000, null);
                 }, function () {
@@ -428,8 +427,8 @@ angular.module('singleConceptAuthoringApp')
                 item.selected = false;
                 scope.feedbackContainer.review.conceptsToReview.push(item);
                 var elementPos = scope.feedbackContainer.review.conceptsReviewed.map(function (x) {
-                  return x.id;
-                }).indexOf(item.id);
+                  return x.conceptId;
+                }).indexOf(item.conceptId);
                 scope.feedbackContainer.review.conceptsReviewed.splice(elementPos, 1);
                 scope.conceptsReviewedTableParams.reload();
                 scope.conceptsToReviewTableParams.reload();
@@ -483,15 +482,15 @@ angular.module('singleConceptAuthoringApp')
 
             // mark as unviewed in ToReview list (if present)
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
-              if (item.id === data.concept.conceptId) {
+              if (item.conceptId === data.concept.conceptId) {
                 item.viewed = false;
               }
             });
 
             // mark as unviewed in Reviewed list (if present)
             angular.forEach(scope.conceptsReviewedViewed, function (item) {
-              if (item.id === data.concept.conceptId) {
-                scope.addToEdit(item.id);
+              if (item.conceptId === data.concept.conceptId) {
+                scope.addToEdit(item.conceptId);
                 item.viewed = false;
               }
             });
@@ -517,21 +516,21 @@ angular.module('singleConceptAuthoringApp')
 
           }
 
-          function addToEditHelper(id) {
+          function addToEditHelper(conceptId) {
 
             // used for status update of addMultipleToEdit
             var deferred = $q.defer();
 
             // check if concept already exists in list
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
-              if (scope.viewedConcepts[i].conceptId === id) {
+              if (scope.viewedConcepts[i].conceptId === conceptId) {
                 notificationService.sendWarning('Concept already shown');
                 return;
               }
             }
 
             // get the full concept for this branch (before version)
-            snowowlService.getFullConcept(id, scope.branch).then(function (response) {
+            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
 
               scope.viewedConcepts.push(response);
 
@@ -554,9 +553,9 @@ angular.module('singleConceptAuthoringApp')
           scope.addToEdit = function (item) {
             // if viewed, ignore
             if (!item.viewed) {
-              notificationService.sendMessage('Loading concept ' + item.id);
+              notificationService.sendMessage('Loading concept ' + item.conceptId);
               item.viewed = true;
-              addToEditHelper(item.id).then(function (response) {
+              addToEditHelper(item.conceptId).then(function (response) {
                 notificationService.sendMessage('Concept loaded', 5000);
               });
             }
@@ -565,7 +564,7 @@ angular.module('singleConceptAuthoringApp')
             console.log(concept);
             $rootScope.$broadcast('viewTaxonomy', {
               concept: {
-                conceptId: concept.id,
+                conceptId: concept.conceptId,
                 fsn: concept.term
               }
             });
@@ -605,7 +604,7 @@ angular.module('singleConceptAuthoringApp')
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
                 if (item.selected === true && !item.viewed) {
-                  conceptsToAdd.push(item.id);
+                  conceptsToAdd.push(item.conceptId);
                   item.viewed = true;
                 }
               });
@@ -623,7 +622,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             for (var i = 0; i < conceptsToAdd.length; i++) {
-              addToEditHelper(conceptsToAdd[i].id).then(function (response) {
+              addToEditHelper(conceptsToAdd[i].conceptId).then(function (response) {
                 conceptsAdded++;
                 if (conceptsAdded === conceptsToAdd.length) {
                   notificationService.sendMessage('All concepts loaded', 5000);
@@ -697,11 +696,11 @@ angular.module('singleConceptAuthoringApp')
 
                 // NOTE: Compare by id, as dragged/dropped concepts have
                 // $hashkey which prevents true equality checking
-                if (newConceptArray[i].id === droppedConcept.id) {
+                if (newConceptArray[i].conceptId === droppedConcept.conceptId) {
                   console.debug('found dropped');
                   droppedIndex = i;
                 }
-                if (newConceptArray[i].id === draggedConcept.id) {
+                if (newConceptArray[i].conceptId === draggedConcept.conceptId) {
                   draggedIndex = i;
                   console.debug('found dragged');
                 }
@@ -920,7 +919,7 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   // check if id is in reviewed list
-                  if (reviewedListIds.indexOf(item.id) === -1) {
+                  if (reviewedListIds.indexOf(item.conceptId) === -1) {
                     // apply check-all status
                     item.selected = scope.checkedToReview;
                     conceptsToReview.push(item);
@@ -986,14 +985,14 @@ angular.module('singleConceptAuthoringApp')
             // extract the concept ids for convenience
             var conceptIds = [];
             angular.forEach(scope.subjectConcepts, function (concept) {
-              conceptIds.push(concept.id);
+              conceptIds.push(concept.conceptId);
             });
               
             // cycle over all currently displayed concepts
             angular.forEach(scope.conceptsToReviewViewed, function (concept) {
 
               // if concept is in selected list and has messages, add them
-              if (conceptIds.indexOf(concept.id) !== -1 && concept.messages && concept.messages.length > 0) {
+              if (conceptIds.indexOf(concept.conceptId) !== -1 && concept.messages && concept.messages.length > 0) {
                 angular.forEach(concept.messages, function (message) {
                   // attach the concept name to the message for display when
                   // multiple concept feedbacks are viewed
@@ -1004,7 +1003,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // mark read if unread is indicated
                 if (!concept.read) {
-                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
+                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
                     concept.read = true;
 
                   });
@@ -1014,7 +1013,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.conceptsReviewedViewed, function (concept) {
 
               // if concept is in selected list and has messages, add them
-              if (conceptIds.indexOf(concept.id) !== -1 && concept.messages && concept.messages.length > 0) {
+              if (conceptIds.indexOf(concept.conceptId) !== -1 && concept.messages && concept.messages.length > 0) {
                 angular.forEach(concept.messages, function (message) {
                   // attach the concept name to the message for display when
                   // multiple concept feedbacks are viewed
@@ -1025,7 +1024,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // mark read if unread is indicated
                 if (!concept.read) {
-                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.id).then(function (response) {
+                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
                     concept.read = true;
 
                   });
@@ -1082,9 +1081,9 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          function createConceptPlaceholder(id, fsn) {
+          function createConceptPlaceholder(conceptId, fsn) {
 
-            console.debug('creating concept placeholder', id, fsn);
+            console.debug('creating concept placeholder', conceptId, fsn);
 
             return '<span style="color: #00a6e5" id="id">' + fsn + '</span>';
           }
@@ -1095,9 +1094,9 @@ angular.module('singleConceptAuthoringApp')
            * @param fsn
            * @returns {string}
            */
-          function createConceptImg(id, fsn) {
+          function createConceptImg(conceptId, fsn) {
 
-            console.debug('creating concept img', id, fsn);
+            console.debug('creating concept img', conceptId, fsn);
 
             // testing creation of image
             var can = document.createElement('canvas');
@@ -1113,7 +1112,7 @@ angular.module('singleConceptAuthoringApp')
             var img = new Image();
             img.src = ctx.canvas.toDataURL();
 
-            return '<img src="' + img.src + '" id="' + id + '-' + fsn + '-endConceptLink" />';
+            return '<img src="' + img.src + '" id="' + conceptId + '-' + fsn + '-endConceptLink" />';
           }
 
           /**
@@ -1158,7 +1157,7 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.dropConceptIntoEditor = function (concept) {
             console.debug('dropped concept into editor', concept);
-            var img = createConceptImg(concept.id, concept.term);
+            var img = createConceptImg(concept.conceptId, concept.term);
             scope.htmlVariable += '&nbsp ' + img + ' ';
 
           };
@@ -1196,7 +1195,7 @@ angular.module('singleConceptAuthoringApp')
             var subjectConceptIds = [];
             angular.forEach(scope.subjectConcepts, function (subjectConcept) {
               console.debug('adding concept id', subjectConcept.conceptId, subjectConcept);
-              subjectConceptIds.push(subjectConcept.id);
+              subjectConceptIds.push(subjectConcept.conceptId);
             });
 
             scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, subjectConceptIds, requestFollowup).then(function (response) {
