@@ -42,7 +42,7 @@
     </div>
 
     <!-- concept name -->
-    <div class="pull-left col-md-6 no-padding title-text" style="margin-left:-25px;">
+    <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
       <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
         <span class="fsn p-t-5">{{concept.fsn}}</span>
 
@@ -50,34 +50,8 @@
             ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
     </div>
 
-    <div class="pull-right m-l-4 m-r-5 col-md-1 no-padding ">
-      <!--
-            <select name="select-primitive-choice" id="select-primitive-choice"
-                    ng-disabled="isStatic"
-                    ng-model="concept.definitionStatus"
-                    ng-change="toggleConceptDefinitionStatus()"
-                    class="form-control grey darken-4 primitive pull-left"
-                    style="width:30px;"
-                    ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
-            </select>
-      -->
-      <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'"
-              ng-disabled="isStatic"
-              class="pull-left p-t-5 p-l-3 white-text primitive-buttons tooltips-left tooltips-light normal-case">
-        <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
-        <span>Concept is Fully Defined</span></button>
-      <button ng-if="concept.definitionStatus == 'PRIMITIVE'"
-              ng-disabled="isStatic"
-              class="pull-left  p-t-5 p-l-3 primitive-buttons white-text tooltips-left tooltips-light normal-case">
-        <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
-        <span>Concept is Primitive</span></button>
-
-      <div class="pull-right">
-        <button ng-init="isCollapsed = false" ng-click="collapse(concept)" type="button"
-                ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-down' : isCollapsed, ' fa fa-caret-up' : !isCollapsed}]"></button>
-      </div>
-    </div>
-    <div class="pull-right no-margin edits concept-title col-md-4 no-padding">
+    <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
+    <div class="  ">
       <button type="button"
               class="deep-purple lighten-2 btn-default md md-save tooltips-left editbuttons small-buttons"
               ng-click="saveConcept()"
@@ -136,7 +110,33 @@
                       placeholder="{{field}}" autofocus>
             </textarea>
       </div>
+       <!--
+            <select name="select-primitive-choice" id="select-primitive-choice"
+                    ng-disabled="isStatic"
+                    ng-model="concept.definitionStatus"
+                    ng-change="toggleConceptDefinitionStatus()"
+                    class="form-control grey darken-4 primitive pull-left"
+                    style="width:30px;"
+                    ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
+            </select>
+      -->
+      <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'"
+              ng-disabled="isStatic"
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-left tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
+        <span>Concept is Fully Defined</span></button>
+      <button ng-if="concept.definitionStatus == 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-left tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
+        <span>Concept is Primitive</span></button>
+
+    
+        <button ng-init="isCollapsed = false" class="btn-default editbuttons small-buttons" ng-click="collapse(concept)" type="button"
+                ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa fa-caret-down' : isCollapsed, ' fa fa-caret-up' : !isCollapsed}]"></button>
+   
     </div>
+       </div> 
   </div>
 
   <div class="row">
