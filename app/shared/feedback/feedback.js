@@ -415,7 +415,6 @@ angular.module('singleConceptAuthoringApp')
           // move item from Reviewed to ToReview
           scope.returnToReview = function (item, stopUiStateUpdate) {
             
-              console.log(scope.task);
               scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
                 scope.task = task;
                 if(scope.task.status === 'Review Completed')

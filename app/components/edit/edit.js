@@ -414,7 +414,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                         if(change.activityType === 'CONTENT_CHANGE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.indexOf(concept) === -1)
+                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
                                 {
                                     snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
                                         if(result[0]){
@@ -430,7 +430,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                         else if(change.activityType === 'CLASSIFICATION_SAVE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.indexOf(concept) === -1)
+                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
                                 {
                                     snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
                                         if(result[0]){
@@ -945,7 +945,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                         if(change.activityType === 'CONTENT_CHANGE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.indexOf(concept) === -1)
+                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
                                 {
                                     snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
                                         if(result[0]){
@@ -961,7 +961,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                         else if(change.activityType === 'CLASSIFICATION_SAVE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.indexOf(concept) === -1)
+                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
                                 {
                                     snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, concept.conceptId.toString(), 1, 1).then(function (result) {
                                         if(result[0]){
@@ -981,7 +981,6 @@ angular.module('singleConceptAuthoringApp.edit', [
                 review = {};
             }
           $scope.feedbackContainer.review = review ? review : {};
-          console.log(scope.feedbackContainer.review);
         });
     };
 
