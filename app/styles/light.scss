@@ -536,7 +536,11 @@ color: #ba68c8;
 .sca-light .pink.lighten-2.btn-round:hover {color: #fff; background-color:#f06292}
 .sca-light .purple.lighten-1.btn-round {background-color:transparent; color:#ba68c8}
 .sca-light .purple.lighten-1.btn-round:hover {color: #864b90; background-color: transparent;}
-
+.sca-light .btn-default.indigo.lighten-2:hover, 
+.sca-light .btn-default.indigo.lighten-2:active {
+    background-color: transparent;
+    color: #273371;
+}
 .sca-light .purple.lighten-2.btn-round {background-color:transparent; color:#ba68c8}
 .sca-light .purple.lighten-2.btn-round:hover {background-color:transparent; color:#7a4483}
 .sca-light .purple.darken-1.btn-round {background-color:transparent; color:#ba68c8}
@@ -550,9 +554,10 @@ color: #ba68c8;
     color: #000;
 }
 .sca-light .btn.black:hover {
-    background-color: #000 !important;
-    color: #fff;
+    color: #000 !important;
+    background-color: transparent;
 }
+.sca-light .review-button-list{background-color: #f8bbd0!important;}
 .sca-light .sca-footer{background-color:#fff;}
 .sca-light .indicator_grey{    color:#666!important; background-color:transparent!important;}
 .sca-light .indicator_grey:hover{     color:#3a3a3a!important;background-color:transparent!important;}
@@ -577,7 +582,7 @@ color: #ba68c8;
     background-color: #e7e7e7!important;
 	color:#333!important
 }
-.sca-light .feedback .switch{color:#4d4d4d!important}
+.sca-light .feedback .switch{color:#fff!important}
 
 .sca-light .edits-row.color_0 .add-buttons,
 .sca-light .edits-row.color_1 .add-buttons,
