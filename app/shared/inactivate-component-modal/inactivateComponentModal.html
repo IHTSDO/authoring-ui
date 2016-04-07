@@ -83,8 +83,8 @@
             </div>
           </div>
 
-          <div class="row" style="border-top:grey solid 1px;" ng-repeat="association in associations">
-            <div class="col-md-4">
+          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-repeat="association in associations">
+            <div class="col-md-5">
               <select class="form-control"
                       ng-options="type as type.text for type in associationTargets"
                       ng-model="association.type">
@@ -101,26 +101,19 @@
                         placeholder="Type to select an associated concept..."></textarea>
 
             </div>
-            <div class="col-md-12">
+            <div class="col-md-1">
               <button type="button" ng-click="addAssociation($index)"
-                      class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-left tooltips-light normal-case">
+                      class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case">
                 <span>Add Association</span></button>
 
 
               <button type="button" ng-click="removeAssociation($index)"
-                      class="btn-default add-buttons md fa fa-minus button-width-minus pull-right tooltips-left tooltips-light normal-case">
+                      class="btn-default add-buttons md fa fa-minus button-width-minus  tooltips-left tooltips-light normal-case">
                 <span>Remove Association</span></button>
             </div>
           </div>
         </div>
-        <div class="row col-md-12 no-padding top-modal">
-          <button type="button"
-                  class="btn btn-default green p-10 inactivation-button-modal m-t-20"
-                  ng-click="selectReason()">
-Continue with {{componentType}} Inactivation
-          </button>
-
-        </div>
+      
 
 
       </div>
@@ -181,13 +174,32 @@ Continue with {{componentType}} Inactivation
 
       </div>
 
-
     </div>
 
   </div>
 
   <div class="modal-footer">
-
+  <div class="row col-md-12 no-padding top-modal">
+        <style>
+		.top-modal .col-md-6.left-button{padding-left:0px}
+		.top-modal .col-md-6.right-button{padding-right:0px}
+		</style>
+         <div class=" col-md-6 left-button ">
+          <button type="button"
+                  class="btn btn-default red p-10 inactivation-button-modal m-t-20"
+                  ng-click="cancel()">
+Cancel {{componentType}} Inactivation
+          </button>
+</div>
+          <div class=" col-md-6 right-button">
+          <button type="button"
+                  class="btn btn-default green p-10 inactivation-button-modal m-t-20"
+                  ng-click="selectReason()">
+Continue with {{componentType}} Inactivation
+          </button>
+</div>
+   
+        </div>
   </div>
 
 </div>
