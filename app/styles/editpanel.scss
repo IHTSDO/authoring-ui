@@ -631,38 +631,43 @@ button.fsn-title-button {
 .color_0 input,
 .color_0 textarea,
 .color_0 select,
-.color_0 .custom-button {
+.color_0 .custom-button, .PRIMITIVE .color_0 .sourcename, .color_0 .sourcename  {
     background-color: #dbdbff;
     color: #474747 !important;
 }
 .color_1 input,
 .color_1 textarea,
 .color_1 select,
-.color_1 .custom-button {
+.color_1 .custom-button,
+.color_1 .sourcename {
     background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .color_2 input,
 .color_2 textarea,
 .color_2 select,
-.color_2 .custom-button {
+.color_2 .custom-button,
+.color_2 .sourcename {
     background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .color_3 input,
 .color_3 textarea,
-.color_3 select {
+.color_3 select,
+.color_3 .sourcename {
     background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .color_4 input,
 .color_4 textarea,
-.color_4 select {
+.color_4 select,
+.color_4 .sourcename {
     background-color: #dbdbff !important;
 }
 .color_5 input,
 .color_5 textarea,
-.color_5 select {
+.color_5 select,
+.color_5 .sourcename {
     background-color: #dbdbff !important;
     color: #474747 !important;
 }
@@ -681,8 +686,12 @@ button.fsn-title-button {
 }
 .is_a input,
 .is_a textarea,
-.is_a select {
+.is_a select,
+.is_a_bg {
     background-color: #ffffdb !important;
+}
+.is_a_bg {
+   margin-left:.5% !important;
 }
 .attr input,
 .attr textarea,
@@ -1066,12 +1075,12 @@ border-bottom:1px solid #8e8e8e
     background-color: #b7dbff !important;
 }
 
-.FULLY_DEFINED .color_ input, .FULLY_DEFINED .color_ textarea, .FULLY_DEFINED .color_ select, .FULLY_DEFINED .color_ .custom-button {
+.FULLY_DEFINED .color_ input, .FULLY_DEFINED .color_ textarea, .FULLY_DEFINED .color_ select, .FULLY_DEFINED .color_ .custom-button .FULLY_DEFINED .sourcename {
     background-color: #dbdbff !important;
     color: #474747 !important;
 }
-
- .PRIMITIVE textarea.relationship,  .PRIMITIVE textarea.rg, .PRIMITIVE select, .PRIMITIVE .custom-button {
+.sourcename  {margin-left:.5%}
+ .PRIMITIVE textarea.relationship,  .PRIMITIVE textarea.rg, .PRIMITIVE select, .PRIMITIVE .custom-button, .PRIMITIVE .sourcename {
     background-color: #b7dbff !important;
     color: #474747 !important;
 }
