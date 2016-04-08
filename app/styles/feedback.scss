@@ -36,6 +36,8 @@ label input[type=checkbox] {
 .h-45 {
     height: 45px;
 }
+.review-term{padding: 5px 5px;
+    display: block;}
 .follow-up input{min-height:18px!important}
 ul.sidebar-tabs{background-color: #d1d1d1;}
 .add-shadow {
@@ -417,7 +419,7 @@ strong{font-weight:700;}
 	border-color: #ffe7f0 #ffe7f0 transparent transparent!important;
 }
 
-
+.numbers.badge {padding: 3px 5px!important;}
 
 .light_greys{background-color: #ececec;}
 .feedback .pager .btn {
@@ -427,3 +429,19 @@ strong{font-weight:700;}
 .feedback .pager .btn {
     padding: 1px 6.5px;
 }}
+
+.checkbox input[type=checkbox]:checked:before, .checkbox-inline input[type=checkbox]:checked:before, input[type=checkbox]:checked:before {
+    content: "";
+    position: relative;
+    top: 10px;
+    left: 6px;
+    display: block;
+    width: 6px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-top-width: 0;
+    border-left-width: 0;
+    transform: rotate(45deg);
+    margin-top: -9px;
+    padding-top: -5px;
+}
