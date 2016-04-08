@@ -90,7 +90,7 @@ pading:8px;
                  ng-if="feedbackContainer.review && feedbackContainer.review.conceptsToReview.length === 0"> No concepts to review </div>
       <table show-filter="false" ng-table="conceptsToReviewTableParams"
                    ng-show="feedbackContainer.review.conceptsToReview.length > 0"
-                   template-pagination="utilities/review-table-pager"
+                   template-pagination="utilities/review-table-pager.html"
                    class="table feedback-table" drop-channel="feedbackConcept">
         <div class="col-md-7 no-padding" ng-if="role === 'REVIEWER' && task.status === 'In Review'">
           <input class=" m-l-10 input-filter form-control ng-scope ng-valid ng-touched"
@@ -142,7 +142,7 @@ pading:8px;
                     filter="{ 'term': 'text' }"
                     ui-draggable="true" drag="concept"
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                    ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
+                    ui-on-drop="dropConcept(concept, $data, actionTab)"><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <span class="pull-left p-5">{{concept.term}} </span></td>
           
           <!--Author Controls -->
           <td ng-if="role === 'AUTHOR'" class="  col-md-3 no-padding"
@@ -239,7 +239,7 @@ pading:8px;
                  ng-if="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length === 0"> No Approved concepts. </div>
       <table show-filter="false" ng-table="conceptsReviewedTableParams"
                    ng-show="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length > 0"
-                   template-pagination="utilities/review-table-pager"
+                   template-pagination="utilities/review-table-pager.html"
                    class="table feedback-table" drop-channel="feedbackConcept">
         <div class="m-10 ">
           <input class=" input-filter form-control ng-scope ng-valid ng-touched"
@@ -257,7 +257,7 @@ pading:8px;
                     filter="{ 'term': 'text' }"
                     ui-draggable="true" drag="concept" 
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                    ui-on-drop="dropConcept(concept, $data, actionTab)" ><span ng-show="concept.modifiedSinceReview" class="new-edits">New Edits</span> {{concept.term}} </td>
+                    ui-on-drop="dropConcept(concept, $data, actionTab)" ><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <span class="pull-left p-5">{{concept.term}} </span> </td>
           <td ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'" class=" col-md-4 no-padding">  <div class="m-3"> <button
                     class="btn btn-round btn-default green base pull-right tooltips-left  normal-case"
                     ng-click="returnToReview(concept)">
@@ -315,7 +315,7 @@ pading:8px;
                  ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length === 0"> No Classification concepts. </div>
       <table show-filter="false" ng-table="conceptsClassifiedTableParams"
                    ng-show="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length > 0"
-                   template-pagination="utilities/review-table-pager"
+                   template-pagination="utilities/review-table-pager.html"
                    class="table feedback-table" drop-channel="feedbackConcept">
         <div class="m-10 ">
           <input class=" input-filter form-control ng-scope ng-valid ng-touched"
@@ -333,7 +333,7 @@ pading:8px;
                     filter="{ 'term': 'text' }"
                     ui-draggable="true" drag="concept" 
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
-                    ui-on-drop="dropConcept(concept, $data, actionTab)" > {{concept.term}} </td>
+                    ui-on-drop="dropConcept(concept, $data, actionTab)" > <span class="pull-left p-5">{{concept.term}} </span> </td>
             <td ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'" class=" col-md-4 no-padding"><div class="m-3"> 
                 <button
                     class="btn pull-right btn-round btn-default blue lighten-2 tooltips-left  normal-case"
