@@ -398,19 +398,31 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canConflict = false;
     $scope.canCreateConcept = false;
     
-    $scope.getConceptsForReview = function(idList, review){
+    $scope.getConceptsForReview = function(idList, review, feedbackList){
         snowowlService.bulkGetConcept(idList, $scope.branch).then(function(response){
                 angular.forEach(response.items, function (concept){
                     angular.forEach(review.concepts, function(reviewConcept){
                         if(concept.id === reviewConcept.conceptId.toString())
                         {
                             reviewConcept.term = concept.fsn.term;
+                            angular.forEach(feedbackList, function(feedback){
+                                if(reviewConcept.conceptId.toString() === feedback.id)
+                                {
+                                    reviewConcept.messages = feedback.messages;   
+                                }
+                            });
                         }
                     });
                     angular.forEach(review.conceptsClassified, function(reviewConcept){
                         if(concept.id === reviewConcept.conceptId.toString())
                         {
                             reviewConcept.term = concept.fsn.term;
+                            angular.forEach(feedbackList, function(feedback){
+                                if(reviewConcept.conceptId.toString() === feedback.id)
+                                {
+                                    reviewConcept.messages = feedback.messages;   
+                                }
+                            });
                         }
                     });
                 });
@@ -452,12 +464,14 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 }
                             });
                         }
-                        var i,j,temparray,chunk = 50;
-                        for (i=0,j=idList.length; i<j; i+=chunk) {
-                            temparray = idList.slice(i,i+chunk);
-                            $scope.getConceptsForReview(temparray, review);
-                        }
-                        
+                         
+                });
+                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
+                    var i,j,temparray,chunk = 50;
+                    for (i=0,j=idList.length; i<j; i+=chunk) {
+                        temparray = idList.slice(i,i+chunk);
+                        $scope.getConceptsForReview(temparray, review, feedback);
+                    }
                 });
                 
             }
@@ -954,7 +968,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
             var review = {};
             if(traceability)
-            if(traceability)
             {
                 review.concepts = [];
                 review.conceptsClassified = [];
@@ -980,13 +993,12 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 }
                             });
                         }
-                        var i,j,temparray,chunk = 50;
-                        for (i=0,j=idList.length; i<j; i+=chunk) {
-                            temparray = idList.slice(i,i+chunk);
-                            $scope.getConceptsForReview(temparray, review);
-                        }
-                        
                 });
+                var i,j,temparray,chunk = 50;
+                for (i=0,j=idList.length; i<j; i+=chunk) {
+                    temparray = idList.slice(i,i+chunk);
+                    $scope.getConceptsForReview(temparray, review);
+                }
                 
             }
             else if(!traceability)
