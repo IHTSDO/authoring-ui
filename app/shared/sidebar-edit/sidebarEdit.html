@@ -20,11 +20,15 @@
                                  class="tooltips-btm tooltips-btm normal-case">
         <div class="fa fa-list-ol"></div>
         <span>Saved List</span></a></li>
-          <li role="presentation" ><a ng-if="taskKey"      ng-disabled="task.feedbackMessagesStatus === 'none' && isOwnTask" 
+         <li role="presentation"  ><a    ng-hide="task.status === 'New'"
                                                ng-click="viewReview()"  class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-envelope"></div>
-        <span>Switch to Feedback View</span></a></li>
+        <span>Switch to Feedback View</span></a><a    ng-show="task.status === 'New'"
+                                                 class="tooltips-btm tooltips-light normal-case">
+                                                
+        <div class="fa fa-envelope"></div>
+        <span>Review Not Available </span></a></li>
       <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
         <div class="fa fa-info-circle"></div>

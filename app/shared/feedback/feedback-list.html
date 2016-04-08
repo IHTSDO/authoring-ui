@@ -59,7 +59,7 @@ pading:8px;
                ng-click="actionTab=1"
                aria-controls="home"
                role="tab"
-               data-toggle="tab">To Review<div class="badge pull-right pink darken-1 ">{{feedbackContainer.review.conceptsToReview.length }}</div></a> </li>
+               data-toggle="tab">To Review<div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsToReview.length }}</div></a> </li>
                
     <li role="presentation"><a style="margin: 0"
                                                                             ng-click="actionTab=2"
@@ -67,14 +67,14 @@ pading:8px;
                                                                             role="tab"
                                                                             data-toggle="tab">Approved
 
-  <div class="badge pull-right pink darken-1 ">{{feedbackContainer.review.conceptsReviewed.length}}</div>
+  <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsReviewed.length}}</div>
    
       </a> </li>
       <li role="presentation"> <a style="margin: 0"
                ng-click="actionTab=3"
                aria-controls="home"
                role="tab"
-               data-toggle="tab">Inferred<div class="badge pull-right pink darken-1 ">{{feedbackContainer.review.conceptsClassified.length }}</div></a> </li>
+               data-toggle="tab">Inferred<div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsClassified.length }}</div></a> </li>
     
   
   </ul>
@@ -90,7 +90,7 @@ pading:8px;
                  ng-if="feedbackContainer.review && feedbackContainer.review.conceptsToReview.length === 0"> No concepts to review </div>
       <table show-filter="false" ng-table="conceptsToReviewTableParams"
                    ng-show="feedbackContainer.review.conceptsToReview.length > 0"
-                   template-pagination="utilities/data-table-pager.html"
+                   template-pagination="utilities/review-table-pager"
                    class="table feedback-table" drop-channel="feedbackConcept">
         <div class="col-md-7 no-padding" ng-if="role === 'REVIEWER' && task.status === 'In Review'">
           <input class=" m-l-10 input-filter form-control ng-scope ng-valid ng-touched"
@@ -239,7 +239,7 @@ pading:8px;
                  ng-if="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length === 0"> No Approved concepts. </div>
       <table show-filter="false" ng-table="conceptsReviewedTableParams"
                    ng-show="feedbackContainer.review && feedbackContainer.review.conceptsReviewed.length > 0"
-                   template-pagination="utilities/data-table-pager.html"
+                   template-pagination="utilities/review-table-pager"
                    class="table feedback-table" drop-channel="feedbackConcept">
         <div class="m-10 ">
           <input class=" input-filter form-control ng-scope ng-valid ng-touched"
@@ -315,7 +315,7 @@ pading:8px;
                  ng-if="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length === 0"> No Classification concepts. </div>
       <table show-filter="false" ng-table="conceptsClassifiedTableParams"
                    ng-show="feedbackContainer.review && feedbackContainer.review.conceptsClassified.length > 0"
-                   template-pagination="utilities/data-table-pager.html"
+                   template-pagination="utilities/review-table-pager"
                    class="table feedback-table" drop-channel="feedbackConcept">
         <div class="m-10 ">
           <input class=" input-filter form-control ng-scope ng-valid ng-touched"
