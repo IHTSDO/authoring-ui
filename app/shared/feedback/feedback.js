@@ -1160,6 +1160,38 @@ angular.module('singleConceptAuthoringApp')
             scope.htmlVariable += '&nbsp ' + img + ' ';
 
           };
+            
+          scope.getConceptsForReview = function(idList, review, feedbackList){
+            snowowlService.bulkGetConcept(idList, scope.branch).then(function(response){
+                    angular.forEach(response.items, function (concept){
+                        angular.forEach(review.concepts, function(reviewConcept){
+                            if(concept.id === reviewConcept.conceptId.toString())
+                            {
+                                reviewConcept.term = concept.fsn.term;
+                                angular.forEach(feedbackList, function(feedback){
+                                    if(reviewConcept.conceptId.toString() === feedback.id)
+                                    {
+                                        reviewConcept.messages = feedback.messages;   
+                                    }
+                                });
+                            }
+                        });
+                        angular.forEach(review.conceptsClassified, function(reviewConcept){
+                            if(concept.id === reviewConcept.conceptId.toString())
+                            {
+                                reviewConcept.term = concept.fsn.term;
+                                angular.forEach(feedbackList, function(feedback){
+                                    if(reviewConcept.conceptId.toString() === feedback.id)
+                                    {
+                                        reviewConcept.messages = feedback.messages;   
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    scope.feedbackContainer.review = review ? review : {};
+                });
+        };
 
           scope.submitFeedback = function (requestFollowup) {
 
@@ -1211,38 +1243,44 @@ angular.module('singleConceptAuthoringApp')
               scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
                 var review = {};
-                if(response && traceability)
-                {
-                    var idList = [];
-                    review.reviewId = response.reviewId;
-                    review.concepts = [];
-                    review.conceptsClassified = [];
-                    angular.forEach(traceability.content, function (change) {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(idList.indexOf(concept.conceptId.toString()) === -1)
+                if(traceability)
+                    {
+                        review.concepts = [];
+                        review.conceptsClassified = [];
+                        var idList = [];
+                        angular.forEach(traceability.content, function (change) {
+                                if(change.activityType === 'CONTENT_CHANGE')
                                 {
-                                    idList.push(concept.conceptId.toString());
+                                    angular.forEach(change.conceptChanges, function (concept) {
+                                        if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
+                                        {
+                                            review.concepts.push(concept);
+                                            idList.push(concept.conceptId);
+                                        }
+                                    });
                                 }
-                            });
-                    });
-                    angular.forEach(response.concepts, function (concept) {
-                        angular.forEach(idList, function (id) {
-                            if(id === concept.id)
-                            {
-                                review.concepts.push(concept);
+                                else if(change.activityType === 'CLASSIFICATION_SAVE')
+                                {
+                                    angular.forEach(change.conceptChanges, function (concept) {
+                                        if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
+                                        {
+                                            review.conceptsClassified.push(concept);
+                                            idList.push(concept.conceptId);
+                                        }
+                                    });
+                                }
+
+                        });
+                        scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
+                            var i,j,temparray,chunk = 50;
+                            for (i=0,j=idList.length; i<j; i+=chunk) {
+                                temparray = idList.slice(i,i+chunk);
+                                scope.getConceptsForReview(temparray, review, feedback);
                             }
                         });
-                    });
-                    angular.forEach(response.concepts, function (concept) {
-                            if(review.concepts.indexOf(concept) === -1)
-                            {
-                                review.conceptsClassified.push(concept);
-                            }
-                        });
-                    scope.feedbackContainer.review = review ? review : {};
-                    notificationService.sendMessage('Feedback Submitted', 5000, null);
-                }
-                else if(response && !traceability)
+                        notificationService.sendMessage('Feedback Submitted', 5000, null);
+                    }
+                else if(!traceability)
                 {
                     review = response;
                     scope.feedbackContainer.review = review ? review : {};
