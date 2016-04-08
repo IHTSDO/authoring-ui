@@ -954,6 +954,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
             var review = {};
             if(traceability)
+            if(traceability)
             {
                 review.concepts = [];
                 review.conceptsClassified = [];
@@ -979,29 +980,19 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 }
                             });
                         }
-                        snowowlService.bulkGetConcept(idList, $scope.branch).then(function(response){
-                            angular.forEach(response, function (concept){
-                                angular.forEach(review.concepts, function(reviewConcept){
-                                    if(concept.conceptId === reviewConcept.conceptId)
-                                    {
-                                        reviewConcept.term = concept.fsn;
-                                    }
-                                });
-                                angular.forEach(review.conceptsClassified, function(reviewConcept){
-                                    if(concept.conceptId === reviewConcept.conceptId)
-                                    {
-                                        reviewConcept.term = concept.fsn;
-                                    }
-                                });
-                            });
-                        });
+                        var i,j,temparray,chunk = 50;
+                        for (i=0,j=idList.length; i<j; i+=chunk) {
+                            temparray = idList.slice(i,i+chunk);
+                            $scope.getConceptsForReview(temparray, review);
+                        }
+                        
                 });
+                
             }
             else if(!traceability)
             {
                 review = {};
             }
-          $scope.feedbackContainer.review = review ? review : {};
         });
     };
 
