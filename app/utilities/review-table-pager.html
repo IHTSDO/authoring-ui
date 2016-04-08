@@ -5,7 +5,7 @@
         <button type="button" ng-switch-when="prev" ng-click="params.page(page.number)" class="btn btn-default"><span class="md-arrow-back"></span></button>
         <button type="button" ng-class="{'blue': !page.active}" ng-switch-when="first" ng-click="params.page(page.number)" class="btn btn-default"><span ng-bind="page.number"></span></button>
         <button type="button" ng-class="{'blue': !page.active}" ng-switch-when="page" ng-click="params.page(page.number)" class="btn btn-default"><span ng-bind="page.number"></span></button>
-        <button type="button" ng-switch-when="more" ng-click="params.page(page.number)" class="btn btn-default">&#8230;</button>
+        <button type="button" ng-switch-when="more" ng-click="params.page(page.number)" class="btn btn-default more-pager">&#8230;</button>
         <button type="button" ng-class="{'blue': !page.active}" ng-switch-when="last" ng-click="params.page(page.number)" class="btn btn-default"><span ng-bind="page.number"></span></button>
       </li>
 <!--      <button type="button" ng-switch-when="next" ng-click="params.page(page.number)" class="btn btn-default pull-right">Next &raquo;</button>-->
