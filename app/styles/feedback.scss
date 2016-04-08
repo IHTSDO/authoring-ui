@@ -419,7 +419,8 @@ strong{font-weight:700;}
 	border-color: #ffe7f0 #ffe7f0 transparent transparent!important;
 }
 
-.numbers.badge {padding: 3px 5px!important;}
+.numbers.badge {padding: 3px 5px!important; 
+    font-size: 10px!important;}
 
 .light_greys{background-color: #ececec;}
 .feedback .pager .btn {
@@ -445,3 +446,35 @@ strong{font-weight:700;}
     margin-top: -9px;
     padding-top: -5px;
 }
+
+  .worklist {background-color:#fff; border:#f5f5f5 1px solid }
+  .work-list-tabs{margin: 5px!important; border:1px #ddd solid!important;background-color:#fff; display:block;}
+  .border-right{border-right:#ddd 1px solid!important }
+.work-list-tabs .nav > li  {
+width:33.33%;
+}
+.work-list-tabs .nav > li > a {
+    line-height: 19px;
+	background-color:#eeeeee;
+	border-radius:0px!important;
+	font-size:11px;
+}
+.work-list-tabs .nav-tabs > li.active > a {
+    box-shadow: none;
+	background-color:#fff;
+		color:#d53072;
+}
+.work-list-tabs .nav-tabs > li > a:hover {
+    box-shadow: none;
+	color:#d53072;
+	background-color:#fff
+}
+
+
+.feedback-lists .btn-round.btn[disabled]:hover {
+    color: #7c7c7c!important;
+    background-color: #494949!important;
+}
+.feedback-table{width:98%;margin:1%}
+
+.tab-content {font-size:12px;}
