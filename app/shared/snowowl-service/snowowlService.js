@@ -535,6 +535,28 @@ angular.module('singleConceptAuthoringApp')
 
       });
     }
+      
+    //Function to bulk get concepts
+    function bulkGetConcept(conceptIdList, branch){
+          var deferred = $q.defer();
+          var queryString = '';
+          angular.forEach(conceptIdList, function(concept, key){
+              if(key +1 !== conceptIdList.length)
+              {
+                queryString += concept + '%20UNION%20';
+              }
+              else{
+                  queryString += concept;
+              }
+          });
+          $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=50&expand=fsn()&escg=' + queryString).then(function (response) {
+            // console.debug('snowowl', response.data);
+            deferred.resolve(response.data);
+          }, function (error) {
+            deferred.reject(error);
+          });
+          return deferred.promise;
+    }
 
     // function to retrieve all module id/name pairs
     function getModules() {
@@ -1083,6 +1105,7 @@ angular.module('singleConceptAuthoringApp')
       getModelPreview: getModelPreview,
       saveClassification: saveClassification,
       addModules: addModules,
+      bulkGetConcept: bulkGetConcept,
       getModules: getModules,
       addLanguages: addLanguages,
       getLanguages: getLanguages,
