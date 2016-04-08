@@ -541,8 +541,6 @@ angular.module('singleConceptAuthoringApp')
           var deferred = $q.defer();
           var queryString = '';
           angular.forEach(conceptIdList, function(concept, key){
-              console.log(conceptIdList.length);
-              console.log(key);
               if(key +1 !== conceptIdList.length)
               {
                 queryString += concept + '%20UNION%20';
