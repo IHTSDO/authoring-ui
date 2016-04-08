@@ -402,11 +402,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         snowowlService.bulkGetConcept(idList, $scope.branch).then(function(response){
                 angular.forEach(response.items, function (concept){
                     angular.forEach(review.concepts, function(reviewConcept){
-                        if(concept.id === reviewConcept.conceptId.toString())
+                        if(concept.id === reviewConcept.conceptId)
                         {
                             reviewConcept.term = concept.fsn.term;
                             angular.forEach(feedbackList, function(feedback){
-                                if(reviewConcept.conceptId.toString() === feedback.id)
+                                if(reviewConcept.conceptId === feedback.id)
                                 {
                                     reviewConcept.messages = feedback.messages;   
                                 }
@@ -414,11 +414,11 @@ angular.module('singleConceptAuthoringApp.edit', [
                         }
                     });
                     angular.forEach(review.conceptsClassified, function(reviewConcept){
-                        if(concept.id === reviewConcept.conceptId.toString())
+                        if(concept.id === reviewConcept.conceptId)
                         {
                             reviewConcept.term = concept.fsn.term;
                             angular.forEach(feedbackList, function(feedback){
-                                if(reviewConcept.conceptId.toString() === feedback.id)
+                                if(reviewConcept.conceptId === feedback.id)
                                 {
                                     reviewConcept.messages = feedback.messages;   
                                 }
@@ -447,8 +447,9 @@ angular.module('singleConceptAuthoringApp.edit', [
                         if(change.activityType === 'CONTENT_CHANGE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
+                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
+                                    concept.conceptId = concept.conceptId.toString();
                                     review.concepts.push(concept);
                                     idList.push(concept.conceptId);
                                 }
@@ -459,6 +460,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                             angular.forEach(change.conceptChanges, function (concept) {
                                 if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
                                 {
+                                    concept.conceptId = concept.conceptId.toString();
                                     review.conceptsClassified.push(concept);
                                     idList.push(concept.conceptId);
                                 }
@@ -976,8 +978,9 @@ angular.module('singleConceptAuthoringApp.edit', [
                         if(change.activityType === 'CONTENT_CHANGE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
+                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
+                                    concept.conceptId = concept.conceptId.toString();
                                     review.concepts.push(concept);
                                     idList.push(concept.conceptId);
                                 }
@@ -988,6 +991,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                             angular.forEach(change.conceptChanges, function (concept) {
                                 if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
                                 {
+                                    concept.conceptId = concept.conceptId.toString();
                                     review.conceptsClassified.push(concept);
                                     idList.push(concept.conceptId);
                                 }

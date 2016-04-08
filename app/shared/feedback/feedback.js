@@ -882,7 +882,6 @@ angular.module('singleConceptAuthoringApp')
                 if (!reviewedListIds || !Array.isArray(reviewedListIds)) {
                   reviewedListIds = [];
                 }
-                console.debug('reviewed list ids', reviewedListIds);
 
                 // local arrays to avoid multiple watch triggers
                 var conceptsToReview = [];
@@ -1165,11 +1164,11 @@ angular.module('singleConceptAuthoringApp')
             snowowlService.bulkGetConcept(idList, scope.branch).then(function(response){
                     angular.forEach(response.items, function (concept){
                         angular.forEach(review.concepts, function(reviewConcept){
-                            if(concept.id === reviewConcept.conceptId.toString())
+                            if(concept.id === reviewConcept.conceptId)
                             {
                                 reviewConcept.term = concept.fsn.term;
                                 angular.forEach(feedbackList, function(feedback){
-                                    if(reviewConcept.conceptId.toString() === feedback.id)
+                                    if(reviewConcept.conceptId === feedback.id)
                                     {
                                         reviewConcept.messages = feedback.messages;   
                                     }
@@ -1177,11 +1176,11 @@ angular.module('singleConceptAuthoringApp')
                             }
                         });
                         angular.forEach(review.conceptsClassified, function(reviewConcept){
-                            if(concept.id === reviewConcept.conceptId.toString())
+                            if(concept.id === reviewConcept.conceptId)
                             {
                                 reviewConcept.term = concept.fsn.term;
                                 angular.forEach(feedbackList, function(feedback){
-                                    if(reviewConcept.conceptId.toString() === feedback.id)
+                                    if(reviewConcept.conceptId === feedback.id)
                                     {
                                         reviewConcept.messages = feedback.messages;   
                                     }
@@ -1240,7 +1239,6 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
                 var review = {};
                 if(traceability)
@@ -1252,8 +1250,9 @@ angular.module('singleConceptAuthoringApp')
                                 if(change.activityType === 'CONTENT_CHANGE')
                                 {
                                     angular.forEach(change.conceptChanges, function (concept) {
-                                        if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
+                                        if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                         {
+                                            concept.conceptId = concept.conceptId.toString();
                                             review.concepts.push(concept);
                                             idList.push(concept.conceptId);
                                         }
@@ -1264,6 +1263,7 @@ angular.module('singleConceptAuthoringApp')
                                     angular.forEach(change.conceptChanges, function (concept) {
                                         if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
                                         {
+                                            concept.conceptId = concept.conceptId.toString();
                                             review.conceptsClassified.push(concept);
                                             idList.push(concept.conceptId);
                                         }
@@ -1287,8 +1287,6 @@ angular.module('singleConceptAuthoringApp')
                     notificationService.sendMessage('Feedback Submitted', 5000, null);
                 }
             });
-                
-              });
             }, function () {
               notificationService.sendError('Error submitting feedback', 5000, null);
             });
