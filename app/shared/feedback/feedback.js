@@ -554,6 +554,12 @@ angular.module('singleConceptAuthoringApp')
             if (!item.viewed) {
               notificationService.sendMessage('Loading concept ' + item.conceptId);
               item.viewed = true;
+              if (!item.read || item.modifiedSinceReview) {
+                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.conceptId).then(function (response) {
+                    item.read = true;
+                    item.modifiedSinceReview = false;
+                  });
+                }
               addToEditHelper(item.conceptId).then(function (response) {
                 notificationService.sendMessage('Concept loaded', 5000);
               });
@@ -886,24 +892,37 @@ angular.module('singleConceptAuthoringApp')
                 // local arrays to avoid multiple watch triggers
                 var conceptsToReview = [];
                 var conceptsReviewed = [];
-
+                
+                
+                
                 // cycle over all concepts for pre-processing
                 angular.forEach(scope.feedbackContainer.review.concepts, function (item) {
-
+                  var lastViewed = new Date(item.viewDate);
+                  var lastUpdated = new Date(item.lastUpdatedTime);
+                  
                   // set follow up request flag to false (overwritten below)
                   item.requestFollowup = false;
 
+                  if(lastUpdated > lastViewed){
+                      item.modifiedSinceReview = true;
+                  }
                   // if no feedback on this concept
                   if (!item.messages || item.messages.length === 0) {
                     item.read = 'absent'; // provide dummy value for sorting by
                                           // alphabetical value
                   }
-
                   // otherwise, process feedback
                   else {
+                    var lastFeedback = new Date(item.messages[item.messages.length -1].creationDate);
                     // cycle over all concepts to check for follow up request
                     // condition met if another user has left feedback with the
                     // flag later than the last feedback left by current user
+                    if(lastFeedback > lastViewed){
+                        item.read = false;
+                    }
+                    else{
+                        item.read = true;
+                    }
                     for (var i = 0; i < item.messages.length; i++) {
                       // if own feedback, break
                       if (item.messages[i].fromUsername === $rootScope.accountDetails.login) {
@@ -938,11 +957,13 @@ angular.module('singleConceptAuthoringApp')
                 //Loops through all items in the reviewed list. If they have
                 // been changed since  the review was created they are moved
                 // back to 'To Review'
-                angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (item) {
-                  if (item.modifiedSinceReview === true) {
-                    scope.returnToReview(item);
-                  }
-                });
+                if(scope.role === 'REVIEWER'){
+                    angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (item) {
+                      if (item.modifiedSinceReview === true) {
+                        scope.returnToReview(item);
+                      }
+                    });
+                }
 
                 // on load, initialize tables -- all subsequent reloads are
                 // manual
@@ -1248,27 +1269,44 @@ angular.module('singleConceptAuthoringApp')
                         var idList = [];
                         angular.forEach(traceability.content, function (change) {
                                 if(change.activityType === 'CONTENT_CHANGE')
+                        {
+                            angular.forEach(change.conceptChanges, function (concept) {
+                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
-                                    angular.forEach(change.conceptChanges, function (concept) {
-                                        if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                        {
-                                            concept.conceptId = concept.conceptId.toString();
-                                            review.concepts.push(concept);
-                                            idList.push(concept.conceptId);
-                                        }
-                                    });
+                                    concept.conceptId = concept.conceptId.toString();
+                                    concept.lastUpdatedTime = change.commitDate;
+                                    review.concepts.push(concept);
+                                    idList.push(concept.conceptId);
                                 }
-                                else if(change.activityType === 'CLASSIFICATION_SAVE')
+                                else if(concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
-                                    angular.forEach(change.conceptChanges, function (concept) {
-                                        if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
-                                        {
-                                            concept.conceptId = concept.conceptId.toString();
-                                            review.conceptsClassified.push(concept);
-                                            idList.push(concept.conceptId);
-                                        }
+                                    var updateConcept = review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
+                                    angular.forEach(concept.componentChanges, function(componentChange){
+                                        updateConcept.componentChanges.push(componentChange);
                                     });
+                                    updateConcept.lastUpdatedTime = change.commitDate;
                                 }
+                            });
+                        }
+                        else if(change.activityType === 'CLASSIFICATION_SAVE')
+                        {
+                            angular.forEach(change.conceptChanges, function (concept) {
+                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0)
+                                {
+                                    concept.conceptId = concept.conceptId.toString();
+                                    review.conceptsClassified.push(concept);
+                                    idList.push(concept.conceptId);
+                                }
+                                else
+                                {
+                                    var updateConcept = review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
+                                    angular.forEach(concept.componentChanges, function(componentChange){
+                                        updateConcept.componentChanges.push(componentChange);
+                                    });
+                                    updateConcept.lastUpdatedTime = change.commitDate;
+                                }
+                            });
+                        }
 
                         });
                         scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){

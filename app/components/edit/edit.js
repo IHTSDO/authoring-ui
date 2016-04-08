@@ -408,7 +408,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                             angular.forEach(feedbackList, function(feedback){
                                 if(reviewConcept.conceptId === feedback.id)
                                 {
-                                    reviewConcept.messages = feedback.messages;   
+                                    reviewConcept.messages = feedback.messages; 
+                                    reviewConcept.viewDate = feedback.viewDate;
                                 }
                             });
                         }
@@ -447,22 +448,39 @@ angular.module('singleConceptAuthoringApp.edit', [
                         if(change.activityType === 'CONTENT_CHANGE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
+                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
                                     concept.conceptId = concept.conceptId.toString();
+                                    concept.lastUpdatedTime = change.commitDate;
                                     review.concepts.push(concept);
                                     idList.push(concept.conceptId);
+                                }
+                                else if(concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
+                                {
+                                    var updateConcept = review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
+                                    angular.forEach(concept.componentChanges, function(componentChange){
+                                        updateConcept.componentChanges.push(componentChange);
+                                    });
+                                    updateConcept.lastUpdatedTime = change.commitDate;
                                 }
                             });
                         }
                         else if(change.activityType === 'CLASSIFICATION_SAVE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
+                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0)
                                 {
                                     concept.conceptId = concept.conceptId.toString();
                                     review.conceptsClassified.push(concept);
                                     idList.push(concept.conceptId);
+                                }
+                                else
+                                {
+                                    var updateConcept = review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
+                                    angular.forEach(concept.componentChanges, function(componentChange){
+                                        updateConcept.componentChanges.push(componentChange);
+                                    });
+                                    updateConcept.lastUpdatedTime = change.commitDate;
                                 }
                             });
                         }
@@ -978,22 +996,39 @@ angular.module('singleConceptAuthoringApp.edit', [
                         if(change.activityType === 'CONTENT_CHANGE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
+                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
                                     concept.conceptId = concept.conceptId.toString();
+                                    concept.lastUpdatedTime = change.commitDate;
                                     review.concepts.push(concept);
                                     idList.push(concept.conceptId);
+                                }
+                                else if(concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
+                                {
+                                    var updateConcept = review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
+                                    angular.forEach(concept.componentChanges, function(componentChange){
+                                        updateConcept.componentChanges.push(componentChange);
+                                    });
+                                    updateConcept.lastUpdatedTime = change.commitDate;
                                 }
                             });
                         }
                         else if(change.activityType === 'CLASSIFICATION_SAVE')
                         {
                             angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId;}).length === 0)
+                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0)
                                 {
                                     concept.conceptId = concept.conceptId.toString();
                                     review.conceptsClassified.push(concept);
                                     idList.push(concept.conceptId);
+                                }
+                                else
+                                {
+                                    var updateConcept = review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
+                                    angular.forEach(concept.componentChanges, function(componentChange){
+                                        updateConcept.componentChanges.push(componentChange);
+                                    });
+                                    updateConcept.lastUpdatedTime = change.commitDate;
                                 }
                             });
                         }

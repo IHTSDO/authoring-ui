@@ -668,7 +668,7 @@ angular.module('singleConceptAuthoringApp')
 // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
       markTaskFeedbackRead: function (projectKey, taskKey, conceptId) {
 
-        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/read', {}).then(function (response) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/view', {}).then(function (response) {
           return response;
         }, function (error) {
           console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
