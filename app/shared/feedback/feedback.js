@@ -547,6 +547,14 @@ angular.module('singleConceptAuthoringApp')
             });
             return deferred.promise;
           }
+            
+          scope.getSNF = function(id){
+              var deferred = $q.defer();
+              snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
+                deferred.resolve(response);
+              });
+              return deferred.promise; 
+            };
 
           // function to add a concept to viewed list from tables
           scope.addToEdit = function (item) {
