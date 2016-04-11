@@ -114,17 +114,17 @@
           <span>Inactive Concept</span>
         </button>
       </div>-->
-      <div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4">
+      <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
  <button type="button"
                   ng-click="viewConceptInTaxonomy(item)"
                   ng-disabled="!item.concept.active"
-                  class="tn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                  class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
                   ng-class="[{'fa fa-book purple' : item.concept.active}, {'fa fa-power-off red' : !item.concept.active }]">
             <span ng-if="item.concept.active">View Concept in Taxonomy</span>
             <span ng-if="!item.concept.active">Inactive Concept</span>
           </button>
         <button type="button"
-                class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
                 title="Edit"
                 ng-click="selectItem(item)"
                 ng-disabled="isEdited(item)"><i class="md fa fa-pencil"></i><span>Load into edit panel </span>

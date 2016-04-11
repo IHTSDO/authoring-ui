@@ -128,13 +128,37 @@ lightest bg #525463
  {
     border-right: 8px solid #5b5b5b;
 }
+
+.sca-dark a.tooltips-left span:after, .sca-dark button.tooltips-left span:after {
+   
+    border-left: 8px solid #5b5b5b;
+}
+
+.sca-dark button[disabled] .project-icon {
+   background-color: #262e39!important;
+   color:#828396 !important;
+}
 /*button colors */
 a.tooltips-left span, button.tooltips-left span {
 color:#fff;
     background: #5b5b5b; }
 /* CSS Document */
 
+.sca-dark a.tooltips-right span:after, .sca-dark  button.tooltips-right span:after, .sca-dark button[disabled].tooltips-right span:after {
 
+    border-right: 8px solid #5b5b5b;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+   
+}
+
+.sca-dark a.tooltips-left span:after, .sca-dark button.tooltips-left span:after {
+
+    border-left: 8px solid #5b5b5b;
+	    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+
+}
 .sca-dark .table-search {
     padding: 0px;
 }
@@ -169,7 +193,14 @@ color:#fff;
     background-color: #4CAF50;
     color: #fff;
 }
-	
+	.sca-dark .project-icon.yellow.darken-2{
+    background-color: #fc0;
+    color: #fff;
+}
+	.sca-dark .project-icon.amber{
+    background-color: #fc0;
+    color: #fff;
+}
 	.sca-dark .project-icon.red {
     background-color: #ff5555;
     color: #fff;
@@ -193,7 +224,7 @@ color:#fff;
     border: 1px solid #383a48 !important;
     border-radius: 4px;
     text-transform: none;
-    color: #23252e !important;
+    color: #828396 !important;
     padding: 0px 10px 0px 0px !important;
     line-height: 30px;
 }
