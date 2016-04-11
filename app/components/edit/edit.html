@@ -23,7 +23,14 @@
     <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
 
-            ng-disabled="task.feedbackMessagesStatus === 'none' && isOwnTask"
+            ng-disabled="task.feedbackMessagesStatus === 'none' && isOwnTask || task.status === 'New'"   ng-show="task.status === 'New'"
+            ng-click="viewReview()">
+      <div class="md md-email"></div>
+      <span>Review Not Available</span></button>
+        <button ng-if="taskKey"
+            type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
+
+            ng-disabled="task.feedbackMessagesStatus === 'none' && isOwnTask || task.status === 'New'"   ng-show="task.status !== 'New'"
             ng-click="viewReview()">
       <div class="md md-email"></div>
       <span>Switch to Feedback View</span></button>
