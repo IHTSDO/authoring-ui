@@ -156,7 +156,7 @@ button.fsn-title-button{width:100%;}
     content: "Validation Report is building";
 }
 
-
+.message_classification_SAVE_FAILED{content: "Classification successfully completed but save has failed";}
 .message_classification_COMPLETED::before {
     content: "Classification successfully completed";
 }
