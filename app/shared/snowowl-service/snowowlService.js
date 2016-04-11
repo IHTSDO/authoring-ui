@@ -306,7 +306,7 @@ angular.module('singleConceptAuthoringApp')
     ////////////////////////////////////////////////////
 
     function getDescriptionProperties(descriptionId, branch) {
-      return $http.get(apiEndpoint + branch + '/descriptions/' + descriptionId).then(function (response) {
+      return $http.get(apiEndpoint + branch + '/descriptions/' + descriptionId + '?expand=inactivationProperties()').then(function (response) {
         return response.data;
       }, function (error) {
         return null;
