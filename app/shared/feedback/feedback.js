@@ -569,12 +569,10 @@ angular.module('singleConceptAuthoringApp')
             if (!item.viewed) {
               notificationService.sendMessage('Loading concept ' + item.conceptId);
               item.viewed = true;
-              if (!item.read || item.modifiedSinceReview) {
-                  scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.conceptId).then(function (response) {
-                    item.read = true;
-                    item.modifiedSinceReview = false;
-                  });
-                }
+              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, item.conceptId).then(function (response) {
+                item.read = true;
+                item.modifiedSinceReview = false;
+              });
               addToEditHelper(item.conceptId).then(function (response) {
                 notificationService.sendMessage('Concept loaded', 5000);
               });
@@ -917,7 +915,8 @@ angular.module('singleConceptAuthoringApp')
                   
                   // set follow up request flag to false (overwritten below)
                   item.requestFollowup = false;
-
+                  console.log(lastUpdated);
+                  console.log(lastViewed);
                   if(lastUpdated > lastViewed){
                       item.modifiedSinceReview = true;
                   }
