@@ -138,7 +138,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.cancelReview = function () {
               var taskObj = {
                 'status': 'IN_PROGRESS',
-                'reviewer': null
+                'reviewer': {
+                    'username': ''
+                  }
               };
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                 notificationService.sendMessage('Review Cancelled', 2000);
