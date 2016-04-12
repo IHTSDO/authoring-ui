@@ -140,7 +140,7 @@
               
               <button
                       class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-left  normal-case"
-                        ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+                        ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-disabled="concept.viewed"> 
                       
               <div
                         class="md md-edit "><span>Add to Edit Panel</span></div>
@@ -151,7 +151,7 @@
           <td ng-if="role === 'REVIEWER' && task.status === 'In Review'" class=" col-md-3 no-padding">
            <div class="pull-right m-r-5"> <button
                       class=" btn btn-round btn-default blue m-r-2 lighten-2 tooltips-left  normal-case"
-                        ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
+                        ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-disabled="concept.viewed">
                       
               <div
                         class="md md-edit "><span>Add to Edit Panel</span></div>
