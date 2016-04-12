@@ -495,7 +495,6 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             angular.forEach(scope.conceptsClassified, function (item) {
-                console.log(item);
               if (item.conceptId === data.concept.conceptId) {
                 scope.addToEdit(item);
                 item.viewed = false;
