@@ -76,89 +76,16 @@ lightest bg #525463
 /*tables */
 /*tooltips*/
 .sca-dark .paging .btn{    background: #1f2731; color: #9B9B9B;box-shadow: 1px 1px 2px #000 !important;}
-.sca-dark .tooltips-left span.green {
-    background-color: #5b5b5b!important;
-    color: #fff
-}
-.sca-dark .tooltips-left span.red {
-    background-color: #5b5b5b!important;
-    color: #fff
-}
-.sca-dark a.tooltips-left span:after,
-.sca-dark button.tooltips-left span:after {
-    border-left: 8px solid #5b5b5b;
-  
-}
-.sca-dark a.tooltips-dark.tooltips-left span:after,
-.sca-dark button.tooltips-dark.tooltips-left span:after {
-    border-left: 8px solid #5b5b5b;
 
-}
-.sca-dark a.tooltips-left span,
-.sca-dark button.tooltips-right span {
-    color: #fff;
-    background: #5b5b5b;
-}
-
-.sca-dark a.tooltips-dark.tooltips-left span,
-.sca-dark button.tooltips-dark.tooltips-right span {
-   color: #fff;
-    background: #5b5b5b;
-}
-.sca-dark a.tooltips-light.tooltips-left span,
-.sca-dark button.tooltips-light.tooltips-left span {
-    color: #fff;
-    background: #5b5b5b;
-}
-.sca-dark .tooltips-left span.green:after {
-    border-left: 8px solid #5b5b5b!important;
-}
-.sca-dark .tooltips-left span.red:after {
-    border-left: 8px solid #5b5b5b!important;
-}
-.sca-dark a.tooltips-right span {
-    color: #fff;
-    background: #5b5b5b;
-}
-.sca-dark a.tooltips-right span:after {
-    border-right: 8px solid #5b5b5b;
-}
-.sca-dark a.tooltips-right.tooltips-dark light:after,
-.sca-dark button.tooltips-right.tooltips-light span:after,
- {
-    border-right: 8px solid #5b5b5b;
-}
-
-.sca-dark a.tooltips-left span:after, .sca-dark button.tooltips-left span:after {
-   
-    border-left: 8px solid #5b5b5b;
-}
 
 .sca-dark button[disabled] .project-icon {
    background-color: #262e39!important;
    color:#828396 !important;
 }
 /*button colors */
-a.tooltips-left span, button.tooltips-left span {
-color:#fff;
-    background: #5b5b5b; }
-/* CSS Document */
 
-.sca-dark a.tooltips-right span:after, .sca-dark  button.tooltips-right span:after, .sca-dark button[disabled].tooltips-right span:after {
 
-    border-right: 8px solid #5b5b5b;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-   
-}
 
-.sca-dark a.tooltips-left span:after, .sca-dark button.tooltips-left span:after {
-
-    border-left: 8px solid #5b5b5b;
-	    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-
-}
 .sca-dark .table-search {
     padding: 0px;
 }
