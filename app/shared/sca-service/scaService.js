@@ -803,7 +803,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.resolve(response.data);
         }, function (error) {
           if(error.status === 504){
-              notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
+              notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
               return error.message;
           }
           else if(error.status === 409){
@@ -837,7 +837,7 @@ angular.module('singleConceptAuthoringApp')
           return response;
         }, function (error) {
           if(error.status === 504){
-              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
+              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will unlock when the rebase completes.');
               return 1;
           }
           else if(error.status === 409){

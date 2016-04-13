@@ -184,6 +184,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 
             if(response.metadata)
             {
+                $rootScope.branchLocked = true;
                 $timeout($scope.pollStatus, 4000);
             }
             else{
@@ -215,6 +216,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                     notificationService.sendWarning('Task initialization complete', 3000);
                     $rootScope.$broadcast('reloadTaxonomy');
               });
+            }
+            else{
+                $scope.pollStatus();   
             }
           });
 
