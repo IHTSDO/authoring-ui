@@ -1039,7 +1039,6 @@ angular.module('singleConceptAuthoringApp')
                 if (!concept.read) {
                   scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
                     concept.read = true;
-
                   });
                 }
               }
@@ -1080,7 +1079,6 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.selectConceptForFeedback = function (concept) {
-            console.log(concept);
             scope.subjectConcepts = [concept];
             getViewedFeedback();
           };
@@ -1267,6 +1265,13 @@ angular.module('singleConceptAuthoringApp')
             });
 
             scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, subjectConceptIds, requestFollowup).then(function (response) {
+                
+            angular.forEach(scope.subjectConcepts, function (subjectConcept) {
+              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, subjectConcept.conceptId).then(function (response) {
+                    subjectConcept.read = true;
+                  });
+            });
+            
 
               
               // clear the htmlVariable and requestFolllowUp flag
