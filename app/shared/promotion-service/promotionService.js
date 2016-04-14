@@ -36,19 +36,21 @@ angular.module('singleConceptAuthoringApp')
         deferred.resolve(flags);
 
       } else {
-
+          console.log('here');
+          console.log(task);
         if (!latestClassificationJson) {
           flags.push({
             checkTitle: 'Classification Not Run',
             checkWarning: 'No classifications were run on this branch. Promote only if you are sure your changes will not affect future classification.',
             blocksPromotion: false
           });
-          scaService.getTaskForProject(project, task).then(function (branchStatus) {
+          if(task !== undefined){
+                scaService.getTaskForProject(project, task).then(function (branchStatus) {
                     console.log(branchStatus);
                     ////////////////////////////////////////////////////////////
                     // CHECK:  Has the Task been reviewed?
                     ////////////////////////////////////////////////////////////
-                    if (branchStatus.feedbackMessagesStatus === 'none') {
+                    if (branchStatus.feedbackMessagesStatus && branchStatus.feedbackMessagesStatus === 'none') {
                       flags.push({
                         checkTitle: 'No review completed',
                         checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
@@ -81,6 +83,10 @@ angular.module('singleConceptAuthoringApp')
 
                     deferred.resolve(flags);
                 });
+          }
+          else{
+              deferred.resolve(flags);
+          }
         } else {
 
           // get the ui state for classiifcation saving timestamp and status
@@ -212,44 +218,50 @@ angular.module('singleConceptAuthoringApp')
                     blocksPromotion: true
                   });
                 }
-                scaService.getTaskForProject(project, task).then(function (branchStatus) {
-                    console.log(branchStatus);
-                    ////////////////////////////////////////////////////////////
-                    // CHECK:  Has the Task been reviewed?
-                    ////////////////////////////////////////////////////////////
-                    if (branchStatus.feedbackMessagesStatus === 'none') {
-                      flags.push({
-                        checkTitle: 'No review completed',
-                        checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
-                        blocksPromotion: false
-                      });
-                    }
+                if(task !== undefined)
+                {
+                    scaService.getTaskForProject(project, task).then(function (branchStatus) {
+                        console.log(branchStatus);
+                        ////////////////////////////////////////////////////////////
+                        // CHECK:  Has the Task been reviewed?
+                        ////////////////////////////////////////////////////////////
+                        if (branchStatus.feedbackMessagesStatus === 'none') {
+                          flags.push({
+                            checkTitle: 'No review completed',
+                            checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
+                            blocksPromotion: false
+                          });
+                        }
 
-                    ////////////////////////////////////////////////////////////
-                    // CHECK:  Is the task still in Review?
-                    ////////////////////////////////////////////////////////////
-                    if (branchStatus.status === 'In Review') {
-                      flags.push({
-                        checkTitle: 'Task is still in Review',
-                        checkWarning: 'The task Review has not been marked as complete.',
-                        blocksPromotion: false
-                      });
-                    }
+                        ////////////////////////////////////////////////////////////
+                        // CHECK:  Is the task still in Review?
+                        ////////////////////////////////////////////////////////////
+                        if (branchStatus.status === 'In Review') {
+                          flags.push({
+                            checkTitle: 'Task is still in Review',
+                            checkWarning: 'The task Review has not been marked as complete.',
+                            blocksPromotion: false
+                          });
+                        }
 
-                    ////////////////////////////////////////////////////////////
-                    // CHECK:  Unread Review messages?
-                    ////////////////////////////////////////////////////////////
-//                    if (branchStatus.feedbackMessagesStatus === 'unread') {
-//                      flags.push({
-//                        checkTitle: 'Review contains unread feedback',
-//                        checkWarning: 'All feedback against concepts within this task has not been read',
-//                        blocksPromotion: false
-//                      });
-//                    }
-                    console.debug('resolving');
+                        ////////////////////////////////////////////////////////////
+                        // CHECK:  Unread Review messages?
+                        ////////////////////////////////////////////////////////////
+    //                    if (branchStatus.feedbackMessagesStatus === 'unread') {
+    //                      flags.push({
+    //                        checkTitle: 'Review contains unread feedback',
+    //                        checkWarning: 'All feedback against concepts within this task has not been read',
+    //                        blocksPromotion: false
+    //                      });
+    //                    }
+                        console.debug('resolving');
 
+                        deferred.resolve(flags);
+                    });
+                }
+                else{
                     deferred.resolve(flags);
-                });
+                }
 
                 
               },
@@ -324,7 +336,7 @@ angular.module('singleConceptAuthoringApp')
           return;
         }
 
-        checkClassificationPrerequisites(branch, project.latestClassificationJson, projectKey, taskKey).then(function (flags) {
+        checkClassificationPrerequisites(branch, project.latestClassificationJson, projectKey).then(function (flags) {
           deferred.resolve(flags);
         }, function (error) {
           deferred.reject(error);
