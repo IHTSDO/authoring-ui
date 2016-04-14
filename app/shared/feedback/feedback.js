@@ -911,13 +911,11 @@ angular.module('singleConceptAuthoringApp')
                 
                 // cycle over all concepts for pre-processing
                 angular.forEach(scope.feedbackContainer.review.concepts, function (item) {
-                  var lastViewed = new Date(item.viewDate);
+                  var lastViewed = new Date(item.viewDate)
                   var lastUpdated = new Date(item.lastUpdatedTime);
                   
                   // set follow up request flag to false (overwritten below)
                   item.requestFollowup = false;
-                  console.log(lastUpdated);
-                  console.log(lastViewed);
                   if(lastUpdated > lastViewed){
                       item.modifiedSinceReview = true;
                   }
@@ -933,6 +931,10 @@ angular.module('singleConceptAuthoringApp')
                     // condition met if another user has left feedback with the
                     // flag later than the last feedback left by current user
                     if(lastFeedback > lastViewed){
+                        item.read = false;
+                    }
+                    
+                    else if(isNaN(lastViewed.getTime())){
                         item.read = false;
                     }
                     else{
