@@ -1048,18 +1048,22 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 }
                             });
                         }
+                         
                 });
-                var i,j,temparray,chunk = 50;
-                for (i=0,j=idList.length; i<j; i+=chunk) {
-                    temparray = idList.slice(i,i+chunk);
-                    $scope.getConceptsForReview(temparray, review);
-                }
+                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
+                    var i,j,temparray,chunk = 50;
+                    for (i=0,j=idList.length; i<j; i+=chunk) {
+                        temparray = idList.slice(i,i+chunk);
+                        $scope.getConceptsForReview(temparray, review, feedback);
+                    }
+                });
                 
             }
             else if(!traceability)
             {
                 review = {};
             }
+          
         });
     };
 
@@ -1293,7 +1297,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.viewReview = function () {
       $scope.getLatestReview();
-      $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/feedback');
+      $scope.setView('feedback');
     };
 
     $scope.$on('reloadTask', function (event, data) {
