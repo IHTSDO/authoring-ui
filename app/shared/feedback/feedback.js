@@ -295,6 +295,7 @@ angular.module('singleConceptAuthoringApp')
               };
               scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
                 notificationService.sendMessage('Review Cancelled', 2000);
+                $rootScope.$broadcast('reloadTask');
                 scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
                     if (task) {
                       scope.task = task;
