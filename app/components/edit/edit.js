@@ -1293,7 +1293,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.viewReview = function () {
       $scope.getLatestReview();
-      $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/feedback');
+      $scope.setView('feedback');
     };
 
     $scope.$on('reloadTask', function (event, data) {
