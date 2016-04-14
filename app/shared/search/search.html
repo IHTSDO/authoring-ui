@@ -91,7 +91,7 @@
           <button type="button"
                   ng-click="viewConceptInTaxonomy(result)"
                   ng-disabled="!result.concept.active"
-                  class="addButton btn btn-round btn-default widget-button tooltips-right tooltips-light normal-case lighten-1"
+                  class="addButton btn btn-round  widget-button tooltips-right tooltips-light normal-case lighten-1"
                   ng-class="[{'fa fa-book purple' : result.concept.active}, {'fa fa-power-off red' : !result.concept.active }]">
             <span ng-if="result.concept.active">View Concept in Taxonomy</span>
             <span ng-if="!result.concept.active">Inactive Concept</span>
@@ -101,13 +101,13 @@
           <button type="button"
                   ng-click="addItemToSavedList(result)"
                   ng-disabled="findItemInSavedList(result.concept.conceptId)"
-                  class="addButton btn btn-round btn-default widget-button md md-playlist-add  tooltips-right tooltips-light normal-case green lighten-1">
+                  class="addButton btn btn-round  widget-button md md-playlist-add  tooltips-right tooltips-light normal-case green lighten-1">
             <span>Add to Task List</span></button>
 
           <button type="button"
                   ng-click="addItemToFavorites(result)"
                   ng-disabled="findItemInFavorites(result.concept.conceptId)"
-                  class="addButton btn btn-round btn-default widget-button md md-favorite  tooltips-right tooltips-light normal-case pink lighten-2">
+                  class="addButton btn btn-round widget-button md md-favorite  tooltips-right tooltips-light normal-case pink lighten-2">
             <span>Add to Project Favorites</span></button>
         </div>
       </div>
