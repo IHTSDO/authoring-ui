@@ -404,9 +404,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                     angular.forEach(review.concepts, function(reviewConcept){
                         if(concept.id === reviewConcept.conceptId)
                         {
-                            if(concept.fsn){
-                                reviewConcept.term = concept.fsn.term;
-                            }
+                            reviewConcept.term = concept.fsn.term;
                             angular.forEach(feedbackList, function(feedback){
                                 if(reviewConcept.conceptId === feedback.id)
                                 {
