@@ -483,7 +483,6 @@ angular.module('singleConceptAuthoringApp')
             // mark as unviewed in ToReview list (if present)
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
               if (item.conceptId === data.concept.conceptId) {
-                scope.addToEdit(item);
                 item.viewed = false;
               }
             });
@@ -491,13 +490,11 @@ angular.module('singleConceptAuthoringApp')
             // mark as unviewed in Reviewed list (if present)
             angular.forEach(scope.conceptsReviewedViewed, function (item) {
               if (item.conceptId === data.concept.conceptId) {
-                scope.addToEdit(item);
                 item.viewed = false;
               }
             });
             angular.forEach(scope.conceptsClassified, function (item) {
               if (item.conceptId === data.concept.conceptId) {
-                scope.addToEdit(item);
                 item.viewed = false;
               }
             });
@@ -1034,7 +1031,6 @@ angular.module('singleConceptAuthoringApp')
                   // multiple concept feedbacks are viewed
                   message.conceptName = concept.term;
                   viewedFeedback.push(message);
-                    console.log(viewedFeedback);
                 });
 
                 // mark read if unread is indicated
