@@ -1264,11 +1264,11 @@ angular.module('singleConceptAuthoringApp')
 
             scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, subjectConceptIds, requestFollowup).then(function (response) {
                 
-            angular.forEach(scope.subjectConcepts, function (subjectConcept) {
-              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, subjectConcept.conceptId).then(function (response) {
-                    subjectConcept.read = true;
-                  });
-            });
+//            angular.forEach(scope.subjectConcepts, function (subjectConcept) {
+//              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, subjectConcept.conceptId).then(function (response) {
+//                    subjectConcept.read = true;
+//                  });
+//            });
             
 
               
