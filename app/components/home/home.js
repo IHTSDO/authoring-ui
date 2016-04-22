@@ -56,7 +56,7 @@ angular.module('singleConceptAuthoringApp.home', [
                 return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.status.key().indexOf(searchStr.toLowerCase()) > -1;
+                  || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.tasks;
@@ -108,7 +108,8 @@ angular.module('singleConceptAuthoringApp.home', [
                   || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                  || item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  || item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.reviewTasks;
