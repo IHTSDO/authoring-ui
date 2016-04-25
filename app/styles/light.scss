@@ -113,14 +113,13 @@
     border-right: 1px rgba(0, 0, 0, .07)solid;
 }
 .sca-light .dashboard-sidebar button {
-    margin: 0;
-    padding: 15px;
+  
     color: #474747;
-    width: 100%;
+   
     background: #fff;
 }
 .sca-light .dashboard-sidebar button a {
-    margin: 0;
+   
     color: #474747;
 }
 .sca-light .dashboard-sidebar button:hover,
@@ -330,7 +329,6 @@
 }
 .sca-light .add-buttons {
     background-color: transparent !important;
-    padding: 1px 3px !important;
     color: #474747 !important;
 }
 .sca-light .toggle-buttons {
@@ -348,10 +346,6 @@
 }
 /*edit buttons */
 
-.sca-light .small-buttons {
-    padding: 0px 1% !important;
-    font-size: 16px !important;
-}
 .sca-light .small-buttons:hover {
     color: #474747 !important;
     background-color: transparent !important;

@@ -95,18 +95,12 @@ lightest bg #525463
 
 
 
-.sca-dark .table-search {
-    padding: 0px;
-}
 .sca-dark .table-search [type=text].form-control{    
-    border: none;
-    border-radius: 0;
-    -webkit-appearance: none;
+   
     box-shadow: inset 0 -1px 0 #1f2731;
-    font-size: 13px;
+ 
     background-color: #2d3743;
-    padding: 20px 10px;
-    margin-top: 10px;
+ 
 }
 .sca-dark .theme-secondary-text, a {
     color: #5cbaff;
@@ -149,11 +143,9 @@ lightest bg #525463
 .sca-dark .project-main-buttons button {
     background-color: #1f2731 !important;
     border: 1px solid #1f2731 !important;
-    border-radius: 4px;
-    text-transform: none;
+
     color: #fff;
-    padding: 0px 10px 0px 0px !important;
-    line-height: 30px;
+  
 }
 .sca-dark .project-main-buttons button:disabled {
     background-color: #383a48 !important;
@@ -161,13 +153,12 @@ lightest bg #525463
     border-radius: 4px;
     text-transform: none;
     color: #828396 !important;
-    padding: 0px 10px 0px 0px !important;
-    line-height: 30px;
+   
 }
 .sca-dark .table-full{background:#2d3743}
 .sca-dark table {
     border-color:#525463;
-	margin-bottom:10px;
+	
 }
 .sca-dark .table > tbody > tr > td, .sca-dark .table > tbody > tr > th {
   
@@ -176,8 +167,7 @@ lightest bg #525463
 .sca-dark .navbar-default{background: #1f2731; border-bottom: 1px rgba(0, 0, 0, .07)solid;}
 .sca-dark .dashboard-sidebar button {
     width: 100%;
-    padding: 15px;
-    font-size: 15px;
+  
     text-transform: none;
     color: #fff;
     text-align: left
@@ -187,14 +177,14 @@ lightest bg #525463
     border-right: 1px rgba(0, 0, 0, .07)solid;
 }
 .sca-dark .dashboard-sidebar button {
-    margin: 0;
-    padding: 15px;
+  
+   
     color: #eeeeee;
     width: 100%;
     background: #1f2731;
 }
 .sca-dark .dashboard-sidebar button a {
-    margin: 0;
+ 
     color: #737373;
 }
 .sca-dark .dashboard-sidebar button:hover,
@@ -310,10 +300,7 @@ lightest bg #525463
 }
 /*edit buttons */
 
-.sca-dark .small-buttons {
-    padding: 0px 1% !important;
-    font-size: 16px !important;
-}
+
 .sca-dark .small-buttons:hover {
     color: #fff !important;
     background-color: transparent !important;
@@ -402,35 +389,22 @@ lightest bg #525463
     transition: all .2s;
 }
 .sca-dark .sidebar-tabs.nav > li.active > a, .sca-dark .sidebar-tabs.nav > li > a:hover {
-    width: 100%;
-    padding: 0px;
-    text-align: center;
-    font-size: 18px;
     background-color: #2d3743!important;
     color: #bebebe;
     box-shadow: none;
     color: #00a6e5;
 }
 .sca-dark .control-label {
-    font-weight: 400;
-    width: 100%;
-    padding-bottom: 3px;
-    margin-bottom: 3px;
     color:#babec1;
-    transition: all .2s ease-out;
     box-shadow: inset 0 -1px 0 #2d3743 !important;
 }
 .sca-dark .timeline-title {
-    font-size: 13px;
-    margin: 0;
-    font-weight: 400;
     color: #eee!important;
 }
 .sca-dark .timeline-title p{ color: #eee!important;}
 .sca-dark .classification-report, .sca-dark .feedback-header {
    
     background-color: #262e39;
-    margin-top: 5px;
     border-top: 1px solid #262e39;
 }
 .sca-dark .classification-btn .btn-default[disabled] span {
