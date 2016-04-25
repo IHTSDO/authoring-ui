@@ -1,6 +1,4 @@
-.btn-default{z-index:1029!important;}
-.widget-toolbar{z-index:10000!important;}
-.widget-toolbar .btn-default{z-index:9999!important;}
+
 .modal-header {
     padding: 10px 15px;
     border-bottom: 1px solid transparent;
@@ -24,13 +22,27 @@
   visibility: hidden;
   border-radius: 6px;
 }
+/*tooltip offsets */
+.offset-tooltip-right.large-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -154px;
+}
+.offset-tooltip-right.large-size-tooltip.tooltips-bottom span:after {
+    left: 90%;}
+.offset-tooltip-right.medium-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -117px;
+}
+.offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after {
+    left: 91%;}
 /*custom tooptip sizes */
 .small-size-tooltip.tooltips-bottom span {width:90px;}
 .small-size-tooltip.tooltips-bottom:hover span {margin-left: -45px;}
 .status-concept.tooltips-bottom span {width:150px;}
 .status-concept.tooltips-bottom:hover span {margin-left: -75px;}
+.medium-size-tooltip.tooltips-bottom span {width:130px;}
+.medium-size-tooltip.tooltips-bottom:hover span {margin-left: -63px;}
+
 .large-size-tooltip.tooltips-bottom span {width:170px;}
-.large-size-tooltip.tooltips-bottom:hover span {margin-left: -85px;}
+.large-size-tooltip.tooltips-bottom:hover span {margin-left: -83px;}
 .tooltips-bottom span:after {
   content: '';
   position: absolute;
@@ -120,9 +132,7 @@ a.tooltips-left span, button.tooltips-left span, button[disabled].tooltips-left 
  
   color: #FFFFFF;
   background: #121215;
-padding:4px 6px;
-font-size:11px;
-  line-height: 12px;
+padding:4px 6px; font-size:10px; line-height: 10px;
   text-align: center;
   visibility: hidden;
   border-radius: 6px;
@@ -183,9 +193,7 @@ a.tooltips-right span, button.tooltips-right span, button[disabled].tooltips-rig
   font-weight: 500;
   color: #FFFFFF;
   background: #121215;
-  padding:6px;
-  font-size:11px;
-  line-height: 12px;
+  padding:6px; font-size:10px; line-height: 10px;
   text-align: center;
   visibility: hidden;
   border-radius: 6px;
@@ -221,8 +229,7 @@ a.tooltips-btm, button.tooltips-btm {
   display: inline;
 }
 a.tooltips-btm span, button.tooltips-btm span {
-  position: absolute;
- font-size:11px;
+  position: absolute; font-size:10px;
   color: #FFFFFF;
   background: #121215;
  width:70px;

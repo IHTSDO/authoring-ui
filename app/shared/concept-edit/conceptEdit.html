@@ -101,7 +101,7 @@
               ng-click="showModel(concept)"><span ng-if="modelVisible"> Hide Model </span><span
         ng-if="!modelVisible"> Show Model </span></button>
       <button type="button"
-              class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-bottom large-size-tooltip tooltips-light normal-case"
+              class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case"
               ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span></button>
       <div ng-repeat="field in concept.additionalFields">
             <textarea class="msd-elastic resizable-text"
@@ -122,14 +122,14 @@
       -->
       <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'"
               ng-disabled="isStatic"
-              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom tooltips-light">
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
         <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
-        <span>Concept is Fully Defined</span></button>
+        <span>Fully Defined</span></button>
       <button ng-if="concept.definitionStatus == 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom tooltips-light">
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
         <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
-        <span>Concept is Primitive</span></button>
+        <span>Primitive</span></button>
 
     
         <button ng-init="isCollapsed = false" class="btn-default editbuttons small-buttons" ng-click="collapse(concept)" type="button"
@@ -429,12 +429,12 @@ drag-image="getDragImageForDescription(description)"></button>
                 <div ng-if="!isStatic">
 
                   <button type="button" ng-click="addRelationship(groupId, relationship)"
-                          class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-left tooltips-light normal-case">
+                          class="btn-default add-buttons md fa fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Add New Relationship</span></button>
 
                   <button type="button" ng-click="removeRelationship(relationship)"
                           ng-if="!relationship.effectiveTime"
-                          class="btn-default add-buttons md fa fa-minus button-width-minus pull-right tooltips-left tooltips-light normal-case">
+                          class="btn-default add-buttons md fa fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Remove Relationship</span></button>
 
 
@@ -457,14 +457,14 @@ drag-image="getDragImageForDescription(description)"></button>
                  drag-enter-class="sca-relgroup-drag-target"
                  drag-hover-class="sca-relgroup-drag-hover">
               <button ng-if="$index === 0"
-                      class="btn-default md-open-with role-group-buttons tooltips-left tooltips-light normal-case "
+                      class="btn-default md-open-with role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right  "
                       ui-draggable="true" drag="relationshipGroup" drag-channel="relationshipGroupObj"
                       drag-image="getDragImageForRelationshipGroup(relationshipGroup)">
                 <span>Drag Relationship Group</span></button>
 
               <button 
                       ng-if="!isStatic"
-                      class="btn-default md-exposure-plus-1 role-group-buttons tooltips-left tooltips-light normal-case "
+                      class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span></button>
             </div>
           </div>
