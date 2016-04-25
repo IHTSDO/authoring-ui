@@ -4,6 +4,8 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "font-awesome/scss/font-awesome.scss";
 // endbower
 @import url(https://fonts.googleapis.com/css?family=Cabin+Condensed);
+@import "notification.scss";
+@import "header.scss";
 @import "home.scss";
 @import "about.scss";
 @import "ihtsdo.scss";
@@ -38,8 +40,8 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  font-family: Roboto, sans-serif!important;
-  font-weight: 400;
+  font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif!important;
+
 	font-style: normal
 }
 html{ height: 100%;}
