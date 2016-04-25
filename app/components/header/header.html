@@ -1,7 +1,83 @@
 <nav class="navbar navbar-default navbar-fixed-top" ng-class="{scroll: (scroll>10)}">
   <div class="container-fluid">
+  <style >
+ 
+ul.dashboard-link-list {
+  text-align: left;
+  float:left;
+  display: inline;
+  margin: 0;
+  padding: 4px 0 0 0;
+  list-style: none;
+
+}
+ul.dashboard-link-list li {
+  display: inline-block;
+  margin-right: -4px;
+  
+  position: relative;
+  padding: 8px 0px 15px 10px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+ul.dashboard-link-list li:hover {
+  background: transparent;
+  color: #fff;
+}
+
+ul.dashboard-link-list li ul li a{color:#fff!important;}
+ul.dashboard-link-list li ul {
+  padding: 0;
+  position: absolute;
+     top: 52px;
+    left: -19px;
+    width: 100px;
+    font-size: 12px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  color:#fff!important;
+  -webkit-transiton: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -ms-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+  -transition: opacity 0.2s;
+}
+ul.dashboard-link-list li ul:after{
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -6px;
+  width: 0; height: 0;
+  border-bottom: 6px solid #4fc3f7;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;}
+ul.dashboard-link-list li ul li { 
+  background: #4fc3f7; 
+  display: block; 
+  color: #fff;
+      padding: 8px 15px;
+}
+ul.dashboard-link-list li ul li:hover { background: #409dc7; }
+ul.dashboard-link-list li:hover ul {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+a.home-link{color:#4fc3f7!important;}
+  </style>
     <ul class="nav navbar-nav navbar-left navbar-left-no-collapse col-md-6 no-padding pull-left">
       <li>
+        
         <div class="brand-logo pull-left">
           <div id="logo">
             <img class="img-responsive" src="images/small_logo.png" alt="IHTSDO" width="40" height="40">
@@ -10,8 +86,25 @@
         </div>
       </li>
       <li>
+      <ul class="dashboard-link-list">
+      <li><a ng-href="#/" class="home-link pointer btn btn-round-sm btn-link withoutripple" >  <i class="md md-home f20"></i> </a>
+     
+       <ul>  
+          <li>
+     <a ng-href="#/home">My Tasks</a>
+    </li>
+      <li><a ng-href="#/my-reviews">Review Tasks</a>
+      </li>
+       
+      </ul>
+      </li>
+     
+      </ul>
+      </li>
+      <li>
+      
         <ul class="breadcrumb" style="line-height: 2em;">
-          <li><a ng-href="#/">Dashboard</a></li>
+          
           <li ng-repeat="titleSection in titleSections" class="tooltips-bottom tooltips-light normal-case" title="{{parseTitleSection(titleSection)}}">{{titleSection}}</li>
         </ul>
       </li>
