@@ -22,11 +22,18 @@
 
     <!--  <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>-->
     
-       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> <span class="badge alert-warning" ng-show="item.concept.definitionStatus === 'PRIMITIVE'" title="Primitive" ng-click="openConceptInformationModal(item)"
-                 >&nbsp;</span>
-          <span class="badge alert-warning" ng-show="item.concept.definitionStatus !== 'PRIMITIVE'"
-                title="Fully Defined" ng-click="openConceptInformationModal(item)"
-                >≡&nbsp;</span></div>
+       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> 
+             <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">≡&nbsp; </div>
+        <span>Fully Defined</span></button>
+      <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">&nbsp; </div>
+        <span>Primitive</span></button>
+           </div>
       <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
       </div>
@@ -45,32 +52,32 @@
           <button type="button"
                   ng-click="viewConceptInTaxonomy(item)"
                   ng-disabled="!item.concept.active"
-                  class="tn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                  class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
                   ng-class="[{'fa fa-book purple' : item.concept.active}, {'fa fa-power-off red' : !item.concept.active }]">
-            <span ng-if="item.concept.active">View Concept in Taxonomy</span>
+            <span ng-if="item.concept.active">View in Taxonomy</span>
             <span ng-if="!item.concept.active">Inactive Concept</span>
           </button>
 
         <button type="button"
-                class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default saved-list-buttons pull-left tooltips-bottom large-size-tooltip "
                 title="Edit"
                 ng-click="addToFavorites(item)"
                 ng-disabled="isInFavorites(item)"><i class="md md-favorite"></i><span>Add to Project Favorites</span>
         </button>
 
         <button type="button"
-                class="btn btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
                 title="Edit"
                 ng-click="selectItem(item)"
                 ng-disabled="isEdited(item)"><i class="md fa fa-pencil"></i><span>Load into edit panel </span>
         </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
 
                 ng-click="clone(item)"><i class="md md-content-copy"></i> <span> Clone this concept </span>
         </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                 title="Remove"
                 ng-click="removeItemFromSavedList(item)"><i
           class="md fa fa-remove"></i><span> Remove from saved list </span>
@@ -97,11 +104,18 @@
         </div>-->
 
     <div class="col-md-12 saved-list no-padding  " ng-repeat="item in favorites.items" style="margin-bottom: 15px;">
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> <span class="badge alert-warning" ng-show="item.concept.definitionStatus === 'PRIMITIVE'" title="Primitive" ng-click="openConceptInformationModal(item)"
-                 >&nbsp;</span>
-          <span class="badge alert-warning" ng-show="item.concept.definitionStatus !== 'PRIMITIVE'"
-                title="Fully Defined" ng-click="openConceptInformationModal(item)"
-                >≡&nbsp;</span></div>
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> 
+      <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">≡&nbsp; </div>
+        <span>Fully Defined</span></button>
+      <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">&nbsp; </div>
+        <span>Primitive</span></button>
+      </div>
       <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
       </div>
@@ -118,27 +132,27 @@
  <button type="button"
                   ng-click="viewConceptInTaxonomy(item)"
                   ng-disabled="!item.concept.active"
-                  class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                  class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip normal-case"
                   ng-class="[{'fa fa-book purple' : item.concept.active}, {'fa fa-power-off red' : !item.concept.active }]">
-            <span ng-if="item.concept.active">View Concept in Taxonomy</span>
+            <span ng-if="item.concept.active">View in Taxonomy</span>
             <span ng-if="!item.concept.active">Inactive Concept</span>
           </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
                 title="Edit"
                 ng-click="selectItem(item)"
                 ng-disabled="isEdited(item)"><i class="md fa fa-pencil"></i><span>Load into edit panel </span>
         </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
 
                 ng-click="clone(item)"><i class="md md-content-copy"></i> <span> Clone this concept </span>
         </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-left tooltips-light normal-case"
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom large-size-tooltip offset-tooltip-right "
                 title="Remove"
                 ng-click="removeItemFromFavorites(item)"><i
-          class="md fa fa-remove"></i><span> Remove from Project Favorites </span>
+          class="md fa fa-remove"></i><span> Remove from Project favorites </span>
         </button>
 
       </div>

@@ -1,9 +1,24 @@
+ .btn[disabled] {
+     pointer-events: visibleFill;
+     opacity: 1.0
+ }
 .addButton.btn-round {
     width: 20px;
     height: 20px;
     font-size: 14px !important;
     line-height: 20px;
     position: relative;
+}
+.dashboard-sidebar {
+    background-color: #474747;
+}
+.dashboard-sidebar button {
+    width: 100%;
+    padding: 15px;
+    font-size: 15px;
+    text-transform: none;
+    color: #fff;
+    text-align: left
 }
 .small-buttons {text-align:center;}
 .primitive-buttons, .primitive-buttons:hover, .primitive-buttons[disabled], .primitive-buttons:focus, .primitive-buttons:active
@@ -251,6 +266,18 @@ button.fsn-title-button{width:100%;}
     background-color: #c2476f;
     color: #fff;
 }
-
+ button.tooltips-left.normal-case span, button.tooltips-right.normal-case span{text-transform:none!important}
+.tab-pane .btn-round.btn[disabled] {
+    pointer-events: visibleFill!important;
+    opacity: 1.0;
+}
+.tab-pane .btn-round.btn[disabled] {
+    pointer-events: visibleFill;
+    opacity: 1.0;
+}
+.tab-pane .btn-round.btn[disabled]:hover {
+    background-color: #EF5350;
+    color: #fff;
+}
 /*pagination */
 .paging .btn.more-pager, .more-pager:hover, .more-pager:focus, .more-pager:active{background-color:transparent!important; box-shadow:none!important} 
