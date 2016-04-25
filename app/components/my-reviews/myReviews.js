@@ -91,7 +91,7 @@ angular.module('singleConceptAuthoringApp.myReviews', [
 
       scaService.getReviewTasks().then(function (response) {
         $scope.reviewTasks = response;
-        if ($scope.tasks && $scope.reviewTasks) {
+        if ($scope.reviewTasks) {
           notificationService.sendMessage('All tasks loaded', 5000);
         }
       });
