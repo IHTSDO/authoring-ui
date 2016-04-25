@@ -46,7 +46,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         taskKey: null
       };
         
-      $scope.searchType = 'Active only';
+      $scope.searchType = 'Active Only';
 
       $scope.toggleGroupByConcept = function () {
         $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
