@@ -11,10 +11,10 @@
       <button class="btn btn-default md md-close" ng-click="clearSearch()" style="background: transparent"></button>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button class="btn btn-default md md-check-box tooltips-right tooltips-light normal-case"
+      <button class="btn btn-default md md-check-box tooltips-bottom small-size-tooltip tooltips-light normal-case"
               ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept" style="background: transparent">
         <span>View Matching Terms</span></button>
-      <button class="btn btn-default md md-check-box-outline-blank tooltips-right tooltips-light normal-case"
+      <button class="btn btn-default md md-check-box-outline-blank tooltips-bottom small-size-tooltip tooltips-light normal-case"
               ng-click="toggleGroupByConcept()"
               ng-if="!userOptions.groupByConcept" style="background: transparent"><span>Group by Concept</span></button>
     </div>
@@ -68,11 +68,17 @@
         </div>
         <div class=" col-md-1 no-padding">
         <div class="p-t-5">
-           <span class="badge alert-warning" ng-show="result.concept.definitionStatus === 'PRIMITIVE'" title="Primitive"
-                 ng-click="openConceptInformationModal(result)">&nbsp;</span>
-          <span class="badge alert-warning" ng-show="result.concept.definitionStatus !== 'PRIMITIVE'"
-                title="Fully Defined"
-                ng-click="openConceptInformationModal(result)">≡&nbsp;</span>
+           <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">≡&nbsp; </div>
+        <span>Fully Defined</span></button>
+      <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result))">&nbsp; </div>
+        <span>Primitive</span></button>
+           
         </div>
         </div>
         <div class="no-padding"
@@ -91,7 +97,7 @@
           <button type="button"
                   ng-click="viewConceptInTaxonomy(result)"
                   ng-disabled="!result.concept.active"
-                  class="addButton btn btn-round  widget-button tooltips-right tooltips-light normal-case lighten-1"
+                  class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1"
                   ng-class="[{'fa fa-book purple' : result.concept.active}, {'fa fa-power-off red' : !result.concept.active }]">
             <span ng-if="result.concept.active">View Concept in Taxonomy</span>
             <span ng-if="!result.concept.active">Inactive Concept</span>
@@ -101,13 +107,13 @@
           <button type="button"
                   ng-click="addItemToSavedList(result)"
                   ng-disabled="findItemInSavedList(result.concept.conceptId)"
-                  class="addButton btn btn-round  widget-button md md-playlist-add  tooltips-right tooltips-light normal-case green lighten-1">
+                  class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1">
             <span>Add to Task List</span></button>
 
           <button type="button"
                   ng-click="addItemToFavorites(result)"
                   ng-disabled="findItemInFavorites(result.concept.conceptId)"
-                  class="addButton btn btn-round widget-button md md-favorite  tooltips-right tooltips-light normal-case pink lighten-2">
+                  class="addButton btn btn-round widget-button md md-favorite  tooltips-bottom tooltips-light normal-case pink lighten-2">
             <span>Add to Project Favorites</span></button>
         </div>
       </div>
