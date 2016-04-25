@@ -26,7 +26,7 @@
     <div class="pull-left col-md-1 no-padding">
 
       <!--   <button ng-click="setDescriptionProperties(description, $event)"
-                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
+                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-bottom tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
                   ng-click="populateDescriptionMore(description)" popover-append-to-body="true">
@@ -35,7 +35,7 @@
             -->
 
       <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
-              class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
+              class="btn btn-default morebuttons grey darken-4 md fa fa-ellipsis-v more-button-width tooltips-bottom tooltips-light normal-case"
               popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}"
               popover-trigger="click: click" popover-append-to-body="true"><span>More details</span></button>
 
@@ -53,11 +53,11 @@
     <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
     <div class="  ">
       <button type="button"
-              class="deep-purple lighten-2 btn-default md md-save tooltips-left editbuttons small-buttons"
+              class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
               ng-click="saveConcept()"
               ng-if="isModified && !isStatic" ng-disabled="saving"><span> Save Concept </span></button>
       <button type="button"
-              class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-left tooltips-light normal-case "
+              class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
               ng-click="saveConcept()"
               ng-if="isMerge" style="margin-bottom: -2px;"><span> Accept Merged Version </span></button>
       <!-- Revert button only appears if parent is specified -->
@@ -69,12 +69,12 @@
       <button type="button"
               style="vertical-align: bottom"
               ng-class="[btn-default, editbuttons, ' fa fa-power-off', {green : concept.active}, {red: !concept.active}]"
-              ng-click="toggleConceptActive(concept)" class="small-buttons tooltips-left tooltips-light normal-case">
+              ng-click="toggleConceptActive(concept)" class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
         <span ng-if="!isStatic"> Activate/ inactivate concept </span>
         <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span></button>
       <button type="button"
               style="vertical-align: bottom"
-              class="btn-default editbuttons small-buttons  tooltips-left tooltips-light normal-case"
+              class="btn-default editbuttons small-buttons  tooltips-bottom tooltips-light large-size-tooltip normal-case"
               ng-class="[{'red fa fa-level-down' : !hideInactive}, {'fa fa-level-up green' : hideInactive}]"
               ng-click="toggleHideInactive()"><span> Show/hide inactive components </span></button>
 
@@ -95,13 +95,13 @@
               ng-if="!isStatic"
               ng-disabled="!isModified"></button>
       <button type="button"
-              class="btn-default editbuttons small-buttons blue tooltips-left tooltips-light normal-case md fa fa-sitemap"
+              class="btn-default editbuttons small-buttons blue tooltips-bottom tooltips-light small-size-tooltip normal-case md fa fa-sitemap"
               title="Show/Hide Model"
               ng-if="!isStatic"
               ng-click="showModel(concept)"><span ng-if="modelVisible"> Hide Model </span><span
         ng-if="!modelVisible"> Show Model </span></button>
       <button type="button"
-              class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-left tooltips-light normal-case"
+              class="btn-default editbuttons small-buttons orange darken-3 md fa fa-close tooltips-bottom large-size-tooltip tooltips-light normal-case"
               ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span></button>
       <div ng-repeat="field in concept.additionalFields">
             <textarea class="msd-elastic resizable-text"
@@ -122,12 +122,12 @@
       -->
       <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'"
               ng-disabled="isStatic"
-              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-left tooltips-light">
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom tooltips-light">
         <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
         <span>Concept is Fully Defined</span></button>
       <button ng-if="concept.definitionStatus == 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-left tooltips-light">
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom tooltips-light">
         <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
         <span>Concept is Primitive</span></button>
 
@@ -168,7 +168,7 @@
              drag-hover-class="sca-drag-hover">
 
           <button ng-click="setDescriptionProperties(description, $event)"
-                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width tooltips-left tooltips-light normal-case"
+                  class="btn-default grey darken-3 md morebuttons fa fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
                   popover-append-to-body="true">
@@ -331,7 +331,7 @@ drag-image="getDragImageForDescription(description)"></button>
 
               <div class="">
                 <button
-                  class="btn-default grey darken-3 md morebuttons more-button-width fa fa-ellipsis-v button-width tooltips-left tooltips-light normal-case"
+                  class="btn-default grey darken-3 md morebuttons more-button-width small-size-tooltip fa fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
                   ng-click="setRelationshipProperties(relationship, $event)"
                   popover-template="'shared/component-more/relationshipMore.html'"
                   popover-placement="{{popoverDirection}}"
