@@ -21,7 +21,7 @@ angular.module('singleConceptAuthoringApp.myReviews', [
     $rootScope.classificationRunning = false;
 
     // TODO Placeholder, as we only have the one tab at the moment
-    $rootScope.pageTitle = "My Tasks";
+    $rootScope.pageTitle = "My Reviews";
     $scope.reviewTasks = null;
     $scope.projects = [];
     $scope.browserLink = '..';
