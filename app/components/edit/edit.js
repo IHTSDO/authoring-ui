@@ -104,6 +104,13 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
         });
     };
+    
+    $scope.gotoHome = function() {
+        $location.url('home');
+      };
+    $scope.gotoReviews = function() {
+        $location.url('my-reviews');
+    };
 
     /////////////////////////////////
     // View & Layout
