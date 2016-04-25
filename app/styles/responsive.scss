@@ -4,6 +4,12 @@
 
   font-size: 14px !important;
 }
+.feedback-lists  .btn-round {
+    width: 20px;
+    height: 20px;
+    font-size: 13px;
+    line-height: 20px;
+}
 }
 @media (min-width: 1450px) {
 .saved-list-buttons {
@@ -188,4 +194,32 @@
 .button-width-plus {
   
     text-align: right;}
+}
+
+@media (min-width: 1550px) {
+
+.feedback-lists  .btn-round {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    line-height: 18px;
+}
+}
+@media (min-width: 1650px) {
+
+.feedback-lists  .btn-round {
+    width: 19px;
+    height: 19px;
+    font-size: 13px;
+    line-height: 19px;
+}
+}
+@media (min-width: 1750px) {
+
+.feedback-lists  .btn-round {
+    width: 20px;
+    height: 20px;
+    font-size: 13px;
+    line-height: 20px;
+}
 }
