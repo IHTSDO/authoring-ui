@@ -28,77 +28,62 @@
 
   <div class="sca-content dash-tables col-lg-9 col-md-9 col-sm-9 pull-right">
 
-    <!-- Author Tasks -->
+    <!-- Reviewer Tasks -->
     <section class="tables-data row no-gutter">
       <div class="card">
 
         <div class="row" style="margin-right:0px;">
           <div class="col-md-3 no-padding">
-            <h3 class="table-title p-20">My Tasks</h3>
+            <h3 class="table-title p-20">Review Tasks</h3>
           </div>
           <div class="col-md-6">
             <div class="table-search">
-              <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
-                     placeholder="Search My Tasks" autofocus/>
-
+              <input type="text" ng-model="reviewTableParams.filter()['search']" class="form-control"
+                     placeholder="Search Available Review Tasks" autofocus/>
             </div>
-
           </div>
           <div class="col-md-2 promoted-check-box">
             <button class="btn btn-default form-control"
-                    ng-class="[{'md-check-box' : showPromotedTasks}, {'md-check-box-outline-blank' : !showPromotedTasks}]"
-                    ng-click="toggleShowPromotedTasks()" style="background: transparent">
+                    ng-class="[{'md-check-box' : showPromotedReviews}, {'md-check-box-outline-blank' : !showPromotedReviews}]"
+                    ng-click="toggleShowPromotedReviews()" style="background: transparent">
               <span class="promoted-check-box">Show Promoted</span></button>
           </div>
           <div class="col-md-1">
-            <div class="pull-right p-t-20">
-              <button type="button" class="btn btn-round tasks-bubble  btn-info ng-scope tooltips-left ">
-                <div> {{tasks.length}}</div>
-                <span>{{tasks.length}} tasks are assigned to you </span>
-
-                <div class="ripple-wrapper"></div>
-              </button>
-              <button type="button" class="btn btn-round tasks-bubble  btn-default tooltips-left "
-                      title="Create New Task"
-                      ng-click="openCreateTaskModal()">
-                <div class="md md-add"></div>
-                <span>Create a New Task</span>
-              </button>
-            </div>
+              <span class="pull-right p-t-20">
+                  <button type="button" class="btn btn-round   tasks-bubble btn-info ng-scope tooltips-left tooltips-light ">
+                    {{reviewTasks.length}}
+                    <span> {{reviewTasks.length}} reviews are in progress</span>
+                  </button>
+              </span>
           </div>
         </div>
-
+        <!--          Left in as a placeholder for reviewer role functionality-->
+        <!--        <div class="table-responsive white" style="margin-right:0px;" ng-if="isReviewer()">-->
         <div class="table-responsive white" style="margin-right:0px;">
 
-
-          <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small">
+          <table ng-table="reviewTableParams" template-pagination="utilities/data-table-pager.html"
+                 class="table table-full table-full-small col-md-12 no-padding">
             <tr ng-repeat="task in $data" class="clickable-row">
 
-              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a class="tooltips-right"
-                                                                                             ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/edit">
-                {{task.summary}}<span> Click to open editing view</span></a>
+              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
+                <a class="tooltips-right"
+                   ng-click="viewReviewTask(task)"> {{task.summary}}<span> Click to open reviewer view</span></a>
               </td>
             
-              <td data-title="'Task Id'" sortable="'taskKey'" filter="{ 'key': 'text' }">
+   <td data-title="'Task Id'" sortable="'taskKey'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
-              <td data-title="'Modified'" sortable="'updated'">
+                <td data-title="'Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
-
-              <td data-title="'Rebase'">
-                  <button
-                    ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'" type="button" ng-click="goToConflicts(task)"
-                    class="btn btn-round  btn-center btn-default lighten-1 amber tooltips-left">
-                    <div class="md md-sync "></div>
-                    <span>Click to pull in changes from project</span>
-                  </button>
+              <td data-title="'Author'" sortable="'assignee.displayName'" filter="{ 'author': 'text' }">
+                {{task.assignee.displayName}}
               </td>
-
+            
+            
               <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                       <button ng-show="task.latestClassificationJson != null"
+                     <button ng-show="task.latestClassificationJson != null"
                           type="button"
                           ng-class="[
                           {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
@@ -117,7 +102,8 @@
 
 
               </td>
-      <td data-title="'Validation'" sortable="'latestValidationStatus'">
+
+              <td data-title="'Validation'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
            <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
@@ -135,8 +121,8 @@
                 </a>
               </td>
 
- <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
-        
+            <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
+               
                 <a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
@@ -154,10 +140,8 @@
                   </button>
                 
                 </a>
-              
               </td>
-             
-              <td data-title="'Status'" sortable="'status'">
+      <td data-title="'Status'" sortable="'status'">
                 <div ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for
                                                                                                           Review
                 </div>
@@ -166,15 +150,15 @@
                 </div>
                 <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
-                    
-     <td data-title="'Review'" sortable="'reviewer'"  >
-  <div ng-show="task.status === 'Review Completed' || task.status === 'In Review'">
+  <td data-title="'Review'" sortable="'reviewer'"  >
+  
            <div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
                 <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
-</div>
-              </td>
 
+              </td>
+                      
+             
             </tr>
           </table>
 
@@ -182,7 +166,6 @@
 
       </div>
     </section>
-
   </div>
 
 </div>
