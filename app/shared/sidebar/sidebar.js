@@ -19,6 +19,9 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
       $scope.gotoHome = function() {
         $location.url('home');
       };
+      $scope.gotoReviews = function() {
+        $location.url('my-reviews');
+      };
 
       $scope.openCreateTaskModal = function () {
         var modalInstance = $modal.open({

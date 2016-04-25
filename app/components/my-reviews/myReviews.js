@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('singleConceptAuthoringApp.home', [
+angular.module('singleConceptAuthoringApp.myReviews', [
   //insert dependencies here
   'ngRoute',
   'ngTable'
@@ -8,13 +8,13 @@ angular.module('singleConceptAuthoringApp.home', [
 
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/home', {
-        controller: 'HomeCtrl',
-        templateUrl: 'components/home/home.html'
+      .when('/my-reviews', {
+        controller: 'MyReviewsCtrl',
+        templateUrl: 'components/my-reviews/myReviews.html'
       });
   })
 
-  .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
+  .controller('MyReviewsCtrl', function MyReviewsCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;
@@ -22,50 +22,50 @@ angular.module('singleConceptAuthoringApp.home', [
 
     // TODO Placeholder, as we only have the one tab at the moment
     $rootScope.pageTitle = "My Tasks";
-    $scope.tasks = null;
+    $scope.reviewTasks = null;
     $scope.projects = [];
     $scope.browserLink = '..';
 
     // flags for displaying promoted tasks
-    $scope.showPromotedTasks = false;
     $scope.showPromotedReviews = false;
-
     // declare table parameters
-    $scope.tableParams = new ngTableParams({
+    $scope.reviewTableParams = new ngTableParams({
         page: 1,
         count: 10,
         sorting: {updated: 'desc', name: 'asc'}
       },
       {
         filterDelay: 50,
-        total: $scope.tasks ? $scope.tasks.length : 0, // length of data
+        total: $scope.reviewTasks ? $scope.reviewTasks.length : 0, // length of
+                                                                   // data
         getData: function ($defer, params) {
 
-          if (!$scope.tasks || $scope.tasks.length == 0) {
+          if (!$scope.reviewTasks || $scope.reviewTasks.length == 0) {
             $defer.resolve([]);
           } else {
 
             var searchStr = params.filter().search;
             var mydata = [];
 
-
-
             if (searchStr) {
-              mydata = $scope.tasks.filter(function (item) {
+              mydata = $scope.reviewTasks.filter(function (item) {
                 return item.summary.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.projectKey.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.status.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.assignee.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                  || item.assignee.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                   || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
-              mydata = $scope.tasks;
+              mydata = $scope.reviewTasks;
             }
 
-            if (!$scope.showPromotedTasks) {
+            if (!$scope.showPromotedReviews) {
               mydata = mydata.filter(function (item) {
                 return item.status !== 'Promoted';
               });
             }
+
 
             params.total(mydata.length);
             mydata = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
@@ -77,9 +77,9 @@ angular.module('singleConceptAuthoringApp.home', [
       }
     );
 
-    $scope.toggleShowPromotedTasks = function() {
-      $scope.showPromotedTasks = !$scope.showPromotedTasks;
-      $scope.tableParams.reload();
+    $scope.toggleShowPromotedReviews = function() {
+      $scope.showPromotedReviews = !$scope.showPromotedReviews;
+      $scope.reviewTableParams.reload();
     };
 
     // TODO Workaround to capture full review functionality
@@ -87,15 +87,15 @@ angular.module('singleConceptAuthoringApp.home', [
     function loadTasks() {
 
       notificationService.sendMessage('Loading tasks...', 0);
-
-      $scope.tasks = null;
       $scope.reviewTasks = null;
-      scaService.getTasks().then(function (response) {
-        $scope.tasks = response;
+
+      scaService.getReviewTasks().then(function (response) {
+        $scope.reviewTasks = response;
         if ($scope.tasks && $scope.reviewTasks) {
           notificationService.sendMessage('All tasks loaded', 5000);
         }
       });
+
     };
     
     $scope.goToConflicts = function(task){
@@ -117,15 +117,10 @@ angular.module('singleConceptAuthoringApp.home', [
             }
         });
     };
-    
-    $scope.$watch('rebaseComplete', function () {
-      $scope.tableParams.reload();
-    }, true);
 
     // on successful set, reload table parameters
-    $scope.$watch('tasks', function () {
-      $scope.tableParams.reload();
-
+    $scope.$watch('reviewTasks', function () {
+      $scope.reviewTableParams.reload();
     }, true);
 
     $scope.openCreateTaskModal = function () {
@@ -152,9 +147,51 @@ angular.module('singleConceptAuthoringApp.home', [
       loadTasks();
     });
 
+    $scope.viewReviewTask = function (task) {
+
+      // if no reviewer, attempt to assign
+      if (task && !task.reviewer) {
+
+        // re-retrieve task to doublecheck availability for assignment
+        scaService.getTaskForProject(task.projectKey, task.key).then(function (response) {
+
+          // if a reviewer specified, has been claimed since last task refresh
+          // send warning and reload tasks
+          if (response.reviewer) {
+            notificationService.sendWarning('Review task ' + task.key + ' has been claimed by another user', 1000);
+            loadTasks();
+          }
+
+          // otherwise assign the current user
+          else {
+
+            // TODO Think we only need username here, doublecheck required fields (BE supplies others)
+            var updateObj = {
+              "reviewer": {
+                "email": $rootScope.accountDetails.email,
+                "avatarUrl": "",
+                "username": $rootScope.accountDetails.login,
+                "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+              }
+            };
+
+            scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+            });
+          }
+        });
+        // otherwise, simply go to feedback view
+      } else {
+        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+      }
+    };
+    $scope.isReviewer = function () {
+      return accountService.isReviewer();
+    };
+
 // Initialization:  get tasks and classifications
     function initialize() {
-      $scope.tasks = [];
+      $scope.reviewTasks = [];
 
       // get all projects for task creation
 //      scaService.getProjects().then(function (response) {
