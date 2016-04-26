@@ -224,3 +224,27 @@
     line-height: 20px;
 }
 }
+@media screen and (min-width: 1851px) {
+    .editing-form button,
+    .editing-form .btn {
+        border: 0px;
+        font-size: 15px;
+        padding: 1px 4px;
+        line-height: 1.346;
+    }
+    .editing-form input,
+    .editing-form textarea,
+    .editing-form select {
+        font-size: 12px !important;
+    }
+ 
+    .title-text {
+        font-size: 12px;
+        line-height: 1;
+        max-width: 200px;
+        text-align: left;
+    }
+    .fsn {
+        text-align: left;
+    }
+}
