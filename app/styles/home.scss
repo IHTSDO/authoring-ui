@@ -16,7 +16,7 @@
     background-color: #3b3b3b;
   }
   &:after {
-    content: "\f29c";
+    
     color: #4fc3f7;
     display: inline-block;
     font: normal normal normal 14px/1 'Material Design Iconic Font';
@@ -84,3 +84,4 @@
     list-style-type: circle;
 }
 .no-shadows:focus, .modal-body .ta-scroll-window .ta-bind:focus, .modal-body .ta-scroll-window .ng-touched{box-shadow:none!important; outline:none!important; border: 1px #fff solid !important;}
+.sca-colours .dashboard-links:hover{background-color:#121212!important}
