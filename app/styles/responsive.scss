@@ -1,29 +1,4 @@
-/* Scss Document */
-@media screen and (max-width: 4250px) {
-    .editing-form button,
-    .editing-form .btn {
-        border: 0px;
-        font-size: 15px;
-        padding: 1px 4px;
-        line-height: 1.346;
-    }
-    .editing-form input,
-    .editing-form textarea,
-    .editing-form select {
-        font-size: 11px !important;
-    }
-    .form-control {
-        height: 30px;
-    }
-    .title-text {
-        font-size: 11px;
-        max-width: 200px;
-        text-align: left;
-    }
-    .fsn {
-        text-align: left;
-    }
-}
+
 
 @media (min-width: 1350px) {
 .saved-list-buttons {
