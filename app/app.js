@@ -78,7 +78,7 @@ angular
       // $delegate is the taOptions we are decorating
       // register the tool with textAngular
       taRegisterTool('taxonomy', {
-        iconclass: "fa fa-link",
+        iconclass: "fa-sca fa-link",
         action: function (scope) {
           window.alert('Not yet functional.  Use input box to access search widget');
           // DOes not work, too easy but had to try :D  scope.openSearchModal();
