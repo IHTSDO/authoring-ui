@@ -14,12 +14,12 @@
 .tooltips-right span,
 .tooltips-top span {
 	position: absolute;
-	padding:0px 6px;
+	padding:5px 6px;
   color: #FFFFFF;
  text-shadow: -1px -1px 1px #4e4e4e;
   background: #616161;
-  height: 23px;
-  line-height: 23px;
+  min-height: 23px;
+  line-height: 13px;
   text-align: center;
   visibility: hidden;
   border-radius: 4px;
