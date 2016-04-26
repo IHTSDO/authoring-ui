@@ -64,7 +64,7 @@ angular.module('singleConceptAuthoringApp')
                     if (branchStatus.status === 'In Review') {
                       flags.push({
                         checkTitle: 'Task is still in review',
-                        checkWarning: 'The task Review has not been marked as complete.',
+                        checkWarning: 'The task review has not been marked as complete.',
                         blocksPromotion: false
                       });
                     }
@@ -239,7 +239,7 @@ angular.module('singleConceptAuthoringApp')
                         if (branchStatus.status === 'In Review') {
                           flags.push({
                             checkTitle: 'Task is still in review',
-                            checkWarning: 'The task Review has not been marked as complete.',
+                            checkWarning: 'The task review has not been marked as complete.',
                             blocksPromotion: false
                           });
                         }
