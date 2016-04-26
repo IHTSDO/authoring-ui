@@ -42,7 +42,7 @@
                   class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
                   ng-show="!item.concept.active"
             >
-            <div class="fa fa-power-off"></div>
+            <div class="fa-sca fa-power-off"></div>
             <span>Inactive Concept</span>
           </button>
       </div>-->
@@ -53,7 +53,7 @@
                   ng-click="viewConceptInTaxonomy(item)"
                   ng-disabled="!item.concept.active"
                   class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
-                  ng-class="[{'fa fa-book purple' : item.concept.active}, {'fa fa-power-off red' : !item.concept.active }]">
+                  ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
             <span ng-if="item.concept.active">View in Taxonomy</span>
             <span ng-if="!item.concept.active">Inactive Concept</span>
           </button>
@@ -69,7 +69,7 @@
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
                 title="Edit"
                 ng-click="selectItem(item)"
-                ng-disabled="isEdited(item)"><i class="md fa fa-pencil"></i><span>Load into edit panel </span>
+                ng-disabled="isEdited(item)"><i class="md fa-sca fa-pencil"></i><span>Load into edit panel </span>
         </button>
         <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
@@ -80,7 +80,7 @@
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                 title="Remove"
                 ng-click="removeItemFromSavedList(item)"><i
-          class="md fa fa-remove"></i><span> Remove from saved list </span>
+          class="md fa-sca fa-remove"></i><span> Remove from saved list </span>
         </button>
 
       </div>
@@ -124,7 +124,7 @@
                 class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
                 ng-show="!item.concept.active"
           >
-          <div class="fa fa-power-off"></div>
+          <div class="fa-sca fa-power-off"></div>
           <span>Inactive Concept</span>
         </button>
       </div>-->
@@ -133,7 +133,7 @@
                   ng-click="viewConceptInTaxonomy(item)"
                   ng-disabled="!item.concept.active"
                   class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip normal-case"
-                  ng-class="[{'fa fa-book purple' : item.concept.active}, {'fa fa-power-off red' : !item.concept.active }]">
+                  ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
             <span ng-if="item.concept.active">View in Taxonomy</span>
             <span ng-if="!item.concept.active">Inactive Concept</span>
           </button>
@@ -141,7 +141,7 @@
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
                 title="Edit"
                 ng-click="selectItem(item)"
-                ng-disabled="isEdited(item)"><i class="md fa fa-pencil"></i><span>Load into edit panel </span>
+                ng-disabled="isEdited(item)"><i class="md fa-sca fa-pencil"></i><span>Load into edit panel </span>
         </button>
         <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
@@ -152,7 +152,7 @@
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom large-size-tooltip offset-tooltip-right "
                 title="Remove"
                 ng-click="removeItemFromFavorites(item)"><i
-          class="md fa fa-remove"></i><span> Remove from Project favorites </span>
+          class="md fa-sca fa-remove"></i><span> Remove from Project favorites </span>
         </button>
 
       </div>

@@ -98,7 +98,7 @@
                   ng-click="viewConceptInTaxonomy(result)"
                   ng-disabled="!result.concept.active"
                   class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1"
-                  ng-class="[{'fa fa-book purple' : result.concept.active}, {'fa fa-power-off red' : !result.concept.active }]">
+                  ng-class="[{'md md-my-library-books purple' : result.concept.active}, {'fa-sca fa-power-off red' : !result.concept.active }]">
             <span ng-if="result.concept.active">View in Taxonomy</span>
             <span ng-if="!result.concept.active">Inactive Concept</span>
           </button>
