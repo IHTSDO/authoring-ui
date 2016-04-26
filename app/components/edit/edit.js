@@ -109,7 +109,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $location.url('home');
       };
     $scope.gotoReviews = function() {
-        $location.url('my-reviews');
+        $location.url('review-tasks');
     };
 
     /////////////////////////////////

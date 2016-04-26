@@ -1,6 +1,6 @@
 'use strict';
 // jshint ignore: start
-angular.module('singleConceptAuthoringApp.myReviews', [
+angular.module('singleConceptAuthoringApp.reviewTasks', [
   //insert dependencies here
   'ngRoute',
   'ngTable'
@@ -8,13 +8,13 @@ angular.module('singleConceptAuthoringApp.myReviews', [
 
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/my-reviews', {
-        controller: 'MyReviewsCtrl',
-        templateUrl: 'components/my-reviews/myReviews.html'
+      .when('/review-tasks', {
+        controller: 'ReviewTasksCtrl',
+        templateUrl: 'components/review-tasks/reviewTasks.html'
       });
   })
 
-  .controller('MyReviewsCtrl', function MyReviewsCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
 
     // clear task-related i nformation
     $rootScope.validationRunning = false;

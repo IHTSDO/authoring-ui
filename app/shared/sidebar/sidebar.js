@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
         $location.url('home');
       };
       $scope.gotoReviews = function() {
-        $location.url('my-reviews');
+        $location.url('review-tasks');
       };
 
       $scope.openCreateTaskModal = function () {
