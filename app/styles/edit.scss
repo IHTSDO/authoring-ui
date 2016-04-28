@@ -1,5 +1,9 @@
-.angular-ui-tree-node .badge{font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif!important;}
-.main-view-offset {padding-left:50px!important;}
+.angular-ui-tree-node .badge {
+    font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif!important;
+}
+.main-view-offset {
+    padding-left: 50px!important;
+}
 .ta-editor p,
 .ta-editor p span,
 .ta-editor p strong {
@@ -288,7 +292,6 @@ h1 {
 #top > main > div > div:nth-child(2) > div > div.sca-column.col-lg-9.col-md-9.col-sm-9 > div.row.project-page > div:nth-child(2) > div:nth-child(2) > div > div > div > div:nth-child(1) > div.pull-right {
     display: none;
 }
-
 @media screen and (max-width: 1850px) {
     .editing-form button,
     .editing-form .btn {
@@ -594,16 +597,15 @@ select.primitive {
     font-size: 18px;
     background-color: #d1d1d1;
     color: #737373;
-	   
 }
-
-.nav > li > a {line-height:30px;}
+.nav > li > a {
+    line-height: 30px;
+}
 .sidebar-tabs.nav > li.active > a,
 .sidebar-tabs.nav > li > a:hover {
     width: 100%;
     padding: 0px;
     text-align: center;
-  
     background-color: #ececec;
     color: #bebebe;
     box-shadow: none;
@@ -809,8 +811,8 @@ button[disabled] .project-icon {
     float: right;
     border-radius: 4px 0px 0px 4px;
     margin-right: 10px;
-}.sidebar-tabs.nav-tabs > li > a
-.project-main-buttons .project-icon .md {
+}
+.sidebar-tabs.nav-tabs > li > a .project-main-buttons .project-icon .md {
     line-height: 30px;
     font-size: 16px;
 }
