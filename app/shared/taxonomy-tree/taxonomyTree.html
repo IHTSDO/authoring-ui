@@ -3,8 +3,9 @@
 
   <style>
     .highlight {
-      background-color: yellow;
-    }
+      background-color: #ffe082;
+    
+	color:#474747;}
   </style>
 
 
@@ -19,12 +20,18 @@
             ng-click="toggleNode(node, this)"></span>
 
       <!-- primitive alert -->
-        <span class="badge alert-warning" ng-show="node.definitionStatus === 'PRIMITIVE'" title="Primitive"
-              ng-click="openConceptInformationModal(node)">&nbsp;</span>
-          <span class="badge alert-warning" ng-show="node.definitionStatus !== 'PRIMITIVE'"
-                title="Fully Defined"
-                ng-click="openConceptInformationModal(node)">≡&nbsp;</span>
-
+	  
+	  <button ng-show="node.definitionStatus !== 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(node)">≡&nbsp; </div>
+        <span>Fully Defined</span></button>
+      <button  ng-show="node.definitionStatus === 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(node)">&nbsp; </div>
+        <span>Primitive</span></button>
+       
       <!-- fsn (draggable) -->
       <span ui-draggable="true" ng-dblclick="setRootConcept(node)" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]" drag-image="node.fsn">
         {{node.fsn}}
