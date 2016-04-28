@@ -72,6 +72,9 @@
     font-size: 18px;
  
 }
+.sca-compact .angular-ui-tree-nodes .angular-ui-tree-nodes {
+    padding-left: 7px;
+}
 .sca-compact .btn-round-sm {
     width: 30px;
     height: 30px;
@@ -194,10 +197,7 @@
   
     font-size: 10px;
 }
-.sca-compact .angular-ui-tree-node {
  
-    font-size: 11px;
-}
 .sca-compact .badge{
     font-size: 10px!important;
 }
