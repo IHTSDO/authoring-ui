@@ -23,16 +23,16 @@
     <!--  <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>-->
     
        <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> 
-             <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'"
+             <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
               class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
-        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">&nbsp; </div>
-        <span>Fully Defined</span></button>
-      <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'"
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
+        <span>Primitive</span></button>
+      <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
               class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
-        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">≡&nbsp; </div>
-        <span>Primitive</span></button>
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
+        <span>Fully Defined</span></button>
            </div>
       <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
@@ -105,16 +105,16 @@
 
     <div class="col-md-12 saved-list no-padding  " ng-repeat="item in favorites.items" style="margin-bottom: 15px;">
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> 
-      <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'"
+      <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
               class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
-        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">&nbsp; </div>
-        <span>Fully Defined</span></button>
-      <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'"
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
+        <span>Primitive</span></button>
+      <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
               class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
-        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(result)">≡&nbsp; </div>
-        <span>Primitive</span></button>
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
+        <span>Fully Defined</span></button>
       </div>
       <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
