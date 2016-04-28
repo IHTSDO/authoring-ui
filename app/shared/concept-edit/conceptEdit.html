@@ -174,9 +174,9 @@
                   popover-append-to-body="true">
             <span>More details</span></button>
 <button
-class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width"
+class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom "
 ui-draggable="true" drag="description" drag-channel="descriptionObj"
-drag-image="getDragImageForDescription(description)"></button>
+drag-image="getDragImageForDescription(description)"> <span>Drag this row</span></button></button>
       
 
           <!-- Active/Inactive -->
@@ -339,9 +339,9 @@ drag-image="getDragImageForDescription(description)"></button>
                   ><span>More details</span></button>
 
                 <button
-                  class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width "
+                  class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width small-size-tooltip tooltips-bottom"
                   ui-draggable="true" drag="relationship" drag-channel="relationshipObj"
-                  drag-image="getDragImageForRelationship(relationship)"></button>
+                  drag-image="getDragImageForRelationship(relationship)"><span>Drag This Row</span></button>
 
                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
                 <button type="button"
@@ -384,12 +384,12 @@ drag-image="getDragImageForDescription(description)"></button>
                       typeahead-editable="false" typeahead-min-length="0">
 
             </textarea>
-            <span class="pull-left md drag-button-width "
+            <div class="pull-left md drag-button-width small-size-tooltip tooltips-bottom"
                   ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]"
                   ui-draggable="true"
                   drag="getConceptIdNamePairFromAttributeType(relationship)"
                   drag-channel="conceptPropertiesObj"
-                  drag-image="getDragImageForConcept(relationship.type.fsn)"></span>
+                  drag-image="getDragImageForConcept(relationship.type.fsn)"><span>Drag this component</span></div>
 
                 </div>
 
@@ -411,12 +411,12 @@ drag-image="getDragImageForDescription(description)"></button>
                       typeahead-wait-ms="700"
                       typeahead-on-select="setRelationshipTargetConceptFromMrcm(relationship, $item)"
                       typeahead-editable="false" typeahead-min-length="3"></textarea>
-                        <span class="pull-left drag-button-width "
+                        <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
                               ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                               ui-draggable="true"
                               drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
                               drag-channel="conceptPropertiesObj"
-                              drag-image="getDragImageForConcept(relationship.target.fsn)"></span>
+                              drag-image="getDragImageForConcept(relationship.target.fsn)"><span>Drag This Component</span></div>
                 </div>
               <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'"
                     class="pull-left p-t-5 p-l-3 white-text"><span
