@@ -1,95 +1,95 @@
 <nav class="navbar navbar-default navbar-fixed-top" ng-class="{scroll: (scroll>10)}">
-  <div class="container-fluid">
-    <ul class="nav navbar-nav navbar-left navbar-left-no-collapse col-md-6 no-padding pull-left">
-      <li>
-        
-        <div class="brand-logo pull-left">
-          <div id="logo">
-            <img class="img-responsive" src="images/small_logo.png" alt="IHTSDO" width="40" height="40">
-          </div>
-          <span>Single Concept Authoring</span>
-        </div>
-      </li>
-      <li>
-      <ul class="dashboard-link-list">
-      <li><a ng-href="#/"><div  class="home-link pointer btn btn-round-sm btn-link withoutripple" >  <i class="md md-menu f20"></i></div> Dashboard</a>
-     
-       <ul>  
-          <li><a ng-href="#/home">My Tasks</a>
-    </li>
-      <li><a ng-href="#/review-tasks">Review Tasks</a>
-      </li>
-       
-      </ul>
-      </li>
-     
-      </ul>
-      </li>
-      <li>
-      
-        <ul class="breadcrumb" style="line-height: 2em;">
-          
-          <li ng-repeat="titleSection in titleSections" class="tooltips-bottom tooltips-light normal-case" title="{{parseTitleSection(titleSection)}}">{{titleSection}}</li>
+    <div class="container-fluid">
+        <ul class="nav navbar-nav navbar-left navbar-left-no-collapse col-md-6 no-padding pull-left">
+            <li>
+
+                <div class="brand-logo pull-left">
+                    <div id="logo">
+                        <img class="img-responsive" src="images/small_logo.png" alt="IHTSDO" width="40" height="40">
+                    </div>
+                    <span>Single Concept Authoring</span>
+                </div>
+            </li>
+            <li>
+                <ul class="dashboard-link-list">
+                    <li>
+                        <a ng-href="#/">
+                            <div class="home-link pointer btn btn-round-sm btn-link withoutripple"> <i class="md md-menu f20"></i>
+                            </div> Dashboard</a>
+
+                        <ul>
+                            <li><a ng-href="#/home">My Tasks</a>
+                            </li>
+                            <li><a ng-href="#/review-tasks">Review Tasks</a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                </ul>
+            </li>
+            <li>
+
+                <ul class="breadcrumb" style="line-height: 2em;">
+
+                    <li ng-repeat="titleSection in titleSections" class="tooltips-bottom tooltips-light normal-case" title="{{parseTitleSection(titleSection)}}">{{titleSection}}</li>
+                </ul>
+            </li>
+
+            <button ng-if="validationRunning" type="button" class="btn btn-round-sm header-nav-button btn-default pull-left tooltips-right normalcase purple lighten-1  ">
+                <div class="md md-school"></div>
+                <span> Validation Running</span>
+            </button>
+
+            <button ng-if="classificationRunning" type="button" class="btn btn-round-sm btn-default pull-left tooltips-right normalcase indicator_green header-nav-button">
+                <div class="md md-notifications "></div>
+                <span>Classification Running </span>
+            </button>
         </ul>
-      </li>
 
 
-      <button type="button" ng-if="validationRunning"
-              style="vertical-align: bottom; color: #9c27b0; background-color: transparent"
-              class="btn-default small-buttons tooltips-right tooltips-light normal-case md md-school">
-        <span>Validation Running</span>
-      </button>
+        <div ng-show="notification" class="pull-left header-alerts col-md-3 pull-left">
 
-      <button type="button" ng-if="classificationRunning"
-              style="vertical-align: bottom"
-              class="btn-default small-buttons green tooltips-right tooltips-light normal-case md md-notifications-on">
-        <span>Classification Running </span>
-      </button>
+            <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
 
+                <div class="alert saved" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" style="padding-right: 8px;">
 
-    </ul>
+                    <!-- NOTE: currently ::before 'x' icon is included on this button -->
+                    <button type="button" class="pull-right fa-sca fa-close" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" ng-click="clearNotification()"></button>
 
+                    <!-- if a link is provided, show it -->
+                    <a ng-if="notification.url" ng-click="gotoNotificationLink()" class="pull-right">
+                        <button type="button" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]"><span class="md md-link"></span>
+                        </button>
+                    </a>
 
-    <div  ng-show="notification" class="pull-left header-alerts col-md-3 pull-left">
-
-      <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
-
-        <div class="alert saved" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" style="padding-right: 8px;">
-
-          <!-- NOTE: currently ::before 'x' icon is included on this button -->
-          <button type="button" class="pull-right fa-sca fa-close" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]" ng-click="clearNotification()"></button>
-
-          <!-- if a link is provided, show it -->
-          <a ng-if="notification.url" ng-click="gotoNotificationLink()" class="pull-right">
-            <button type="button" ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]"><span class="md md-link"></span></button>
-          </a>
-
-          <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}}</strong>
-          </p>
+                    <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}}</strong>
+                    </p>
+                </div>
+            </div>
         </div>
-      </div>
+
+
+        <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services col-md-2" ng-if="!loggedIn">
+            <li class="pull-right">
+                <a ng-href="#/login">Login</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right navbar-right-no-collapse  identity-services col-md-3 pull-right" ng-if="loggedIn">
+
+            <li class="pull-right">
+                <button class="dropdown-toggle pointer btn btn-round-sm btn-link header-settings withoutripple" ng-click="openSettingsModal()"> <i class="md md-settings f20"></i> </button>
+
+            </li>
+            <li class="pull-right">
+                <a ng-href="#/logout">Logout</a>
+            </li>
+            <li class="pull-right">
+                <a id="profile_not_active" title="display name will link to profile services in later updates">
+                    <span ng-if="accountDetails == null">Logged in as unknown user</span>
+                    <span ng-if="accountDetails != null">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
+                </a>
+            </li>
+        </ul>
     </div>
-
-
-    <ul class="nav navbar-nav navbar-right navbar-right-no-collapse identity-services col-md-2" ng-if="!loggedIn">
-     <li class="pull-right">
-        <a ng-href="#/login">Login</a>
-      </li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right navbar-right-no-collapse  identity-services col-md-3 pull-right" ng-if="loggedIn">
-
-      <li class="pull-right"><button class="dropdown-toggle pointer btn btn-round-sm btn-link header-settings withoutripple" ng-click="openSettingsModal()">  <i class="md md-settings f20"></i> </button>
-       
-      </li>
-       <li class="pull-right">
-        <a ng-href="#/logout">Logout</a>
-      </li>
-         <li class="pull-right">
-        <a id="profile_not_active" title="display name will link to profile services in later updates">
-          <span ng-if="accountDetails == null">Logged in as unknown user</span>
-          <span ng-if="accountDetails != null">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
-        </a>
-      </li>
-    </ul>
-  </div>
 </nav>
