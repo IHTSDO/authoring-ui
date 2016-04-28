@@ -22,7 +22,7 @@
 
   <!-- end validation error -->
   <!-- The concept itself -->
-  <div class="row p-t-5 grey darken-4 concept-headers" style="margin-right:0px;">
+  <div class="row grey darken-4 concept-headers" style="margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
 
       <!--   <button ng-click="setDescriptionProperties(description, $event)"
@@ -44,14 +44,14 @@
     <!-- concept name -->
     <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
       <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
-        <span class="fsn p-t-5">{{concept.fsn}}</span>
+        <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}</span>
 
           <span
-            ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey">Unsaved Concept</span></button>
+            ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey" class="fsn">Unsaved Concept</span></button>
     </div>
 
     <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
-    <div class="  ">
+    <div class=" p-t-3  ">
       <button type="button"
               class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
               ng-click="saveConcept()"

@@ -1063,7 +1063,7 @@ border-bottom:1px solid #8e8e8e
     height: 24px;
     font-size: 14px;
     line-height: 24px;}
-	.model-header-sca{min-height:35px!important;}
+	.model-header-sca{min-height:32px!important;}
 	.editing-form button.red:focus, .editing-form button.red:active{background-color: #e92848;}
 	.editing-form button.green:focus, .editing-form button.green:active{background-color: #4CAF50;}
 	
@@ -1075,7 +1075,7 @@ border-bottom:1px solid #8e8e8e
 
 }
 
-
+ .p-t-3{padding-top:3px!important;}
 
 .editing-form .PRIMITIVE .sourcename .drag-button-width {
     background-color: #b7dbff !important;
@@ -1100,3 +1100,7 @@ border-bottom:1px solid #8e8e8e
 	
 	.def_FULLY_DEFINED textarea, .def_FULLY_DEFINED select, .def_FULLY_DEFINED .custom-button{    background-color: #dbdbff !important;
     color: #474747 !important;}
+	
+	.sidebar-tabs.nav > li > a {
+    line-height: 35px;
+}
