@@ -1,69 +1,60 @@
  .btn-default .badge {
-  color: #fff;
-  background-color: #666;
-}
-.btn-primary .badge {
-  color: #009cd7;
-  background-color: #fff;
-}
-.btn-success .badge {
-  color: #009cd7;
-  background-color: #fff;
-}
-.btn-info .badge {
-  color: #2196F3;
-  background-color: #fff;
-} 
-
-.btn-warning .badge {
-  color: #ffab40;
-  background-color: #fff;
-}
-
-.btn-danger .badge {
-  color: #e92848;
-  background-color: #fff;
-}
-  .badge {
-    font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: normal;
-    font-size: 12px;
-	font-weight:400;
-    padding: 6px 10px;
-    margin: 0px;
-    line-height: 13px;
-
-  }
-
-  .Stale.badge {
-    background-color: #bdbdbd;
-  }
-
-  .Diverged.badge {
-    background-color: #ffa726;
-  }
-
-  .Up.To.Date.badge {
-    background-color: #66BB6A;
-  }
-
-  .Behind.badge {
-    background-color: #EF5350;
-  }
-
-  .Forward.badge {
-    background-color: #42A5F5;
-  }
-  
+     color: #fff;
+     background-color: #666;
+ }
+ .btn-primary .badge {
+     color: #009cd7;
+     background-color: #fff;
+ }
+ .btn-success .badge {
+     color: #009cd7;
+     background-color: #fff;
+ }
+ .btn-info .badge {
+     color: #2196F3;
+     background-color: #fff;
+ }
+ .btn-warning .badge {
+     color: #ffab40;
+     background-color: #fff;
+ }
+ .btn-danger .badge {
+     color: #e92848;
+     background-color: #fff;
+ }
+ .badge {
+     font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+     font-weight: normal;
+     font-size: 12px;
+     font-weight: 400;
+     padding: 6px 10px;
+     margin: 0px;
+     line-height: 13px;
+ }
+ .Stale.badge {
+     background-color: #bdbdbd;
+ }
+ .Diverged.badge {
+     background-color: #ffa726;
+ }
+ .Up.To.Date.badge {
+     background-color: #66BB6A;
+ }
+ .Behind.badge {
+     background-color: #EF5350;
+ }
+ .Forward.badge {
+     background-color: #42A5F5;
+ }
  .badge.alert-warning {
-    font-weight: normal;
-    font-size: 15px !important;
-    text-align: center;
-    padding: 0px 0px 7px 3px;
-    width: 17px;
-    height: 17px;
-    line-height: 19px;
-    border-radius: 50%;
-    margin: 0px;
-	color:#474747;
-}
+     font-weight: normal;
+     font-size: 15px !important;
+     text-align: center;
+     padding: 0px 0px 7px 3px;
+     width: 17px;
+     height: 17px;
+     line-height: 19px;
+     border-radius: 50%;
+     margin: 0px;
+     color: #fff;
+ }
