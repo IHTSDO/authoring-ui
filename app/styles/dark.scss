@@ -694,3 +694,19 @@ sca-dark .pull-left.follow-up {
 .sca-dark .table-title {
     color: #eee
 }
+.sca-dark .arrow-purple {
+    width: 0;
+    height: 0;
+    margin-top: 22px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #ba68c8;
+}
+.sca-dark .arrow-blue {
+    width: 0;
+    height: 0;
+    margin-top: 22px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid #00a6e5;
+}

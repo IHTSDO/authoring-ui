@@ -3,9 +3,14 @@
 
   <style>
     .highlight {
-      background-color: #ffe082;
+      background-color: #ffeb3b; padding:1px 4px; 
     
 	color:#474747;}
+	.m-t-3{margin-top:3px;}
+	.angular-ui-tree-node span{display:inline-block; max-width:83%; vertical-align: top;}
+	.angular-ui-tree-node .small-size-tooltip span{max-width: 90px;
+    width: 90px;
+    vertical-align: baseline;}
   </style>
 
 
@@ -13,7 +18,7 @@
   <script type="text/ng-template" id="nodes_renderer.html">
 
     <div class="clearfix"> </div>
-    <div>
+    <div class="m-t-3">
 
       <!-- collapsible control -->
       <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed)"
