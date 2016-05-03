@@ -240,23 +240,7 @@
                 </a>
               </td>
 
-              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'">
-                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
-
-                  <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
-                          class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback (All read)"><span class="md md-drafts"></span>
-
-                    <div class="ripple-wrapper"></div>
-                  </button>
-                  <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round btn-default pink darken-1" tooltip=""
-                          title="View Feedback (Unread)"><span class="md md-email"></span>
-
-                    <div class="ripple-wrapper"></div>
-                  </button>
-                </a>
-              </td>
+             
               <td data-title="'Status'" sortable="'status'">
                 <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
               </td>

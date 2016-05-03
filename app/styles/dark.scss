@@ -9,7 +9,7 @@ lightest bg #525463
 262e39
 */
 /* scolll bars */
-
+.hideme{display:none!important}
 .sca-dark .navbar .dashboard-link-list li:hover .btn-link {
     background-color: #525463
 }
@@ -710,3 +710,17 @@ sca-dark .pull-left.follow-up {
     border-bottom: 8px solid transparent;
     border-right: 8px solid #00a6e5;
 }
+
+.sca-dark .indigo.lighten-2{
+    color: rgb(121, 134, 203);
+    background-color: transparent;
+}
+
+.sca-dark .indigo.lighten-2:hover {
+    color: #3f51b5;
+    background-color: transparent;
+}
+.sca-dark .loading-merges.blue.darken-1 {background-color:#00a6e5!important}
+.sca-dark .loading-merges.green {background-color:rgb(50, 174, 26)!important}
+.sca-dark .loading-merges.amber {background-color:rgb(255, 202, 40)!important; color:#fff!important}
+

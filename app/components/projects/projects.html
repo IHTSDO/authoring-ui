@@ -82,7 +82,7 @@
               </td>
 
               <td data-title="'Status'" sortable="'branchState'">
-                <span class="badge" ng-class="'{{getBranchStateText(project)}}'">{{getBranchStateText(project)}}</span>
+                <span class="badge {{getBranchStateText(project)}}" ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span>
               </td>
 
             </tr>
