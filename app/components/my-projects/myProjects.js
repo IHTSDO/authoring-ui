@@ -56,9 +56,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
                 return item.title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                 || item.projectLead.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
                 || item.projectLead.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                || item.validationStatus .toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
-                || item.branchState.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.projects;
