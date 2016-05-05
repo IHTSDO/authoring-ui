@@ -33,7 +33,9 @@ angular.module('singleConceptAuthoringApp')
           function (response) {
             return response.data;
           }, function (error) {
-            // TODO Handle errors
+            if (error.status === 403) {
+              $location.path('/login');
+            }
           }
         );
       },
@@ -1046,6 +1048,10 @@ angular.module('singleConceptAuthoringApp')
               }
 
             }
+          }, function (error) {
+                    if (error.status === 403) {
+                      $location.path('/login');
+                    }
           });
         }, intervalInMs);
       }
