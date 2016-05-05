@@ -460,6 +460,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.errors = ['Concept is not complete, and cannot be saved.  Specify all empty fields and try again.'];
             return;
           }
+          else if (!scope.isConceptValid(scope.concept) && scope.errors) {
+            return;
+          }
 
           // clean concept of any locally added information
           snowowlService.cleanConcept(scope.concept);
@@ -1025,16 +1028,39 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if an unpublished description, no reason required
           else if (!description.effectiveTime) {
+            
             description.active = false;
-
-            // ensure all minimum fields are present
-            componentAuthoringUtil.applyMinimumFields(scope.concept);
-
-            autoSave();
+            var activeFsn = [];
+              for (var i = 0; i < scope.concept.descriptions.length; i++) {
+                if (scope.concept.descriptions[i].type === 'FSN' && scope.concept.descriptions[i].active === true) {
+                  activeFsn.push(scope.concept.descriptions[i]);
+                }
+              }
+              if (activeFsn.length !== 1) {
+                scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
+                description.active = true;
+              }
+            else{
+                // ensure all minimum fields are present
+                componentAuthoringUtil.applyMinimumFields(scope.concept);
+                autoSave();
+            }
           }
 
           // otherwise, open a select reason modal
           else {
+            description.active = false;
+            var innerActiveFsn = [];
+              for (var j = 0; j < scope.concept.descriptions.length; j++) {
+                if (scope.concept.descriptions[j].type === 'FSN' && scope.concept.descriptions[j].active === true) {
+                  innerActiveFsn.push(scope.concept.descriptions[j]);
+                }
+              }
+              if (innerActiveFsn.length !== 1) {
+                scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
+                description.active = true;
+              }
+              else{
             // TODO Decide what the heck to do with result
             selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
 
@@ -1059,6 +1085,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.saveConcept();
               }
             });
+          }
           }
         };
 
@@ -1991,7 +2018,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
           if (activeFsn.length !== 1) {
-            scope.warnings = ['Concept with id: ' + concept.conceptId + ' Must have exactly one active FSN. Concept not saved.'];
+            scope.errors = ['Concept with id: ' + concept.conceptId + ' Must have exactly one active FSN. Concept not saved.'];
             return false;
           }
 
