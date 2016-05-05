@@ -51,7 +51,10 @@ angular.module('singleConceptAuthoringApp.projects', [
 
             if (searchStr) {
               mydata = $scope.projects.filter(function (item) {
-                return item.title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                return item.title.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                || item.projectLead.displayName.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                || item.projectLead.username.toLowerCase().indexOf(searchStr.toLowerCase()) > -1
+                || item.key.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
               });
             } else {
               mydata = $scope.projects;
