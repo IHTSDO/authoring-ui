@@ -281,21 +281,21 @@ angular.module('singleConceptAuthoringApp')
                     scope.stopSavingClassificationPolling();
 
                     // save the ui state based on response status
-                    scope.saveClassificationUiState(response.status);
+//                    scope.saveClassificationUiState(response.status);
                   }
                   else if (response.status === 'STALE') {
                     notificationService.sendWarning('Report Stale, please re-classify and save.');
 
                     scope.stopSavingClassificationPolling();
 
-                    scope.saveClassificationUiState(response.status);
+//                    scope.saveClassificationUiState(response.status);
                   }
                   else if (response.status === 'SAVE_FAILED') {
                     notificationService.sendError('Saving classification aborted');
 
                     scope.stopSavingClassificationPolling();
 
-                    scope.saveClassificationUiState(response.status);
+//                    scope.saveClassificationUiState(response.status);
                   }
                 });
               } else {
@@ -330,7 +330,7 @@ angular.module('singleConceptAuthoringApp')
                     scope.stopSavingClassificationPolling();
 
                     // save the ui state based on response status
-                    scope.saveClassificationUiState(response.status);
+//                    scope.saveClassificationUiState(response.status);
                   }
 
                   //   console.debug('response not saved');
@@ -420,16 +420,16 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // otherwise, if saved, check if save event previously detected
-            else if (scope.classificationContainer.status === 'SAVED') {
-
-              scope.getClassificationUiState().then(function (response) {
-
-                // if no ui state for this classification id, save one
-                if (!response) {
-                  scope.saveClassificationUiState(scope.classificationContainer.status);
-                }
-              });
-            }
+//            else if (scope.classificationContainer.status === 'SAVED') {
+//
+//              scope.getClassificationUiState().then(function (response) {
+//
+//                // if no ui state for this classification id, save one
+//                if (!response) {
+//                  scope.saveClassificationUiState(scope.classificationContainer.status);
+//                }
+//              });
+//            }
 
             // get relationship changes
             snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {
