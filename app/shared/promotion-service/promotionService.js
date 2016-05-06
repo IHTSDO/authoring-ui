@@ -91,9 +91,8 @@ angular.module('singleConceptAuthoringApp')
 
           // get the ui state for classiifcation saving timestamp and status
           // information
-          scaService.getUiStateForUser('classification-' + latestClassificationJson.id).then(function (classificationStatus) {
+//          scaService.getUiStateForUser('classification-' + latestClassificationJson.id).then(function (classificationStatus) {
 
-            console.debug('saved classification status', classificationStatus);
 
             // get the branch details
             snowowlService.getBranch(branch).then(function (branchStatus) {
@@ -163,7 +162,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // if no classification status saved or saved state was not
                   // captured by application
-                  if (!classificationStatus || classificationStatus.status === 'SAVING_IN_PROGRESS') {
+                  if (!latestClassificationJson.saveDate) {
                     flags.push({
                       checkTitle: 'Classification May Not Be Current',
                       checkWarning: 'Could not determine whether modifications were made after saving the classification. Promote only if you sure any changes will not affect future classification.',
@@ -173,14 +172,14 @@ angular.module('singleConceptAuthoringApp')
 
                   // otherwise compare the head timestamp of the branch to the
                   // saved timestamp of classification results acceptance
-                  else if (classificationStatus.timestamp > branchStatus.headTimestamp) {
+                  else if ((new Date(latestClassificationJson.saveDate)).getTime() > branchStatus.headTimestamp) {
                     flags.push({
                       checkTitle: 'Classification Current',
                       checkWarning: null,
                       blocksPromotion: false
                     });
                   }
-                  else if (classificationStatus.timestamp <= branchStatus.headTimestamp) {
+                  else if ((new Date(latestClassificationJson.saveDate)).getTime() <= branchStatus.headTimestamp) {
                     flags.push({
                       checkTitle: 'Classification Not Current',
                       checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
@@ -268,7 +267,6 @@ angular.module('singleConceptAuthoringApp')
               function (error) {
                 deferred.reject('Could not determine branch state');
               });
-          });
         }
 
       }
