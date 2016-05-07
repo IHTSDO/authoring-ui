@@ -37,7 +37,7 @@
     <!-- sidebar -->
       <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 no-padding"
            ng-include src="'shared/sidebar-edit/feedbackEdit.html'"></div>
- 
+
 
 
 
@@ -57,21 +57,21 @@
                   ng-click="cancelReview()">Cancel Review
           </button>
     </div>
-      
-        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}    </div>  
+
+        <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}    </div>
             <div ng-if="role === 'REVIEWER' && task.status === 'In Review'" class="pull-left p-l-15 ">
           <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
                   ng-hide="task.status === 'Review Completed'"
                   ng-click="unclaimReview()">Unclaim Review
           </button>
         </div>
-     
+
             <div class="switch pull-right p-l-10">
-        
-          
-        
+
+
+
         </div>
-   
+
         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'"> &nbsp;Task not claimed by a
                                                                                           reviewer
         </div>
@@ -83,7 +83,7 @@
 
       <div class="col-md-4">
         <!-- Cancel/Unclaim Review button -->
-      
+
 
         <!-- Review In Progress / Review Complete toggle -->
         <div ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'" class="switch pull-right">
@@ -98,22 +98,22 @@
 
       </div>
 
-      
+
 
     </div>
   </div>
 
   <!-- Taxonomy, models, and concepts -->
   <div class="col-md-9 no-padding" >
- 
+
     <div ng-if="viewedConcepts.length > 0">
 
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
         <div class="col-md-6">
 
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-          
-       
+
+
         </div>
         <div class="col-md-6">
           <div concept-edit concept="concept" branch="branch" static="true" component-styles="styles[concept.conceptId]"
@@ -122,7 +122,7 @@
         <div class="col-md-12 row-fluid no-padding no-gutter" style="display: flex;"  ng-show="!isCollapsed">
             <div class="col-md-6 no-padding no-gutter">
             <!-- Loading placeholder -->
-          
+
 
             <!-- Main report and feedback content (once loaded) -->
             <div class="row m-l-10 no-gutter" ng-if="feedbackContainer.review">
@@ -130,22 +130,19 @@
               <!-- Review report (concept list) -->
 
 
-       
+
               <!-- Feedback messages -->
             </div>
           </div>
-            <div class="col-md-6 no-gutter no-padding darken-3 grey" ></div> 
+            <div class="col-md-6 no-gutter no-padding darken-3 grey" ></div>
           </div>
 
       </div>
-             
-              <div class="col-md-12 light_greys no-padding"  ng-show="subjectConcepts.length > 0">
 
-    <div class=" pull-left clear-button tooltips-left tooltips-light normal-case p-l-10 " 
-                    ng-click="selectConceptForFeedback(concept)">
-          <strong> {{viewedFeedback.length}} </strong>Total Comments for  <span ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}</span></div>
-        
-</div>
+      <div class="col-md-12 light_greys no-padding"  ng-show="subjectConcepts.length > 0">
+          <strong>{{viewedFeedback.length}}</strong> Total Comments for <span ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}</span>
+      </div>
+
    <div class="col-md-12 feedback-area">
                             <div class="col-md-6 no-padding feedback-chat " ng-show="subjectConcepts.length > 0">
 
@@ -156,11 +153,11 @@
                 <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
 
 
-                 <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 " style="word-break: break-all; margin: 0px" 
+                 <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 " style="word-break: break-all; margin: 0px"
                  ng-class="[{
                           author_feedback_chat : task.assignee.username  === feedback.fromUsername
                           }]"
-                          
+
                           ></p>
                     <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
                             ng-show="feedback.feedbackRequested" >
@@ -188,7 +185,7 @@
                                 ta-text-editor-class="form-control myform2-height" ta-html-editor-class="form-control myform2-height"
                               ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
                                 <div class="col-md-12 no-padding">
-                 
+
                      <div class="col-md-6 no-padding concept-filter ">
                   <input type="text" class="feedback-search m-b-5  " placeholder="Search concepts..."
                          ui-on-drop=""
@@ -210,14 +207,14 @@
                             ng-click="submitFeedback(requestFollowup)"
                             style="text-transform: none"> <span class="md md-forum "></span>Send Feedback
                     </button>
-                  
+
                   </div>
                   </div>
                 </div>
 </div>
 </div>
 
-              
+
 
 
               </div>
