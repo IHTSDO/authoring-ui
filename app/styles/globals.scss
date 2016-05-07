@@ -362,3 +362,7 @@ td textarea, td input, td select {
 .header-alerts button:focus {
   background-color: transparent !important
 }
+
+section.tables-data > div.card div.table-responsive > table.table-full > tbody > tr > td {
+  height: 45px;
+}
