@@ -56,7 +56,7 @@ angular.module('singleConceptAuthoringApp')
           }
         }
         response.filter(function (el) {
-          return el.active === true
+          return el.concept.active === true
         });
         return response;
       });
