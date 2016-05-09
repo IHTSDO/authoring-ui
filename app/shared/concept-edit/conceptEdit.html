@@ -32,7 +32,9 @@
 
             -->
 
-            <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton" class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light normal-case" popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}" popover-trigger="click: click" popover-append-to-body="true"><span>More details</span>
+            <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
+                    class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
+                    popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}" popover-trigger="click: click" popover-append-to-body="true"><span>More details</span>
             </button>
 
         </div>
@@ -62,16 +64,34 @@
                     <span ng-if="!isStatic"> Activate/ inactivate concept </span>
                     <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
                 </button>
-                <button type="button" style="vertical-align: bottom" class="btn-default editbuttons small-buttons  tooltips-bottom tooltips-light large-size-tooltip normal-case" ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]" ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
+                <button type="button"
+                        style="vertical-align: bottom"
+                        class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case"
+                        ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]"
+                        ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
                 </button>
 
 
-                <button type="button" class="btn-default editbuttons small-buttons amber md md-undo " title="Undo Changes" ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic"></button>
-                <button type="button" class="btn-default editbuttons small-buttons amber md md-redo " title="Redo Changes" ng-click="redo()" ng-if="!isStatic" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1"></button>
-                <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history" title="Revert to Saved" ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified"></button>
-                <button type="button" class="btn-default editbuttons small-buttons blue tooltips-bottom tooltips-light small-size-tooltip normal-case md fa-sca fa-sitemap" title="Show/Hide Model" ng-if="!isStatic" ng-click="showModel(concept)"><span ng-if="modelVisible"> Hide Model </span><span ng-if="!modelVisible"> Show Model </span>
+                <button type="button" class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
+                        ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">
+                  <span>Undo Changes</span>
                 </button>
-                <button type="button" class="btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case" ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span>
+                <button type="button" class="btn-default editbuttons small-buttons amber md md-redo tooltips-bottom tooltips-light small-size-tooltip"
+                        ng-click="redo()" ng-if="!isStatic" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1">
+                  <span>Redo Changes</span>
+                </button>
+                <button type="button" class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom tooltips-light"
+                        ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified">
+                  <span>Revert to Saved</span>
+                </button>
+                <button type="button" class="btn-default editbuttons small-buttons blue tooltips-bottom tooltips-light small-size-tooltip normal-case md fa-sca fa-sitemap"
+                        ng-if="!isStatic" ng-click="showModel(concept)">
+                  <span ng-if="modelVisible"> Hide Model </span>
+                  <span ng-if="!modelVisible"> Show Model </span>
+                </button>
+
+                <button type="button" class="btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case"
+                        ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span>
                 </button>
                 <div ng-repeat="field in concept.additionalFields">
                     <textarea class="msd-elastic resizable-text" ng-model-options="{updateOn: 'blur'}" ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
@@ -126,19 +146,30 @@
             <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
                 <div class="col-md-12 no-padding color_{{relationship.groupId}} def_{{concept.definitionStatus}} " drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
-                    <button ng-click="setDescriptionProperties(description, $event)" class="btn-default grey darken-3 md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case" popover-template="'shared/component-more/descriptionMore.html'" popover-placement="{{popoverDirection}}" popover-append-to-body="true">
+                    <button ng-click="setDescriptionProperties(description, $event)"
+                            class="btn-default grey darken-3 md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
+                            popover-template="'shared/component-more/descriptionMore.html'"
+                            popover-placement="{{popoverDirection}}"
+                            popover-append-to-body="true">
                         <span>More details</span>
                     </button>
-                    <button class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom " ui-draggable="true" drag="description" drag-channel="descriptionObj" drag-image="getDragImageForDescription(description)"> <span>Drag this row</span>
+                    <button class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom "
+                            ui-draggable="true" drag="description" drag-channel="descriptionObj" drag-image="getDragImageForDescription(description)">
+                      <span>Drag this row</span>
                     </button>
                     </button>
 
 
                     <!-- Active/Inactive -->
-                    <button type="button" style="vertical-align: bottom" ng-disabled="isStatic" ng-click="toggleDescriptionActive(description)" ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]" title="Active/Inactive"></button>
+                    <button type="button" style="vertical-align: bottom"
+                            ng-disabled="isStatic" ng-click="toggleDescriptionActive(description)"
+                            ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
+                            class="tooltips-bottom small-size-tooltip">
+                      <span>Active/Inactive</span>
+                    </button>
 
                     <!-- Case Significance -->
-                    <button type="button" class=" blue accent-2 button-width custom-button text-center tooltips-right tooltips-light normal-case" ng-disabled="isStatic" ng-click="toggleCaseSignificance(description)">
+                    <button type="button" class=" blue accent-2 button-width custom-button text-center tooltips-bottom tooltips-light xxlarge-size-tooltip normal-case" ng-disabled="isStatic" ng-click="toggleCaseSignificance(description)">
 
                         <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
 
@@ -168,15 +199,23 @@
                     <!-- Dialect / Acceptability -- never alterable for FSN -->
                     <div>
                         <!-- en-us acceptability -->
-                        <button type="button" class=" blue accent-2 button-width-acceptability custom-button" ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)" title="{{getAcceptabilityTooltipText(description, 'en-us')}} US" ng-click="toggleAcceptability(description, 'en-us')">
+                        <button type="button"
+                                class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
+                                ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
+                                ng-click="toggleAcceptability(description, 'en-us')">
                             <div class="md col-md-12 no-padding text-center">us: {{getAcceptabilityDisplayText(description, 'en-us')}}
                             </div>
+                          <span>{{getAcceptabilityTooltipText(description, 'en-us')}} US</span>
                         </button>
 
                         <!-- en-gb acceptability -->
-                        <button type="button" class=" blue accent-2 button-width-acceptability custom-button" ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)" title="{{getAcceptabilityTooltipText(description, 'en-gb')}} GB" ng-click="toggleAcceptability(description, 'en-gb')">
+                        <button type="button"
+                                class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
+                                ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
+                                ng-click="toggleAcceptability(description, 'en-gb')">
                             <div class="md col-md-12 no-padding text-center">gb: {{getAcceptabilityDisplayText(description, 'en-gb')}}
                             </div>
+                          <span>{{getAcceptabilityTooltipText(description, 'en-gb')}} GB</span>
                         </button>
 
 
@@ -228,28 +267,62 @@
                         <div class="col-md-11 no-padding left-of-edit" drop-channel="relationshipObj" ui-on-drop="dropRelationship(relationship, $data)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
                             <div class="">
-                                <button class="btn-default grey darken-3 md morebuttons more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case" ng-click="setRelationshipProperties(relationship, $event)" popover-template="'shared/component-more/relationshipMore.html'" popover-placement="{{popoverDirection}}" title="Some title here" popover-append-to-body="true"><span>More details</span>
+                                <button class="btn-default grey darken-3 md morebuttons more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case" ng-click="setRelationshipProperties(relationship, $event)" popover-template="'shared/component-more/relationshipMore.html'" popover-placement="{{popoverDirection}}"
+                                       popover-append-to-body="true">
+                                  <span>More details</span>
                                 </button>
 
-                                <button class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width small-size-tooltip tooltips-bottom" ui-draggable="true" drag="relationship" drag-channel="relationshipObj" drag-image="getDragImageForRelationship(relationship)"><span>Drag This Row</span>
+                                <button class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width small-size-tooltip tooltips-bottom"
+                                        ui-draggable="true" drag="relationship" drag-channel="relationshipObj" drag-image="getDragImageForRelationship(relationship)">
+                                  <span>Drag This Row</span>
                                 </button>
 
                                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
-                                <button type="button" style="vertical-align: bottom" ng-disabled="isStatic" ng-click="toggleRelationshipActive(relationship)" ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]" title="Active/Inactive"></button>
+                                <button type="button"
+                                        class="tooltips-bottom small-size-tooltip"
+                                        style="vertical-align: bottom"
+                                        ng-disabled="isStatic"
+                                        ng-click="toggleRelationshipActive(relationship)" ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
+                                  <span>Active/Inactive</span>
+                                </button>
 
                                 <!-- relationship group -->
-                                <div class="pull-left rolegroup">
-                                    <textarea ng-disabled="isStatic" ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}" ng-change="updateRelationship(relationship, true)" class="form-control rg msd-elastic: \n;" type="text" placeholder="#" ui-on-drop="dropNullOp()">
+                                <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
+                                    <textarea ng-disabled="isStatic"
+                                              ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
+                                              ng-change="updateRelationship(relationship, true)"
+                                              class="form-control rg msd-elastic: \n;"
+                                              type="text" placeholder="#" ui-on-drop="dropNullOp()">
                                     </textarea>
+                                  <span>Role Group</span>
                                 </div>
 
                                 <!-- attribute type' -->
-                                <div class="pull-left is_a is_a_bg" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipType(relationship, $data)" drop-validate="!relationship.effectiveTime && !isStatic">
+                                <div class="pull-left is_a is_a_bg"
+                                     drag-enter-class="sca-drag-target"
+                                     drag-hover-class="sca-drag-hover"
+                                     drop-channel="conceptPropertiesObj"
+                                     ui-on-drop="dropRelationshipType(relationship, $data)"
+                                     drop-validate="!relationship.effectiveTime && !isStatic">
 
-                                    <textarea type="text" ng-model="relationship.type.fsn" ng-disabled="relationship.effectiveTime || isStatic" class="resizable-text form-control msd-elastic: \n;" typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch" typeahead-focus-first="false" typeahead-loading="typeTypeaheadLoading" typeahead-wait-ms="700" typeahead-on-select="setRelationshipTypeConceptFromMrcm(relationship, $item)" typeahead-editable="false" typeahead-min-length="0">
+                                    <textarea type="text" ng-model="relationship.type.fsn" ng-disabled="relationship.effectiveTime || isStatic"
+                                              class="resizable-text form-control msd-elastic: \n;"
+                                              typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
+                                              typeahead-focus-first="false"
+                                              typeahead-loading="typeTypeaheadLoading"
+                                              typeahead-wait-ms="700"
+                                              typeahead-on-select="setRelationshipTypeConceptFromMrcm(relationship, $item)"
+                                              typeahead-editable="false"
+                                              typeahead-min-length="0">
 
                                     </textarea>
-                                    <div class="pull-left md drag-button-width small-size-tooltip tooltips-bottom" ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]" ui-draggable="true" drag="getConceptIdNamePairFromAttributeType(relationship)" drag-channel="conceptPropertiesObj" drag-image="getDragImageForConcept(relationship.type.fsn)"><span>Drag this component</span>
+                                    <div class="pull-left md drag-button-width small-size-tooltip tooltips-bottom"
+                                         ng-class="[{'md-open-with' : !typeTypeaheadLoading}, {'md-cached' : typeTypeaheadLoading}]"
+                                         ui-draggable="true"
+                                         drag="getConceptIdNamePairFromAttributeType(relationship)"
+                                         drag-channel="conceptPropertiesObj"
+                                         drag-image="getDragImageForConcept(relationship.type.fsn)">
+                                      <span>Drag this component</span>
                                     </div>
 
                                 </div>
@@ -261,10 +334,17 @@
                                     <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom " ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]" ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)" drag-channel="conceptPropertiesObj" drag-image="getDragImageForConcept(relationship.target.fsn)"><span>Drag This Component</span>
                                     </div>
                                 </div>
-                                <span ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'" class="pull-left p-t-5 p-l-3 white-text"><span
-                class="badge alert-warning ng-binding">≡&nbsp; </span></span>
-                                <span ng-if="relationship.target.definitionStatus == 'PRIMITIVE'" class="pull-left  p-t-5 p-l-3 white-text"><span
-                class="badge alert-warning ng-binding">&nbsp; </span></span>
+
+                                <div ng-if="relationship.target.definitionStatus == 'FULLY_DEFINED'"
+                                      class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+                                  <div class="badge alert-warning ng-binding pull-left">≡&nbsp; </div>
+                                  <span>Fully Defined</span>
+                                </div>
+                                <div ng-if="relationship.target.definitionStatus == 'PRIMITIVE'"
+                                      class="pull-left p-t-5 p-l-3 white-text tooltips-bottom small-size-tooltip">
+                                  <div class="badge alert-warning ng-binding pull-left">&nbsp; </div>
+                                  <span>Primitive</span>
+                                </div>
 
 
                                 <div ng-if="!isStatic">
