@@ -1418,7 +1418,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // console.debug('selectInactivationReason', componentType,
           // reasons, associationTargets, conceptId, branch);
-
+          var popups = document.querySelectorAll('.popover');
+            if(popups) {
+                for(var i=0; i<popups.length; i++) {
+                    var popup = popups[i];
+                    var popupElement = angular.element(popup);
+                    popupElement.scope().$parent.isOpen=false;
+                    popupElement.remove();
+                }
+            }
           var deferred = $q.defer();
 
           var modalInstance = $modal.open({
