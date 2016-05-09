@@ -1088,6 +1088,50 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           }
         };
+        scope.editDescriptionInactivationReason = function (item) {
+            selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
+
+              notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
+
+              // if a reason supplied
+              if (results.reason.id) {
+
+                // persist the inactivation reason
+                snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
+                  item.active = false;
+                  scope.saveConcept();
+                }, function (error) {
+                  notificationService.sendError('Error inactivating description');
+                });
+
+              }
+            });
+        };
+          
+        scope.editConceptInactivationReason = function (item) {
+            selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+
+                notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
+
+                snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+
+                  // if reason is selected, deactivate all descriptions and
+                  // relationships
+                  if (results.reason) {
+
+                    // save concept but bypass validation checks
+                    saveHelper().then(function () {
+                      notificationService.sendMessage('Concept inactivated');
+                    }, function (error) {
+                      notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                    });
+                  }
+                }, function () {
+                  notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+                });
+
+              });
+        };
 
 /// define case significances
         scope.getCaseSignificanceDisplayText = function (description) {

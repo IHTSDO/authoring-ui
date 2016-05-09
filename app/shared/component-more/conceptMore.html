@@ -29,7 +29,10 @@
 
   <div ng-if="!concept.active" class="pop-edit concept-more description-popover row">
     <div class="col-md-12 no-padding pull-left">
-      <label class="control-label">Inactivation Reason</label>
+      <label class="control-label">Inactivation Reason
+        <button type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editConceptInactivationReason(concept)" aria-disabled="false"><i class="md fa-sca fa-pencil"></i><span>Edit</span>
+        </button>
+      </label>
       <span class="fields row" ng-if="concept.inactivationIndicator">{{formatComponentMoreText(concept.inactivationIndicator)}}</span>
       <span class="fields row" ng-if="!concept.inactivationIndicator || concept.inactivationIndicator.length === 0">No reason specified</span>
     </div>
