@@ -54,7 +54,6 @@
       </li>
     </ul>
 
-
     <div ng-show="notification" class="pull-left header-alerts col-md-3 pull-left">
 
       <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
@@ -64,7 +63,7 @@
              style="padding-right: 8px;">
 
           <!-- NOTE: currently ::before 'x' icon is included on this button -->
-          <button type="button" class="pull-right fa-sca fa-close"
+          <button type="button" class=" fa-sca fa-close"
                   ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]"
                   ng-click="clearNotification()"></button>
 
@@ -76,7 +75,7 @@
             </button>
           </a>
 
-          <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}}</strong>
+          <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}} </strong>
           </p>
         </div>
       </div>

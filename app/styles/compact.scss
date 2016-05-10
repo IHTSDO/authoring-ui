@@ -29,7 +29,7 @@
       padding-left: 35px!important;
   }
   /*Dashboard */
-
+  
   .sca-compact .logo .img-responsive {
       height: 35px;
       width: 35px
@@ -76,7 +76,7 @@
       margin: 5px 0 0;
   }
   /* alerts*/
-
+  
   .sca-compact .saved {
       padding: 5px 30px 5px 5px;
       margin: 5px;
@@ -107,7 +107,7 @@
       padding: 5px 10px;
   }
   /*edit view */
-
+  
   .sca-compact .editing-form button,
   .sca-compact .editing-form .btn {
       line-height: 1;
@@ -154,7 +154,7 @@
       line-height: 12px;
   }
   /* widget toolbar */
-
+  
   .sca-compact .button-nav {
       width: 35px;
       top: 48px;
@@ -170,7 +170,7 @@
       height: 35px;
   }
   /* task details */
-
+  
   .sca-compact .task-details .iconbase,
   .sca-compact .inactivation-button-modal .iconbase {
       width: 30px;
@@ -187,6 +187,7 @@
       font-size: 12px;
   }
   /*padding*/
+  
   .sca-compact .p-20 {
       padding-top: 10px;
       padding-left: 10px;
@@ -198,9 +199,7 @@
       font-size: 12px;
       line-height: 20px;
   }
-  .sca-compact .alert > p{
-  }
-  .sca-compact .timeline-title,
+  .sca-compact .alert > p {} .sca-compact .timeline-title,
   .sca-compact .timeline-title p,
   .sca-compact .timeline-title i,
   .sca-compact .timeline-title em,
@@ -209,8 +208,8 @@
   .sca-compact .alert > ul .sca-compact .table-title {
       font-size: 11px;
   }
-  .sca-compact .alert button{
-	  padding-top:0px!important;
+  .sca-compact .alert button {
+      padding-top: 0px!important;
   }
   .sca-compact .table-search {
       padding: 5px 20px;
@@ -227,18 +226,22 @@
   .sca-compact .badge {
       font-size: 10px!important;
   }
-
   .sca-compact .header-nav-button {
-    width: 20px!important;
-    height: 20px!important;
-    line-height: 20px!important;
-    font-size: 16px!important;
+      width: 20px!important;
+      height: 20px!important;
+      line-height: 20px!important;
+      font-size: 16px!important;
   }
-
   .sca-compact .header-alerts div .alert {
-    min-height: 40px;
+      min-height: 40px;
   }
-
+  .sca-compact .alert .fa-sca.fa-close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin-top: 7px;
+      margin-right: -7px
+  }
   .sca-compact section.tables-data > div.card div.table-responsive > table.table-full > tbody > tr > td {
-    height: 35px;
+      height: 35px;
   }
