@@ -68,14 +68,13 @@
                   ng-click="clearNotification()"></button>
 
           <!-- if a link is provided, show it -->
-          <a ng-if="notification.url" ng-click="gotoNotificationLink()" class="pull-right">
-            <button type="button"
-                    ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]">
-              <span class="md md-link"></span>
-            </button>
-          </a>
+        
 
-          <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}} </strong>
+          <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}} </strong>  <a ng-if="notification.url" ng-click="gotoNotificationLink()">
+            <span ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]">
+              <span class="md md-link"></span>
+            </span>
+          </a>
           </p>
         </div>
       </div>
