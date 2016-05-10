@@ -7022,8 +7022,8 @@ input[type=email]:focus,
 input[type=number]:focus,
 input[type=password]:focus,
 input[type=text]:focus {
-  -webkit-box-shadow: inset 0 -2px 0 #009cd7;
-  box-shadow: inset 0 -2px 0 #009cd7;
+  -webkit-box-shadow: inset 0 -1px 0 #009cd7;
+  box-shadow: inset 0 -1px 0 #009cd7;
 }
 select.form-control:focus,
 select:focus {

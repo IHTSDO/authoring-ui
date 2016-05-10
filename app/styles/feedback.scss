@@ -11,6 +11,105 @@
     border-radius: 2px;
     transition: 240ms;
 }
+/*feedback window filter */
+.feedback-window .concept-filter {
+    padding-bottom: 5px!important;
+    margin-left: -5px;
+}
+.feedback-window .concept-filter input {
+min-height: 23px !important;
+}
+.concept-filter input{font-weight:normal!important;font-kerning:
+auto
+;
+font-size:
+12px
+;
+font-stretch:
+normal
+;
+font-style:
+normal
+;
+font-variant:
+normal
+;
+font-variant-ligatures:
+normal
+;
+font-weight:
+normal
+;}
+.concept-filter input[placeholder]{color:#666!important;    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #666;    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #666;    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #666;    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+   opacity:  1;
+}
+/*feedback window spacing */
+.feedback-window.col-md-6 {    width: 49.5%;
+ 
+    margin-left: .5%;
+}
+/* Send feedback button */
+.send-feedback-icon{padding:3px;    padding: 0px 4px;}
+/*follow up checkboxes */
+.follow-up {
+    font-size: 12px;
+	padding-top:3px;
+	font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+.follow-up-right .btn {
+    padding: 3px 8px;
+    font-size: 12px;
+	font-weight:normal;
+	    font-style: normal;
+}
+.follow-up-right .btn:hover, .follow-up-right .btn:focus {
+   background-color:transparent!important;
+   color:#009cd7!important;
+}
+.follow-up  input[type=checkbox] {
+   position:absolute;
+}
+.follow-up input[type=checkbox]:after {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    margin-right: 5px;
+	margin-left:5px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    -webkit-transition: 240ms;
+    -o-transition: 240ms;
+    transition: 240ms;
+	color:#fff!important
+}
+.follow-up input[type=checkbox]:checked:before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 10px;
+    display: table;
+    width: 6px;
+    height: 12px;
+    border: 2px solid #fff;
+	
+    border-top-width: 0;
+    border-left-width: 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
 .numbers.badge {padding: 3px 5px!important;}
 .feedback-lists  .btn-round {
     width: 17px;
@@ -39,7 +138,6 @@ label input[type=checkbox] {
 }
 .review-term{padding: 5px 5px;
     display: block;}
-.follow-up input{min-height:18px!important}
 ul.sidebar-tabs{background-color: #d1d1d1;}
 .add-shadow {
      box-shadow: 
@@ -133,19 +231,8 @@ section thead input {
 .ta-scroll-window.form-control {
     min-height: 250px;
 }
-.follow-up input[type=checkbox]:after {
-    width: 16px!important;
-    height: 16px!important;
-    margin: 0px!important;
-    font-size: 14px!important;
-}
-.follow-up {
-    font-size: 11px;
-}
-.follow-up-right .btn {
-    padding: 3px 8px;
-    font-size: 12px;
-}
+
+
 .btn-default.green.darken-4:hover{background-color: #2E7D32;}
 
 
