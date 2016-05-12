@@ -55,8 +55,8 @@ angular.module('singleConceptAuthoringApp')
             }
           }
         }
-        response = response.filter(function (el) {
-          return el.concept.active === true;
+        response.filter(function (el) {
+          return el.concept.active === true
         });
         return response;
       });
