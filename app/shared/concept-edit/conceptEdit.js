@@ -1094,7 +1094,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
               // if a reason supplied
-              if (results.reason.id) {
+              //if (results.reason.id) {
 
                 // persist the inactivation reason
                 snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
@@ -1104,7 +1104,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   notificationService.sendError('Error inactivating description');
                 });
 
-              }
+              //}
             });
         };
           
