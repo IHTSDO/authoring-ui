@@ -797,9 +797,10 @@ angular.module('singleConceptAuthoringApp')
                 getReviewStatusAndInitialize(mergeReviewId);
               });
             } else {
-              scaService.getUiStateForUser($routeParams.projectKey + '-merge-review').then(function (mergeReviewId) {
-                getReviewStatusAndInitialize(mergeReviewId);
-              });
+                scope.comparingText = 'Project rebase disabled to protect MAIN during release.';
+//              scaService.getUiStateForUser($routeParams.projectKey + '-merge-review').then(function (mergeReviewId) {
+//                getReviewStatusAndInitialize(mergeReviewId);
+//              });
             }
           };
 
