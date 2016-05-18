@@ -19,7 +19,7 @@
         <div class="btn-group pull-right p-t-10 p-r-10">
          <button class="btn btn-border tooltips-bottom xxlarge-size-tooltip "
                   ng-click="mergeAndRebase()"
-                  ng-disabled="true">
+                  ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'">
             <div
               class="project-icon yellow darken-2 pull-left">
               <div class="md md-autorenew"></div>
@@ -47,7 +47,7 @@
           </button>
           <button class="btn btn-border tooltips-bottom medium-size-tooltip "
                   ng-click="promote()"
-                  ng-disabled="true">
+                  ng-disabled="project.branchState !== 'FORWARD'">
             <div
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>
@@ -72,7 +72,7 @@
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <a ng-href="">
+            <a ng-href="#/projects/project/{{project.key}}/conflicts">
             <button
               ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'"
               ng-init="conflictsCollapsed = true"
