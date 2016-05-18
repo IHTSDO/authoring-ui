@@ -302,15 +302,20 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/scripts/scripts.js': [
-    //         '<%= yeoman.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
+     uglify: {
+      options:
+       {
+          sourceMap: true,
+          sourceMapName: '<%= yeoman.dist %>/scripts/source.map',
+       },
+       dist: {
+         files: {
+           '<%= yeoman.dist %>/scripts/scripts.js': [
+             '<%= yeoman.dist %>/scripts/scripts.js'
+           ]
+         }
+       }
+     },
     // concat: {
     //   dist: {}
     // },
@@ -449,7 +454,6 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve:' + target]);
   });
 
@@ -474,6 +478,7 @@ module.exports = function (grunt) {
     'cssmin',
     'filerev',
     'usemin',
+    'uglify',
     'htmlmin'
   ]);
 
