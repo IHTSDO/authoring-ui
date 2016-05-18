@@ -302,23 +302,11 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-     uglify: {
-      options:
-       {
-          sourceMap: true,
-          sourceMapName: '<%= yeoman.dist %>/scripts/source.map',
-       },
-       dist: {
-         files: {
-           '<%= yeoman.dist %>/scripts/scripts.js': [
-             '<%= yeoman.dist %>/scripts/scripts.js'
-           ]
-         }
+     concat: {
+       options: {
+           sourceMap : true
        }
      },
-    // concat: {
-    //   dist: {}
-    // },
 
     imagemin: {
       dist: {
@@ -478,7 +466,6 @@ module.exports = function (grunt) {
     'cssmin',
     'filerev',
     'usemin',
-    'uglify',
     'htmlmin'
   ]);
 
