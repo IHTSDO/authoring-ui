@@ -402,13 +402,18 @@ module.exports = function (grunt) {
     },
       
     cacheBust: {
-    taskName: {
+      taskName: {
         options: {
-            assets: ['dist/**/**'],
+            baseDir: 'dist/',
+            assets: ['**/**'],
             queryString: true
         },
-        src: ['dist/**/*.html']
-        }
+        files: [{
+                expand: true,
+                cwd: 'dist/',
+                src: ['**/*.html']
+        }]
+      }
     },
 
     // Run some tasks in parallel to speed up the build process
