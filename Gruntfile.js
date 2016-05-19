@@ -400,6 +400,16 @@ module.exports = function (grunt) {
         src: '{,*/}*.css'
       }
     },
+      
+    cacheBust: {
+    taskName: {
+        options: {
+            assets: ['dist/**/**'],
+            queryString: true
+        },
+        src: ['dist/**/*.html']
+        }
+    },
 
     // Run some tasks in parallel to speed up the build process
     concurrent: {
@@ -466,7 +476,8 @@ module.exports = function (grunt) {
     'cssmin',
     'filerev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'cacheBust'
   ]);
 
   grunt.registerTask('default', [
