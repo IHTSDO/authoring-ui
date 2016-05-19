@@ -92,6 +92,15 @@
 
   ga('create', 'UA-41892858-21');
   ga('send', 'pageview');
+  window.addEventListener('error', function(e) {
+    _gaq.push([
+        '_trackEvent',
+        'JavaScript Error',
+        e.message,
+        e.filename + ':  ' + e.lineno,
+        true
+    ]);
+});
 </script>
 
 <!-- build:js(.) scripts/vendor.js -->
