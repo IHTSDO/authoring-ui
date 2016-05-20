@@ -143,9 +143,9 @@ angular.module('singleConceptAuthoringApp')
                     if (scope.acceptedConceptIds.indexOf(conflict.conceptI)) {
                       scope.acceptedConceptIds.push(conflict.conceptId);
                       if ($routeParams.taskKey) {
-                        scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted', scope.acceptedConceptIds);
+                        scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted-' + scope.id, scope.acceptedConceptIds);
                       } else {
-                        scaService.saveUiStateForUser($routeParams.projectKey + '-merges-accepted', scope.acceptedConceptIds);
+                        scaService.saveUiStateForUser($routeParams.projectKey + '-merges-accepted-' + scope.id, scope.acceptedConceptIds);
                       }
                     }
                   }
@@ -486,7 +486,7 @@ angular.module('singleConceptAuthoringApp')
             // get previously accepted merges, if they exist, and apply to
             // conflicts
             if ($routeParams.taskKey) {
-              scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted').then(function (mergesAccepted) {
+              scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'merges-accepted-' + scope.id).then(function (mergesAccepted) {
                 if (!mergesAccepted) {
                   mergesAccepted = [];
                 }
@@ -505,7 +505,7 @@ angular.module('singleConceptAuthoringApp')
             // if project, just load tables
             else {
 
-              scaService.getUiStateForUser($routeParams.projectKey + '-merges-accepted').then(function (mergesAccepted) {
+              scaService.getUiStateForUser($routeParams.projectKey + '-merges-accepted-' + scope.id).then(function (mergesAccepted) {
                 if (!mergesAccepted) {
                   mergesAccepted = [];
                 }
