@@ -9,6 +9,8 @@
  * Main module of the application.
  */
 angular
+
+  
   .module('singleConceptAuthoringApp', [
     /*    'ngAnimate',*/
     'ngAria',
@@ -66,6 +68,8 @@ angular
     $provide.factory('$routeProvider', function () {
       return $routeProvider;
     });
+    $provide.decorator('$exceptionHandler',
+        ['$delegate', '$window', extendExceptionHandler]);
     //intercept requests to add hardcoded authorization header to work around the spring security popup
     $httpProvider.interceptors.push('httpRequestInterceptor');
 
@@ -105,8 +109,24 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location) {
+  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window) {
 
+    $window.ga('create', 'UA-41892858-21', 'auto');
+    // track pageview on state change
+    $rootScope.$on('$locationChangeSuccess', function (event) {
+        $window.ga('send', 'pageview', $location.path());
+    });
+    $window.onerror = function handleGlobalError( message, fileName, lineNumber, columnNumber, error ) {
+        console.log('error');
+        if ( ! error ) {
+            error = new Error( message );
+            error.fileName = fileName;
+            error.lineNumber = lineNumber;
+            error.columnNumber = ( columnNumber || 0 );
+        }
+        $window.ga('send', 'error', error)
+    };
+    
     // intialize required SNOMEDCT metadata
     metadataService.initialize('MAIN');
 
@@ -233,3 +253,11 @@ angular
 
 
   }]);
+
+// Extend the $exceptionHandler service to also display a toast.
+function extendExceptionHandler($delegate, $window) {
+    return function (exception, cause) {
+        $delegate(exception, cause);
+        $window.ga('send', 'error', exception + ', ' + cause)
+    };
+};
