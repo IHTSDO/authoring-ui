@@ -559,6 +559,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (scope.isStatic) {
             return;
           }
+          if (scope.isMerge) {
+            notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you need to make a modification to either activation status please accept the merge and then make these changes within a task.');
+            return;
+          }
           // if active, ensure concept is fully saved prior to inactivation
           // don't want to persist the inactivation reason without a forced
           // save
@@ -1019,7 +1023,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.toggleDescriptionActive = function (description) {
           // console.debug('toggling description active', description);
-
+          
+          if (scope.isMerge) {
+            notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you need to make a modification to either activation status please accept the merge and then make these changes within a task.');
+            return;
+          }
           // if inactive, simply set active
           if (!description.active) {
             description.active = true;
