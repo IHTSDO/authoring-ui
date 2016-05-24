@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
 
         // set default limit if not specified (unlimited)
         if (!scope.limit) {
-          scope.limit = 1;
+          scope.limit = -1;
         }
 
         // The root concepts for display
@@ -56,7 +56,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
               node.children = children;
-              node.isCollapsed = true;
+              node.isCollapsed = false;
 
             },
 
