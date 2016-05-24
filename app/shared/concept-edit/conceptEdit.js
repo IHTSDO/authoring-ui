@@ -560,7 +560,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
           if (scope.isMerge) {
-            notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you need to want to modify an activation status please accept the merge and then make these changes within the task.');
+            notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you want to modify an activation status please accept the merge and then make these changes within the task.');
             return;
           }
           // if active, ensure concept is fully saved prior to inactivation
@@ -1025,7 +1025,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // console.debug('toggling description active', description);
           
           if (scope.isMerge) {
-            notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you need to want to modify an activation status please accept the merge and then make these changes within the task.');
+            notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you want to modify an activation status please accept the merge and then make these changes within the task.');
             return;
           }
           // if inactive, simply set active
