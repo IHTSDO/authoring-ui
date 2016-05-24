@@ -258,6 +258,7 @@ angular
 function extendExceptionHandler($delegate, $window) {
     return function (exception, cause) {
         $delegate(exception, cause);
-        $window.ga('send', 'error', exception + ', ' + cause)
+        console.log(exception.toString());
+        $window.ga('send', '_trackEvent', 'JavaScript Error', exception.toString(), true)
     };
 };
