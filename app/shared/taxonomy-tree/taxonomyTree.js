@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService) {
+  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService, $filter) {
     return {
       restrict: 'A',
       transclude: false,
@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
 
         // set default limit if not specified (unlimited)
         if (!scope.limit) {
-          scope.limit = 1;
+          scope.limit = -1;
         }
 
         // The root concepts for display
@@ -64,6 +64,42 @@ angular.module('singleConceptAuthoringApp')
               console.error('Could not retrieve children for node', node);
             }
           );
+        };
+        
+        scope.getAndSetParents = function (node) {
+          var deferred = $q.defer();
+          var conceptId = node.conceptId;
+
+          snowowlService.getConceptParents(node.conceptId, scope.branch).then(function (parents) {
+              scope.array = [];
+              if (!parents) {
+                console.error('Could not retrieve children for node', node);
+                deferred.resolve([]);
+              }
+
+              angular.forEach(parents, function (parent) {
+                parent.isCollapsed = true;
+                scope.array.push(parent);
+              });
+              
+              
+              node.collapsed = false;
+              var newArray = $filter('orderBy')(scope.array, 'fsn', false);
+              newArray[newArray.length -1].children = [];
+              newArray[newArray.length -1].children.push(node);
+              newArray[newArray.length -1].collapsed = false;
+              console.log(newArray);
+              
+              deferred.resolve(newArray);
+            },
+
+            function () {
+              console.error('Could not retrieve parents for node', node);
+              deferred.resolve([]);
+            }
+            
+          );
+            return deferred.promise;
         };
 
         var paths = {};
@@ -183,7 +219,8 @@ angular.module('singleConceptAuthoringApp')
               for (var i = 0; i < nEligibleParents && i < parents.length; i++) {
                 //console.debug(i, parents[i]);
                 addPathSegment(parents[i].conceptId, node.conceptId);
-                scope.constructRootTreesHelper(parents[i], parents[i].conceptId + '~' + path);
+                nodes[parents[i].conceptId] = parents[i];
+                //scope.constructRootTreesHelper(parents[i], parents[i].conceptId + '~' + path);
               }
 
             }
@@ -240,18 +277,27 @@ angular.module('singleConceptAuthoringApp')
           // if a concept is supplied
           if (scope.concept) {
 
-            // if concept supplied has leaf inferred property, start constructing trees
-            if (scope.concept.hasOwnProperty('isLeafInferred')) {
-              scope.constructRootTrees(scope.concept);
-            }
+            var parent = scope.concept;
 
-            // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
-            else {
-              snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
-                scope.concept = response;
-                scope.constructRootTrees(scope.concept);
-              });
-            }
+            // get the children
+            scope.getAndSetChildren(parent);
+            scope.getAndSetParents(parent).then(function(array){
+                scope.terminologyTree = array;
+            });
+            // add as root tree
+            
+//            // if concept supplied has leaf inferred property, start constructing trees
+//            if (scope.concept.hasOwnProperty('isLeafInferred')) {
+//              scope.constructRootTrees(scope.concept);
+//            }
+//
+//            // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
+//            else {
+//              snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
+//                scope.concept = response;
+//                scope.constructRootTrees(scope.concept);
+//              });
+//            }
 
           }
 
