@@ -11,7 +11,7 @@
 
       <!-- collapsible control -->
       <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed, node.focusParent)"
-            ng-click="toggleNode(node, this)"></span>
+            ng-click="toggleNode(node, this, node.focusParent)"></span>
 
       <!-- primitive alert -->
 	  
@@ -34,7 +34,7 @@
     <div>
       <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled  ng-class="{hidden: collapsed}">
         <li ng-repeat="node in node.children | orderBy: 'fsn'"
-            ui-tree-node collapsed="{{node.isCollapsed}}" data-nodrag ng-include="'nodes_renderer.html'">
+            ui-tree-node collapsed="{{node.conceptId === concept.conceptId ? false : node.isCollapsed}}" data-nodrag ng-include="'nodes_renderer.html'">
         </li>
       </ol>
     </div>

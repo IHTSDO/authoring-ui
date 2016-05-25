@@ -253,7 +253,10 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // toggle state of the node
-          nodeScope.toggle();
+          if(!node.focusParent && node.focusParent !== true)
+          {
+            nodeScope.toggle();
+          }
 
           // if node open, has children, but no children loaded
           if (!nodeScope.collapsed && node.focusParent && node.focusParent === true && !node.isLeafInferred && (!node.parent)) {
@@ -351,12 +354,12 @@ angular.module('singleConceptAuthoringApp')
           console.debug('taxonomyTree concept changed from/to', viewedConceptId, scope.concept ? scope.concept.conceptId : 'null');
 
           // only re-initialize if the requested concept is different than the currently viewed concept
-          if (scope.concept && scope.concept.conceptId !== viewedConceptId) {
-            viewedConceptId = scope.concept.conceptId;
+//          if (scope.concept && scope.concept.conceptId !== viewedConceptId) {
+//            viewedConceptId = scope.concept.conceptId;
+//            initialize();
+//          } else if (!scope.concept) {
             initialize();
-          } else if (!scope.concept) {
-            initialize();
-          }
+//          }
 
         }, true);
         
