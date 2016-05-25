@@ -67,7 +67,7 @@ angular.module('singleConceptAuthoringApp')
           );
         };
         
-        scope.getAndSetParents = function (node) {
+        scope.getAndSetParents = function (node, preserve) {
           var deferred = $q.defer();
           var conceptId = node.conceptId;
 
@@ -80,9 +80,18 @@ angular.module('singleConceptAuthoringApp')
 
               angular.forEach(parents, function (parent) {
                 parent.isCollapsed = true;
+                parent.focusParent = true;
                 scope.array.push(parent);
               });
               
+              if(preserve === true){
+                  angular.forEach(scope.terminologyTree, function (item) {
+                    if(item.children && item.children.length > 0)
+                    {
+                        node.children = item.children;
+                    }
+                  });
+              }
               
               node.collapsed = false;
               var newArray = $filter('orderBy')(scope.array, 'fsn', false);
@@ -247,13 +256,20 @@ angular.module('singleConceptAuthoringApp')
           nodeScope.toggle();
 
           // if node open, has children, but no children loaded
-          if (!nodeScope.collapsed && !node.isLeafInferred && (!node.children || node.children.length === 0)) {
+          if (!nodeScope.collapsed && node.focusParent && node.focusParent === true && !node.isLeafInferred && (!node.parent)) {
+            node.focusParent = false;
+              node.collapsed = false;
+            scope.getAndSetParents(node, true).then(function(array){
+                scope.terminologyTree = array;
+            });
+          }
+          else if (!nodeScope.collapsed && !node.isLeafInferred && (!node.children || node.children.length === 0)) {
             scope.getAndSetChildren(node);
           }
 
         };
 
-        scope.getTreeNodeIcon = function (node, collapsed) {
+        scope.getTreeNodeIcon = function (node, collapsed, focusParent) {
 
           if (!node) {
             return;
@@ -262,7 +278,11 @@ angular.module('singleConceptAuthoringApp')
             return 'glyphicon glyphicon-minus';
           } else if (collapsed) {
             return 'glyphicon glyphicon-chevron-right';
-          } else {
+          } 
+          else if (focusParent === true) {
+            node.isCollapsed = false;
+            return 'glyphicon glyphicon-chevron-up';
+          }else {
             return 'glyphicon glyphicon-chevron-down';
           }
         };
@@ -297,7 +317,7 @@ angular.module('singleConceptAuthoringApp')
             else{
                 // get the parents
                 scope.getAndSetChildren(parent);
-                scope.getAndSetParents(parent).then(function(array){
+                scope.getAndSetParents(parent, false).then(function(array){
                 scope.terminologyTree = array;
             });
             }
