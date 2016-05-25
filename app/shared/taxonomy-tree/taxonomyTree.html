@@ -10,7 +10,7 @@
     <div class="m-t-7">
 
       <!-- collapsible control -->
-      <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed)"
+      <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed, node.focusParent)"
             ng-click="toggleNode(node, this)"></span>
 
       <!-- primitive alert -->
