@@ -319,8 +319,8 @@ angular.module('singleConceptAuthoringApp')
             }
             else{
                 // get the parents
-                scope.getAndSetChildren(parent);
-                scope.getAndSetParents(parent, false).then(function(array){
+                scope.getAndSetChildren(scope.concept);
+                scope.getAndSetParents(scope.concept, false).then(function(array){
                 scope.terminologyTree = array;
             });
             }
@@ -354,12 +354,12 @@ angular.module('singleConceptAuthoringApp')
           console.debug('taxonomyTree concept changed from/to', viewedConceptId, scope.concept ? scope.concept.conceptId : 'null');
 
           // only re-initialize if the requested concept is different than the currently viewed concept
-//          if (scope.concept && scope.concept.conceptId !== viewedConceptId) {
-//            viewedConceptId = scope.concept.conceptId;
-//            initialize();
-//          } else if (!scope.concept) {
+          if (scope.concept && scope.concept.conceptId !== viewedConceptId) {
+            viewedConceptId = scope.concept.conceptId;
             initialize();
-//          }
+          } else if (!scope.concept) {
+            initialize();
+          }
 
         }, true);
         
