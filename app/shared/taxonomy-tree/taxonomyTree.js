@@ -354,14 +354,14 @@ angular.module('singleConceptAuthoringApp')
           console.debug('taxonomyTree concept changed from/to', viewedConceptId, scope.concept ? scope.concept.conceptId : 'null');
 
           // only re-initialize if the requested concept is different than the currently viewed concept
-          if (scope.concept && scope.concept.conceptId !== viewedConceptId) {
-            viewedConceptId = scope.concept.conceptId;
+//          if (scope.concept && scope.concept.conceptId !== viewedConceptId) {
+//            viewedConceptId = scope.concept.conceptId;
+//            initialize();
+//          } else if (!scope.concept) {
             initialize();
-          } else if (!scope.concept) {
-            initialize();
-          }
+//          }
 
-        }, true);
+        }, false);
         
         scope.$on('reloadTaxonomy', function(event, data) {
             initialize();
