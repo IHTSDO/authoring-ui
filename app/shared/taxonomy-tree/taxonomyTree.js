@@ -9,7 +9,8 @@ angular.module('singleConceptAuthoringApp')
       scope: {
         concept: '=?',
         branch: '=',
-        limit: '@?'
+        limit: '@?',
+        view: '='
       },
       templateUrl: 'shared/taxonomy-tree/taxonomyTree.html',
 
@@ -278,26 +279,28 @@ angular.module('singleConceptAuthoringApp')
           if (scope.concept) {
 
             var parent = scope.concept;
+            // add as root tree
+            if(scope.view){
+                // if concept supplied has leaf inferred property, start constructing trees
+                if (scope.concept.hasOwnProperty('isLeafInferred')) {
+                  scope.constructRootTrees(scope.concept);
+                }
 
-            // get the children
-            scope.getAndSetChildren(parent);
-            scope.getAndSetParents(parent).then(function(array){
+                // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
+                else {
+                  snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
+                    scope.concept = response;
+                    scope.constructRootTrees(scope.concept);
+                  });
+                }
+            }
+            else{
+                // get the parents
+                scope.getAndSetChildren(parent);
+                scope.getAndSetParents(parent).then(function(array){
                 scope.terminologyTree = array;
             });
-            // add as root tree
-            
-//            // if concept supplied has leaf inferred property, start constructing trees
-//            if (scope.concept.hasOwnProperty('isLeafInferred')) {
-//              scope.constructRootTrees(scope.concept);
-//            }
-//
-//            // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
-//            else {
-//              snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
-//                scope.concept = response;
-//                scope.constructRootTrees(scope.concept);
-//              });
-//            }
+            }
 
           }
 
