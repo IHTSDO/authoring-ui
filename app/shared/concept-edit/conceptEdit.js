@@ -1785,8 +1785,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var errors = [];
           var relsChecked = 0;
+            console.log('mrcm validation');
           angular.forEach(relGroup, function (rel) {
-            scope.validateMrcmRulesForTypeAndValue(rel.type.id, rel.target.fsn).then(function (response) {
+            scope.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.target.fsn).then(function (response) {
               errors = errors.concat(response);
               if (++relsChecked === relGroup.length) {
                 deferred.resolve(errors);
@@ -1806,12 +1807,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param value
          */
         scope.validateMrcmRulesForTypeAndValue = function (type, value) {
-
           var deferred = $q.defer();
 
           var errors = [];
           // check type (if not blank)
           if (type) {
+              
             if (scope.getConceptsForAttributeTypeahead(type).length === 0) {
               errors.push('Attribute type ' + type + ' is disallowed.');
               deferred.resolve(errors);
