@@ -1669,8 +1669,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Scope is static, cannot drop');
             return;
           }
-            
-          scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.target.fsn).then(function (response){
+            console.log(source);
+          scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn).then(function (response){
               if (response.length === 0) {
                   // copy relationship object and replace target relationship
                   var copy = angular.copy(source);
@@ -1702,7 +1702,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               
             } else {
               scope.warnings = response;
-              scope.warnings.splice(0, 0, 'Could not relationship:');
+              scope.warnings.splice(0, 0, 'Could not drop relationship:');
             }
           });
 
@@ -1797,7 +1797,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var relsChecked = 0;
             console.log('mrcm validation');
           angular.forEach(relGroup, function (rel) {
-            scope.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.target.fsn).then(function (response) {
+            scope.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.type.fsn, rel.target.fsn).then(function (response) {
               errors = errors.concat(response);
               if (++relsChecked === relGroup.length) {
                 deferred.resolve(errors);
@@ -1816,7 +1816,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param type
          * @param value
          */
-        scope.validateMrcmRulesForTypeAndValue = function (type, value) {
+        scope.validateMrcmRulesForTypeAndValue = function (type, typeName, value) {
           var deferred = $q.defer();
 
           var errors = [];
@@ -1824,7 +1824,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (type) {
               
             if (scope.getConceptsForAttributeTypeahead(type).length === 0) {
-              errors.push('Attribute type ' + type + ' is disallowed.');
+              errors.push('Attribute type ' + typeName + ' is disallowed.');
               deferred.resolve(errors);
             } else {
               // check target (if not blank)
