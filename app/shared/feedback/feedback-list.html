@@ -1,7 +1,8 @@
 <!-- for ng-table checkboxes -->
 <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
   resulting in elements being placed outside of the table (i.e. position: fixed)
-  -->
+  --><div class="col-md-12 scroll-if-height  no-padding">
+  
 <script type="text/ng-template" id="checkboxheader.html">
     <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
   </script>
@@ -21,9 +22,7 @@
               <div class="m-10">Loading review...</div>
             </div>
 </div>
-<style>
 
- </style>
 <div class="row work-list-tabs feedback-lists p-b-20" ng-if="feedbackContainer.review">
   <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
               <div class="m-10">Loading review...</div>
@@ -67,6 +66,15 @@
                    ng-show="feedbackContainer.review.conceptsToReview.length > 0"
                    template-pagination="utilities/review-table-pager.html"
                    class="table feedback-table" drop-channel="feedbackConcept">
+                   <div class="col-md-1 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'" ng-hide="feedbackContainer.review.conceptsToReview.length === 0" >
+          <!-- Only appears if reviewer role -->
+          <div class=" p-5" >
+            <button class="btn btn-round btn-default black tooltips-bottom normal-case"
+                    ng-click="groupSelectedConcepts(actionTab)">
+            <div class="md md-layers "></div>
+            <span>Group selected concepts</span> </button>
+          </div>
+          </div>
         <div class="col-md-7 no-padding" ng-if="role === 'REVIEWER' && task.status === 'In Review'">
           <input class=" m-l-10 input-filter form-control ng-scope ng-valid ng-touched"
                                         placeholder="Filter concepts"
@@ -83,27 +91,24 @@
                                         ng-change="reloadConceptsToReview(conceptsToReviewSearchStr)"
                                         ng-model-options="{debounce: 500}" ui-on-drop="null">
         </div>
-        <div class="col-md-5 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'" ng-hide="feedbackContainer.review.conceptsToReview.length === 0" >
+        <div class="col-md-4 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'" ng-hide="feedbackContainer.review.conceptsToReview.length === 0" >
           <!-- Only appears if reviewer role -->
-          <div class="pull-right p-5" >
-            <button class="btn btn-round btn-default black tooltips-bottom normal-case"
-                    ng-click="groupSelectedConcepts(actionTab)">
-            <div class="md md-layers "></div>
-            <span>Group selected concepts</span> </button>
+           <div class="pull-right p-5" >
          <!--   <button class="btn btn-round btn-default pink lighten-2 tooltips-bottom normal-case"
                     ng-click="selectConceptsForFeedback()">
             <div class="md md-forum "></div>
             <span>Add feedback to selected concepts</span> </button>-->
+            <button class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip normal-case"
+                    ng-click="addMultipleToEdit(actionTab)">
+            <div class="md md-edit "></div>
+            <span>Show selected in edit panel</span> </button>
             <button class="btn btn-round btn-default  green base  tooltips-bottom large-size-tooltip normal-case"
                     ng-click="moveMultipleToOtherList(actionTab)">
             <div
                 class="md md-thumb-up "></div>
             <span>Mark selected as reviewed</span></button>
-            <button class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip normal-case"
-                    ng-click="addMultipleToEdit(actionTab)">
-            <div class="md md-edit "></div>
-            <span>Show selected in edit panel</span> </button>
-          </div>
+            
+            </div>
         </div>
         <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings ng-class="[
                           {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},-->
@@ -321,3 +326,4 @@
 
 </div>
 
+</div>
