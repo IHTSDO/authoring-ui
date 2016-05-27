@@ -1669,34 +1669,44 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Scope is static, cannot drop');
             return;
           }
+            
+          scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.target.fsn).then(function (response){
+              if (response.length === 0) {
+                  // copy relationship object and replace target relationship
+                  var copy = angular.copy(source);
 
-          // copy relationship object and replace target relationship
-          var copy = angular.copy(source);
+                  // clear the effective time and source information
+                  delete copy.sourceId;
+                  delete copy.effectiveTime;
+                  delete copy.relationshipId;
 
-          // clear the effective time and source information
-          delete copy.sourceId;
-          delete copy.effectiveTime;
-          delete copy.relationshipId;
+                  // set the group based on target
+                  copy.groupId = target.groupId;
 
-          // set the group based on target
-          copy.groupId = target.groupId;
+                  // get index of target relationship
+                  var targetIndex = scope.concept.relationships.indexOf(target);
 
-          // get index of target relationship
-          var targetIndex = scope.concept.relationships.indexOf(target);
+                  // if existing relationship, insert source relationship afterwards
+                  if (target.target.conceptId) {
+                    scope.concept.relationships.splice(targetIndex + 1, 0, copy);
+                  }
 
-          // if existing relationship, insert source relationship afterwards
-          if (target.target.conceptId) {
-            scope.concept.relationships.splice(targetIndex + 1, 0, copy);
-          }
+                  // otherwise replace the relationship
+                  else {
+                    scope.concept.relationships[targetIndex] = copy;
+                  }
 
-          // otherwise replace the relationship
-          else {
-            scope.concept.relationships[targetIndex] = copy;
-          }
+                  autoSave();
 
-          autoSave();
+                  scope.computeRelationshipGroups();
+              
+            } else {
+              scope.warnings = response;
+              scope.warnings.splice(0, 0, 'Could not relationship:');
+            }
+          });
 
-          scope.computeRelationshipGroups();
+          
         };
 
         scope.addRelationshipGroup = function () {
