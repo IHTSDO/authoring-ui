@@ -724,3 +724,39 @@ sca-dark .pull-left.follow-up {
 .sca-dark .loading-merges.green {background-color:rgb(50, 174, 26)!important}
 .sca-dark .loading-merges.amber {background-color:rgb(255, 202, 40)!important; color:#fff!important}
 
+.sca-dark .scroll-if-height::-webkit-scrollbar{
+    width: 7px;
+    height: 7px;
+    background-color: #2d3743
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-button{
+    width: 7px;
+    height: 7px;
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-thumb
+{
+    background: #262e39;
+    border: 0px none #ffffff;
+    border-radius: 62px;
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-thumb:hover{
+    background: #262e39;
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-thumb:active{
+    background: #262e39;
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-track{
+    background: #2d3743;
+    border: 0px none #ffffff;
+    border-radius: 50px;
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-track:hover{
+    background: #2d3743;
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-track:active{
+    background: #2d3743;
+}
+.sca-dark .scroll-if-height::-webkit-scrollbar-corner{
+    background: transparent;
+}
+.sca-dark .task-detail div{color:#fff!important}
