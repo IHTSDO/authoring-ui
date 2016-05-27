@@ -90,21 +90,25 @@
 
 
   </div>
+<style>
+.fixed-height{position:fixed!important; padding-left:0px!important
+}
 
+</style>
   <!-- Main page content -->
   <div class="row no-gutter main-view-offset">
 
     <!-- Default edit view -->
     <div ng-if="thisView === 'edit-default'">
-
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
       <!-- sidebar -->
-      <div class="editpanel sca-column no-padding"
-           ng-class="getLayoutWidths('sidebar')"
+      <div class="editpanel sca-column no-padding "
+          
            ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- models & concepts-->
       <div ng-class="getLayoutWidths('modelsAndConcepts')"
-           class="no-padding hide-scroll" sca-infinite-scroll="addMoreItems()"
+           class="no-padding hide-scroll pull-right" sca-infinite-scroll="addMoreItems()"
            sca-infinite-scroll-disabled="conceptsRendering"
            sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
@@ -150,7 +154,7 @@
 
 
       </div>
-
+</div>
     </div>
 
     <!-- Edit view with no sidebar -->
@@ -227,7 +231,7 @@
     <div ng-if="thisView === 'edit-no-model'">
 
       <!-- sidebar -->
-      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 no-padding"
+      <div class="editpanel sca-column col-lg-3 col-md-3 col-sm-3 fixed-height no-padding"
            ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <!-- concepts-->
