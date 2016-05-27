@@ -318,11 +318,22 @@ angular.module('singleConceptAuthoringApp')
                 }
             }
             else{
-                // get the parents
-                scope.getAndSetChildren(scope.concept);
-                scope.getAndSetParents(scope.concept, false).then(function(array){
-                scope.terminologyTree = array;
-            });
+                if (scope.concept.hasOwnProperty('isLeafInferred')) {
+                    scope.getAndSetChildren(scope.concept);
+                    scope.getAndSetParents(scope.concept, false).then(function(array){
+                        scope.terminologyTree = array;
+                        });
+                }
+
+                // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
+                else {
+                  snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function(response) {
+                    scope.getAndSetChildren(response);
+                    scope.getAndSetParents(response, false).then(function(array){
+                            scope.terminologyTree = array;
+                        });
+                    });
+                }
             }
 
           }
