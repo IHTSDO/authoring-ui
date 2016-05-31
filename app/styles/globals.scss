@@ -61,6 +61,10 @@ html {
 .saved.red {
     background-color: #c13244 !important;
 }
+.saved {
+    padding: 8px 20px 8px 0px!important;
+	
+}
 .sca-default .theme-secondary-text,
 a {
     color: #009cd7;
@@ -315,11 +319,11 @@ td select {
 }
 .header-alerts div .alert p {
     display: table-cell;
-    vertical-align: middle;
+    vertical-align:  middle;
     min-height: 44px;
     width: 98%;
-	margin-right:20px;
-	float:left;
+	margin-left:-10px;
+	
     text-align: left;
 }
 .alert .fa-sca.fa-close {
@@ -327,6 +331,7 @@ td select {
     top: 0;
     right: 0;
     margin-top: 12px;
+	
     margin-right: -10px
 }
 .header-alerts button,
@@ -340,7 +345,59 @@ section.tables-data > div.card div.table-responsive > table.table-full > tbody >
 
 .appbar{width:100%!important;clear:both;}
 #slim_appbar{height:auto!important;}
-.scroll-if-height::-webkit-scrollbar{
+
+h4.timeline-title td,
+h4.timeline-title table,
+h4.timeline-title tr,
+h4.timeline-title div
+{
+	background-color:transparent!important;
+	font-size:12px!important;
+	color:#444 !important;
+	}
+
+h4.timeline-title{    overflow-x: scroll;}
+h4.timeline-title::-webkit-scrollbar,
+
+{
+    width: 7px;
+    height: 7px;
+    background-color: #fff
+}
+h4.timeline-title::-webkit-scrollbar-button{
+    width: 7px;
+    height: 7px;
+}
+h4.timeline-title::-webkit-scrollbar-thumb
+{
+    background: #e1e1e1;
+    border: 0px none #ffffff;
+    border-radius: 62px;
+}
+h4.timeline-title::-webkit-scrollbar-thumb:hover{
+    background: #57a5cc;
+}
+h4.timeline-title::-webkit-scrollbar-thumb:active{
+    background: #e7e7e7;
+}
+h4.timeline-title::-webkit-scrollbar-track{
+    background: #edecee;
+    border: 0px none #ffffff;
+    border-radius: 50px;
+}
+h4.timeline-title::-webkit-scrollbar-track:hover{
+    background: #e5e6e8;
+}
+h4.timeline-title::-webkit-scrollbar-track:active{
+    background: #d8d7d9;
+}
+h4.timeline-title::-webkit-scrollbar-corner{
+    background: transparent;
+}
+
+.scroll-if-height::-webkit-scrollbar,
+
+{
     width: 7px;
     height: 7px;
     background-color: #fff
