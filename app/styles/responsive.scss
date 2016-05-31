@@ -226,3 +226,13 @@
         line-height: 20px;
     }
 }
+.scroll-if-height{ height:600px;}
+@media (min-height: 880px) {
+.scroll-if-height{ height:700px;}	
+}
+@media (min-height: 980px) {
+.scroll-if-height{ height:800px;}	
+}
+@media (min-height: 1080px) {
+.scroll-if-height{ height:900px;}	
+}
