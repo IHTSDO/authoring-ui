@@ -871,6 +871,9 @@ button.fsn-title-button {
 .popover select {
     margin-bottom: 0px!important;
     padding: 0px!important;
+	
+    min-height: 10px!important;
+
     color: #474747!important;
 }
 .popover .control-label {
