@@ -1823,7 +1823,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // check type (if not blank)
           if (type) {
               
-            if (scope.getConceptsForAttributeTypeahead(type).length === 0) {
+            if (scope.getConceptsForAttributeTypeahead(typeName).length === 0) {
               errors.push('Attribute type ' + typeName + ' is disallowed.');
               deferred.resolve(errors);
             } else {
