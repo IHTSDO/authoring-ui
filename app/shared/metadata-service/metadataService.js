@@ -78,7 +78,7 @@ angular.module('singleConceptAuthoringApp')
         {id: 'LIMITED', text: 'Limited component'},
         {id: 'OUTDATED', text: 'Outdated component'},
         {id: 'PENDING_MOVE', text: 'Pending move'},
-        {id: '', text: 'Reason not stated'}
+        {id: 'RETIRED', text: 'Reason not stated'}
 
       ];
     }
