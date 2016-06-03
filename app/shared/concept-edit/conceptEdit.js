@@ -1695,7 +1695,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   else {
                     scope.concept.relationships[targetIndex] = copy;
                   }
-
+                  scope.getDomainAttributes(); 
                   autoSave();
 
                   scope.computeRelationshipGroups();
@@ -2172,6 +2172,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // Otherwise, changes 'revert' to previously saved values
           if (!relationship.effectiveTime && !roleGroupOnly) {
             delete relationship.relationshipId;
+          }
+          if(relationship.type.conceptId === '116680003' && !roleGroupOnly)
+          {
+              scope.getDomainAttributes();   
           }
 
           scope.computeRelationshipGroups();
