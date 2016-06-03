@@ -1904,7 +1904,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // console.debug('inactive concept properties', response);
 
               if (!response.inactivationIndicator) {
-                concept.inactivationIndicator = 'No reason specified';
+                concept.inactivationIndicator = 'No reason stated';
               } else {
                 concept.inactivationIndicator = response.inactivationIndicator;
               }
@@ -1935,7 +1935,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.active) {
             snowowlService.getDescriptionProperties(description.descriptionId, scope.branch).then(function (response) {
               if (!response.inactivationIndicator) {
-                description.inactivationIndicator = 'No reason specified';
+                description.inactivationIndicator = 'No reason stated';
               } else {
                 description.inactivationIndicator = response.inactivationIndicator;
                 description.released = response.released;
