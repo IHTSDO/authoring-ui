@@ -1584,7 +1584,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // check that attribute is acceptable for MRCM rules
-          var attributes = scope.getConceptsForAttributeTypeahead(data.name);
+          var attributes = scope.getConceptForFullAttribute(data.name);
           if (attributes && attributes.length > 0) {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
@@ -1823,7 +1823,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // check type (if not blank)
           if (type) {
               
-            if (scope.getConceptsForAttributeTypeahead(typeName).length === 0) {
+            if (scope.getConceptForFullAttribute(typeName).length === 0) {
               errors.push('Attribute type ' + typeName + ' is disallowed.');
               deferred.resolve(errors);
             } else {
@@ -2416,6 +2416,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           response = response.filter(function (item) {
             return item.fsn.term.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;
+          });
+          return response;
+        };
+          
+        scope.getConceptForFullAttribute = function (searchStr) {
+          //   console.debug('getConceptsForAttributeTypeahead', searchStr,
+          // scope.allowedAttributes);
+          var response = scope.allowedAttributes;
+          for (var i = 0; i < response.length; i++) {
+            for (var j = response.length - 1; j > i; j--) {
+              if (response[j].id === response[i].id) {
+                response.splice(j, 1);
+                j--;
+              }
+            }
+          }
+          response = response.filter(function (item) {
+            return item.fsn.term.toLowerCase() === searchStr.toLowerCase();
           });
           return response;
         };
