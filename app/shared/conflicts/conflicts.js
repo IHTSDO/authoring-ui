@@ -127,7 +127,6 @@ angular.module('singleConceptAuthoringApp')
             }
 
             if (Object.keys(data.validationResults.errors).length > 0) {
-              console.sendError('Cannot accept merge due to convention errors');
             } else {
 
               notificationService.sendMessage('Accepting merged version for concept ' + data.concept.conceptId);
@@ -157,6 +156,7 @@ angular.module('singleConceptAuthoringApp')
                 if (Object.keys(data.validationResults.warnings).length === 0) {
                   $rootScope.$broadcast('stopEditing', {concept: data.concept});
                 } else {
+                  $rootScope.$broadcast('stopEditing', {concept: data.concept});
                   notificationService.sendWarning('Merged changes accepted, but convention warnings were detected');
                 }
 
