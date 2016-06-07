@@ -127,6 +127,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             if (Object.keys(data.validationResults.errors).length > 0) {
+                notificationService.sendError('Please resolve convention errors prior to accepting concept merge.');
             } else {
 
               notificationService.sendMessage('Accepting merged version for concept ' + data.concept.conceptId);
