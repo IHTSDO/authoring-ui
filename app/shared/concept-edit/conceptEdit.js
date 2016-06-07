@@ -529,7 +529,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else {
               saveHelper(scope.concept).then(function () {
                 //scope.validateConcept();
-                notificationService.sendMessage('Concept saved:' + scope.concept.fsn, 5000);
+                notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
                 scope.saving = false;
               }, function (error) {
                   console.log(error);
