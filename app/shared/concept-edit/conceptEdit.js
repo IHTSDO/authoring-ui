@@ -2135,7 +2135,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
-          if (description.type === 'TEXT_DEFINITION' && !description.term) {
+          if (description.type === 'TEXT_DEFINITION') {
             description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
             description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
