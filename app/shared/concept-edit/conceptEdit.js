@@ -1178,25 +1178,38 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.acceptabilityMap) {
             description.acceptabilityMap = {};
           }
+          if(description.type !== 'TEXT_DEFINITION'){
+              switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
 
-          switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+                // if preferred, switch to acceptable
+                case 'PREFERRED':
+                  description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
+                  break;
 
-            // if preferred, switch to acceptable
-            case 'PREFERRED':
-              description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
-              break;
+                // if acceptable, switch to not acceptable (i.e. clear the dialect
+                // key)
+                case 'ACCEPTABLE':
+                  delete description.acceptabilityMap[scope.dialects[dialectName]];
+                  break;
 
-            // if acceptable, switch to not acceptable (i.e. clear the dialect
-            // key)
-            case 'ACCEPTABLE':
-              delete description.acceptabilityMap[scope.dialects[dialectName]];
-              break;
-
-            // if neither of the above, or blank, set to preferred
-            default:
-              description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
-              break;
+                // if neither of the above, or blank, set to preferred
+                default:
+                  description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                  break;
+              }
           }
+            else{
+                switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+                case 'PREFERRED':
+                  delete description.acceptabilityMap[scope.dialects[dialectName]];
+                  break;
+
+                // if neither of the above, or blank, set to preferred
+                default:
+                  description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                  break;
+              }
+            }
 
           autoSave();
         };
