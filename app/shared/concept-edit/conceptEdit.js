@@ -416,11 +416,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             angular.forEach(validationResults, function (validationResult) {
               if (validationResult.severity === 'WARNING') {
-                results.hasWarnings = true;
-                if (!results.warnings[validationResult.componentId]) {
-                  results.warnings[validationResult.componentId] = [];
+                if(!scope.merge){
+                    results.hasWarnings = true;
+                    if (!results.warnings[validationResult.componentId]) {
+                      results.warnings[validationResult.componentId] = [];
+                    }
+                    results.warnings[validationResult.componentId].push(validationResult.message);
                 }
-                results.warnings[validationResult.componentId].push(validationResult.message);
               }
               else if (validationResult.severity === 'ERROR') {
                 results.hasErrors = true;
