@@ -73,8 +73,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
-    $scope.branch = 'MAIN/' + $scope.projectKey + '/' + $scope.taskKey;
-    $scope.parentBranch = 'MAIN/' + $scope.projectKey;
+    $scope.branch = $rootScope.branchPath;
+    $scope.parentBranch = $rootScope.parentBranch;
 
     //////////////////////////////
     // Infinite Scroll
@@ -94,7 +94,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     
     $scope.goToConflicts = function(){
-        snowowlService.getBranch('MAIN/' + $scope.projectKey).then(function(response){
+        snowowlService.getBranch($rootScope.parentBranch).then(function(response){
             if(!response.metadata)
             {
                 $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
@@ -379,11 +379,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     //////////////////////////////
     // Initialization
     //////////////////////////////
+    
     if ($routeParams.taskKey) {
-      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-      $scope.sourceBranch = 'MAIN/' + $routeParams.projectKey;
+      $scope.targetBranch = $rootScope.branchPath;
+      $scope.sourceBranch = $rootScope.parentBranch;
     } else {
-      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey;
+      $scope.targetBranch = $rootScope.parentBranch;
       $scope.sourceBranch = 'MAIN/';
     }
 
@@ -738,6 +739,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.updateEditListUiState();
 
     });
+    
+    if ($routeParams.taskKey) {
+      $scope.targetBranch = $rootScope.branchPath;
+      $scope.sourceBranch = $rootScope.parentBranch;
+    } else {
+      $scope.targetBranch = $rootScope.parentBranch;
+      $scope.sourceBranch = 'MAIN/';
+    }
 
     // watch for concept cloning from the edit sidebar
     $scope.$on('cloneConcept', function (event, data) {
@@ -1256,6 +1265,20 @@ angular.module('singleConceptAuthoringApp.edit', [
         }, function() {
             setBranchFunctionality($scope.task.branchState);
     }, true);
+    
+    $scope.$watch(function() {
+        return $rootScope.branchPath;
+        }, function() {
+            if ($routeParams.taskKey) {
+              $scope.targetBranch = $rootScope.branchPath;
+              $scope.sourceBranch = $rootScope.parentBranch;
+            } else {
+              $scope.targetBranch = $rootScope.parentBranch;
+              $scope.sourceBranch = 'MAIN/';
+            }
+    }, true);
+    
+    
 
 //////////////////////////////////////////
     // Initialization
@@ -1319,6 +1342,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+          if(response.branchPath){
+              $rootScope.branchPath = response.branchPath;
+          }
+          else{
+              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
+                  $rootScope.parentBranch = projectResponse.branchPath;
+              });
+          }
           $rootScope.currentTask = response;
 
           $scope.getLatestClassification();
