@@ -200,14 +200,19 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
           if(response.branchPath){
-              $rootScope.parentBranch = response.branchPath;
+              $rootScope.branchPath = response.branchPath;
+          }
+          else{
+              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
+                  $rootScope.parentBranch = projectResponse.branchPath;
+              });
           }
           
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
-        snowowlService.getBranch($rootScope.parentBranch).then(function (response) {
+        snowowlService.getBranch($rootScope.branchPath).then(function (response) {
             if(response.metadata)
             {
                 $rootScope.branchLocked = true;
@@ -216,7 +221,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             else if(response.status === 404)
             {
                 notificationService.sendWarning('Task initializing');
-                snowowlService.createBranch($rootScope.parentBranch).then(function (response) {
+                snowowlService.createBranch($rootScope.parentBranch + $routeParams.taskKey).then(function (response) {
                     notificationService.sendWarning('Task initialization complete', 3000);
                     $rootScope.$broadcast('reloadTaxonomy');
               });
