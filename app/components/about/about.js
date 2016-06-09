@@ -160,7 +160,7 @@ angular.module('singleConceptAuthoringApp.about', [
     };
     
     $scope.goToConflicts = function(task){
-        snowowlService.getBranch('MAIN/' + task.projectKey).then(function(response){
+        snowowlService.getBranch($rootScope.parentBranch).then(function(response){
             if(!response.metadata)
             {
                 snowowlService.getBranch($rootScope.branchPath).then(function(response){
@@ -225,9 +225,13 @@ angular.module('singleConceptAuthoringApp.about', [
 
         // re-retrieve task to doublecheck availability for assignment
         scaService.getTaskForProject(task.projectKey, task.key).then(function (response) {
-          if(response.branchPath)
-          {
-            $rootScope.parentBranch = response.branchPath;
+          if(response.branchPath){
+              $rootScope.branchPath = response.branchPath;
+          }
+          else{
+              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
+                  $rootScope.parentBranch = projectResponse.branchPath;
+              });
           }
 
           // if a reviewer specified, has been claimed since last task refresh
