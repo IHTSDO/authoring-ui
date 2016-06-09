@@ -226,13 +226,21 @@
         line-height: 20px;
     }
 }
+.search-scroll .scroll-if-height{ height:525px;}
 .scroll-if-height{ height:600px;}
 @media (min-height: 880px) {
 .scroll-if-height{ height:700px;}	
+.search-scroll .scroll-if-height{ height:625px;}
 }
 @media (min-height: 980px) {
-.scroll-if-height{ height:800px;}	
+.scroll-if-height{ height:800px;}
+.search-scroll .scroll-if-height{ height:725px;}	
 }
 @media (min-height: 1080px) {
 .scroll-if-height{ height:900px;}	
+.search-scroll .scroll-if-height{ height:825px;}
+}
+@media (min-height: 1180px) {
+.scroll-if-height{ height:1000px;}	
+.search-scroll .scroll-if-height{ height:925px;}
 }
