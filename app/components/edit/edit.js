@@ -1265,6 +1265,14 @@ angular.module('singleConceptAuthoringApp.edit', [
     if ($routeParams.taskKey) {
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
+        if(response.branchPath){
+              $rootScope.branchPath = response.branchPath;
+          }
+          else{
+              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
+                  $rootScope.parentBranch = projectResponse.branchPath;
+              });
+          }
         $rootScope.currentTask = response;
 
         accountService.getRoleForTask(response).then(function (role) {

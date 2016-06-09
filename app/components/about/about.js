@@ -163,7 +163,7 @@ angular.module('singleConceptAuthoringApp.about', [
         snowowlService.getBranch('MAIN/' + task.projectKey).then(function(response){
             if(!response.metadata)
             {
-                snowowlService.getBranch('MAIN/' + task.projectKey + '/' + task.key).then(function(response){
+                snowowlService.getBranch($rootScope.branchPath).then(function(response){
                     if(!response.metadata)
                     {
                         $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
@@ -225,6 +225,10 @@ angular.module('singleConceptAuthoringApp.about', [
 
         // re-retrieve task to doublecheck availability for assignment
         scaService.getTaskForProject(task.projectKey, task.key).then(function (response) {
+          if(response.branchPath)
+          {
+            $rootScope.parentBranch = response.branchPath;
+          }
 
           // if a reviewer specified, has been claimed since last task refresh
           // send warning and reload tasks

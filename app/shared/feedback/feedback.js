@@ -54,6 +54,14 @@ angular.module('singleConceptAuthoringApp')
           scope.role = null;
           scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
             if (task) {
+              if(response.branchPath){
+              $rootScope.branchPath = response.branchPath;
+              }
+              else{
+                  scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
+                      $rootScope.parentBranch = projectResponse.branchPath;
+                  });
+              }
               scope.task = task;
               scope.reviewComplete = task.status !== 'In Review';
               console.debug('review complete', scope.reviewComplete);
