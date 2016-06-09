@@ -1,4 +1,4 @@
-<div class=" col-md-12 no-padding scroll-if-height   " ng-controller="searchPanelCtrl">
+<div class=" col-md-12 no-padding  search-scroll " ng-controller="searchPanelCtrl">
 
 
   <div class="row no-padding">
@@ -33,7 +33,7 @@
 
   <div class="col-md-12 no-padding" ng-if="searchStatus">{{searchStatus}}</div>
 
-  <div ng-show="results.length > 0" class="m-l-10">
+  <div ng-show="results.length > 0" class="m-l-10 scroll-if-height " >
 
     <!-- headers -->
     <div class="row no-padding">
@@ -123,15 +123,16 @@
 
 
   <!-- load more button -->
+<div class="col-md-12 m-t-10">
   <button
     ng-show="loadPerformed"
-    class="btn btn-default classify m-5"
+    class="btn btn-default classify col-md-12"
     ng-click="loadMore()"
     ng-disabled="!loadMoreEnabled">
-    <span ng-if="loadMoreEnabled" class="button-link">Load Next {{resultsSize}}</span>
-    <span ng-if="!loadMoreEnabled">End of Results</span>
+    <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
+    <span ng-if="!loadMoreEnabled ">End of Results</span>
   </button>
-
+  </div>
   <!-- Spacing to temporarily fix margin problems -->
   <div class="m-t-50">
     &nbsp
