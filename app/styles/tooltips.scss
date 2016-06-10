@@ -154,10 +154,22 @@ content: '';
     left: 90%;
 }
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom:hover span {
-    margin-left: -127px;
+    margin-left: -129px;
 }
 .offset-tooltip-right.medium-size-tooltip.tooltips-bottom span:after {
-    left: 91%;
+    left: 92%;
+}
+.offset-tooltip-left.medium-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -7px;
+}
+.offset-tooltip-left.medium-size-tooltip.tooltips-bottom span:after {
+    left: 5%;
+}
+.offset-tooltip-left.small-size-tooltip.tooltips-bottom:hover span {
+    margin-left: -8px!important;
+}
+.offset-tooltip-left.small-size-tooltip.tooltips-bottom span:after {
+    left: 9%;
 }
 /*custom tooptip sizes */
 

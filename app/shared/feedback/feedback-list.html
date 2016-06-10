@@ -98,11 +98,11 @@
                     ng-click="selectConceptsForFeedback()">
             <div class="md md-forum "></div>
             <span>Add feedback to selected concepts</span> </button>-->
-            <button class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip normal-case"
+            <button class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right"
                     ng-click="addMultipleToEdit(actionTab)">
             <div class="md md-edit "></div>
             <span>Show selected in edit panel</span> </button>
-            <button class="btn btn-round btn-default  green base  tooltips-bottom large-size-tooltip normal-case"
+            <button class="btn btn-round btn-default  green base  tooltips-bottom medium-size-tooltip offset-tooltip-right"
                     ng-click="moveMultipleToOtherList(actionTab)">
             <div
                 class="md md-thumb-up "></div>
@@ -132,7 +132,7 @@
                         class="md md-flag"></div>
               <span>Flagged for follow-up</span></button>
               <button ng-show="concept.messages.length > 0"
-                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip normal-case"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right"
 
                             ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
               <div
@@ -165,7 +165,7 @@
                       class="md md-thumb-up "></div>
             <span>Approve</span></button>
                      <button
-                      ng-hide="subjectConcepts.length > 0 " class=" btn btn-round btn-default  indigo lighten-2 tooltips-bottom large-size-tooltip normal-case m-r-2 "
+                      ng-hide="subjectConcepts.length > 0 " class=" btn btn-round btn-default  indigo lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 "
                         ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
 
               <div
@@ -173,13 +173,13 @@
               </button>
 
                   <button
-                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip normal-case m-r-2 "
+                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 "
                     ng-click="selectConceptForFeedback(concept)"     ng-show="subjectConcepts.length > 0 ">
                     <div class="fa-sca fa-comment  "></div>
                     <span>View/submit feedback for concept</span>
                   </button>
                       <button ng-show="concept.messages.length > 0"
-                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip normal-case"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right"
 
                             ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
               <div
@@ -249,7 +249,7 @@
             <span>Unapprove</span></button>
 
                   <button
-                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip normal-case m-r-2 "
+                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 "
                     ng-click="selectConceptForFeedback(concept)"     ng-show="subjectConcepts.length > 0 ">
                     <div class="fa-sca fa-comment  "></div>
                     <span>View/submit feedback for concept</span>
