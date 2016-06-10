@@ -25,12 +25,12 @@
        <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> 
              <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
         <span>Primitive</span></button>
       <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
+              class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
         <span>Fully Defined</span></button>
            </div>
@@ -52,27 +52,27 @@
           <button type="button"
                   ng-click="viewConceptInTaxonomy(item)"
                   ng-disabled="!item.concept.active"
-                  class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
+                  class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                   ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
             <span ng-if="item.concept.active">View in Taxonomy</span>
             <span ng-if="!item.concept.active">Inactive Concept</span>
           </button>
 
         <button type="button"
-                class="btn btn-default saved-list-buttons pull-left tooltips-bottom large-size-tooltip "
+                class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                 title="Edit"
                 ng-click="addToFavorites(item)"
                 ng-disabled="isInFavorites(item)"><i class="md md-favorite"></i><span>Add to Project Favorites</span>
         </button>
 
         <button type="button"
-                class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
+                class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right  "
                 title="Edit"
                 ng-click="selectItem(item)"
                 ng-disabled="isEdited(item)"><i class="md fa-sca fa-pencil"></i><span>Load into edit panel </span>
         </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
 
                 ng-click="clone(item)"><i class="md md-content-copy"></i> <span> Clone this concept </span>
         </button>
@@ -107,12 +107,12 @@
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> 
       <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left ">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
         <span>Primitive</span></button>
       <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
-              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
+              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip offset-tooltip-left">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
         <span>Fully Defined</span></button>
       </div>
@@ -132,19 +132,19 @@
  <button type="button"
                   ng-click="viewConceptInTaxonomy(item)"
                   ng-disabled="!item.concept.active"
-                  class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip normal-case"
+                  class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right"
                   ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
             <span ng-if="item.concept.active">View in Taxonomy</span>
             <span ng-if="!item.concept.active">Inactive Concept</span>
           </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                 title="Edit"
                 ng-click="selectItem(item)"
                 ng-disabled="isEdited(item)"><i class="md fa-sca fa-pencil"></i><span>Load into edit panel </span>
         </button>
         <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip "
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
 
                 ng-click="clone(item)"><i class="md md-content-copy"></i> <span> Clone this concept </span>
         </button>
