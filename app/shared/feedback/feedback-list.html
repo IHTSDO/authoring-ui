@@ -2,7 +2,7 @@
 <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
   resulting in elements being placed outside of the table (i.e. position: fixed)
   --><div class="col-md-12 scroll-if-height  no-padding">
-  
+
 <script type="text/ng-template" id="checkboxheader.html">
     <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
   </script>
@@ -69,7 +69,7 @@
                    <div class="col-md-1 no-padding " ng-if="role === 'REVIEWER' && task.status === 'In Review'" ng-hide="feedbackContainer.review.conceptsToReview.length === 0" >
           <!-- Only appears if reviewer role -->
           <div class=" p-5" >
-            <button class="btn btn-round btn-default black tooltips-bottom normal-case"
+            <button class="btn btn-round btn-default black tooltips-bottom medium-size-tooltip offset-tooltip-left normal-case"
                     ng-click="groupSelectedConcepts(actionTab)">
             <div class="md md-layers "></div>
             <span>Group selected concepts</span> </button>
@@ -98,16 +98,16 @@
                     ng-click="selectConceptsForFeedback()">
             <div class="md md-forum "></div>
             <span>Add feedback to selected concepts</span> </button>-->
-            <button class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right"
+            <button class="btn btn-round btn-default blue lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
                     ng-click="addMultipleToEdit(actionTab)">
             <div class="md md-edit "></div>
             <span>Show selected in edit panel</span> </button>
-            <button class="btn btn-round btn-default  green base  tooltips-bottom medium-size-tooltip offset-tooltip-right"
+            <button class="btn btn-round btn-default  green base  tooltips-bottom large-size-tooltip offset-tooltip-right"
                     ng-click="moveMultipleToOtherList(actionTab)">
             <div
                 class="md md-thumb-up "></div>
             <span>Mark selected as reviewed</span></button>
-            
+
             </div>
         </div>
         <!--filter row, put in because cannot specify ui-on-drop behavior for input field with ng-table settings ng-class="[
@@ -126,13 +126,13 @@
           <td ng-if="role === 'AUTHOR'" class="  col-md-3 no-padding"
                     data-title="'Read/Unread'" sortable="'read'"><div class="pull-right m-3 ">
                  <div class="pull-right m-r-5"> <button
-                      class="btn btn-round btn-default green base  tooltips-bottom normal-case"
+                      class="btn btn-round btn-default green base tooltips-bottom large-size-tooltip offset-tooltip-right normal-case"
                       ng-show="concept.requestFollowup">
               <div
                         class="md md-flag"></div>
               <span>Flagged for follow-up</span></button>
               <button ng-show="concept.messages.length > 0"
-                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
 
                             ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
               <div
@@ -140,7 +140,7 @@
               </button>
 
               <button
-                      class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom normal-case"
+                      class="btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                         ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-disabled="concept.viewed">
 
               <div
@@ -151,7 +151,7 @@
           <!--Reviewer Controls -->
           <td ng-if="role === 'REVIEWER'" class=" col-md-3 no-padding">
            <div class="pull-right m-r-5"> <button
-                      class=" btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom normal-case"
+                      class=" btn btn-round btn-default blue m-r-2 lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                         ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)" ng-disabled="concept.viewed">
 
               <div
@@ -159,13 +159,13 @@
               </button>
 
           <button
-                    class="btn btn-round btn-default green base tooltips-bottom normal-case"
+                    class="btn btn-round btn-default green base tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                     ng-click="addToReviewed(concept)">
             <div
                       class="md md-thumb-up "></div>
             <span>Approve</span></button>
                      <button
-                      ng-hide="subjectConcepts.length > 0 " class=" btn btn-round btn-default  indigo lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 "
+                      ng-hide="subjectConcepts.length > 0 " class=" btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
                         ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
 
               <div
@@ -173,13 +173,13 @@
               </button>
 
                   <button
-                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 "
+                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
                     ng-click="selectConceptForFeedback(concept)"     ng-show="subjectConcepts.length > 0 ">
                     <div class="fa-sca fa-comment  "></div>
                     <span>View/submit feedback for concept</span>
                   </button>
                       <button ng-show="concept.messages.length > 0"
-                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right"
 
                             ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
               <div
@@ -236,27 +236,27 @@
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                     ui-on-drop="dropConcept(concept, $data, actionTab)" ><span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span> <span class="pull-left p-5">{{concept.term}} </span> </td>
           <td  class=" col-md-4 no-padding">     <div class="pull-right m-r-5">  <button ng-show="concept.messages.length > 0"
-                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip m-r-2 normal-case"
+                            class="btn btn-round btn-default pink lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 normal-case"
                             ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">
               <div
                         ng-class="['md', {'md-email' : !concept.read}, {'md-drafts' : concept.read}] "><span> View/submit feedback for concept</span> </div>
               </button>
                <button
-                    class="btn btn-round btn-default green base  tooltips-bottom m-r-2 normal-case" ng-if="role === 'REVIEWER' && task.status === 'In Review'"
+                    class="btn btn-round btn-default green base tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 normal-case" ng-if="role === 'REVIEWER' && task.status === 'In Review'"
                     ng-click="returnToReview(concept)">
             <div
                       class="md md-thumb-down"></div>
             <span>Unapprove</span></button>
 
                   <button
-                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2 "
+                    class="  btn btn-round btn-default indigo lighten-2 tooltips-bottom large-size-tooltip offset-tooltip-right m-r-2 "
                     ng-click="selectConceptForFeedback(concept)"     ng-show="subjectConcepts.length > 0 ">
                     <div class="fa-sca fa-comment  "></div>
                     <span>View/submit feedback for concept</span>
                   </button>
 
               <button
-                    class="btn btn-round btn-default blue lighten-2 tooltips-bottom m-r-2  normal-case"
+                    class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right m-r-2  normal-case"
                       ng-click="selectConceptForFeedback(concept); addToEdit(concept)"
                     ng-disabled="concept.viewed">
             <div
@@ -300,7 +300,7 @@
                     ui-on-drop="dropConcept(concept, $data, actionTab)" > <span class="pull-left p-5">{{concept.term}} </span> </td>
             <td ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'" class=" col-md-4 no-padding">  <div class="pull-right m-r-5">
                 <button
-                    class="btn btn-round btn-default blue lighten-2 tooltips-bottom normal-case"
+                    class="btn btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                       ng-click="addToEdit(concept)"
                     ng-disabled="concept.viewed">
             <div
@@ -310,7 +310,7 @@
             </td>
             <td ng-if="role === 'AUTHOR'" class=" col-md-4 no-padding">
              <div class="pull-right m-r-5"> <button
-                    class="btn  btn-round btn-default blue lighten-2 tooltips-bottom normal-case"
+                    class="btn  btn-round btn-default blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right normal-case"
                       ng-click="addToEdit(concept)"
                     ng-disabled="concept.viewed">
             <div
