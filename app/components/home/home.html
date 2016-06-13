@@ -97,7 +97,7 @@
               </td>
 
               <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
-                <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
+                <a ng-href="#/tasks/task/{{task.branchPath}}/classify">
                        <button ng-show="task.latestClassificationJson != null"
                           type="button"
                           ng-class="[
@@ -118,7 +118,7 @@
 
               </td>
       <td data-title="'Validation'" sortable="'latestValidationStatus'">
-                <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
+                <a class="tooltips-left" ng-href="#/tasks/task/{{task.branchPath}}/validate">
            <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
                           ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
@@ -137,7 +137,7 @@
 
  <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
         
-                <a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
+                <a class="tooltips-left " ng-href="#/tasks/task/{{task.branchPath}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
                           class="btn btn-round   btn-default  pink darken-1  "
