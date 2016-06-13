@@ -8,7 +8,7 @@ angular.module('singleConceptAuthoringApp.projectMerge', [
   // configure route providerl
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/projects/project/:projectKey/conflicts', {
+      .when('/projects/project/:root/:projectKey/conflicts', {
         controller: 'ProjectMergeCtrl',
         templateUrl: 'components/project-merge/projectMerge.html',
         resolve: {}
@@ -17,6 +17,6 @@ angular.module('singleConceptAuthoringApp.projectMerge', [
 
   .controller('ProjectMergeCtrl', function ProjectMergeCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
 
-    $scope.sourceBranch = 'MAIN';
-    $scope.targetBranch = 'MAIN/' + $routeParams.projectKey;
+    $scope.sourceBranch = $routeParams.root;
+    $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey;
   });

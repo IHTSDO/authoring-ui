@@ -102,10 +102,10 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         snowowlService.getBranch('MAIN/' + task.projectKey).then(function(response){
             if(!response.metadata)
             {
-                snowowlService.getBranch('MAIN/' + task.projectKey + '/' + task.key).then(function(response){
+                snowowlService.getBranch(task.branchPath).then(function(response){
                     if(!response.metadata)
                     {
-                        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
+                        $location.url('tasks/task/' + task.branchPath + '/conflicts');
                     }
                     else{
                         notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
