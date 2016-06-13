@@ -115,6 +115,12 @@
                   ng-disabled="findItemInFavorites(result.concept.conceptId)"
                   class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
             <span>Add to Project Favorites</span></button>
+                <button type="button"
+                class="btn btn-round addButton widget-button blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right  "
+                title="Edit"
+                ng-click="selectItem(result)"
+                ng-disabled="isEdited(result)"><i class="md fa-sca fa-pencil"></i><span>Load into edit panel </span>
+        </button>
         </div>
       </div>
     </div>
