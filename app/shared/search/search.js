@@ -203,6 +203,26 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.searchStatus = null;
       };
+ $scope.selectItem = function (item) {
+      if (!item) {
+        return;
+      }
+      console.log(item.concept.conceptId);
+      $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
+
+    };
+	 $scope.isEdited = function(item) {
+      return $scope.editList.indexOf(item.concept.conceptId) !== -1;
+    };
+	  $scope.viewConceptInTaxonomy = function (item) {
+        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+        $rootScope.$broadcast('viewTaxonomy', {
+          concept: {
+            conceptId: item.concept.conceptId,
+            fsn: item.concept.fsn
+          }
+        });
+      };
 
       $scope.viewConceptInTaxonomy = function (item) {
         console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
