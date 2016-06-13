@@ -8,7 +8,7 @@ angular.module('singleConceptAuthoringApp.edit', [
   // all task editing functionality
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/tasks/task/:projectKey/:taskKey/:mode', {
+      .when('/tasks/task/:root/:projectKey/:taskKey/:mode', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {}
@@ -70,11 +70,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.classificationRunning = false;
     $rootScope.currentTask = null;
 
+    $scope.root = $routeParams.root;
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
-
-    $scope.branch = $rootScope.branchPath;
-    $scope.parentBranch = $rootScope.parentBranch;
+    
+    $scope.branch = $scope.root + '/' + $scope.projectKey + '/' + $scope.taskKey;
+    $scope.parentBranch = $scope.root + '/' + $scope.projectKey;
 
     //////////////////////////////
     // Infinite Scroll
@@ -94,7 +95,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     
     $scope.goToConflicts = function(){
-        snowowlService.getBranch($rootScope.parentBranch).then(function(response){
+        snowowlService.getBranch($scope.parentBranch).then(function(response){
             if(!response.metadata)
             {
                 $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
@@ -379,15 +380,15 @@ angular.module('singleConceptAuthoringApp.edit', [
     //////////////////////////////
     // Initialization
     //////////////////////////////
-    
-    if ($routeParams.taskKey) {
-      $scope.targetBranch = $rootScope.branchPath;
-      $scope.sourceBranch = $rootScope.parentBranch;
-    } else {
-      $scope.targetBranch = $rootScope.parentBranch;
-      $scope.sourceBranch = 'MAIN/';
-    }
 
+    if ($routeParams.taskKey) {
+      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.sourceBranch = $routeParams.root + '/' + $routeParams.projectKey;
+    } else {
+      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey;
+      $scope.sourceBranch = $routeParams.root;
+    }
+    
     // displayed concept array
     $scope.concepts = [];
 
@@ -741,11 +742,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
     
     if ($routeParams.taskKey) {
-      $scope.targetBranch = $rootScope.branchPath;
-      $scope.sourceBranch = $rootScope.parentBranch;
+      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.sourceBranch = $routeParams.root + '/' + $routeParams.projectKey;
     } else {
-      $scope.targetBranch = $rootScope.parentBranch;
-      $scope.sourceBranch = 'MAIN/';
+      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey;
+      $scope.sourceBranch = $routeParams.root;
     }
 
     // watch for concept cloning from the edit sidebar
@@ -1266,18 +1267,6 @@ angular.module('singleConceptAuthoringApp.edit', [
             setBranchFunctionality($scope.task.branchState);
     }, true);
     
-    $scope.$watch(function() {
-        return $rootScope.branchPath;
-        }, function() {
-            if ($routeParams.taskKey) {
-              $scope.targetBranch = $rootScope.branchPath;
-              $scope.sourceBranch = $rootScope.parentBranch;
-            } else {
-              $scope.targetBranch = $rootScope.parentBranch;
-              $scope.sourceBranch = 'MAIN/';
-            }
-    }, true);
-    
     
 
 //////////////////////////////////////////
@@ -1288,14 +1277,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     if ($routeParams.taskKey) {
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
-        if(response.branchPath){
-              $rootScope.branchPath = response.branchPath;
-          }
-          else{
-              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
-                  $rootScope.parentBranch = projectResponse.branchPath;
-              });
-          }
         $rootScope.currentTask = response;
 
         accountService.getRoleForTask(response).then(function (role) {
@@ -1342,14 +1323,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
-          if(response.branchPath){
-              $rootScope.branchPath = response.branchPath;
-          }
-          else{
-              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
-                  $rootScope.parentBranch = projectResponse.branchPath;
-              });
-          }
           $rootScope.currentTask = response;
 
           $scope.getLatestClassification();
