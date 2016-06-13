@@ -76,7 +76,7 @@
             <tr ng-repeat="task in $data" class="clickable-row">
 
               <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }"><a class="tooltips-right"
-                                                                                             ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/edit">
+                                                                                             ng-href="#/tasks/task/{{task.branchPath}}/edit">
                 {{task.summary}}<span> Click to open editing view</span></a>
               </td>
             

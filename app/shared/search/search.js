@@ -5,7 +5,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
     function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService) {
 
       // controller $scope.options
-      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.resultsPage = 1;
       $scope.resultsSize = 100;
       $scope.loadPerformed = false;
