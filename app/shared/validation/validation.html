@@ -56,6 +56,7 @@
     .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
       margin-left: -33px;
     }
+	.validation-report title{display:none!important}
   </style>
 
   <div class="row purple deep-purple lighten-1" style="vertical-align: middle">
@@ -96,8 +97,8 @@
 
             <td data-title="'Failed Assertions'" sortable="'assertionText'">{{assertion.assertionText}}
             </td>
-            <td data-title="'# of Cases'" sortable="'failureCount'">
-              {{assertion.failureCount}}
+            <td data-title="'# of Cases'" sortable="'failureCount'" >
+             <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.failureCount}} <span># of cases with errors</span></div>
             </td>
 
             <td data-title="''" sortable="''">
