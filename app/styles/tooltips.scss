@@ -33,8 +33,7 @@ box-shadow: -1px 1px 10px -1px rgba(0,0,0,0.2);
 .tooltips-bottom span {
     width: 140px;
 }
-.tooltips-right span,
-{
+.tooltips-right span {
     min-width: 160px;
 }
 .tooltips-btm span {
@@ -52,7 +51,7 @@ box-shadow: -1px 1px 10px -1px rgba(0,0,0,0.2);
 .tooltips-top:hover span {
     visibility: visible;
     opacity: 1.0;
-    z-index: 999;
+    z-index: 10001;
 }
 .tooltips-bottom:hover span {
     top: 30px;
@@ -76,12 +75,12 @@ box-shadow: -1px 1px 10px -1px rgba(0,0,0,0.2);
     margin-right: 5px;
 }
 .tooltips-right:hover span {
-    
+
     left: 100%;
     top: 50%;
     margin-top: -10px;
     margin-left: 10px;
-    
+
 }
 
 /*tooltip main span afters */
@@ -89,7 +88,7 @@ box-shadow: -1px 1px 10px -1px rgba(0,0,0,0.2);
 .tooltips-btm span:after,
 .tooltips-left span:after,
 .tooltips-right span:after,
-.tooltips-top span:after{    
+.tooltips-top span:after{
 content: '';
     position: absolute;
    width: 0;
@@ -109,7 +108,7 @@ content: '';
     top: 100%;
     left: 50%;
     margin-left: -8px;
- 
+
     border-top: 8px solid #616161;
     border-right: 8px solid transparent;
     border-left: 8px solid transparent;
@@ -124,7 +123,7 @@ content: '';
     border-bottom: 5px solid transparent;
 }
 .tooltips-right span:after{
-  
+
     top: 50%;
     right: 100%;
     margin-top: -5px;
@@ -134,12 +133,12 @@ content: '';
 }
 
 .tooltips-btm span:after{
-    
+
     bottom: 100%;
     left: 50%;
-  
+
     margin-left: -5px;
-   
+
     border-bottom: 5px solid #616161;
     border-right: 5px solid transparent;
     font-family: Roboto, sans-serif !important;
