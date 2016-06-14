@@ -226,29 +226,26 @@
         line-height: 20px;
     }
 }
-.search-scroll .scroll-if-height{ height:525px;}
-.scroll-if-height{ height:600px;}
-@media (min-height: 680px) {
-.scroll-if-height{ height:535px; z-index:10000}	
-.search-scroll .scroll-if-height{ height:395px;}
+
+/* baseline heights optimised for 1366x768 resolution - subsequent media queries override for larger screens */
+/* breakpoints and heights optimised for standard screen heights: 800, 1024, 1200 */
+/* and acceptable layout in each range */
+
+.scroll-if-height { height: 535px; z-index: 10000; }
+.search-scroll .scroll-if-height { height: 395px; }
+
+@media screen and (min-height: 700px) {
+  .scroll-if-height { height: 565px; }
+  .search-scroll .scroll-if-height { height: 425px; }
 }
-@media (min-height: 780px) {
-.scroll-if-height{ height:600px; z-index:10000}	
-.search-scroll .scroll-if-height{ height:525px;}
+
+@media screen and (min-height: 900px) {
+  .scroll-if-height { height: 795px; }
+  .search-scroll .scroll-if-height { height:655px; }
 }
-@media (min-height: 880px) {
-.scroll-if-height{ height:700px; z-index:10000}	
-.search-scroll .scroll-if-height{ height:625px;}
+
+@media screen and (min-height: 1110px) {
+  .scroll-if-height { height: 945px; }
+  .search-scroll .scroll-if-height { height:805px; }
 }
-@media (min-height: 980px) {
-.scroll-if-height{ height:800px;}
-.search-scroll .scroll-if-height{ height:725px;}	
-}
-@media (min-height: 1080px) {
-.scroll-if-height{ height:900px;}	
-.search-scroll .scroll-if-height{ height:825px;}
-}
-@media (min-height: 1180px) {
-.scroll-if-height{ height:1000px;}	
-.search-scroll .scroll-if-height{ height:925px;}
-}
+
