@@ -1,49 +1,60 @@
-<!DOCTYPE html>
+
 <div class="no-padding col-md-12 sidebar-grey p-b-40">
-    <!-- Nested node template -->
-    <script type="text/ng-template" id="nodes_renderer.html">
-        <div class="clearfix"></div>
-        <div class="m-t-7">
-            <!-- collapsible control -->
-            <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed, node.focusParent)"
+
+
+
+  <!-- Nested node template -->
+  <script type="text/ng-template" id="nodes_renderer.html">
+
+    <div class="clearfix"> </div>
+    <div class="m-t-7">
+
+      <!-- collapsible control -->
+      <span class="taxonomy-chevron" ng-class="getTreeNodeIcon(node, collapsed, node.focusParent)"
             ng-click="toggleNode(node, this, node.focusParent)"></span>
-            <!-- primitive alert -->
-            <button ng-show="node.definitionStatus !== 'PRIMITIVE'"
+
+      <!-- primitive alert -->
+	  
+	  <button ng-show="node.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
               class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
-                <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(node)">≡&nbsp; </div>
-                <span>Fully Defined</span>
-            </button>
-            <button  ng-show="node.definitionStatus === 'PRIMITIVE'"
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(node)">≡&nbsp; </div>
+        <span>Fully Defined</span></button>
+      <button  ng-show="node.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
               class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip offset-tooltip-left">
-                <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(node)">&nbsp; </div>
-                <span>Primitive</span>
-            </button>
-            <!-- fsn (draggable) -->
-            <span ui-draggable="true" ng-dblclick="setRootConcept(node)" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]" drag-image="node.fsn">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(node)">&nbsp; </div>
+        <span>Primitive</span></button>
+       
+      <!-- fsn (draggable) -->
+      <span ui-draggable="true" ng-dblclick="setRootConcept(node)" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]" drag-image="node.fsn">
         {{node.fsn}}
       </span>
-        </div>
-        <div>
-            <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled  ng-class="{hidden: collapsed}">
-                <li ng-repeat="node in node.children | orderBy: 'fsn'"
-            ui-tree-node collapsed="{{node.conceptId === concept.conceptId ? false : node.isCollapsed}}" data-nodrag ng-include="'nodes_renderer.html'"></li>
-            </ol>
-        </div>
-    </script>
-    <!-- Loading progress bar -->
-    <div ng-if="terminologyTree.length === 0" class="m-10">
+    </div>
+    <div>
+      <ol ui-tree-nodes="" ng-model="node.children" data-nodrop-enabled  ng-class="{hidden: collapsed}">
+        <li ng-repeat="node in node.children | orderBy: 'fsn'"
+            ui-tree-node collapsed="{{node.conceptId === concept.conceptId ? false : node.isCollapsed}}" data-nodrag ng-include="'nodes_renderer.html'">
+        </li>
+      </ol>
+    </div>
+
+  </script>
+
+  <!-- Loading progress bar -->
+  <div ng-if="terminologyTree.length === 0" class="m-10">
     Loading hierarchy...
-    
-        <div progressbar value="getProgress()" type="success" ></div>
+    <div progressbar value="getProgress()" type="success" >
     </div>
-    <!-- instantiate the tree -->
-    <div ui-tree class="col-md-12 p-10 m-b-40" ng-if="terminologyTree.length > 0">
-        <div class="clearfix"></div>
-        <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
-            <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
+  </div>
+
+
+  <!-- instantiate the tree -->
+  <div ui-tree class="col-md-12 p-10 m-b-40" ng-if="terminologyTree.length > 0">
+    <div class="clearfix"> </div>
+    <ol ui-tree-nodes="" ng-model="terminologyTree" id="tree-root" data-nodrop-enabled>
+      <li ng-repeat="node in terminologyTree | orderBy: 'fsn'"
           ui-tree-node collapsed="false" data-nodrag ng-include="'nodes_renderer.html'"></li>
-        </ol>
-    </div>
+    </ol>
+  </div>
 </div>
