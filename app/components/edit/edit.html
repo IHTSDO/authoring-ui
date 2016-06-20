@@ -286,6 +286,16 @@
       </div>
 
     </div>
+      
+    <div ng-if="thisView === 'inactivation'">
+
+      <!-- validation report -->
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
+        <div inactivation inactivation-concept="inactivationConcept" branch="targetBranch"></div>
+      </div>
+
+    </div>
+
 
     <!-- Classification view -->
     <div ng-if="thisView === 'classification'">

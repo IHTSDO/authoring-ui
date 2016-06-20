@@ -128,6 +128,7 @@ angular.module('singleConceptAuthoringApp')
       snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response) {
         console.debug('descendants', response);
         $scope.descendants = response;
+        $rootScope.descendants = response;
         $scope.descendantsLoading = false;
         $scope.tableParamsDescendants.reload();
 
@@ -199,6 +200,7 @@ angular.module('singleConceptAuthoringApp')
             }
           }
         });
+        $rootScope.children = $scope.children;
 
         $scope.inboundRelationshipsLoading = false;
 

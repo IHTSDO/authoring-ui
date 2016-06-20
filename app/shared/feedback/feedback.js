@@ -1284,18 +1284,21 @@ angular.module('singleConceptAuthoringApp')
                 var review = {};
                 if(traceability)
                     {
+                        console.log(traceability);
                         review.concepts = [];
                         review.conceptsClassified = [];
                         var idList = [];
                         angular.forEach(traceability.content, function (change) {
                                 if(change.activityType === 'CONTENT_CHANGE')
                         {
+                            
                             angular.forEach(change.conceptChanges, function (concept) {
                                 if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
                                     concept.conceptId = concept.conceptId.toString();
                                     concept.lastUpdatedTime = change.commitDate;
                                     review.concepts.push(concept);
+                                    console.log(concept.conceptId);
                                     idList.push(concept.conceptId);
                                 }
                                 else if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType === 'INFERRED_RELATIONSHIP';}).length !== 0)
