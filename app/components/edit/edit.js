@@ -302,6 +302,13 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.concepts = [];
           $scope.canCreateConcept = false;
           break;
+        case 'inactivation':
+          $rootScope.pageTitle = 'Inactivation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $routeParams.mode = 'inactivation';
+          //  view starts with no concepts
+          $scope.concepts = [];
+          $scope.canCreateConcept = false;
+          break;
         case 'feedback':
           $rootScope.pageTitle = 'Providing Feedback/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'feedback';
@@ -461,6 +468,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                             angular.forEach(change.conceptChanges, function (concept) {
                                 if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
                                 {
+                                    console.log(concept.conceptId);
                                     concept.conceptId = concept.conceptId.toString();
                                     concept.lastUpdatedTime = change.commitDate;
                                     review.concepts.push(concept);
