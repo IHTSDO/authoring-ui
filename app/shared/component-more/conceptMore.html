@@ -1,6 +1,5 @@
-<!DOCTYPE html>
 <div class="edits editing-form">
-    <div class="pop-edit concept-more description-popover row">
+  <div class="pop-edit concept-more description-popover row">
         <div class="concept-id pull-left">
             <label class="control-label">Concept ID</label>
             <span class="fields row "> {{concept.conceptId}}</span>
@@ -18,12 +17,12 @@
               ng-model="concept.moduleId" ng-disabled="isStatic"
               ng-change="setConceptModule(concept)" ng-options="module.id as (module.name) for module in modules"></select>
         </div>
-        <hr>
-        </div>
+
+  </div>
         <div ng-if="!concept.active" class="pop-edit concept-more description-popover row">
             <div class="col-md-12 no-padding pull-left">
                 <label class="control-label">Inactivation Reason
-        
+
                     <button type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editConceptInactivationReason(concept)" aria-disabled="false">
                         <i class="md fa-sca fa-pencil"></i>
                         <span>Edit</span>

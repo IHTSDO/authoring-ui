@@ -551,7 +551,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.saving = false;
           });
         };
-        
+
 
         // function to toggle active status of concept
         // cascades to children components
@@ -691,7 +691,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // (unlike toggle buttons)
               autoSave();
           }
-          
+
         };
 
 // function to apply cascade changes when concept module id changes
@@ -1025,7 +1025,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.toggleDescriptionActive = function (description) {
           // console.debug('toggling description active', description);
-          
+
           if (scope.isMerge) {
             notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you want to modify an activation status please accept the merge and then make these changes within the task.');
             return;
@@ -1038,7 +1038,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if an unpublished description, no reason required
           else if (!description.effectiveTime) {
-            
+
             description.active = false;
             var activeFsn = [];
               for (var i = 0; i < scope.concept.descriptions.length; i++) {
@@ -1117,7 +1117,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               //}
             });
         };
-          
+
         scope.editConceptInactivationReason = function (item) {
             selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
@@ -1368,7 +1368,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               autoSave();
           }
           else{
-            scope.warnings = ['You must activate the concept before its components.'];   
+            scope.warnings = ['You must activate the concept before its components.'];
           }
         };
 
@@ -1710,18 +1710,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   else {
                     scope.concept.relationships[targetIndex] = copy;
                   }
-                  scope.getDomainAttributes(); 
+                  scope.getDomainAttributes();
                   autoSave();
 
                   scope.computeRelationshipGroups();
-              
+
             } else {
               scope.warnings = response;
               scope.warnings.splice(0, 0, 'Could not drop relationship:');
             }
           });
 
-          
+
         };
 
         scope.addRelationshipGroup = function () {
@@ -1837,7 +1837,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var errors = [];
           // check type (if not blank)
           if (type) {
-              
+
             if (scope.getConceptForFullAttribute(typeName).length === 0) {
               errors.push('Attribute type ' + typeName + ' is disallowed.');
               deferred.resolve(errors);
@@ -2190,7 +2190,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           if(relationship.type.conceptId === '116680003' && !roleGroupOnly)
           {
-              scope.getDomainAttributes();   
+              scope.getDomainAttributes();
           }
 
           scope.computeRelationshipGroups();
@@ -2434,7 +2434,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           return response;
         };
-          
+
         scope.getConceptForFullAttribute = function (searchStr) {
           //   console.debug('getConceptsForAttributeTypeahead', searchStr,
           // scope.allowedAttributes);
@@ -2571,12 +2571,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // sets the popover direction (left, bottom, right) based on current
 // position of root element
         scope.setPopoverDirection = function ($event) {
-          //    console.debug($event.pageX);
-          if ($event.pageX < 700) {
-            scope.popoverDirection = 'right';
-          } else {
-            scope.popoverDirection = 'left';
+          var direction = 'left';
+
+          // morebuttons are the concept edit panel 'more details' popovers (concept, description, attribute)
+          if ($event.target.className.indexOf('morebuttons') >= 0) {
+            direction = 'left-top';
           }
+
+          if ($event.pageX < 700) {
+            direction = 'right';
+
+            // morebuttons are the concept edit panel 'more details' popovers (concept, description, attribute)
+            if ($event.target.className.indexOf('morebuttons') >= 0) {
+              direction = 'right-top';
+            }
+          }
+
+          scope.popoverDirection = direction;
         };
 
         scope.formatComponentMoreText = function (text) {
