@@ -181,24 +181,24 @@
                  class="table table-full table-full-small">
             <tr ng-repeat="task in $data">
 
-              <td data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
+              <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'" filter="{ 'summary': 'text' }">
                 <a class="tooltips-right"
                    ng-click="viewTask(task)"> {{task.summary}}<span>Open Task</span></a>
               </td>
-               <td data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }">
+               <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
-              <td data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
+              <td header-title="'Click to sort'" data-title="'Author'" sortable="'authorKey'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
               </td>
-              <td data-title="'Reviewer'" sortable="'reviewerKey'" filter="{ 'reviewer' : 'text' }">
+              <td header-title="'Click to sort'" data-title="'Reviewer'" sortable="'reviewerKey'" filter="{ 'reviewer' : 'text' }">
                 {{task.reviewer.displayName}}
 
               </td>
-              <td data-title="'Modified'" sortable="'updated'">
+              <td header-title="'Click to sort'" data-title="'Modified'" sortable="'updated'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
-              <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
+              <td header-title="'Click to sort'" data-title="'Classification'" sortable="'latestClassificationJson.status'">
                  <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                        <button ng-show="task.latestClassificationJson != null"
                           type="button"
@@ -222,7 +222,7 @@
 
               </td>
 
-              <td data-title="'Validation'" sortable="'latestValidationStatus'">
+              <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'">
                  <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                    <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
@@ -241,10 +241,10 @@
               </td>
 
              
-              <td data-title="'Status'" sortable="'status'">
+              <td header-title="'Click to sort'" data-title="'Status'" sortable="'status'">
                 <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
               </td>
-              <td data-title="''" sortable="''">
+              <td header-title="'Click to sort'" data-title="''" sortable="''">
                 <button class="btn btn-default btn-round md md-settings blue  tooltips-light normal-case" ng-click="editTask(task)"></button>
               </td>
             </tr>
