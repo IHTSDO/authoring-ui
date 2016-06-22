@@ -105,9 +105,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.validationRunning = true;
 		   $rootScope.$broadcast('reloadTask');
-          notificationService.sendMessage('Task successfully submitted for validation', 10000, null);
+          notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
         }, function () {
-          notificationService.sendMessage('Error submitting task for validation', 5000, null);
+          notificationService.sendMessage('Error submitting task for validation', 10000, null);
         });
       };
       $scope.submitForReview = function () {
@@ -118,13 +118,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
         };
         scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
-			
+
           scaService.updateTask(
             $routeParams.projectKey, $routeParams.taskKey,
             {
               'status': 'IN_REVIEW'
             }).then(function (response) {
-              notificationService.sendMessage('Task submitted for review');
+              notificationService.sendMessage('Task submitted for review', 5000);
               scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
 			   $rootScope.$broadcast('reloadTask');
               $scope.reviewClicked = true;
@@ -147,7 +147,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.sendMessage('Review Cancelled', 2000);
                 $rootScope.$broadcast('reloadTask');
               });
-            
+
           };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
@@ -179,27 +179,27 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
         });
       };
-        
+
       $scope.pollStatus = function() {
             snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function (response) {
-                
+
             if(response.metadata)
             {
                 $rootScope.branchLocked = true;
                 $timeout($scope.pollStatus, 4000);
             }
             else{
-                
+
                 $rootScope.branchLocked = false;
             }
           });
-                        
+
                 };
 
       function initialize() {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
-          
+
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
@@ -220,7 +220,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               });
             }
             else{
-                $scope.pollStatus();   
+                $scope.pollStatus();
             }
           });
 
