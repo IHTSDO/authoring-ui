@@ -229,9 +229,9 @@ angular.module('singleConceptAuthoringApp')
             // TODO This is inelegant, should reconsider
             var canSave = true;
             if ($routeParams.taskKey) {
-                saveClassificationHelper();
+              saveClassificationHelper();
             } else {
-                saveClassificationHelper();
+              saveClassificationHelper();
             }
           };
 
@@ -406,6 +406,12 @@ angular.module('singleConceptAuthoringApp')
             scope.inferredNotPreviouslyStated = null;
             scope.equivalentConcepts = null;
 
+            // set flag for whether any results were found
+            scope.resultsNotEmpty = scope.classificationContainer.equivalentConceptsFound
+              || scope.classificationContainer.inferredRelationshipChangesFound
+              || scope.classificationContainer.redundantStatedRelationshipsFound;
+
+
             if (!scope.classificationContainer || !scope.classificationContainer.id) {
               //console.debug('Either container or its id is null');
               return;
@@ -566,9 +572,9 @@ angular.module('singleConceptAuthoringApp')
                     {
                       'status': 'IN_REVIEW'
                     }).then(function (response) {
-                      scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
-                      // whether success or fail, disable button
-                    });
+                    scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
+                    // whether success or fail, disable button
+                  });
                 }
               }
             });

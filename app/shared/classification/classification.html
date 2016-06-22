@@ -3,38 +3,54 @@
     <div class="col-md-12 green classification-header" style="vertical-align: middle">
       <div class="p-5">Classification Report: {{statusText}}
 
-        <button ng-if="classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
-                class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
-                ng-click="downloadClassification()" style="text-transform: none">
-          <span>Download Classification Results</span>
-        </button>
+        <!-- Only display classification action buttons if results are found -->
+        <div class="pull-right" ng-if="resultsNotEmpty">
 
-        <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-                class="btn btn-default green pull-right"
-                ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+          <button
+            ng-if="classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
+            class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
+            ng-click="downloadClassification()" style="text-transform: none">
+            <span>Download Classification Results</span>
+          </button>
 
-        <button ng-if=" classificationContainer.status === 'COMPLETED'"
-                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                 ng-hide="classificationContainer.status === 'SAVED'" ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Accept Classification Results
-        </button>
+          <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+                  class="btn btn-default green pull-right"
+                  ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
-        <button ng-if=" classificationContainer.status === 'SAVING_IN_PROGRESS'"
-                disabled
-                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
-        </button>
+          <button ng-if=" classificationContainer.status === 'COMPLETED'"
+                  class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                  ng-hide="classificationContainer.status === 'SAVED'" ng-click="saveClassification()"><i
+            class="md md-check m-r-10"></i>Accept Classification Results
+          </button>
 
-        <button ng-if=" classificationContainer.status === 'SAVED'"
-                disabled
-                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Classification Saved
-        </button>
+          <button ng-if=" classificationContainer.status === 'SAVING_IN_PROGRESS'"
+                  disabled
+                  class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                  ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
+          </button>
+
+          <button ng-if=" classificationContainer.status === 'SAVED'"
+                  disabled
+                  class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                  ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Classification Saved
+          </button>
+        </div>
 
       </div>
     </div>
 
+    <!-- Empty classification report display. TODO Needs style attention -->
+    <div ng-show="!resultsNotEmpty" class="row classification-report">
+      <div class="classification-btn">
+      <button class="btn btn-default green classify" ng-click="classify()"
+              disabled><span class="md md-notifications green darken-1 iconbase"></span>
+        <span class="button-link">Classification Report Empty, No Action Required</span>
+      </button>
+    </div>
+
     <!-- Classification Report Contents -->
-    <div ng-show="!isCollapsed && (classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED')">
+    <div
+      ng-show="resultsNotEmpty && !isCollapsed && (classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED')">
 
       <!-- Nav tabs -->
       <div class="row classification-report">
@@ -42,18 +58,21 @@
 
           <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
                                                                    aria-controls="home" role="tab"
-                                                                   data-toggle="tab"> Classification Results ({{isClassificationLoaded() ? relationshipChanges.length : '-'}})</a></li>
+                                                                   data-toggle="tab"> Classification Results
+            ({{isClassificationLoaded() ? relationshipChanges.length : '-'}})</a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Redundant Relationships ({{isClassificationLoaded() ? redundantStatedRelationships.length : '-'}})</a>
+                                                       data-toggle="tab">Redundant Relationships
+            ({{isClassificationLoaded() ? redundantStatedRelationships.length : '-'}})</a>
           </li>
           <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
                                                   data-toggle="tab">Inferred
-                                                                    Not
-                                                                    Previously
-                                                                    Stated ({{isClassificationLoaded() ? inferredNotPreviouslyStated.length : '-'}})</a>
+            Not
+            Previously
+            Stated ({{isClassificationLoaded() ? inferredNotPreviouslyStated.length : '-'}})</a>
           </li>
           <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
-                                                         data-toggle="tab">Equivalency Errors ({{isClassificationLoaded() ? equivalentConcepts.length : '-'}})</a></li>
+                                                         data-toggle="tab">Equivalency Errors
+            ({{isClassificationLoaded() ? equivalentConcepts.length : '-'}})</a></li>
         </ul>
       </div>
 
@@ -104,7 +123,8 @@
         </div>
 
         <div class="row grey darken-3">
-          <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter" classification-saved="{{classificationContainer.status === 'SAVED'}}"></div>
+          <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"
+               classification-saved="{{classificationContainer.status === 'SAVED'}}"></div>
         </div>
       </div>
 
