@@ -330,15 +330,16 @@ angular.module('singleConceptAuthoringApp.project', [
 
         // determine destination based on role
         accountService.getRoleForTask(task).then(function (role) {
+          console.log(task.branchPath);
           switch (role) {
-            case 'REVIWER':
-              $location.url('tasks/task/' + task.branchPath + '/' + task.key + '/feedback');
+            case 'REVIEWER':
+              $location.url('tasks/task/' + task.branchPath + '/feedback');
               break;
             case 'AUTHOR':
-              $location.url('tasks/task/' + task.branchPath + '/' + task.key + '/edit');
+              $location.url('tasks/task/' + task.branchPath + '/edit');
               break;
             default:
-              $location.url('tasks/task/' + task.branchPath + '/' + task.key + '/edit');
+              $location.url('tasks/task/' + task.branchPath + '/edit');
               break;
           }
         });
