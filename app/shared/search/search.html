@@ -67,7 +67,10 @@
                     </div>
                 </div>
                 <div class="no-padding" ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
-                    <div class="p-5 wordbreak" ui-draggable="true" style="display:inline" drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj" drag-image="result.concept.fsn">{{result.concept.fsn}}
+                    <div class="p-5 wordbreak" ui-draggable="true" style="display:inline" drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj" drag-image="result.concept.fsn"><a class=" wordbreak  " title="Edit" ng-click="addItemToSavedList(result); selectItem(result)" ng-disabled="isEdited(result)">
+                       
+                       {{result.term}} 
+                   {{result.concept.fsn}} </a>
                     </div>
                 </div>
                 <div class="col-md-3 no-padding">
@@ -81,10 +84,7 @@
                     <button type="button" ng-click="addItemToFavorites(result)" ng-disabled="findItemInFavorites(result.concept.conceptId)" class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
                         <span>Add to Project Favorites</span>
                     </button>
-                    <button type="button" class="btn btn-round addButton widget-button blue lighten-2 tooltips-bottom medium-size-tooltip offset-tooltip-right  " title="Edit" ng-click="addItemToSavedList(result); selectItem(result)" ng-disabled="isEdited(result)">
-                        <i class="md fa-sca fa-pencil"></i>
-                        <span>Load into edit panel </span>
-                    </button>
+                   
                 </div>
             </div>
         </div>
