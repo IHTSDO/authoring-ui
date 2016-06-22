@@ -64,6 +64,7 @@
      font-size: 20px;
      box-shadow: none !important;
      margin-right: 0px!important;
+     z-index: inherit;
  }
  .task-details .btn {
      padding: 0px;
@@ -350,7 +351,7 @@
      color: #fff;
  }
  /*pagination */
- 
+
  .paging .btn.more-pager,
  .more-pager:hover,
  .more-pager:focus,

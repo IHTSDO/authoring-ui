@@ -2581,13 +2581,13 @@ tbody.collapse.in {
   position: fixed;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1070;
 }
 .navbar-fixed-top {
   position: fixed;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1070;
   top: 0;
   border-width: 0 0 1px;
 }
@@ -4436,13 +4436,21 @@ button.close {
 .popover.top {
   margin-top: -10px;
 }
-.popover.right {
+.popover.right,
+.popover.right-top,
+.popover[placement=right-top],
+.popover.right-bottom,
+.popover[placement=right-bottom] {
   margin-left: 10px;
 }
 .popover.bottom {
   margin-top: 10px;
 }
-.popover.left {
+.popover.left,
+.popover.left-top,
+.popover[placement=left-top],
+.popover.left-bottom,
+.popover[placement=left-bottom] {
   margin-left: -10px;
 }
 .popover-title {
@@ -4488,11 +4496,19 @@ button.close {
   border-bottom-width: 0;
   border-top-color: #fff;
 }
-.popover.left > .arrow:after {
+.popover.left > .arrow:after,
+.popover.left-top > .arrow:after,
+.popover[placement=left-top] > .arrow:after,
+.popover.left-bottom > .arrow:after,
+.popover[placement=left-bottom] > .arrow:after {
   content: " ";
   bottom: -10px;
 }
-.popover.right > .arrow {
+.popover.right > .arrow,
+.popover.right-top > .arrow,
+.popover[placement=right-top] > .arrow,
+.popover.right-bottom > .arrow,
+.popover[placement=right-bottom] > .arrow {
   top: 50%;
   left: -11px;
   margin-top: -11px;
@@ -4500,13 +4516,18 @@ button.close {
   border-right-color: rgba(0,0,0,0.2);
   border-right-color: rgba(0,0,0,0.275);
 }
-.popover.right > .arrow:after {
+.popover.right > .arrow:after,
+.popover.right-top > .arrow:after,
+.popover[placement=right-top] > .arrow:after,
+.popover.right-bottom > .arrow:after,
+.popover[placement=right-bottom] > .arrow:after {
   content: " ";
   bottom: -10px;
   left: 1px;
   border-left-width: 0;
   border-right-color: #fff;
 }
+
 .popover.bottom > .arrow {
   left: 50%;
   margin-left: -11px;
@@ -4522,7 +4543,11 @@ button.close {
   border-top-width: 0;
   border-bottom-color: #fff;
 }
-.popover.left > .arrow {
+.popover.left > .arrow,
+.popover.left-top > .arrow,
+.popover[placement=left-top] > .arrow,
+.popover.left-bottom > .arrow,
+.popover[placement=left-top] > .arrow {
   top: 50%;
   right: -11px;
   margin-top: -11px;
@@ -4530,11 +4555,28 @@ button.close {
   border-left-color: rgba(0,0,0,0.2);
   border-left-color: rgba(0,0,0,0.275);
 }
-.popover.left > .arrow:after {
+.popover.left > .arrow:after,
+.popover.left-top > .arrow:after,
+.popover[placement=left-top] > .arrow:after,
+.popover.left-bottom > .arrow:after,
+.popover[placement=left-top] > .arrow:after {
   right: 1px;
   border-right-width: 0;
   border-left-color: #fff;
 }
+.popover.left-top > .arrow,
+.popover[placement=left-top] > .arrow,
+.popover.right-top > .arrow,
+.popover[placement=right-top] > .arrow {
+  top: 15px;
+}
+.popover.left-bottom > .arrow,
+.popover[placement=left-bottom] > .arrow,
+.popover.right-bottom > .arrow,
+.popover[placement=right-bottom] > .arrow {
+  bottom: 15px;
+}
+
 
 .clearfix:after,
 .clearfix:before {
@@ -4595,18 +4637,12 @@ select {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-@media only screen and (-webkit-min-device-pixel-ratio: 1.25),only screen and (min-device-pixel-ratio: 1.25),only screen and (min-resolution: 200dpi),only screen and (min-resolution: 1.25dppx) {
-  -webkit-font-smoothing: subpixel-antialiased;
-}
 .affix {
   position: fixed;
 }
 .btn,
 .form-group {
   position: relative;
-}
-@-ms-viewport {
-  width: device-width;
 }
 @media (min-width: 992px) and (max-width: 1199px) {
   .visible-md {
