@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.root = $routeParams.root;
 
       // set the branch
-      
+
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
@@ -330,15 +330,16 @@ angular.module('singleConceptAuthoringApp.project', [
 
         // determine destination based on role
         accountService.getRoleForTask(task).then(function (role) {
+          console.debug('getRoleForTask', role);
           switch (role) {
             case 'REVIWER':
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+              $location.url('tasks/task/' + task.branchPath + '/feedback');
               break;
             case 'AUTHOR':
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              $location.url('tasks/task/' + task.branchPath + '/edit');
               break;
             default:
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              $location.url('tasks/task/' + task.branchPath + '/edit');
               break;
           }
         });

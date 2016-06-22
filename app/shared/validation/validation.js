@@ -36,13 +36,13 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
           scope.setViewTop();
-            
+
           scope.getSNF = function(id){
               var deferred = $q.defer();
               snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
                 deferred.resolve(response);
               });
-              return deferred.promise; 
+              return deferred.promise;
             };
 
           scope.conceptUpdateFunction = function (project, task, concept) {
@@ -397,7 +397,7 @@ angular.module('singleConceptAuthoringApp')
 
             modalInstance.result.then(function (task) {
 
-              notificationService.sendMessage('Task ' + task.key + ' created', -1, '#/tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              notificationService.sendMessage('Task ' + task.key + ' created', -1, '#/tasks/task/' + task.branchPath + '/edit');
 
               console.debug('Task created', task.projectKey, task.key);
 
