@@ -859,15 +859,17 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       getBranch(branchPath).then(function (branch) {
         if (!branch) {
-           deferred.reject('Branch is null');
+          deferred.reject('Branch is null');
         }
-        if (!branch.metadata) {
-          branch.metadata = {};
+        else {
+          if (!branch.metadata) {
+            branch.metadata = {};
+          }
+          branch.metadata.preventPromotion = preventPromotion;
+          $http.put(apiEndpoint + '/branches/' + branch, branch).then(function (updatedBranch) {
+            deferred.resolve(updatedBranch);
+          });
         }
-        branch.metadata.preventPromotion = preventPromotion;
-        $http.put(apiEndpoint + '/branches/' + branch, branch).then(function (updatedBranch) {
-          deferred.resolve(updatedBranch);
-        });
       }, function (error) {
         notificationService.sendError('Unexpected error retrieving branch while setting promotion eligibility');
         deferred.reject('Unexpected error');
@@ -1158,8 +1160,8 @@ angular.module('singleConceptAuthoringApp')
       getBranch: getBranch,
       createBranch: createBranch,
       getTraceabilityForBranch: getTraceabilityForBranch,
-      isBranchPromotable : isBranchPromotable,
-      setBranchPreventPromotion : setBranchPreventPromotion,
+      isBranchPromotable: isBranchPromotable,
+      setBranchPreventPromotion: setBranchPreventPromotion,
 
       // merge-review functionality
       getMergeReview: getMergeReview,
