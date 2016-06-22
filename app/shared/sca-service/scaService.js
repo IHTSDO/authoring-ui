@@ -759,7 +759,7 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendError('Error promoting project', 10000);
             return null;
           }
-          
+
         });
       },
 
@@ -789,7 +789,7 @@ angular.module('singleConceptAuthoringApp')
           else if(error.status === 409){
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
               return null;
-              
+
           }
           else{
             notificationService.sendError('Error rebasing Task: ' + projectKey);
@@ -947,7 +947,7 @@ angular.module('singleConceptAuthoringApp')
                       });
                     }
                     msg = newNotification.event + ' feedback for project ' + newNotification.project + ' and task ' + newNotification.task;
-                    url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
+                    url = '#/tasks/task/MAIN/' + newNotification.project + '/' + newNotification.task + '/feedback';
                     break;
 
                   /*
@@ -962,10 +962,10 @@ angular.module('singleConceptAuthoringApp')
 
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
-                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                      url = '#/tasks/task/MAIN/' + newNotification.project + '/' + newNotification.task + '/classify';
                       $rootScope.$broadcast('reloadTask');
                     } else {
-                      url = '#/project/' + newNotification.project;
+                      url = '#/project/MAIN/' + newNotification.project;
                       $rootScope.$broadcast('reloadProject');
                     }
 
@@ -983,7 +983,7 @@ angular.module('singleConceptAuthoringApp')
                       $rootScope.$broadcast('notification.branchState', newNotification);
                     }
                     break;
-                        
+
                   /*
                    Rebase Complete object structure
                    project: "WRPAS"
@@ -996,11 +996,11 @@ angular.module('singleConceptAuthoringApp')
 
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
-                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                      url = '#/tasks/task/MAIN/' + newNotification.project + '/' + newNotification.task + '/edit';
                       $rootScope.$broadcast('reloadTask');
                       $rootScope.$broadcast('rebaseComplete');
                     } else {
-                      url = '#/project/' + newNotification.project;
+                      url = '#/project/MAIN/' + newNotification.project;
                       $rootScope.$broadcast('reloadProject');
                     }
 
@@ -1025,9 +1025,9 @@ angular.module('singleConceptAuthoringApp')
                     // do not supply a url (button link) for FAILED status
                     if (event !== 'FAILED') {
                       if (newNotification.task) {
-                        url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
+                        url = '#/tasks/task/MAIN/' + newNotification.project + '/' + newNotification.task + '/validate';
                       } else {
-                        url = '#/projects/project/' + newNotification.project + '/validate';
+                        url = '#/projects/project/MAIN/' + newNotification.project + '/validate';
                       }
                     }
                     // broadcast validation complete to taskDetail
