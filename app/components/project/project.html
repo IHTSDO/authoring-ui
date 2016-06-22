@@ -55,25 +55,26 @@
             Promote This Project to the Mainline
             <span>Promote this project</span>
           </button>
-    
-       
-       
-      
-         
+
+
+
+
+
         </div>
-        
-      
+
+
       </div>
 </div>
-    
-    
+
+
     <div class="row project-page">
       <!-- Conflict Report Results -->
       <div class="card ">
         <div class="card-header">
           <div class="card-title">
-            <a ng-href="#/projects/project/{{project.key}}/conflicts">
+
             <button
+              ng-click="mergeAndRebase()"
               ng-disabled="project.branchState !== 'DIVERGED' && project.branchState !== 'BEHIND' && project.branchState !== 'STALE'"
               ng-init="conflictsCollapsed = true"
               type="button"
@@ -212,13 +213,13 @@
                            {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.status !== 'STALE'},
                            ]"
   class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                    <div class="md md-notifications "></div> 
+                    <div class="md md-notifications "></div>
                                         <span > <div class="message_classification_{{task.latestClassificationJson.status}}"><div ng-if="task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.redundantStatedRelationshipsFound === false"> but equivalent relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false"> but redundant stated relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === true"> but redundant stated relationships and equivalency errors were found </div> </div></span>
                   </button>
-               
+
                   </a>
 
-          
+
 
               </td>
 
@@ -235,12 +236,12 @@
                           class="btn btn-round btn-default lighten-2 pull-left ">
                     <div class="md md-school "></div>    <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>
-                  
-                
+
+
                 </a>
               </td>
 
-             
+
               <td header-title="'Click to sort'" data-title="'Status'" sortable="'status'">
                 <span ng-if="task.status !== 'IN_REVIEW'" class="badge {{task.status}}"> {{task.status}} </span>
               </td>
