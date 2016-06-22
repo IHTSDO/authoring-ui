@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!-- for ng-table checkboxes -->
 <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
   resulting in elements being placed outside of the table (i.e. position: fixed)
@@ -12,10 +11,10 @@
             </script>
             <script type="text/ng-template" id="ng-table/filters/hasFeedback.html">
                 <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value=""/> None
-    
+
                 <br/>
                 <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
-  
+
             </script>
             <style></style>
             <div class="row m-l-10 m-t-15 ">
@@ -46,7 +45,7 @@
                                                                             role="tab"
                                                                             data-toggle="tab">Approved
 
-  
+
                             <div class="badge pull-right pink darken-1 numbers ">{{feedbackContainer.review.conceptsReviewed.length}}</div>
                         </a>
                     </li>

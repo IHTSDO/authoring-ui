@@ -34,7 +34,11 @@
 
             <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
                     class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
-                    popover-template="'shared/component-more/conceptMore.html'" popover-placement="{{popoverDirection}}" popover-trigger="click: click" popover-append-to-body="true"><span>More details</span>
+                    popover-template="'shared/component-more/conceptMore.html'"
+                    popover-placement="{{popoverDirection}}"
+                    popover-trigger="click: click"
+                    popover-append-to-body="false">
+              <span>More details</span>
             </button>
 
         </div>
@@ -150,7 +154,7 @@
                             class="btn-default grey darken-3 md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
                             popover-template="'shared/component-more/descriptionMore.html'"
                             popover-placement="{{popoverDirection}}"
-                            popover-append-to-body="true">
+                            popover-append-to-body="false">
                         <span>More details</span>
                     </button>
                     <button class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom "
@@ -267,8 +271,11 @@
                         <div class="col-md-11 no-padding left-of-edit" drop-channel="relationshipObj" ui-on-drop="dropRelationship(relationship, $data)" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
                             <div class="">
-                                <button class="btn-default grey darken-3 md morebuttons more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case" ng-click="setRelationshipProperties(relationship, $event)" popover-template="'shared/component-more/relationshipMore.html'" popover-placement="{{popoverDirection}}"
-                                       popover-append-to-body="true">
+                                <button class="btn-default grey darken-3 md morebuttons more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
+                                        ng-click="setRelationshipProperties(relationship, $event)"
+                                        popover-template="'shared/component-more/relationshipMore.html'"
+                                        popover-placement="{{popoverDirection}}"
+                                        popover-append-to-body="false">
                                   <span>More details</span>
                                 </button>
 

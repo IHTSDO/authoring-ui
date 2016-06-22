@@ -9,8 +9,7 @@
     width: 100%!important;
 }
 .fsn,
-.title-text,
-{
+.title-text {
     width: 100%;
 }
 .editpanel {
@@ -20,8 +19,7 @@
     margin-bottom: 0px;
     width: 100%;
 }
-tab-pane.active .no-padding.col-md-9
-{
+tab-pane.active .no-padding.col-md-9 {
     line-height: 12px;
     font-size: 12px;
     padding-bottom: 3px;
@@ -50,6 +48,7 @@ aside.editpanel ul a {
 .editing-form {
     -webkit-text-size-adjust: 100%;
     padding-bottom: 5px;
+    z-index: inherit;
 }
 .editing-form a {
     text-decoration: none;
@@ -754,30 +753,30 @@ button.fsn-title-button {
 .case-s .md-radio-button-on {
     font-size: 18px
 }
-/* screenshots colours 
+/* screenshots colours
 
 
-.color_ input, .color_ textarea, .color_ select { 
+.color_ input, .color_ textarea, .color_ select {
     background-color: #303030 !important;  color: #b7dbff !important;
 }
 
-.color_0 input, .color_0 textarea, .color_0 select { 
+.color_0 input, .color_0 textarea, .color_0 select {
     background-color: #303030 !important;  color: #dbdbff !important;
 }
-.color_1 input, .color_1 textarea, .color_1 select{ 
+.color_1 input, .color_1 textarea, .color_1 select{
     background-color: #303030 !important;  color: #dbdbff !important;
 }
 
-.color_2 input, .color_2 textarea, .color_2 select{  
+.color_2 input, .color_2 textarea, .color_2 select{
     background-color: #303030 !important;  color: #dbdbff !important;
 }
-.color_3 input, .color_3 textarea, .color_3 select{ 
+.color_3 input, .color_3 textarea, .color_3 select{
     background-color: #303030 !important; color: #dbdbff !important;
 }
-.is_a input, .is_a textarea, .is_a select{ 
+.is_a input, .is_a textarea, .is_a select{
     background-color: #303030 !important; color: #ffffdb !important;
 }
-.attr input, .attr textarea, .attr select{ 
+.attr input, .attr textarea, .attr select{
     background-color: #303030 !important; color: #ffffdb !important;
 }
 .green {
@@ -845,7 +844,7 @@ button.fsn-title-button {
     background-color: #fff !important;
 }
 .popover .fields {
-    padding: 4px 0px;
+    font-size: 10px;
 }
 .description-popover .SCTID {
     width: 100px;
@@ -862,7 +861,14 @@ button.fsn-title-button {
     margin-right: 10px;
 }
 .popover {
-    min-width: 650px;
+    min-width: 540px;
+}
+/* avoid the popover extending underneath the LH tab panel for smaller width screens */
+
+@media screen and (max-width: 1400px) {
+    .popover {
+        min-width: 475px;
+    }
 }
 .pop-edit {
     font-size: 11px;
@@ -871,15 +877,13 @@ button.fsn-title-button {
 .popover select {
     margin-bottom: 0px!important;
     padding: 0px!important;
-	
-    min-height: 10px!important;
-
+    min-height: 11px!important;
     color: #474747!important;
 }
 .task-details hr {
     margin-top: 1px;
     margin-bottom: -2px;
-	}
+}
 .popover .control-label {
     font-weight: 400;
     width: 100%;
@@ -895,41 +899,21 @@ button.fsn-title-button {
 /* Concept level */
 
 .popover select {
-    height: 10px !important;
+    height: 11px !important;
 }
 .popover-content {
     padding: 0px 3px !important;
 }
 button.fsn-title-button {
-    width: 100%
+    width: 100%;
 }
-.concept-more .concept-id {
-    width: 14%;
-    margin-right: 3%
-}
-.concept-more .time {
-    width: 13%;
-    margin-right: 1%
-}
-.concept-more .module {
-    width: 69%;
-}
-/* description level */
-
-.description-more .sct-id {
-    width: 16%;
-    margin-right: 1%
-}
-.description-more .time {
-    width: 13%;
-    margin-right: 1%
-}
-.description-more .lang-id {
-    width: 9%;
-    margin-right: 1%
-}
-.description-more .module-id {
-    width: 56%;
+.concept-more > *,
+.description-more > *,
+.relationship-more > * {
+    min-width: 3em;
+    margin: 4px 2px;
+    min-height: 11px;
+    max-width: 98%;
 }
 /* slider*/
 
