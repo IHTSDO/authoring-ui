@@ -1027,7 +1027,7 @@ angular.module('singleConceptAuthoringApp')
                       if (newNotification.task) {
                         url = '#/tasks/task/MAIN/' + newNotification.project + '/' + newNotification.task + '/validate';
                       } else {
-                        url = '#/projects/project/MAIN/' + newNotification.project + '/validate';
+                        url = '#/projects/project/MAIN/' + newNotification.project;
                       }
                     }
                     // broadcast validation complete to taskDetail
@@ -1040,7 +1040,8 @@ angular.module('singleConceptAuthoringApp')
 
                 // send the notification (if message supplied) with optional url
                 if (msg) {
-                  notificationService.sendMessage(msg, 0, url);
+                  // TODO Re-enable url once WRP-2842 resolved, links currently non-functional
+                  notificationService.sendMessage(msg, 0, null);
                 }
               } else {
                 console.error('Unknown notification type received', newNotification);
