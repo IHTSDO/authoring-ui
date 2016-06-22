@@ -200,7 +200,7 @@
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
               <td header-title="'Click to sort'" data-title="'Classification'" sortable="'latestClassificationJson.status'">
-                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
+                 <a ng-href="#/tasks/task/{{task.branchPath}}/classify">
                        <button ng-show="task.latestClassificationJson != null"
                           type="button"
                           ng-class="[
@@ -224,7 +224,7 @@
               </td>
 
               <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'">
-                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
+                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.branchPath}}/validate">
                    <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
                           ng-class="[
