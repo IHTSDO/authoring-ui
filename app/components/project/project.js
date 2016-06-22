@@ -31,12 +31,20 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.browserLink = '..';
       $scope.root = $routeParams.root;
 
-      // set the branch
+      // get the branch
+      $scope.projectBranch = null;
 
+      // get and set the branch
+      snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function(response) {
+        $scope.projectBranch = response;
+      });
 
+      // function to get the project
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
           $scope.project = response;
+
+
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning =
