@@ -338,7 +338,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
         // determine destination based on role
         accountService.getRoleForTask(task).then(function (role) {
-          console.log(task.branchPath);
+          console.debug('getRoleForTask', role);
           switch (role) {
             case 'REVIEWER':
               $location.url('tasks/task/' + task.branchPath + '/feedback');
