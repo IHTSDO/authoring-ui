@@ -18,6 +18,8 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
+      // project and project branch
+      $scope.projectBranch = null;
       $scope.project = null;
 
       // initialize the containers
@@ -25,14 +27,12 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.classificationContainer = null;
       $scope.conflictsContainer = null;
 
-      // initialize the header notifications
+      // initialize the header notification
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
       $scope.root = $routeParams.root;
 
-      // get the branch
-      $scope.projectBranch = null;
 
       // get and set the branch
       snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function(response) {
