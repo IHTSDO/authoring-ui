@@ -50,67 +50,101 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     };
 
-    $scope.addToFavorites = function(item) {
+    $scope.addToFavorites = function (item) {
       $scope.favorites.items.push(item);
       scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites
       );
     };
 
-    $scope.isInFavorites = function(item) {
+    $scope.isInFavorites = function (item) {
       if (!$scope.favorites || !Array.isArray($scope.favorites.items)) {
         return false;
       }
       return $scope.favorites.items.indexOf(item) !== -1;
     };
 
-    $scope.isEdited = function(item) {
+    $scope.isEdited = function (item) {
       return $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
-	  $scope.viewConceptInTaxonomy = function (item) {
-        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
-        $rootScope.$broadcast('viewTaxonomy', {
-          concept: {
-            conceptId: item.concept.conceptId,
-            fsn: item.concept.fsn
-          }
-        });
-      };
+    $scope.viewConceptInTaxonomy = function (item) {
+      console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+      $rootScope.$broadcast('viewTaxonomy', {
+        concept: {
+          conceptId: item.concept.conceptId,
+          fsn: item.concept.fsn
+        }
+      });
+    };
 
     $scope.getConceptPropertiesObj = function (item) {
       return {id: item.concept.conceptId, name: item.concept.fsn};
     };
-      
+
     $scope.openConceptInformationModal = function (result) {
-        var modalInstance = $modal.open({
-          templateUrl: 'shared/concept-information/conceptInformationModal.html',
-          controller: 'conceptInformationModalCtrl',
-          resolve: {
-            conceptId: function () {
-              return result.concept.conceptId;
-            },
-            branch: function () {
-              return $scope.branch;
-            }
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/concept-information/conceptInformationModal.html',
+        controller: 'conceptInformationModalCtrl',
+        resolve: {
+          conceptId: function () {
+            return result.concept.conceptId;
+          },
+          branch: function () {
+            return $scope.branch;
+          }
+        }
+      });
+
+      modalInstance.result.then(function (response) {
+        // do nothing
+      }, function () {
+        // do nothing
+      });
+    };
+
+    $scope.$on('conceptEdit.conceptModified', function (event, data) {
+      if (!data || !data.concept) {
+        console.error('Cannot handle concept modification event: concept must be supplied');
+      } else {
+        console.debug('conceptModified notification', data);
+        // sample structure for favorites
+        //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
+        angular.forEach($scope.savedList.items, function (item) {
+
+          // if concept on list, update the relevant display fields
+          if (item.concept.conceptId === data.concept.conceptId) {
+            item.active = data.concept.active;
+            item.concept.definitionStatus = data.concept.definitionStatus;
+            item.concept.fsn = data.concept.fsn;
+            item.editing = true;
+            scaService.saveUiStateForTask(
+              $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
+            );
           }
         });
 
-        modalInstance.result.then(function (response) {
-          // do nothing
-        }, function () {
-          // do nothing
-        });
-      };
-      
+        angular.forEach($scope.favorites.items, function (item) {
+
+          // if concept on list, update the relevant display fields
+          if (item.concept.conceptId === data.concept.conceptId) {
+            item.active = data.concept.active;
+            item.concept.definitionStatus = data.concept.definitionStatus;
+            item.concept.fsn = data.concept.fsn;
+            scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
+          }
+        })
+      }
+    });
+
     $scope.$on('stopEditing', function (event, data) {
-          if (!data || !data.concept) {
-            console.error('Cannot handle stop editing event: concept must be supplied');
-          } else {
-            angular.forEach($scope.savedList.items, function (item) {
-              if (item.concept.conceptId === data.concept.conceptId) {
-                item.editing = false;
-              }
-            });
+      if (!data || !data.concept) {
+        console.error('Cannot handle stop editing event: concept must be supplied');
+      } else {
+        angular.forEach($scope.savedList.items, function (item) {
+          if (item.concept.conceptId === data.concept.conceptId) {
+            item.editing = false;
           }
         });
+      }
+    });
 
   }]);
