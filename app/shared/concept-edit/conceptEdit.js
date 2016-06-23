@@ -2243,10 +2243,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if changed
           if (scope.concept !== scope.unmodifiedConcept) {
 
+            console.debug('broadcasting conceptModified');
+
             // broadcast event to any listeners (currently task detail)
             $rootScope.$broadcast('conceptEdit.conceptModified', {
               branch: scope.branch,
-              conceptId: scope.concept.conceptId
+              conceptId: scope.concept.conceptId,
+              concept: scope.concept
             });
 
             scope.isModified = true;
