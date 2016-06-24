@@ -64,6 +64,9 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     };
 
     $scope.isEdited = function (item) {
+      if (!$scope.editList || !Array.isArray($scope.editList.items)) {
+        return false;
+      }
       return $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
     $scope.viewConceptInTaxonomy = function (item) {
