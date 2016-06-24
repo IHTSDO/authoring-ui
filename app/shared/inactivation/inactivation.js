@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
+  .directive('inactivation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'inactivationService', 'notificationService', '$timeout', '$modal',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, inactivationService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -11,11 +11,6 @@ angular.module('singleConceptAuthoringApp')
         scope: {
           //concept that is being inactivated
           inactivationConcept: '=',
-            
-          children: '=',
-
-          // flag for whether or not to allow editing controls
-          editable: '&',
 
           // branch this report is good for
           branch: '='
@@ -27,13 +22,13 @@ angular.module('singleConceptAuthoringApp')
 
           scope.editable = attrs.editable === 'true';
           scope.taskKey = $routeParams.taskKey;
-            
+
           scope.getSNF = function(id){
               var deferred = $q.defer();
               snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
                 deferred.resolve(response);
               });
-              return deferred.promise; 
+              return deferred.promise;
             };
 
           scope.conceptUpdateFunction = function (project, task, concept) {

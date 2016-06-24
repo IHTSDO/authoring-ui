@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp.edit', [
 //insert dependencies here
-  'ngRoute'
-])
+    'ngRoute'
+  ])
 
   // all task editing functionality
   .config(function config($routeProvider) {
@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
   })
 
-//Directive to trigger a function on the rendering of an entire ng-repeat,
+  //Directive to trigger a function on the rendering of an entire ng-repeat,
   // will make global once infinite scroll functionality is complete
   .directive('repeatComplete', ['$timeout', function ($timeout) {
     return {
@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
 
     // clear task-related information
     $rootScope.validationRunning = false;
@@ -94,23 +94,22 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.conceptsRendering = false;
     };
 
-    $scope.goToConflicts = function(){
-        snowowlService.getBranch($scope.parentBranch).then(function(response){
-            if(!response.metadata)
-            {
-                $location.url('tasks/task/' + $scope.root + '/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
-            }
-            else{
-                notificationService.sendWarning('Unable to start rebase on task ' + $scope.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
-            }
-        });
+    $scope.goToConflicts = function () {
+      snowowlService.getBranch($scope.parentBranch).then(function (response) {
+        if (!response.metadata) {
+          $location.url('tasks/task/' + $scope.root + '/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
+        }
+        else {
+          notificationService.sendWarning('Unable to start rebase on task ' + $scope.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
+        }
+      });
     };
 
-    $scope.gotoHome = function() {
-        $location.url('home');
-      };
-    $scope.gotoReviews = function() {
-        $location.url('review-tasks');
+    $scope.gotoHome = function () {
+      $location.url('home');
+    };
+    $scope.gotoReviews = function () {
+      $location.url('review-tasks');
     };
 
     /////////////////////////////////
@@ -196,91 +195,91 @@ angular.module('singleConceptAuthoringApp.edit', [
         $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
         .then(function (uiState) {
 
-          console.debug('saved-list:', uiState);
+            console.debug('saved-list:', uiState);
 
-          if (!uiState) {
-            $scope.savedList = {items: []};
-          }
-          else {
-            $scope.savedList = uiState;
-          }
+            if (!uiState) {
+              $scope.savedList = {items: []};
+            }
+            else {
+              $scope.savedList = uiState;
+            }
 
-        }
-      );
+          }
+        );
 
       // get favorite list
       scaService.getUiStateForUser(
-        'my-favorites-' + $routeParams.projectKey)
+          'my-favorites-' + $routeParams.projectKey)
         .then(function (uiState) {
 
-          console.debug('my project favorites', uiState);
+            console.debug('my project favorites', uiState);
 
-          if (!uiState) {
-            $scope.favorites = {items: []};
-          }
-          else {
-            $scope.favorites = uiState;
-          }
+            if (!uiState) {
+              $scope.favorites = {items: []};
+            }
+            else {
+              $scope.favorites = uiState;
+            }
 
-        }
-      );
+          }
+        );
     };
 
     $scope.getEditPanel = function () {
       scaService.getUiStateForTask(
         $routeParams.projectKey, $routeParams.taskKey, 'edit-panel')
         .then(function (uiState) {
-          $scope.concepts = [];
-          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-            $scope.editList = [];
-          }
-          else {
-            $scope.editList = uiState;
-            for (var i = 0; i < $scope.editList.length; i++) {
-              $scope.addConceptToListFromId($scope.editList[i]);
+            $scope.concepts = [];
+            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+              $scope.editList = [];
             }
-          }
+            else {
+              $scope.editList = uiState;
+              for (var i = 0; i < $scope.editList.length; i++) {
+                $scope.addConceptToListFromId($scope.editList[i]);
+              }
+            }
 
-        }
-      );
+          }
+        );
     };
 
     $scope.getClassificationEditPanel = function () {
       scaService.getUiStateForTask(
         $routeParams.projectKey, $routeParams.taskKey, 'classification-edit-panel')
         .then(function (uiState) {
-          $scope.concepts = [];
-          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-            $scope.classificationEditList = [];
-          }
-          else {
-            $scope.classificationEditList = uiState;
-            for (var i = 0; i < $scope.classificationEditList.length; i++) {
-              $scope.addConceptToListFromId($scope.classificationEditList[i]);
+            $scope.concepts = [];
+            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+              $scope.classificationEditList = [];
             }
-          }
+            else {
+              $scope.classificationEditList = uiState;
+              for (var i = 0; i < $scope.classificationEditList.length; i++) {
+                $scope.addConceptToListFromId($scope.classificationEditList[i]);
+              }
+            }
 
-        }
-      );
+          }
+        );
     };
 
     $scope.getValidationEditPanel = function () {
       scaService.getUiStateForTask(
         $routeParams.projectKey, $routeParams.taskKey, 'validation-edit-panel')
         .then(function (uiState) {
-          $scope.concepts = [];
-          if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
-            $scope.validationEditList = [];
-          }
-          else {
-            $scope.validationEditList = uiState;
-            for (var i = 0; i < $scope.validationEditList.length; i++) {
-              $scope.addConceptToListFromId($scope.validationEditList[i]);
+            $scope.concepts = [];
+            if (!uiState || Object.getOwnPropertyNames(uiState).length === 0) {
+              $scope.validationEditList = [];
             }
-          }
+            else {
+              $scope.validationEditList = uiState;
+              for (var i = 0; i < $scope.validationEditList.length; i++) {
+                $scope.addConceptToListFromId($scope.validationEditList[i]);
+              }
+            }
 
-        }
-      );
+          }
+        );
     };
 
     $scope.setView = function (name) {
@@ -305,7 +304,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'inactivation':
           $rootScope.pageTitle = 'Inactivation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'inactivation';
-          //  view starts with no concepts
+          $scope.inactivationConcept = inactivationService.getConceptToInactivate();
           $scope.concepts = [];
           $scope.canCreateConcept = false;
           break;
@@ -399,6 +398,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     // displayed concept array
     $scope.concepts = [];
 
+    // the inactivation concept (if available)
+    $scope.inactivationConcept = null;
+
     // ui states
     $scope.editList = null;
     $scope.savedList = null;
@@ -414,39 +416,52 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canConflict = false;
     $scope.canCreateConcept = false;
 
-    $scope.getConceptsForReview = function(idList, review, feedbackList){
-        snowowlService.bulkGetConcept(idList, $scope.branch).then(function(response){
-                angular.forEach(response.items, function (concept){
-                    angular.forEach(review.concepts, function(reviewConcept){
-                        if(concept.id === reviewConcept.conceptId)
-                        {
-                            if(concept.fsn){
-                                reviewConcept.term = concept.fsn.term;
-                            }
-                            angular.forEach(feedbackList, function(feedback){
-                                if(reviewConcept.conceptId === feedback.id)
-                                {
-                                    reviewConcept.messages = feedback.messages;
-                                    reviewConcept.viewDate = feedback.viewDate;
-                                }
-                            });
-                        }
-                    });
-                    angular.forEach(review.conceptsClassified, function(reviewConcept){
-                        if(concept.id === reviewConcept.conceptId)
-                        {
-                            reviewConcept.term = concept.fsn.term;
-                            angular.forEach(feedbackList, function(feedback){
-                                if(reviewConcept.conceptId === feedback.id)
-                                {
-                                    reviewConcept.messages = feedback.messages;
-                                }
-                            });
-                        }
-                    });
-                });
-                $scope.feedbackContainer.review = review ? review : {};
-            });
+    //
+    // INACTIVATION FUNCTIONS
+    //
+
+    // watch for inactivation requests from elsewhere in the application
+    $scope.$on('inactivateConcept', function (event, data) {
+      $scope.setView('inactivation');
+    });
+
+    // pass inactivation service function to determine whether in active inactivation (heh)
+    $scope.isInactivation = inactivationService.isInactivation;
+
+
+    //
+    // Review functions
+    //
+
+    $scope.getConceptsForReview = function (idList, review, feedbackList) {
+      snowowlService.bulkGetConcept(idList, $scope.branch).then(function (response) {
+        angular.forEach(response.items, function (concept) {
+          angular.forEach(review.concepts, function (reviewConcept) {
+            if (concept.id === reviewConcept.conceptId) {
+              if (concept.fsn) {
+                reviewConcept.term = concept.fsn.term;
+              }
+              angular.forEach(feedbackList, function (feedback) {
+                if (reviewConcept.conceptId === feedback.id) {
+                  reviewConcept.messages = feedback.messages;
+                  reviewConcept.viewDate = feedback.viewDate;
+                }
+              });
+            }
+          });
+          angular.forEach(review.conceptsClassified, function (reviewConcept) {
+            if (concept.id === reviewConcept.conceptId) {
+              reviewConcept.term = concept.fsn.term;
+              angular.forEach(feedbackList, function (feedback) {
+                if (reviewConcept.conceptId === feedback.id) {
+                  reviewConcept.messages = feedback.messages;
+                }
+              });
+            }
+          });
+        });
+        $scope.feedbackContainer.review = review ? review : {};
+      });
     };
 
     // on load, set the initial view based on classify/validate parameters
@@ -454,79 +469,95 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('classification');
     } else if ($routeParams.mode === 'validate') {
       $scope.setView('validation');
+    } else if ($routeParams.mode === 'inactivation') {
+      // on load, check ui state for active inactivations (heh)
+      scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept').then(function (response) {
+        if (response) {
+          inactivationService.setConceptToInactivate(response);
+          $scope.setView('inactivation');
+        }
+      });
+
     } else if ($routeParams.mode === 'feedback') {
-        snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-            var review = {};
-            if(traceability)
-            {
-                review.concepts = [];
-                review.conceptsClassified = [];
-                var idList = [];
-                angular.forEach(traceability.content, function (change) {
-                        if(change.activityType === 'CONTENT_CHANGE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    console.log(concept.conceptId);
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.concepts.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType === 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    var updateConcept = review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-                        else if(change.activityType === 'CLASSIFICATION_SAVE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else
-                                {
-                                    var updateConcept = review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-
-                });
-                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
-                    var i,j,temparray,chunk = 50;
-                    for (i=0,j=idList.length; i<j; i+=chunk) {
-                        temparray = idList.slice(i,i+chunk);
-                        $scope.getConceptsForReview(temparray, review, feedback);
-                    }
-                });
-
+      snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+        var review = {};
+        if (traceability) {
+          review.concepts = [];
+          review.conceptsClassified = [];
+          var idList = [];
+          angular.forEach(traceability.content, function (change) {
+            if (change.activityType === 'CONTENT_CHANGE') {
+              angular.forEach(change.conceptChanges, function (concept) {
+                if (review.concepts.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0 && concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  console.log(concept.conceptId);
+                  concept.conceptId = concept.conceptId.toString();
+                  concept.lastUpdatedTime = change.commitDate;
+                  review.concepts.push(concept);
+                  idList.push(concept.conceptId);
+                }
+                else if (review.conceptsClassified.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0 && concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType === 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  concept.conceptId = concept.conceptId.toString();
+                  concept.lastUpdatedTime = change.commitDate;
+                  review.conceptsClassified.push(concept);
+                  idList.push(concept.conceptId);
+                }
+                else if (concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  var updateConcept = review.concepts.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  })[0];
+                  angular.forEach(concept.componentChanges, function (componentChange) {
+                    updateConcept.componentChanges.push(componentChange);
+                  });
+                  updateConcept.lastUpdatedTime = change.commitDate;
+                }
+              });
             }
-            else if(!traceability)
-            {
-                review = {};
+            else if (change.activityType === 'CLASSIFICATION_SAVE') {
+              angular.forEach(change.conceptChanges, function (concept) {
+                if (review.conceptsClassified.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0) {
+                  concept.conceptId = concept.conceptId.toString();
+                  review.conceptsClassified.push(concept);
+                  idList.push(concept.conceptId);
+                }
+                else {
+                  var updateConcept = review.conceptsClassified.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  })[0];
+                  angular.forEach(concept.componentChanges, function (componentChange) {
+                    updateConcept.componentChanges.push(componentChange);
+                  });
+                  updateConcept.lastUpdatedTime = change.commitDate;
+                }
+              });
             }
 
-        });
+          });
+          scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
+            var i, j, temparray, chunk = 50;
+            for (i = 0, j = idList.length; i < j; i += chunk) {
+              temparray = idList.slice(i, i + chunk);
+              $scope.getConceptsForReview(temparray, review, feedback);
+            }
+          });
+
+        }
+        else if (!traceability) {
+          review = {};
+        }
+
+      });
       $scope.setView('feedback');
     } else if ($routeParams.mode === 'conflicts') {
       $scope.setView('conflicts');
@@ -614,35 +645,35 @@ angular.module('singleConceptAuthoringApp.edit', [
         // get the concept and add it to the stack
         snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
 
-            // console.debug('Response received for ' + conceptId, response);
-            if (!response) {
-              return;
-            }
+          // console.debug('Response received for ' + conceptId, response);
+          if (!response) {
+            return;
+          }
 
-            $scope.concepts.push(response);
-            console.log($routeParams);
-            if ($scope.editList.indexOf(conceptId) === -1) {
-              console.debug('updating');
-              $scope.updateEditListUiState();
-              // update edited item flagging
-            }
+          $scope.concepts.push(response);
+          console.log($routeParams);
+          if ($scope.editList.indexOf(conceptId) === -1) {
+            console.debug('updating');
+            $scope.updateEditListUiState();
+            // update edited item flagging
+          }
 
-            if ($scope.concepts.length === $scope.editList.length) {
-              notificationService.sendMessage('All concepts loaded', 10000, null);
-              $scope.updateEditListUiState();
-            } else {
-              // send loading notification for user display
-              notificationService.sendMessage('Loading concepts...', 10000, null);
-            }
+          if ($scope.concepts.length === $scope.editList.length) {
+            notificationService.sendMessage('All concepts loaded', 10000, null);
+            $scope.updateEditListUiState();
+          } else {
+            // send loading notification for user display
+            notificationService.sendMessage('Loading concepts...', 10000, null);
+          }
 
-          }, function (error) {
-            console.log('Error retrieving concept', error);
-            if (error.status === 404) {
-              notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
-            } else {
-              notificationService.sendError('Unexpected error retrieving concept');
-            }
-          });
+        }, function (error) {
+          console.log('Error retrieving concept', error);
+          if (error.status === 404) {
+            notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
+          } else {
+            notificationService.sendError('Unexpected error retrieving concept');
+          }
+        });
 
       }
 
@@ -1020,76 +1051,83 @@ angular.module('singleConceptAuthoringApp.edit', [
     // get latest review
     $scope.getLatestReview = function () {
       snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-            var review = {};
-            if(traceability)
-            {
-                review.concepts = [];
-                review.conceptsClassified = [];
-                var idList = [];
-                angular.forEach(traceability.content, function (change) {
-                        if(change.activityType === 'CONTENT_CHANGE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.concepts.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType === 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    var updateConcept = review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-                        else if(change.activityType === 'CLASSIFICATION_SAVE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else
-                                {
-                                    var updateConcept = review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-
-                });
-                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
-                    var i,j,temparray,chunk = 50;
-                    for (i=0,j=idList.length; i<j; i+=chunk) {
-                        temparray = idList.slice(i,i+chunk);
-                        $scope.getConceptsForReview(temparray, review, feedback);
-                    }
-                });
-
+        var review = {};
+        if (traceability) {
+          review.concepts = [];
+          review.conceptsClassified = [];
+          var idList = [];
+          angular.forEach(traceability.content, function (change) {
+            if (change.activityType === 'CONTENT_CHANGE') {
+              angular.forEach(change.conceptChanges, function (concept) {
+                if (review.concepts.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0 && concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  concept.conceptId = concept.conceptId.toString();
+                  concept.lastUpdatedTime = change.commitDate;
+                  review.concepts.push(concept);
+                  idList.push(concept.conceptId);
+                }
+                else if (review.conceptsClassified.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0 && concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType === 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  concept.conceptId = concept.conceptId.toString();
+                  concept.lastUpdatedTime = change.commitDate;
+                  review.conceptsClassified.push(concept);
+                  idList.push(concept.conceptId);
+                }
+                else if (concept.componentChanges.filter(function (obj) {
+                    return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
+                  }).length !== 0) {
+                  var updateConcept = review.concepts.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  })[0];
+                  angular.forEach(concept.componentChanges, function (componentChange) {
+                    updateConcept.componentChanges.push(componentChange);
+                  });
+                  updateConcept.lastUpdatedTime = change.commitDate;
+                }
+              });
             }
-            else if(!traceability)
-            {
-                review = {};
+            else if (change.activityType === 'CLASSIFICATION_SAVE') {
+              angular.forEach(change.conceptChanges, function (concept) {
+                if (review.conceptsClassified.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  }).length === 0) {
+                  concept.conceptId = concept.conceptId.toString();
+                  review.conceptsClassified.push(concept);
+                  idList.push(concept.conceptId);
+                }
+                else {
+                  var updateConcept = review.conceptsClassified.filter(function (obj) {
+                    return obj.conceptId === concept.conceptId.toString();
+                  })[0];
+                  angular.forEach(concept.componentChanges, function (componentChange) {
+                    updateConcept.componentChanges.push(componentChange);
+                  });
+                  updateConcept.lastUpdatedTime = change.commitDate;
+                }
+              });
             }
 
-        });
+          });
+          scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
+            var i, j, temparray, chunk = 50;
+            for (i = 0, j = idList.length; i < j; i += chunk) {
+              temparray = idList.slice(i, i + chunk);
+              $scope.getConceptsForReview(temparray, review, feedback);
+            }
+          });
+
+        }
+        else if (!traceability) {
+          review = {};
+        }
+
+      });
     };
 
     var feedbackStyles = {};
@@ -1131,7 +1169,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     };
 
-    $scope.getSNF = function(id){
+    $scope.getSNF = function (id) {
       var deferred = $q.defer();
       snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
@@ -1269,14 +1307,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       return cssClass;
     };
 
-    $scope.$watch(function() {
-        return $rootScope.branchLocked;
-        }, function() {
-          if ($scope.task) {
-            setBranchFunctionality($scope.task.branchState);
-          }
+    $scope.$watch(function () {
+      return $rootScope.branchLocked;
+    }, function () {
+      if ($scope.task) {
+        setBranchFunctionality($scope.task.branchState);
+      }
     }, true);
-
 
 
 //////////////////////////////////////////

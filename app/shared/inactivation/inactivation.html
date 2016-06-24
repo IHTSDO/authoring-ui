@@ -1,19 +1,18 @@
-
 <section class="tables-data">
-    <!-- for ng-table checkboxes -->
-    <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
-        <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
+  <!-- for ng-table checkboxes -->
+  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
+    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
            id="select_all_failures"
            name="filter-checkbox" value=""/>
-    </script>
-    <script type="text/ng-template" id="editheader.html">
-        <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
+  </script>
+  <script type="text/ng-template" id="editheader.html">
+    <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
             class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
             <span
-      class="md md-edit"></span>
-        </button>
-    </script>
-    <style>
+              class="md md-edit"></span>
+    </button>
+  </script>
+  <style>
 
     .table > tbody > tr > td,
     .table > tbody > tr > th {
@@ -45,90 +44,102 @@
       margin-left: -33px;
     }
   </style>
-    <div class="row red lighten-1" style="vertical-align: middle">
-        <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept}}
-        </div>
+  <div class="row red lighten-1" style="vertical-align: middle">
+    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}
+
+
+      <button
+        class="btn btn-default red darken-4 pull-right" style="text-transform: none"
+        ng-click="cancelInactivation()"><i class="md md-check m-r-10"></i>Cancel Inactivation
+      </button>
+
+      <button
+        class="btn btn-default green  pull-right" style="text-transform: none"
+        ng-click="cancelInactivation()"><i class="md md-check m-r-10"></i>Complete Inactivation
+      </button>
     </div>
-    <div class="card m-10 validation-report">
-        <div role="tabpanel" class="">
-            <div class="ng-table-no-results">
+  </div>
+  <div class="card m-10 validation-report">
+    <div role="tabpanel" class="">
+      <div class="ng-table-no-results">
         No validation results to display
       </div>
-            <div class="table-responsive white" style="margin-right:0px;" ng-if="rels">
-                <table
+      <div class="table-responsive white" style="margin-right:0px;" ng-if="rels">
+        <table
           ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
-                    <tr ng-repeat="rel in $data">
-                        <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
+          <tr ng-repeat="rel in $data">
+            <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
             </td>
-                        <td data-title="'Attribute'" sortable="'failureCount'" >
-                            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}} 
-                                <span>Relationship type</span>
-                            </div>
-                        </td>
-                        <td data-title="'Value (Proposed)'" sortable="'failureCount'" >
-                            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}} 
-                                <span>Proposed Value</span>
-                            </div>
-                        </td>
-                        <td ng-if="editable" data-header="'editheader.html'">
-                                <button type="button" class="btn btn-round btn-default blue"
+            <td data-title="'Attribute'" sortable="'failureCount'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
+                <span>Relationship type</span>
+              </div>
+            </td>
+            <td data-title="'Value (Proposed)'" sortable="'failureCount'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
+                <span>Proposed Value</span>
+              </div>
+            </td>
+            <td ng-if="editable" data-header="'editheader.html'">
+              <button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure.errorMessage.conceptId)"
-                title="View/Edit Concept">
-                                    <span class="md md-edit"></span>
-                                </button>
-                            </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="table-responsive white" style="margin-right:0px;" ng-if="assocs">
-                <table
+                      title="View/Edit Concept">
+                <span class="md md-edit"></span>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="table-responsive white" style="margin-right:0px;" ng-if="assocs">
+        <table
           ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
-                    <tr ng-repeat="assoc in $data">
-                        <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
+          <tr ng-repeat="assoc in $data">
+            <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
             </td>
-                        <td data-title="'Attribute'" sortable="'failureCount'" >
-                            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}} 
-                                <span>Relationship type</span>
-                            </div>
-                        </td>
-                        <td data-title="'Value (Proposed)'" sortable="'failureCount'" >
-                            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}} 
-                                <span>Relationship type</span>
-                            </div>
-                        </td>
-                        <td ng-if="editable" data-header="'editheader.html'">
-                                <button type="button" class="btn btn-round btn-default blue"
+            <td data-title="'Attribute'" sortable="'failureCount'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
+                <span>Relationship type</span>
+              </div>
+            </td>
+            <td data-title="'Value (Proposed)'" sortable="'failureCount'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
+                <span>Relationship type</span>
+              </div>
+            </td>
+            <td ng-if="editable" data-header="'editheader.html'">
+              <button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure.errorMessage.conceptId)"
-                title="View/Edit Concept">
-                                    <span class="md md-edit"></span>
-                                </button>
-                            </td>
-                    </tr>
-                </table>
-            </div>
-            </div>
+                      title="View/Edit Concept">
+                <span class="md md-edit"></span>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Taxonomy, models, and concepts -->
+  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
+    <!-- Taxonomy -->
+    <div class="col-md-4">
+      <div>
+        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
+        <div class="col-md-6">
+          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
         </div>
-        <!-- Taxonomy, models, and concepts -->
-        <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
-            <!-- Taxonomy -->
-            <div class="col-md-4">
-                <div>
-                    <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
-                    <div class="col-md-6">
-                        <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div concept-edit concept="concept" branch="branch" static="false"
-               component-styles="styles[concept.conceptId]" save-function="conceptUpdateFunction(project, task, concept)"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-6">
+          <div concept-edit concept="concept" branch="branch" static="false"
+               component-styles="styles[concept.conceptId]"
+               save-function="conceptUpdateFunction(project, task, concept)"></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
