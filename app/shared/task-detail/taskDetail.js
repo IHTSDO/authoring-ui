@@ -22,11 +22,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
         // immediately lock the task (fake the task lock)
-        if (!$scope.taskBranch.metadata) {
-          $scope.taskBranch.metadata = {};
-        }
-        $scope.taskBranch.metadata.lock = 'Lock pending';
-        updateLock();
+        lockTask();
 
         // start the classification
         scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -59,6 +55,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         notificationService.sendMessage('Preparing for task promotion...');
 
+        // immediately lock the task
+        lockTask();
+
         promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
 
           console.debug('promotion flags', flags);
@@ -76,6 +75,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             notificationService.sendMessage('Promoting task...');
             scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               notificationService.sendMessage('Task successfully promoted', 5000);
+              $rootScope.$broadcast('reloadTask');
             });
           } else {
 
@@ -115,12 +115,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
+
+        // NOTE: Validation does not lock task
+
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.validationRunning = true;
           $rootScope.$broadcast('reloadTask');
           notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
         }, function () {
           notificationService.sendMessage('Error submitting task for validation', 10000, null);
+          $rootScope.$broadcast('reloadTask');
         });
       };
       $scope.submitForReview = function () {
@@ -193,7 +197,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       };
 
-      // helper function to check lock based on task and project branches
+      // helper function to update lock based on task and project branches
       // NOTE: Must be manually called on expected
       function updateLock() {
         // update lock only if task and project branch both loaded
@@ -201,6 +205,20 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
            $rootScope.branchLocked = ($scope.taskBranch.metadata && $scope.taskBranch.metadata.lock || $scope.projectBranch.metadata && $scope.projectBranch.metadata.lock);
         }
       };
+
+      // force lock a task by adding a 'lock' item to metadata
+      // NOTE: Replaced on next task update by actual lock
+      function lockTask() {
+        if ($scope.taskBranch) {
+          if (!$scope.taskBranch.metadata) {
+            $scope.taskBranch.metadata = {};
+          }
+          $scope.taskBranch.metadata.lock = 'Lock pending';
+          updateLock();
+        } else {
+          console.error('Cannot lock task, branch not loaded');
+        }
+      }
 
       //
       // Project polling for lock status updates
