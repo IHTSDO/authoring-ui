@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       });
     };
 
-    $scope.$on('conceptEdit.conceptModified', function (event, data) {
+    $scope.$on('conceptEdit.conceptChange', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot handle concept modification event: concept must be supplied');
       } else {
