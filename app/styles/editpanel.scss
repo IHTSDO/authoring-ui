@@ -569,7 +569,7 @@ select {
         width: 80%;
     }
     /* form widths */
-    
+
     .editing-form .rolegroup {
         width: 3.0%;
         padding-left: 0px;
@@ -861,15 +861,10 @@ button.fsn-title-button {
     margin-right: 10px;
 }
 .popover {
-    min-width: 540px;
+    margin-top: 1px;
+    min-width: 650px;
 }
-/* avoid the popover extending underneath the LH tab panel for smaller width screens */
 
-@media screen and (max-width: 1400px) {
-    .popover {
-        min-width: 475px;
-    }
-}
 .pop-edit {
     font-size: 11px;
     margin: 0px !important;
@@ -899,7 +894,7 @@ button.fsn-title-button {
 /* Concept level */
 
 .popover select {
-    height: 11px !important;
+    height: 10px !important;
 }
 .popover-content {
     padding: 0px 3px !important;
@@ -911,10 +906,15 @@ button.fsn-title-button {
 .description-more > *,
 .relationship-more > * {
     min-width: 3em;
-    margin: 4px 2px;
+    margin: 2px 2px;
     min-height: 11px;
     max-width: 98%;
 }
+
+.popover .editing-form {
+  padding-bottom: 0;
+}
+
 /* slider*/
 
 .sca-layout-elem {
