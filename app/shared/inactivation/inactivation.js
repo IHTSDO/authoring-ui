@@ -23,49 +23,91 @@ angular.module('singleConceptAuthoringApp')
           scope.editable = attrs.editable === 'true';
           scope.taskKey = $routeParams.taskKey;
 
-          scope.getSNF = function(id){
-              var deferred = $q.defer();
-              snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
-                deferred.resolve(response);
-              });
-              return deferred.promise;
-            };
+          scope.getSNF = function (id) {
+            var deferred = $q.defer();
+            snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
+              deferred.resolve(response);
+            });
+            return deferred.promise;
+          };
 
           scope.conceptUpdateFunction = function (project, task, concept) {
-              var deferred = $q.defer();
-              snowowlService.updateConcept(project, task, concept).then(function (response) {
-                deferred.resolve(response);
-              });
-              return deferred.promise;
-            };
+            var deferred = $q.defer();
+            snowowlService.updateConcept(project, task, concept).then(function (response) {
+              deferred.resolve(response);
+            });
+            return deferred.promise;
+          };
 
-          // local variables for ng-table population
-          scope.assertionsFailed = [];
-          scope.failures = [];
+          //
+          // Relationship retrieval functions
+          //
+          /**
+           * Helper function to get and set a page of, or all, inbound relationships
+           * @param conceptId
+           * @param branch
+           * @param startIndex
+           * @param maxResults
+           */
+          function getInboundRelationships(startIndex, maxResults) {
+            console.log('getting inbound relationships', startIndex, maxResults);
+            var deferred = $q.defer();
+
+            // get the concept relationships again (all)
+            snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0, scope.tableLimit).then(function (response) {
+
+              // temporary array for preventing duplicate children
+              var activeRels = [];
+
+              // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
+              // make top-level properties
+              angular.forEach(response.inboundRelationships, function (item) {
+
+                console.debug('checking relationship', item.active, item);
+
+                // filter out non-active relationships
+                if (item.active) {
+                  item.sourceFsn = item.source.fsn;
+                  item.typeFsn = item.type.fsn;
+                  activeRels.push(item);
+                }
+              });
+
+              response.inboundRelationships = activeRels;
+
+              deferred.resolve(response);
+
+            });
+            return deferred.promise;
+          }
+
+
+          //
+          // Association retrieval functions
+          //
+
+
+          //
+          // NgTable declarations
+          //
 
           // declare table parameters
           scope.relsTableParams = new NgTableParams({
               page: 1,
-              count: 10,
-              sorting: {failureCount: 'desc'},
-              orderBy: 'failureCount'
+              count: 10
             },
             {
               filterDelay: 50,
-              total: scope.assertionsFailed ? scope.assertionsFailed.length : 0,
+
+              // initial display text, overwritten in getData
+              total: '-',
               getData: function ($defer, params) {
 
-                if (!scope.assertionsFailed || scope.assertionsFailed.length === 0) {
-                  $defer.resolve([]);
-                } else {
-
-                  var orderedData = scope.assertionsFailed;
-
-                  params.total(orderedData.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-
-                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                }
+                getInboundRelationships((params.page() - 1) * params.count(), params.count()).then(function (response) {
+                  console.log('ngTable inbound relationships', params);
+                  scope.relsTableParams.total(response.total);
+                  $defer.resolve(response.inboundRelationships);
+                });
               }
             }
           );
@@ -73,30 +115,15 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.assocsTableParams = new NgTableParams({
               page: 1,
-              count: 10,
-              sorting: {userModified: 'desc'},
-              orderBy: 'userModified'
+              count: 10
             },
             {
-              total: scope.failures ? scope.failures.length : 0,
+              // initial display text, overwritten in getData
+              total: '-',
               getData: function ($defer, params) {
-
-                console.debug('getData failures', scope.failures);
-
-                // clear the loading variable on reload
-                scope.failuresLoading = false;
-
-                if (!scope.failures || scope.failures.length === 0) {
-                  $defer.resolve([]);
-                } else {
-
-                  var orderedData = scope.failures;
-                  params.total(orderedData.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-
-                  console.debug('getData failures orderedData', orderedData);
-                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                }
+                // TODO Put call here
+                scope.relsTableParams.total(0);
+                $defer.resolve([]);
               }
             }
           );

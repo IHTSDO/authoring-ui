@@ -60,65 +60,87 @@
     </div>
   </div>
   <div class="card m-10 validation-report">
-    <div role="tabpanel" class="">
-      <div class="ng-table-no-results">
-        No validation results to display
-      </div>
-      <div class="table-responsive white" style="margin-right:0px;" ng-if="rels">
-        <table
-          ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
-          class="table table-full table-full-small">
-          <tr ng-repeat="rel in $data">
-            <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
-            </td>
-            <td data-title="'Attribute'" sortable="'failureCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-                <span>Relationship type</span>
-              </div>
-            </td>
-            <td data-title="'Value (Proposed)'" sortable="'failureCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-                <span>Proposed Value</span>
-              </div>
-            </td>
-            <td ng-if="editable" data-header="'editheader.html'">
-              <button type="button" class="btn btn-round btn-default blue"
-                      ng-click="editConcept(failure.errorMessage.conceptId)"
-                      title="View/Edit Concept">
-                <span class="md md-edit"></span>
-              </button>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="table-responsive white" style="margin-right:0px;" ng-if="assocs">
-        <table
-          ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
-          class="table table-full table-full-small">
-          <tr ng-repeat="assoc in $data">
-            <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
-            </td>
-            <td data-title="'Attribute'" sortable="'failureCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-                <span>Relationship type</span>
-              </div>
-            </td>
-            <td data-title="'Value (Proposed)'" sortable="'failureCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-                <span>Relationship type</span>
-              </div>
-            </td>
-            <td ng-if="editable" data-header="'editheader.html'">
-              <button type="button" class="btn btn-round btn-default blue"
-                      ng-click="editConcept(failure.errorMessage.conceptId)"
-                      title="View/Edit Concept">
-                <span class="md md-edit"></span>
-              </button>
-            </td>
-          </tr>
-        </table>
-      </div>
+
+    <div class="ng-table-no-results" ng-show="assocsTableParams.total() == 0 && relsTableParams.total() == 0">
+      No validation results to display
     </div>
+
+    <!-- Nav tabs -->
+    <div class="row classification-report">
+        <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+
+          <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
+                                                                   aria-controls="home" role="tab"
+                                                                   data-toggle="tab"> Relationships Affected By
+            Inactivation ({{relsTableParams.total()}})
+          </a></li>
+          <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
+                                                       data-toggle="tab">Historical Associations ({{assocsTableParams.total()}})</a>
+          </li>
+        </ul>
+      </div>
+
+  </div>
+    <div class="table-responsive white" style="margin-right:0px;">
+      <table
+        ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
+        class="table table-full table-full-small">
+        <tr ng-repeat="rel in $data">
+          <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
+            <input type="checkbox" ng-model="rel.selected" ui-on-drop="">
+          </td>
+          <td data-title="'RG'" sortable="'groupId'">{{rel.group}}</td>
+          <td data-title="'Concept'" sortable="FSN">{{rel.sourceFsn}}
+          </td>
+          <td data-title="'Attribute'" sortable="'failureCount'">
+            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
+              <span>Relationship type</span>
+            </div>
+          </td>
+          <td data-title="'Value (Proposed)'" sortable="'failureCount'">
+            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> ???
+              <span>Proposed Value</span>
+            </div>
+          </td>
+          <td ng-if="editable" data-header="'editheader.html'">
+            <button type="button" class="btn btn-round btn-default blue"
+                    ng-click="editConcept(failure.errorMessage.conceptId)"
+                    title="View/Edit Concept">
+              <span class="md md-edit"></span>
+            </button>
+          </td>
+        </tr>
+      </table>
+      NOTE: Inactive relationships not shown.
+    </div>
+    <div class="table-responsive white" style="margin-right:0px;" ng-if="assocs">
+      <table
+        ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
+        class="table table-full table-full-small">
+        <tr ng-repeat="assoc in $data">
+          <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
+          </td>
+          <td data-title="'Attribute'" sortable="'failureCount'">
+            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
+              <span>Relationship type</span>
+            </div>
+          </td>
+          <td data-title="'Value (Proposed)'" sortable="'failureCount'">
+            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
+              <span>Relationship type</span>
+            </div>
+          </td>
+          <td ng-if="editable" data-header="'editheader.html'">
+            <button type="button" class="btn btn-round btn-default blue"
+                    ng-click="editConcept(failure.errorMessage.conceptId)"
+                    title="View/Edit Concept">
+              <span class="md md-edit"></span>
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
   </div>
   <!-- Taxonomy, models, and concepts -->
   <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
