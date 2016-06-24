@@ -80,14 +80,14 @@
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
                     <tr ng-repeat="assertion in $data">
-                        <td data-title="'Failed Assertions'" sortable="'assertionText'">{{assertion.assertionText}}
+                        <td header-title="'Click to sort'" data-title="'Failed Assertions'" sortable="'assertionText'">{{assertion.assertionText}}
             </td>
-                        <td data-title="'# of Cases'" sortable="'failureCount'" >
+                        <td header-title="'Click to sort'" data-title="'# of Cases'" sortable="'failureCount'" >
                             <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.failureCount}} 
                                 <span># of cases with errors</span>
                             </div>
                         </td>
-                        <td data-title="''" sortable="''">
+                        <td >
                             <button
                 title="View These Failures" type="button" ng-click="viewFailures(assertion)"
                 class="btn btn-default blue case-failures">Load Cases
@@ -125,13 +125,13 @@
                             <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
                             </td>
                             <!-- other columns here -->
-                            <td data-title="'Concept'" sortable="'conceptId'">
+                            <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
               {{failure.errorMessage.conceptId}}
             </td>
-                            <td data-title="'Error Message'" sortable="'detail'">
+                            <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'">
               {{failure.errorMessage.detail}}
             </td>
-                            <td ng-if="taskKey" data-title="'Changed Here'" sortable="'userModified'">
+                            <td ng-if="taskKey"  header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
               {{failure.userModified}}
             </td>
                             <td ng-if="editable" data-header="'editheader.html'">

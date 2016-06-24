@@ -17,7 +17,7 @@
   "strict": true,
   "trailing": true,
   "smarttabs": true,
-  "jQuery": true
+  "jQuery": true,
   "globals": {
     "angular": false,
     "$": false,

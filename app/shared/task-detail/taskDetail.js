@@ -8,6 +8,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.branch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $rootScope.branchLocked = false;
 
+      // the project and task branch objects
+      $scope.projectBranch = null;
+      $scope.taskBranch = null;
+
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
       $scope.taxonomyConcept = null;
@@ -17,6 +21,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
+        // immediately lock the task (fake the task lock)
+        lockTask();
+
+        // start the classification
         scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
           if (!response || !response.data || !response.data.id) {
@@ -34,10 +42,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $scope.classificationId = response.data.id;
           $rootScope.classificationRunning = true;
 
-          // broadcast task update to application to capture classification
-          // change
           $rootScope.$broadcast('reloadTask');
 
+
+        }, function () {
+          // do nothing on error
         });
       };
 
@@ -61,8 +70,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // if response contains no flags, simply promote
           if (!warningsFound) {
             notificationService.sendMessage('Promoting task...');
+
+            // manually lock the task in expectation of server lock post-promotion
+            lockTask();
+
             scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               notificationService.sendMessage('Task successfully promoted', 5000);
+              $rootScope.$broadcast('reloadTask');
             });
           } else {
 
@@ -75,7 +89,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 flags: function () {
                   return flags;
                 },
-                isTask: function() {
+                isTask: function () {
                   return true;
                 }
               }
@@ -84,6 +98,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 notificationService.sendMessage('Promoting task...');
+
+                // manually lock the task in expectation of server lock post-promotion
+                lockTask();
+
                 scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   notificationService.sendMessage('Task successfully promoted', 5000);
                   $rootScope.$broadcast('reloadTask');
@@ -102,12 +120,16 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.startValidation = function () {
         notificationService.sendMessage('Submitting task for validation...');
+
+        // NOTE: Validation does not lock task
+
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.validationRunning = true;
-		   $rootScope.$broadcast('reloadTask');
-          notificationService.sendMessage('Task successfully submitted for validation', 10000, null);
+          $rootScope.$broadcast('reloadTask');
+          notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
         }, function () {
-          notificationService.sendMessage('Error submitting task for validation', 5000, null);
+          notificationService.sendMessage('Error submitting task for validation', 10000, null);
+          $rootScope.$broadcast('reloadTask');
         });
       };
       $scope.submitForReview = function () {
@@ -124,31 +146,31 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             {
               'status': 'IN_REVIEW'
             }).then(function (response) {
-              notificationService.sendMessage('Task submitted for review');
-              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
-			   $rootScope.$broadcast('reloadTask');
-              $scope.reviewClicked = true;
-              $scope.task = response;
-            }, function (error) {
-              notificationService.sendError('Error submitting task for review');
-            });
+            notificationService.sendMessage('Task submitted for review', 5000);
+            scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
+            $rootScope.$broadcast('reloadTask');
+            $scope.reviewClicked = true;
+            $scope.task = response;
+          }, function (error) {
+            notificationService.sendError('Error submitting task for review');
+          });
         });
 
       };
-  // cancel review
-          $scope.cancelReview = function () {
-              var taskObj = {
-                'status': 'IN_PROGRESS',
-                'reviewer': {
-                    'username': ''
-                  }
-              };
-              scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
-                notificationService.sendMessage('Review Cancelled', 2000);
-                $rootScope.$broadcast('reloadTask');
-              });
+      // cancel review
+      $scope.cancelReview = function () {
+        var taskObj = {
+          'status': 'IN_PROGRESS',
+          'reviewer': {
+            'username': ''
+          }
+        };
+        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
+          notificationService.sendMessage('Review Cancelled', 2000);
+          $rootScope.$broadcast('reloadTask');
+        });
 
-          };
+      };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
           templateUrl: 'shared/task/task.html',
@@ -180,50 +202,65 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       };
 
-      // TODO Project locking is intended to block, no classifications can be kicked off, and no editing
-      // can still run validations
-      $scope.pollStatus = function() {
-            snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function (response) {
+      // helper function to update lock based on task and project branches
+      // NOTE: Must be manually called on expected
+      function updateLock() {
+        // update lock only if task and project branch both loaded
+        if ($scope.taskBranch && $scope.projectBranch) {
+           $rootScope.branchLocked = ($scope.taskBranch.metadata && $scope.taskBranch.metadata.lock || $scope.projectBranch.metadata && $scope.projectBranch.metadata.lock);
+        }
+      };
 
-            if(response.metadata)
-            {
-                $rootScope.branchLocked = true;
-                $timeout($scope.pollStatus, 4000);
-            }
-            else{
+      // force lock a task by adding a 'lock' item to metadata
+      // NOTE: Replaced on next task update by actual lock
+      function lockTask() {
+        if ($scope.taskBranch) {
+          if (!$scope.taskBranch.metadata) {
+            $scope.taskBranch.metadata = {};
+          }
+          $scope.taskBranch.metadata.lock = 'Lock pending';
+          updateLock();
+        } else {
+          console.error('Cannot lock task, branch not loaded');
+        }
+      }
 
-                $rootScope.branchLocked = false;
-            }
-          });
+      //
+      // Project polling for lock status updates
+      // TODO Inquire as to whether notifications can serve this purpose? Seems like locking would be a branch state notification
+      // TODO Update: Changing project metadata does not trigger a notification
+      //
+      var projectPoll = null;
+      function pollProjectStatus() {
+        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function (response) {
 
-                };
+          $scope.projectBranch = response;
+
+          // check for lock and update if presen
+          updateLock();
+
+          // if a timeout already scheduled, cancel it
+          if (projectPoll) {
+            $timeout.cancel(projectPoll);
+          }
+          projectPoll = $timeout(pollProjectStatus, 4000);
+        });
+      };
 
       function initialize() {
+
+        console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
+
+        // clear the branch variables (but not the task to avoid display re-initialization)
+        $scope.taskBranch = null;
+
+        // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
 
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
-          });
-        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
-            console.log(response);
-            if(response.metadata)
-            {
-                $rootScope.branchLocked = true;
-                $scope.pollStatus();
-            }
-            else if(response.status === 404)
-            {
-                notificationService.sendWarning('Task initializing');
-                snowowlService.createBranch($routeParams.root + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                    notificationService.sendWarning('Task initialization complete', 3000);
-                    $rootScope.$broadcast('reloadTaxonomy');
-              });
-            }
-            else{
-                $scope.pollStatus();
-            }
           });
 
           // set button flags
@@ -238,6 +275,27 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
 
         });
+
+        // retrieve the task branch
+        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+          console.log('task branch', $rootScope.branchLocked, response);
+
+          // store the latest task branch
+          $scope.taskBranch = response;
+          updateLock();
+
+          if ($scope.taskBranch.status === 404) {
+            notificationService.sendWarning('Task initializing');
+            snowowlService.createBranch($routeParams.root + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
+              notificationService.sendWarning('Task initialization complete', 3000);
+              $rootScope.$broadcast('reloadTaxonomy');
+            });
+          }
+        });
+
+        // start polling the project for lock updates
+        pollProjectStatus();
+
       }
 
       $scope.$on('reloadTask', function (event, data) {

@@ -36,42 +36,42 @@ angular.module('singleConceptAuthoringApp')
         deferred.resolve(flags);
 
       } else {
-          console.log('here');
-          console.log(task);
+        console.log('here');
+        console.log(task);
         if (!latestClassificationJson) {
           flags.push({
             checkTitle: 'Classification Not Run',
             checkWarning: 'No classifications were run on this branch. Promote only if you are sure your changes will not affect future classification.',
             blocksPromotion: false
           });
-          if(task !== undefined){
-                scaService.getTaskForProject(project, task).then(function (branchStatus) {
-                    console.log(branchStatus);
-                    ////////////////////////////////////////////////////////////
-                    // CHECK:  Has the Task been reviewed?
-                    ////////////////////////////////////////////////////////////
-                    if (!branchStatus.feedbackMessagesStatus || branchStatus.feedbackMessagesStatus === 'none') {
-                      flags.push({
-                        checkTitle: 'No review completed',
-                        checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
-                        blocksPromotion: false
-                      });
-                    }
+          if (task !== undefined) {
+            scaService.getTaskForProject(project, task).then(function (branchStatus) {
+              console.log(branchStatus);
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Has the Task been reviewed?
+              ////////////////////////////////////////////////////////////
+              if (!branchStatus.feedbackMessagesStatus || branchStatus.feedbackMessagesStatus === 'none') {
+                flags.push({
+                  checkTitle: 'No review completed',
+                  checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
+                  blocksPromotion: false
+                });
+              }
 
-                    ////////////////////////////////////////////////////////////
-                    // CHECK:  Is the task still in Review?
-                    ////////////////////////////////////////////////////////////
-                    if (branchStatus.status === 'In Review') {
-                      flags.push({
-                        checkTitle: 'Task is still in review',
-                        checkWarning: 'The task review has not been marked as complete.',
-                        blocksPromotion: false
-                      });
-                    }
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Is the task still in Review?
+              ////////////////////////////////////////////////////////////
+              if (branchStatus.status === 'In Review') {
+                flags.push({
+                  checkTitle: 'Task is still in review',
+                  checkWarning: 'The task review has not been marked as complete.',
+                  blocksPromotion: false
+                });
+              }
 
-                    ////////////////////////////////////////////////////////////
-                    // CHECK:  Unread Review messages?
-                    ////////////////////////////////////////////////////////////
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Unread Review messages?
+              ////////////////////////////////////////////////////////////
 //                    if (branchStatus.feedbackMessagesStatus === 'unread') {
 //                      flags.push({
 //                        checkTitle: 'Review contains unread feedback',
@@ -79,13 +79,13 @@ angular.module('singleConceptAuthoringApp')
 //                        blocksPromotion: false
 //                      });
 //                    }
-                    console.debug('resolving');
+              console.debug('resolving');
 
-                    deferred.resolve(flags);
-                });
-          }
-          else{
               deferred.resolve(flags);
+            });
+          }
+          else {
+            deferred.resolve(flags);
           }
         } else {
 
@@ -94,179 +94,194 @@ angular.module('singleConceptAuthoringApp')
 //          scaService.getUiStateForUser('classification-' + latestClassificationJson.id).then(function (classificationStatus) {
 
 
-            // get the branch details
-            snowowlService.getBranch(branch).then(function (branchStatus) {
+          // get the branch details
+          snowowlService.getBranch(branch).then(function (branchStatus) {
 
-                console.debug('branch', branchStatus);
+              console.debug('branch', branchStatus);
 
-                if (!branchStatus) {
+              if (!branchStatus) {
+                flags.push({
+                  checkTitle: 'Could Not Retrieve Branch Details',
+                  checkWarning: 'Could not retrieve branch details for branch: ' + branch + '.  This is a fatal error; contact an administrator',
+                  blocksPromotion: true
+                });
+
+                deferred.resolve(flags);
+              }
+
+              ////////////////////////////////////////////////////////////
+              // CHECK: Was classification run?
+              ////////////////////////////////////////////////////////////
+
+              if (latestClassificationJson.status === 'COMPLETED' || latestClassificationJson.status === 'SAVING_IN_PROGRESS' || latestClassificationJson.status === 'SAVED') {
+
+                console.debug('classification run -- YES');
+                flags.push({
+                  checkTitle: 'Classification Run',
+                  checkWarning: null,
+                  blocksPromotion: false
+                });
+              } else {
+                console.debug('classification run -- NO');
+                flags.push({
+                  checkTitle: 'Classification Not Completed',
+                  checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
+                  blocksPromotion: false
+                });
+              }
+
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Is the classification current?
+              ////////////////////////////////////////////////////////////
+
+              // Case 1: if classification report is completed, but not
+              // accepted, check that results are current relative to task
+              // modification does not require ui state, can use timestamp on
+              // classification status
+              if (latestClassificationJson.status === 'COMPLETED') {
+
+                if ((new Date(latestClassificationJson.creationDate)).getTime() >= branchStatus.headTimestamp) {
                   flags.push({
-                    checkTitle: 'Could Not Retrieve Branch Details',
-                    checkWarning: 'Could not retrieve branch details for branch: ' + branch + '.  This is a fatal error; contact an administrator',
-                    blocksPromotion: true
+                    checkTitle: 'Classification Current',
+                    checkWarning: null,
+                    blocksPromotion: false
                   });
+                } else {
+                  flags.push({
+                    checkTitle: 'Classification Not Current',
+                    checkWarning: 'Classification was run, but modifications were made after the classifier was initiated.  Promote only if you are sure any changes will not affect future classification.',
+                    blocksPromotion: false
+                  });
+                }
+              }
+
+              // Case 2: if classification results were accepted, use the
+              // stored ui-state to check that the results are current
+              // relative to task modifications
+              else if (latestClassificationJson.status === 'SAVED') {
+
+                // if no classification status saved or saved state was not
+                // captured by application
+                if (!latestClassificationJson.saveDate) {
+                  flags.push({
+                    checkTitle: 'Classification May Not Be Current',
+                    checkWarning: 'Could not determine whether modifications were made after saving the classification. Promote only if you sure any changes will not affect future classification.',
+                    blocksPromotion: false
+                  });
+                }
+
+                // otherwise compare the head timestamp of the branch to the
+                // saved timestamp of classification results acceptance
+                else if ((new Date(latestClassificationJson.saveDate)).getTime() > branchStatus.headTimestamp) {
+                  flags.push({
+                    checkTitle: 'Classification Current',
+                    checkWarning: null,
+                    blocksPromotion: false
+                  });
+                }
+                else if ((new Date(latestClassificationJson.saveDate)).getTime() <= branchStatus.headTimestamp) {
+                  flags.push({
+                    checkTitle: 'Classification Not Current',
+                    checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
+                    blocksPromotion: false
+                  });
+                }
+              }
+
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Was classification saved?
+              ////////////////////////////////////////////////////////////
+
+              // check if saved
+              if (latestClassificationJson.status === 'SAVED') {
+
+                flags.push({
+                  checkTitle: 'Classification Accepted',
+                  checkWarning: null,
+                  blocksPromotion: false
+                });
+              }
+
+              // check if classification has results
+              else if (latestClassificationJson.equivalentConceptsFound
+                || latestClassificationJson.inferredRelationshipChangesFound
+                || latestClassificationJson.redundantStatedRelationshipsFound) {
+                flags.push({
+                  checkTitle: 'Classification Not Accepted',
+                  checkWarning: 'Classification results were not accepted to this branch',
+                  blocksPromotion: false
+                });
+              }
+
+              // if no results, put up a display message
+              else {
+                flags.push({
+                  checkTitle: 'Classification Has No Results to Accept',
+                  checkWarning: null,
+                  blocksPromotion: null
+                })
+              }
+
+
+              ////////////////////////////////////////////////////////////
+              // CHECK:  Does the classification report equivalencies?
+              ////////////////////////////////////////////////////////////
+              if (latestClassificationJson.equivalentConceptsFound) {
+                flags.push({
+                  checkTitle: 'Equivalencies Found',
+                  checkWarning: 'Classification reports equivalent concepts on this branch. You may not promote until these are resolved',
+                  blocksPromotion: true
+                });
+              }
+              if (task !== undefined) {
+                scaService.getTaskForProject(project, task).then(function (branchStatus) {
+                  console.log(branchStatus);
+                  ////////////////////////////////////////////////////////////
+                  // CHECK:  Has the Task been reviewed?
+                  ////////////////////////////////////////////////////////////
+                  if (!branchStatus.feedbackMessagesStatus || branchStatus.feedbackMessagesStatus === 'none') {
+                    flags.push({
+                      checkTitle: 'No review completed',
+                      checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
+                      blocksPromotion: false
+                    });
+                  }
+
+                  ////////////////////////////////////////////////////////////
+                  // CHECK:  Is the task still in Review?
+                  ////////////////////////////////////////////////////////////
+                  if (branchStatus.status === 'In Review') {
+                    flags.push({
+                      checkTitle: 'Task is still in review',
+                      checkWarning: 'The task review has not been marked as complete.',
+                      blocksPromotion: false
+                    });
+                  }
+
+                  ////////////////////////////////////////////////////////////
+                  // CHECK:  Unread Review messages?
+                  ////////////////////////////////////////////////////////////
+                  //                    if (branchStatus.feedbackMessagesStatus === 'unread') {
+                  //                      flags.push({
+                  //                        checkTitle: 'Review contains unread feedback',
+                  //                        checkWarning: 'All feedback against concepts within this task has not been read',
+                  //                        blocksPromotion: false
+                  //                      });
+                  //                    }
+                  console.debug('resolving');
 
                   deferred.resolve(flags);
-                }
+                });
+              }
+              else {
+                deferred.resolve(flags);
+              }
 
-                ////////////////////////////////////////////////////////////
-                // CHECK: Was classification run?
-                ////////////////////////////////////////////////////////////
 
-                if (latestClassificationJson.status === 'COMPLETED' || latestClassificationJson.status === 'SAVING_IN_PROGRESS' || latestClassificationJson.status === 'SAVED') {
-
-                  console.debug('classification run -- YES');
-                  flags.push({
-                    checkTitle: 'Classification Run',
-                    checkWarning: null,
-                    blocksPromotion: false
-                  });
-                } else {
-                  console.debug('classification run -- NO');
-                  flags.push({
-                    checkTitle: 'Classification Not Completed',
-                    checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
-                    blocksPromotion: false
-                  });
-                }
-
-                ////////////////////////////////////////////////////////////
-                // CHECK:  Is the classification current?
-                ////////////////////////////////////////////////////////////
-
-                // Case 1: if classification report is completed, but not
-                // accepted, check that results are current relative to task
-                // modification does not require ui state, can use timestamp on
-                // classification status
-                if (latestClassificationJson.status === 'COMPLETED') {
-
-                  if ((new Date(latestClassificationJson.creationDate)).getTime() >= branchStatus.headTimestamp) {
-                    flags.push({
-                      checkTitle: 'Classification Current',
-                      checkWarning: null,
-                      blocksPromotion: false
-                    });
-                  } else {
-                    flags.push({
-                      checkTitle: 'Classification Not Current',
-                      checkWarning: 'Classification was run, but modifications were made after the classifier was initiated.  Promote only if you are sure any changes will not affect future classification.',
-                      blocksPromotion: false
-                    });
-                  }
-                }
-
-                // Case 2: if classification results were accepted, use the
-                // stored ui-state to check that the results are current
-                // relative to task modifications
-                else if (latestClassificationJson.status === 'SAVED') {
-
-                  // if no classification status saved or saved state was not
-                  // captured by application
-                  if (!latestClassificationJson.saveDate) {
-                    flags.push({
-                      checkTitle: 'Classification May Not Be Current',
-                      checkWarning: 'Could not determine whether modifications were made after saving the classification. Promote only if you sure any changes will not affect future classification.',
-                      blocksPromotion: false
-                    });
-                  }
-
-                  // otherwise compare the head timestamp of the branch to the
-                  // saved timestamp of classification results acceptance
-                  else if ((new Date(latestClassificationJson.saveDate)).getTime() > branchStatus.headTimestamp) {
-                    flags.push({
-                      checkTitle: 'Classification Current',
-                      checkWarning: null,
-                      blocksPromotion: false
-                    });
-                  }
-                  else if ((new Date(latestClassificationJson.saveDate)).getTime() <= branchStatus.headTimestamp) {
-                    flags.push({
-                      checkTitle: 'Classification Not Current',
-                      checkWarning: 'Classification was run, but modifications were made to the task afterwards.  Promote only if you are sure those changes will not affect future classifications.',
-                      blocksPromotion: false
-                    });
-                  }
-                }
-
-                ////////////////////////////////////////////////////////////
-                // CHECK:  Was classification saved?
-                ////////////////////////////////////////////////////////////
-
-                if (latestClassificationJson.status === 'SAVED') {
-
-                  flags.push({
-                    checkTitle: 'Classification Accepted',
-                    checkWarning: null,
-                    blocksPromotion: false
-                  });
-                } else {
-                  flags.push({
-                    checkTitle: 'Classification Not Accepted',
-                    checkWarning: 'Classification results were not accepted to this branch',
-                    blocksPromotion: false
-                  });
-                }
-
-                ////////////////////////////////////////////////////////////
-                // CHECK:  Does the classification report equivalencies?
-                ////////////////////////////////////////////////////////////
-                if (latestClassificationJson.equivalentConceptsFound) {
-                  flags.push({
-                    checkTitle: 'Equivalencies Found',
-                    checkWarning: 'Classification reports equivalent concepts on this branch. You may not promote until these are resolved',
-                    blocksPromotion: true
-                  });
-                }
-                if(task !== undefined)
-                {
-                    scaService.getTaskForProject(project, task).then(function (branchStatus) {
-                        console.log(branchStatus);
-                        ////////////////////////////////////////////////////////////
-                        // CHECK:  Has the Task been reviewed?
-                        ////////////////////////////////////////////////////////////
-                        if (!branchStatus.feedbackMessagesStatus ||branchStatus.feedbackMessagesStatus === 'none') {
-                          flags.push({
-                            checkTitle: 'No review completed',
-                            checkWarning: 'No review has been completed on this task, are you sure you would like to promote?',
-                            blocksPromotion: false
-                          });
-                        }
-
-                        ////////////////////////////////////////////////////////////
-                        // CHECK:  Is the task still in Review?
-                        ////////////////////////////////////////////////////////////
-                        if (branchStatus.status === 'In Review') {
-                          flags.push({
-                            checkTitle: 'Task is still in review',
-                            checkWarning: 'The task review has not been marked as complete.',
-                            blocksPromotion: false
-                          });
-                        }
-
-                        ////////////////////////////////////////////////////////////
-                        // CHECK:  Unread Review messages?
-                        ////////////////////////////////////////////////////////////
-    //                    if (branchStatus.feedbackMessagesStatus === 'unread') {
-    //                      flags.push({
-    //                        checkTitle: 'Review contains unread feedback',
-    //                        checkWarning: 'All feedback against concepts within this task has not been read',
-    //                        blocksPromotion: false
-    //                      });
-    //                    }
-                        console.debug('resolving');
-
-                        deferred.resolve(flags);
-                    });
-                }
-                else{
-                    deferred.resolve(flags);
-                }
-
-                
-              },
-              function (error) {
-                deferred.reject('Could not determine branch state');
-              });
+            },
+            function (error) {
+              deferred.reject('Could not determine branch state');
+            });
         }
 
       }

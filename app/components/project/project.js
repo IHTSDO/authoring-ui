@@ -18,6 +18,8 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
+      // project and project branch
+      $scope.projectBranch = null;
       $scope.project = null;
 
       // initialize the containers
@@ -25,18 +27,24 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.classificationContainer = null;
       $scope.conflictsContainer = null;
 
-      // initialize the header notifications
+      // initialize the header notification
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
       $scope.root = $routeParams.root;
 
-      // set the branch
-      
 
+      // get and set the branch
+      snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function(response) {
+        $scope.projectBranch = response;
+      });
+
+      // function to get the project
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
           $scope.project = response;
+
+
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning =
@@ -330,15 +338,16 @@ angular.module('singleConceptAuthoringApp.project', [
 
         // determine destination based on role
         accountService.getRoleForTask(task).then(function (role) {
+          console.debug('getRoleForTask', role);
           switch (role) {
-            case 'REVIWER':
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+            case 'REVIEWER':
+              $location.url('tasks/task/' + task.branchPath + '/feedback');
               break;
             case 'AUTHOR':
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              $location.url('tasks/task/' + task.branchPath + '/edit');
               break;
             default:
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              $location.url('tasks/task/' + task.branchPath + '/edit');
               break;
           }
         });

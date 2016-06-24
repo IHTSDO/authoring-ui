@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
 
     };
-    
+
     $scope.goToConflicts = function(task){
         snowowlService.getBranch('MAIN/' + task.projectKey).then(function(response){
             if(!response.metadata)
@@ -176,13 +176,12 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             };
 
             scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+              $location.url('tasks/task/' + task.branchPath + '/feedback');
             });
           }
         });
-        // otherwise, simply go to feedback view
       } else {
-        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+        $location.url('tasks/task/' + task.branchPath + '/feedback');
       }
     };
     $scope.isReviewer = function () {
