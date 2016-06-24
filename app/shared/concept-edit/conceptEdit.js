@@ -373,7 +373,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // conflict/feedback resolved lists)
                 $rootScope.$broadcast('conceptEdit.conceptChange', {
                   branch: scope.branch,
-                  conceptId: scope.concept.conceptId
+                  conceptId: scope.concept.conceptId,
+                  concept : scope.concept
                 });
 
                 // if ui state update function specified, call it (after a
