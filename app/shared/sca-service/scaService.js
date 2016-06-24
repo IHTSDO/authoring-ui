@@ -365,8 +365,6 @@ angular.module('singleConceptAuthoringApp')
           concept = {current: true};
         }
 
-        console.debug('autosaving modified concept', projectKey, taskKey, concept);
-
         // TODO Refine this when support for multiple unsaved concepts goes in
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId, concept).then(
           function (response) {
@@ -905,6 +903,8 @@ angular.module('singleConceptAuthoringApp')
               var newNotification = response.data[0];
 
               var msg = null;
+
+              // TODO Modify url once WRP-2842 resolved, links currently non-functional
               var url = null;
 
               /**
@@ -1040,8 +1040,8 @@ angular.module('singleConceptAuthoringApp')
 
                 // send the notification (if message supplied) with optional url
                 if (msg) {
-                  // TODO Re-enable url once WRP-2842 resolved, links currently non-functional
-                  notificationService.sendMessage(msg, 0, null);
+
+                  notificationService.sendMessage(msg, 0, url);
                 }
               } else {
                 console.error('Unknown notification type received', newNotification);
