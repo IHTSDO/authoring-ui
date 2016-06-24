@@ -55,9 +55,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         notificationService.sendMessage('Preparing for task promotion...');
 
-        // immediately lock the task
-        lockTask();
-
         promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
 
           console.debug('promotion flags', flags);
@@ -73,6 +70,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // if response contains no flags, simply promote
           if (!warningsFound) {
             notificationService.sendMessage('Promoting task...');
+
+            // manually lock the task in expectation of server lock post-promotion
+            lockTask();
+
             scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               notificationService.sendMessage('Task successfully promoted', 5000);
               $rootScope.$broadcast('reloadTask');
@@ -97,6 +98,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 notificationService.sendMessage('Promoting task...');
+
+                // manually lock the task in expectation of server lock post-promotion
+                lockTask();
+
                 scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   notificationService.sendMessage('Task successfully promoted', 5000);
                   $rootScope.$broadcast('reloadTask');

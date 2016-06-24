@@ -410,6 +410,10 @@ angular.module('singleConceptAuthoringApp')
             scope.resultsNotEmpty = scope.classificationContainer.equivalentConceptsFound
               || scope.classificationContainer.inferredRelationshipChangesFound
               || scope.classificationContainer.redundantStatedRelationshipsFound;
+            console.debug('RESULTS', scope.classificationContainer.equivalentConceptsFound
+              , scope.classificationContainer.inferredRelationshipChangesFound
+              , scope.classificationContainer.redundantStatedRelationshipsFound
+            )
 
 
             if (!scope.classificationContainer || !scope.classificationContainer.id) {

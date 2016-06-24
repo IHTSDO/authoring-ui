@@ -66,7 +66,6 @@ angular.module('singleConceptAuthoringApp')
 
 ////////////////////////////////////////////
 // Method Visibility
-// TODO All methods currently visible!
 ////////////////////////////////////////////
     return {
 
