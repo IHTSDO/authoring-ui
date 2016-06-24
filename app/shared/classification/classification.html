@@ -3,38 +3,38 @@
     <div class="col-md-12 green classification-header" style="vertical-align: middle">
       <div class="p-5">Classification Report: {{statusText}}
 
+
+
         <!-- Only display classification action buttons if results are found -->
-        <div class="pull-right" ng-if="resultsNotEmpty">
+        <button
+          ng-if="resultsNotEmpty && classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
+          class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
+          ng-click="downloadClassification()" style="text-transform: none">
+          <span>Download Classification Results</span>
+        </button>
 
-          <button
-            ng-if="classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
-            class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
-            ng-click="downloadClassification()" style="text-transform: none">
-            <span>Download Classification Results</span>
-          </button>
+        <button ng-if="resultsNotEmpty" ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+                class="btn btn-default green pull-right"
+                ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
-          <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-                  class="btn btn-default green pull-right"
-                  ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+        <button ng-if="resultsNotEmpty && classificationContainer.status === 'COMPLETED'"
+                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                ng-hide="classificationContainer.status === 'SAVED'" ng-click="saveClassification()"><i
+          class="md md-check m-r-10"></i>Accept Classification Results
+        </button>
 
-          <button ng-if=" classificationContainer.status === 'COMPLETED'"
-                  class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                  ng-hide="classificationContainer.status === 'SAVED'" ng-click="saveClassification()"><i
-            class="md md-check m-r-10"></i>Accept Classification Results
-          </button>
+        <button ng-if="resultsNotEmpty && classificationContainer.status === 'SAVING_IN_PROGRESS'"
+                disabled
+                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
+        </button>
 
-          <button ng-if=" classificationContainer.status === 'SAVING_IN_PROGRESS'"
-                  disabled
-                  class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                  ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
-          </button>
+        <button ng-if="resultsNotEmpty && classificationContainer.status === 'SAVED'"
+                disabled
+                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Classification Saved
+        </button>
 
-          <button ng-if=" classificationContainer.status === 'SAVED'"
-                  disabled
-                  class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                  ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Classification Saved
-          </button>
-        </div>
 
       </div>
     </div>
@@ -42,10 +42,11 @@
     <!-- Empty classification report display. TODO Needs style attention -->
     <div ng-show="!resultsNotEmpty" class="row classification-report">
       <div class="classification-btn">
-      <button class="btn btn-default green classify" ng-click="classify()"
-              disabled><span class="md md-notifications green darken-1 iconbase"></span>
-        <span class="button-link">Classification Report Empty, No Action Required</span>
-      </button>
+        <button class="btn btn-default green classify" ng-click="classify()"
+                disabled><span class="md md-notifications green darken-1 iconbase"></span>
+          <span class="button-link">Classification Report Empty, No Action Required</span>
+        </button>
+      </div>
     </div>
 
     <!-- Classification Report Contents -->
@@ -102,37 +103,37 @@
 
       </div>
     </div>
-  </div>
 
-  <!-- Taxonomy, models, and concepts -->
-  <div class="row classification-report no-padding no-gutter m-t-15" ng-if="viewedConcepts.length > 0">
 
-    <!-- Taxonomy -->
-    <div class="col-md-3 grey lighten-2">
-      <div>
-        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-      </div>
-    </div>
+    <!-- Taxonomy, models, and concepts -->
+    <div class="row classification-report no-padding no-gutter m-t-15" ng-if="viewedConcepts.length > 0">
 
-    <div class="col-md-9">
-
-      <div ng-repeat="conceptPair in viewedConcepts">
-
-        <div class="row no-padding  grey darken-3 no-gutter">
-          <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true" autosave="false"></div>
-        </div>
-
-        <div class="row grey darken-3">
-          <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"
-               classification-saved="{{classificationContainer.status === 'SAVED'}}"></div>
+      <!-- Taxonomy -->
+      <div class="col-md-3 grey lighten-2">
+        <div>
+          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
         </div>
       </div>
 
-    </div>
+      <div class="col-md-9">
 
+        <div ng-repeat="conceptPair in viewedConcepts">
+
+          <div class="row no-padding  grey darken-3 no-gutter">
+            <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true" autosave="false"></div>
+          </div>
+
+          <div class="row grey darken-3">
+            <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"
+                 classification-saved="{{classificationContainer.status === 'SAVED'}}"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="m-b-50">&nbsp</div>
   </div>
-  <div class="m-b-50">&nbsp</div>
-</div>
 
 
 
