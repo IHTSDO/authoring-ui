@@ -91,11 +91,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
       {
-        scope.$watch(function() {
-        return $rootScope.branchLocked;
-        }, function() {
+        scope.$watch(function () {
+          return $rootScope.branchLocked;
+        }, function () {
           scope.isStatic = $rootScope.branchLocked;
-    }, true);
+        }, true);
 
         //    console.debug('conceptEdit styles', scope.componentStyles);
         scope.saving = false;
@@ -374,7 +374,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 $rootScope.$broadcast('conceptEdit.conceptChange', {
                   branch: scope.branch,
                   conceptId: scope.concept.conceptId,
-                  concept : scope.concept
+                  concept: scope.concept
                 });
 
                 // if ui state update function specified, call it (after a
@@ -417,12 +417,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             angular.forEach(validationResults, function (validationResult) {
               if (validationResult.severity === 'WARNING') {
-                if(!scope.merge){
-                    results.hasWarnings = true;
-                    if (!results.warnings[validationResult.componentId]) {
-                      results.warnings[validationResult.componentId] = [];
-                    }
-                    results.warnings[validationResult.componentId].push(validationResult.message);
+                if (!scope.merge) {
+                  results.hasWarnings = true;
+                  if (!results.warnings[validationResult.componentId]) {
+                    results.warnings[validationResult.componentId] = [];
+                  }
+                  results.warnings[validationResult.componentId].push(validationResult.message);
                 }
               }
               else if (validationResult.severity === 'ERROR') {
@@ -507,22 +507,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // save concept
               saveHelper().then(function () {
                 // recompute validation warnings
-                    scope.validateConcept().then(function () {
-                        notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
-                        scope.saving = false;
+                scope.validateConcept().then(function () {
+                  notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                  scope.saving = false;
                 }, function (error) {
                   notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
-                        scope.saving = false;
+                  scope.saving = false;
                 });
 
               }, function (error) {
-                  if(error.status === 504)
-                  {
+                if (error.status === 504) {
                   notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
-                  }
-                  else{
-                    notificationService.sendError('Error saving concept: ' + error.statusText);
-                  }
+                }
+                else {
+                  notificationService.sendError('Error saving concept: ' + error.statusText);
+                }
                 scope.saving = false;
               });
             }
@@ -535,14 +534,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
                 scope.saving = false;
               }, function (error) {
-                  console.log(error);
-                if(error.status === 504)
-                  {
+                console.log(error);
+                if (error.status === 504) {
                   notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
-                  }
-                  else{
-                    notificationService.sendError('Error saving concept: ' + error.statusText);
-                  }
+                }
+                else {
+                  notificationService.sendError('Error saving concept: ' + error.statusText);
+                }
                 scope.saving = false;
               });
             }
@@ -579,33 +577,29 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if inactive, simply set active and autoSave
           if (!scope.concept.active) {
             scope.warnings = ['Please select which relationships you would like to activate along with the concept, or create a new Is A and click save.'];
-              if(!scope.concept.relationships)
-              {
-                  console.log('here');
-                  scope.concept.relationships = [];
-                  scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
-                  autoSave();
-                  scope.computeRelationshipGroups();
+            if (!scope.concept.relationships) {
+              console.log('here');
+              scope.concept.relationships = [];
+              scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
+              autoSave();
+              scope.computeRelationshipGroups();
+            }
+            else {
+              var stated = false;
+              angular.forEach(scope.concept.relationships, function (relationship) {
+                if (relationship.characteristicType === 'STATED_RELATIONSHIP') {
+                  stated = true;
+                }
+              });
+              if (stated === false) {
+                scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
+                autoSave();
+                scope.computeRelationshipGroups();
               }
-              else
-              {
-                  var stated = false;
-                  angular.forEach(scope.concept.relationships, function (relationship) {
-                      if(relationship.characteristicType === 'STATED_RELATIONSHIP')
-                      {
-                          stated = true;
-                      }
-                    });
-                  if(stated === false)
-                  {
-                      scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
-                      autoSave();
-                      scope.computeRelationshipGroups();
-                  }
-              }
-              scope.getDomainAttributes();
-              scope.concept.active = true;
-              scope.hideInactive = false;
+            }
+            scope.getDomainAttributes();
+            scope.concept.active = true;
+            scope.hideInactive = false;
           }
 
           // otherwise, proceed with checks and inactivation reason persistence
@@ -626,11 +620,65 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return;
             }
 
-            // persist the ui state for reload events
-            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept', scope.concept);
+            // validate the concept
+            snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
+              // check for errors -- NOTE: Currently unused, but errors are
+              // printed to log if detected
+              var errors = validationResults.filter(
+                function (result) {
+                  return result.type === 'ERROR';
+                });
 
-            // set the concept in the inactivation service for listener update and retrieval
-            inactivationService.setConceptToInactivate(scope.concept);
+              if (errors.length > 0) {
+                console.log('Detected errors in concept when inactivating', errors);
+              } else {
+                console.log('No errors detected');
+              }
+
+              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+
+                notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
+
+                snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+
+                  scope.concept.active = false;
+
+                  // if reason is selected, deactivate all descriptions and
+                  // relationships
+                  if (results.reason) {
+
+                    // straightforward inactivation of relationships
+                    // NOTE: Descriptions stay active so a FSN can still be
+                    // found
+                    angular.forEach(scope.concept.relationships, function (relationship) {
+                      relationship.active = false;
+                    });
+
+                    // save concept but bypass validation checks
+                    saveHelper().then(function () {
+                      notificationService.sendMessage('Concept inactivated');
+                    }, function (error) {
+                      notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                    });
+                  }
+                }, function () {
+                  notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+                });
+
+              });
+
+            });
+
+            /**
+             * WRP-2161 content
+             *
+             // persist the ui state for reload events
+             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept', scope.concept);
+
+             // set the concept in the inactivation service for listener update and retrieval
+             // NOTE: Also broadcasts a route change to edit.js from the service
+             inactivationService.setConceptToInactivate(scope.concept);
+             */
           }
 
         };
@@ -640,17 +688,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * with autosave
          */
         scope.toggleConceptDefinitionStatus = function (isStatic) {
-          if(!isStatic)
-          {
-              if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
-                scope.concept.definitionStatus = 'PRIMITIVE';
-              }
-              else {
-                scope.concept.definitionStatus = 'FULLY_DEFINED';
-              }
-              // only action required is autosave, value is changed via select
-              // (unlike toggle buttons)
-              autoSave();
+          if (!isStatic) {
+            if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
+              scope.concept.definitionStatus = 'PRIMITIVE';
+            }
+            else {
+              scope.concept.definitionStatus = 'FULLY_DEFINED';
+            }
+            // only action required is autosave, value is changed via select
+            // (unlike toggle buttons)
+            autoSave();
           }
 
         };
@@ -1002,19 +1049,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             description.active = false;
             var activeFsn = [];
-              for (var i = 0; i < scope.concept.descriptions.length; i++) {
-                if (scope.concept.descriptions[i].type === 'FSN' && scope.concept.descriptions[i].active === true) {
-                  activeFsn.push(scope.concept.descriptions[i]);
-                }
+            for (var i = 0; i < scope.concept.descriptions.length; i++) {
+              if (scope.concept.descriptions[i].type === 'FSN' && scope.concept.descriptions[i].active === true) {
+                activeFsn.push(scope.concept.descriptions[i]);
               }
-              if (activeFsn.length !== 1) {
-                scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
-                description.active = true;
-              }
-            else{
-                // ensure all minimum fields are present
-                componentAuthoringUtil.applyMinimumFields(scope.concept);
-                autoSave();
+            }
+            if (activeFsn.length !== 1) {
+              scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
+              description.active = true;
+            }
+            else {
+              // ensure all minimum fields are present
+              componentAuthoringUtil.applyMinimumFields(scope.concept);
+              autoSave();
             }
           }
 
@@ -1022,86 +1069,86 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             description.active = false;
             var innerActiveFsn = [];
-              for (var j = 0; j < scope.concept.descriptions.length; j++) {
-                if (scope.concept.descriptions[j].type === 'FSN' && scope.concept.descriptions[j].active === true) {
-                  innerActiveFsn.push(scope.concept.descriptions[j]);
+            for (var j = 0; j < scope.concept.descriptions.length; j++) {
+              if (scope.concept.descriptions[j].type === 'FSN' && scope.concept.descriptions[j].active === true) {
+                innerActiveFsn.push(scope.concept.descriptions[j]);
+              }
+            }
+            if (innerActiveFsn.length !== 1) {
+              scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
+              description.active = true;
+            }
+            else {
+              // TODO Decide what the heck to do with result
+              selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
+
+                notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
+
+                // if a reason supplied
+                if (results.reason.id) {
+
+                  // persist the inactivation reason
+                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
+                    description.active = false;
+                    scope.saveConcept();
+                  }, function (error) {
+                    notificationService.sendError('Error inactivating description');
+                  });
+
                 }
-              }
-              if (innerActiveFsn.length !== 1) {
-                scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
-                description.active = true;
-              }
-              else{
-            // TODO Decide what the heck to do with result
-            selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
 
-              notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
-
-              // if a reason supplied
-              if (results.reason.id) {
-
-                // persist the inactivation reason
-                snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
+                // if no reason supplied, simply save the concept
+                else {
                   description.active = false;
                   scope.saveConcept();
-                }, function (error) {
-                  notificationService.sendError('Error inactivating description');
-                });
-
-              }
-
-              // if no reason supplied, simply save the concept
-              else {
-                description.active = false;
-                scope.saveConcept();
-              }
-            });
-          }
+                }
+              });
+            }
           }
         };
         scope.editDescriptionInactivationReason = function (item) {
-            selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
+          selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
 
-              notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
+            notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
-              // if a reason supplied
-              //if (results.reason.id) {
+            // if a reason supplied
+            //if (results.reason.id) {
 
-                // persist the inactivation reason
-                snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
-                  item.active = false;
-                  scope.saveConcept();
-                }, function (error) {
-                  notificationService.sendError('Error inactivating description');
-                });
-
-              //}
+            // persist the inactivation reason
+            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
+              item.active = false;
+              scope.saveConcept();
+            }, function (error) {
+              notificationService.sendError('Error inactivating description');
             });
+
+            //}
+          });
         };
 
         scope.editConceptInactivationReason = function (item) {
-            selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+          selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
-                notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
+            notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
-                snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+            snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
-                  // if reason is selected, deactivate all descriptions and
-                  // relationships
-                  if (results.reason) {
+              // if reason is selected, deactivate all descriptions and
+              // relationships
+              if (results.reason) {
 
-                    // save concept but bypass validation checks
-                    saveHelper().then(function () {
-                      notificationService.sendMessage('Concept inactivated');
-                    }, function (error) {
-                      notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                    });
-                  }
-                }, function () {
-                  notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+                // save concept but bypass validation checks
+                saveHelper().then(function () {
+                  notificationService.sendMessage('Concept inactivated');
+                }, function (error) {
+                  notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
                 });
+              }
+            }, function () {
+              notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+            });
 
-              });
+          });
         };
 
 /// define case significances
@@ -1141,38 +1188,38 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.acceptabilityMap) {
             description.acceptabilityMap = {};
           }
-          if(description.type !== 'TEXT_DEFINITION'){
-              switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+          if (description.type !== 'TEXT_DEFINITION') {
+            switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
 
-                // if preferred, switch to acceptable
-                case 'PREFERRED':
-                  description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
-                  break;
+              // if preferred, switch to acceptable
+              case 'PREFERRED':
+                description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
+                break;
 
-                // if acceptable, switch to not acceptable (i.e. clear the dialect
-                // key)
-                case 'ACCEPTABLE':
-                  delete description.acceptabilityMap[scope.dialects[dialectName]];
-                  break;
+              // if acceptable, switch to not acceptable (i.e. clear the dialect
+              // key)
+              case 'ACCEPTABLE':
+                delete description.acceptabilityMap[scope.dialects[dialectName]];
+                break;
 
-                // if neither of the above, or blank, set to preferred
-                default:
-                  description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
-                  break;
-              }
-          }
-            else{
-                switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
-                case 'PREFERRED':
-                  delete description.acceptabilityMap[scope.dialects[dialectName]];
-                  break;
-
-                // if neither of the above, or blank, set to preferred
-                default:
-                  description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
-                  break;
-              }
+              // if neither of the above, or blank, set to preferred
+              default:
+                description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                break;
             }
+          }
+          else {
+            switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+              case 'PREFERRED':
+                delete description.acceptabilityMap[scope.dialects[dialectName]];
+                break;
+
+              // if neither of the above, or blank, set to preferred
+              default:
+                description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                break;
+            }
+          }
 
           autoSave();
         };
@@ -1320,15 +1367,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.toggleRelationshipActive = function (relationship) {
           // no special handling required, simply toggle
-          if(scope.concept.active === true)
-          {
-              relationship.active = !relationship.active;
-              relationship.effectiveTime = null;
-              componentAuthoringUtil.applyMinimumFields(scope.concept);
-              scope.getDomainAttributes();
-              autoSave();
+          if (scope.concept.active === true) {
+            relationship.active = !relationship.active;
+            relationship.effectiveTime = null;
+            componentAuthoringUtil.applyMinimumFields(scope.concept);
+            scope.getDomainAttributes();
+            autoSave();
           }
-          else{
+          else {
             scope.warnings = ['You must activate the concept before its components.'];
           }
         };
@@ -1403,14 +1449,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // console.debug('selectInactivationReason', componentType,
           // reasons, associationTargets, conceptId, branch);
           var popups = document.querySelectorAll('.popover');
-            if(popups) {
-                for(var i=0; i<popups.length; i++) {
-                    var popup = popups[i];
-                    var popupElement = angular.element(popup);
-                    popupElement.scope().$parent.isOpen=false;
-                    popupElement.remove();
-                }
+          if (popups) {
+            for (var i = 0; i < popups.length; i++) {
+              var popup = popups[i];
+              var popupElement = angular.element(popup);
+              popupElement.scope().$parent.isOpen = false;
+              popupElement.remove();
             }
+          }
           var deferred = $q.defer();
 
           var modalInstance = $modal.open({
@@ -1645,36 +1691,36 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Scope is static, cannot drop');
             return;
           }
-            console.log(source);
-          scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn).then(function (response){
-              if (response.length === 0) {
-                  // copy relationship object and replace target relationship
-                  var copy = angular.copy(source);
+          console.log(source);
+          scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn).then(function (response) {
+            if (response.length === 0) {
+              // copy relationship object and replace target relationship
+              var copy = angular.copy(source);
 
-                  // clear the effective time and source information
-                  delete copy.sourceId;
-                  delete copy.effectiveTime;
-                  delete copy.relationshipId;
+              // clear the effective time and source information
+              delete copy.sourceId;
+              delete copy.effectiveTime;
+              delete copy.relationshipId;
 
-                  // set the group based on target
-                  copy.groupId = target.groupId;
+              // set the group based on target
+              copy.groupId = target.groupId;
 
-                  // get index of target relationship
-                  var targetIndex = scope.concept.relationships.indexOf(target);
+              // get index of target relationship
+              var targetIndex = scope.concept.relationships.indexOf(target);
 
-                  // if existing relationship, insert source relationship afterwards
-                  if (target.target.conceptId) {
-                    scope.concept.relationships.splice(targetIndex + 1, 0, copy);
-                  }
+              // if existing relationship, insert source relationship afterwards
+              if (target.target.conceptId) {
+                scope.concept.relationships.splice(targetIndex + 1, 0, copy);
+              }
 
-                  // otherwise replace the relationship
-                  else {
-                    scope.concept.relationships[targetIndex] = copy;
-                  }
-                  scope.getDomainAttributes();
-                  autoSave();
+              // otherwise replace the relationship
+              else {
+                scope.concept.relationships[targetIndex] = copy;
+              }
+              scope.getDomainAttributes();
+              autoSave();
 
-                  scope.computeRelationshipGroups();
+              scope.computeRelationshipGroups();
 
             } else {
               scope.warnings = response;
@@ -1771,7 +1817,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var errors = [];
           var relsChecked = 0;
-            console.log('mrcm validation');
+          console.log('mrcm validation');
           angular.forEach(relGroup, function (rel) {
             scope.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.type.fsn, rel.target.fsn).then(function (response) {
               errors = errors.concat(response);
@@ -2149,9 +2195,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship.effectiveTime && !roleGroupOnly) {
             delete relationship.relationshipId;
           }
-          if(relationship.type.conceptId === '116680003' && !roleGroupOnly)
-          {
-              scope.getDomainAttributes();
+          if (relationship.type.conceptId === '116680003' && !roleGroupOnly) {
+            scope.getDomainAttributes();
           }
 
           scope.computeRelationshipGroups();
@@ -2429,16 +2474,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (response[i].definitionStatus === 'PRIMITIVE') {
                 status = 'P';
               }
-              if(response[i].fsn)
-              {
-                  response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-                  // console.debug('checking for duplicates', i, response[i]);
-                  for (var j = response.length - 1; j > i; j--) {
-                    if (response[j].id === response[i].id) {
-                      response.splice(j, 1);
-                      j--;
-                    }
+              if (response[i].fsn) {
+                response[i].tempFsn = response[i].fsn.term + ' - ' + status;
+                // console.debug('checking for duplicates', i, response[i]);
+                for (var j = response.length - 1; j > i; j--) {
+                  if (response[j].id === response[i].id) {
+                    response.splice(j, 1);
+                    j--;
                   }
+                }
               }
             }
             return response;

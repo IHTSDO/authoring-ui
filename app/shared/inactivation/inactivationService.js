@@ -13,7 +13,11 @@ angular.module('singleConceptAuthoringApp')
     // Getters & setters
     //
     function isInactivation() {
-      return conceptToInactivate != null && conceptToInactivate != undefined;
+
+      return false;
+
+      // TODO REENABLE once inactivation is desired, this is used to trigger state detection
+      // return conceptToInactivate != null && conceptToInactivate != undefined;
     }
 
     function setConceptToInactivate(concept) {
