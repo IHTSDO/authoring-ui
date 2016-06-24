@@ -303,13 +303,22 @@
 
     </div>
 
+    <!-- Inactivation view -->
     <div ng-if="thisView === 'inactivation'">
 
-      <!-- inactivation screen -->
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
-        <div inactivation inactivation-concept="inactivationConcept" branch="targetBranch"></div>
-      </div>
+      <div class="row no-padding no-gutter">
 
+        <div class="col-md-3">
+          <!-- sidebar -->
+          <!--<div class="editpanel sca-column no-padding" ng-include src="'shared/sidebar-edit/sidebarEdit.html'">
+          </div>-->
+        </div>
+
+        <!-- inactivation screen -->
+        <div class="col-md-9">
+          <div inactivation inactivation-concept="inactivationConcept" branch="targetBranch"></div>
+        </div>
+      </div>
     </div>
 
 

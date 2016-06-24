@@ -4,7 +4,7 @@
 // Service for concept inactivation
 //
 angular.module('singleConceptAuthoringApp')
-  .service('inactivationService', ['$http', '$rootScope', 'scaService', 'snowowlService', 'notificationService', function ($http, $rootScope, scaService, snowowlService, notificationService) {
+  .service('inactivationService', ['$http', '$q', '$rootScope', 'scaService', 'snowowlService', 'notificationService', function ($http, $q, $rootScope, scaService, snowowlService, notificationService) {
 
     // the concept selected for inactivation in this session
     var conceptToInactivate = null;
