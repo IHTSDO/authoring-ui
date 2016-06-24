@@ -118,7 +118,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           }
         };
         scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
-			
+
           scaService.updateTask(
             $routeParams.projectKey, $routeParams.taskKey,
             {
@@ -147,7 +147,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.sendMessage('Review Cancelled', 2000);
                 $rootScope.$broadcast('reloadTask');
               });
-            
+
           };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
@@ -179,27 +179,29 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
         });
       };
-        
+
+      // TODO Project locking is intended to block, no classifications can be kicked off, and no editing
+      // can still run validations
       $scope.pollStatus = function() {
             snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function (response) {
-                
+
             if(response.metadata)
             {
                 $rootScope.branchLocked = true;
                 $timeout($scope.pollStatus, 4000);
             }
             else{
-                
+
                 $rootScope.branchLocked = false;
             }
           });
-                        
+
                 };
 
       function initialize() {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
-          
+
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
@@ -220,7 +222,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               });
             }
             else{
-                $scope.pollStatus();   
+                $scope.pollStatus();
             }
           });
 
