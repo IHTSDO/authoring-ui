@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, metadataService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -553,6 +553,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
+        // pass inactivation service function to determine whether in process of inactivation
+        scope.isInactivation = inactivationService.isInactivation;
+
 
         // function to toggle active status of concept
         // cascades to children components
@@ -622,55 +625,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
               return;
             }
-            // validate the concept
-            snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
-              // check for errors -- NOTE: Currently unused, but errors are
-              // printed to log if detected
-              var errors = validationResults.filter(
-                function (result) {
-                  return result.type === 'ERROR';
-                });
 
-              if (errors.length > 0) {
-                console.log('Detected errors in concept when inactivating', errors);
-              } else {
-                console.log('No errors detected');
-              }
+            // persist the ui state for reload events
+            scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept', scope.concept);
 
-              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
-
-                notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
-
-                snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
-
-                  scope.concept.active = false;
-
-                  // if reason is selected, deactivate all descriptions and
-                  // relationships
-                  if (results.reason) {
-
-                    // straightforward inactivation of relationships
-                    // NOTE: Descriptions stay active so a FSN can still be
-                    // found
-                    angular.forEach(scope.concept.relationships, function (relationship) {
-                      relationship.active = false;
-                    });
-
-                    // save concept but bypass validation checks
-                    saveHelper().then(function () {
-                      notificationService.sendMessage('Concept inactivated');
-                    }, function (error) {
-                      notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                    });
-                  }
-                }, function () {
-                  notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
-                });
-
-              });
-
-            });
-
+            // set the concept in the inactivation service for listener update and retrieval
+            inactivationService.setConceptToInactivate(scope.concept);
           }
 
         };

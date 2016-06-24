@@ -3,6 +3,15 @@
 
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
+
+    <!-- Inactivation button (shown only if service has concept set) -->
+    <button
+      type="button" ng-click="setView('inactivation')"
+      ng-show="isInactivation()"
+      class="btn btn-default red widget-toolbar tooltips-right tooltips-light normal-case">
+      <div class="md fa-sca fa-power-off"></div>
+      <span>Inactivation</span></button>
+
     <!-- Create new concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             type="button" ng-click="createConcept()"
@@ -23,14 +32,14 @@
     <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
 
-            ng-disabled="task.status === 'New'"   ng-show="task.status === 'New'"
-             ng-click="viewReview()">
+            ng-disabled="task.status === 'New'" ng-show="task.status === 'New'"
+            ng-click="viewReview()">
       <div class="md md-email"></div>
       <span>Review Not Available</span></button>
-        <button ng-if="taskKey"
+    <button ng-if="taskKey"
             type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
 
-              ng-show="task.status !== 'New'"
+            ng-show="task.status !== 'New'"
             ng-click="viewReview()">
       <div class="md md-email"></div>
       <span>Switch to Feedback View</span></button>
@@ -60,7 +69,7 @@
             class="btn btn-default widget-toolbar blue lighten-1 conflicts tooltips-right tooltips-light normal-case"
             ng-if="!taskKey"
             ng-disabled="conflictsContainer.conflicts.concepts.length !== 0"
-         
+
 
             ng-click="promoteProject()">
       <div class="md md-call-merge"></div>
@@ -90,71 +99,78 @@
 
 
   </div>
-<style>
-.fixed-height{position:fixed!important; padding-left:0px!important;margin-left: -1px;
-}
-.scroll-if-height{ overflow-y:auto;overflow-x: hidden;}
-</style>
+  <style>
+    .fixed-height {
+      position: fixed !important;
+      padding-left: 0px !important;
+      margin-left: -1px;
+    }
+
+    .scroll-if-height {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  </style>
   <!-- Main page content -->
   <div class="row no-gutter main-view-offset">
 
     <!-- Default edit view -->
     <div ng-if="thisView === 'edit-default'">
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-      <!-- sidebar -->
-      <div class="editpanel sca-column no-padding "
-          
-           ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <!-- sidebar -->
+        <div class="editpanel sca-column no-padding "
 
-      <!-- models & concepts-->
-      <div ng-class="getLayoutWidths('modelsAndConcepts')"
-           class="no-padding hide-scroll pull-right" sca-infinite-scroll="addMoreItems()"
-           sca-infinite-scroll-disabled="conceptsRendering"
-           sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+             ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
+
+        <!-- models & concepts-->
+        <div ng-class="getLayoutWidths('modelsAndConcepts')"
+             class="no-padding hide-scroll pull-right" sca-infinite-scroll="addMoreItems()"
+             sca-infinite-scroll-disabled="conceptsRendering"
+             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
 
 
-        <!-- model & concept data-->
-        <div class="row-fluid no-gutter" style="display: -webkit-box;
+          <!-- model & concept data-->
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;"
-             ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
-             ng-class="isLast($last)"
-             repeat-complete callback="renderingComplete()">
+               ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
+               ng-class="isLast($last)"
+               repeat-complete callback="renderingComplete()">
 
-          <!-- model -->
-          <div class="no-gutter " style="height: 100%" ng-class="getLayoutWidths('models')">
-            <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-          </div>
-
-          <!-- concept -->
-          <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')"
-               style="margin-right:0px;">
-            <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                 branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
-                 save-function="conceptUpdateFunction(project, task, concept)"
-              >
+            <!-- model -->
+            <div class="no-gutter " style="height: 100%" ng-class="getLayoutWidths('models')">
+              <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
             </div>
-          </div>
 
-        </div>
-        <div class="row-fluid no-gutter" style="display: -webkit-box;
+            <!-- concept -->
+            <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')"
+                 style="margin-right:0px;">
+              <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
+                   branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
+                   save-function="conceptUpdateFunction(project, task, concept)"
+              >
+              </div>
+            </div>
+
+          </div>
+          <div class="row-fluid no-gutter" style="display: -webkit-box;
           display: -webkit-flex;
           display: -ms-flexbox;
           display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
-          <div class="no-gutter" ng-class="getLayoutWidths('models')">
-            <div class="modelScrollBox"></div>
+            <div class="no-gutter" ng-class="getLayoutWidths('models')">
+              <div class="modelScrollBox"></div>
+            </div>
+
+            <!-- concept -->
+            <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')"
+                 style="margin-right:0px;">
+            </div>
           </div>
 
-          <!-- concept -->
-          <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')"
-               style="margin-right:0px;">
-          </div>
+
         </div>
-
-
       </div>
-</div>
     </div>
 
     <!-- Edit view with no sidebar -->
@@ -190,7 +206,7 @@
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
                    branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
                    save-function="conceptUpdateFunction(project, task, concept)"
-                >
+              >
               </div>
             </div>
 
@@ -257,7 +273,7 @@
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
                  branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
                  save-function="conceptUpdateFunction(project, task, concept)"
-              >
+            >
             </div>
           </div>
 
@@ -286,10 +302,10 @@
       </div>
 
     </div>
-      
+
     <div ng-if="thisView === 'inactivation'">
 
-      <!-- validation report -->
+      <!-- inactivation screen -->
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 no-padding">
         <div inactivation inactivation-concept="inactivationConcept" branch="targetBranch"></div>
       </div>
