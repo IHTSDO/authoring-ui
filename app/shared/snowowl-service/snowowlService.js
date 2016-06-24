@@ -16,7 +16,7 @@ angular.module('singleConceptAuthoringApp')
         //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
-       // console.debug('createConcept failure', error);
+        // console.debug('createConcept failure', error);
         deferred.reject(error);
       });
       return deferred.promise;
@@ -217,7 +217,7 @@ angular.module('singleConceptAuthoringApp')
     // Retrieve Concept Short Normal Form
     // GET {path}/concepts/{conceptId}?representationalForm=short-normal
     function getConceptSNF(conceptId, branch) {
-      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId +'/authoring-form?normaliseAttributeValues=false').then(function (response) {
+      return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/authoring-form?normaliseAttributeValues=false').then(function (response) {
         return response.data;
       }, function (error) {
         // TODO Handle error
@@ -535,27 +535,26 @@ angular.module('singleConceptAuthoringApp')
 
       });
     }
-      
+
     //Function to bulk get concepts
-    function bulkGetConcept(conceptIdList, branch){
-          var deferred = $q.defer();
-          var queryString = '';
-          angular.forEach(conceptIdList, function(concept, key){
-              if(key +1 !== conceptIdList.length)
-              {
-                queryString += concept + '%20UNION%20';
-              }
-              else{
-                  queryString += concept;
-              }
-          });
-          $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=50&expand=fsn()&escg=' + queryString).then(function (response) {
-            // console.debug('snowowl', response.data);
-            deferred.resolve(response.data);
-          }, function (error) {
-            deferred.reject(error);
-          });
-          return deferred.promise;
+    function bulkGetConcept(conceptIdList, branch) {
+      var deferred = $q.defer();
+      var queryString = '';
+      angular.forEach(conceptIdList, function (concept, key) {
+        if (key + 1 !== conceptIdList.length) {
+          queryString += concept + '%20UNION%20';
+        }
+        else {
+          queryString += concept;
+        }
+      });
+      $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=50&expand=fsn()&escg=' + queryString).then(function (response) {
+        // console.debug('snowowl', response.data);
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
     }
 
     // function to retrieve all module id/name pairs
@@ -789,7 +788,7 @@ angular.module('singleConceptAuthoringApp')
         return null;
       });
     }
-      
+
     ////////////////////////////////
     // Traceability Functions
     ////////////////////////////////
@@ -797,20 +796,19 @@ angular.module('singleConceptAuthoringApp')
     // Get traceability log for branch
     // GET /traceability-service/activities?onBranch=
     function getTraceabilityForBranch(projectKey, taskKey) {
-        return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey).then(function (response) {
-          return response.data;
-        }, function (error) {
-            console.log(error);
-            console.log(error.data.message.indexOf('404'));
-            if(error.status === 404 || error.status === 500 && error.data.message.indexOf('404') === 0)
-            {
-                
-            }
-            else{
-                notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
-            }
-        });
-      }
+      return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey).then(function (response) {
+        return response.data;
+      }, function (error) {
+        console.log(error);
+        console.log(error.data.message.indexOf('404'));
+        if (error.status === 404 || error.status === 500 && error.data.message.indexOf('404') === 0) {
+
+        }
+        else {
+          notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
+        }
+      });
+    }
 
     //////////////////////////////////////////////////////
     // Branch Functions
@@ -829,13 +827,52 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function createBranch(parent, task) {
-       return $http.post(apiEndpoint + 'branches', {
-            parent: parent,
-            name: task
-            }).then(function (response) {
-            return response.data;
-        }, function (error) {
-            return null;
+      return $http.post(apiEndpoint + 'branches', {
+        parent: parent,
+        name: task
+      }).then(function (response) {
+        return response.data;
+      }, function (error) {
+        return null;
+      });
+    }
+
+    function isBranchPromotable(branchPath) {
+      var deferred = $q.defer();
+      getBranch(branchPath).then(function (branch) {
+        if (!branch) {
+          deferred.resolve('Branch is null');
+        }
+        else if (branch.metadata && branch.metadata.preventPromotion) {
+          deferred.resolve(false);
+        } else {
+          deferred.resolve(true);
+        }
+      }, function (error) {
+        notificationService.sendError('Unexpected error retrieving branch for checking promotion eligibility');
+        deferred.reject('Unexpected errror');
+      });
+      return deferred.promise;
+    }
+
+    function setBranchPreventPromotion(branchPath, preventPromotion) {
+      var deferred = $q.defer();
+      getBranch(branchPath).then(function (branch) {
+        if (!branch) {
+          deferred.reject('Branch is null');
+        }
+        else {
+          if (!branch.metadata) {
+            branch.metadata = {};
+          }
+          branch.metadata.preventPromotion = preventPromotion;
+          $http.put(apiEndpoint + '/branches/' + branch, branch).then(function (updatedBranch) {
+            deferred.resolve(updatedBranch);
+          });
+        }
+      }, function (error) {
+        notificationService.sendError('Unexpected error retrieving branch while setting promotion eligibility');
+        deferred.reject('Unexpected error');
       });
     }
 
@@ -891,7 +928,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
             pollForReview(mergeReviewId, intervalTime * 1.5).then(function (pollResults) {
               deferred.resolve(pollResults);
-            }, function(error) {
+            }, function (error) {
               deferred.reject(error);
             });
           }
@@ -925,13 +962,13 @@ angular.module('singleConceptAuthoringApp')
         var locHeader = response.headers('Location');
         var mergeReviewId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
 
-       // console.debug('merge-review id', mergeReviewId);
+        // console.debug('merge-review id', mergeReviewId);
 
         pollForReview(mergeReviewId, 1000).then(function (response) {
           //console.debug('end poll result', response);
           response.id = mergeReviewId;
           deferred.resolve(response);
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
         });
       }, function (error) {
@@ -956,7 +993,7 @@ angular.module('singleConceptAuthoringApp')
             return null;
           });
         }
-      }, function(error) {
+      }, function (error) {
         return null;
       });
     }
@@ -969,7 +1006,7 @@ angular.module('singleConceptAuthoringApp')
         var mergeReview = response.data;
         mergeReview.id = mergeReviewId; // re-append id for convenience
         return mergeReview;
-      }, function(error) {
+      }, function (error) {
         return null;
       });
     }
@@ -1007,23 +1044,23 @@ angular.module('singleConceptAuthoringApp')
      */
     function mergeAndApply(mergeReviewId) {
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/apply').then(function(response) {
+      $http.post(apiEndpoint + 'merge-reviews/' + mergeReviewId + '/apply').then(function (response) {
         deferred.resolve(response.data);
       }, function (error) {
-          if(error.status === 504){
-              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
-              return 1;
-          }
-          else if(error.status === 409){
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null;
+        if (error.status === 504) {
+          notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
+          return 1;
+        }
+        else if (error.status === 409) {
+          notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+          return null;
 
-          }
-          else{
-            notificationService.sendError('Error rebasing Task: ' + projectKey);
-            return null;
-          }
-        });
+        }
+        else {
+          notificationService.sendError('Error rebasing Task: ' + mergeReviewId);
+          return null;
+        }
+      });
       return deferred.promise;
     }
 
@@ -1114,17 +1151,23 @@ angular.module('singleConceptAuthoringApp')
       downloadClassification: downloadClassification,
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
-      getTraceabilityForBranch: getTraceabilityForBranch,
-      getBranch: getBranch,
-      createBranch: createBranch,
+
+      // attribute retrieval
       getDomainAttributes: getDomainAttributes,
       getAttributeValues: getAttributeValues,
+
+      // branch functionality
+      getBranch: getBranch,
+      createBranch: createBranch,
+      getTraceabilityForBranch: getTraceabilityForBranch,
+      isBranchPromotable: isBranchPromotable,
+      setBranchPreventPromotion: setBranchPreventPromotion,
 
       // merge-review functionality
       getMergeReview: getMergeReview,
       getMergeReviewForBranches: getMergeReviewForBranches,
-      getMergeReviewDetails : getMergeReviewDetails,
-      generateMergeReview : generateMergeReview,
+      getMergeReviewDetails: getMergeReviewDetails,
+      generateMergeReview: generateMergeReview,
       storeConceptAgainstMergeReview: storeConceptAgainstMergeReview,
       mergeAndApply: mergeAndApply,
 

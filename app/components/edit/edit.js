@@ -73,7 +73,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.root = $routeParams.root;
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
-    
+
     $scope.branch = $scope.root + '/' + $scope.projectKey + '/' + $scope.taskKey;
     $scope.parentBranch = $scope.root + '/' + $scope.projectKey;
 
@@ -93,19 +93,19 @@ angular.module('singleConceptAuthoringApp.edit', [
       $rootScope.$broadcast('repeatComplete');
       $scope.conceptsRendering = false;
     };
-    
+
     $scope.goToConflicts = function(){
         snowowlService.getBranch($scope.parentBranch).then(function(response){
             if(!response.metadata)
             {
-                $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
+                $location.url('tasks/task/' + $scope.root + '/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
             }
             else{
                 notificationService.sendWarning('Unable to start rebase on task ' + $scope.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
             }
         });
     };
-    
+
     $scope.gotoHome = function() {
         $location.url('home');
       };
@@ -395,7 +395,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey;
       $scope.sourceBranch = $routeParams.root;
     }
-    
+
     // displayed concept array
     $scope.concepts = [];
 
@@ -413,7 +413,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canPromote = false;
     $scope.canConflict = false;
     $scope.canCreateConcept = false;
-    
+
     $scope.getConceptsForReview = function(idList, review, feedbackList){
         snowowlService.bulkGetConcept(idList, $scope.branch).then(function(response){
                 angular.forEach(response.items, function (concept){
@@ -426,7 +426,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                             angular.forEach(feedbackList, function(feedback){
                                 if(reviewConcept.conceptId === feedback.id)
                                 {
-                                    reviewConcept.messages = feedback.messages; 
+                                    reviewConcept.messages = feedback.messages;
                                     reviewConcept.viewDate = feedback.viewDate;
                                 }
                             });
@@ -439,7 +439,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                             angular.forEach(feedbackList, function(feedback){
                                 if(reviewConcept.conceptId === feedback.id)
                                 {
-                                    reviewConcept.messages = feedback.messages;   
+                                    reviewConcept.messages = feedback.messages;
                                 }
                             });
                         }
@@ -510,7 +510,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 }
                             });
                         }
-                         
+
                 });
                 scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
                     var i,j,temparray,chunk = 50;
@@ -519,13 +519,13 @@ angular.module('singleConceptAuthoringApp.edit', [
                         $scope.getConceptsForReview(temparray, review, feedback);
                     }
                 });
-                
+
             }
             else if(!traceability)
             {
                 review = {};
             }
-          
+
         });
       $scope.setView('feedback');
     } else if ($routeParams.mode === 'conflicts') {
@@ -748,7 +748,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.updateEditListUiState();
 
     });
-    
+
     if ($routeParams.taskKey) {
       $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $scope.sourceBranch = $routeParams.root + '/' + $routeParams.projectKey;
@@ -1073,7 +1073,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 }
                             });
                         }
-                         
+
                 });
                 scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
                     var i,j,temparray,chunk = 50;
@@ -1082,13 +1082,13 @@ angular.module('singleConceptAuthoringApp.edit', [
                         $scope.getConceptsForReview(temparray, review, feedback);
                     }
                 });
-                
+
             }
             else if(!traceability)
             {
                 review = {};
             }
-          
+
         });
     };
 
@@ -1130,13 +1130,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
     };
-    
+
     $scope.getSNF = function(id){
       var deferred = $q.defer();
       snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
       });
-      return deferred.promise; 
+      return deferred.promise;
     };
 
     //////////////////////////////////////////
@@ -1268,14 +1268,16 @@ angular.module('singleConceptAuthoringApp.edit', [
       var cssClass = check ? 'last' : null;
       return cssClass;
     };
-    
+
     $scope.$watch(function() {
         return $rootScope.branchLocked;
         }, function() {
+          if ($scope.task) {
             setBranchFunctionality($scope.task.branchState);
+          }
     }, true);
-    
-    
+
+
 
 //////////////////////////////////////////
     // Initialization
