@@ -5,7 +5,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, promotionService, notificationService, $q) {
 
       $scope.task = null;
-      $scope.branch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $rootScope.branchLocked = false;
 
       // the project and task branch objects
@@ -232,7 +232,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       //
       var projectPoll = null;
       function pollProjectStatus() {
-        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function (response) {
+        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey).then(function (response) {
 
           $scope.projectBranch = response;
 
@@ -257,12 +257,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
-
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
-        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        snowowlService.getBranch($rootScope.branchPath).then(function (response) {
             if(response.metadata)
             {
                 $rootScope.branchLocked = true;
@@ -271,7 +270,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             else if(response.status === 404)
             {
                 notificationService.sendWarning('Task initializing');
-                snowowlService.createBranch($routeParams.root + '/' + $routeParams.projectKey + $routeParams.taskKey).then(function (response) {
+                snowowlService.createBranch($rootScope.parentBranch + $routeParams.taskKey).then(function (response) {
                     notificationService.sendWarning('Task initialization complete', 3000);
                     $rootScope.$broadcast('reloadTaxonomy');
               });
