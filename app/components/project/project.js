@@ -32,10 +32,12 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
 
+      // set the branch
+      $scope.branch = 'MAIN/' + $routeParams.projectKey;
+
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-          $rootScope.parentBranch = response.branchPath;
-          $scope.branch = $rootScope.parentBranch;
+
           $scope.project = response;
 
 
