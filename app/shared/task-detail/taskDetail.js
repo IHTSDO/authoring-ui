@@ -261,7 +261,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
-        snowowlService.getBranch($rootScope.parentBranch).then(function (response) {
+        snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
             if(response.metadata)
             {
                 $rootScope.branchLocked = true;
@@ -270,7 +270,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             else if(response.status === 404)
             {
                 notificationService.sendWarning('Task initializing');
-                snowowlService.createBranch($rootScope.parentBranch).then(function (response) {
+                snowowlService.createBranch('MAIN/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                     notificationService.sendWarning('Task initialization complete', 3000);
                     $rootScope.$broadcast('reloadTaxonomy');
               });
@@ -294,7 +294,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         // retrieve the task branch
-        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
           console.log('task branch', $rootScope.branchLocked, response);
 
           // store the latest task branch
@@ -303,7 +303,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           if ($scope.taskBranch.status === 404) {
             notificationService.sendWarning('Task initializing');
-            snowowlService.createBranch($routeParams.root + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
+            snowowlService.createBranch('MAIN' + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
               notificationService.sendWarning('Task initialization complete', 3000);
               $rootScope.$broadcast('reloadTaxonomy');
             });
