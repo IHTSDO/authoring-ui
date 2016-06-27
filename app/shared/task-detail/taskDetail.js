@@ -202,7 +202,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.pollStatus = function() {
             snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
                 
-            if(response.metadata)
+            if(response.metadata && response.metadata.lock)
             {
                 $rootScope.branchLocked = true;
                 $timeout($scope.pollStatus, 4000);
@@ -250,7 +250,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $scope.role = role;
           });
         snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
-            if(response.metadata)
+            if(response.metadata && !response.metadata.lock)
             {
                 $rootScope.branchLocked = true;
                 $scope.pollStatus();
