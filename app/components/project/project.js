@@ -342,13 +342,6 @@ angular.module('singleConceptAuthoringApp.project', [
               $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
               break;
             default:
-            case 'REVIWER':
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
-              break;
-            case 'AUTHOR':
-              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
-              break;
-            default:
               $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
               break;
           }
