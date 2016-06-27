@@ -140,7 +140,7 @@ angular.module('singleConceptAuthoringApp.project', [
       };
       $scope.mergeAndRebase = function(task){
         snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
-            if(!response.metadata)
+            if(!response.metadata || response.metadata && !response.metadata.lock)
             {
                $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
             }
@@ -171,10 +171,10 @@ angular.module('singleConceptAuthoringApp.project', [
           // if response contains no flags, simply promote
           if (!warningsFound) {
             snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
-            if(!response.metadata)
+            if(!response.metadata || response.metadata && !response.metadata.lock)
             {
                 snowowlService.getBranch('MAIN/').then(function(response){
-                    if(!response.metadata)
+                    if(!response.metadata || response.metadata && !response.metadata.lock)
                     {
                         notificationService.sendMessage('Promoting project...');
                         scaService.promoteProject($routeParams.projectKey).then(function (response) {
@@ -210,10 +210,10 @@ angular.module('singleConceptAuthoringApp.project', [
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
-                if(!response.metadata)
+                if(!response.metadata || response.metadata && !response.metadata.lock)
                 {
                     snowowlService.getBranch('MAIN/').then(function(response){
-                        if(!response.metadata)
+                        if(!response.metadata || response.metadata && !response.metadata.lock)
                         {
                             notificationService.sendMessage('Promoting project...');
                             scaService.promoteProject($routeParams.projectKey).then(function (response) {

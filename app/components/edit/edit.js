@@ -94,7 +94,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     $scope.goToConflicts = function(){
         snowowlService.getBranch('MAIN/' + $scope.projectKey).then(function(response){
-            if(!response.metadata)
+            if(!response.metadata || response.metadata && !response.metadata.lock)
             {
                 $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
             }
