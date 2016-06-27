@@ -262,6 +262,24 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
+        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            if(response.metadata)
+            {
+                $rootScope.branchLocked = true;
+                $scope.pollStatus();
+            }
+            else if(response.status === 404)
+            {
+                notificationService.sendWarning('Task initializing');
+                snowowlService.createBranch($routeParams.root + '/' + $routeParams.projectKey + $routeParams.taskKey).then(function (response) {
+                    notificationService.sendWarning('Task initialization complete', 3000);
+                    $rootScope.$broadcast('reloadTaxonomy');
+              });
+            }
+            else{
+                $scope.pollStatus();   
+            }
+          });
 
           // set button flags
           if ($scope.task && $scope.task.latestClassificationJson) {
