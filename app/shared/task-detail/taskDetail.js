@@ -5,7 +5,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
     function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, promotionService, notificationService, $q) {
 
       $scope.task = null;
-      $scope.branch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
       $rootScope.branchLocked = false;
 
       // the project and task branch objects
@@ -20,9 +20,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.classify = function () {
 
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
-
-        // immediately lock the task (fake the task lock)
-        lockTask();
 
         // start the classification
         scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -201,51 +198,42 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
         });
       };
+        
+      $scope.pollStatus = function() {
+            snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+                
+            if(response.metadata && response.metadata.lock)
+            {
+                $rootScope.branchLocked = true;
+                $timeout($scope.pollStatus, 4000);
+            }
+            else{
+                
+                $rootScope.branchLocked = false;
+            }
+          });
+                        
+        };
 
-      // helper function to update lock based on task and project branches
-      // NOTE: Must be manually called on expected
-      function updateLock() {
-        // update lock only if task and project branch both loaded
-        if ($scope.taskBranch && $scope.projectBranch) {
-           $rootScope.branchLocked = ($scope.taskBranch.metadata && $scope.taskBranch.metadata.lock || $scope.projectBranch.metadata && $scope.projectBranch.metadata.lock);
-        }
-      };
-
-      // force lock a task by adding a 'lock' item to metadata
-      // NOTE: Replaced on next task update by actual lock
-      function lockTask() {
-        if ($scope.taskBranch) {
-          if (!$scope.taskBranch.metadata) {
-            $scope.taskBranch.metadata = {};
-          }
-          $scope.taskBranch.metadata.lock = 'Lock pending';
-          updateLock();
-        } else {
-          console.error('Cannot lock task, branch not loaded');
-        }
-      }
 
       //
       // Project polling for lock status updates
       // TODO Inquire as to whether notifications can serve this purpose? Seems like locking would be a branch state notification
       // TODO Update: Changing project metadata does not trigger a notification
       //
-      var projectPoll = null;
-      function pollProjectStatus() {
-        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function (response) {
-
-          $scope.projectBranch = response;
-
-          // check for lock and update if presen
-          updateLock();
-
-          // if a timeout already scheduled, cancel it
-          if (projectPoll) {
-            $timeout.cancel(projectPoll);
-          }
-          projectPoll = $timeout(pollProjectStatus, 4000);
-        });
-      };
+//      var projectPoll = null;
+//      function pollProjectStatus() {
+//        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey).then(function (response) {
+//
+//          $scope.projectBranch = response;
+//
+//          // if a timeout already scheduled, cancel it
+//          if (projectPoll) {
+//            $timeout.cancel(projectPoll);
+//          }
+//          projectPoll = $timeout(pollProjectStatus, 4000);
+//        });
+//      };
 
       function initialize() {
 
@@ -257,10 +245,27 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
-
           // get role for task
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
+          });
+        snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+            if(response.metadata && !response.metadata.lock)
+            {
+                $rootScope.branchLocked = true;
+                $scope.pollStatus();
+            }
+            else if(response.status === 404)
+            {
+                notificationService.sendWarning('Task initializing');
+                snowowlService.createBranch('MAIN/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                    notificationService.sendWarning('Task initialization complete', 3000);
+                    $rootScope.$broadcast('reloadTaxonomy');
+              });
+            }
+            else{
+                $scope.pollStatus();   
+            }
           });
 
           // set button flags
@@ -277,16 +282,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         // retrieve the task branch
-        snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
           console.log('task branch', $rootScope.branchLocked, response);
 
           // store the latest task branch
           $scope.taskBranch = response;
-          updateLock();
 
           if ($scope.taskBranch.status === 404) {
             notificationService.sendWarning('Task initializing');
-            snowowlService.createBranch($routeParams.root + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
+            snowowlService.createBranch('MAIN' + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
               notificationService.sendWarning('Task initialization complete', 3000);
               $rootScope.$broadcast('reloadTaxonomy');
             });
@@ -294,7 +298,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         // start polling the project for lock updates
-        pollProjectStatus();
+//        pollProjectStatus();
 
       }
 

@@ -7,7 +7,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/project/:root/:projectKey', {
+      .when('/project/:projectKey', {
         controller: 'ProjectCtrl',
         templateUrl: 'components/project/project.html'
       });
@@ -31,17 +31,13 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.classificationRunning = false;
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
-      $scope.root = $routeParams.root;
 
+      // set the branch
+      $scope.branch = 'MAIN/' + $routeParams.projectKey;
 
-      // get and set the branch
-      snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function(response) {
-        $scope.projectBranch = response;
-      });
-
-      // function to get the project
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+
           $scope.project = response;
 
 
@@ -52,7 +48,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // get the latest classification for this project (if exists)
           if ($scope.project.latestClassificationJson) {
-            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, $scope.root).then(function (response) {
+            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
               console.log(response);
               $scope.classificationContainer = response;
             });
@@ -140,16 +136,16 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // rebase the project -- simply route to merge/rebase view
       $scope.mergeAndRebase = function () {
-        $location.url('projects/project/' + $scope.root + '/' + $routeParams.projectKey + '/conflicts');
+        $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
       };
       $scope.mergeAndRebase = function(task){
-        snowowlService.getBranch($scope.root + '/' + $routeParams.projectKey).then(function(response){
-            if(!response.metadata)
+        snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+            if(!response.metadata || response.metadata && !response.metadata.lock)
             {
-               $location.url('projects/project/' + $scope.root + '/' + $routeParams.projectKey + '/conflicts');
+               $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
             }
             else{
-                notificationService.sendWarning('Unable to start rebase on project as the root is locked due to ongoing changes.', 7000);
+                notificationService.sendWarning('Unable to start rebase on project as the MAIN is locked due to ongoing changes.', 7000);
             }
          });
     };
@@ -174,11 +170,11 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
-            snowowlService.getBranch($scope.root + $routeParams.projectKey).then(function(response){
-            if(!response.metadata)
+            snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+            if(!response.metadata || response.metadata && !response.metadata.lock)
             {
-                snowowlService.getBranch($scope.root).then(function(response){
-                    if(!response.metadata)
+                snowowlService.getBranch('MAIN/').then(function(response){
+                    if(!response.metadata || response.metadata && !response.metadata.lock)
                     {
                         notificationService.sendMessage('Promoting project...');
                         scaService.promoteProject($routeParams.projectKey).then(function (response) {
@@ -187,7 +183,7 @@ angular.module('singleConceptAuthoringApp.project', [
                         });
                     }
                     else{
-                        notificationService.sendWarning('Unable to start rebase as the root is locked due to ongoing changes.', 7000);
+                        notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
                     }
                 });
             }
@@ -213,11 +209,11 @@ angular.module('singleConceptAuthoringApp.project', [
 
             modalInstance.result.then(function (proceed) {
               if (proceed) {
-                snowowlService.getBranch($scope.root + '/' + $routeParams.projectKey).then(function(response){
-                if(!response.metadata)
+                snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+                if(!response.metadata || response.metadata && !response.metadata.lock)
                 {
-                    snowowlService.getBranch($scope.root).then(function(response){
-                        if(!response.metadata)
+                    snowowlService.getBranch('MAIN/').then(function(response){
+                        if(!response.metadata || response.metadata && !response.metadata.lock)
                         {
                             notificationService.sendMessage('Promoting project...');
                             scaService.promoteProject($routeParams.projectKey).then(function (response) {
@@ -226,7 +222,7 @@ angular.module('singleConceptAuthoringApp.project', [
                             });
                         }
                         else{
-                            notificationService.sendWarning('Unable to start rebase as the root is locked due to ongoing changes.', 7000);
+                            notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
                         }
                     });
                 }
@@ -338,16 +334,15 @@ angular.module('singleConceptAuthoringApp.project', [
 
         // determine destination based on role
         accountService.getRoleForTask(task).then(function (role) {
-          console.debug('getRoleForTask', role);
           switch (role) {
-            case 'REVIEWER':
-              $location.url('tasks/task/' + task.branchPath + '/feedback');
+            case 'REVIWER':
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
               break;
             case 'AUTHOR':
-              $location.url('tasks/task/' + task.branchPath + '/edit');
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
               break;
             default:
-              $location.url('tasks/task/' + task.branchPath + '/edit');
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
               break;
           }
         });

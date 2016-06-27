@@ -3,7 +3,7 @@
 angular.module('singleConceptAuthoringApp')
 
   .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
+    function ($rootScope, $filter, $q, ngTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -24,11 +24,12 @@ angular.module('singleConceptAuthoringApp')
         link: function (scope, element, attrs, linkCtrl) {
 
           // sets view to top and clears viewed concept list
-          scope.setViewTop = function() {
+          scope.setViewTop = function () {
             scope.viewTop = true;
             scope.viewedConcepts = [];
           };
 
+          scope.assertionsFailed = null;
 
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
@@ -36,32 +37,28 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
           scope.setViewTop();
-            
-          scope.getSNF = function(id){
-              var deferred = $q.defer();
-              snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
-                deferred.resolve(response);
-              });
-              return deferred.promise; 
-            };
+
+          scope.getSNF = function (id) {
+            var deferred = $q.defer();
+            snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
+              deferred.resolve(response);
+            });
+            return deferred.promise;
+          };
 
           scope.conceptUpdateFunction = function (project, task, concept) {
-              var deferred = $q.defer();
-              snowowlService.updateConcept(project, task, concept).then(function (response) {
-                deferred.resolve(response);
-              });
-              return deferred.promise;
-            };
+            var deferred = $q.defer();
+            snowowlService.updateConcept(project, task, concept).then(function (response) {
+              deferred.resolve(response);
+            });
+            return deferred.promise;
+          };
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
             scope.validationContainer = {executionStatus: '', report: ''};
           }
 
           console.debug('entered validation.js', scope.validationContainer);
-
-          // local variables for ng-table population
-          scope.assertionsFailed = [];
-          scope.failures = [];
 
           // Allow broadcasting of new validation results
           // e.g. from server-side notification of work complete
@@ -103,65 +100,60 @@ angular.module('singleConceptAuthoringApp')
             return status;
           };
 
-          // declare table parameters
-          scope.topTableParams = new NgTableParams({
+
+          // the map of failures viewed
+          var tableParams = {};
+          scope.failures = [1, 2, 3, 4, 5];
+
+          scope.tableParams = new ngTableParams({
               page: 1,
               count: 10,
-              sorting: {failureCount: 'desc'},
-              orderBy: 'failureCount'
+              sorting: {updated: 'desc', name: 'asc'}
             },
             {
               filterDelay: 50,
-              total: scope.assertionsFailed ? scope.assertionsFailed.length : 0,
+              total: scope.failures ? scope.failures.length : 0, // length of data
               getData: function ($defer, params) {
 
-                if (!scope.assertionsFailed || scope.assertionsFailed.length === 0) {
+                if (!scope.failures || scope.failures.length == 0) {
                   $defer.resolve([]);
                 } else {
-
-                  var orderedData = scope.assertionsFailed;
-
-                  params.total(orderedData.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-
-                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  $defer.resolve(scope.failures);
                 }
+
               }
+
             }
           );
 
-          // declare table parameters
-          scope.failureTableParams = new NgTableParams({
-              page: 1,
-              count: 10,
-              sorting: {userModified: 'desc'},
-              orderBy: 'userModified'
-            },
-            {
-              total: scope.failures ? scope.failures.length : 0,
-              getData: function ($defer, params) {
+          scope.getTableParams = function (assertionFailed) {
 
-                console.debug('getData failures', scope.failures);
-
-                // clear the loading variable on reload
-                scope.failuresLoading = false;
-
-                if (!scope.failures || scope.failures.length === 0) {
-                  $defer.resolve([]);
-                } else {
-
-                  var orderedData = scope.failures;
-                  params.total(orderedData.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-
-                  console.debug('getData failures orderedData', orderedData);
-                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                }
-              }
+            if (!assertionFailed || !assertionFailed.assertionText) {
+              return null;
             }
-          );
+            if (!tableParams.hasOwnProperty(assertionFailed.assertionText)) {
+              console.debug('Instantiating table params for ' + assertionFailed.assertionText, assertionFailed.firstNInstances);
+              tableParams[assertionFailed.assertionText] = new ngTableParams(
+                {
+                  //  failures: assertionFailed.firstNInstances
+                }, {
+                  total: function (params) {
+                    return params.failures().length
+                  },
+                  getData: function ($defer, params) {
 
-          // watch for changes in the validation in order to populate tables
+                    var data = params.sorting() ? $filter('orderBy')(scope.failures, params.orderBy()) : scope.failures;
+                    console.log('data', data);
+                    $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  }
+                }
+              );
+            }
+            return tableParams[assertionFailed.assertionText];
+          }
+          ;
+
+// watch for changes in the validation in order to populate tables
           scope.$watch('validationContainer', function () {
 
             if (!scope.validationContainer || !scope.validationContainer.report) {
@@ -173,104 +165,16 @@ angular.module('singleConceptAuthoringApp')
 
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
+            console.debug('failed assertions', scope.assertionsFailed);
 
             // reset view to full report
             scope.viewTop = true;
 
-            // reload the tables
-            scope.topTableParams.reload();
-            scope.failureTableParams.reload();
+            // clear the ng-tables
+            scope.failureTableParamsMap = {};
 
           }, true); // make sure to check object inequality, not reference!
 
-
-          scope.viewFailures = function (assertionFailure) {
-
-            console.debug('assertionFailure', assertionFailure);
-
-            scope.assertionFailureViewed = assertionFailure.assertionText;
-            scope.viewTop = false;
-
-            scope.failuresLoading = true;
-
-            var objArray = [];
-
-            // different handling for projects and tasks
-            if (!$routeParams.taskKey) {
-              console.debug('project detected');
-
-              angular.forEach(assertionFailure.firstNInstances, function (instance) {
-                var obj = {
-                  concept: null,
-                  errorMessage: instance,
-                  selected: false
-                };
-                objArray.push(obj);
-              });
-              scope.failures = objArray;
-              scope.failureTableParams.reload();
-            }
-
-            // task handling
-            else {
-
-              // convert instances into table objects
-              if (!scope.changedList) {
-                console.debug(assertionFailure.firstNInstances);
-
-                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                  scope.changedList = response;
-                  angular.forEach(assertionFailure.firstNInstances, function (instance) {
-                    var obj = {
-                      concept: null,
-                      errorMessage: instance,
-                      selected: false,
-                      userModified: false
-                    };
-                    angular.forEach(scope.changedList.concepts, function (concept) {
-                      if (instance.conceptId === concept.id) {
-                        obj.userModified = true;
-                      }
-                    });
-                    objArray.push(obj);
-                  });
-
-                  scope.failures = objArray;
-                  scope.failureTableParams.reload();
-                });
-
-              }
-
-              else {
-
-                console.debug(assertionFailure.firstNInstances);
-                angular.forEach(assertionFailure.firstNInstances, function (instance) {
-
-                  var obj = {
-                    concept: null,
-                    errorMessage: instance,
-                    selected: false,
-                    userModified: false
-                  };
-                  angular.forEach(scope.changedList.concepts, function (concept) {
-                    if (instance.conceptId === concept.id) {
-                      obj.userModified = true;
-                    }
-                  });
-                  objArray.push(obj);
-                });
-
-                scope.failures = objArray;
-                scope.failureTableParams.reload();
-              }
-              // TODO Set edit enable/disable for edit panel
-            }
-
-            // set scope.failures to trigger watch
-            scope.failures = objArray;
-
-            scope.failureTableParams.reload();
-          };
 
           scope.selectAll = function (selectAllActive) {
             angular.forEach(scope.failures, function (failure) {
@@ -495,7 +399,8 @@ angular.module('singleConceptAuthoringApp')
           };
         }
 
-      };
+      }
+        ;
 
     }])
 ;

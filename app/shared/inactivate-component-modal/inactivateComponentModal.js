@@ -166,7 +166,7 @@ angular.module('singleConceptAuthoringApp')
 
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
-        angular.forEach(response2.inboundRelationships, function (item) {
+        angular.forEach(response2 .inboundRelationships, function (item) {
 
           console.debug('checking relationship', item.active, item);
 
