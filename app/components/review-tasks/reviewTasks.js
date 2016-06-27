@@ -97,15 +97,15 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
 
     };
-
+    
     $scope.goToConflicts = function(task){
         snowowlService.getBranch('MAIN/' + task.projectKey).then(function(response){
-            if(!response.metadata)
+            if(!response.metadata || response.metadata && !response.metadata.lock)
             {
-                snowowlService.getBranch(task.branchPath).then(function(response){
-                    if(!response.metadata)
+                snowowlService.getBranch('MAIN/' + task.projectKey + '/' + task.key).then(function(response){
+                    if(!response.metadata || response.metadata && !response.metadata.lock)
                     {
-                        $location.url('tasks/task/' + task.branchPath + '/conflicts');
+                        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
                     }
                     else{
                         notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
@@ -176,12 +176,13 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             };
 
             scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
-              $location.url('tasks/task/' + task.branchPath + '/feedback');
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
             });
           }
         });
+        // otherwise, simply go to feedback view
       } else {
-        $location.url('tasks/task/' + task.branchPath + '/feedback');
+        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
       }
     };
     $scope.isReviewer = function () {

@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'inactivationService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, inactivationService, notificationService, $timeout, $modal) {
+  .directive('inactivation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -18,7 +18,6 @@ angular.module('singleConceptAuthoringApp')
         templateUrl: 'shared/inactivation/inactivation.html',
 
         link: function (scope, element, attrs, linkCtrl) {
-
 
           scope.editable = attrs.editable === 'true';
           scope.taskKey = $routeParams.taskKey;
@@ -38,6 +37,43 @@ angular.module('singleConceptAuthoringApp')
             });
             return deferred.promise;
           };
+
+          //
+          // Fsn by Id retrieval
+          // NOTE: Call this on page changes to ensure concept ids are present
+          //
+          var fsnIdMap = {};
+          function populateFsns() {
+            var newIds = [];
+            for (var id in fsnIdMap) {
+              if (!fsnIdMap.hasOwnProperty(id)) {
+                newIds.push(id);
+              }
+            }
+            snowowlService.bulkGetConcept(newIds).then(function(concepts) {
+              angular.forEach(concepts, function(concept) {
+                fsnIdMap[concept.id] = concept.fsn.term;
+              })
+            })
+          }
+
+          //
+          // Proposed value functions
+          //
+          function getProposedRelationship(relationship) {
+
+            // isa relationships -- parents become grandparents of children
+            if (metadataService.isIsaRelationship(relationship.type)) {
+
+            } else {
+              relationship.target.fsn = null;
+              relationship.target.conceptId = null;
+            }
+          }
+
+          function getProposedAssociationReference(assocationReference) {
+
+          }
 
           //
           // Relationship retrieval functions
@@ -73,6 +109,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
 
+              // reassign the active rels
               response.inboundRelationships = activeRels;
 
               deferred.resolve(response);
@@ -80,11 +117,6 @@ angular.module('singleConceptAuthoringApp')
             });
             return deferred.promise;
           }
-
-
-          //
-          // Association retrieval functions
-          //
 
 
           //

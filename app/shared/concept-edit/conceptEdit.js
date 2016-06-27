@@ -635,9 +635,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 console.log('No errors detected');
               }
 
+              // set the concept in the inactivation service for listener update and retrieval
+              // NOTE: Also broadcasts a route change to edit.js from the service
+              inactivationService.setConceptToInactivate(scope.concept);
+              scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept', scope.concept);
+
               selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
                 notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
+
+                // WRP-2161 testing bypass -- to disable new fe atures, modify isInactivation service to return false only
+                // This inactivationService function also triggers the accessibility of the inactivation view
+                if (!inactivationService.isInactivation()) {
 
                 snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
@@ -664,21 +673,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }, function () {
                   notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
                 });
+              }
 
               });
 
             });
 
-            /**
-             * WRP-2161 content
-             *
-             // persist the ui state for reload events
-             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept', scope.concept);
 
-             // set the concept in the inactivation service for listener update and retrieval
-             // NOTE: Also broadcasts a route change to edit.js from the service
-             inactivationService.setConceptToInactivate(scope.concept);
-             */
           }
 
         };

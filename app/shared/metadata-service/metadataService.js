@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('metadataService', ['$http', '$rootScope', 'snowowlService', function ($http, $rootScope, snowowlService) {
+  .service('metadataService', ['$http', '$rootScope', function ($http, $rootScope) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -21,24 +21,6 @@ angular.module('singleConceptAuthoringApp')
 
     // description inactivation metadata
     var descriptionInactivationReasons = [];
-
-//    function setDescriptionInactivationReasons() {
-//      snowowlService.getConceptChildren(descriptionInactivationParent, 'MAIN').then(function (response) {
-//
-//        // for each child
-//        angular.forEach(response, function (child) {
-//
-//          // strip semantic tag
-//          var term = child.substring(0, child.lastIndexOf('('));
-//
-//          // trim whitespace
-//          term.trim();
-//
-//          // add to list
-//
-//        });
-//      });
-//    }
 
     /**
      * Sets the static array of concept inactivation reasons
@@ -136,17 +118,6 @@ angular.module('singleConceptAuthoringApp')
             display: 9
           }
         ];
-
-      /*
-       NOTE: Cannot use this, as SnowOwl does not use SNOMEDCT concept, but rather abbreviation
-
-       snowowlService.getConceptRelationshipsInbound(associationInactivationParent, branch, 0, -1).then(function (items) {
-       items.inboundRelationships.filter(function (item) {
-       return item.characteristicType === 'STATED_RELATIONSHIP' && item.type.id === isaRelationshipId;
-       }).map(function(item) {
-       associationInactivationReasons.push({conceptId : item.source.id, fsn : item.source.fsn});
-       })
-       });*/
     }
 
     var projects = [];
