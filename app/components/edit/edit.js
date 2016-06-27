@@ -93,16 +93,16 @@ angular.module('singleConceptAuthoringApp.edit', [
       $rootScope.$broadcast('repeatComplete');
       $scope.conceptsRendering = false;
     };
-
-    $scope.goToConflicts = function () {
-      snowowlService.getBranch($scope.parentBranch).then(function (response) {
-        if (!response.metadata) {
-          $location.url('tasks/task/' + $scope.root + '/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
-        }
-        else {
-          notificationService.sendWarning('Unable to start rebase on task ' + $scope.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
-        }
-      });
+    $scope.goToConflicts = function(){
+        snowowlService.getBranch($scope.parentBranch).then(function(response){
+            if(!response.metadata)
+            {
+                $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
+            }
+            else{
+                notificationService.sendWarning('Unable to start rebase on task ' + $scope.taskKey + ' as the project branch is locked due to ongoing changes.', 7000);
+            }
+        });
     };
 
     $scope.gotoHome = function () {

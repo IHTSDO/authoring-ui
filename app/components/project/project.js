@@ -33,12 +33,6 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.browserLink = '..';
       $scope.root = $routeParams.root;
 
-
-      // get and set the branch
-      snowowlService.getBranch($routeParams.root + '/' + $routeParams.projectKey).then(function(response) {
-        $scope.projectBranch = response;
-      });
-
       // function to get the project
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
@@ -340,6 +334,7 @@ angular.module('singleConceptAuthoringApp.project', [
         accountService.getRoleForTask(task).then(function (role) {
           console.debug('getRoleForTask', role);
           switch (role) {
+<<<<<<< HEAD
             case 'REVIEWER':
               $location.url('tasks/task/' + task.branchPath + '/feedback');
               break;
@@ -348,6 +343,16 @@ angular.module('singleConceptAuthoringApp.project', [
               break;
             default:
               $location.url('tasks/task/' + task.branchPath + '/edit');
+=======
+            case 'REVIWER':
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+              break;
+            case 'AUTHOR':
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+              break;
+            default:
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+>>>>>>> parent of eccc19d... Fixed branchPath links in project.js, edit.js rebase call now uses branchPath
               break;
           }
         });
