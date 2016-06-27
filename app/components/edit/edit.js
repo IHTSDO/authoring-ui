@@ -108,7 +108,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     $scope.gotoReviews = function () {
       $location.url('review-tasks');
-    
+    };
     $scope.gotoHome = function() {
         $location.url('home');
       };
@@ -435,36 +435,39 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Review functions
     //
 
-    $scope.getConceptsForReview = function (idList, review, feedbackList) {
-      snowowlService.bulkGetConcept(idList, $scope.branch).then(function (response) {
-        angular.forEach(response.items, function (concept) {
-          angular.forEach(review.concepts, function (reviewConcept) {
-            if (concept.id === reviewConcept.conceptId) {
-              if (concept.fsn) {
-                reviewConcept.term = concept.fsn.term;
-              }
-              angular.forEach(feedbackList, function (feedback) {
-                if (reviewConcept.conceptId === feedback.id) {
-                  reviewConcept.messages = feedback.messages;
-                  reviewConcept.viewDate = feedback.viewDate;
-                }
-              });
-            }
-          });
-          angular.forEach(review.conceptsClassified, function (reviewConcept) {
-            if (concept.id === reviewConcept.conceptId) {
-              reviewConcept.term = concept.fsn.term;
-              angular.forEach(feedbackList, function (feedback) {
-                if (reviewConcept.conceptId === feedback.id) {
-                  reviewConcept.messages = feedback.messages;
-                }
-              });
-            }
-          });
-        });
-        $scope.feedbackContainer.review = review ? review : {};
-      });
-    };
+    $scope.getConceptsForReview = function(idList, review, feedbackList){
+            snowowlService.bulkGetConcept(idList, $scope.branch).then(function(response){
+                    angular.forEach(response.items, function (concept){
+                        angular.forEach(review.concepts, function(reviewConcept){
+                            if(concept.id === reviewConcept.conceptId)
+                            {
+                                if(concept.fsn){
+                                    reviewConcept.term = concept.fsn.term;
+                                }
+                                angular.forEach(feedbackList, function(feedback){
+                                    if(reviewConcept.conceptId === feedback.id)
+                                    {
+                                        reviewConcept.messages = feedback.messages;   
+                                    }
+                                });
+                            }
+                        });
+                        angular.forEach(review.conceptsClassified, function(reviewConcept){
+                            if(concept.id === reviewConcept.conceptId)
+                            {
+                                reviewConcept.term = concept.fsn.term;
+                                angular.forEach(feedbackList, function(feedback){
+                                    if(reviewConcept.conceptId === feedback.id)
+                                    {
+                                        reviewConcept.messages = feedback.messages;   
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    $scope.feedbackContainer.review = review ? review : {};
+                });
+        };
 
     // on load, set the initial view based on classify/validate parameters
     if ($routeParams.mode === 'classify') {
@@ -1058,6 +1061,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                   }).length === 0 && concept.componentChanges.filter(function (obj) {
                     return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
                   }).length !== 0) {
+                  console.log(concept.conceptId);
                   concept.conceptId = concept.conceptId.toString();
                   concept.lastUpdatedTime = change.commitDate;
                   review.concepts.push(concept);
@@ -1106,7 +1110,22 @@ angular.module('singleConceptAuthoringApp.edit', [
                 }
               });
             }
-        });
+
+          });
+          scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
+            var i, j, temparray, chunk = 50;
+            for (i = 0, j = idList.length; i < j; i += chunk) {
+              temparray = idList.slice(i, i + chunk);
+              $scope.getConceptsForReview(temparray, review, feedback);
+            }
+          });
+
+        }
+        else if (!traceability) {
+          review = {};
+        }
+
+      });
     };
 
     var feedbackStyles = {};
@@ -1292,12 +1311,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         setBranchFunctionality($scope.task.branchState);
       }
     }, true);
-    
-    $scope.$watch(function() {
-        return $rootScope.branchLocked;
-        }, function() {
-            setBranchFunctionality($scope.task.branchState);
-    }, true);
 
 //////////////////////////////////////////
     // Initialization
@@ -1343,9 +1356,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conflictsContainer = {
       conflicts: null
     };
+          
 
     $scope.viewReview = function () {
       $scope.getLatestReview();
+        console.log('review');
       $scope.setView('feedback');
     };
 

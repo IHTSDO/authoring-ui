@@ -21,9 +21,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
 
-        // immediately lock the task (fake the task lock)
-        lockTask();
-
         // start the classification
         scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
 
@@ -201,51 +198,42 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
         });
       };
+        
+      $scope.pollStatus = function() {
+            snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+                
+            if(response.metadata)
+            {
+                $rootScope.branchLocked = true;
+                $timeout($scope.pollStatus, 4000);
+            }
+            else{
+                
+                $rootScope.branchLocked = false;
+            }
+          });
+                        
+        };
 
-      // helper function to update lock based on task and project branches
-      // NOTE: Must be manually called on expected
-      function updateLock() {
-        // update lock only if task and project branch both loaded
-        if ($scope.taskBranch && $scope.projectBranch) {
-           $rootScope.branchLocked = ($scope.taskBranch.metadata && $scope.taskBranch.metadata.lock || $scope.projectBranch.metadata && $scope.projectBranch.metadata.lock);
-        }
-      };
-
-      // force lock a task by adding a 'lock' item to metadata
-      // NOTE: Replaced on next task update by actual lock
-      function lockTask() {
-        if ($scope.taskBranch) {
-          if (!$scope.taskBranch.metadata) {
-            $scope.taskBranch.metadata = {};
-          }
-          $scope.taskBranch.metadata.lock = 'Lock pending';
-          updateLock();
-        } else {
-          console.error('Cannot lock task, branch not loaded');
-        }
-      }
 
       //
       // Project polling for lock status updates
       // TODO Inquire as to whether notifications can serve this purpose? Seems like locking would be a branch state notification
       // TODO Update: Changing project metadata does not trigger a notification
       //
-      var projectPoll = null;
-      function pollProjectStatus() {
-        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey).then(function (response) {
-
-          $scope.projectBranch = response;
-
-          // check for lock and update if presen
-          updateLock();
-
-          // if a timeout already scheduled, cancel it
-          if (projectPoll) {
-            $timeout.cancel(projectPoll);
-          }
-          projectPoll = $timeout(pollProjectStatus, 4000);
-        });
-      };
+//      var projectPoll = null;
+//      function pollProjectStatus() {
+//        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey).then(function (response) {
+//
+//          $scope.projectBranch = response;
+//
+//          // if a timeout already scheduled, cancel it
+//          if (projectPoll) {
+//            $timeout.cancel(projectPoll);
+//          }
+//          projectPoll = $timeout(pollProjectStatus, 4000);
+//        });
+//      };
 
       function initialize() {
 
@@ -299,7 +287,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // store the latest task branch
           $scope.taskBranch = response;
-          updateLock();
 
           if ($scope.taskBranch.status === 404) {
             notificationService.sendWarning('Task initializing');
@@ -311,7 +298,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         // start polling the project for lock updates
-        pollProjectStatus();
+//        pollProjectStatus();
 
       }
 
