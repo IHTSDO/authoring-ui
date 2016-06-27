@@ -261,7 +261,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
-        snowowlService.getBranch($rootScope.branchPath).then(function (response) {
+        snowowlService.getBranch($rootScope.parentBranch).then(function (response) {
             if(response.metadata)
             {
                 $rootScope.branchLocked = true;
@@ -270,7 +270,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             else if(response.status === 404)
             {
                 notificationService.sendWarning('Task initializing');
-                snowowlService.createBranch($rootScope.parentBranch + $routeParams.taskKey).then(function (response) {
+                snowowlService.createBranch($rootScope.parentBranch).then(function (response) {
                     notificationService.sendWarning('Task initialization complete', 3000);
                     $rootScope.$broadcast('reloadTaxonomy');
               });
