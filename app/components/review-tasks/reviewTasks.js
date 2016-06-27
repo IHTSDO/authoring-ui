@@ -180,6 +180,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             });
           }
         });
+        // otherwise, simply go to feedback view
       } else {
         $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
       }
