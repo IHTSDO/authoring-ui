@@ -34,6 +34,8 @@ angular.module('singleConceptAuthoringApp.project', [
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+          $rootScope.parentBranch = response.branchPath;
+          $scope.branch = $rootScope.parentBranch;
           $scope.project = response;
 
 

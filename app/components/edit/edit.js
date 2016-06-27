@@ -8,7 +8,7 @@ angular.module('singleConceptAuthoringApp.edit', [
   // all task editing functionality
   .config(function config($routeProvider) {
     $routeProvider
-      .when('/tasks/task/:root/:projectKey/:taskKey/:mode', {
+      .when('/tasks/task/:projectKey/:taskKey/:mode', {
         controller: 'EditCtrl',
         templateUrl: 'components/edit/edit.html',
         resolve: {}
@@ -70,12 +70,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     $rootScope.classificationRunning = false;
     $rootScope.currentTask = null;
 
-    $scope.root = $routeParams.root;
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
-    
-    $scope.branch = $scope.root + '/' + $scope.projectKey + '/' + $scope.taskKey;
-    $scope.parentBranch = $scope.root + '/' + $scope.projectKey;
+
+    $scope.branch = $rootScope.branchPath;
+    $scope.parentBranch = $rootScope.parentBranch;
 
     //////////////////////////////
     // Infinite Scroll
@@ -94,7 +93,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.conceptsRendering = false;
     };
     $scope.goToConflicts = function(){
-        snowowlService.getBranch($scope.parentBranch).then(function(response){
+        snowowlService.getBranch($rootScope.parentBranch).then(function(response){
             if(!response.metadata)
             {
                 $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
@@ -391,15 +390,15 @@ angular.module('singleConceptAuthoringApp.edit', [
     //////////////////////////////
     // Initialization
     //////////////////////////////
-
-    if ($routeParams.taskKey) {
-      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-      $scope.sourceBranch = $routeParams.root + '/' + $routeParams.projectKey;
-    } else {
-      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey;
-      $scope.sourceBranch = $routeParams.root;
-    }
     
+    if ($routeParams.taskKey) {
+      $scope.targetBranch = $rootScope.branchPath;
+      $scope.sourceBranch = $rootScope.parentBranch;
+    } else {
+      $scope.targetBranch = $rootScope.parentBranch;
+      $scope.sourceBranch = 'MAIN/';
+    }
+
     // displayed concept array
     $scope.concepts = [];
 
@@ -420,8 +419,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.canPromote = false;
     $scope.canConflict = false;
     $scope.canCreateConcept = false;
-<<<<<<< HEAD
-
     //
     // INACTIVATION FUNCTIONS
     //
@@ -468,42 +465,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
         $scope.feedbackContainer.review = review ? review : {};
       });
-=======
-    
-    $scope.getConceptsForReview = function(idList, review, feedbackList){
-        snowowlService.bulkGetConcept(idList, $scope.branch).then(function(response){
-                angular.forEach(response.items, function (concept){
-                    angular.forEach(review.concepts, function(reviewConcept){
-                        if(concept.id === reviewConcept.conceptId)
-                        {
-                            if(concept.fsn){
-                                reviewConcept.term = concept.fsn.term;
-                            }
-                            angular.forEach(feedbackList, function(feedback){
-                                if(reviewConcept.conceptId === feedback.id)
-                                {
-                                    reviewConcept.messages = feedback.messages; 
-                                    reviewConcept.viewDate = feedback.viewDate;
-                                }
-                            });
-                        }
-                    });
-                    angular.forEach(review.conceptsClassified, function(reviewConcept){
-                        if(concept.id === reviewConcept.conceptId)
-                        {
-                            reviewConcept.term = concept.fsn.term;
-                            angular.forEach(feedbackList, function(feedback){
-                                if(reviewConcept.conceptId === feedback.id)
-                                {
-                                    reviewConcept.messages = feedback.messages;   
-                                }
-                            });
-                        }
-                    });
-                });
-                $scope.feedbackContainer.review = review ? review : {};
-            });
->>>>>>> parent of c101be2... WRP-2840 Fixes for dynamic path link URLs (to use branch path).
     };
 
     // on load, set the initial view based on classify/validate parameters
@@ -511,7 +472,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('classification');
     } else if ($routeParams.mode === 'validate') {
       $scope.setView('validation');
-<<<<<<< HEAD
     } else if ($routeParams.mode === 'inactivation') {
       // on load, check ui state for active inactivations (heh)
       scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept').then(function (response) {
@@ -564,73 +524,6 @@ angular.module('singleConceptAuthoringApp.edit', [
                   updateConcept.lastUpdatedTime = change.commitDate;
                 }
               });
-=======
-    } else if ($routeParams.mode === 'feedback') {
-        snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-            var review = {};
-            if(traceability)
-            {
-                review.concepts = [];
-                review.conceptsClassified = [];
-                var idList = [];
-                angular.forEach(traceability.content, function (change) {
-                        if(change.activityType === 'CONTENT_CHANGE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.concepts.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType === 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    var updateConcept = review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-                        else if(change.activityType === 'CLASSIFICATION_SAVE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else
-                                {
-                                    var updateConcept = review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-                         
-                });
-                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
-                    var i,j,temparray,chunk = 50;
-                    for (i=0,j=idList.length; i<j; i+=chunk) {
-                        temparray = idList.slice(i,i+chunk);
-                        $scope.getConceptsForReview(temparray, review, feedback);
-                    }
-                });
-                
->>>>>>> parent of c101be2... WRP-2840 Fixes for dynamic path link URLs (to use branch path).
             }
             else if (change.activityType === 'CLASSIFICATION_SAVE') {
               angular.forEach(change.conceptChanges, function (concept) {
@@ -652,7 +545,6 @@ angular.module('singleConceptAuthoringApp.edit', [
                 }
               });
             }
-<<<<<<< HEAD
 
           });
           scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
@@ -669,10 +561,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
       });
-=======
-          
-        });
->>>>>>> parent of c101be2... WRP-2840 Fixes for dynamic path link URLs (to use branch path).
       $scope.setView('feedback');
     } else if ($routeParams.mode === 'conflicts') {
       $scope.setView('conflicts');
@@ -896,11 +784,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
     
     if ($routeParams.taskKey) {
-      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-      $scope.sourceBranch = $routeParams.root + '/' + $routeParams.projectKey;
+      $scope.targetBranch = $rootScope.branchPath;
+      $scope.sourceBranch = $rootScope.parentBranch;
     } else {
-      $scope.targetBranch = $routeParams.root + '/' + $routeParams.projectKey;
-      $scope.sourceBranch = $routeParams.root;
+      $scope.targetBranch = $rootScope.parentBranch;
+      $scope.sourceBranch = 'MAIN/';
     }
 
     // watch for concept cloning from the edit sidebar
@@ -1166,7 +1054,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     // get latest review
     $scope.getLatestReview = function () {
       snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-<<<<<<< HEAD
         var review = {};
         if (traceability) {
           review.concepts = [];
@@ -1207,71 +1094,6 @@ angular.module('singleConceptAuthoringApp.edit', [
                   updateConcept.lastUpdatedTime = change.commitDate;
                 }
               });
-=======
-            var review = {};
-            if(traceability)
-            {
-                review.concepts = [];
-                review.conceptsClassified = [];
-                var idList = [];
-                angular.forEach(traceability.content, function (change) {
-                        if(change.activityType === 'CONTENT_CHANGE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.concepts.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0 && concept.componentChanges.filter(function( obj ) {return obj.componentSubType === 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    concept.lastUpdatedTime = change.commitDate;
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else if(concept.componentChanges.filter(function( obj ) {return obj.componentSubType !== 'INFERRED_RELATIONSHIP';}).length !== 0)
-                                {
-                                    var updateConcept = review.concepts.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-                        else if(change.activityType === 'CLASSIFICATION_SAVE')
-                        {
-                            angular.forEach(change.conceptChanges, function (concept) {
-                                if(review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();}).length === 0)
-                                {
-                                    concept.conceptId = concept.conceptId.toString();
-                                    review.conceptsClassified.push(concept);
-                                    idList.push(concept.conceptId);
-                                }
-                                else
-                                {
-                                    var updateConcept = review.conceptsClassified.filter(function( obj ) {return obj.conceptId === concept.conceptId.toString();})[0];
-                                    angular.forEach(concept.componentChanges, function(componentChange){
-                                        updateConcept.componentChanges.push(componentChange);
-                                    });
-                                    updateConcept.lastUpdatedTime = change.commitDate;
-                                }
-                            });
-                        }
-                         
-                });
-                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function(feedback){
-                    var i,j,temparray,chunk = 50;
-                    for (i=0,j=idList.length; i<j; i+=chunk) {
-                        temparray = idList.slice(i,i+chunk);
-                        $scope.getConceptsForReview(temparray, review, feedback);
-                    }
-                });
-                
->>>>>>> parent of c101be2... WRP-2840 Fixes for dynamic path link URLs (to use branch path).
             }
             else if (change.activityType === 'CLASSIFICATION_SAVE') {
               angular.forEach(change.conceptChanges, function (concept) {
@@ -1293,27 +1115,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                 }
               });
             }
-<<<<<<< HEAD
-
-          });
-          scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (feedback) {
-            var i, j, temparray, chunk = 50;
-            for (i = 0, j = idList.length; i < j; i += chunk) {
-              temparray = idList.slice(i, i + chunk);
-              $scope.getConceptsForReview(temparray, review, feedback);
-            }
-          });
-
-        }
-        else if (!traceability) {
-          review = {};
-        }
-
-      });
-=======
-          
         });
->>>>>>> parent of c101be2... WRP-2840 Fixes for dynamic path link URLs (to use branch path).
     };
 
     var feedbackStyles = {};
@@ -1354,13 +1156,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
     };
-<<<<<<< HEAD
-
-    $scope.getSNF = function (id) {
-=======
     
     $scope.getSNF = function(id){
->>>>>>> parent of c101be2... WRP-2840 Fixes for dynamic path link URLs (to use branch path).
       var deferred = $q.defer();
       snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
@@ -1497,8 +1294,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       var cssClass = check ? 'last' : null;
       return cssClass;
     };
-<<<<<<< HEAD
-
     $scope.$watch(function () {
       return $rootScope.branchLocked;
     }, function () {
@@ -1507,16 +1302,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }, true);
 
-=======
-    
-    $scope.$watch(function() {
-        return $rootScope.branchLocked;
-        }, function() {
-            setBranchFunctionality($scope.task.branchState);
-    }, true);
-    
-    
->>>>>>> parent of c101be2... WRP-2840 Fixes for dynamic path link URLs (to use branch path).
 
 //////////////////////////////////////////
     // Initialization
@@ -1526,6 +1311,14 @@ angular.module('singleConceptAuthoringApp.edit', [
     if ($routeParams.taskKey) {
       scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $scope.task = response;
+        if(response.branchPath){
+              $rootScope.branchPath = response.branchPath;
+          }
+          else{
+              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
+                  $rootScope.parentBranch = projectResponse.branchPath;
+              });
+          }
         $rootScope.currentTask = response;
 
         accountService.getRoleForTask(response).then(function (role) {
@@ -1572,6 +1365,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+          if(response.branchPath){
+              $rootScope.branchPath = response.branchPath;
+          }
+          else{
+              scaService.getProjectForKey($routeParams.projectKey).then(function(projectResponse){
+                  $rootScope.parentBranch = projectResponse.branchPath;
+              });
+          }
           $rootScope.currentTask = response;
 
           $scope.getLatestClassification();
