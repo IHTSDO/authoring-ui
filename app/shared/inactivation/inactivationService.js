@@ -14,10 +14,10 @@ angular.module('singleConceptAuthoringApp')
     //
     function isInactivation() {
 
-      return false;
+      //return false;
 
       // TODO REENABLE once inactivation is desired, this is used to trigger state detection
-      // return conceptToInactivate != null && conceptToInactivate != undefined;
+      return conceptToInactivate !== null && conceptToInactivate !== undefined;
     }
 
     function setConceptToInactivate(concept) {
@@ -117,7 +117,7 @@ angular.module('singleConceptAuthoringApp')
       getConceptToInactivate: getConceptToInactivate,
       inactivateConcept: inactivateConcept,
       cancelInactivation: cancelInactivation
-    }
+    };
 
   }])
 ;
