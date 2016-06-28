@@ -71,11 +71,10 @@
 
         <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
                                                                  aria-controls="home" role="tab"
-                                                                 data-toggle="tab"> New Historical Associations
+                                                                 data-toggle="tab"> Hierarchical Relationships Affected ({{isaRelsTableParams.total()}})
         <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=2"
                                                                  aria-controls="home" role="tab"
-                                                                 data-toggle="tab"> Relationships Affected By
-          Inactivation ({{relsTableParams.total()}})
+                                                                 data-toggle="tab"> Attribute Relationships Affected ({{attrRelsTableParams.total()}})
         </a></li>
         <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
                                                      data-toggle="tab">Previous Historical Associations
@@ -86,18 +85,47 @@
 
   </div>
   <div ng-show="actionTab==1">
-  </div>
-  <div ng-show="actionTab==2" class="table-responsive white" style="margin-right:0px;">
     <table
-      ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
+      ng-table="isaRelsTableParams" template-pagination="utilities/data-table-pager.html"
       class="table table-full table-full-small">
       <tr ng-repeat="rel in $data">
         <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
           <input type="checkbox" ng-model="rel.selected" ui-on-drop="">
         </td>
-        <td data-title="'RG'" sortable="'groupId'">{{rel.group}}</td>
+        <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
+        </td>
+        <td data-title="'Attribute'" sortable="'failureCount'">
+          <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
+            <span>Relationship type</span>
+          </div>
+        </td>
+        <td data-title="'Value (Proposed)'" sortable="'failureCount'">
+          <div class="tooltips-bottom small-size-tooltip offset-tooltip-left">{{rel.target.fsn}}
+            <span>Proposed Value</span>
+          </div>
+        </td>
+        <td ng-if="editable" data-header="'editheader.html'">
+          <button type="button" class="btn btn-round btn-default blue"
+                  ng-click="editConcept(failure.errorMessage.conceptId)"
+                  title="View/Edit Concept">
+            <span class="md md-edit"></span>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div ng-show="actionTab==2" class="table-responsive white" style="margin-right:0px;">
+    <table
+      ng-table="attrRelsTableParams" template-pagination="utilities/data-table-pager.html"
+      class="table table-full table-full-small">
+      <tr ng-repeat="rel in $data">
+        <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
+          <input type="checkbox" ng-model="rel.selected" ui-on-drop="">
+        </td>
+
         <td data-title="'Concept'" sortable="FSN">{{rel.sourceFsn}}
         </td>
+        <td data-title="'RG'" sortable="'groupId'">{{rel.group}}</td>
         <td data-title="'Attribute'" sortable="'failureCount'">
           <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
             <span>Relationship type</span>
@@ -117,37 +145,16 @@
         </td>
       </tr>
     </table>
-    NOTE: Inactive relationships not shown.
+  </div>
+  <div ng-if="viewedConcept" class="row no-padding no-gutter">
+    <div concept-edit concept="viewedConcept" branch="branch" static="false"
+         component-styles="styles[viewedConcept.conceptId]"
+         save-function="conceptUpdateFunction(project, task, concept)"></div>
   </div>
   <div class="table-responsive white" style="margin-right:0px;" ng-show="actionTab==3">
-    <table
-      ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
-      class="table table-full table-full-small">
-      <tr ng-repeat="assoc in $data">
-        <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
-        </td>
-        <td data-title="'Attribute'" sortable="'failureCount'">
-          <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-            <span>Relationship type</span>
-          </div>
-        </td>
-        <td data-title="'Value (Proposed)'" sortable="'failureCount'">
-          <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-            <span>Relationship type</span>
-          </div>
-        </td>
-        <td ng-if="editable" data-header="'editheader.html'">
-          <button type="button" class="btn btn-round btn-default blue"
-                  ng-click="editConcept(failure.errorMessage.conceptId)"
-                  title="View/Edit Concept">
-            <span class="md md-edit"></span>
-          </button>
-        </td>
-      </tr>
-    </table>
+
   </div>
-  </div>
-  </div>
+
   <!-- Taxonomy, models, and concepts -->
   <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
     <!-- Taxonomy -->
@@ -162,9 +169,7 @@
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
         </div>
         <div class="col-md-6">
-          <div concept-edit concept="concept" branch="branch" static="false"
-               component-styles="styles[concept.conceptId]"
-               save-function="conceptUpdateFunction(project, task, concept)"></div>
+
         </div>
       </div>
     </div>

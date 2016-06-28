@@ -19,104 +19,32 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
-          scope.editable = attrs.editable === 'true';
-          scope.taskKey = $routeParams.taskKey;
+          console.debug('INACTIVATION VIEW', scope.inactivationConcept, scope.branch)
 
-          scope.getSNF = function (id) {
-            var deferred = $q.defer();
-            snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
-              deferred.resolve(response);
-            });
-            return deferred.promise;
-          };
+          // tab content arrays
+          scope.isaRels = [];
+          scope.attrRels = [];
+          scope.assocRefs = [];
 
+          // map of changed concepts for batch update
+          scope.affectedRelationshipIds = [];
+          scope.affectedConceptIds = [];
+          scope.affectedConcepts = {};
+
+          // currently edited concept
+          scope.viewedConcept = null;
+
+          // children and parents (convenience arrays)
+          scope.inactivationConceptChildren = [];
+          scope.inactivationConceptParents = [];
+
+          //
+          // Concept update function
+          //
           scope.conceptUpdateFunction = function (project, task, concept) {
-            var deferred = $q.defer();
-            snowowlService.updateConcept(project, task, concept).then(function (response) {
-              deferred.resolve(response);
-            });
-            return deferred.promise;
+            scope.affectedConcepts[concept.conceptId] = concept;
+            reloadTables();
           };
-
-          //
-          // Fsn by Id retrieval
-          // NOTE: Call this on page changes to ensure concept ids are present
-          //
-          var fsnIdMap = {};
-          function populateFsns() {
-            var newIds = [];
-            for (var id in fsnIdMap) {
-              if (!fsnIdMap.hasOwnProperty(id)) {
-                newIds.push(id);
-              }
-            }
-            snowowlService.bulkGetConcept(newIds).then(function(concepts) {
-              angular.forEach(concepts, function(concept) {
-                fsnIdMap[concept.id] = concept.fsn.term;
-              })
-            })
-          }
-
-          //
-          // Proposed value functions
-          //
-          function getProposedRelationship(relationship) {
-
-            // isa relationships -- parents become grandparents of children
-            if (metadataService.isIsaRelationship(relationship.type)) {
-
-            } else {
-              relationship.target.fsn = null;
-              relationship.target.conceptId = null;
-            }
-          }
-
-          function getProposedAssociationReference(assocationReference) {
-
-          }
-
-          //
-          // Relationship retrieval functions
-          //
-          /**
-           * Helper function to get and set a page of, or all, inbound relationships
-           * @param conceptId
-           * @param branch
-           * @param startIndex
-           * @param maxResults
-           */
-          function getInboundRelationships(startIndex, maxResults) {
-            console.log('getting inbound relationships', startIndex, maxResults);
-            var deferred = $q.defer();
-
-            // get the concept relationships again (all)
-            snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0, scope.tableLimit).then(function (response) {
-
-              // temporary array for preventing duplicate children
-              var activeRels = [];
-
-              // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
-              // make top-level properties
-              angular.forEach(response.inboundRelationships, function (item) {
-
-                console.debug('checking relationship', item.active, item);
-
-                // filter out non-active relationships
-                if (item.active) {
-                  item.sourceFsn = item.source.fsn;
-                  item.typeFsn = item.type.fsn;
-                  activeRels.push(item);
-                }
-              });
-
-              // reassign the active rels
-              response.inboundRelationships = activeRels;
-
-              deferred.resolve(response);
-
-            });
-            return deferred.promise;
-          }
 
 
           //
@@ -124,7 +52,7 @@ angular.module('singleConceptAuthoringApp')
           //
 
           // declare table parameters
-          scope.relsTableParams = new NgTableParams({
+          scope.isaRelsTableParams = new NgTableParams({
               page: 1,
               count: 10
             },
@@ -135,17 +63,30 @@ angular.module('singleConceptAuthoringApp')
               total: '-',
               getData: function ($defer, params) {
 
-                getInboundRelationships((params.page() - 1) * params.count(), params.count()).then(function (response) {
-                  console.log('ngTable inbound relationships', params);
-                  scope.relsTableParams.total(response.total);
-                  $defer.resolve(response.inboundRelationships);
-                });
+                console.debug('GET DATA')
+                var data = [];
+                // recompute the affected relationships from ids or blank ids
+                for (var conceptId in scope.affectedConcepts) {
+                  angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                    // add all relationships with no id
+                    if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                      rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
+                      rel.typeFsn = rel.type.fsn;
+                      data.push(rel);
+                    }
+                  })
+                }
+                console.debug('  ISA DATA', data);
+                data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
+                params.total(data.length);
+                $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+
               }
             }
           );
 
           // declare table parameters
-          scope.assocsTableParams = new NgTableParams({
+          scope.attrRelsTableParams = new NgTableParams({
               page: 1,
               count: 10
             },
@@ -153,9 +94,25 @@ angular.module('singleConceptAuthoringApp')
               // initial display text, overwritten in getData
               total: '-',
               getData: function ($defer, params) {
-                // TODO Put call here
-                scope.relsTableParams.total(0);
-                $defer.resolve([]);
+
+                console.debug('GET DATA')
+                var data = [];
+                // recompute the affected relationships from ids or blank ids
+                for (var conceptId in scope.affectedConcepts) {
+                  angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                    // add all relationships with no id
+                    if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                      rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
+                      rel.typeFsn = rel.type.fsn;
+                      data.push(rel);
+                    }
+                  })
+                }
+                console.debug('  ATTR DATA', data);
+                data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
+                params.total(data.length);
+                $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+
               }
             }
           );
@@ -165,6 +122,12 @@ angular.module('singleConceptAuthoringApp')
               failure.selected = selectAllActive;
             });
           };
+
+
+          function reloadTables() {
+            scope.isaRelsTableParams.reload();
+            scope.attrRelsTableParams.reload();
+          }
 
           /**
            * Remove concepts from viewed list on stopEditing events from
@@ -267,6 +230,130 @@ angular.module('singleConceptAuthoringApp')
               });
             });
           };
+
+          //
+          // Retrieval functions
+          //
+
+
+          function getAffectedObjectIds() {
+            console.log('Getting affected object ids');
+            var deferred = $q.defer();
+            snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0, -1).then(function (response) {
+              scope.affectedRelationshipIds = [];
+
+              angular.forEach(response.inboundRelationships, function (item) {
+
+                // only want active, stated relationships
+                if (item.active && item.characteristicType === 'STATED_RELATIONSHIP') {
+                  // ng-table can't sort on A.B fields,
+                  item.sourceFsn = item.source.fsn;
+                  item.typeFsn = item.type.fsn;
+                  scope.affectedRelationshipIds.push(item.id);
+                  scope.affectedConcepts[item.sourceId] = {};
+                }
+              });
+              console.debug('  Affected relationship ids ', scope.affectedRelationshipIds);
+              console.debug('  Affected concept ids', scope.affectedConcepts);
+              deferred.resolve();
+            });
+            return deferred.promise;
+          }
+
+          /**
+           * Initialization functions
+           */
+
+
+          function getAffectedConcepts(inboundRelationships) {
+            console.debug('Getting affected concepts');
+            var deferred = $q.defer();
+            var conceptsRetrieved = 0;
+            angular.forEach(Object.keys(scope.affectedConcepts), function (conceptId) {
+              console.debug('  Getting concept ' + conceptId);
+              snowowlService.getFullConcept(conceptId, scope.branch).then(function (concept) {
+                scope.affectedConcepts[conceptId] = concept;
+                if (Object.keys(scope.affectedConcepts).length === ++conceptsRetrieved) {
+                  console.debug('  Final concept map', scope.affectedConcepts);
+                  deferred.resolve();
+                }
+              })
+            });
+
+
+            return deferred.promise;
+          }
+
+          // inactivate a relationship and add new relationships for children
+          function inactivateRelationship(concept, rel) {
+            console.debug('Inactivating relationship ', rel);
+
+            // assign copied new relationship to each parent
+            angular.forEach(scope.inactivationConceptParents, function (parent) {
+
+              var newRel = angular.copy(rel);
+              newRel.relationshipId = null;
+              newRel.effectiveTime = null;
+              newRel.released = false;
+              newRel.target.id = parent.conceptId;
+              newRel.target.fsn = parent.fsn;
+              concept.relationships.push(newRel);
+              console.debug('    added relationship', newRel);
+            });
+
+            rel.active = 0;
+            console.debug('  Final state of concept', concept);
+          }
+
+
+          function prepareAffectedRelationships() {
+
+            for (var key in scope.affectedConcepts) {
+              console.debug('Preparing affected relationships for concept' + key);
+              if (scope.affectedConcepts.hasOwnProperty(key)) {
+                var concept = scope.affectedConcepts[key];
+                angular.forEach(concept.relationships, function (rel) {
+                  console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
+                  if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1) {
+                    console.debug('  prepping relationship', rel.relationshipId);
+                    inactivateRelationship(concept, rel);
+                  }
+                });
+              }
+            }
+          };
+
+
+          function initialize() {
+            notificationService.sendMessage('Initializing inactivation...');
+
+            // extract the parent concepts
+            angular.forEach(scope.inactivationConcept.relationships, function (rel) {
+              if (rel.active && rel.characteristicType === 'STATED_RELATIONSHIP' && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                scope.inactivationConceptParents.push({conceptId: rel.target.conceptId, fsn: rel.target.fsn});
+              }
+            });
+            console.debug('Concept parents:', scope.inactivationConceptParents);
+
+
+            // ensure that children have been retrieved
+            snowowlService.getConceptChildren(scope.inactivationConcept.conceptId, scope.branch).then(function (children) {
+              scope.inactivationConceptChildren = children;
+              notificationService.sendMessage('Retrieving inbound relationships...');
+              getAffectedObjectIds().then(function () {
+                notificationService.sendMessage('Initializing affected concepts...');
+                getAffectedConcepts().then(function () {
+                  notificationService.sendMessage('Preparing affected relationships...');
+                  prepareAffectedRelationships();
+                  notificationService.sendMessage('Inactivation initialization complete');
+                  reloadTables();
+
+                });
+              });
+            });
+          };
+
+          initialize();
         }
 
       };
