@@ -48,15 +48,12 @@
           </button>
           <button class="btn btn-border tooltips-bottom xlarge-size-tooltip "
                   ng-click="promote()"
-                  ng-disabled="project.branchState !== 'FORWARD' || !projectBranch || projectBranch.metadata.preventPromotion">
+                  ng-disabled="project.branchState !== 'FORWARD' || !projectBranch">
             <div
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>
             </div>
-            <div ng-if="projectBranch.metadata.preventPromotion">Project Promotion Disabled</div>
-            <div ng-if="!projectBranch.metadata.preventPromotion">Promote This Project to the Mainline</div>
-            <span ng-if="!projectBranch.metadata.preventPromotion">Promote this project</span>
-            <span ng-if="projectBranch.metadata.preventPromotion">This project may not be promoted</span>
+            <div>Promote This Project to the Mainline</div>
           </button>
 
 
