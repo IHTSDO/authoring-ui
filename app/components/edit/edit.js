@@ -286,6 +286,18 @@ angular.module('singleConceptAuthoringApp.edit', [
         );
     };
 
+    //
+    // View functions
+    //
+    $scope.$on('conceptEdit.inactivateConcept', function(event, data) {
+      $scope.setView('inactivation');
+    });
+
+    $scope.$on('inactivation.cancelInactivation', function(event, data) {
+      $scope.setView('edit-default');
+    });
+
+
     $scope.setView = function (name) {
 
       // do nothing if no name supplied
@@ -308,7 +320,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'inactivation':
           $rootScope.pageTitle = 'Inactivation/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'inactivation';
-          $scope.inactivationConcept = inactivationService.getConceptToInactivate();
           $scope.concepts = [];
           $scope.canCreateConcept = false;
           break;
@@ -447,7 +458,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 angular.forEach(feedbackList, function(feedback){
                                     if(reviewConcept.conceptId === feedback.id)
                                     {
-                                        reviewConcept.messages = feedback.messages;   
+                                        reviewConcept.messages = feedback.messages;
                                     }
                                 });
                             }
@@ -459,7 +470,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                                 angular.forEach(feedbackList, function(feedback){
                                     if(reviewConcept.conceptId === feedback.id)
                                     {
-                                        reviewConcept.messages = feedback.messages;   
+                                        reviewConcept.messages = feedback.messages;
                                     }
                                 });
                             }
@@ -1166,13 +1177,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
     };
-    
+
     $scope.getSNF = function(id){
       var deferred = $q.defer();
       snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
       });
-      return deferred.promise; 
+      return deferred.promise;
     };
 
     //////////////////////////////////////////
@@ -1356,7 +1367,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conflictsContainer = {
       conflicts: null
     };
-          
+
 
     $scope.viewReview = function () {
       $scope.getLatestReview();
