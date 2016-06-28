@@ -21,10 +21,7 @@ angular.module('singleConceptAuthoringApp')
 
           console.debug('INACTIVATION VIEW', scope.inactivationConcept, scope.branch)
 
-          // tab content arrays
-          scope.isaRels = [];
-          scope.attrRels = [];
-          scope.assocRefs = [];
+          scope.initializing = true;
 
           // map of changed concepts for batch update
           scope.affectedRelationshipIds = [];
@@ -44,6 +41,7 @@ angular.module('singleConceptAuthoringApp')
           // Concept update function
           //
           scope.conceptUpdateFunction = function (project, task, concept) {
+            window.alert('ohai');
             scope.affectedConcepts[concept.conceptId] = concept;
             scope.reloadTables();
           };
@@ -198,20 +196,27 @@ angular.module('singleConceptAuthoringApp')
            */
 
 
-          function getAffectedConcepts(inboundRelationships) {
+          function getAffectedConcepts() {
             console.debug('Getting affected concepts');
             var deferred = $q.defer();
-            var conceptsRetrieved = 0;
-            angular.forEach(Object.keys(scope.affectedConcepts), function (conceptId) {
-              console.debug('  Getting concept ' + conceptId);
-              snowowlService.getFullConcept(conceptId, scope.branch).then(function (concept) {
-                scope.affectedConcepts[conceptId] = concept;
-                if (Object.keys(scope.affectedConcepts).length === ++conceptsRetrieved) {
-                  console.debug('  Final concept map', scope.affectedConcepts);
-                  deferred.resolve();
-                }
-              })
-            });
+
+            if (scope.affectedRelationshipIds.length == 0) {
+              deferred.resolve();
+            }
+            else {
+              var conceptsRetrieved = 0;
+
+              angular.forEach(Object.keys(scope.affectedConcepts), function (conceptId) {
+                console.debug('  Getting concept ' + conceptId);
+                snowowlService.getFullConcept(conceptId, scope.branch).then(function (concept) {
+                  scope.affectedConcepts[conceptId] = concept;
+                  if (Object.keys(scope.affectedConcepts).length === ++conceptsRetrieved) {
+                    console.debug('  Final concept map', scope.affectedConcepts);
+                    deferred.resolve();
+                  }
+                })
+              });
+            }
 
 
             return deferred.promise;
@@ -278,8 +283,9 @@ angular.module('singleConceptAuthoringApp')
                 getAffectedConcepts().then(function () {
                   notificationService.sendMessage('Preparing affected relationships...');
                   prepareAffectedRelationships();
-                  notificationService.sendMessage('Inactivation initialization complete');
+                  notificationService.sendMessage('Inactivation initialization complete', 5000);
                   scope.reloadTables();
+                  scope.initializing = false;
 
                 });
               });

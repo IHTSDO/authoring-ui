@@ -313,7 +313,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           snowowlService.cleanConcept(scope.concept);
 
           var saveFn = null;
-          if (scope.concept.fsn === null) {
+
+          if (scope.saveFunction) {
+            saveFn = scope.saveFunction;
+          }
+
+          else if (scope.concept.fsn === null) {
             saveFn = snowowlService.createConcept;
           } else {
             saveFn = snowowlService.updateConcept;
@@ -327,32 +332,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (response && response.conceptId) {
 
                 console.debug('Save concept successful');
-
-                /*
-                 TODO Removed after discussion of this functionality on 12/17 -- limited scope of unsaved work only (not more comprehensive work list) indicates combinining this functionality with modified-concept UI-state
-
-                 // get the unsaved work list
-                 scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function (unsavedWork) {
-
-                 if (!unsavedWork) {
-                 unsavedWork = [];
-                 }
-
-                 // filter out this concept's id (if it exists)
-                 unsavedWork = unsavedWork.filter(function (id) {
-                 if (scope.concept.conceptId) {
-                 return id !== scope.concept.conceptId;
-                 } else {
-                 return id !== 'unsaved';
-                 }
-                 });
-
-                 console.debug('removed concept from unsaved work list', unsavedWork);
-
-                 // update the unsaved work list
-                 scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', newUnsavedList);
-                 });
-                 */
 
                 // set concept and unmodified state
                 scope.concept = response;
@@ -648,32 +627,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // This inactivationService function also triggers the accessibility of the inactivation view
                 if (!inactivationService.isInactivation()) {
 
-                snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+                  snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
-                  scope.concept.active = false;
+                    scope.concept.active = false;
 
-                  // if reason is selected, deactivate all descriptions and
-                  // relationships
-                  if (results.reason) {
+                    // if reason is selected, deactivate all descriptions and
+                    // relationships
+                    if (results.reason) {
 
-                    // straightforward inactivation of relationships
-                    // NOTE: Descriptions stay active so a FSN can still be
-                    // found
-                    angular.forEach(scope.concept.relationships, function (relationship) {
-                      relationship.active = false;
-                    });
+                      // straightforward inactivation of relationships
+                      // NOTE: Descriptions stay active so a FSN can still be
+                      // found
+                      angular.forEach(scope.concept.relationships, function (relationship) {
+                        relationship.active = false;
+                      });
 
-                    // save concept but bypass validation checks
-                    saveHelper().then(function () {
-                      notificationService.sendMessage('Concept inactivated');
-                    }, function (error) {
-                      notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                    });
-                  }
-                }, function () {
-                  notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
-                });
-              }
+                      // save concept but bypass validation checks
+                      saveHelper().then(function () {
+                        notificationService.sendMessage('Concept inactivated');
+                      }, function (error) {
+                        notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                      });
+                    }
+                  }, function () {
+                    notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+                  });
+                }
 
               });
 
@@ -2261,34 +2240,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             scope.isModified = true;
 
-            // store the modified concept in ui-state
-            scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
-
-            });
-            /*
-             TODO Removed after discussion of this functionality on 12/17 -- limited scope of unsaved work only (not more comprehensive work list) indicates combinining this functionality with modified-concept UI-state
-
-
-             // get the unsaved work list
-             scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function(unsavedWork) {
-
-             if (!unsavedWork) {
-             unsavedWork = [];
-             }
-
-             if (scope.concept.conceptId && unsavedWork.indexOf(scope.conceptId) === -1) {
-             unsavedWork.push(scope.concept.conceptId);
-             } else if (!scope.concept.conceptId && unsavedWork.indexOf('unsaved') === -1) {
-             unsavedWork.push('unsaved');
-             }
-
-             console.debug('added concept to unsaved work list', unsavedWork);
-
-             // update the unsaved work list
-             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', unsavedWork);
-             });
-
-             */
+            // store the modified concept in ui-state if autosave on
+            if (scope.autosave == true) {
+              scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
+                // do nothing
+              });
+            }
 
           } else {
             scope.isModified = false;
@@ -2300,18 +2257,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * NOTE: outside $watch to prevent spurious updates
          */
         function autoSave() {
-          if (scope.autosave === true) {
-            // console.debug('conceptEdit: autosave called', scope.concept
-            // === scope.lastModifiedConcept, scope.concept);
 
-            scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
-            scope.conceptHistoryPtr++;
+          // console.debug('conceptEdit: autosave called', scope.concept
+          // === scope.lastModifiedConcept, scope.concept);
 
-            // save the modified concept
-            saveModifiedConcept();
-          }
+          scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
+          scope.conceptHistoryPtr++;
 
+          // save the modified concept
+          saveModifiedConcept();
         }
+
 
         /**
          * Resets concept history
