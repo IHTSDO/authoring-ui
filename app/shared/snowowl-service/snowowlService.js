@@ -74,12 +74,19 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-      // TODO Add relationship cleaning fields
+      var allowableRelationshipProperties = [
+          'active', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'released'
+        ]
       angular.forEach(concept.relationships, function (relationship) {
 
         // if a locally assigned UUID, strip
         if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
           delete relationship.relationshipId;
+        }
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
         }
       });
     }
