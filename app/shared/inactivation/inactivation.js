@@ -9,8 +9,6 @@ angular.module('singleConceptAuthoringApp')
         transclude: false,
         replace: true,
         scope: {
-          //concept that is being inactivated
-          inactivationConcept: '=',
 
           // branch this report is good for
           branch: '='
@@ -19,7 +17,11 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
-          console.debug('INACTIVATION VIEW', scope.inactivationConcept, scope.branch)
+
+          scope.inactivationConcept = inactivationService.getConceptToInactivate();
+
+          console.debug('INACTIVATION VIEW', scope.inactivationConcept, scope.branch);
+
 
           scope.initializing = true;
 
@@ -167,7 +169,7 @@ angular.module('singleConceptAuthoringApp')
           scope.cancelInactivation = function() {
             if (window.confirm('All changes made during inactivation will be lost, are you sure?')) {
               inactivationService.setConceptToInactivate(null);
-              $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
+              $rootScope.$broadcast('inactivation.cancelInactivation');
             }
           }
 
@@ -234,7 +236,7 @@ angular.module('singleConceptAuthoringApp')
 
           // inactivate a relationship and add new relationships for children
           function inactivateRelationship(concept, rel) {
-            console.debug('Inactivating relationship ', rel);
+            console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
 
             // assign copied new relationship to each parent
             angular.forEach(scope.inactivationConceptParents, function (parent) {

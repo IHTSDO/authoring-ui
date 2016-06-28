@@ -614,14 +614,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 console.log('No errors detected');
               }
 
-              // set the concept in the inactivation service for listener update and retrieval
-              // NOTE: Also broadcasts a route change to edit.js from the service
-              inactivationService.setConceptToInactivate(scope.concept);
-              scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept', scope.concept);
+             selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
-              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+               // set the concept in the inactivation service for listener update and retrieval
+               // NOTE: Also broadcasts a route change to edit.js from the service
+               inactivationService.setConceptToInactivate(scope.concept);
+               $rootScope.$broadcast('conceptEdit.inactivateConcept');
 
-                notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
+
+               notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
                 // WRP-2161 testing bypass -- to disable new fe atures, modify isInactivation service to return false only
                 // This inactivationService function also triggers the accessibility of the inactivation view

@@ -6,6 +6,8 @@ angular.module('singleConceptAuthoringApp')
     // the selected tab
     $scope.actionTab = 1;
 
+    $scope.descendants = null;
+
     $scope.filterByInactivationReason = function () {
         return function (item) {
             if ($scope.reason.display.indexOf(item.display) !== -1)
@@ -61,6 +63,94 @@ angular.module('singleConceptAuthoringApp')
         return response;
       });
     };
+
+
+// declare table parameters
+    $scope.tableParamsChildren = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          characteristicType: 'desc',
+          sourceFsn: 'asc'
+        },
+        orderBy: 'sourceFsn'
+      },
+      {
+        total: $scope.children ? $scope.children.length : 0, // length of data
+        getData: function ($defer, params) {
+
+          if (!$scope.children || $scope.children.length === 0) {
+            $defer.resolve([]);
+          } else {
+
+            params.total($scope.children.length);
+            var childrenDisplayed = params.sorting() ? $filter('orderBy')($scope.children, params.orderBy()) : $scope.children;
+
+            $defer.resolve(childrenDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          }
+
+        }
+      }
+    );
+
+// declare table parameters
+    $scope.tableParamsDescendants = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          sortableName: 'asc'
+        },
+        orderBy: 'sortableName'
+      },
+      {
+        total: $scope.descendants ? $scope.descendants.descendants.items.length : 0, // length
+        // of
+        // data
+        getData: function ($defer, params) {
+
+          if (!$scope.descendants || $scope.descendants.descendants.length === 0) {
+            $defer.resolve([]);
+          } else {
+
+            params.total($scope.descendants.descendants.items.length);
+            var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.descendants.items, params.orderBy()) : $scope.descendants.descendants.items;
+
+            console.debug(descendantsDisplayed);
+
+            $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          }
+
+        }
+      }
+    );
+
+// declare table parameters
+    $scope.tableParamsInboundRelationships = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {
+          characteristicType: 'desc',
+          sourceFsn: 'asc'
+        },
+        orderBy: 'sourceFsn'
+      },
+      {
+        total: $scope.inboundRelationships ? $scope.inboundRelationships.length : 0, // length of
+        // data
+        getData: function ($defer, params) {
+
+          if (!$scope.inboundRelationships || $scope.inboundRelationships.length === 0) {
+            $defer.resolve([]);
+          } else {
+
+            params.total($scope.inboundRelationships.length);
+            var inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships, params.orderBy()) : $scope.inboundRelationships;
+            $defer.resolve(inboundRelationshipsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          }
+        }
+      }
+    );
+
 
     $scope.selectReason = function () {
 
@@ -243,91 +333,6 @@ angular.module('singleConceptAuthoringApp')
         });
     }
 
-// declare table parameters
-    $scope.tableParamsChildren = new ngTableParams({
-        page: 1,
-        count: 10,
-        sorting: {
-          characteristicType: 'desc',
-          sourceFsn: 'asc'
-        },
-        orderBy: 'sourceFsn'
-      },
-      {
-        total: $scope.children ? $scope.children.length : 0, // length of data
-        getData: function ($defer, params) {
-
-          if (!$scope.children || $scope.children.length === 0) {
-            $defer.resolve([]);
-          } else {
-
-            params.total($scope.children.length);
-            var childrenDisplayed = params.sorting() ? $filter('orderBy')($scope.children, params.orderBy()) : $scope.children;
-
-            $defer.resolve(childrenDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-          }
-
-        }
-      }
-    );
-
-// declare table parameters
-    $scope.tableParamsDescendants = new ngTableParams({
-        page: 1,
-        count: 10,
-        sorting: {
-          sortableName: 'asc'
-        },
-        orderBy: 'sortableName'
-      },
-      {
-        total: $scope.descendants ? $scope.descendants.descendants.items.length : 0, // length
-                                                                         // of
-        // data
-        getData: function ($defer, params) {
-
-          if (!$scope.descendants || $scope.descendants.descendants.length === 0) {
-            $defer.resolve([]);
-          } else {
-
-            params.total($scope.descendants.descendants.items.length);
-            var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.descendants.items, params.orderBy()) : $scope.descendants.descendants.items;
-
-            console.debug(descendantsDisplayed);
-
-            $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-          }
-
-        }
-      }
-    );
-
-// declare table parameters
-    $scope.tableParamsInboundRelationships = new ngTableParams({
-        page: 1,
-        count: 10,
-        sorting: {
-          characteristicType: 'desc',
-          sourceFsn: 'asc'
-        },
-        orderBy: 'sourceFsn'
-      },
-      {
-        total: $scope.inboundRelationships ? $scope.inboundRelationships.length : 0, // length of
-        // data
-        getData: function ($defer, params) {
-
-          if (!$scope.inboundRelationships || $scope.inboundRelationships.length === 0) {
-            $defer.resolve([]);
-          } else {
-
-            params.total($scope.inboundRelationships.length);
-            var inboundRelationshipsDisplayed = params.sorting() ? $filter('orderBy')($scope.inboundRelationships, params.orderBy()) : $scope.inboundRelationships;
-            $defer.resolve(inboundRelationshipsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-          }
-        }
-      }
-    );
 
     $scope.cancel = function () {
       $modalInstance.dismiss();
