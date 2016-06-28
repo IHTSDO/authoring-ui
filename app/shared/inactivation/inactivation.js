@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal) {
+  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal',
+    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -160,6 +160,16 @@ angular.module('singleConceptAuthoringApp')
           scope.editConcept = function (conceptId) {
             scope.editedConcept = scope.affectedConcepts[conceptId];
           };
+
+          //
+          // Complete and cancel
+          //
+          scope.cancelInactivation = function() {
+            if (window.confirm('All changes made during inactivation will be lost, are you sure?')) {
+              inactivationService.setConceptToInactivate(null);
+              $location.url('tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
+            }
+          }
 
 
           //
