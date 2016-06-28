@@ -80,7 +80,12 @@
                                                      data-toggle="tab">Previous Historical Associations
           ({{assocsTableParams.total()}})</a>
         </li>
+        <li>
+          <input type="text" ng-model="filter" class="form-control" ng-change="reloadTables()" ng-model-options='{ debounce: 500 }'
+                 placeholder="Search Results" />
+        </li>
       </ul>
+
     </div>
 
   </div>
@@ -104,9 +109,9 @@
             <span>Proposed Value</span>
           </div>
         </td>
-        <td ng-if="editable" data-header="'editheader.html'">
+        <td data-header="'editheader.html'">
           <button type="button" class="btn btn-round btn-default blue"
-                  ng-click="editConcept(failure.errorMessage.conceptId)"
+                  ng-click="editConcept(rel.sourceId)"
                   title="View/Edit Concept">
             <span class="md md-edit"></span>
           </button>
@@ -146,9 +151,9 @@
       </tr>
     </table>
   </div>
-  <div ng-if="viewedConcept" class="row no-padding no-gutter">
-    <div concept-edit concept="viewedConcept" branch="branch" static="false"
-         component-styles="styles[viewedConcept.conceptId]"
+  <div ng-if="editedConcept" class="row no-padding no-gutter">
+    <div concept-edit concept="editedConcept" branch="branch" static="false"
+         component-styles="styles[editedConcept.conceptId]"
          save-function="conceptUpdateFunction(project, task, concept)"></div>
   </div>
   <div class="table-responsive white" style="margin-right:0px;" ng-show="actionTab==3">
@@ -156,21 +161,16 @@
   </div>
 
   <!-- Taxonomy, models, and concepts -->
-  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
+  <div class="row m-t-15 no-gutter" ng-show="editedConcept">
     <!-- Taxonomy -->
-    <div class="col-md-4">
+    <div class="col-md-6">
       <div>
         <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
       </div>
     </div>
-    <div class="col-md-8">
-      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
-        <div class="col-md-6">
-          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-        </div>
-        <div class="col-md-6">
-
-        </div>
+    <div class="col-md-6">
+      <div>
+        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
       </div>
     </div>
   </div>

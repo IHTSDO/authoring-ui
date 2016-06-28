@@ -32,19 +32,32 @@ angular.module('singleConceptAuthoringApp')
           scope.affectedConcepts = {};
 
           // currently edited concept
-          scope.viewedConcept = null;
+          scope.editedConcept = null;
 
           // children and parents (convenience arrays)
           scope.inactivationConceptChildren = [];
           scope.inactivationConceptParents = [];
 
+          // table filtering (across all tabs)
+          scope.filter = null;
           //
           // Concept update function
           //
           scope.conceptUpdateFunction = function (project, task, concept) {
             scope.affectedConcepts[concept.conceptId] = concept;
-            reloadTables();
+            scope.reloadTables();
           };
+
+          function relationshipFilter(item) {
+            return item.sourceId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
+              || item.sourceFsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
+              || item.target.conceptId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
+              || item.target.fsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
+              || item.type.conceptId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
+              || item.type.fsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
+
+
+          }
 
 
           //
@@ -76,6 +89,12 @@ angular.module('singleConceptAuthoringApp')
                     }
                   })
                 }
+
+                if (scope.filter) {
+                  data = data.filter(relationshipFilter);
+                }
+
+
                 console.debug('  ISA DATA', data);
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                 params.total(data.length);
@@ -108,7 +127,10 @@ angular.module('singleConceptAuthoringApp')
                     }
                   })
                 }
-                console.debug('  ATTR DATA', data);
+
+                if (scope.filter) {
+                  data = data.filter(relationshipFilter);
+                }
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                 params.total(data.length);
                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -124,7 +146,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
 
-          function reloadTables() {
+          scope.reloadTables = function () {
             scope.isaRelsTableParams.reload();
             scope.attrRelsTableParams.reload();
           }
@@ -134,102 +156,13 @@ angular.module('singleConceptAuthoringApp')
            * conceptEdit
            */
           scope.$on('stopEditing', function (event, data) {
-            for (var i = 0; i < scope.viewedConcepts.length; i++) {
-              if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
-                scope.viewedConcepts.splice(i, 1);
-                return;
-              }
-            }
+            scope.editedConcept = false;
           });
 
-          /**
-           * Function to add a concept by id to the list
-           * Used by single editConcept or multiple editSelectedConcept methods
-           * @param conceptId
-           * @returns {*|promise}
-           */
-          function editConceptHelper(conceptId) {
-            var deferred = $q.defer();
-
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
-              if (!scope.viewedConcepts || !Array.isArray(scope.viewedConcepts)) {
-                scope.viewedConcepts = [];
-              }
-              scope.viewedConcepts.push(response);
-              deferred.resolve(response);
-            }, function (error) {
-              deferred.reject(); // no error passing, for count purposes only
-            });
-
-            return deferred.promise;
-          }
-
           scope.editConcept = function (conceptId) {
-
-            var existingIds = scope.viewedConcepts.map(function (viewed) {
-              return viewed.conceptId;
-            });
-
-            // NOTE: Requires string conversion based on RVF format
-            if (existingIds.indexOf(conceptId.toString()) !== -1) {
-              notificationService.sendWarning('Concept already loaded', 5000);
-            } else {
-
-              notificationService.sendMessage('Loading concept...');
-              editConceptHelper(conceptId).then(function (response) {
-                notificationService.sendMessage('Concept loaded', 5000);
-
-                $timeout(function () {
-                  $rootScope.$broadcast('viewTaxonomy', {
-                    concept: {
-                      conceptId: response.conceptId,
-                      fsn: response.fsn
-                    }
-                  });
-                }, 500);
-              }, function (error) {
-                notificationService.sendError('Error loading concept', 5000);
-              });
-            }
+            scope.editedConcept = scope.affectedConcepts[conceptId];
           };
 
-          scope.editSelectedConcepts = function () {
-            var nConcepts = 0;
-            notificationService.sendMessage('Loading concepts...');
-
-            console.debug(scope.failures);
-
-            // construct array of concept ids for previously loaded concepts
-            var existingIds = scope.viewedConcepts.map(function (viewed) {
-              return viewed.conceptId;
-            });
-
-            var conceptsToAdd = [];
-            angular.forEach(scope.failures, function (failure) {
-              if (failure.selected && existingIds.indexOf(failure.errorMessage.conceptId.toString()) === -1) {
-                conceptsToAdd.push(failure.errorMessage.conceptId);
-              }
-            });
-
-            console.debug('existing ids', existingIds);
-
-            // cycle over all failures
-            var conceptsLoaded = 0;
-            angular.forEach(conceptsToAdd, function (conceptId) {
-
-              console.debug('loading concept ', conceptId);
-
-              // add the concept
-              editConceptHelper(conceptId).then(function () {
-
-                if (++conceptsLoaded === conceptsToAdd.length) {
-                  notificationService.sendMessage('Concepts loaded.', 5000);
-                }
-              }, function (error) {
-                notificationService.sendError('Error loading at least one concept');
-              });
-            });
-          };
 
           //
           // Retrieval functions
@@ -295,7 +228,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.relationshipId = null;
               newRel.effectiveTime = null;
               newRel.released = false;
-              newRel.target.id = parent.conceptId;
+              newRel.target.conceptId = parent.conceptId;
               newRel.target.fsn = parent.fsn;
               concept.relationships.push(newRel);
               console.debug('    added relationship', newRel);
@@ -346,7 +279,7 @@ angular.module('singleConceptAuthoringApp')
                   notificationService.sendMessage('Preparing affected relationships...');
                   prepareAffectedRelationships();
                   notificationService.sendMessage('Inactivation initialization complete');
-                  reloadTables();
+                  scope.reloadTables();
 
                 });
               });
