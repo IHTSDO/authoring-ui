@@ -1177,13 +1177,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
     };
-
+    
     $scope.getSNF = function(id){
       var deferred = $q.defer();
       snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
       });
-      return deferred.promise;
+      return deferred.promise; 
     };
 
     //////////////////////////////////////////
@@ -1367,6 +1367,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conflictsContainer = {
       conflicts: null
     };
+          
 
 
     $scope.viewReview = function () {
