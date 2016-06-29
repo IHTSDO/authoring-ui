@@ -45,7 +45,7 @@
     }
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
-    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}
+    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}} (Reason: {{reasonId}})
 
 
       <button
@@ -75,9 +75,9 @@
                                                                    aria-controls="home" role="tab"
                                                                    data-toggle="tab"> Hierarchical Relationships
             Affected ({{isaRelsTableParams.total()}})
-          <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=2"
-                                                                   aria-controls="home" role="tab"
-                                                                   data-toggle="tab"> Attribute Relationships Affected
+          <li role="presentation" class="classification"><a style="margin: 0px" ng-click="actionTab=2"
+                                                            aria-controls="home" role="tab"
+                                                            data-toggle="tab"> Attribute Relationships Affected
             ({{attrRelsTableParams.total()}})
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
@@ -104,12 +104,12 @@
             </td>
             <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
             </td>
-            <td data-title="'Attribute'" sortable="'failureCount'">
+            <td data-title="'Attribute'" sortable="'typeFsn'">
               <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
                 <span>Relationship type</span>
               </div>
             </td>
-            <td data-title="'Value (Proposed)'" sortable="'failureCount'">
+            <td data-title="'Value (Proposed)'" sortable="'target'">
               <div class="tooltips-bottom small-size-tooltip offset-tooltip-left">{{rel.target.fsn}}
                 <span>Proposed Value</span>
               </div>
@@ -133,22 +133,22 @@
               <input type="checkbox" ng-model="rel.selected" ui-on-drop="">
             </td>
 
-            <td data-title="'Concept'" sortable="FSN">{{rel.sourceFsn}}
+            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
             </td>
-            <td data-title="'RG'" sortable="'groupId'">{{rel.group}}</td>
-            <td data-title="'Attribute'" sortable="'failureCount'">
+            <td data-title="'RG'" sortable="'groupId'">{{rel.groupId}}</td>
+            <td data-title="'Attribute'" sortable="'typeFsn'">
               <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
                 <span>Relationship type</span>
               </div>
             </td>
-            <td data-title="'Value (Proposed)'" sortable="'failureCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> ???
+            <td data-title="'Value (Proposed)'" sortable="'target'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.target.fsn}}
                 <span>Proposed Value</span>
               </div>
             </td>
-            <td ng-if="editable" data-header="'editheader.html'">
+            <td data-header="'editheader.html'">
               <button type="button" class="btn btn-round btn-default blue"
-                      ng-click="editConcept(failure.errorMessage.conceptId)"
+                      ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
                 <span class="md md-edit"></span>
               </button>
@@ -156,30 +156,33 @@
           </tr>
         </table>
       </div>
+      <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
+        <div class="alert alert-warning">Not implemented</div>
+      </div>
       <div ng-if="editedConcept" class="row no-padding no-gutter">
         <div concept-edit concept="editedConcept" branch="branch" static="false" autosave="false"
              component-styles="styles[editedConcept.conceptId]"
-             save-function="conceptUpdateFunction"></div>
+             save-function="conceptUpdateFunction(project, task, concept)"></div>
       </div>
       <div class="table-responsive white" style="margin-right:0px;" ng-show="actionTab==3">
-
       </div>
+    </div>
 
-      <!-- Taxonomy, models, and concepts -->
-      <div class="row m-t-15 no-gutter" ng-show="editedConcept">
-        <!-- Taxonomy -->
-        <div class="col-md-6">
-          <div>
-            <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-          </div>
+    <!-- Taxonomy, models, and concepts -->
+    <div class="row m-t-15 no-gutter" ng-show="editedConcept">
+      <!-- Taxonomy -->
+      <div class="col-md-6">
+        <div>
+          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
         </div>
-        <div class="col-md-6">
-          <div>
-            <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-          </div>
+      </div>
+      <div class="col-md-6">
+        <div>
+          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 </section>
 
