@@ -67,104 +67,108 @@
               ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
         </div>
     </div>
-    <!--
-    <div class="row validation-report-header "><div class="col-md-6"><div class="p-t-15 "><strong>Validation Report: </strong> {{getStatusText()}}</div></div><div class="col-md-6 p-t-10 "><button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true"><i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
-        </button></div></div>-->
-    <div class="card m-10 validation-report" ng-show="!isCollapsed">
-        <div role="tabpanel" class="">
-            <div class="ng-table-no-results" ng-if="viewTop && assertionsFailed.length === 0">
+  <!--
+  <div class="row validation-report-header "><div class="col-md-6"><div class="p-t-15 "><strong>Validation Report: </strong> {{getStatusText()}}</div></div><div class="col-md-6 p-t-10 "><button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true"><i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
+      </button></div></div>-->
+  <div class="card m-10 validation-report" ng-show="!isCollapsed">
+    <div role="tabpanel" class="">
+      <div class="ng-table-no-results" ng-if="viewTop && assertionsFailed.length === 0">
         No validation results to display
       </div>
-            <div class="table-responsive white" style="margin-right:0px;" ng-if="viewTop">
-                <table
+      <div class="table-responsive white" style="margin-right:0px;" ng-if="viewTop">
+        <table
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
-                    <tr ng-repeat="assertion in $data">
-                        <td header-title="'Click to sort'" data-title="'Failed Assertions'" sortable="'assertionText'">{{assertion.assertionText}}
+          <tr ng-repeat="assertion in $data">
+            <td header-title="'Click to sort'" data-title="'Failed Assertions'" sortable="'assertionText'">
+              {{assertion.assertionText}}
             </td>
-                        <td header-title="'Click to sort'" data-title="'# of Cases'" sortable="'failureCount'" >
-                            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.failureCount}} 
-                                <span># of cases with errors</span>
-                            </div>
-                        </td>
-                        <td >
-                            <button
+            <td header-title="'Click to sort'" data-title="'# of Cases'" sortable="'failureCount'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.failureCount}}
+                <span># of cases with errors</span>
+              </div>
+            </td>
+            <td>
+              <button
                 title="View These Failures" type="button" ng-click="viewFailures(assertion)"
                 class="btn btn-default blue case-failures">Load Cases
-                                <i
-                class="glyphicon glyphicon-chevron-right treeButton"></i>
-                            </button>
-                            <div class="ripple-wrapper"></div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="table-responsive white" style="margin-right:0px;" ng-if="!viewTop">
-                <div class="row">
-                    <div class="col-md-10 p-10">
-                        <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
+                <i
+                  class="glyphicon glyphicon-chevron-right treeButton"></i>
+              </button>
+              <div class="ripple-wrapper"></div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="table-responsive white" style="margin-right:0px;" ng-if="!viewTop">
+        <div class="row">
+          <div class="col-md-10 p-10">
+            <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
 
-          
-                    </div>
-                    <div class="col-md-2 p-10">
-                        <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="setViewTop()">
-                            <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
-            
-                        </button>
-                    </div>
-                    <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
-                      Create Task From Failures
-                   </button></div>-->
-                </div>
-                <div ng-if="failures.length === 0">Loading cases...</div>
-                <table ng-show="failures.length > 0"
+
+          </div>
+          <div class="col-md-2 p-10">
+            <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right"
+                    ng-click="setViewTop()">
+              <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
+
+            </button>
+          </div>
+          <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
+            Create Task From Failures
+         </button></div>-->
+        </div>
+        <div ng-if="failures.length === 0">Loading cases...</div>
+        <table ng-show="failures.length > 0"
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
-                    <tr ng-repeat="failure in $data">
-                        <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
-                            <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
-                            </td>
-                            <!-- other columns here -->
-                            <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
-              {{failure.errorMessage.conceptId}}
+          <tr ng-repeat="failure in $data">
+            <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
+              <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
             </td>
-                            <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'">
-              {{failure.errorMessage.detail}}
+            <!-- other columns here -->
+            <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
+              {{failure.conceptId}}
             </td>
-                            <td ng-if="taskKey"  header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
+            <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{failure.conceptFsn}}</td>
+            <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
+              {{failure.message}}
+            </td>
+            <td ng-if="taskKey" header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
               {{failure.userModified}}
             </td>
-                            <td ng-if="editable" data-header="'editheader.html'">
-                                <button type="button" class="btn btn-round btn-default blue"
+            <td ng-if="editable" data-header="'editheader.html'">
+              <button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure.errorMessage.conceptId)"
-                title="View/Edit Concept">
-                                    <span class="md md-edit"></span>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+                      title="View/Edit Concept">
+                <span class="md md-edit"></span>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Taxonomy, models, and concepts -->
+  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
+    <!-- Taxonomy -->
+    <div class="col-md-4">
+      <div>
+        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
+        <div class="col-md-6">
+          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
         </div>
-        <!-- Taxonomy, models, and concepts -->
-        <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
-            <!-- Taxonomy -->
-            <div class="col-md-4">
-                <div>
-                    <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
-                    <div class="col-md-6">
-                        <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div concept-edit concept="concept" branch="branch" static="false"
-               component-styles="styles[concept.conceptId]" save-function="conceptUpdateFunction(project, task, concept)"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-6">
+          <div concept-edit concept="concept" branch="branch" static="false"
+               component-styles="styles[concept.conceptId]"
+               save-function="conceptUpdateFunction(project, task, concept)"></div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
