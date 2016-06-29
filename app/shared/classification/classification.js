@@ -21,13 +21,6 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
-          // console.debug('classification display using branch', scope.branch);
-
-          if (!scope.branch) {
-            console.error('Classification display requires branch');
-            return;
-          }
-
           scope.editable = attrs.editable === 'true';
 
           // local concept-edit and model list
@@ -400,6 +393,11 @@ angular.module('singleConceptAuthoringApp')
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
 
+            if (!scope.classificationContainer || !scope.classificationContainer.id) {
+              //console.debug('Either container or its id is null');
+              return;
+            }
+
             // set the item arrays to null to trigger loading status detection
             scope.relationshipChanges = null;
             scope.redundantStatedRelationships = null;
@@ -413,13 +411,10 @@ angular.module('singleConceptAuthoringApp')
             console.debug('RESULTS', scope.classificationContainer.equivalentConceptsFound
               , scope.classificationContainer.inferredRelationshipChangesFound
               , scope.classificationContainer.redundantStatedRelationshipsFound
-            )
+            );
 
 
-            if (!scope.classificationContainer || !scope.classificationContainer.id) {
-              //console.debug('Either container or its id is null');
-              return;
-            }
+
 
             // set the display status text
             scope.setStatusText();
