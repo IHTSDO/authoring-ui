@@ -660,7 +660,7 @@ angular.module('singleConceptAuthoringApp')
           console.debug('description id detected');
 
           // use {path}/descriptions/id call
-          $http.get(apiEndpoint + metadataService.getBranchRoot() + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
+          $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
 
             // descriptions endpoint returns different format, which does not
             // include definitionStatus, recall browser
