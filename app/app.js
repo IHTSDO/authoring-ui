@@ -10,7 +10,7 @@
  */
 angular
 
-  
+
   .module('singleConceptAuthoringApp', [
     /*    'ngAnimate',*/
     'ngAria',
@@ -58,7 +58,7 @@ angular
       };
     })
 
-  
+
   .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider) {
 
     // up the digest limit to account for extremely long depth of SNOMEDCT trees leading to spurious errors
@@ -126,9 +126,6 @@ angular
         }
         $window.ga('send', 'error', error)
     };
-    
-    // intialize required SNOMEDCT metadata
-    metadataService.initialize('MAIN');
 
     // set the default redirect/route
     $routeProvider.otherwise({
@@ -139,12 +136,12 @@ angular
             var env = $location.host().split(/[.]/)[0];
             if(env === 'local' || env === 'dev-term' || env === 'dev-authoring')
             {
-                $rootScope.development = true;  
+                $rootScope.development = true;
                 $rootScope.notProd = true;
             }
             else if(env === 'uat-term' || env === 'uat-authoring')
             {
-                $rootScope.uat = true; 
+                $rootScope.uat = true;
                 $rootScope.notProd = true;
             }
             else{
@@ -153,7 +150,7 @@ angular
                 $rootScope.development = false;
             }
           }, 3000);
-    
+
 
     // begin polling the sca endpoint at 10s intervals
     scaService.startPolling(10000);
