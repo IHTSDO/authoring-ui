@@ -6,17 +6,15 @@
  * Example:  <div compile="htmlFragment"></div>
  */
 angular.module('singleConceptAuthoringApp').directive('compileHtml', ['$compile', function ($compile) {
-  return function(scope, element, attrs) {
+  return function (scope, element, attrs) {
 
-    console.debug('entered compileHtml', attrs);
     scope.$watch(
-      function(scope) {
+      function (scope) {
         // watch the 'compile' expression for changes
         return scope.$eval(attrs.compileHtml);
       },
-      function(value) {
+      function (value) {
 
-        console.debug('compileHtml watch', value);
 
         // when the 'compile' expression changes
         // assign it into the current DOM
