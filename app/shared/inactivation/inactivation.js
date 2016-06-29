@@ -18,10 +18,6 @@ angular.module('singleConceptAuthoringApp')
         link: function (scope, element, attrs, linkCtrl) {
 
 
-          scope.inactivationConcept = inactivationService.getConceptToInactivate();
-
-          console.debug('INACTIVATION VIEW', scope.inactivationConcept, scope.branch);
-
 
           scope.initializing = true;
 
@@ -43,9 +39,12 @@ angular.module('singleConceptAuthoringApp')
           // Concept update function
           //
           scope.conceptUpdateFunction = function (project, task, concept) {
+            var deferred = $q.defer();
             window.alert('ohai');
             scope.affectedConcepts[concept.conceptId] = concept;
             scope.reloadTables();
+            deferred.resolve(concept);
+            return deferred.promise;
           };
 
           function relationshipFilter(item) {
@@ -67,7 +66,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.isaRelsTableParams = new NgTableParams({
               page: 1,
-              count: 10
+              count: 5
             },
             {
               filterDelay: 50,
@@ -107,7 +106,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.attrRelsTableParams = new NgTableParams({
               page: 1,
-              count: 10
+              count: 5
             },
             {
               // initial display text, overwritten in getData
@@ -160,6 +159,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
           scope.editConcept = function (conceptId) {
+            console.debug('edit request', conceptId, scope.affectedConcepts[conceptId], scope.affectedConcepts);
             scope.editedConcept = scope.affectedConcepts[conceptId];
           };
 
@@ -168,7 +168,7 @@ angular.module('singleConceptAuthoringApp')
           //
           scope.cancelInactivation = function() {
             if (window.confirm('All changes made during inactivation will be lost, are you sure?')) {
-              inactivationService.setConceptToInactivate(null);
+              inactivationService.cancelInactivation(null);
               $rootScope.$broadcast('inactivation.cancelInactivation');
             }
           }
@@ -276,6 +276,11 @@ angular.module('singleConceptAuthoringApp')
 
           function initialize() {
             notificationService.sendMessage('Initializing inactivation...');
+
+            scope.inactivationConcept = inactivationService.getConcept();
+            scope.reasonId = inactivationService.getReasonId();
+
+            console.debug('  concept to inactivate', scope.inactivationConcept);
 
             // extract the parent concepts
             angular.forEach(scope.inactivationConcept.relationships, function (rel) {

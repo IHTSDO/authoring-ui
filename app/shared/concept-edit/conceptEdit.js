@@ -314,6 +314,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var saveFn = null;
 
+          // TODO This isn't working when passed in, requires parameterized arguments, e.g.
+          // project: $routeParams.projectKey,
+          // task: $routeParams.taskKey,
+          //  concept: scope.concept
+          // which doesn't work with snowowlService functions. Irritating!
+
           if (scope.saveFunction) {
             saveFn = scope.saveFunction;
           }
@@ -324,9 +330,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             saveFn = snowowlService.updateConcept;
           }
 
-          saveFn($routeParams.projectKey,
+          console.debug('SAVE FUNCTION', saveFn);
+
+          saveFn(
+            $routeParams.projectKey,
             $routeParams.taskKey,
-            scope.concept).then(function (response) {
+            scope.concept
+          ).then(function (response) {
               //// console.debug('create', response);
               // successful response will have conceptId
               if (response && response.conceptId) {
@@ -614,19 +624,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 console.log('No errors detected');
               }
 
-             selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
-               // set the concept in the inactivation service for listener update and retrieval
-               // NOTE: Also broadcasts a route change to edit.js from the service
-               inactivationService.setConceptToInactivate(scope.concept);
-               $rootScope.$broadcast('conceptEdit.inactivateConcept');
+                // set the concept in the inactivation service for listener update and retrieval
+                // NOTE: Also broadcasts a route change to edit.js from the service
+                inactivationService.setParameters($routeParams.projectKey, $routeParams.taskKey, scope.concept, results.reason.id, results.associationTarget);
+                $rootScope.$broadcast('conceptEdit.inactivateConcept');
 
-
-               notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
                 // WRP-2161 testing bypass -- to disable new fe atures, modify isInactivation service to return false only
                 // This inactivationService function also triggers the accessibility of the inactivation view
-                if (!inactivationService.isInactivation()) {
+                // TODO As of 6/28 4:50PST This is disabled, moved to inactivationService
+                /*if (!inactivationService.isInactivation()) {
 
                   snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
@@ -635,6 +644,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     // if reason is selected, deactivate all descriptions and
                     // relationships
                     if (results.reason) {
+
+                      inactivationService.setInactivationReasons()
 
                       // straightforward inactivation of relationships
                       // NOTE: Descriptions stay active so a FSN can still be
@@ -653,10 +664,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   }, function () {
                     notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
                   });
-                }
+                }*/
+
 
               });
-
             });
 
 
