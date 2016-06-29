@@ -135,7 +135,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
               item.concept.fsn = data.concept.fsn;
               scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
             }
-          })
+          });
         }
       }
     });

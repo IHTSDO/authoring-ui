@@ -569,7 +569,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         notificationService.sendError('Bad URL request for task view detected (' + $routeParams.mode + ').  Acceptable values are: edit, classify, conflicts, feedback, and validate');
         return;
       }
-    }
+    };
 
     /**
      * edit.js-specific helper function to return full boostrap col names
@@ -1377,12 +1377,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       scaService.getTaskForProject($scope.projectKey, $scope.taskKey).then(function (task) {
         metadataService.setBranch(task.branchPath);
         initialize();
-      })
+      });
     } else {
       scaService.getProjectForKey($scope.projectKey).then(function (project) {
         metadataService.setBranch(project.branchPath);
         initialize();
-      })
+      });
     }
 
 

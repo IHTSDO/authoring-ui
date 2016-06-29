@@ -91,7 +91,7 @@ angular.module('singleConceptAuthoringApp')
         concept : null,
         reasonId : null,
         assocMembers : null
-      }
+      };
     }
 
     //

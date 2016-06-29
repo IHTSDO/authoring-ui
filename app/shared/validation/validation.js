@@ -178,12 +178,12 @@ angular.module('singleConceptAuthoringApp')
                 snowowlService.getDescriptionProperties(descIds[1], scope.branch).then(function (description) {
                   failure.message = failure.message.replace(/Description: id=\d+/g, 'Description: ' + description.term);
 
-                  if (++descsDone == scope.failures.length) {
+                  if (++descsDone === scope.failures.length) {
                     deferred.resolve();
                   }
                 });
 
-              } else if (++descsDone == scope.failures.length) {
+              } else if (++descsDone === scope.failures.length) {
                 deferred.resolve();
               }
 
@@ -305,7 +305,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.failures = objArray;
                   getNamesForFailures().then(function () {
                     scope.failureTableParams.reload();
-                  })
+                  });
                 });
 
               }
@@ -332,7 +332,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.failures = objArray;
                 getNamesForFailures().then(function () {
                   scope.failureTableParams.reload();
-                })
+                });
               }
               // TODO Set edit enable/disable for edit panel
             }
