@@ -6,8 +6,9 @@ angular.module('singleConceptAuthoringApp')
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
-    // root branch for metadata computations
+    // branch and branch root
     var branch = null;
+    var branchRoot = null;
 
     // relationship metadata
     var isaRelationshipId = '116680003';
@@ -171,8 +172,7 @@ angular.module('singleConceptAuthoringApp')
        * @param branch the branch from which metadata is retrieved (e.g.
        *   'MAIN')
        */
-      initialize: function (branchName) {
-        branch = branchName;
+      initialize: function () {
         setConceptInactivationReasons();
         setAssociationInactivationReasons();
         setDescriptionInactivationReasons();
