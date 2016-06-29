@@ -1379,7 +1379,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         initialize();
       })
     } else {
-      scaService.getProject($scope.projectKey).then(function (project) {
+      scaService.getProjectForKey($scope.projectKey).then(function (project) {
         metadataService.setBranch(project.branchPath);
         initialize();
       })
