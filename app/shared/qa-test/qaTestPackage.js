@@ -46,7 +46,7 @@ angular.module('singleConceptAuthoringApp')
     QaTest.status = 'Not run';
 
     QaTest.runTests = function (projectKey, taskKey) {
-      console.debug('QaTest: Running tests', projectKey, taskKey);
+      //console.debug('QaTest: Running tests', projectKey, taskKey);
       project = projectKey;
       task = taskKey;
 
@@ -72,7 +72,7 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       var testFound = false;
       angular.forEach(testGroups, function(testGroup) {
-        console.debug('checking test group', testGroup, testGroup.getName());
+        //console.debug('checking test group', testGroup, testGroup.getName());
         if (testGroup.getName() === testGroupName) {
           testFound = true;
           testGroup.runSingleTest(testName, projectKey, taskKey).then(function(response) {

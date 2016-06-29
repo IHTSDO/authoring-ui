@@ -73,14 +73,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.processResults();
       };
 
-      console.debug('saved list in search', $scope.savedList);
+      //console.debug('saved list in search', $scope.savedList);
 
       /**
        * Helper function to manipulate displayed concepts
        */
       $scope.processResults = function () {
 
-        console.debug('processing results', $scope.userOptions);
+        //console.debug('processing results', $scope.userOptions);
 
         // group concepts by SCTID
         var displayedResults = [];
@@ -176,7 +176,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.processResults();
 
         }, function (error) {
-          console.debug('error', error);
+          //console.debug('error', error);
           $scope.searchStatus = 'Error performing search: ' + error;
           if (error.statusText) {
             $scope.searchStatus += ': ' + error.statusText;
@@ -215,7 +215,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
 	  $scope.viewConceptInTaxonomy = function (item) {
-        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+        //console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.viewConceptInTaxonomy = function (item) {
-        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+        //console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
@@ -330,7 +330,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        * @returns {{id: conceptId, name: fsn}}
        */
       $scope.getConceptPropertiesObj = function (concept) {
-        console.debug('Getting concept properties obj', concept);
+        //console.debug('Getting concept properties obj', concept);
         return {id: concept.conceptId, name: concept.fsn};
       };
 

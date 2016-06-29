@@ -96,7 +96,7 @@ angular.module('singleConceptAuthoringApp.search', [])
     // NOTE: Search plugin returns weird names it seems
     // so leave retrieval to the drop target function
     $scope.getConceptPropertiesObj = function (conceptId) {
-      console.debug('Getting concept properties obj', conceptId);
+      //console.debug('Getting concept properties obj', conceptId);
       return {id: conceptId, name: null};
     };
 

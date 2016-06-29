@@ -27,7 +27,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function setParameters(branch, concept, reasonId, assocRefsetMembers) {
-      console.debug('inactivationService setParameters', project, task, concept, reasonId, assocRefsetMembers);
+      // console.debug('inactivationService setParameters', project, task, concept, reasonId, assocRefsetMembers);
       parameters = {};
       parameters.concept = concept;
       parameters.branch = branch;

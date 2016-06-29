@@ -15,7 +15,7 @@ angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
        * @returns {{id: *, name: null}}
        */
       $scope.getConceptPropertiesObj = function (concept) {
-        console.debug('Getting concept properties obj', concept);
+        //console.debug('Getting concept properties obj', concept);
         return {id: concept.id, name: concept.fsn};
       };
 

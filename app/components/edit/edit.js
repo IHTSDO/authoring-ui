@@ -1187,7 +1187,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     function setBranchFunctionality(branchState) {
 
-      console.debug('setBranchFunctionality', branchState, $scope.task, $scope.isOwnTask);
+      // console.debug('setBranchFunctionality', branchState, $scope.task, $scope.isOwnTask);
 
       // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
       // status
@@ -1348,7 +1348,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.currentTask = response;
 
           accountService.getRoleForTask(response).then(function (role) {
-            console.debug(response, role);
+            // console.debug(response, role);
             $scope.isOwnTask = role === 'AUTHOR';
             setBranchFunctionality($scope.task.branchState);
           });

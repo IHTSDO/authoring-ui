@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
     // therefore only send the concept Id and let the drop target
     // function handle name retrieval
     $scope.getConceptPropertiesObj = function (conceptId) {
-      console.debug('Getting concept properties obj', conceptId);
+      //console.debug('Getting concept properties obj', conceptId);
       return {id: conceptId, name: null};
     };
 

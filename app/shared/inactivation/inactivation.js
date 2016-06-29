@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp')
               total: '-',
               getData: function ($defer, params) {
 
-                console.debug('GET DATA')
+                // console.debug('GET DATA')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
@@ -94,7 +94,7 @@ angular.module('singleConceptAuthoringApp')
                 }
 
 
-                console.debug('  ISA DATA', data);
+                // console.debug('  ISA DATA', data);
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
                 params.total(data.length);
                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
               total: '-',
               getData: function ($defer, params) {
 
-                console.debug('GET DATA')
+                // console.debug('GET DATA')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
@@ -159,7 +159,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
           scope.editConcept = function (conceptId) {
-            console.debug('edit request', conceptId, scope.affectedConcepts[conceptId], scope.affectedConcepts);
+            // console.debug('edit request', conceptId, scope.affectedConcepts[conceptId], scope.affectedConcepts);
             scope.editedConcept = scope.affectedConcepts[conceptId];
           };
 
@@ -196,8 +196,8 @@ angular.module('singleConceptAuthoringApp')
                   scope.affectedConcepts[item.sourceId] = {};
                 }
               });
-              console.debug('  Affected relationship ids ', scope.affectedRelationshipIds);
-              console.debug('  Affected concept ids', scope.affectedConcepts);
+              // console.debug('  Affected relationship ids ', scope.affectedRelationshipIds);
+              // console.debug('  Affected concept ids', scope.affectedConcepts);
               deferred.resolve();
             });
             return deferred.promise;
@@ -209,7 +209,7 @@ angular.module('singleConceptAuthoringApp')
 
 
           function getAffectedConcepts() {
-            console.debug('Getting affected concepts');
+            // console.debug('Getting affected concepts');
             var deferred = $q.defer();
 
             if (scope.affectedRelationshipIds.length == 0) {
@@ -219,11 +219,11 @@ angular.module('singleConceptAuthoringApp')
               var conceptsRetrieved = 0;
 
               angular.forEach(Object.keys(scope.affectedConcepts), function (conceptId) {
-                console.debug('  Getting concept ' + conceptId);
+                // console.debug('  Getting concept ' + conceptId);
                 snowowlService.getFullConcept(conceptId, scope.branch).then(function (concept) {
                   scope.affectedConcepts[conceptId] = concept;
                   if (Object.keys(scope.affectedConcepts).length === ++conceptsRetrieved) {
-                    console.debug('  Final concept map', scope.affectedConcepts);
+                    // console.debug('  Final concept map', scope.affectedConcepts);
                     deferred.resolve();
                   }
                 })
@@ -236,7 +236,7 @@ angular.module('singleConceptAuthoringApp')
 
           // inactivate a relationship and add new relationships for children
           function inactivateRelationship(concept, rel) {
-            console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
+            // console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
 
             // assign copied new relationship to each parent
             angular.forEach(scope.inactivationConceptParents, function (parent) {
@@ -248,24 +248,24 @@ angular.module('singleConceptAuthoringApp')
               newRel.target.conceptId = parent.conceptId;
               newRel.target.fsn = parent.fsn;
               concept.relationships.push(newRel);
-              console.debug('    added relationship', newRel);
+              // console.debug('    added relationship', newRel);
             });
 
             rel.active = 0;
-            console.debug('  Final state of concept', concept);
+            // console.debug('  Final state of concept', concept);
           }
 
 
           function prepareAffectedRelationships() {
 
             for (var key in scope.affectedConcepts) {
-              console.debug('Preparing affected relationships for concept' + key);
+              // console.debug('Preparing affected relationships for concept' + key);
               if (scope.affectedConcepts.hasOwnProperty(key)) {
                 var concept = scope.affectedConcepts[key];
                 angular.forEach(concept.relationships, function (rel) {
-                  console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
+                  // console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
                   if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1) {
-                    console.debug('  prepping relationship', rel.relationshipId);
+                    // console.debug('  prepping relationship', rel.relationshipId);
                     inactivateRelationship(concept, rel);
                   }
                 });
@@ -280,7 +280,7 @@ angular.module('singleConceptAuthoringApp')
             scope.inactivationConcept = inactivationService.getConcept();
             scope.reasonId = inactivationService.getReasonId();
 
-            console.debug('  concept to inactivate', scope.inactivationConcept);
+            // console.debug('  concept to inactivate', scope.inactivationConcept);
 
             // extract the parent concepts
             angular.forEach(scope.inactivationConcept.relationships, function (rel) {
@@ -288,7 +288,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.inactivationConceptParents.push({conceptId: rel.target.conceptId, fsn: rel.target.fsn});
               }
             });
-            console.debug('Concept parents:', scope.inactivationConceptParents);
+            // console.debug('Concept parents:', scope.inactivationConceptParents);
 
 
             // ensure that children have been retrieved

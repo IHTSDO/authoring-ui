@@ -20,14 +20,14 @@ angular.module('singleConceptAuthoringApp')
         console.log(scope.type);
         // listen for removal of concepts from editing panel
         scope.$on('stopEditing', function (event, data) {
-          console.debug('classificationReport received stopEditing notification', data);
+          // console.debug('classificationReport received stopEditing notification', data);
           if (!data || !data.concept) {
             console.error('Cannot handle stop editing event: concept must be supplied');
           } else {
 
             // check all current data items for edit re-enable
             angular.forEach(scope.items, function (item) {
-              console.debug('comparing', item.sourceId, data.concept.conceptId);
+              // console.debug('comparing', item.sourceId, data.concept.conceptId);
               if (item.sourceId === data.concept.conceptId) {
                 item.isLoaded = false;
               }
@@ -88,7 +88,7 @@ angular.module('singleConceptAuthoringApp')
                         mydata = scope.items;
                     }
               }
-                
+
               var orderedData = params.sorting() ?
                 $filter('orderBy')(mydata, params.orderBy()) :
                 mydata;
