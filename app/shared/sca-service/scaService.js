@@ -896,7 +896,7 @@ angular.module('singleConceptAuthoringApp')
           $http.get(apiEndpoint + 'notifications').then(function (response) {
             if (response && response.data && response.data[0]) {
 
-              //console.debug('NEW NOTIFICATION', response);
+              console.log('Server notification:', response.data);
 
               // getNotifications returns an array, get the latest
               // TODO Fold all results into a drop-down list in top right corner
