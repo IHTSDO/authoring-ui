@@ -140,19 +140,24 @@ angular.module('singleConceptAuthoringApp')
               conceptIds.push(failure.conceptId);
             });
 
-            // bulk call for concept ids
-            snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
-              // save the value on the failures in the concept map
-              var idNameMap = {};
-              angular.forEach(concepts.items, function (concept) {
-                idNameMap[concept.id] = concept.fsn.term;
-              });
-              angular.forEach(scope.failures, function (failure) {
-                failure.conceptFsn = idNameMap[failure.conceptId];
-              });
+            if (conceptIds.length > 0) {
 
+              // bulk call for concept ids
+              snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+                // save the value on the failures in the concept map
+                var idNameMap = {};
+                angular.forEach(concepts.items, function (concept) {
+                  idNameMap[concept.id] = concept.fsn.term;
+                });
+                angular.forEach(scope.failures, function (failure) {
+                  failure.conceptFsn = idNameMap[failure.conceptId];
+                });
+
+                deferred.resolve();
+              });
+            } else {
               deferred.resolve();
-            });
+            }
 
             return deferred.promise;
           }
@@ -263,6 +268,7 @@ angular.module('singleConceptAuthoringApp')
                 };
                 objArray.push(obj);
               });
+              scope.failures = objArray;
               getNamesForFailures().then(function () {
                 scope.failureTableParams.reload();
               });
