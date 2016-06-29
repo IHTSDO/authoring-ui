@@ -13,7 +13,7 @@ angular.module( 'singleConceptAuthoringApp.test', [
       });
 })
 
-.controller( 'TestCtrl', function TestCtrl( $scope, $rootScope, $interval, QaTestPackage, scaService) {
+.controller( 'TestCtrl', function TestCtrl( $scope, $rootScope, $interval, QaTestPackage, scaService, metadataService) {
 
     $rootScope.pageTitle = 'Test Management';
 
@@ -30,7 +30,8 @@ angular.module( 'singleConceptAuthoringApp.test', [
     scaService.createTaskForProject('WRPTEST', task)   .then(function(response) {
       $scope.projectKey = response.projectKey;
       $scope.taskKey = response.key;
-      $scope.branch = 'MAIN/' + $scope.projectKey + '/' + $scope.taskKey;
+      $scope.branch = task.branchPath;
+      metadataService.setBranch(task.branchPath);
     });
 
     $scope.testPackages = [
