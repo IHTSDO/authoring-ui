@@ -145,13 +145,10 @@ angular.module('singleConceptAuthoringApp')
               // save the value on the failures in the concept map
               var idNameMap = {};
               angular.forEach(concepts.items, function (concept) {
-                console.debug('concept', concept);
-                idNameMap[concept.id] = concept.fsn.term;
+                 idNameMap[concept.id] = concept.fsn.term;
               });
-              console.debug('idNameMap', idNameMap);
               angular.forEach(scope.failures, function (failure) {
                 failure.conceptFsn = idNameMap[failure.conceptId];
-                console.debug('updated failure', failure);
               });
 
               deferred.resolve();
@@ -166,7 +163,6 @@ angular.module('singleConceptAuthoringApp')
 
             angular.forEach(scope.failures, function (failure) {
 
-              console.debug('checking failure', failure);
 
               // match the description
               var descIds = failure.message.match(/Description: id=(\d+)/);
@@ -175,7 +171,7 @@ angular.module('singleConceptAuthoringApp')
               if (descIds && descIds[1]) {
                 snowowlService.getDescriptionProperties(descIds[1], scope.branch).then(function (description) {
                   failure.message = failure.message.replace(/Description: id=\d+/g, 'Description: ' + description.term);
-                  console.debug('new desc failure', failure);
+
                   if (++descsDone == scope.failures.length) {
                     deferred.resolve();
                   }
@@ -204,8 +200,6 @@ angular.module('singleConceptAuthoringApp')
             {
               total: scope.failures ? scope.failures.length : 0,
               getData: function ($defer, params) {
-
-                console.debug('getData failures', scope.failures);
                 // clear the loading variable on reload
                 scope.failuresLoading = false;
 
@@ -272,7 +266,7 @@ angular.module('singleConceptAuthoringApp')
               });
               getNamesForFailures().then(function() {
                 scope.failureTableParams.reload();
-              })
+              });
               scope.failureTableParams.reload();
             }
 
