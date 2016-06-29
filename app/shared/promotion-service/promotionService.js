@@ -291,8 +291,9 @@ angular.module('singleConceptAuthoringApp')
     function checkPrerequisitesForTask(projectKey, taskKey) {
       var deferred = $q.defer();
 
-      var branch = 'MAIN/' + projectKey + '/' + taskKey;
       scaService.getTaskForProject(projectKey, taskKey).then(function (task) {
+
+        var branch = task.branchPath;
 
         console.debug('Task', task);
 
@@ -327,8 +328,9 @@ angular.module('singleConceptAuthoringApp')
     function checkPrerequisitesForProject(projectKey) {
       var deferred = $q.defer();
 
-      var branch = 'MAIN/' + projectKey;
       scaService.getProjectForKey(projectKey).then(function (project) {
+
+        var branch = project.branchPath;
 
         if (project.branchState === 'BEHIND' || project.branchState === 'DIVERGED' || project.branchState === 'STALE') {
           deferred.resolve([{

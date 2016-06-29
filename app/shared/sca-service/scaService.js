@@ -757,7 +757,7 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendError('Error promoting project', 10000);
             return null;
           }
-          
+
         });
       },
 
@@ -787,7 +787,7 @@ angular.module('singleConceptAuthoringApp')
           else if(error.status === 409){
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
               return null;
-              
+
           }
           else{
             notificationService.sendError('Error rebasing Task: ' + projectKey);
@@ -983,7 +983,7 @@ angular.module('singleConceptAuthoringApp')
                       $rootScope.$broadcast('notification.branchState', newNotification);
                     }
                     break;
-                        
+
                   /*
                    Rebase Complete object structure
                    project: "WRPAS"
@@ -1027,8 +1027,7 @@ angular.module('singleConceptAuthoringApp')
                       if (newNotification.task) {
                         url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
                       } else {
-                        url = '#/projects/project/MAIN/' + newNotification.project;
-                        url = '#/projects/project/' + newNotification.project + '/validate';
+                        url = '#/projects/project/' + newNotification.project;
                       }
                     }
                     // broadcast validation complete to taskDetail
