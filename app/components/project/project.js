@@ -59,7 +59,6 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
-      $scope.getProject();
 
       $scope.$on('reloadProject', function (event, data) {
         console.debug('Received reload project request, current project: ', $scope.project);
@@ -329,6 +328,10 @@ angular.module('singleConceptAuthoringApp.project', [
         // set the branch
         $scope.branch = metadataService.getBranch();
 
+        // initialize the project
+        $scope.getProject();
+
+        // get the project task list
         scaService.getTasksForProject($routeParams.projectKey).then(function (response) {
           $scope.tasks = response;
           angular.forEach($scope.tasks, function (task) {
