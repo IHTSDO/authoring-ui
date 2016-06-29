@@ -405,12 +405,9 @@ angular.module('singleConceptAuthoringApp')
             scope.equivalentConcepts = null;
 
             // set flag for whether any results were found
-            scope.resultsNotEmpty = scope.classificationContainer.equivalentConceptsFound
-              || scope.classificationContainer.inferredRelationshipChangesFound
-              || scope.classificationContainer.redundantStatedRelationshipsFound;
-
-
-
+            scope.resultsNotEmpty = scope.classificationContainer.equivalentConceptsFound ||
+              scope.classificationContainer.inferredRelationshipChangesFound ||
+              scope.classificationContainer.redundantStatedRelationshipsFound;
 
 
             // set the display status text

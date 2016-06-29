@@ -908,7 +908,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // cycle over all concepts for pre-processing
                 angular.forEach(scope.feedbackContainer.review.concepts, function (item) {
-                  var lastViewed = new Date(item.viewDate)
+                  var lastViewed = new Date(item.viewDate);
                   var lastUpdated = new Date(item.lastUpdatedTime);
 
                   // set follow up request flag to false (overwritten below)

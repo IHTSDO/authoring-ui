@@ -75,8 +75,8 @@ angular.module('singleConceptAuthoringApp')
       });
 
       var allowableRelationshipProperties = [
-          'active', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'released'
-        ]
+        'active', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'released'
+      ];
       angular.forEach(concept.relationships, function (relationship) {
 
         // if a locally assigned UUID, strip

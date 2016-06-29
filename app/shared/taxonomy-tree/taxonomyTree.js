@@ -273,10 +273,12 @@ angular.module('singleConceptAuthoringApp')
           // clear any existing trees
           scope.terminologyTree = [];
 
+          var parent = null;
+
           // if a concept is supplied
           if (scope.concept) {
 
-            var parent = scope.concept;
+            parent = scope.concept;
             // add as root tree
             if (scope.view) {
               // if concept supplied has leaf inferred property, start constructing trees
@@ -317,7 +319,7 @@ angular.module('singleConceptAuthoringApp')
           else {
 
             // declare parent concept
-            var parent = {
+            parent = {
               active: true,
               conceptId: 138875005,
               definitionStatus: 'PRIMITIVE',

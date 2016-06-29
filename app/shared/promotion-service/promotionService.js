@@ -203,9 +203,9 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // check if classification has results
-              else if (latestClassificationJson.equivalentConceptsFound
-                || latestClassificationJson.inferredRelationshipChangesFound
-                || latestClassificationJson.redundantStatedRelationshipsFound) {
+              else if (latestClassificationJson.equivalentConceptsFound ||
+                latestClassificationJson.inferredRelationshipChangesFound ||
+                latestClassificationJson.redundantStatedRelationshipsFound) {
                 flags.push({
                   checkTitle: 'Classification Not Accepted',
                   checkWarning: 'Classification results were not accepted to this branch',
@@ -219,7 +219,7 @@ angular.module('singleConceptAuthoringApp')
                   checkTitle: 'Classification Has No Results to Accept',
                   checkWarning: null,
                   blocksPromotion: null
-                })
+                });
               }
 
 

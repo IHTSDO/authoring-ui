@@ -1,5 +1,5 @@
 'use strict';
-
+// jshint ignore: start
 angular.module('singleConceptAuthoringApp')
   .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch, $routeParams, $q) {
 
@@ -58,7 +58,7 @@ angular.module('singleConceptAuthoringApp')
           }
         }
         response = response.filter(function (el) {
-          return el.concept.active === true
+          return el.concept.active === true;
         });
         return response;
       });

@@ -1,5 +1,5 @@
 'use strict';
-
+// jshint ignore: start
 angular.module('singleConceptAuthoringApp')
 
   .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal',
@@ -16,7 +16,6 @@ angular.module('singleConceptAuthoringApp')
         templateUrl: 'shared/inactivation/inactivation.html',
 
         link: function (scope, element, attrs, linkCtrl) {
-
 
 
           scope.initializing = true;
@@ -48,16 +47,13 @@ angular.module('singleConceptAuthoringApp')
           };
 
           function relationshipFilter(item) {
-            return item.sourceId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
-              || item.sourceFsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
-              || item.target.conceptId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
-              || item.target.fsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
-              || item.type.conceptId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
-              || item.type.fsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1
-
-
+            return item.sourceId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1 ||
+              item.sourceFsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1 ||
+              item.target.conceptId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1 ||
+              item.target.fsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1 ||
+              item.type.conceptId.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1 ||
+              item.type.fsn.toLowerCase().indexOf(scope.filter.toLowerCase()) > -1;
           }
-
 
           //
           // NgTable declarations
@@ -86,7 +82,7 @@ angular.module('singleConceptAuthoringApp')
                       rel.typeFsn = rel.type.fsn;
                       data.push(rel);
                     }
-                  })
+                  });
                 }
 
                 if (scope.filter) {
@@ -124,7 +120,7 @@ angular.module('singleConceptAuthoringApp')
                       rel.typeFsn = rel.type.fsn;
                       data.push(rel);
                     }
-                  })
+                  });
                 }
 
                 if (scope.filter) {
@@ -148,7 +144,7 @@ angular.module('singleConceptAuthoringApp')
           scope.reloadTables = function () {
             scope.isaRelsTableParams.reload();
             scope.attrRelsTableParams.reload();
-          }
+          };
 
           /**
            * Remove concepts from viewed list on stopEditing events from
@@ -166,12 +162,12 @@ angular.module('singleConceptAuthoringApp')
           //
           // Complete and cancel
           //
-          scope.cancelInactivation = function() {
+          scope.cancelInactivation = function () {
             if (window.confirm('All changes made during inactivation will be lost, are you sure?')) {
               inactivationService.cancelInactivation(null);
               $rootScope.$broadcast('inactivation.cancelInactivation');
             }
-          }
+          };
 
 
           //
@@ -212,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
             // console.debug('Getting affected concepts');
             var deferred = $q.defer();
 
-            if (scope.affectedRelationshipIds.length == 0) {
+            if (scope.affectedRelationshipIds.length === 0) {
               deferred.resolve();
             }
             else {
@@ -226,7 +222,7 @@ angular.module('singleConceptAuthoringApp')
                     // console.debug('  Final concept map', scope.affectedConcepts);
                     deferred.resolve();
                   }
-                })
+                });
               });
             }
 
@@ -271,7 +267,7 @@ angular.module('singleConceptAuthoringApp')
                 });
               }
             }
-          };
+          }
 
 
           function initialize() {
@@ -307,7 +303,7 @@ angular.module('singleConceptAuthoringApp')
                 });
               });
             });
-          };
+          }
 
           initialize();
         }
