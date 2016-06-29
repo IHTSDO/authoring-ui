@@ -1,11 +1,11 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http',  'metadataService','notificationService', 'scaService', 'snowowlService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService) {
 
       // controller $scope.options
-      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branch = metadataService.getBranch();
       $scope.resultsPage = 1;
       $scope.resultsSize = 100;
       $scope.loadPerformed = false;
@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         taskSet: false,
         taskKey: null
       };
-        
+
       $scope.searchType = 'Active Only';
 
       $scope.toggleGroupByConcept = function () {
@@ -53,11 +53,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.processResults();
 
       };
-      
+
       $scope.toggleSearchType = function (){
         if($scope.searchType === 'Active and Inactive')
         {
-            $scope.searchType = 'Active Only'; 
+            $scope.searchType = 'Active Only';
             $scope.userOptions.searchType = 1;
         }
         else if($scope.searchType === 'Active Only')
@@ -67,7 +67,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
         else
         {
-            $scope.searchType = 'Active and Inactive';   
+            $scope.searchType = 'Active and Inactive';
             $scope.userOptions.searchType = 0;
         }
         $scope.processResults();
@@ -130,7 +130,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         else{
             $scope.results = displayedResults;
         }
-        
+
 
         // user cue for status
         if ($scope.results.length === 0) {
@@ -212,7 +212,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
     };
 	 $scope.isEdited = function(item) {
-      return $scope.editList.indexOf(item.concept.conceptId) !== -1;
+      return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
 	  $scope.viewConceptInTaxonomy = function (item) {
         console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
