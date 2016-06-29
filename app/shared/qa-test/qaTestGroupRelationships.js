@@ -276,7 +276,7 @@ angular.module('singleConceptAuthoringApp')
               // replace unicode characters
               receivedError.message = receivedError.message.replace(/\u2019/g, '\'').replace(/[\u201C\u201d]/g, '"');
 
-              console.debug(test.name, test.results, test.expectedError);
+              //console.debug(test.name, test.results, test.expectedError);
 
               /*      console.debug('comparing errors');
                console.debug(test.expectedError);
@@ -302,7 +302,7 @@ angular.module('singleConceptAuthoringApp')
             test.status = 'PASSED';
           }
 
-          console.debug('Test complete', test.status);
+          //console.debug('Test complete', test.status);
 
           // run next test
           return runHelper(tests, ++index);
@@ -324,7 +324,7 @@ angular.module('singleConceptAuthoringApp')
             testFound = true;
             test.status = 'Pending';
             runHelper([test], 0).then(function () {
-              console.debug('test complete', test);
+              //console.debug('test complete', test);
               deferred.resolve(test);
             });
           }

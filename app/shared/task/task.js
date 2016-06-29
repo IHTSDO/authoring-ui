@@ -3,7 +3,7 @@
 angular.module('singleConceptAuthoringApp')
   .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete) {
 
-    console.debug('task.js with task', task);
+    //console.debug('task.js with task', task);
     // scope variables
     $scope.projects = null;
     $scope.task = task;
@@ -25,14 +25,14 @@ angular.module('singleConceptAuthoringApp')
 
     // TODO Consider relaxing jshint to allow functions to be called pre
     // declaration
-	
+
 	   // closes the modal instance (if applicable)
     $scope.close = function () {
       $modalInstance.close();
     };
     initialize();
 
- 
+
 
     // Creates a task from modal form
     $scope.createTask = function () {
@@ -52,7 +52,7 @@ angular.module('singleConceptAuthoringApp')
       scaService.createTaskForProject($scope.task.projectKey, $scope.task).then(
         function (response) {
 
-          console.debug('MODAL: task created', response);
+          //console.debug('MODAL: task created', response);
           // close modal
           $modalInstance.close(response);
         }, function (error) {
@@ -65,7 +65,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.updateTask = function () {
 
-      console.debug('updateTask', $scope.task);
+      //console.debug('updateTask', $scope.task);
 
       // check that all required fields are present
       if (!$scope.task.summary) {

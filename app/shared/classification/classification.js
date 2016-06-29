@@ -39,7 +39,7 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            console.debug(scope.classificationContainer.status);
+            // console.debug(scope.classificationContainer.status);
 
             switch (scope.classificationContainer.status) {
               case 'COMPLETED':
@@ -116,7 +116,7 @@ angular.module('singleConceptAuthoringApp')
                   conceptModelObj.conceptAfter = secondResponse;
 
                   scope.viewedConcepts.push(conceptModelObj);
-                  console.debug('conceptPairObj', conceptModelObj);
+                  // console.debug('conceptPairObj', conceptModelObj);
                   notificationService.clear();
 
                   // after a slight delay, broadcast a draw and taxonomy
@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
                 });
               } else {
                 scope.viewedConcepts.push(conceptModelObj);
-                console.debug('conceptPairObj', conceptModelObj);
+                // console.debug('conceptPairObj', conceptModelObj);
                 notificationService.clear();
 
                 // after a slight delay, broadcast a draw event
@@ -190,7 +190,7 @@ angular.module('singleConceptAuthoringApp')
            * task/project eligible
            */
           function saveClassificationHelper() {
-            console.debug('saveClassificationHelper');
+            // console.debug('saveClassificationHelper');
             snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
               if (!data) {
                 notificationService.sendError('Saving classification aborted', 0);
@@ -408,10 +408,7 @@ angular.module('singleConceptAuthoringApp')
             scope.resultsNotEmpty = scope.classificationContainer.equivalentConceptsFound
               || scope.classificationContainer.inferredRelationshipChangesFound
               || scope.classificationContainer.redundantStatedRelationshipsFound;
-            console.debug('RESULTS', scope.classificationContainer.equivalentConceptsFound
-              , scope.classificationContainer.inferredRelationshipChangesFound
-              , scope.classificationContainer.redundantStatedRelationshipsFound
-            );
+
 
 
 

@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
 
-      console.debug('cleaning concept', concept);
+      //console.debug('cleaning concept', concept);
 
       // strip unknown tags
       var allowableProperties = [
@@ -281,7 +281,7 @@ angular.module('singleConceptAuthoringApp')
      */
     function inactivateConcept(branch, conceptId, inactivationIndicator, associationTargets) {
 
-      console.debug('inactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
+      //console.debug('inactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
 
       var deferred = $q.defer();
 
@@ -326,7 +326,7 @@ angular.module('singleConceptAuthoringApp')
 
     function inactivateDescription(branch, descriptionId, inactivationIndicator) {
 
-      console.debug('deactivating description', descriptionId, branch, inactivationIndicator);
+      //console.debug('deactivating description', descriptionId, branch, inactivationIndicator);
 
       var deferred = $q.defer();
 
@@ -423,11 +423,11 @@ angular.module('singleConceptAuthoringApp')
 
       $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?expand=source.fsn,type.fsn' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit)).then(function (response) {
 
-        console.debug('inbound', response);
+        //console.debug('inbound', response);
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
-          console.debug('returning []');
+          //console.debug('returning []');
           deferred.resolve({total: 0, inboundRelationships: []});
         } else {
 
@@ -630,7 +630,7 @@ angular.module('singleConceptAuthoringApp')
         // if concept id
         if (searchStr.substr(-2, 1) === '0') {
 
-          console.debug('concept id detected');
+          //console.debug('concept id detected');
 
           // use browser/{path}/concepts/{id} call
           $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
@@ -657,7 +657,7 @@ angular.module('singleConceptAuthoringApp')
         // if description id
         else if (searchStr.substr(-2, 1) === '1') {
 
-          console.debug('description id detected');
+          //console.debug('description id detected');
 
           // use {path}/descriptions/id call
           $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
@@ -692,7 +692,7 @@ angular.module('singleConceptAuthoringApp')
         // if relationship id
         else if (searchStr.substr(-2, 1) === '2') {
 
-          console.debug('relationship id detected');
+          //console.debug('relationship id detected');
 
           // use {path}/descriptions/id call
           $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
@@ -717,7 +717,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               };
 
-              console.debug('source', source);
+              //console.debug('source', source);
 
               if (source && target) {
                 deferred.resolve([source, target]);
@@ -743,7 +743,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               };
 
-              console.debug('target', target);
+              //console.debug('target', target);
 
               if (source && target) {
                 deferred.resolve([source, target]);
@@ -760,7 +760,7 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, unsupported component type
         else {
-          console.debug('Numeric value could not be determined, rejecting');
+          //console.debug('Numeric value could not be determined, rejecting');
           deferred.reject('Could not parse numeric value (not a concept, description, or relationship SCTID)');
         }
       }
@@ -772,7 +772,7 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          console.debug(error);
+          //console.debug(error);
           if (error.status === 500) {
             deferred.reject('Unexpected server error.  Please check your search terms and try again.');
           } else {
@@ -960,7 +960,7 @@ angular.module('singleConceptAuthoringApp')
      */
     function generateMergeReview(parentBranch, childBranch) {
 
-      console.debug('Generating merge review', parentBranch, childBranch);
+      //console.debug('Generating merge review', parentBranch, childBranch);
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'merge-reviews', {
         source: parentBranch,
@@ -1105,10 +1105,10 @@ angular.module('singleConceptAuthoringApp')
 
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
-        console.debug('validate success');
+        //console.debug('validate success');
         deferred.resolve(response.data);
       }, function (error) {
-        console.debug('validate error', error);
+        //console.debug('validate error', error);
         deferred.reject(error.message);
       });
       return deferred.promise;

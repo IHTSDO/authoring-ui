@@ -79,7 +79,7 @@ angular.module('singleConceptAuthoringApp')
 //                        blocksPromotion: false
 //                      });
 //                    }
-              console.debug('resolving');
+              //console.debug('resolving');
 
               deferred.resolve(flags);
             });
@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
           // get the branch details
           snowowlService.getBranch(branch).then(function (branchStatus) {
 
-              console.debug('branch', branchStatus);
+              //console.debug('branch', branchStatus);
 
               if (!branchStatus) {
                 flags.push({
@@ -115,14 +115,14 @@ angular.module('singleConceptAuthoringApp')
 
               if (latestClassificationJson.status === 'COMPLETED' || latestClassificationJson.status === 'SAVING_IN_PROGRESS' || latestClassificationJson.status === 'SAVED') {
 
-                console.debug('classification run -- YES');
+                //console.debug('classification run -- YES');
                 flags.push({
                   checkTitle: 'Classification Run',
                   checkWarning: null,
                   blocksPromotion: false
                 });
               } else {
-                console.debug('classification run -- NO');
+                //console.debug('classification run -- NO');
                 flags.push({
                   checkTitle: 'Classification Not Completed',
                   checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
@@ -268,7 +268,7 @@ angular.module('singleConceptAuthoringApp')
                   //                        blocksPromotion: false
                   //                      });
                   //                    }
-                  console.debug('resolving');
+                  //console.debug('resolving');
 
                   deferred.resolve(flags);
                 });
@@ -295,7 +295,7 @@ angular.module('singleConceptAuthoringApp')
 
         var branch = task.branchPath;
 
-        console.debug('Task', task);
+        //console.debug('Task', task);
 
         if (task.branchState === 'BEHIND' || task.branchState === 'DIVERGED' || task.branchState === 'STALE') {
           deferred.resolve([{

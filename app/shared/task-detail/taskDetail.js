@@ -1,11 +1,11 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'notificationService', '$q',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, accountService, scaService, snowowlService, promotionService, notificationService, $q) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'notificationService', '$q',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, notificationService, $q) {
 
       $scope.task = null;
-      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branch = metadataService.getBranch();
       $rootScope.branchLocked = false;
 
       // the project and task branch objects
@@ -54,7 +54,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
 
-          console.debug('promotion flags', flags);
+          //console.debug('promotion flags', flags);
 
           // detect whether any user warnings were detected
           var warningsFound = false;
@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         modalInstance.result.then(function (response) {
-          console.debug('UPDATE TASK:', response);
+          //console.debug('UPDATE TASK:', response);
 
           // check for task deletion
           if (response === 'DELETED') {
@@ -198,21 +198,21 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         }, function () {
         });
       };
-        
+
       $scope.pollStatus = function() {
-            snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
-                
+            snowowlService.getBranch($scope.branch).then(function (response) {
+
             if(response.metadata && response.metadata.lock)
             {
                 $rootScope.branchLocked = true;
                 $timeout($scope.pollStatus, 4000);
             }
             else{
-                
+
                 $rootScope.branchLocked = false;
             }
           });
-                        
+
         };
 
 
@@ -222,7 +222,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // TODO Update: Changing project metadata does not trigger a notification
       //
 //      var projectPoll = null;
-//      function pollProjectStatus() {
+  //      function pollProjectStatus() {
 //        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey).then(function (response) {
 //
 //          $scope.projectBranch = response;
@@ -237,7 +237,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       function initialize() {
 
-        console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
+        //console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
 
         // clear the branch variables (but not the task to avoid display re-initialization)
         $scope.taskBranch = null;
@@ -249,7 +249,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
-        snowowlService.getBranch('MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
+        snowowlService.getBranch($scope.branch).then(function (response) {
             if(response.metadata && !response.metadata.lock)
             {
                 $rootScope.branchLocked = true;
@@ -258,13 +258,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             else if(response.status === 404)
             {
                 notificationService.sendWarning('Task initializing');
-                snowowlService.createBranch('MAIN/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                     notificationService.sendWarning('Task initialization complete', 3000);
                     $rootScope.$broadcast('reloadTaxonomy');
               });
             }
             else{
-                $scope.pollStatus();   
+                $scope.pollStatus();
             }
           });
 
@@ -282,24 +282,20 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         // retrieve the task branch
-        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey).then(function (response) {
-          console.log('task branch', $rootScope.branchLocked, response);
+        snowowlService.getBranch($scope.branch).then(function (response) {
+          console.log('Task branch', $rootScope.branchLocked ? 'Locked' : 'Unlocked', response);
 
           // store the latest task branch
           $scope.taskBranch = response;
 
           if ($scope.taskBranch.status === 404) {
             notificationService.sendWarning('Task initializing');
-            snowowlService.createBranch('MAIN' + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
+            snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
               notificationService.sendWarning('Task initialization complete', 3000);
               $rootScope.$broadcast('reloadTaxonomy');
             });
           }
         });
-
-        // start polling the project for lock updates
-//        pollProjectStatus();
-
       }
 
       $scope.$on('reloadTask', function (event, data) {
@@ -318,9 +314,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
 // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptModified', function (event, data) {
-        console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
+        //console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
         if ($scope.task.status === 'Review Completed') {
-          console.debug('updating task');
+          //console.debug('updating task');
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
             $scope.task = response;
           });

@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
 
       $scope.$on('reloadProject', function (event, data) {
-        console.debug('Received reload project request, current project: ', $scope.project);
+        // console.debug('Received reload project request, current project: ', $scope.project);
         $scope.getProject();
       });
 
@@ -109,7 +109,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on load, retrieve latest validation
       scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
-        console.debug('latest validation', response);
+        // console.debug('latest validation', response);
         $scope.validationContainer = response;
 
       });
@@ -151,7 +151,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
         promotionService.checkPrerequisitesForProject($routeParams.projectKey).then(function (flags) {
 
-          console.debug('promotion flags', flags);
+          // console.debug('promotion flags', flags);
 
           // detect whether any user warnings were detected
           var warningsFound = false;
@@ -289,7 +289,7 @@ angular.module('singleConceptAuthoringApp.project', [
         });
 
         modalInstance.result.then(function (response) {
-          console.debug('modal closed with response', response);
+          // console.debug('modal closed with response', response);
           if (response) {
             if (response === 'DELETED') {
               initialize();

@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
           // NOTE Want to handle cases where # is supplied or not supplied
           // (really shouldn't be, but is in many cases)
 
-          console.debug(scope.notification.url, $location.url, scope.notification.url.indexOf($location.url), $location.url().indexOf(scope.notification.url));
+          // console.debug(scope.notification.url, $location.url, scope.notification.url.indexOf($location.url), $location.url().indexOf(scope.notification.url));
 
           if (scope.notification.url.indexOf($location.url()) !== -1 || $location.url().indexOf(scope.notification.url) !== -1) {
             $route.reload();
@@ -132,7 +132,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
           modalInstance.result.then(function (response) {
-            console.debug('user preferences modal closed with response', response);
+            // console.debug('user preferences modal closed with response', response);
             if (response) {
               // do nothing -- user preferences ctrl should make appropriate
               // changes on completion

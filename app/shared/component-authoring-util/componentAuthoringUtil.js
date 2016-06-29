@@ -153,7 +153,7 @@ angular.module('singleConceptAuthoringApp')
      */
     function applyMinimumFields(concept) {
 
-      console.debug('Checking minimum fields', concept);
+      // console.debug('Checking minimum fields', concept);
 
       var elementFound;
 
@@ -165,7 +165,7 @@ angular.module('singleConceptAuthoringApp')
         }
       });
       if (!elementFound) {
-        console.debug('Concept does not have FSN');
+        // console.debug('Concept does not have FSN');
         concept.descriptions.push(getNewFsn());
       }
 
@@ -180,7 +180,7 @@ angular.module('singleConceptAuthoringApp')
         }
       });
       if (!elementFound) {
-        console.debug('Concept does not have SYNONYM');
+        // console.debug('Concept does not have SYNONYM');
         concept.descriptions.push(getNewPt());
       }
 
@@ -192,7 +192,7 @@ angular.module('singleConceptAuthoringApp')
         }
       });
       if (!elementFound) {
-        console.debug('Concept does not have IsA relationship');
+        // console.debug('Concept does not have IsA relationship');
         concept.relationships.push(getNewIsaRelationship());
       }
 
@@ -361,7 +361,7 @@ angular.module('singleConceptAuthoringApp')
         return false;
       }
     }
-    
+
     function ptFromFsnAutomation (concept, description) {
         if (description.term.match(/.*\(.*\)/g)) {
               var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
@@ -384,7 +384,7 @@ angular.module('singleConceptAuthoringApp')
                       delete pt.descriptionId;
                       return concept;
                   }
-                    
+
                 }
               });
 
@@ -397,7 +397,7 @@ angular.module('singleConceptAuthoringApp')
               }
             } else {
               return concept;
-            }   
+            }
     }
 
     return {

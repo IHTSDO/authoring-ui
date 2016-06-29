@@ -32,7 +32,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
 
-        console.debug('entered drawModelSca', scope.classificationSaved, scope.concept, scope.conceptAfter)
+        // console.debug('entered drawModelSca', scope.classificationSaved, scope.concept, scope.conceptAfter)
 
         // broadcast taxonomy request
         scope.viewConceptInTaxonomy = function (concept) {

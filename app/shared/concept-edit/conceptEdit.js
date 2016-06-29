@@ -136,7 +136,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.hideInactive = true;
         }
 
-        console.log('hiding inactive: ', scope.showInactive, scope.hideInactive);
 
         //////////////////////////////////////////////////////////////
         // Handle additional fields, if required
@@ -330,7 +329,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             saveFn = snowowlService.updateConcept;
           }
 
-          console.debug('SAVE FUNCTION', saveFn);
+          // console.debug('SAVE FUNCTION', saveFn);
 
           saveFn(
             $routeParams.projectKey,
@@ -341,7 +340,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // successful response will have conceptId
               if (response && response.conceptId) {
 
-                console.debug('Save concept successful');
+                // console.debug('Save concept successful');
 
                 // set concept and unmodified state
                 scope.concept = response;
@@ -472,7 +471,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // validate concept first
           scope.validateConcept().then(function () {
 
-            console.debug('validation results', scope.validation);
+            // console.debug('validation results', scope.validation);
 
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
@@ -567,7 +566,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!scope.concept.active) {
             scope.warnings = ['Please select which relationships you would like to activate along with the concept, or create a new Is A and click save.'];
             if (!scope.concept.relationships) {
-              console.log('here');
+
               scope.concept.relationships = [];
               scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
               autoSave();
@@ -1318,7 +1317,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addRelationship = function (relGroup, relationshipBefore) {
 
-          console.debug('adding relationship', relGroup, relationshipBefore);
+          // console.debug('adding relationship', relGroup, relationshipBefore);
 
           var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
 
@@ -1475,7 +1474,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
 
           modalInstance.result.then(function (results) {
-            console.log(results);
+
             deferred.resolve(results);
           }, function () {
             deferred.reject();
@@ -1683,7 +1682,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Scope is static, cannot drop');
             return;
           }
-          console.log(source);
+
           scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn).then(function (response) {
             if (response.length === 0) {
               // copy relationship object and replace target relationship
@@ -1809,7 +1808,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var errors = [];
           var relsChecked = 0;
-          console.log('mrcm validation');
+
           angular.forEach(relGroup, function (rel) {
             scope.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.type.fsn, rel.target.fsn).then(function (response) {
               errors = errors.concat(response);
@@ -2169,7 +2168,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
-          console.debug('concept after description update', scope.concept);
+          // console.debug('concept after description update', scope.concept);
 
           autoSave();
         };
@@ -2193,7 +2192,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.computeRelationshipGroups();
 
-          console.debug(scope.concept.relationships, scope.relationshipGroups);
+          // console.debug(scope.concept.relationships, scope.relationshipGroups);
 
           autoSave(relationship);
 
@@ -2241,7 +2240,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if changed
           if (scope.concept !== scope.unmodifiedConcept) {
 
-            console.debug('broadcasting conceptModified');
+            // console.debug('broadcasting conceptModified');
 
             // broadcast event to any listeners (currently task detail)
             $rootScope.$broadcast('conceptEdit.conceptModified', {
@@ -2378,7 +2377,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
-          console.log('watcher: relationships changed');
+
           var changed = false;
           angular.forEach(scope.concept.relationships, function (relationship) {
             if (relationship.type.conceptId === '116680003' && relationship.active === true) {

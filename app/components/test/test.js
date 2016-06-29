@@ -42,7 +42,7 @@ angular.module( 'singleConceptAuthoringApp.test', [
     angular.forEach($scope.testPackages, function (testPackage) {
       var results = testPackage.getResults();
       testPackage.results = results;
-      console.debug('testpackage w/results', testPackage);
+      // console.debug('testpackage w/results', testPackage);
     });
 
 
@@ -59,9 +59,9 @@ angular.module( 'singleConceptAuthoringApp.test', [
     };
 
     $scope.runSingleTest = function (testPackage, testGroupName, test) {
-      console.debug('running single test', test);
+      // console.debug('running single test', test);
       testPackage.runSingleTest(testGroupName, test.name, $scope.projectKey, $scope.taskKey).then(function(response) {
-        console.debug('single test complete & response', test, response);
+        // console.debug('single test complete & response', test, response);
         test = response;
       });
     };
