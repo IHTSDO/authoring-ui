@@ -132,6 +132,8 @@ angular.module('singleConceptAuthoringApp')
         }
         branch = branchName;
         branchRoot = branchName.split('/')[0];
+
+        console.debug('new branch root', branchRoot);
       },
 
       getBranch : function() {

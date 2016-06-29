@@ -1,5 +1,5 @@
 'use strict';
-//Directive used within the edit panel to load in concepts based upon the scroll position against the window. 
+//Directive used within the edit panel to load in concepts based upon the scroll position against the window.
 angular.module('singleConceptAuthoringApp')
 .directive('scaInfiniteScroll', [
     '$rootScope', '$window', '$timeout', function ($rootScope, $window, $timeout) {
@@ -11,7 +11,7 @@ angular.module('singleConceptAuthoringApp')
           elem.css('overflow-x', 'hidden');
           elem.css('height', 'inherit');
           scrollDistance = 0;
-          console.log('infinite');
+          console.log('Configuring infinite scroll');
           //attr checking is used to detect the infinite scroll params
           if (attrs.scaInfiniteScrollDistance !== null) {
             scope.$watch(attrs.scaInfiniteScrollDistance, function (value) {
@@ -37,7 +37,7 @@ angular.module('singleConceptAuthoringApp')
             elem.animate({scrollTop: '0'});
           });
           handler = function () {
-            console.log('scroll');
+
             var shouldScroll;
             shouldScroll = ($(document).height() - $(window).height()) - $(window).scrollTop() < 400;
             if (shouldScroll && scrollEnabled) {
