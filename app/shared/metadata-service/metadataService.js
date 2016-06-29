@@ -125,6 +125,23 @@ angular.module('singleConceptAuthoringApp')
 
     return {
 
+      setBranch: function(branchName) {
+        if (!branchName) {
+          console.error('Fatal error: metadata branch root cannot be null');
+          return;
+        }
+        branch = branchName;
+        branchRoot = branchName.split('/')[0];
+      },
+
+      getBranch : function() {
+        return branch;
+      },
+
+      getBranchRoot : function() {
+        return branchRoot;
+      },
+
       /**
        * Returns true if typeId matches that specified for IsA relationship.
        * @param typeId the typeId
