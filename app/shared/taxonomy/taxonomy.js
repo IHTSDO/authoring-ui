@@ -1,10 +1,10 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taxonomyPanel', [])
 
-  .controller('taxonomyPanelCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService',
-    function taxonomyPanelCtrl($scope, $rootScope, $location, $routeParams) {
+  .controller('taxonomyPanelCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService',
+    function taxonomyPanelCtrl($scope, $rootScope, $location, $routeParams, metadataService) {
 
-      $scope.branch = 'MAIN/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+      $scope.branch = metadataService.getBranch();
 
       // initialize with root concept (triggers rendering of full SNOMEDCT hierarchy)
       $scope.rootConcept = null;

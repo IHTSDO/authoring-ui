@@ -2,13 +2,13 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.taxonomy', [])
 
-  .controller('taxonomyCtrl', ['$scope', '$routeParams', '$location', '$compile', 'endpointService', function AppCtrl($scope, $routeParams, $location, $compile, endpointService) {
+  .controller('taxonomyCtrl', ['$scope', '$routeParams', '$location', '$compile', 'endpointService', 'metadataService', function AppCtrl($scope, $routeParams, $location, $compile, endpointService, metadataService) {
 
-    $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
+    $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + "/" + $routeParams.taskKey;
     var options = {
       serverUrl: "/snowowl",
       edition: "snomed-ct/v2/browser",
-      release: "MAIN",
+      release: metadataService.getBranchRoot(),
       selectedView: "inferred",
       displayChildren: false,
       langRefset: "900000000000509007",
@@ -254,7 +254,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             var selectedId = $(event.target).attr('data-concept-id');
             var selectedLabel = $(event.target).attr('data-term');
             if (typeof selectedId != "undefined") {
-                
+
               $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + selectedId + "/parents?form=" + panel.options.selectedView, function (result) {
                 // done
               }).done(function (result) {
