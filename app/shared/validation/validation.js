@@ -146,7 +146,7 @@ angular.module('singleConceptAuthoringApp')
               // save the value on the failures in the concept map
               var idNameMap = {};
               angular.forEach(concepts.items, function (concept) {
-                 idNameMap[concept.id] = concept.fsn.term;
+                idNameMap[concept.id] = concept.fsn.term;
               });
               angular.forEach(scope.failures, function (failure) {
                 failure.conceptFsn = idNameMap[failure.conceptId];
@@ -261,13 +261,12 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(assertionFailure.firstNInstances, function (instance) {
                 var obj = {
                   conceptId: instance.conceptId,
-                  conceptFsn: null,
                   message: instance.detail,
                   selected: false
                 };
                 objArray.push(obj);
               });
-              getNamesForFailures().then(function() {
+              getNamesForFailures().then(function () {
                 scope.failureTableParams.reload();
               });
               scope.failureTableParams.reload();
@@ -285,7 +284,6 @@ angular.module('singleConceptAuthoringApp')
                   angular.forEach(assertionFailure.firstNInstances, function (instance) {
                     var obj = {
                       conceptId: instance.conceptId,
-                      conceptFsn: null,
                       message: instance.detail,
                       selected: false,
                       userModified: false
@@ -299,7 +297,7 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   scope.failures = objArray;
-                  getNamesForFailures().then(function() {
+                  getNamesForFailures().then(function () {
                     scope.failureTableParams.reload();
                   })
                 });
@@ -313,7 +311,6 @@ angular.module('singleConceptAuthoringApp')
 
                   var obj = {
                     conceptId: instance.conceptId,
-                    conceptFsn: null,
                     message: instance.detail,
                     selected: false,
                     userModified: false
@@ -327,13 +324,12 @@ angular.module('singleConceptAuthoringApp')
                 });
 
                 scope.failures = objArray;
-                getNamesForFailures().then(function() {
-                scope.failureTableParams.reload();
+                getNamesForFailures().then(function () {
+                  scope.failureTableParams.reload();
                 })
               }
               // TODO Set edit enable/disable for edit panel
             }
-
 
 
             scope.failureTableParams.reload();
