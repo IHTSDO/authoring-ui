@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.browserLink = '..';
 
       // set the branch
-      $scope.branch = 'MAIN/' + $routeParams.projectKey;
+      $scope.branch = metadataService.getBranch();
 
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // get the latest classification for this project (if exists)
           if ($scope.project.latestClassificationJson) {
-            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
+            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, metadataService.getBranchRoot()).then(function (response) {
               console.log(response);
               $scope.classificationContainer = response;
             });
@@ -139,13 +139,13 @@ angular.module('singleConceptAuthoringApp.project', [
         $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
       };
       $scope.mergeAndRebase = function(task){
-        snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+        snowowlService.getBranch($scoe.branch).then(function(response){
             if(!response.metadata || response.metadata && !response.metadata.lock)
             {
                $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
             }
             else{
-                notificationService.sendWarning('Unable to start rebase on project as the MAIN is locked due to ongoing changes.', 7000);
+                notificationService.sendWarning('Unable to start rebase on project as the root branch is locked due to ongoing changes.', 7000);
             }
          });
     };
@@ -170,10 +170,10 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
-            snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+            snowowlService.getBranch($scope.branch).then(function(response){
             if(!response.metadata || response.metadata && !response.metadata.lock)
             {
-                snowowlService.getBranch('MAIN/').then(function(response){
+                snowowlService.getBranch(metadataService.getBranchRoot()).then(function(response){
                     if(!response.metadata || response.metadata && !response.metadata.lock)
                     {
                         notificationService.sendMessage('Promoting project...');
@@ -183,7 +183,7 @@ angular.module('singleConceptAuthoringApp.project', [
                         });
                     }
                     else{
-                        notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
+                        notificationService.sendWarning('Unable to start rebase as branch root is locked due to ongoing changes.', 7000);
                     }
                 });
             }
@@ -209,10 +209,10 @@ angular.module('singleConceptAuthoringApp.project', [
 
             modalInstance.result.then(function (proceed) {
               if (proceed) {
-                snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
+                snowowlService.getBranch($scope.branch).then(function(response){
                 if(!response.metadata || response.metadata && !response.metadata.lock)
                 {
-                    snowowlService.getBranch('MAIN/').then(function(response){
+                    snowowlService.getBranch(metadataService.getBranchRoot()).then(function(response){
                         if(!response.metadata || response.metadata && !response.metadata.lock)
                         {
                             notificationService.sendMessage('Promoting project...');
@@ -222,7 +222,7 @@ angular.module('singleConceptAuthoringApp.project', [
                             });
                         }
                         else{
-                            notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
+                            notificationService.sendWarning('Unable to start rebase as branch root is locked due to ongoing changes.', 7000);
                         }
                     });
                 }
