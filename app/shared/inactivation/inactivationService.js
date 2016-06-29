@@ -26,12 +26,11 @@ angular.module('singleConceptAuthoringApp')
       return parameters.concept !== null &&  parameters.concept !== undefined;
     }
 
-    function setParameters(project, task, concept, reasonId, assocRefsetMembers) {
+    function setParameters(branch, concept, reasonId, assocRefsetMembers) {
       console.debug('inactivationService setParameters', project, task, concept, reasonId, assocRefsetMembers);
       parameters = {};
       parameters.concept = concept;
-      parameters.project = project;
-      parameters.task = task;
+      parameters.branch = branch;
       parameters.reasonId = reasonId;
       parameters.assocMembers = assocRefsetMembers;
       $rootScope.$broadcast('concept', {concept: concept});
@@ -57,9 +56,9 @@ angular.module('singleConceptAuthoringApp')
         deferred.reject('Inactivation called without setting reason');
       } else {
 
-        var branch = 'MAIN/' +  parameters.project + '/' +  parameters.task;
 
-        snowowlService.inactivateConcept('MAIN/' + parameters.project + '/' + parameters.task,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
+
+        snowowlService.inactivateConcept(parameters.branch,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
 
           parameters.concept.active = false;
 
@@ -88,8 +87,7 @@ angular.module('singleConceptAuthoringApp')
 
     function cancelInactivation() {
       parameters = {
-        project : null,
-        task : null,
+        branch : null,
         concept : null,
         reasonId : null,
         assocMembers : null
