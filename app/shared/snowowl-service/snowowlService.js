@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
     // POST /browser/{path}/concepts
     function createConcept(project, task, concept) {
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+      $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
         //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
@@ -26,7 +26,7 @@ angular.module('singleConceptAuthoringApp')
     // PUT /browser/{path}/concepts/{conceptId}
     function updateConcept(project, task, concept) {
       var deferred = $q.defer();
-      $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
+      $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
         //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
     // get a specific classification result for projectKey, taskKey, and
     // classifierId
     function getClassificationForTask(projectKey, taskKey, classifierId) {
-      return $http.get(apiEndpoint + 'MAIN' + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
+      return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
       });
     }
@@ -136,7 +136,7 @@ angular.module('singleConceptAuthoringApp')
     // get a specific classification result for project id, classifier id, and
     // branch
     function getClassificationForProject(projectKey, classifierId) {
-      return $http.get(apiEndpoint + 'MAIN' + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
+      return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
       });
     }
@@ -151,7 +151,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get all classification results for a project and task
     function getClassificationsForTask(projectKey, taskKey, branch) {
-      return $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
+      return $http.get(apiEndpoint + metadataService.getBranchRoot() + projectKey + '/' + taskKey + '/classifications').then(function (response) {
         return response.data.items;
       });
     }
@@ -633,7 +633,7 @@ angular.module('singleConceptAuthoringApp')
           console.debug('concept id detected');
 
           // use browser/{path}/concepts/{id} call
-          $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
+          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
 
             // convert to browser search form
             var item = {
@@ -660,11 +660,11 @@ angular.module('singleConceptAuthoringApp')
           console.debug('description id detected');
 
           // use {path}/descriptions/id call
-          $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
+          $http.get(apiEndpoint + metadataService.getBranchRoot() + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
 
             // descriptions endpoint returns different format, which does not
             // include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function (response2) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function (response2) {
 
               // convert to browser search form
               var item = {
@@ -695,14 +695,14 @@ angular.module('singleConceptAuthoringApp')
           console.debug('relationship id detected');
 
           // use {path}/descriptions/id call
-          $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
+          $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
 
             var source = null;
             var target = null;
 
             // descriptions endpoint returns different format, which does not
             // include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function (sourceResponse) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function (sourceResponse) {
 
               // convert to browser search form
               source = {
@@ -728,7 +728,7 @@ angular.module('singleConceptAuthoringApp')
 
             // descriptions endpoint returns different format, which does not
             // include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.destinationId).then(function (targetResponse) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.destinationId).then(function (targetResponse) {
 
               // convert to browser search form
               target = {
@@ -769,7 +769,7 @@ angular.module('singleConceptAuthoringApp')
       else {
 
         // use browser/{path}/descriptions?{options} call
-        $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
+        $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           console.debug(error);
@@ -807,7 +807,7 @@ angular.module('singleConceptAuthoringApp')
     // Get traceability log for branch
     // GET /traceability-service/activities?onBranch=
     function getTraceabilityForBranch(projectKey, taskKey) {
-      return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey).then(function (response) {
+      return $http.get('/traceability-service/activities?onBranch=' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey).then(function (response) {
         return response.data;
       }, function (error) {
         console.log(error);
@@ -1104,7 +1104,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
+      $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
         console.debug('validate success');
         deferred.resolve(response.data);
       }, function (error) {

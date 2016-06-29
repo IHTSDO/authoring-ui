@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
 
     // clear task-related information
     $rootScope.validationRunning = false;
@@ -73,8 +73,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
-    $scope.branch = 'MAIN/' + $scope.projectKey + '/' + $scope.taskKey;
-    $scope.parentBranch = 'MAIN/' + $scope.projectKey;
+    $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + '/' + $scope.taskKey;
+    $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
 
     //////////////////////////////
     // Infinite Scroll
@@ -93,7 +93,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.conceptsRendering = false;
     };
     $scope.goToConflicts = function(){
-        snowowlService.getBranch('MAIN/' + $scope.projectKey).then(function(response){
+        snowowlService.getBranch(metadataService.getBranchRoot() + '/' + $scope.projectKey).then(function(response){
             if(!response.metadata || response.metadata && !response.metadata.lock)
             {
                 $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/conflicts');
@@ -402,11 +402,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Initialization
     //////////////////////////////
     if ($routeParams.taskKey) {
-      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-      $scope.sourceBranch = 'MAIN/' + $routeParams.projectKey;
+      $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
     } else {
-      $scope.targetBranch = 'MAIN/' + $routeParams.projectKey;
-      $scope.sourceBranch = 'MAIN/';
+      $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+      $scope.sourceBranch = metadataService.getBranchRoot() + '/';
     }
 
     // displayed concept array
@@ -1177,13 +1177,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
     };
-    
+
     $scope.getSNF = function(id){
       var deferred = $q.defer();
       snowowlService.getConceptSNF(id, $scope.branch).then(function (response) {
         deferred.resolve(response);
       });
-      return deferred.promise; 
+      return deferred.promise;
     };
 
     //////////////////////////////////////////
@@ -1367,7 +1367,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.conflictsContainer = {
       conflicts: null
     };
-          
+
 
 
     $scope.viewReview = function () {
