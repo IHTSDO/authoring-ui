@@ -61,6 +61,8 @@ angular
 
   .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider) {
 
+    console.log('Configuring application');
+
     // up the digest limit to account for extremely long depth of SNOMEDCT trees leading to spurious errors
     // this is not an ideal solution, but this is a known edge-case until Angular 2.0 (see https://github.com/angular/angular.js/issues/6440)
     $rootScopeProvider.digestTtl(20);
@@ -98,7 +100,6 @@ angular
         if (index !== -1) {
             taOptions.toolbar[1].splice(index, 1);
         }
-      console.log(taOptions.toolbar);
 
       // set false to allow the textAngular-sanitize provider to be replaced
       // see https://github.com/fraywing/textAngular/wiki/Setting-Defaults
@@ -110,6 +111,8 @@ angular
   })
 
   .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window) {
+
+    console.log('Running application');
 
     $window.ga('create', 'UA-41892858-21', 'auto');
     // track pageview on state change
