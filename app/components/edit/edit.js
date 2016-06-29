@@ -43,8 +43,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           angular.forEach(editPanels, function (panel) {
             panelHeight += panel.clientHeight;
           });
-          //console.log(header[0].clientHeight);
-          //console.log(footer[0].clientHeight);
+
           var existingHeight = header[0].clientHeight + panelHeight;
           if (scope.first) {
             //existingHeight -= 84;
@@ -89,7 +88,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
     $scope.renderingComplete = function () {
-      console.log('broadcasting');
+
       $rootScope.$broadcast('repeatComplete');
       $scope.conceptsRendering = false;
     };
@@ -493,7 +492,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                     }).length === 0 && concept.componentChanges.filter(function (obj) {
                       return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
                     }).length !== 0) {
-                    console.log(concept.conceptId);
+
                     concept.conceptId = concept.conceptId.toString();
                     concept.lastUpdatedTime = change.commitDate;
                     review.concepts.push(concept);
@@ -596,7 +595,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.conceptUpdateFunction = function (project, task, concept) {
-      console.log('functionCalled');
+
       var deferred = $q.defer();
       snowowlService.updateConcept(project, task, concept).then(function (response) {
         deferred.resolve(response);
@@ -648,7 +647,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           $scope.concepts.push(response);
-          console.log($routeParams);
+
           if ($scope.editList.indexOf(conceptId) === -1) {
             $scope.updateEditListUiState();
             // update edited item flagging
@@ -707,7 +706,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // helper function to save current edit list (task view only)
     $scope.updateEditListUiState = function () {
       if ($scope.taskKey) {
-        console.log('Updating edit list');
+
         var conceptIds = [];
         angular.forEach($scope.concepts, function (concept) {
           if (concept.conceptId) {
@@ -726,7 +725,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // helper function to save current edit list (classification view only)
     $scope.updateClassificationEditListUiState = function () {
       if ($scope.taskKey) {
-        console.log('Updating classification edit list');
+
         var conceptIds = [];
         angular.forEach($scope.concepts, function (concept) {
           if (concept.conceptId) {
@@ -741,7 +740,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     // helper function to save current edit list (validation view only)
     $scope.updateValidationEditListUiState = function () {
       if ($scope.taskKey) {
-        console.log('Updating validation edit list');
+
         var conceptIds = [];
         angular.forEach($scope.concepts, function (concept) {
           if (concept.conceptId) {
@@ -944,14 +943,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
           $scope.classificationContainer.equivalentConcepts = [];
           angular.forEach(equivalentConcepts, function (item) {
-            //console.log(item.equivalentConcepts);
+
             if (item.equivalentConcepts.length === 2) {
               $scope.classificationContainer.equivalentConcepts.push(item.equivalentConcepts);
             }
             else {
               var key = item.equivalentConcepts[0];
               angular.forEach(item.equivalentConcepts, function (equivalence) {
-                // console.log(item);
+
                 if (equivalence !== key) {
                   var newEq = [];
                   newEq.push(key);
@@ -961,7 +960,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               });
             }
           });
-          //console.log($scope.classificationContainer.equivalentConcepts);
+
         });
       } else {
         $scope.classificationContainer.equivalentConcepts = [];
@@ -1044,7 +1043,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                   }).length === 0 && concept.componentChanges.filter(function (obj) {
                     return obj.componentSubType !== 'INFERRED_RELATIONSHIP';
                   }).length !== 0) {
-                  console.log(concept.conceptId);
+
                   concept.conceptId = concept.conceptId.toString();
                   concept.lastUpdatedTime = change.commitDate;
                   review.concepts.push(concept);
@@ -1306,7 +1305,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.viewReview = function () {
       $scope.getLatestReview();
-      console.log('review');
       $scope.setView('feedback');
     };
 
