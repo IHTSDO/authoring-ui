@@ -69,7 +69,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             notificationService.sendMessage('Promoting task...');
 
             // manually lock the task in expectation of server lock post-promotion
-            lockTask();
+            //lockTask();
 
             scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               notificationService.sendMessage('Task successfully promoted', 5000);
@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 notificationService.sendMessage('Promoting task...');
 
                 // manually lock the task in expectation of server lock post-promotion
-                lockTask();
+                //lockTask();
 
                 scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   notificationService.sendMessage('Task successfully promoted', 5000);
