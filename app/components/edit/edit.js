@@ -135,7 +135,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           accountService.getUserPreferences().then(function (preferences) {
 
-            console.debug('preferences', preferences);
 
             if (preferences && preferences.layout && preferences.layout.editDefault) {
               layout = preferences.layout.editDefault;
@@ -170,8 +169,6 @@ angular.module('singleConceptAuthoringApp.edit', [
               };
             }
 
-            console.debug('new layout object', layout);
-
             // set the widths for easy access
             layoutHandler.setLayout(layout);
 
@@ -191,15 +188,13 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      console.debug('edit.js: task detected', $scope.taskKey);
-      $scope.getEditPanel();
+       $scope.getEditPanel();
 
       // get saved list
       scaService.getUiStateForTask(
         $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
         .then(function (uiState) {
 
-            console.debug('saved-list:', uiState);
 
             if (!uiState) {
               $scope.savedList = {items: []};
@@ -215,8 +210,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       scaService.getUiStateForUser(
           'my-favorites-' + $routeParams.projectKey)
         .then(function (uiState) {
-
-            console.debug('my project favorites', uiState);
 
             if (!uiState) {
               $scope.favorites = {items: []};
@@ -629,11 +622,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
-      console.debug('adding concept', conceptId);
-
       // verify that this SCTID does not exist in the edit list
       angular.forEach($scope.concepts, function (concept) {
-        console.debug('comparing', concept.conceptId, conceptId);
         if (concept.conceptId === conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
@@ -661,7 +651,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         // get the concept and add it to the stack
         snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
 
-          // console.debug('Response received for ' + conceptId, response);
           if (!response) {
             return;
           }
@@ -669,7 +658,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.concepts.push(response);
           console.log($routeParams);
           if ($scope.editList.indexOf(conceptId) === -1) {
-            console.debug('updating');
             $scope.updateEditListUiState();
             // update edited item flagging
           }
@@ -775,13 +763,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
-
-      console.debug('editConcept', data);
-      var conceptId = data.conceptId;
+  var conceptId = data.conceptId;
 
       // verify that this SCTID does not exist in the edit list
       for (var i = 0; i < $scope.concepts.length; i++) {
-        console.debug('comparing', $scope.concepts[i].conceptId, conceptId, $scope.concepts[i].conceptId === conceptId);
         if ($scope.concepts[i].conceptId === conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
@@ -807,7 +792,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       notificationService.sendMessage('Cloning concept...');
 
-      console.debug('cloning concept with id ' + data.conceptId);
 
       // get the concept and add it to the stack
       snowowlService.getFullConcept(data.conceptId, $scope.targetBranch).then(function (response) {
@@ -816,7 +800,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         var conceptExists = false;
         for (var i = 0; i < $scope.concepts.length; i++) {
 
-          console.debug('checking for duplicate concept, id: ', $scope.concepts[i].conceptId);
 
           // cancel if unsaved work exists (track-by id problems)
           if (!$scope.concepts[i].conceptId) {
@@ -825,13 +808,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
           if ($scope.concepts[i].conceptId === data.conceptId) {
-            console.debug('duplicate concept found');
             conceptExists = true;
           }
         }
         if (!conceptExists) {
-          console.debug('concept with id ' + concept.conceptId + ' not present in list, adding');
-          $scope.concepts.push(response);
+           $scope.concepts.push(response);
 
           $timeout(function () {
             $scope.updateEditListUiState();
@@ -1154,10 +1135,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         } else {
 
           angular.forEach(concept.descriptions, function (description) {
-            console.debug('checking description', description.effectiveTime);
             if (description.effectiveTime === undefined) {
-              console.debug('--> modified');
-              styleObj[description.descriptionId] = {
+               styleObj[description.descriptionId] = {
                 message: null,
                 style: 'tealhl'
               };
@@ -1200,20 +1179,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         // response : {}; });
       } else {
 
-        /* TODO Removed 11/19, would prefer to have merge-review status as part of task info
-
-         snowowlService.getMergeReviewForBranches($scope.parentBranch, $scope.branch).then(function (response) {
-
-         if (!response || response.status !== 'CURRENT') {
-         console.debug('No current merge review');
-         $scope.mergeReviewCurrent = false;
-         }
-
-         else if (response.status === 'CURRENT') {
-         console.debug('Current merge review');
-         $scope.mergeReviewCurrent = true;
-         }
-         })*/
       }
     };
 
