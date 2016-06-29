@@ -151,7 +151,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get all classification results for a project and task
     function getClassificationsForTask(projectKey, taskKey, branch) {
-      return $http.get(apiEndpoint + metadataService.getBranchRoot() + projectKey + '/' + taskKey + '/classifications').then(function (response) {
+      return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
         return response.data.items;
       });
     }
@@ -176,7 +176,7 @@ angular.module('singleConceptAuthoringApp')
       // console.debug('downloadClassification', classifierId, branch);
       return $http({
         'method': 'GET',
-        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
+        'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
         'headers': {
           'Accept': 'text/csv'
         }
