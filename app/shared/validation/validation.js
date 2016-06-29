@@ -129,6 +129,70 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+          //
+          // Concept FSN and Description Term display names
+          //
+
+          function getConceptNames() {
+            var deferred = $q.defer();
+            var conceptIds = [];
+            angular.forEach(scope.failures, function (failure) {
+              conceptIds.push(failure.conceptId);
+            });
+
+            // bulk call for concept ids
+            snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+              // save the value on the failures in the concept map
+              var idNameMap = {};
+              angular.forEach(concepts.items, function (concept) {
+                console.debug('concept', concept);
+                idNameMap[concept.id] = concept.fsn.term;
+              });
+              console.debug('idNameMap', idNameMap);
+              angular.forEach(scope.failures, function (failure) {
+                failure.conceptFsn = idNameMap[failure.conceptId];
+                console.debug('updated failure', failure);
+              });
+
+              deferred.resolve();
+            });
+
+            return deferred.promise;
+          }
+
+          function getDescriptionNames() {
+            var deferred = $q.defer();
+            var descsDone = 0;
+
+            angular.forEach(scope.failures, function (failure) {
+
+              console.debug('checking failure', failure);
+
+              // match the description
+              var descIds = failure.message.match(/Description: id=(\d+)/);
+
+              // if description found and display name not already retrieved and added
+              if (descIds && descIds[1]) {
+                snowowlService.getDescriptionProperties(descIds[1], scope.branch).then(function (description) {
+                  failure.message = failure.message.replace(/Description: id=\d+/g, 'Description: ' + description.term);
+                  console.debug('new desc failure', failure);
+                  if (++descsDone == scope.failures.length) {
+                    deferred.resolve();
+                  }
+                });
+
+              } else if (++descsDone == scope.failures.length) {
+                deferred.resolve();
+              }
+
+            });
+            return deferred.promise;
+          }
+
+          // called by failureTableParams.getData(), retrieves names if needed
+          function getNamesForFailures() {
+            return $q.all([getDescriptionNames(), getConceptNames()]);
+          }
 
           // declare table parameters
           scope.failureTableParams = new NgTableParams({
@@ -142,7 +206,6 @@ angular.module('singleConceptAuthoringApp')
               getData: function ($defer, params) {
 
                 console.debug('getData failures', scope.failures);
-
                 // clear the loading variable on reload
                 scope.failuresLoading = false;
 
@@ -152,10 +215,9 @@ angular.module('singleConceptAuthoringApp')
 
                   var orderedData = scope.failures;
                   params.total(orderedData.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-
-                  console.debug('getData failures orderedData', orderedData);
-                  $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                  
+                  orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                  $defer.resolve(orderedData);
                 }
               }
             }
@@ -201,13 +263,16 @@ angular.module('singleConceptAuthoringApp')
 
               angular.forEach(assertionFailure.firstNInstances, function (instance) {
                 var obj = {
-                  concept: null,
-                  errorMessage: instance,
+                  conceptId: instance.conceptId,
+                  conceptFsn: null,
+                  message: instance.detail,
                   selected: false
                 };
                 objArray.push(obj);
               });
-              scope.failures = objArray;
+              getNamesForFailures().then(function() {
+                scope.failureTableParams.reload();
+              })
               scope.failureTableParams.reload();
             }
 
@@ -222,8 +287,9 @@ angular.module('singleConceptAuthoringApp')
                   scope.changedList = response;
                   angular.forEach(assertionFailure.firstNInstances, function (instance) {
                     var obj = {
-                      concept: null,
-                      errorMessage: instance,
+                      conceptId: instance.conceptId,
+                      conceptFsn: null,
+                      message: instance.detail,
                       selected: false,
                       userModified: false
                     };
@@ -236,7 +302,9 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   scope.failures = objArray;
-                  scope.failureTableParams.reload();
+                  getNamesForFailures().then(function() {
+                    scope.failureTableParams.reload();
+                  })
                 });
 
               }
@@ -247,8 +315,9 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
                   var obj = {
-                    concept: null,
-                    errorMessage: instance,
+                    conceptId: instance.conceptId,
+                    conceptFsn: null,
+                    message: instance.detail,
                     selected: false,
                     userModified: false
                   };
@@ -261,13 +330,12 @@ angular.module('singleConceptAuthoringApp')
                 });
 
                 scope.failures = objArray;
+                getNamesForFailures().then(function() {
                 scope.failureTableParams.reload();
+                })
               }
               // TODO Set edit enable/disable for edit panel
             }
-
-            // set scope.failures to trigger watch
-            scope.failures = objArray;
 
             scope.failureTableParams.reload();
           };
