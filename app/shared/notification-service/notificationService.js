@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
         console.error('Cannot send empty application notification');
       }
 
-      console.warning('Notification: ', message);
+      console.warn('Notification: ', message);
 
       var notification = {
         type: 'WARNING',
