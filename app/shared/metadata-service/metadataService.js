@@ -7,14 +7,13 @@ angular.module('singleConceptAuthoringApp')
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
     // branch and branch root
-    var branch = null;
-    var branchRoot = null;
+    var branchMetadata = null;
 
     // relationship metadata
     var isaRelationshipId = '116680003';
 
     // component inactivation metadata
-    var conceptInactivationReasons = conceptInactivationReasons = [
+    var conceptInactivationReasons = [
         {id: 'AMBIGUOUS', text: 'Ambiguous component', display : [4]},
         {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display : [3]},
         {id: 'DUPLICATE', text: 'Duplicate component', display : [7]},
@@ -26,7 +25,7 @@ angular.module('singleConceptAuthoringApp')
       ];
     // var inactivationParent = '900000000000481005';
 
-    var associationInactivationReasons = associationInactivationReasons =
+    var associationInactivationReasons =
         [
           {
             id: 'ALTERNATIVE',
@@ -77,7 +76,7 @@ angular.module('singleConceptAuthoringApp')
     // var associationInactivationParent = '900000000000522004';
 
     // description inactivation metadata
-    var descriptionInactivationReasons = descriptionInactivationReasons = [
+    var descriptionInactivationReasons = [
         {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
         {id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
         {id: 'DUPLICATE', text: 'Duplicate component'},
@@ -116,7 +115,7 @@ angular.module('singleConceptAuthoringApp')
     function setDescriptionInactivationReasons() {
 
       /**
-       * [DUPLICATE, OUTDATED, ERRONEOUS, LIMITED, MOVED_ELSEWHERE, PENDING_MOVE, INAPPROPRIATE, CONCEPT_NON_CURRENT]
+    * [DUPLICATE, OUTDATED, ERRONEOUS, LIMITED, MOVED_ELSEWHERE, PENDING_MOVE, INAPPROPRIATE, CONCEPT_NON_CURRENT]
        * @type {*[]}
        */
       descriptionInactivationReasons = [
@@ -192,23 +191,33 @@ angular.module('singleConceptAuthoringApp')
 
     return {
 
-      setBranch: function(branchName) {
-        if (!branchName) {
+      setBranchMetadata: function(branchMetadataObj) {
+        if (!branchMetadataObj) {
           console.error('Fatal error: metadata branch root cannot be null');
           return;
         }
-        branch = branchName;
-        branchRoot = branchName.split('/')[0];
-
-        // console.debug('new branch root', branchRoot);
+        branchMetadata = branchMetadataObj;
       },
 
+      getBranchMetadata : function() {
+        return branchMetadata;
+      },
+
+
       getBranch : function() {
-        return branch;
+        if (!branchMetadata || !branchMetadata.hasOwnProperty('branchPath')) {
+          console.error('Fatal error: branch metadata does not contain branch path');
+          return;
+        }
+        return branchMetadata.branchPath;
       },
 
       getBranchRoot : function() {
-        return branchRoot;
+        if (!branchMetadata || !branchMetadata.hasOwnProperty('branchPath')) {
+          console.error('Fatal error: branch metadata does not contain branch path');
+          return;
+        }
+        return branchMetadata.branchPath.split('/')[0];
       },
 
       /**

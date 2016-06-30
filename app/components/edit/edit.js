@@ -1375,12 +1375,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Get the branch and save in metadata service
     if ($scope.taskKey) {
       scaService.getTaskForProject($scope.projectKey, $scope.taskKey).then(function (task) {
-        metadataService.setBranch(task.branchPath);
+        metadataService.setBranchMetadata(task);
         initialize();
       });
     } else {
       scaService.getProjectForKey($scope.projectKey).then(function (project) {
-        metadataService.setBranch(project.branchPath);
+        metadataService.setBranchMetadata(project);
         initialize();
       });
     }
