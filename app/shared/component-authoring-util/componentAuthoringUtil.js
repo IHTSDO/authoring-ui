@@ -1,95 +1,71 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('componentAuthoringUtil', function () {
+  .service('componentAuthoringUtil', function (metadataService) {
 
     /////////////////////////////////////
     // calls to return JSON objects
     /////////////////////////////////////
 
-    /**
-     * Get a default blank description (acceptable Synonym)
-     * @param conceptId
-     * @returns {{active: boolean, moduleId: string, type: string, term: null,
-     *   lang: string, caseSignificance: string, conceptId: *,
-     *   acceptabilityMap: {900000000000509007: string, 900000000000508004:
-     *   string}}}
-     */
-    function getNewDescription(conceptId) {
+    function getNewAcceptabilityMap(moduleId, defaultValue) {
+      var acceptabilityMap = {};
+      var dialects = metadataService.getDialectsForModuleId(moduleId);
+      for (var key in dialects) {
+        acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
+      }
+      return acceptabilityMap;
+    }
+
+    function getNewDescription(moduleId) {
       return {
         'active': true,
-        'moduleId': '900000000000207008',
+        'moduleId': moduleId,
         'type': 'SYNONYM',
         'term': null,
-        'lang': 'en',
+        'lang': metadataService.getLanguagesForModuleId(moduleId)[0],
         'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
-        'conceptId': conceptId,
-        'acceptabilityMap': {
-          '900000000000509007': 'ACCEPTABLE',
-          '900000000000508004': 'ACCEPTABLE'
-        }
+        'conceptId': null,
+        'acceptabilityMap': getNewAcceptabilityMap(moduleId, 'ACCEPTABLE')
       };
     }
 
-    /**
-     * Get a blank Fully Specified Name description
-     * @param conceptId
-     * @returns {{active, moduleId, type, term, lang, caseSignificance,
-     *   conceptId, acceptabilityMap}|*}
-     */
-    function getNewFsn(conceptId) {
+    function getNewFsn(moduleId) {
       // add FSN acceptability and type
-      var desc = getNewDescription(conceptId);
+      var desc = getNewDescription(moduleId);
       desc.type = 'FSN';
-      desc.acceptabilityMap = {
-        '900000000000509007': 'PREFERRED',
-        '900000000000508004': 'PREFERRED'
-      };
+      desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED');
 
       return desc;
     }
 
-    /**
-     * Get a blank Preferred Term description
-     * @param conceptId
-     * @returns {{active, moduleId, type, term, lang, caseSignificance,
-     *   conceptId, acceptabilityMap}|*}
-     */
-    function getNewPt(conceptId) {
+    function getNewPt(moduleId) {
       // add PT acceptability and type
-      var desc = getNewDescription(conceptId);
+      var desc = getNewDescription(moduleId);
       desc.type = 'SYNONYM';
-      desc.acceptabilityMap = {
-        '900000000000509007': 'PREFERRED',
-        '900000000000508004': 'PREFERRED'
-      };
+      desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED');
 
       return desc;
     }
 
-    function getNewTextDefinition(conceptId) {
+    function getNewTextDefinition(moduleId) {
       // add PT acceptability and type
-      var desc = getNewDescription(conceptId);
+      var desc = getNewDescription(moduleId);
       desc.type = 'TEXT_DEFINITION';
       desc.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
-      desc.acceptabilityMap = {
-        '900000000000509007': 'PREFERRED',
-        '900000000000508004': 'PREFERRED'
-      };
+      desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED');
 
       return desc;
     }
 
     // creates a blank relationship linked to specified source concept
-    function getNewIsaRelationship(conceptId) {
+    function getNewIsaRelationship(moduleId) {
       return {
         'active': true,
         'characteristicType': 'STATED_RELATIONSHIP',
         'effectiveTime': null,
         'groupId': 0,
         'modifier': 'EXISTENTIAL',
-        'moduleId': '900000000000207008',
-        'sourceId': conceptId,
+        'moduleId': moduleId,
         'target': {
           'conceptId': null
         },
@@ -101,7 +77,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     // creates a blank relationship linked to specified source concept
-    function getNewAttributeRelationship(conceptId) {
+    function getNewAttributeRelationship(moduleId) {
       return {
         'active': true,
         'characteristicType': 'STATED_RELATIONSHIP',
@@ -109,8 +85,7 @@ angular.module('singleConceptAuthoringApp')
         'effectiveTime': null,
         'groupId': 0,
         'modifier': 'EXISTENTIAL',
-        'moduleId': '900000000000207008',
-        'sourceId': conceptId,
+        'moduleId': moduleId,
         'target': {
           'conceptId': null
         },
@@ -123,6 +98,7 @@ angular.module('singleConceptAuthoringApp')
     // creats a blank concept with one each of a blank
     // description, relationship, attribute
     function getNewConcept() {
+      var moduleId = metadataService.getCurrentModuleId();
       var concept = {
         'conceptId': null,
         'descriptions': [],
@@ -130,17 +106,17 @@ angular.module('singleConceptAuthoringApp')
         'fsn': null,
         'definitionStatus': 'PRIMITIVE',
         'active': true,
-        'moduleId': '900000000000207008'
+        'moduleId': moduleId
       };
 
       // add FSN description
-      concept.descriptions.push(getNewFsn(null));
+      concept.descriptions.push(getNewFsn(moduleId));
 
       // add a Preferred Term
-      concept.descriptions.push(getNewPt(null));
+      concept.descriptions.push(getNewPt(moduleId));
 
       // add IsA relationship
-      concept.relationships.push(getNewIsaRelationship(null));
+      concept.relationships.push(getNewIsaRelationship(moduleId));
 
       return concept;
     }

@@ -256,10 +256,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // console.debug(scope.concept, scope.branch, scope.parentBranch,
         // scope.static);
 
-        // retrieve metadata (only modules for now)
-        scope.modules = snowowlService.getModules();
-        scope.languages = snowowlService.getLanguages();
-        scope.dialects = snowowlService.getDialects();
+        // retrieve SNOMEDCT international metadata
+        scope.intlModules = snowowlService.getModules();
+        scope.intlLanguages = snowowlService.getLanguages();
+
+        // allowable attributes for relationships
         scope.allowedAttributes = [];
 
         scope.toggleHideInactive = function () {
@@ -710,14 +711,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
+        //
+        // Component more functions
+        //
+
+        // get the avialable languages for this module id
+        scope.getAvailableLanguages = function(moduleId) {
+
+          return metadataService.getLanguagesForModuleId(moduleId);
+        };
+
+        // get the available modules based on whether this is an extension element
+        scope.getAvailableModules = function(element) {
+          return metadataService.getModules(element.released);
+        };
+
 ////////////////////////////////
 // Description Elements
 ////////////////////////////////
-
-// define available languages
-        scope.languages = [
-          'en'
-        ];
 
 // Define definition types
 // NOTE:  PT is not a SNOMEDCT type, used to set acceptabilities
@@ -727,13 +738,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
         ];
 
-// define the available dialects
-        scope.dialects = {
-          'en-us': '900000000000509007',
-          'en-gb': '900000000000508004'
+        // define the available dialects
+        scope.dialects = metadataService.getAllDialects();
+
+        scope.dialectComparator = function(a, b) {
+          return a < b;
         };
 
-// define acceptability types
+        // function to retrieve branch dialect ids as array instead of map
+        // NOTE: Required for orderBy in ng-repeat
+        scope.getDialectKeysForDescription = function(description) {
+          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId));
+        };
+
+        // define acceptability types
         scope.acceptabilityAbbrs = {
           'PREFERRED': 'P',
           'ACCEPTABLE': 'A'
@@ -991,6 +1009,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var description = componentAuthoringUtil.getNewDescription(null);
 
+          console.debug('New description', description);
+
+
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
             scope.concept.descriptions.push(description);
@@ -1001,6 +1022,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept.descriptions.splice(afterIndex + 1, 0, description);
             autoSave();
           }
+          console.debug('Concept', scope.concept);
 
         };
 
@@ -1179,43 +1201,46 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          Function to cycle acceptability map for a description & dialect through acceptable values
          Preferred -> Acceptable -> Not Acceptable -> Preferred
          */
-        scope.toggleAcceptability = function (description, dialectName) {
+        scope.toggleAcceptability = function (description, dialectId) {
 
+          console.debug('toggle acceptability', description.type, dialectId, description.acceptabilityMap[dialectId], description.acceptabilityMap);
           if (!description.acceptabilityMap) {
             description.acceptabilityMap = {};
           }
           if (description.type !== 'TEXT_DEFINITION') {
-            switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+            switch (description.acceptabilityMap[dialectId]) {
 
               // if preferred, switch to acceptable
               case 'PREFERRED':
-                description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
+                description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
                 break;
 
               // if acceptable, switch to not acceptable (i.e. clear the dialect
               // key)
               case 'ACCEPTABLE':
-                delete description.acceptabilityMap[scope.dialects[dialectName]];
+                delete description.acceptabilityMap[dialectId];
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
-                description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
                 break;
             }
           }
           else {
-            switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+            switch (description.acceptabilityMap[dialectId]) {
               case 'PREFERRED':
-                delete description.acceptabilityMap[scope.dialects[dialectName]];
+                delete description.acceptabilityMap[dialectId];
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
-                description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
                 break;
             }
           }
+
+          console.debug(description.acceptabilityMap);
 
           autoSave();
         };
@@ -1234,12 +1259,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
+        // returns the name of a dialect given its refset id
+        scope.getDialectName = function(id) {
+          for (var key in scope.dialects) {
+            if (scope.dialects[key] === id) {
+              return key.replace('en-', '');
+            }
+          }
+        }
+
         // returns the display abbreviation for a specified dialect
-        scope.getAcceptabilityDisplayText = function (description, dialectName) {
-          if (!description || !dialectName) {
+        scope.getAcceptabilityDisplayText = function (description, dialectId) {
+          if (!description || !dialectId) {
             return null;
           }
-          var dialectId = scope.dialects[dialectName];
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
@@ -1263,7 +1296,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var displayText = scope.acceptabilityAbbrs[acceptability];
           return displayText ? displayText : 'N';
 
-          //return scope.acceptabilityAbbrs[acceptability];
         };
 
         ////////////////////////////////
