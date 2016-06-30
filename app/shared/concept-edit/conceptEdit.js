@@ -548,6 +548,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // NOTE: This function hard-saves the concept, to prevent sync errors
         // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function () {
+
+          if (!scope.concept.released) {
+            notificationService.sendWarning('Removal of unreleased content is not yet supported');
+            return;
+          }
           if (scope.isStatic) {
             return;
           }
