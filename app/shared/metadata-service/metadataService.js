@@ -14,14 +14,81 @@ angular.module('singleConceptAuthoringApp')
     var isaRelationshipId = '116680003';
 
     // component inactivation metadata
-    var conceptInactivationReasons = [];
+    var conceptInactivationReasons = conceptInactivationReasons = [
+        {id: 'AMBIGUOUS', text: 'Ambiguous component', display : [4]},
+        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display : [3]},
+        {id: 'DUPLICATE', text: 'Duplicate component', display : [7]},
+        {id: 'ERRONEOUS', text: 'Erroneous component', display : [6, 9]},
+        {id: 'LIMITED', text: 'Limited component', display : [9]},
+        {id: 'OUTDATED', text: 'Outdated component', display : [6, 9]},
+        {id: 'PENDING_MOVE', text: 'Pending move', display : [3]},
+        {id: 'RETIRED', text: 'Reason not stated' , display : [6, 9]}
+      ];
     // var inactivationParent = '900000000000481005';
 
-    var associationInactivationReasons = [];
+    var associationInactivationReasons = associationInactivationReasons =
+        [
+          {
+            id: 'ALTERNATIVE',
+            text: 'ALTERNATIVE association reference set',
+            display: 1
+          },
+          {
+            id: 'MOVED_FROM',
+            text: 'MOVED FROM association reference set',
+            display: 2
+          },
+          {
+            id: 'MOVED_TO',
+            text: 'MOVED TO association reference set',
+            display: 3
+          },
+          {
+            id: 'POSSIBLY_EQUIVALENT_TO',
+            text: 'POSSIBLY EQUIVALENT TO association reference set',
+            display: 4
+          },
+          {
+            id: 'REFERS_TO',
+            text: 'REFERS TO concept association reference set',
+            display: 5
+          },
+          {
+            id: 'REPLACED_BY',
+            text: 'REPLACED BY association reference set',
+            display: 6
+          },
+          {
+            id: 'SAME_AS',
+            text: 'SAME AS association reference set',
+            display: 7
+          },
+          {
+            id: 'SIMILAR_TO',
+            text: 'SIMILAR TO association reference set',
+            display: 8
+          },
+          {
+            id: 'WAS_A',
+            text: 'WAS A association reference set',
+            display: 9
+          }
+        ];
     // var associationInactivationParent = '900000000000522004';
 
     // description inactivation metadata
-    var descriptionInactivationReasons = [];
+    var descriptionInactivationReasons = descriptionInactivationReasons = [
+        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
+        {id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
+        {id: 'DUPLICATE', text: 'Duplicate component'},
+        {id: 'ERRONEOUS', text: 'Erroneous component'},
+        {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
+        {id: 'LIMITED', text: 'Limited component'},
+        {id: 'OUTDATED', text: 'Outdated component'},
+        {id: 'PENDING_MOVE', text: 'Pending move'},
+        {id: 'RETIRED', text: 'Reason not stated'}
+
+      ];
 
     /**
      * Sets the static array of concept inactivation reasons

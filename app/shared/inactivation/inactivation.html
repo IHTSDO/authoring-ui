@@ -1,17 +1,4 @@
 <section class="tables-data">
-  <!-- for ng-table checkboxes -->
-  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
-    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
-           id="select_all_failures"
-           name="filter-checkbox" value=""/>
-  </script>
-  <script type="text/ng-template" id="editheader.html">
-    <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
-            class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
-            <span
-              class="md md-edit"></span>
-    </button>
-  </script>
   <style>
 
     .table > tbody > tr > td,
@@ -38,10 +25,6 @@
     .back-button:hover {
       background-color: #00a6e5 !important;
       border: 1px solid #00a6e5 !important;
-    }
-
-    .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
-      margin-left: -33px;
     }
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
@@ -73,11 +56,11 @@
 
           <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
                                                                    aria-controls="home" role="tab"
-                                                                   data-toggle="tab"> Hierarchical Relationships
+                                                                   data-toggle="tab"> Children
             Affected ({{isaRelsTableParams.total()}})
           <li role="presentation" class="classification"><a style="margin: 0px" ng-click="actionTab=2"
                                                             aria-controls="home" role="tab"
-                                                            data-toggle="tab"> Attribute Relationships Affected
+                                                            data-toggle="tab"> Attributes Affected
             ({{attrRelsTableParams.total()}})
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
@@ -99,9 +82,6 @@
           ng-table="isaRelsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
-            <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
-              <input type="checkbox" ng-model="rel.selected" ui-on-drop="">
-            </td>
             <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
             </td>
             <td data-title="'Attribute'" sortable="'typeFsn'">
@@ -129,10 +109,6 @@
           ng-table="attrRelsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
-            <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
-              <input type="checkbox" ng-model="rel.selected" ui-on-drop="">
-            </td>
-
             <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
             </td>
             <td data-title="'RG'" sortable="'groupId'">{{rel.groupId}}</td>

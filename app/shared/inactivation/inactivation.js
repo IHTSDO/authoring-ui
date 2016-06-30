@@ -112,6 +112,7 @@ angular.module('singleConceptAuthoringApp')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
+                    console.log(scope.affectedConcepts);
                   angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
                     // add all relationships with no id
                     if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
@@ -251,14 +252,14 @@ angular.module('singleConceptAuthoringApp')
           }
             
           function inactivateAttributeRelationship(concept, rel) {
-
-              if(scope.assocs[0]){
+              if(scope.histAssocTarget != null){
+                  
                   var newRel = angular.copy(rel);
                   newRel.relationshipId = null;
                   newRel.effectiveTime = null;
                   newRel.released = false;
-                  newRel.target.conceptId = scope.assocs[0].conceptId;
-                  newRel.target.fsn = scope.assocs[0].fsn;
+                  newRel.target.conceptId = scope.histAssocTarget.conceptId;
+                  newRel.target.fsn = scope.histAssocTarget.fsn;
                   concept.relationships.push(newRel);
                   rel.active = 0;
               }
@@ -278,7 +279,7 @@ angular.module('singleConceptAuthoringApp')
                     // console.debug('  prepping relationship', rel.relationshipId);
                     inactivateRelationship(concept, rel);
                   }
-                  else{
+                  else if(scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1){
                     inactivateAttributeRelationship(concept, rel);
                   }
                 });
@@ -293,6 +294,18 @@ angular.module('singleConceptAuthoringApp')
             scope.inactivationConcept = inactivationService.getConcept();
             scope.reasonId = inactivationService.getReasonId();
             scope.assocs = inactivationService.getAssocs();
+            scope.histAssocTarget = {};
+            for (var key in scope.assocs) {
+                scope.histAssocTarget.conceptId = "";
+                scope.histAssocTarget.fsn = "";
+                scope.histAssocTarget.conceptId = scope.assocs[key];
+                snowowlService.getConceptPreferredTerm(scope.histAssocTarget.conceptId, scope.branch).then(function (response) {
+                    scope.histAssocTarget.fsn = response.term;
+                });
+                
+                break;
+            }
+            console.log(scope.histAssocTarget);
 
             // console.debug('  concept to inactivate', scope.inactivationConcept);
 
