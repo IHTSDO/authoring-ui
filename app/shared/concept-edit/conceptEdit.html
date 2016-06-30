@@ -75,11 +75,12 @@
         <button type="button" style="vertical-align: bottom"
                 ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
                 ng-click="toggleConceptActive(concept)"
-                ng-disabled="isInactivation() || isStatic || !concept.released"
+                ng-disabled="isInactivation() || isStatic"
                 class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
-          <span ng-if="!isStatic && !concept.released">Cannot inactivate unreleased concept</span>
+
           <span ng-if="!isStatic && concept.released && !isInactivation()"> Activate/ inactivate concept </span>
           <span ng-if="!isStatic && concept.released && isInactivation()">Inactivation in progress, cannot change active status</span>
+          <span ng-if="!isStatic && !concept.released">Remove unreleased concept</span>
           <span ng-if="isStatic "> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
 
         </button>
@@ -197,10 +198,12 @@
 
           <!-- Active/Inactive -->
           <button type="button" style="vertical-align: bottom"
-                  ng-disabled="isStatic" ng-click="toggleDescriptionActive(description)"
+                  ng-disabled="isStatic || !concept.released" ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
                   class="tooltips-bottom small-size-tooltip">
-            <span>Active/Inactive</span>
+            <span ng-if="concept.released && !isStatic">Toggle Active/Inactive</span>
+            <span ng-if="!concept.released && !isStatic">Cannot inactivate unreleased content</span>
+            <span ng-if="isStatic">Active/Inactive</span>
           </button>
 
           <!-- Case Significance -->
@@ -350,10 +353,12 @@
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip"
                         style="vertical-align: bottom"
-                        ng-disabled="isStatic"
+                        ng-disabled="isStatic || !concept.released"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
-                  <span>Active/Inactive</span>
+                  <span ng-if="concept.released && !isStatic">Toggle Active/Inactive</span>
+                  <span ng-if="!concept.released && !isStatic">Cannot inactivate unreleased content</span>
+                  <span ng-if="isStatic">Active/Inactive</span>
                 </button>
 
                 <!-- relationship group -->
