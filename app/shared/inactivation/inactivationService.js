@@ -28,6 +28,9 @@ angular.module('singleConceptAuthoringApp')
     function getConceptToInactivate() {
       return conceptToInactivate;
     }
+    function getAssocs() {
+      return parameters.assocMembers;
+    }
 
     //
     // Actions
