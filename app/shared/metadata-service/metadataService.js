@@ -6,272 +6,270 @@ angular.module('singleConceptAuthoringApp')
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
-    // branch and branch root
-    var branchMetadata = null;
+    // project cache (still used?)
+    var projects = [];
 
     // relationship metadata
     var isaRelationshipId = '116680003';
 
     // component inactivation metadata
     var conceptInactivationReasons = [
-        {id: 'AMBIGUOUS', text: 'Ambiguous component', display : [4]},
-        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display : [3]},
-        {id: 'DUPLICATE', text: 'Duplicate component', display : [7]},
-        {id: 'ERRONEOUS', text: 'Erroneous component', display : [6, 9]},
-        {id: 'LIMITED', text: 'Limited component', display : [9]},
-        {id: 'OUTDATED', text: 'Outdated component', display : [6, 9]},
-        {id: 'PENDING_MOVE', text: 'Pending move', display : [3]},
-        {id: 'RETIRED', text: 'Reason not stated' , display : [6, 9]}
-      ];
+      {id: 'AMBIGUOUS', text: 'Ambiguous component', display: [4]},
+      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display: [3]},
+      {id: 'DUPLICATE', text: 'Duplicate component', display: [7]},
+      {id: 'ERRONEOUS', text: 'Erroneous component', display: [6, 9]},
+      {id: 'LIMITED', text: 'Limited component', display: [9]},
+      {id: 'OUTDATED', text: 'Outdated component', display: [6, 9]},
+      {id: 'PENDING_MOVE', text: 'Pending move', display: [3]},
+      {id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
+    ];
     // var inactivationParent = '900000000000481005';
 
     var associationInactivationReasons =
-        [
-          {
-            id: 'ALTERNATIVE',
-            text: 'ALTERNATIVE association reference set',
-            display: 1
-          },
-          {
-            id: 'MOVED_FROM',
-            text: 'MOVED FROM association reference set',
-            display: 2
-          },
-          {
-            id: 'MOVED_TO',
-            text: 'MOVED TO association reference set',
-            display: 3
-          },
-          {
-            id: 'POSSIBLY_EQUIVALENT_TO',
-            text: 'POSSIBLY EQUIVALENT TO association reference set',
-            display: 4
-          },
-          {
-            id: 'REFERS_TO',
-            text: 'REFERS TO concept association reference set',
-            display: 5
-          },
-          {
-            id: 'REPLACED_BY',
-            text: 'REPLACED BY association reference set',
-            display: 6
-          },
-          {
-            id: 'SAME_AS',
-            text: 'SAME AS association reference set',
-            display: 7
-          },
-          {
-            id: 'SIMILAR_TO',
-            text: 'SIMILAR TO association reference set',
-            display: 8
-          },
-          {
-            id: 'WAS_A',
-            text: 'WAS A association reference set',
-            display: 9
-          }
-        ];
+      [
+        {
+          id: 'ALTERNATIVE',
+          text: 'ALTERNATIVE association reference set',
+          display: 1
+        },
+        {
+          id: 'MOVED_FROM',
+          text: 'MOVED FROM association reference set',
+          display: 2
+        },
+        {
+          id: 'MOVED_TO',
+          text: 'MOVED TO association reference set',
+          display: 3
+        },
+        {
+          id: 'POSSIBLY_EQUIVALENT_TO',
+          text: 'POSSIBLY EQUIVALENT TO association reference set',
+          display: 4
+        },
+        {
+          id: 'REFERS_TO',
+          text: 'REFERS TO concept association reference set',
+          display: 5
+        },
+        {
+          id: 'REPLACED_BY',
+          text: 'REPLACED BY association reference set',
+          display: 6
+        },
+        {
+          id: 'SAME_AS',
+          text: 'SAME AS association reference set',
+          display: 7
+        },
+        {
+          id: 'SIMILAR_TO',
+          text: 'SIMILAR TO association reference set',
+          display: 8
+        },
+        {
+          id: 'WAS_A',
+          text: 'WAS A association reference set',
+          display: 9
+        }
+      ];
     // var associationInactivationParent = '900000000000522004';
 
     // description inactivation metadata
     var descriptionInactivationReasons = [
-        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
-        {id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-        {id: 'DUPLICATE', text: 'Duplicate component'},
-        {id: 'ERRONEOUS', text: 'Erroneous component'},
-        {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
-        {id: 'LIMITED', text: 'Limited component'},
-        {id: 'OUTDATED', text: 'Outdated component'},
-        {id: 'PENDING_MOVE', text: 'Pending move'},
-        {id: 'RETIRED', text: 'Reason not stated'}
+      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
+      {id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
+      {id: 'DUPLICATE', text: 'Duplicate component'},
+      {id: 'ERRONEOUS', text: 'Erroneous component'},
+      {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
+      {id: 'LIMITED', text: 'Limited component'},
+      {id: 'OUTDATED', text: 'Outdated component'},
+      {id: 'PENDING_MOVE', text: 'Pending move'},
+      {id: 'RETIRED', text: 'Reason not stated'}
 
-      ];
+    ];
 
-    /**
-     * Sets the static array of concept inactivation reasons
-     */
-    function setConceptInactivationReasons() {
+    //
+    // International SNOMEDCT metadata
+    //
+
+    var internationalMetadata = {
+      modules: [{
+        id: '900000000000207008',
+        name: 'SNOMED CT core module (core metadata concept)'
+      }, {
+        id: '900000000000012004',
+        name: 'SNOMED CT model component module (core metadata concept)'
+      }],
+      languages: ['en'],
+      dialects: {
+        '900000000000509007': 'en-us', '900000000000508004': 'en-gb'
+      },
+    };
+
+    //
+    // Extension metadata
+    //
+    // TODO Hard-coded Swedish language module for dev/demo purposes
+    var extensionMetadata = {
+      modules: [{
+        id: '45991000052106',
+        name: 'SNOMED CT Sweden NRC maintained module (core metadata concept)'
+      }],
+      languages: ['sv', 'en'],
+      dialects: {
+        '46011000052107': 'sv',
+        '900000000000509007': 'en-us'
+      }
+    };
+
+    //
+    // Branch/Task-level metadata
+    //
+    var branchMetadata = {};
 
 
-      // set the inactivation reasons with combination of enum values and
-      // preferred terms
-      conceptInactivationReasons = [
-        {id: 'AMBIGUOUS', text: 'Ambiguous component', display : [4]},
-        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere', display : [3]},
-        {id: 'DUPLICATE', text: 'Duplicate component', display : [7]},
-        {id: 'ERRONEOUS', text: 'Erroneous component', display : [6, 9]},
-        {id: 'LIMITED', text: 'Limited component', display : [9]},
-        {id: 'OUTDATED', text: 'Outdated component', display : [6, 9]},
-        {id: 'PENDING_MOVE', text: 'Pending move', display : [3]},
-        {id: 'RETIRED', text: 'Reason not stated' , display : [6, 9]}
-      ];
+    //
+    // Metadata setters
+    //
+    function setExtensionMetadata(metadata) {
+      extensionMetadata = metadata;
     }
 
-    /**
-     * Sets th e static array of description inactivation reasons
-     */
-    function setDescriptionInactivationReasons() {
-
-      /**
-    * [DUPLICATE, OUTDATED, ERRONEOUS, LIMITED, MOVED_ELSEWHERE, PENDING_MOVE, INAPPROPRIATE, CONCEPT_NON_CURRENT]
-       * @type {*[]}
-       */
-      descriptionInactivationReasons = [
-        {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
-        {id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-        {id: 'DUPLICATE', text: 'Duplicate component'},
-        {id: 'ERRONEOUS', text: 'Erroneous component'},
-        {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
-        {id: 'LIMITED', text: 'Limited component'},
-        {id: 'OUTDATED', text: 'Outdated component'},
-        {id: 'PENDING_MOVE', text: 'Pending move'},
-        {id: 'RETIRED', text: 'Reason not stated'}
-
-      ];
+    function setBranchMetadata(branchMetadataObj) {
+      branchMetadata = branchMetadataObj;
     }
 
-    /**
-     * Sets the static array of association inactivation reasons
-     */
-    function setAssociationInactivationReasons() {
-
-      associationInactivationReasons =
-        [
-          {
-            id: 'ALTERNATIVE',
-            text: 'ALTERNATIVE association reference set',
-            display: 1
-          },
-          {
-            id: 'MOVED_FROM',
-            text: 'MOVED FROM association reference set',
-            display: 2
-          },
-          {
-            id: 'MOVED_TO',
-            text: 'MOVED TO association reference set',
-            display: 3
-          },
-          {
-            id: 'POSSIBLY_EQUIVALENT_TO',
-            text: 'POSSIBLY EQUIVALENT TO association reference set',
-            display: 4
-          },
-          {
-            id: 'REFERS_TO',
-            text: 'REFERS TO concept association reference set',
-            display: 5
-          },
-          {
-            id: 'REPLACED_BY',
-            text: 'REPLACED BY association reference set',
-            display: 6
-          },
-          {
-            id: 'SAME_AS',
-            text: 'SAME AS association reference set',
-            display: 7
-          },
-          {
-            id: 'SIMILAR_TO',
-            text: 'SIMILAR TO association reference set',
-            display: 8
-          },
-          {
-            id: 'WAS_A',
-            text: 'WAS A association reference set',
-            display: 9
-          }
-        ];
+    //
+    // Module retrieval functions
+    //
+    function getCurrentModuleId() {
+      return extensionMetadata ?
+        extensionMetadata.modules[0].id : internationalMetadata.modules[0].id;
     }
 
-    var projects = [];
+    function isExtensionModule(moduleId) {
+      return extensionMetadata.modules.filter(function (module) {
+          return module.id === moduleId;
+        }).length > 0;
+    }
+
+
+    function getModules(isExtension) {
+      if (isExtension) {
+        return extensionMetadata.modules;
+      } else {
+        return internationalMetadata.modules;
+      }
+    }
+
+    //
+    // Branch functions -- only used for branchPath resolution
+    //
+
+    function getBranch() {
+      return branchMetadata.branchPath;
+    }
+
+    function getBranchRoot() {
+      return branchMetadata.branchPath.split('/')[0];
+    }
+
+    // returns branch dialects plus base dialects
+    // NOTE: Branch dialects override defaults
+    function getAllDialects() {
+      // get the test branch dialects
+      var dialects = internationalMetadata.dialects;
+      for (var key in extensionMetadata.dialects) {
+        dialects[key] = extensionMetadata.dialects[key];
+      }
+      return dialects;
+    }
+
+    function getDialectsForModuleId(moduleId) {
+      if (isExtensionModule(moduleId)) {
+        return extensionMetadata.dialects;
+      } else {
+        return internationalMetadata.dialects;
+      }
+    }
+
+    function getLanguagesForModuleId(moduleId) {
+
+      if (isExtensionModule(moduleId)) {
+        return extensionMetadata.languages;
+      } else {
+        return internationalMetadata.languages;
+      }
+    }
+
+
+    //
+    // Relationship metadata functions
+    //
+    function isIsaRelationship(typeId) {
+      return typeId === isaRelationshipId;
+    }
+
+    //
+    // Inactivation reason retrieval functions
+    //
+
+    function getConceptInactivationReasons() {
+      return conceptInactivationReasons;
+    }
+
+
+    function getAssociationInactivationReasons() {
+      return associationInactivationReasons;
+    }
+
+    function getDescriptionInactivationReasons() {
+      return descriptionInactivationReasons;
+    }
+
+    //
+    // Cached project retrieval functions
+    //
+
+    function getProjects() {
+      return projects;
+    }
+
+    function setProjects(projectsList) {
+      projects = projectsList;
+    }
 
     return {
 
-      setBranchMetadata: function(branchMetadataObj) {
-        if (!branchMetadataObj) {
-          console.error('Fatal error: metadata branch root cannot be null');
-          return;
-        }
-        branchMetadata = branchMetadataObj;
-      },
+      // relationship functions
+      isIsaRelationship: isIsaRelationship,
 
-      getBranchMetadata : function() {
-        return branchMetadata;
-      },
+      // project cache getters/setters
+      setProjects: setProjects,
+      getProjects: getProjects,
 
+      // inactivation reason retrieval
+      getConceptInactivationReasons: getConceptInactivationReasons,
+      getDescriptionInactivationReasons: getDescriptionInactivationReasons,
+      getAssociationInactivationReasons: getAssociationInactivationReasons,
 
-      getBranch : function() {
-        if (!branchMetadata || !branchMetadata.hasOwnProperty('branchPath')) {
-          console.error('Fatal error: branch metadata does not contain branch path');
-          return;
-        }
-        return branchMetadata.branchPath;
-      },
+      // extension-dependent retrieval functions
+      isExtensionModule : isExtensionModule,
+      getCurrentModuleId : getCurrentModuleId,
+      getModules : getModules,
+      getLanguagesForModuleId: getLanguagesForModuleId,
+      getDialectsForModuleId: getDialectsForModuleId,
+      getAllDialects: getAllDialects,
 
-      getBranchRoot : function() {
-        if (!branchMetadata || !branchMetadata.hasOwnProperty('branchPath')) {
-          console.error('Fatal error: branch metadata does not contain branch path');
-          return;
-        }
-        return branchMetadata.branchPath.split('/')[0];
-      },
+      // module and branch metadata setters
+      setExtensionMetadata: setExtensionMetadata,
+      setBranchMetadata: setBranchMetadata,
 
-      /**
-       * Returns true if typeId matches that specified for IsA relationship.
-       * @param typeId the typeId
-       * @returns {boolean} true if equal, false if not
-       */
-      isIsaRelationship: function (typeId) {
-        return typeId === isaRelationshipId;
-      },
+      // branch/task fupath retrieval functions
+      getBranch: getBranch,
+      getBranchRoot: getBranchRoot
 
-      /**
-       * Gets the concept inactivation reasons.
-       * @returns {Array} the concept inactivation reasons
-       */
-      getConceptInactivationReasons: function () {
-        return conceptInactivationReasons;
-      },
-
-      /**
-       * Gets the association inactivation reasons.
-       * @returns {Array} the association inactivation reasons
-       */
-      getAssociationInactivationReasons: function () {
-        return associationInactivationReasons;
-      },
-
-      /**
-       * Get the description inactivation reasons
-       * @returns {Array}
-       */
-      getDescriptionInactivationReasons: function () {
-        return descriptionInactivationReasons;
-      },
-
-      getProjects: function () {
-        return projects;
-      },
-
-      setProjects: function (projectsList) {
-        projects = projectsList;
-      },
-
-      /**
-       * Initializes all required metadata for a specified branch. Run at
-       * application start.
-       * @param branch the branch from which metadata is retrieved (e.g.
-       *   'MAIN')
-       */
-      initialize: function () {
-        setConceptInactivationReasons();
-        setAssociationInactivationReasons();
-        setDescriptionInactivationReasons();
-      }
 
     };
 

@@ -171,9 +171,11 @@
   <div ng-show="!isCollapsed" class="editHeightSelector darken-3 grey ">
 
 
+
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions()" ng-class="getComponentStyle(description.descriptionId, null, '')"
          class="">
+
 
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
         <div class="col-md-12 no-padding color_{{relationship.groupId}} def_{{concept.definitionStatus}} "
@@ -255,7 +257,19 @@
 
           <!-- Dialect / Acceptability -- never alterable for FSN -->
           <div>
-            <!-- en-us acceptability -->
+            <button ng-repeat="dialect in getDialectKeysForDescription(description) | orderBy:'dialect':false:dialectComparator"
+                    type="button"
+                    class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
+
+                    ng-click="toggleAcceptability(description, dialect)">
+              <div class="md col-md-12 no-padding text-center">{{dialects[dialect]}}: {{getAcceptabilityDisplayText(description,dialect)}}
+              </div>
+              <span>{{getAcceptabilityTooltipText(description.acceptabilityMap[dialect], dialect)}} {{getDialectName(dialect)}}</span>
+            </button>
+
+
+           <!-- Old acceptability map
+            &lt;!&ndash; first acceptability &ndash;&gt;
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                     ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
@@ -265,7 +279,7 @@
               <span>{{getAcceptabilityTooltipText(description, 'en-us')}} US</span>
             </button>
 
-            <!-- en-gb acceptability -->
+            &lt;!&ndash; en-gb acceptability &ndash;&gt;
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                     ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
@@ -273,7 +287,7 @@
               <div class="md col-md-12 no-padding text-center">gb: {{getAcceptabilityDisplayText(description, 'en-gb')}}
               </div>
               <span>{{getAcceptabilityTooltipText(description, 'en-gb')}} GB</span>
-            </button>
+            </button>-->
 
 
           </div>

@@ -906,7 +906,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
-      var concept = componentAuthoringUtil.getNewConcept($scope.targetBranch);
+      var concept = componentAuthoringUtil.getNewConcept();
 
       $scope.concepts.unshift(concept);
       $scope.updateEditListUiState();

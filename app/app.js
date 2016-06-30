@@ -50,13 +50,13 @@ angular
     'singleConceptAuthoringApp.conceptInformationModal'
   ])
   .factory('httpRequestInterceptor', function () {
-      return {
-        request: function (config) {
-          config.headers['Authorization'] = 'Basic c25vd293bDpzbm93b3ds ';
-          return config;
-        }
-      };
-    })
+    return {
+      request: function (config) {
+        config.headers['Authorization'] = 'Basic c25vd293bDpzbm93b3ds ';
+        return config;
+      }
+    };
+  })
 
 
   .config(function ($rootScopeProvider, $provide, $routeProvider, $modalProvider, $httpProvider) {
@@ -71,7 +71,7 @@ angular
       return $routeProvider;
     });
     $provide.decorator('$exceptionHandler',
-        ['$delegate', '$window', extendExceptionHandler]);
+      ['$delegate', '$window', extendExceptionHandler]);
     //intercept requests to add hardcoded authorization header to work around the spring security popup
     $httpProvider.interceptors.push('httpRequestInterceptor');
 
@@ -93,13 +93,13 @@ angular
       // add the button to the default toolbar definition
       taOptions.toolbar[1].push('taxonomy');
       var index = taOptions.toolbar[1].indexOf('undo');    // <-- Not supported in <IE9
-        if (index !== -1) {
-            taOptions.toolbar[1].splice(index, 1);
-        }
+      if (index !== -1) {
+        taOptions.toolbar[1].splice(index, 1);
+      }
       index = taOptions.toolbar[1].indexOf('redo');    // <-- Not supported in <IE9
-        if (index !== -1) {
-            taOptions.toolbar[1].splice(index, 1);
-        }
+      if (index !== -1) {
+        taOptions.toolbar[1].splice(index, 1);
+      }
 
       // set false to allow the textAngular-sanitize provider to be replaced
       // see https://github.com/fraywing/textAngular/wiki/Setting-Defaults
@@ -117,17 +117,17 @@ angular
     $window.ga('create', 'UA-41892858-21', 'auto');
     // track pageview on state change
     $rootScope.$on('$locationChangeSuccess', function (event) {
-        $window.ga('send', 'pageview', $location.path());
+      $window.ga('send', 'pageview', $location.path());
     });
-    $window.onerror = function handleGlobalError( message, fileName, lineNumber, columnNumber, error ) {
-        console.log('error');
-        if ( ! error ) {
-            error = new Error( message );
-            error.fileName = fileName;
-            error.lineNumber = lineNumber;
-            error.columnNumber = ( columnNumber || 0 );
-        }
-        $window.ga('send', 'error', error)
+    $window.onerror = function handleGlobalError(message, fileName, lineNumber, columnNumber, error) {
+      console.log('error');
+      if (!error) {
+        error = new Error(message);
+        error.fileName = fileName;
+        error.lineNumber = lineNumber;
+        error.columnNumber = ( columnNumber || 0 );
+      }
+      $window.ga('send', 'error', error)
     };
 
     // set the default redirect/route
@@ -136,23 +136,21 @@ angular
     });
     $rootScope.notProd = false;
     $timeout(function () {
-            var env = $location.host().split(/[.]/)[0];
-            if(env === 'local' || env === 'dev-term' || env === 'dev-authoring')
-            {
-                $rootScope.development = true;
-                $rootScope.notProd = true;
-            }
-            else if(env === 'uat-term' || env === 'uat-authoring')
-            {
-                $rootScope.uat = true;
-                $rootScope.notProd = true;
-            }
-            else{
-                $rootScope.notProd = false;
-                $rootScope.uat = false;
-                $rootScope.development = false;
-            }
-          }, 3000);
+      var env = $location.host().split(/[.]/)[0];
+      if (env === 'local' || env === 'dev-term' || env === 'dev-authoring') {
+        $rootScope.development = true;
+        $rootScope.notProd = true;
+      }
+      else if (env === 'uat-term' || env === 'uat-authoring') {
+        $rootScope.uat = true;
+        $rootScope.notProd = true;
+      }
+      else {
+        $rootScope.notProd = false;
+        $rootScope.uat = false;
+        $rootScope.development = false;
+      }
+    }, 3000);
 
 
     // begin polling the sca endpoint at 10s intervals
@@ -193,7 +191,6 @@ angular
       });
 
 
-
       // add required endpoints to route provider
       $routeProvider
         .when('/login', {
@@ -221,7 +218,7 @@ angular
     ///////////////////////////////////////////
     // Cache local data
     ///////////////////////////////////////////
-    scaService.getProjects().then(function(response) {
+    scaService.getProjects().then(function (response) {
       metadataService.setProjects(response);
     });
 
@@ -229,19 +226,6 @@ angular
     ///////////////////////////////////////////
     // Instantiate basic metadata in SnowOwl //
     ///////////////////////////////////////////
-
-    var baseModules = [
-      '900000000000207008', '900000000000012004'
-    ];
-
-    var baseLanguages = ['en'];
-
-    var baseDialects = ['en-us', 'en-gb'];
-
-    // TODO Leave MAIN here?
-    snowowlService.addModules(baseModules, 'MAIN');
-    snowowlService.addLanguages(baseLanguages);
-    snowowlService.addDialects(baseDialects);
 
   })
   .controller('AppCtrl', ['$scope', 'rootScope', '$location', function AppCtrl($scope, $rootScope, $location) {
@@ -256,9 +240,9 @@ angular
 
 // Extend the $exceptionHandler service to also display a toast.
 function extendExceptionHandler($delegate, $window) {
-    return function (exception, cause) {
-        $delegate(exception, cause);
-        console.log(exception.toString());
-        $window.ga('send', '_trackEvent', 'JavaScript Error', exception.toString(), true)
-    };
+  return function (exception, cause) {
+    $delegate(exception, cause);
+    console.log(exception.toString());
+    $window.ga('send', '_trackEvent', 'JavaScript Error', exception.toString(), true)
+  };
 };
