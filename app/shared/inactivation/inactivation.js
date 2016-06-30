@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.isaRelsTableParams = new NgTableParams({
               page: 1,
-              count: 5
+              count: 10
             },
             {
               filterDelay: 50,
@@ -101,7 +101,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.attrRelsTableParams = new NgTableParams({
               page: 1,
-              count: 5
+              count: 10
             },
             {
               // initial display text, overwritten in getData
@@ -112,7 +112,6 @@ angular.module('singleConceptAuthoringApp')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
-                    console.log(scope.affectedConcepts);
                   angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
                     // add all relationships with no id
                     if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
@@ -155,8 +154,25 @@ angular.module('singleConceptAuthoringApp')
           });
 
           scope.editConcept = function (conceptId) {
-            // console.debug('edit request', conceptId, scope.affectedConcepts[conceptId], scope.affectedConcepts);
-            scope.editedConcept = scope.affectedConcepts[conceptId];
+            scope.editedConcept = false;
+            $timeout(function () {
+                scope.editedConcept = scope.affectedConcepts[conceptId];
+              }, 1000);
+            
+          };
+            
+          scope.remove = function(relationship){
+              var concept = scope.affectedConcepts[relationship.sourceId];
+              for(var i = concept.relationships.length -1; i >= 0 ; i--){
+                  if(concept.relationships[i].target.conceptId === relationship.target.conceptId && concept.relationships[i].type.conceptId === relationship.type.conceptId)
+                  {
+                        concept.relationships.splice(i, 1);
+                  }
+              };
+              if(scope.editedConcept && scope.editedConcept.conceptId === relationship.sourceId){
+                  scope.editConcept(relationship.sourceId);
+              }
+              scope.reloadTables();
           };
 
           //
@@ -294,8 +310,10 @@ angular.module('singleConceptAuthoringApp')
             scope.inactivationConcept = inactivationService.getConcept();
             scope.reasonId = inactivationService.getReasonId();
             scope.assocs = inactivationService.getAssocs();
+            scope.assocName = null;
             scope.histAssocTarget = {};
             for (var key in scope.assocs) {
+                scope.assocName = key;
                 scope.histAssocTarget.conceptId = "";
                 scope.histAssocTarget.fsn = "";
                 scope.histAssocTarget.conceptId = scope.assocs[key];
@@ -305,7 +323,6 @@ angular.module('singleConceptAuthoringApp')
                 
                 break;
             }
-            console.log(scope.histAssocTarget);
 
             // console.debug('  concept to inactivate', scope.inactivationConcept);
 

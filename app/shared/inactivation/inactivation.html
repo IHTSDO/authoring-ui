@@ -26,14 +26,18 @@
       background-color: #00a6e5 !important;
       border: 1px solid #00a6e5 !important;
     }
+      
+    .table-filter{
+      padding:25px;
+    }
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
-    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}} (Reason: {{reasonId}})
+    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} - {{assocName}} {{histAssocTarget.fsn}}
 
 
       <button
         class="btn btn-default red darken-4 pull-right" style="text-transform: none"
-        ng-click="cancelInactivation()"><i class="md md-check m-r-10"></i>Cancel Inactivation
+        ng-click="cancelInactivation()"><i class="md md-cross m-r-10"></i>Cancel Inactivation
       </button>
 
       <button
@@ -64,11 +68,11 @@
             ({{attrRelsTableParams.total()}})
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Previous Historical Associations
+                                                       data-toggle="tab">Historical Associations Affected
             ({{assocsTableParams.total()}})</a>
           </li>
           <li>
-            <input type="text" ng-model="filter" class="form-control" ng-change="reloadTables()"
+            <input type="text" ng-model="filter" class="table-filter" ng-change="reloadTables()"
                    ng-model-options='{ debounce: 500 }'
                    placeholder="Search Results"/>
           </li>
@@ -101,8 +105,14 @@
                 <span class="md md-edit"></span>
               </button>
             </td>
+            <td data-header="'editheader.html'">
+              <button type="button" class="btn btn-round btn-default red" ng-click="remove(rel)">
+                    <span class="md fa-sca fa-minus"></span>
+              </button>
+            </td>
           </tr>
         </table>
+          </br></br></br>
       </div>
       <div ng-show="actionTab==2" class="table-responsive white" style="margin-right:0px;">
         <table
@@ -131,6 +141,7 @@
             </td>
           </tr>
         </table>
+          </br></br></br>
       </div>
       <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
         <div class="alert alert-warning">Not implemented</div>
