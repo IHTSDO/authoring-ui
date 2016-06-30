@@ -108,10 +108,9 @@ angular.module('singleConceptAuthoringApp')
         // data
         getData: function ($defer, params) {
 
-          if (!$scope.descendants || $scope.descendants.descendants.length === 0) {
+          if (!$scope.descendants || !$scope.descendants.descendants.items) {
             $defer.resolve([]);
           } else {
-
             params.total($scope.descendants.descendants.items.length);
             var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.descendants.items, params.orderBy()) : $scope.descendants.descendants.items;
 
