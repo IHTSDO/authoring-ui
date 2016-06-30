@@ -352,7 +352,7 @@ angular.module('singleConceptAuthoringApp.project', [
       //
 
       scaService.getProjectForKey($routeParams.projectKey).then(function (project) {
-        metadataService.setBranch(project.branchPath);
+        metadataService.setBranchMetadata(project);
         initialize();
       });
 

@@ -100,7 +100,7 @@ angular.module('singleConceptAuthoringApp.home', [
     $scope.goToConflicts = function (task) {
 
       // set the branch for retrieval by other views
-      metadataService.setBranch(task.branchPath);
+      metadataService.setBranchMetadata(task);
 
       // check for project lock before continuing
       snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {

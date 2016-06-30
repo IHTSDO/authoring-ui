@@ -31,7 +31,7 @@ angular.module( 'singleConceptAuthoringApp.test', [
       $scope.projectKey = response.projectKey;
       $scope.taskKey = response.key;
       $scope.branch = task.branchPath;
-      metadataService.setBranch(task.branchPath);
+      metadataService.setBranchMetadata(task);
     });
 
     $scope.testPackages = [
