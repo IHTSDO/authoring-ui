@@ -400,7 +400,7 @@ angular.module('singleConceptAuthoringApp')
                 $timeout(function () {
                   $rootScope.$broadcast('viewTaxonomy', {
                     concept: {
-                      conceptId: response.conceptId,
+                      conceptId: conceptId,
                       fsn: response.fsn
                     }
                   });
@@ -424,8 +424,8 @@ angular.module('singleConceptAuthoringApp')
 
             var conceptsToAdd = [];
             angular.forEach(scope.failures, function (failure) {
-              if (failure.selected && existingIds.indexOf(failure.errorMessage.conceptId.toString()) === -1) {
-                conceptsToAdd.push(failure.errorMessage.conceptId);
+              if (failure.selected && existingIds.indexOf(failure.conceptId.toString()) === -1) {
+                conceptsToAdd.push(failure.conceptId);
               }
             });
 

@@ -43,6 +43,9 @@ angular.module('singleConceptAuthoringApp')
     function getReasonId() {
       return parameters.reasonId;
     }
+    function getAssocs() {
+      return parameters.assocMembers;
+    }
 
     //
     // Actions
@@ -103,6 +106,7 @@ angular.module('singleConceptAuthoringApp')
       setParameters: setParameters,
       getConcept: getConcept,
       getReasonId: getReasonId,
+      getAssocs: getAssocs,
       inactivateConcept: inactivateConcept,
       cancelInactivation: cancelInactivation
     };
