@@ -31,47 +31,56 @@ angular.module('singleConceptAuthoringApp')
           {
             id: 'ALTERNATIVE',
             text: 'ALTERNATIVE association reference set',
-            display: 1
+            display: 1,
+            conceptId: '900000000000530003'
           },
           {
             id: 'MOVED_FROM',
             text: 'MOVED FROM association reference set',
-            display: 2
+            display: 2,
+            conceptId: '900000000000525002'
           },
           {
             id: 'MOVED_TO',
             text: 'MOVED TO association reference set',
-            display: 3
+            display: 3,
+            conceptId: '900000000000524003'
           },
           {
             id: 'POSSIBLY_EQUIVALENT_TO',
             text: 'POSSIBLY EQUIVALENT TO association reference set',
-            display: 4
+            display: 4,
+            conceptId: '900000000000523009'
           },
           {
             id: 'REFERS_TO',
             text: 'REFERS TO concept association reference set',
-            display: 5
+            display: 5,
+            conceptId: '900000000000531004'
           },
           {
             id: 'REPLACED_BY',
             text: 'REPLACED BY association reference set',
-            display: 6
+            display: 6,
+            conceptId: '900000000000526001'
           },
           {
             id: 'SAME_AS',
             text: 'SAME AS association reference set',
-            display: 7
+            display: 7,
+            conceptId: '900000000000527005'
           },
           {
             id: 'SIMILAR_TO',
             text: 'SIMILAR TO association reference set',
-            display: 8
+            display: 8,
+            conceptId: '900000000000529008'
           },
           {
             id: 'WAS_A',
             text: 'WAS A association reference set',
-            display: 9
+            display: 9,
+            conceptId: '900000000000528000'
           }
         ];
     // var associationInactivationParent = '900000000000522004';
@@ -143,47 +152,56 @@ angular.module('singleConceptAuthoringApp')
           {
             id: 'ALTERNATIVE',
             text: 'ALTERNATIVE association reference set',
-            display: 1
+            display: 1,
+            conceptId: '900000000000530003'
           },
           {
             id: 'MOVED_FROM',
             text: 'MOVED FROM association reference set',
-            display: 2
+            display: 2,
+            conceptId: '900000000000525002'
           },
           {
             id: 'MOVED_TO',
             text: 'MOVED TO association reference set',
-            display: 3
+            display: 3,
+            conceptId: '900000000000524003'
           },
           {
             id: 'POSSIBLY_EQUIVALENT_TO',
             text: 'POSSIBLY EQUIVALENT TO association reference set',
-            display: 4
+            display: 4,
+            conceptId: '900000000000523009'
           },
           {
             id: 'REFERS_TO',
             text: 'REFERS TO concept association reference set',
-            display: 5
+            display: 5,
+            conceptId: '900000000000531004'
           },
           {
             id: 'REPLACED_BY',
             text: 'REPLACED BY association reference set',
-            display: 6
+            display: 6,
+            conceptId: '900000000000526001'
           },
           {
             id: 'SAME_AS',
             text: 'SAME AS association reference set',
-            display: 7
+            display: 7,
+            conceptId: '900000000000527005'
           },
           {
             id: 'SIMILAR_TO',
             text: 'SIMILAR TO association reference set',
-            display: 8
+            display: 8,
+            conceptId: '900000000000529008'
           },
           {
             id: 'WAS_A',
             text: 'WAS A association reference set',
-            display: 9
+            display: 9,
+            conceptId: '900000000000528000'
           }
         ];
     }
