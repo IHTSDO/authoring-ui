@@ -39,7 +39,6 @@ angular.module('singleConceptAuthoringApp')
           //
           scope.conceptUpdateFunction = function (project, task, concept) {
             var deferred = $q.defer();
-            window.alert('ohai');
             scope.affectedConcepts[concept.conceptId] = concept;
             scope.reloadTables();
             deferred.resolve(concept);
@@ -250,6 +249,21 @@ angular.module('singleConceptAuthoringApp')
             rel.active = 0;
             // console.debug('  Final state of concept', concept);
           }
+            
+          function inactivateAttributeRelationship(concept, rel) {
+
+              if(scope.assocs[0]){
+                  var newRel = angular.copy(rel);
+                  newRel.relationshipId = null;
+                  newRel.effectiveTime = null;
+                  newRel.released = false;
+                  newRel.target.conceptId = scope.assocs[0].conceptId;
+                  newRel.target.fsn = scope.assocs[0].fsn;
+                  concept.relationships.push(newRel);
+                  rel.active = 0;
+              }
+              
+          }
 
 
           function prepareAffectedRelationships() {
@@ -260,9 +274,12 @@ angular.module('singleConceptAuthoringApp')
                 var concept = scope.affectedConcepts[key];
                 angular.forEach(concept.relationships, function (rel) {
                   // console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
-                  if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1) {
+                  if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1 && metadataService.isIsaRelationship(rel.type.conceptId)) {
                     // console.debug('  prepping relationship', rel.relationshipId);
                     inactivateRelationship(concept, rel);
+                  }
+                  else{
+                    inactivateAttributeRelationship(concept, rel);
                   }
                 });
               }
@@ -275,6 +292,7 @@ angular.module('singleConceptAuthoringApp')
 
             scope.inactivationConcept = inactivationService.getConcept();
             scope.reasonId = inactivationService.getReasonId();
+            scope.assocs = inactivationService.getAssocs();
 
             // console.debug('  concept to inactivate', scope.inactivationConcept);
 
