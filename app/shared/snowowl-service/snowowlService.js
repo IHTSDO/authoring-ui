@@ -461,6 +461,27 @@ angular.module('singleConceptAuthoringApp')
         // TODO Handle error
       });
     }
+      
+    // Retrieve historical association references to a concept
+    // GET /{path}/concepts/{conceptId}/members
+    // https://dev-term.ihtsdotools.org:443/snowowl/snomed-ct/v2/MAIN/members?targetComponent=64766004&offset=0&limit=50
+    function getMembersByTargetComponent(conceptId, branch) {
+      var deferred = $q.defer();
+
+      return $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId).then(function (response) {
+
+        // if zero-count, return empty array (no blank array returned)
+        if (response.data.total === 0) {
+          deferred.resolve([]);
+        } else {
+
+          // otherwise, return the passed array
+          deferred.resolve(response.data.outboundRelationships);
+        }
+      }, function (error) {
+        // TODO Handle error
+      });
+    }
 
     // helper call to populate relationship display names
     function getRelationshipDisplayNames(relationship, branch) {
