@@ -460,27 +460,23 @@ angular.module('singleConceptAuthoringApp')
       }, function (error) {
         // TODO Handle error
       });
+      
     }
       
     // Retrieve historical association references to a concept
     // GET /{path}/concepts/{conceptId}/members
-    // https://dev-term.ihtsdotools.org:443/snowowl/snomed-ct/v2/MAIN/members?targetComponent=64766004&offset=0&limit=50
     function getMembersByTargetComponent(conceptId, branch) {
       var deferred = $q.defer();
-
-      return $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId).then(function (response) {
-
-        // if zero-count, return empty array (no blank array returned)
+        $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId + '&expand=referencedComponent(expand(fsn()))').then(function (response) {
         if (response.data.total === 0) {
           deferred.resolve([]);
         } else {
-
-          // otherwise, return the passed array
-          deferred.resolve(response.data.outboundRelationships);
+          deferred.resolve(response.data);
         }
       }, function (error) {
-        // TODO Handle error
+        deferred.reject(error);
       });
+      return deferred.promise;
     }
 
     // helper call to populate relationship display names
@@ -1183,6 +1179,7 @@ angular.module('singleConceptAuthoringApp')
       downloadClassification: downloadClassification,
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
+      getMembersByTargetComponent: getMembersByTargetComponent,
 
       // attribute retrieval
       getDomainAttributes: getDomainAttributes,
