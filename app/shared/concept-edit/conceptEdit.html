@@ -75,13 +75,15 @@
         <button type="button" style="vertical-align: bottom"
                 ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
                 ng-click="toggleConceptActive(concept)"
-                ng-disabled="isInactivation() || isStatic"
+                ng-disabled="isInactivation() || isStatic || isLockedModule(concept.moduleId)"
                 class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
 
-          <span ng-if="!isStatic && concept.released && !isInactivation()"> Activate/ inactivate concept </span>
+
+          <span ng-if="!isStatic && concept.released && !isInactivation() && !isLockedModule(concept.moduleId)"> Activate/ inactivate concept </span>
           <span ng-if="!isStatic && concept.released && isInactivation()">Inactivation in progress, cannot change active status</span>
           <span ng-if="!isStatic && !concept.released">Remove unreleased concept</span>
-          <span ng-if="isStatic "> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
+          <span ng-if="!isStatic && isLockedModule(concept.moduleId)">{{concept.active ? 'Active Concept' : 'InactiveConcept'}}</span>
+          <span ng-if="isStatic || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
 
         </button>
         <button type="button"
@@ -132,15 +134,16 @@
             style="width:30px;"
             ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
     </select>
--->
-        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'" ng-disabled="isStatic"
+-->   {{isLockedModule(concept.moduleId)}}
+        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'" ng-click="toggleConceptDefinitionStatus(isStatic)"
+                ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
-          <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
+          <div class="badge alert-warning ng-binding" >≡&nbsp; </div>
           <span>Fully Defined</span>
         </button>
-        <button ng-if="concept.definitionStatus == 'PRIMITIVE'" ng-disabled="isStatic"
+        <button ng-if="concept.definitionStatus == 'PRIMITIVE'" ng-click="toggleConceptDefinitionStatus(isStatic)" ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
-          <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
+          <div class="badge alert-warning ng-binding" >&nbsp; </div>
           <span>Primitive</span>
         </button>
 
@@ -175,9 +178,6 @@
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions()" ng-class="getComponentStyle(description.descriptionId, null, '')"
          class="">
-
-
-      <hr>
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
         <div class="col-md-12 no-padding color_{{relationship.groupId}} def_{{concept.definitionStatus}} "
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"

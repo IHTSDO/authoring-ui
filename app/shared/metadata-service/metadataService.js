@@ -116,7 +116,7 @@ angular.module('singleConceptAuthoringApp')
         id: '45991000052106',
         name: 'SNOMED CT Sweden NRC maintained module (core metadata concept)'
       }],
-      languages: ['en', 'sv'],
+      languages: ['sv', 'en'],
       dialects: {
         '900000000000509007': 'en-us',
         '46011000052107': 'sv'
@@ -149,10 +149,19 @@ angular.module('singleConceptAuthoringApp')
         extensionMetadata.modules[0].id : internationalMetadata.modules[0].id;
     }
 
+    // checks if specified module is part of extension
     function isExtensionModule(moduleId) {
       return extensionMetadata.modules.filter(function (module) {
           return module.id === moduleId;
         }).length > 0;
+    }
+
+    // checks if specified module is locked to editing
+    function isLockedModule(moduleId) {
+      if (!extensionMetadata) {
+        return false;
+      }
+      return !isExtensionModule(moduleId);
     }
 
 
@@ -259,7 +268,7 @@ angular.module('singleConceptAuthoringApp')
       getAssociationInactivationReasons: getAssociationInactivationReasons,
 
       // extension-dependent retrieval functions
-      isExtensionModule : isExtensionModule,
+      isLockedModule : isLockedModule,
       getCurrentModuleId : getCurrentModuleId,
       getModulesForModuleId : getModulesForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
