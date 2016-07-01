@@ -274,7 +274,7 @@ angular.module('singleConceptAuthoringApp')
       getBranch: getBranch,
       getBranchRoot: getBranchRoot,
 
-      // TODO Remove after dev
+      // TODO Re  move after dev
 
       getInternationalMetadata : function() {
         return internationalMetadata;
