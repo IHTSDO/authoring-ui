@@ -106,6 +106,7 @@ angular.module('singleConceptAuthoringApp')
         'fsn': null,
         'definitionStatus': 'PRIMITIVE',
         'active': true,
+        'released' : false,
         'moduleId': moduleId
       };
 
