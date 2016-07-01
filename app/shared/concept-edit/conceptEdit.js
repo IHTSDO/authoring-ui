@@ -1010,7 +1010,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.addDescription = function (afterIndex) {
 
 
-
           var description = componentAuthoringUtil.getNewDescription(null);
 
           console.debug('New description', description);
@@ -1256,10 +1255,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
-            return scope.dialects[dialectId] + ': Not Acceptable';
+            return 'Not Acceptable';
           }
 
-          return scope.dialects[dialectId] + ': ' + description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
+          return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
         // returns the name of a dialect given its refset id
@@ -2164,8 +2163,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
-          if (!description.effectiveTime && description.type === 'TEXT_DEFINITION') {
-            for (var dialectId in getDialectKeysForDescription(description)) {
+          if (!description.effectiveTime && description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
+            for (var dialectId in scope.getDialectKeysForDescription(description)) {
               description.acceptabilityMap[dialectId] = 'PREFERRED';
             }
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
@@ -2173,7 +2172,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if a new description (determined by blank term), ensure sensitivity
           // do not modify acceptability map
-          else if (description.type === 'SYNONYM' && !description.term) {
+          else if (!description.effectiveTime && description.type === 'SYNONYM' && !metadataService.isLockedModule(description.moduleId)) {
             description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
           }
 
@@ -2182,8 +2181,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else if (description.type === 'FSN') {
 
             // if a new FSN (determined by blank term)
-            if (!description.term) {
-              for (var dialectId in getDialectKeysForDescription(description)) {
+            if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
+              for (var dialectId in scope.getDialectKeysForDescription(description)) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               }
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
