@@ -6,7 +6,7 @@
         </div>
         <div class="lang-id pull-left">
             <label class="control-label">Lang.</label>
-            <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="isStatic"
+            <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="isStatic || isLockedModule(description.moduleId)"
               ng-model="description.lang" ng-change="updateDescription(description)"
               ng-options="language as language for language in getAvailableLanguages(description.moduleId)"></select>
         </div>
@@ -17,7 +17,7 @@
         <div class="module-id pull-left">
             <label class="control-label">Module Id</label>
             <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
-              ng-model="description.moduleId" ng-disabled="isStatic"
+              ng-model="description.moduleId" ng-disabled="isStatic || isLockedModule(description.moduleId)"
               ng-change="updateDescription(description)" ng-options="module.id as module.name for module in getAvailableModules(description.moduleId)"></select>
         </div>
     </div>
@@ -25,7 +25,7 @@
         <div class="module pull-left">
             <label class="control-label">Inactivation Reason
 
-                <button type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editDescriptionInactivationReason(description)" aria-disabled="false">
+                <button ng-if="!isStatic && !isLockedModule(description.moduleId)" type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editDescriptionInactivationReason(description)" aria-disabled="false">
                     <i class="md fa-sca fa-pencil"></i>
                     <span>Edit</span>
                 </button>
