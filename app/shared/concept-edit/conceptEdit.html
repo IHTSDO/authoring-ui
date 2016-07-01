@@ -176,6 +176,8 @@
     <div ng-repeat="description in getDescriptions()" ng-class="getComponentStyle(description.descriptionId, null, '')"
          class="">
 
+
+      <hr>
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
         <div class="col-md-12 no-padding color_{{relationship.groupId}} def_{{concept.definitionStatus}} "
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"
@@ -254,6 +256,8 @@
             </select>
           </div>
 
+
+
           <!-- Dialect / Acceptability -- never alterable for FSN -->
           <div>
             <button ng-repeat="dialect in getDialectKeysForDescription(description) | orderBy:'dialect':false:dialectComparator"
@@ -261,9 +265,10 @@
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
 
                     ng-click="toggleAcceptability(description, dialect)">
-              <div class="md col-md-12 no-padding text-center">{{dialects[dialect]}}: {{getAcceptabilityDisplayText(description,dialect)}}
+
+              <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description,dialect)}}
               </div>
-              <span>{{getAcceptabilityTooltipText(description.acceptabilityMap[dialect], dialect)}} {{getDialectName(dialect)}}</span>
+              <span>{{getAcceptabilityTooltipText(description, dialect)}} </span>
             </button>
 
 
