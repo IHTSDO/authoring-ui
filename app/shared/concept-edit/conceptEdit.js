@@ -722,8 +722,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         // get the available modules based on whether this is an extension element
-        scope.getAvailableModules = function(element) {
-          return metadataService.getModules(element.released);
+        scope.getAvailableModules = function(isReleased) {
+          return metadataService.getModules(isReleased);
         };
 
 ////////////////////////////////
@@ -756,6 +756,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           'PREFERRED': 'P',
           'ACCEPTABLE': 'A'
         };
+
+        scope.getExtensionMetadata = metadataService.getExtensionMetadata;
 
 // Reorder descriptions based on type and acceptability
 // Must preserve position of untyped/new descriptions

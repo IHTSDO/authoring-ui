@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
       languages: ['en'],
       dialects: {
         '900000000000509007': 'en-us', '900000000000508004': 'en-gb'
-      },
+      }
     };
 
     //
@@ -155,10 +155,14 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function getModules(isExtension) {
-      if (isExtension) {
+    // if released, return international edition, if not released
+    // TODO THis is NOT a long term solution!!!!
+    function getModules(isReleased) {
+      if (!isReleased) {
+
         return extensionMetadata.modules;
       } else {
+
         return internationalMetadata.modules;
       }
     }
@@ -179,7 +183,7 @@ angular.module('singleConceptAuthoringApp')
     // NOTE: Branch dialects override defaults
     function getAllDialects() {
       // get the test branch dialects
-      var dialects = internationalMetadata.dialects;
+      var dialects = angular.copy(internationalMetadata.dialects);
       for (var key in extensionMetadata.dialects) {
         dialects[key] = extensionMetadata.dialects[key];
       }
@@ -268,7 +272,21 @@ angular.module('singleConceptAuthoringApp')
 
       // branch/task fupath retrieval functions
       getBranch: getBranch,
-      getBranchRoot: getBranchRoot
+      getBranchRoot: getBranchRoot,
+
+      // TODO Remove after dev
+
+      getInternationalMetadata : function() {
+        return internationalMetadata;
+      },
+
+      getExtensionMetadata: function() {
+        console.debug('extension metadata', extensionMetadata);
+        return extensionMetadata;
+      },
+      getBranchMetadata : function() {
+        return branchMetadata;
+      }
 
 
     };
