@@ -156,6 +156,15 @@ angular.module('singleConceptAuthoringApp')
         }).length > 0;
     }
 
+    // checks if specified dialect belongs to extension
+    function isExtensionDialect(dialectId) {
+      if (!extensionMetadata) {
+        return false;
+      } else {
+        return extensionMetadata.dialects.hasOwnProperty(dialectId);
+      }
+    }
+
     // checks if specified module is locked to editing
     function isLockedModule(moduleId) {
       if (!extensionMetadata) {
@@ -200,7 +209,12 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getDialectsForModuleId(moduleId) {
-      if (isExtensionModule(moduleId)) {
+      // TODO Confirm this behavior (WRP-2808)
+      // Always return the extension dialects if available
+      // even for non-extension content, in order to allow
+      // authors to add acceptabilities for existing descriptions
+      // if (isExtensionModule(moduleId)) {
+      if (extensionMetadata) {
         return extensionMetadata.dialects;
       } else {
         return internationalMetadata.dialects;
@@ -267,8 +281,11 @@ angular.module('singleConceptAuthoringApp')
       getDescriptionInactivationReasons: getDescriptionInactivationReasons,
       getAssociationInactivationReasons: getAssociationInactivationReasons,
 
-      // extension-dependent retrieval functions
+      // boolean checks exposed for use
       isLockedModule : isLockedModule,
+      isExtensionDialect : isExtensionDialect,
+
+      // extension module-dependent retrieval functions
       getCurrentModuleId : getCurrentModuleId,
       getModulesForModuleId : getModulesForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
