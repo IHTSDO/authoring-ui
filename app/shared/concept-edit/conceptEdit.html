@@ -273,7 +273,7 @@
                 ng-repeat="dialect in getDialectKeysForDescription(description) | orderBy:'dialect':false:dialectComparator"
                 type="button"
                 class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                ng-disabled="isStatic || isExtensionDialect(dialect))"
+                ng-disabled="description.type === 'FSN' || isStatic || (isLockedModule(description.moduleId) && !isExtensionDialect(dialect))"
                 ng-click="toggleAcceptability(description, dialect)">
 
                 <div class="md col-md-12 no-padding text-center">

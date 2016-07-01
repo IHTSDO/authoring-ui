@@ -1283,15 +1283,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
 
-          //If the desciption is an FSN then set to PREFERRED and
-          // continue.Simplest place in execution to catch the creation of
-          // new FSN's and update acceptability
-          if (description.type === 'FSN') {
-            if (acceptability !== 'PREFERRED') {
-              description.acceptabilityMap[dialectId] = 'PREFERRED';
-            }
-          }
-
           // return the specified abbreviation, or 'N' for Not Acceptable if no
           // abbreviation found
           var displayText = scope.acceptabilityAbbrs[acceptability];
@@ -2174,8 +2165,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
           if (!description.effectiveTime && description.type === 'TEXT_DEFINITION') {
-            description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-            description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+            for (var dialectId in getDialectKeysForDescription(description)) {
+              description.acceptabilityMap[dialectId] = 'PREFERRED';
+            }
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           }
 
@@ -2191,8 +2183,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // if a new FSN (determined by blank term)
             if (!description.term) {
-              description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-              description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+              for (var dialectId in getDialectKeysForDescription(description)) {
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
+              }
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }
             componentAuthoringUtil.ptFromFsnAutomation(scope.concept, description);
