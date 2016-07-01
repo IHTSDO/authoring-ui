@@ -17,6 +17,9 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getNewDescription(moduleId) {
+      if (!moduleId) {
+        moduleId = metadataService.getCurrentModuleId();
+      }
       return {
         'active': true,
         'moduleId': moduleId,
@@ -59,6 +62,9 @@ angular.module('singleConceptAuthoringApp')
 
     // creates a blank relationship linked to specified source concept
     function getNewIsaRelationship(moduleId) {
+      if (!moduleId) {
+        moduleId = metadataService.getCurrentModuleId();
+      }
       return {
         'active': true,
         'characteristicType': 'STATED_RELATIONSHIP',
@@ -78,6 +84,9 @@ angular.module('singleConceptAuthoringApp')
 
     // creates a blank relationship linked to specified source concept
     function getNewAttributeRelationship(moduleId) {
+      if (!moduleId) {
+        moduleId = metadataService.getCurrentModuleId();
+      }
       return {
         'active': true,
         'characteristicType': 'STATED_RELATIONSHIP',

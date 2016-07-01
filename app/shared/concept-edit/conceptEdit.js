@@ -181,6 +181,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
+        //
+        // Extension handling
+        // TODO Move relevant content here
+        //
+        scope.isLockedModule = metadataService.isLockedModule;
+
+
         /////////////////////////////////////////////////////////////////
         // Autosaving and Modified Concept Storage Initialization
         /////////////////////////////////////////////////////////////////
@@ -255,10 +262,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // console.debug(scope.concept, scope.branch, scope.parentBranch,
         // scope.static);
-
-        // retrieve SNOMEDCT international metadata
-        scope.intlModules = snowowlService.getModules();
-        scope.intlLanguages = snowowlService.getLanguages();
 
         // allowable attributes for relationships
         scope.allowedAttributes = [];
@@ -1005,6 +1008,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // arg: afterIndex, integer, the index at which to add description
 // after
         scope.addDescription = function (afterIndex) {
+
+
 
           var description = componentAuthoringUtil.getNewDescription(null);
 
