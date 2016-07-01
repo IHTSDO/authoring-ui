@@ -28,7 +28,7 @@
     }
       
     .table-filter{
-      padding:25px;
+      padding:25px !important;
     }
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
@@ -61,14 +61,14 @@
           <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
                                                                    aria-controls="home" role="tab"
                                                                    data-toggle="tab"> Children
-            Affected ({{isaRelsTableParams.total()}})
+            Effected ({{isaRelsTableParams.total()}})
           <li role="presentation" class="classification"><a style="margin: 0px" ng-click="actionTab=2"
                                                             aria-controls="home" role="tab"
-                                                            data-toggle="tab"> Attributes Affected
+                                                            data-toggle="tab"> Attributes Effected
             ({{attrRelsTableParams.total()}})
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Historical Associations Affected
+                                                       data-toggle="tab">Historical Associations Effected
             ({{assocsTableParams.total()}})</a>
           </li>
           <li>
@@ -98,14 +98,14 @@
                 <span>Proposed Value</span>
               </div>
             </td>
-            <td data-header="'editheader.html'">
+            <td>
               <button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
                 <span class="md md-edit"></span>
               </button>
             </td>
-            <td data-header="'editheader.html'">
+            <td>
               <button type="button" class="btn btn-round btn-default red" ng-click="remove(rel)">
                     <span class="md fa-sca fa-minus"></span>
               </button>
@@ -132,14 +132,14 @@
                 <span>Proposed Value</span>
               </div>
             </td>
-            <td data-header="'editheader.html'">
+            <td>
               <button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
                 <span class="md md-edit"></span>
               </button>
             </td>
-            <td data-header="'editheader.html'">
+            <td>
               <button type="button" class="btn btn-round btn-default red" ng-click="remove(rel)">
                     <span class="md fa-sca fa-minus"></span>
               </button>
@@ -149,16 +149,43 @@
           </br></br></br>
       </div>
       <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
-        <div class="alert alert-warning">Not implemented</div>
+        <table
+          ng-table="assocsTableParams" template-pagination="utilities/data-table-pager.html"
+          class="table table-full table-full-small">
+          <tr ng-repeat="rel in $data">
+            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.referencedComponent.fsn.term}}
+            </td>
+            <td data-title="'Reason'" sortable="'typeFsn'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.referencedComponent.inactivationIndicator}}
+                <span>Reason</span>
+              </div>
+            </td>
+            <td data-title="'Association'" sortable="'typeFsn'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.refsetName}}
+                <span>Association</span>
+              </div>
+            </td>
+            <td data-title="'Value (Proposed)'" sortable="'target'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{histAssocTarget.fsn}}
+                <span>Proposed Value</span>
+              </div>
+            </td>
+            <td>
+              <button type="button" class="btn btn-round btn-default blue"
+                      ng-click="editConcept(rel.referencedComponent.id)"
+                      title="View/Edit Concept">
+                <span class="md md-edit"></span>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn btn-round btn-default red" ng-click="remove(rel)">
+                    <span class="md fa-sca fa-minus"></span>
+              </button>
+            </td>
+          </tr>
+        </table>
+          </br></br></br>
       </div>
-      <div ng-if="editedConcept" class="row no-padding no-gutter">
-        <div concept-edit concept="editedConcept" branch="branch" static="false" autosave="false"
-             component-styles="styles[editedConcept.conceptId]"
-             save-function="conceptUpdateFunction(project, task, concept)"></div>
-      </div>
-      <div class="table-responsive white" style="margin-right:0px;" ng-show="actionTab==3">
-      </div>
-    </div>
 
     <!-- Taxonomy, models, and concepts -->
     <div class="row m-t-15 no-gutter" ng-show="editedConcept">
