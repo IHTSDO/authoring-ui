@@ -722,8 +722,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         // get the available modules based on whether this is an extension element
-        scope.getAvailableModules = function (isReleased) {
-          return metadataService.getModules(isReleased);
+        scope.getAvailableModules = function (moduleId) {
+          return metadataService.getModulesForModuleId(moduleId);
         };
 
 ////////////////////////////////
