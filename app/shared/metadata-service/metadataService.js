@@ -109,14 +109,21 @@ angular.module('singleConceptAuthoringApp')
 
     //
     // Extension metadata
-    //
+    // TODO Chris Swires: this is the format expected by setting extensionMetadata
+    // in home.js, project.js, and review-tasks.js
     // TODO Hard-coded Swedish language module for dev/demo purposes
     var extensionMetadata = {
+
+      // modules as id/name object array
       modules: [{
         id: '45991000052106',
         name: 'SNOMED CT Sweden NRC maintained module (core metadata concept)'
       }],
+
+      // languages as string array
       languages: ['sv', 'en'],
+
+      // dialects as id->name map
       dialects: {
         '900000000000509007': 'en-us',
         '46011000052107': 'sv'
@@ -126,17 +133,27 @@ angular.module('singleConceptAuthoringApp')
 
     //
     // Branch/Task-level metadata
-    //
+    // Task level information
+    // and should be automatically set by edit.js
+    // and similar views
     var branchMetadata = {};
 
 
     //
     // Metadata setters
     //
+
+    // Extension metadata
+    // TODO Chris Swires, this is the setter for use
+    // by home.js, review-tasks.js, and project.js
     function setExtensionMetadata(metadata) {
       extensionMetadata = metadata;
     }
 
+    // Branch metadata
+    // TODO Chris Swires, this is the setter for use
+    // by views like edit.js, and should already be
+    // fully functional. Shouldn't need to worry about this.
     function setBranchMetadata(branchMetadataObj) {
       branchMetadata = branchMetadataObj;
     }
@@ -144,6 +161,10 @@ angular.module('singleConceptAuthoringApp')
     //
     // Module retrieval functions
     //
+
+    // retrieves the first extension module id if in extension
+    // returns the first international module id if not
+    // used by componentAuthoringUtil to set module on new components
     function getCurrentModuleId() {
       return extensionMetadata ?
         extensionMetadata.modules[0].id : internationalMetadata.modules[0].id;
@@ -300,7 +321,7 @@ angular.module('singleConceptAuthoringApp')
       getBranch: getBranch,
       getBranchRoot: getBranchRoot,
 
-      // TODO Re  move after dev
+      // TODO Functions exposed for dev work, remove when complete
 
       getInternationalMetadata : function() {
         return internationalMetadata;
