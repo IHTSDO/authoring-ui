@@ -642,34 +642,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // TODO As of 6/28 4:50PST This is disabled, moved to inactivationService
                 /*if (!inactivationService.isInactivation()) {
 
-                  snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
+                 snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
-                    scope.concept.active = false;
+                 scope.concept.active = false;
 
-                    // if reason is selected, deactivate all descriptions and
-                    // relationships
-                    if (results.reason) {
+                 // if reason is selected, deactivate all descriptions and
+                 // relationships
+                 if (results.reason) {
 
-                      inactivationService.setInactivationReasons()
+                 inactivationService.setInactivationReasons()
 
-                      // straightforward inactivation of relationships
-                      // NOTE: Descriptions stay active so a FSN can still be
-                      // found
-                      angular.forEach(scope.concept.relationships, function (relationship) {
-                        relationship.active = false;
-                      });
+                 // straightforward inactivation of relationships
+                 // NOTE: Descriptions stay active so a FSN can still be
+                 // found
+                 angular.forEach(scope.concept.relationships, function (relationship) {
+                 relationship.active = false;
+                 });
 
-                      // save concept but bypass validation checks
-                      saveHelper().then(function () {
-                        notificationService.sendMessage('Concept inactivated');
-                      }, function (error) {
-                        notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                      });
-                    }
-                  }, function () {
-                    notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
-                  });
-                }*/
+                 // save concept but bypass validation checks
+                 saveHelper().then(function () {
+                 notificationService.sendMessage('Concept inactivated');
+                 }, function (error) {
+                 notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                 });
+                 }
+                 }, function () {
+                 notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+                 });
+                 }*/
 
 
               });
@@ -716,13 +716,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
 
         // get the avialable languages for this module id
-        scope.getAvailableLanguages = function(moduleId) {
+        scope.getAvailableLanguages = function (moduleId) {
 
           return metadataService.getLanguagesForModuleId(moduleId);
         };
 
         // get the available modules based on whether this is an extension element
-        scope.getAvailableModules = function(isReleased) {
+        scope.getAvailableModules = function (isReleased) {
           return metadataService.getModules(isReleased);
         };
 
@@ -741,14 +741,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // define the available dialects
         scope.dialects = metadataService.getAllDialects();
 
-        scope.dialectComparator = function(a, b) {
-          return a < b;
-        };
+        // always return en-us dialect first
+        scope.dialectComparator = function (a, b) {
+          if (a === '900000000000509007') {
+            return -1;
+          } else if (b === '900000000000509007') {
+            return 1;
+          } else {
+            return a < b;
+          }
+          ;
+        }
 
         // function to retrieve branch dialect ids as array instead of map
         // NOTE: Required for orderBy in ng-repeat
-        scope.getDialectKeysForDescription = function(description) {
-          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId));
+        scope.getDialectKeysForDescription = function (description) {
+          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId)).sort(scope.dialectComparator);
         };
 
         // define acceptability types
@@ -821,57 +829,46 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
 
-            if (a.acceptabilityMap && b.acceptabilityMap) {
+            // sort by values for ordered keys in dialects
+            var acceptabilityComparator = function (descA, descB, dialect) {
 
-              // sort on en-us value first
-              var aUS = a.acceptabilityMap[scope.dialects['en-us']];
-              var bUS = b.acceptabilityMap[scope.dialects['en-us']];
-              // console.debug('sorting on en-us', aUS, bUS);
-              if (aUS !== bUS) {
+              var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
+              var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
 
-                // specified value first
-                if (aUS && !bUS) {
+              if (aVal != bVal) {
+                if (aVal && !bVal) {
                   return -1;
                 }
-                if (bUS && !aUS) {
+                if (!aVal && bVal) {
                   return 1;
                 }
-
                 // if both defined, one must be PREFERRED
-                if (aUS === 'PREFERRED') {
+                if (aVal === 'PREFERRED') {
                   return -1;
                 }
-                if (bUS === 'PREFERRED') {
+                if (bVal === 'PREFERRED') {
                   return 1;
                 }
               }
+              return 0;
+            };
 
-              // sort on en-us value first
-              var aGB = a.acceptabilityMap[scope.dialects['en-gb']];
-              var bGB = b.acceptabilityMap[scope.dialects['en-gb']];
-              // console.debug('sorting on en-gb', aGB, bGB);
-              if (aGB !== bGB) {
-                // console.debug('not equal');
+            // sort by en-us value first
+            var comp = acceptabilityComparator(a, b, '900000000000509007');
+            if (comp !== 0) {
+              return comp;
+            }
 
-                // specified value first
-                if (aGB && !bGB) {
-                  return -1;
-                }
-                if (bGB && !aGB) {
-                  return 1;
-                }
-
-                // if both defined, one must be PREFERRED
-                if (aGB === 'PREFERRED') {
-                  // console.debug('a preferred');
-                  return -1;
-                }
-                if (bGB === 'PREFERRED') {
-                  // console.debug('b preferred');
-                  return 1;
+            // sort by non en-us values second
+            for (var dialect in Object.keys(scope.dialects)) {
+              if (dialect !== '900000000000509007') {
+                comp = acceptabilityComparator(a, b, dialect);
+                if (comp !== 0) {
+                  return comp;
                 }
               }
             }
+
             // all else being equal, sort on term
             // console.debug('sorting on term', a.term, b.term);
             return a.term < b.term ? -1 : 1;
@@ -1247,28 +1244,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
-        scope.getAcceptabilityTooltipText = function (description, dialectName) {
-          if (!description || !dialectName) {
+        scope.getAcceptabilityTooltipText = function (description, dialectId) {
+          if (!description || !dialectId) {
             return null;
           }
-          var dialectId = scope.dialects[dialectName];
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
-            return 'Not Acceptable';
+            return scope.dialects[dialectId] + ': Not Acceptable';
           }
 
-          return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
+          return scope.dialects[dialectId] + ': ' + description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
         // returns the name of a dialect given its refset id
-        scope.getDialectName = function(id) {
-          for (var key in scope.dialects) {
-            if (scope.dialects[key] === id) {
-              return key.replace('en-', '');
-            }
-          }
-        }
+        function getShortDialectName(id) {
+          return scope.dialects[id].replace('en-', '');
+        };
 
         // returns the display abbreviation for a specified dialect
         scope.getAcceptabilityDisplayText = function (description, dialectId) {
@@ -1276,9 +1268,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return null;
           }
 
+          var name = getShortDialectName(dialectId);
+
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
-            return 'N';
+            return name + ':N';
           }
 
           // retrieve the value (or null if does not exist) and return
@@ -1296,7 +1290,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // return the specified abbreviation, or 'N' for Not Acceptable if no
           // abbreviation found
           var displayText = scope.acceptabilityAbbrs[acceptability];
-          return displayText ? displayText : 'N';
+          return displayText ? name + ':' + displayText : name + ':N';
 
         };
 

@@ -116,10 +116,11 @@ angular.module('singleConceptAuthoringApp')
         id: '45991000052106',
         name: 'SNOMED CT Sweden NRC maintained module (core metadata concept)'
       }],
-      languages: ['sv', 'en'],
+      languages: ['en', 'sv'],
       dialects: {
-        '46011000052107': 'sv',
-        '900000000000509007': 'en-us'
+        '900000000000509007': 'en-us',
+        '46011000052107': 'sv'
+
       }
     };
 
