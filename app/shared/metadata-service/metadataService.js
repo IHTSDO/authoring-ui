@@ -157,9 +157,8 @@ angular.module('singleConceptAuthoringApp')
 
 
     // if released, return international edition, if not released
-    // TODO THis is NOT a long term solution!!!!
-    function getModules(isReleased) {
-      if (!isReleased) {
+    function getModulesForModuleId(moduleId) {
+      if (isExtensionModule(moduleId)) {
 
         return extensionMetadata.modules;
       } else {
@@ -262,7 +261,7 @@ angular.module('singleConceptAuthoringApp')
       // extension-dependent retrieval functions
       isExtensionModule : isExtensionModule,
       getCurrentModuleId : getCurrentModuleId,
-      getModules : getModules,
+      getModulesForModuleId : getModulesForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
       getAllDialects: getAllDialects,
