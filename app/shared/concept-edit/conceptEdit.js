@@ -1032,6 +1032,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if inactive, simply set active
           if (!description.active) {
             description.active = true;
+            description.effectiveTime = null;
             autoSave();
           }
 
