@@ -253,7 +253,7 @@
             <!-- en-us acceptability -->
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
+                    ng-disabled="isStatic || description.effectiveTime"
                     ng-click="toggleAcceptability(description, 'en-us')">
               <div class="md col-md-12 no-padding text-center">us: {{getAcceptabilityDisplayText(description, 'en-us')}}
               </div>
@@ -263,7 +263,7 @@
             <!-- en-gb acceptability -->
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic || (description.type === 'FSN' && description.effectiveTime)"
+                    ng-disabled="isStatic || description.effectiveTime"
                     ng-click="toggleAcceptability(description, 'en-gb')">
               <div class="md col-md-12 no-padding text-center">gb: {{getAcceptabilityDisplayText(description, 'en-gb')}}
               </div>
