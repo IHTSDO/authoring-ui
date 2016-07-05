@@ -172,10 +172,10 @@ angular.module('singleConceptAuthoringApp')
 
 
                 extensionMetadata = {
-                    modules: {
-                        id: metadata.defaultModuleId,
-                        name: metadata.defaultModuleName
-                    },
+                    modules: [
+                        {id: metadata.defaultModuleId,
+                        name: metadata.defaultModuleName}
+                    ],
                     languages: languages,
                     dialects: dialects
                 }
