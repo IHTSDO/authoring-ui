@@ -456,7 +456,7 @@
                 <span>Drag Relationship Group</span>
               </button>
 
-              <button ng-if="!isStatic"
+              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId)"
                       class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span>
               </button>
