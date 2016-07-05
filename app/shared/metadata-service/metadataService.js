@@ -112,7 +112,9 @@ angular.module('singleConceptAuthoringApp')
     // TODO Chris Swires: this is the format expected by setting extensionMetadata
     // in home.js, project.js, and review-tasks.js
     // TODO Hard-coded Swedish language module for dev/demo purposes
-    var extensionMetadata = {
+    var extensionMetadata = null;
+
+    /**
 
       // modules as id/name object array
       modules: [{
@@ -130,6 +132,7 @@ angular.module('singleConceptAuthoringApp')
 
       }
     };
+     */
 
     //
     // Branch/Task-level metadata
@@ -160,12 +163,12 @@ angular.module('singleConceptAuthoringApp')
         // extract the default language and dialect
         var language, dialect = null;
         for (var key in metadata) {
-          console.debug('Checking property', key, metadata[key])
+         // console.debug('Checking property', key, metadata[key])
           if (metadata.hasOwnProperty(key)) {
             var match = key.match(/requiredLanguageRefset\.(.+)/);
-            console.debug('  Checking match', match);
+            //console.debug('  Checking match', match);
             if (match && match[1]) {
-              console.debug('    Found match', match[1]);
+             // console.debug('    Found match', match[1]);
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
             }
@@ -188,6 +191,7 @@ angular.module('singleConceptAuthoringApp')
           dialects: dialects
         }
         console.debug('Set extension metadata', extensionMetadata, metadata);
+        $rootScope.$broadcast('extensionMetadataChange');
       }
     }
 
@@ -357,7 +361,7 @@ angular.module('singleConceptAuthoringApp')
       // project cache getters/setters
       setProjects: setProjects,
       getProjects: getProjects,
-      getProjectForKey : getProjectForKey,
+      getProjectForKey: getProjectForKey,
 
       // inactivation reason retrieval
       getConceptInactivationReasons: getConceptInactivationReasons,
@@ -374,6 +378,9 @@ angular.module('singleConceptAuthoringApp')
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
       getAllDialects: getAllDialects,
+      isExtensionSet : function() {
+        return extensionMetadata != null;
+      },
 
       // module and branch metadata setters
       setExtensionMetadata: setExtensionMetadata,
