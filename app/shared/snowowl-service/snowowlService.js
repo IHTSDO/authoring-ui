@@ -895,6 +895,14 @@ angular.module('singleConceptAuthoringApp')
         return null;
       });
     }
+      
+    function getAttributeValuesByConcept(branch, attributeId, searchStr) {
+      return $http.get(apiEndpoint + '/mrcm/' + branch + '/attribute-values/' + attributeId + '?' + 'termPrefix=' + encodeURIComponent(searchStr) + '&expand=fsn()&offset=0&limit=50').then(function (response) {
+        return response.data.items ? response.data.items : [];
+      }, function (error) {
+        return null;
+      });
+    }
 
     //////////////////////////////////////////////////////////
     // Merge Review functions
@@ -1155,6 +1163,7 @@ angular.module('singleConceptAuthoringApp')
       // attribute retrieval
       getDomainAttributes: getDomainAttributes,
       getAttributeValues: getAttributeValues,
+      getAttributeValuesByConcept: getAttributeValuesByConcept,
 
       // branch functionality
       getBranch: getBranch,
