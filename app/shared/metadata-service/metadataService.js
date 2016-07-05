@@ -227,7 +227,7 @@ angular.module('singleConceptAuthoringApp')
       if (!extensionMetadata || !extensionMetadata.dialects) {
         return false;
       } else {
-        return extensionMetadata.dialects.hasOwnProperty(dialectId);
+        return dialectId !== '900000000000509007' && extensionMetadata.dialects.hasOwnProperty(dialectId);
       }
     }
 

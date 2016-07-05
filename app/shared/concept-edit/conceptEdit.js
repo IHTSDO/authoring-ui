@@ -720,11 +720,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Component more functions
         //
 
-        console.debug('Concept module', scope.concept.moduleId);
-        console.debug('Concept modules',metadataService.getModulesForModuleId(scope.concept.moduleId));
-        console.debug('Concept languages', metadataService.getLanguagesForModuleId(scope.concept.moduleId));
-        console.debug('Concept dialects', metadataService.getDialectsForModuleId(scope.concept.moduleId));
-
         // get the avialable languages for this module id
         scope.getAvailableLanguages = function (moduleId) {
 
