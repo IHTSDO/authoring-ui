@@ -1309,13 +1309,53 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('feedback');
     };
 
-    function loadTaskAndProject() {
+    function loadProject() {
+
+      var deferred = $q.defer();
 
       // get the project
-      scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
-        $scope.project = response;
-        metadataService.setExtensionMetadata(response.metadata);
+      scaService.getProjectForKey($routeParams.projectKey).then(function (project) {
+        console.debug('Retrieved project', project);
+        $scope.project = project;
+
+        // set the metadata from project if task not set
+        if (!$scope.taskKey) {
+          metadataService.setBranchMetadata($scope.project);
+        }
+
+        // TODO Temporary for testing while UAT-MS is out of order, remove once better
+        metadataService.setExtensionMetadata({
+          'defaultModuleId': '554471000005108',
+          'defaultModuleName': 'Danish module (core metadata concept)',
+          'defaultNamespace': '1000005',
+          'requiredLanguageRefset.da': '554461000005103'
+        });
+
+        // get the name of the extension metadata (if present)
+        if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
+          console.debug('Setting metadata', $scope.project.metadata);
+          snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
+            $scope.project.metadata.defaultModuleName = extConcept.fsn;
+            metadataService.setExtensionMetadata($scope.project.metadata);
+            deferred.resolve();
+          }, function(error) {
+            deferred.reject();
+          })
+        } else {
+          deferred.resolve();
+        }
+      }, function(error) {
+        deferred.reject();
       });
+
+      return deferred.promise;
+
+
+    }
+
+    function loadTask() {
+
+      var deferred = $q.defer();
 
       // get the task if appropriate
       if ($routeParams.taskKey) {
@@ -1334,41 +1374,52 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           setBranchFunctionality($scope.task.branchState);
         });
+
+        // populate the container objects
+        $scope.getLatestClassification();
+        $scope.getLatestValidation();
+        $scope.getLatestConflictsReport();
+
+        deferred.resolve();
+      } else {
+        deferred.reject();
       }
 
-      // populate the container objects
-      $scope.getLatestClassification();
-      $scope.getLatestValidation();
-      $scope.getLatestConflictsReport();
+
     }
 
     $scope.$on('reloadTask', function (event, data) {
-      loadTaskAndProject();
+      loadTask();
     });
 
-    //////////////////////////////////////////
-    // Initialization
-    //////////////////////////////////////////
+//////////////////////////////////////////
+// Initialization
+//////////////////////////////////////////
 
 
     function initialize() {
 
-      // initialize the branches
-      $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + '/' + $scope.taskKey;
-      $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
 
-      if ($routeParams.taskKey) {
-        $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-        $scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-      } else {
-        $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-        $scope.sourceBranch = metadataService.getBranchRoot() + '/';
-      }
 
-      loadTaskAndProject();
+      // initialize the task and project
+      $q.all(loadTask(), loadProject()).then(function () {
 
-      // set the initial view
-      $scope.setInitialView();
+        // initialize the branches
+        $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + '/' + $scope.taskKey;
+        $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
+
+        if ($routeParams.taskKey) {
+          $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+        } else {
+          $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+          $scope.sourceBranch = metadataService.getBranchRoot() + '/';
+        }
+
+        // set the initial view
+        $scope.setInitialView();
+      })
+
 
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
@@ -1376,11 +1427,11 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     }
 
-    //
-    // Pre-initialization: Set branch information
-    //
+//
+// Pre-initialization: Set branch information
+//
 
-    // Get the branch and save in metadata service
+// Get the branch and save in metadata service
     if ($scope.taskKey) {
       scaService.getTaskForProject($scope.projectKey, $scope.taskKey).then(function (task) {
         metadataService.setBranchMetadata(task);
@@ -1394,4 +1445,5 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
 
-  });
+  })
+;
