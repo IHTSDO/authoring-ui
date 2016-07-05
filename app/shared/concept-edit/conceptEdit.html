@@ -75,11 +75,11 @@
         <button type="button" style="vertical-align: bottom"
                 ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
                 ng-click="toggleConceptActive(concept)"
-                ng-disabled="isInactivation()"
+                ng-disabled="isInactivation()  || isLockedModule(description.moduleId)"
                 class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
           <span ng-if="!isStatic  && !isInactivation()"> Activate/ inactivate concept </span>
           <span ng-if="!isStatic && isInactivation()">Inactivation in progress, cannot change active status</span>
-          <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
+          <span ng-if="isStatic || isLockedModule(description.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
         </button>
         <button type="button"
                 style="vertical-align: bottom"
@@ -130,12 +130,12 @@
             ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
     </select>
 -->
-        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'" ng-disabled="isStatic"
+        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'" ng-disabled="isStatic || isLockedModule(description.moduleId)"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
           <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
           <span>Fully Defined</span>
         </button>
-        <button ng-if="concept.definitionStatus == 'PRIMITIVE'" ng-disabled="isStatic"
+        <button ng-if="concept.definitionStatus == 'PRIMITIVE'" ng-disabled="isStatic || isLockedModule(description.moduleId)"
                 class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
           <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
           <span>Primitive</span>
@@ -263,28 +263,7 @@
               <span>{{getAcceptabilityTooltipText(description, dialectId)}} US</span>
             </button>
 
-           <!--
-            &lt;!&ndash; en-us acceptability &ndash;&gt;
-            <button type="button"
-                    class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic"
-                    ng-click="toggleAcceptability(description, 'en-us')">
-              <div class="md col-md-12 no-padding text-center">us: {{getAcceptabilityDisplayText(description, 'en-us')}}
-              </div>
-              <span>{{getAcceptabilityTooltipText(description, 'en-us')}} US</span>
-            </button>
 
-            &lt;!&ndash; en-gb acceptability &ndash;&gt;
-            <button type="button"
-                    class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic"
-                    ng-click="toggleAcceptability(description, 'en-gb')">
-              <div class="md col-md-12 no-padding text-center">gb: {{getAcceptabilityDisplayText(description, 'en-gb')}}
-              </div>
-              <span>{{getAcceptabilityTooltipText(description, 'en-gb')}} GB</span>
-            </button>
-
--->
           </div>
 
 
@@ -362,7 +341,7 @@
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip"
                         style="vertical-align: bottom"
-                        ng-disabled="isStatic"
+                        ng-disabled="isStatic  || isLockedModule(relationship.moduleId)"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
                   <span>Active/Inactive</span>
@@ -370,7 +349,7 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                                    <textarea ng-disabled="isStatic"
+                                    <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId)"
                                               ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
                                               ng-change="updateRelationship(relationship, true)"
                                               class="form-control rg msd-elastic: \n;"
@@ -388,7 +367,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
                                     <textarea type="text" ng-model="relationship.type.fsn"
-                                              ng-disabled="relationship.effectiveTime || isStatic"
+                                              ng-disabled="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId)"
                                               class="resizable-text form-control msd-elastic: \n;"
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
@@ -416,7 +395,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
                   <textarea type="text" ng-model="relationship.target.fsn"
-                            ng-disabled="relationship.effectiveTime || isStatic"
+                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId)"
                             class="resizable-text relationship msd-elastic: \n;"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
@@ -443,7 +422,7 @@
                 </div>
 
 
-                <div ng-if="!isStatic">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId)">
 
                   <button type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
