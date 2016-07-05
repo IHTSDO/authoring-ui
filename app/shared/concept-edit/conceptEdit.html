@@ -195,7 +195,7 @@
 
           <!-- Active/Inactive -->
           <button type="button" style="vertical-align: bottom"
-                  ng-disabled="isStatic" ng-click="toggleDescriptionActive(description)"
+                  ng-disabled="isStatic || isLockedModule(description.moduleId)" ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
                   class="tooltips-bottom small-size-tooltip">
             <span>Active/Inactive</span>
@@ -204,7 +204,7 @@
           <!-- Case Significance -->
           <button type="button"
                   class=" blue accent-2 button-width custom-button text-center tooltips-bottom tooltips-light xxlarge-size-tooltip normal-case"
-                  ng-disabled="isStatic" ng-click="toggleCaseSignificance(description)">
+                  ng-disabled="isStatic || isLockedModule(description.moduleId)" ng-click="toggleCaseSignificance(description)">
 
             <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
 
@@ -219,7 +219,7 @@
 
                         <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                                   ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic || description.effectiveTime" maxlength="255"
+                                  ng-disabled="isStatic || description.effectiveTime || isLockedModule(description.moduleId)" maxlength="255"
                                   ng-model="description.term"
                                   class="color_{{relationship.groupId}} form-control msd-elastic: \n;" type="text"
                                   placeholder="Description">
@@ -227,13 +227,14 @@
 
                         <textarea autofocus ng-if="description.type === 'SYNONYM'"
                                   ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic || description.effectiveTime" maxlength="255"
+                                  ng-disabled="isStatic || description.effectiveTime || isLockedModule(description.moduleId)" maxlength="255"
                                   ng-model="description.term"
                                   class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
                                   placeholder="Description">
                         </textarea>
                         <textarea ng-if="description.type === 'TEXT_DEFINITION'"
                                   ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
+                                  ng-disabled="isStatic || description.effectiveTime || isLockedModule(description.moduleId)" maxlength="255"
                                   ng-model="description.term" type="text" placeholder="Description"
                                   class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
                         </textarea>
@@ -241,7 +242,7 @@
 
           <!-- TypeId -->
           <div class="pull-left typeid">
-            <select ng-disabled="description.effectiveTime || isStatic"
+            <select ng-disabled="description.effectiveTime || isStatic || isLockedModule(description.moduleId)"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
                     ng-model="description.type" ng-change="updateDescription(description)" name="select-type"
                     id="select-type-choice" class="form-control color_{{relationship.groupId}}" ui-on-drop="">
@@ -255,7 +256,7 @@
             <button ng-repeat="dialectId in getDialectIdsForDescription(description)"
                     type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic"
+                    ng-disabled="isStatic || description.type === 'FSN' || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId))"
                     ng-click="toggleAcceptability(description, dialectId)">
               <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
               </div>
