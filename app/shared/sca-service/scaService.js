@@ -1027,7 +1027,7 @@ angular.module('singleConceptAuthoringApp')
                       if (newNotification.task) {
                         url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/validate';
                       } else {
-                        url = '#/projects/project/' + newNotification.project;
+                        url = '#/project/' + newNotification.project;
                       }
                     }
                     // broadcast validation complete to taskDetail
