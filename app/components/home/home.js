@@ -97,6 +97,42 @@ angular.module('singleConceptAuthoringApp.home', [
       });
     };
 
+    function getProjectByKey(projectKey) {
+     for (var i =0; i < $scope.projects.length; i++) {
+       if ($scope.projects[i].key === projectKey) {
+         return $scope.projects[i];
+       }
+     }
+    };
+
+    $scope.goToTask = function(task) {
+      // get the project from the projects list
+      var project = getProjectByKey(task.projectKey);
+
+      // check for project lock before continuing
+      snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {
+        if (!response.metadata || response.metadata && !response.metadata.lock) {
+
+          // check for branch lock before continuing
+          snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey + '/' + task.key).then(function (response) {
+            if (!response.metadata || response.metadata && !response.metadata.lock) {
+
+              // set or clear the extension metadata (based on presence of field)
+              metadataService.setExtensionMetadata(project.metadata);
+
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
+            }
+            else {
+              notificationService.sendWarning('Unable to open editing view on task ' + task.key + ' as the task branch is locked due to ongoing changes.', 7000);
+            }
+          });
+        }
+        else {
+          notificationService.sendWarning('Unable to open editing view on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
+        }
+      });
+    };
+
     $scope.goToConflicts = function (task) {
 
       // set the branch for retrieval by other views
@@ -112,12 +148,12 @@ angular.module('singleConceptAuthoringApp.home', [
               $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
             }
             else {
-              notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the task branch is locked due to ongoing changes.', 7000);
+              notificationService.sendWarning('Unable to open conflicts view on task ' + task.key + ' as the task branch is locked due to ongoing changes.', 7000);
             }
           });
         }
         else {
-          notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
+          notificationService.sendWarning('Unable to open conflicts view for ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
         }
       });
     };
@@ -159,20 +195,8 @@ angular.module('singleConceptAuthoringApp.home', [
 // Initialization:  get tasks and classifications
     function initialize() {
       $scope.tasks = [];
-
-      // get all projects for task creation
-//      scaService.getProjects().then(function (response) {
-//        if (!response || response.length == 0) {
-//          $scope.projects = [];
-//          return;
-//        } else {
-//          $scope.projects = response;
-//        }
-//      });
       $scope.projects = metadataService.getProjects();
 
-      // temporary workaround, restricting to WRPAS tasks
-      // and getting
       loadTasks();
 
     }
