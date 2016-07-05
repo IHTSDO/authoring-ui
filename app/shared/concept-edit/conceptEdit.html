@@ -250,7 +250,20 @@
 
           <!-- Dialect / Acceptability -- never alterable for FSN -->
           <div>
-            <!-- en-us acceptability -->
+
+            <!-- button for each dialect key -->
+            <button ng-repeat="dialectId in getDialectIdsForDescription(description)"
+                    type="button"
+                    class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
+                    ng-disabled="isStatic"
+                    ng-click="toggleAcceptability(description, dialectId)">
+              <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
+              </div>
+              <span>{{getAcceptabilityTooltipText(description, dialectId)}} US</span>
+            </button>
+
+           <!--
+            &lt;!&ndash; en-us acceptability &ndash;&gt;
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                     ng-disabled="isStatic"
@@ -260,7 +273,7 @@
               <span>{{getAcceptabilityTooltipText(description, 'en-us')}} US</span>
             </button>
 
-            <!-- en-gb acceptability -->
+            &lt;!&ndash; en-gb acceptability &ndash;&gt;
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                     ng-disabled="isStatic"
@@ -270,7 +283,7 @@
               <span>{{getAcceptabilityTooltipText(description, 'en-gb')}} GB</span>
             </button>
 
-
+-->
           </div>
 
 

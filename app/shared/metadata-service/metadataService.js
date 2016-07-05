@@ -336,6 +336,15 @@ angular.module('singleConceptAuthoringApp')
       return projects;
     }
 
+    function getProjectForKey(key) {
+      for (var i = 0; i < projects ? projects.length : -1; i++) {
+        if (projects[i].key === key) {
+          return projects[i];
+        }
+      }
+      return null;
+    }
+
     function setProjects(projectsList) {
       projects = projectsList;
     }
@@ -348,6 +357,7 @@ angular.module('singleConceptAuthoringApp')
       // project cache getters/setters
       setProjects: setProjects,
       getProjects: getProjects,
+      getProjectForKey : getProjectForKey,
 
       // inactivation reason retrieval
       getConceptInactivationReasons: getConceptInactivationReasons,

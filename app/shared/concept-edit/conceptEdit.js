@@ -766,7 +766,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // function to retrieve branch dialect ids as array instead of map
         // NOTE: Required for orderBy in ng-repeat
-        scope.getDialectKeysForDescription = function (description) {
+        scope.getDialectIdsForDescription = function (description) {
           return Object.keys(metadataService.getDialectsForModuleId(description.moduleId)).sort(scope.dialectComparator);
         };
 
@@ -1257,6 +1257,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
+
+        // returns the name of a dialect given its refset id
+        function getShortDialectName(id) {
+          if (!scope.dialects[id]) {
+            return '??';
+          }
+          return scope.dialects[id].replace('en-', '');
+        };
+
         scope.getAcceptabilityTooltipText = function (description, dialectId) {
           if (!description || !dialectId) {
             return null;
@@ -1270,13 +1279,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
-        // returns the name of a dialect given its refset id
-        function getShortDialectName(id) {
-          if (!scope.dialects[id]) {
-            return '??';
-          }
-          return scope.dialects[id].replace('en-', '');
-        };
 
         // returns the display abbreviation for a specified dialect
         scope.getAcceptabilityDisplayText = function (description, dialectId) {
@@ -1300,6 +1302,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return displayText ? name + ':' + displayText : name + ':N';
 
         };
+
+
 
         ////////////////////////////////
         // Relationship Elements
