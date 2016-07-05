@@ -69,7 +69,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.taskKey = $routeParams.taskKey;
 
 
-
     // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
@@ -908,6 +907,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var concept = componentAuthoringUtil.getNewConcept();
 
+      console.debug('New concept', concept);
+
       $scope.concepts.unshift(concept);
       $scope.updateEditListUiState();
     };
@@ -1308,18 +1309,41 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('feedback');
     };
 
-    $scope.$on('reloadTask', function (event, data) {
+    function loadTaskAndProject() {
+
+      // get the project
+      scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
+        $scope.project = response;
+        metadataService.setExtensionMetadata(response.metadata);
+      });
+
+      // get the task if appropriate
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
           $rootScope.currentTask = response;
 
-          $scope.getLatestClassification();
-          $scope.getLatestValidation();
+          // set the metadata for use by other elements
+          metadataService.setBranchMetadata($scope.task);
+
+          accountService.getRoleForTask(response).then(function (role) {
+            // console.debug(response, role);
+            $scope.isOwnTask = role === 'AUTHOR';
+            setBranchFunctionality($scope.task.branchState);
+          });
 
           setBranchFunctionality($scope.task.branchState);
         });
       }
+
+      // populate the container objects
+      $scope.getLatestClassification();
+      $scope.getLatestValidation();
+      $scope.getLatestConflictsReport();
+    }
+
+    $scope.$on('reloadTask', function (event, data) {
+      loadTaskAndProject();
     });
 
     //////////////////////////////////////////
@@ -1341,20 +1365,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.sourceBranch = metadataService.getBranchRoot() + '/';
       }
 
-      // if a task, get the task for assigned user information
-      if ($routeParams.taskKey) {
-        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.task = response;
-          $rootScope.currentTask = response;
-
-          accountService.getRoleForTask(response).then(function (role) {
-            // console.debug(response, role);
-            $scope.isOwnTask = role === 'AUTHOR';
-            setBranchFunctionality($scope.task.branchState);
-          });
-
-        });
-      }
+      loadTaskAndProject();
 
       // set the initial view
       $scope.setInitialView();
@@ -1362,10 +1373,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
-      // populate the container objects
-      $scope.getLatestClassification();
-      $scope.getLatestValidation();
-      $scope.getLatestConflictsReport();
+
     }
 
     //

@@ -188,6 +188,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
 
+
+
         /////////////////////////////////////////////////////////////////
         // Autosaving and Modified Concept Storage Initialization
         /////////////////////////////////////////////////////////////////
@@ -718,6 +720,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Component more functions
         //
 
+        console.debug('Concept module', scope.concept.moduleId);
+        console.debug('Concept modules',metadataService.getModulesForModuleId(scope.concept.moduleId));
+        console.debug('Concept languages', metadataService.getLanguagesForModuleId(scope.concept.moduleId));
+        console.debug('Concept dialects', metadataService.getDialectsForModuleId(scope.concept.moduleId));
+
         // get the avialable languages for this module id
         scope.getAvailableLanguages = function (moduleId) {
 
@@ -727,6 +734,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // get the available modules based on whether this is an extension element
         scope.getAvailableModules = function (moduleId) {
           return metadataService.getModulesForModuleId(moduleId);
+
         };
 
 ////////////////////////////////
@@ -1264,6 +1272,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // returns the name of a dialect given its refset id
         function getShortDialectName(id) {
+          if (!scope.dialects[id]) {
+            return '??';
+          }
           return scope.dialects[id].replace('en-', '');
         };
 
