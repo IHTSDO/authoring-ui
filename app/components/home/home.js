@@ -109,6 +109,12 @@ angular.module('singleConceptAuthoringApp.home', [
       // get the project from the projects list
       var project = getProjectByKey(task.projectKey);
 
+      // set the branch metadata
+      metadataService.setBranchMetadata(task);
+
+      // set the extension metadata (clears if not present)
+      metadataService.setExtensionMetadata(project.metadata);
+
       // check for project lock before continuing
       snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {
         if (!response.metadata || response.metadata && !response.metadata.lock) {
@@ -116,18 +122,16 @@ angular.module('singleConceptAuthoringApp.home', [
           // check for branch lock before continuing
           snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey + '/' + task.key).then(function (response) {
             if (!response.metadata || response.metadata && !response.metadata.lock) {
-
-              // set or clear the extension metadata (based on presence of field)
-              metadataService.setExtensionMetadata(project.metadata);
-
               $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
             }
             else {
+              metadataService.clearBranchMetadata();
               notificationService.sendWarning('Unable to open editing view on task ' + task.key + ' as the task branch is locked due to ongoing changes.', 7000);
             }
           });
         }
         else {
+          metadataService.clearBranchMetadata();
           notificationService.sendWarning('Unable to open editing view on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
         }
       });
@@ -135,8 +139,14 @@ angular.module('singleConceptAuthoringApp.home', [
 
     $scope.goToConflicts = function (task) {
 
-      // set the branch for retrieval by other views
+      // get the project from the projects list
+      var project = getProjectByKey(task.projectKey);
+
+      // set the branch metadata
       metadataService.setBranchMetadata(task);
+
+      // set the extension metadata (clears if not present)
+      metadataService.setExtensionMetadata(project.metadata);
 
       // check for project lock before continuing
       snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {
@@ -148,11 +158,13 @@ angular.module('singleConceptAuthoringApp.home', [
               $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
             }
             else {
+              metadataService.clearBranchMetadata();
               notificationService.sendWarning('Unable to open conflicts view on task ' + task.key + ' as the task branch is locked due to ongoing changes.', 7000);
             }
           });
         }
         else {
+          metadataService.clearBranchMetadata();
           notificationService.sendWarning('Unable to open conflicts view for ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
         }
       });
