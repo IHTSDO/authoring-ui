@@ -206,6 +206,11 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    function clearBranchMetadata() {
+      extensionMetadata = null;
+      branchMetadata = null;
+    }
+
     //
     // Branch functions -- only used for branchPath resolution
     //
@@ -316,6 +321,7 @@ angular.module('singleConceptAuthoringApp')
       // module and branch metadata setters
       setExtensionMetadata: setExtensionMetadata,
       setBranchMetadata: setBranchMetadata,
+      clearBranchMetadata : clearBranchMetadata,
 
       // branch/task fupath retrieval functions
       getBranch: getBranch,
