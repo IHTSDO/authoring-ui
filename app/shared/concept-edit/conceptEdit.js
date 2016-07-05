@@ -1062,6 +1062,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if inactive, simply set active
           if (!description.active) {
             description.active = true;
+            description.effectiveTime = null;
             autoSave();
           }
 
@@ -1574,7 +1575,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           if (relationship.type.conceptId !== null) {
             // check if allowable relationship target using concept id
-            scope.getConceptsForValueTypeahead(relationship.type.conceptId, data.name).then(function (response) {
+            scope.getConceptForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
               if (response && response.length > 0) {
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
@@ -2461,6 +2462,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
         scope.getConceptsForValueTypeahead = function (attributeId, searchStr) {
           return snowowlService.getAttributeValues(scope.branch, attributeId, searchStr).then(function (response) {
+
+            if (!response) {
+              return [];
+            }
+
+            // remove duplicates
+            for (var i = 0; i < response.length; i++) {
+              var status = 'FD';
+              if (response[i].definitionStatus === 'PRIMITIVE') {
+                status = 'P';
+              }
+              if (response[i].fsn) {
+                response[i].tempFsn = response[i].fsn.term + ' - ' + status;
+                // console.debug('checking for duplicates', i, response[i]);
+                for (var j = response.length - 1; j > i; j--) {
+                  if (response[j].id === response[i].id) {
+                    response.splice(j, 1);
+                    j--;
+                  }
+                }
+              }
+            }
+            return response;
+          });
+        };
+          
+        scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
+          return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
 
             if (!response) {
               return [];
