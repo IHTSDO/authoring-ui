@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http',  'metadataService','notificationService', 'scaService', 'snowowlService',
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService',
     function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService) {
 
       // controller $scope.options
@@ -17,6 +17,29 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       // the stored results
       $scope.storedResults = [];
+
+      // the available dialects
+      $scope.$on('extensionMetadataChange', function() {
+        console.debug('search dialects: ', metadataService.getDialectsForModuleId(metadataService.getCurrentModuleId()));
+
+        $scope.dialects = metadataService.getDialectsForModuleId(metadataService.getCurrentModuleId());
+        if (!$scope.dialects || Object.keys($scope.dialects).length === 0) {
+          return;
+        }
+        if (metadataService.isExtensionSet()) {
+          for (var key in $scope.dialects) {
+            console.debug('checking', key);
+            if (metadataService.isExtensionDialect(key)) {
+              console.debug('found extension dialect', key);
+              $scope.selectedDialect = key;
+            }
+          }
+        } else {
+          console.debug('not extension, setting en-us');
+          $scope.selectedDialect = '900000000000509007';
+        }
+      });
+
 
       // user controls
       $scope.userOptions = {
@@ -54,21 +77,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
       };
 
-      $scope.toggleSearchType = function (){
-        if($scope.searchType === 'Active and Inactive')
-        {
-            $scope.searchType = 'Active Only';
-            $scope.userOptions.searchType = 1;
+      $scope.toggleSearchType = function () {
+        if ($scope.searchType === 'Active and Inactive') {
+          $scope.searchType = 'Active Only';
+          $scope.userOptions.searchType = 1;
         }
-        else if($scope.searchType === 'Active Only')
-        {
-            $scope.searchType = 'Inactive Only';
-            $scope.userOptions.searchType = 2;
+        else if ($scope.searchType === 'Active Only') {
+          $scope.searchType = 'Inactive Only';
+          $scope.userOptions.searchType = 2;
         }
-        else
-        {
-            $scope.searchType = 'Active and Inactive';
-            $scope.userOptions.searchType = 0;
+        else {
+          $scope.searchType = 'Active and Inactive';
+          $scope.userOptions.searchType = 0;
         }
         $scope.processResults();
       };
@@ -117,18 +137,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           }
         }
 
-        if($scope.userOptions.searchType === 1){
-            $scope.results = displayedResults.filter(function (item) {
-              return item.concept.active === true;
-            });
+        if ($scope.userOptions.searchType === 1) {
+          $scope.results = displayedResults.filter(function (item) {
+            return item.concept.active === true;
+          });
         }
-        else if($scope.userOptions.searchType === 2){
-            $scope.results = displayedResults.filter(function (item) {
-              return item.concept.active === false;
-            });
+        else if ($scope.userOptions.searchType === 2) {
+          $scope.results = displayedResults.filter(function (item) {
+            return item.concept.active === false;
+          });
         }
-        else{
-            $scope.results = displayedResults;
+        else {
+          $scope.results = displayedResults;
         }
 
 
@@ -203,18 +223,18 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.searchStatus = null;
       };
- $scope.selectItem = function (item) {
-      if (!item) {
-        return;
-      }
-      console.log(item.concept.conceptId);
-      $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
+      $scope.selectItem = function (item) {
+        if (!item) {
+          return;
+        }
+        console.log(item.concept.conceptId);
+        $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
 
-    };
-	 $scope.isEdited = function(item) {
-      return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
-    };
-	  $scope.viewConceptInTaxonomy = function (item) {
+      };
+      $scope.isEdited = function (item) {
+        return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
+      };
+      $scope.viewConceptInTaxonomy = function (item) {
         //console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
