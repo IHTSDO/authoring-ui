@@ -25,7 +25,7 @@
                     <span>Fully Defined</span>
                 </button>
             </div>
-            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
+            <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
       </div>
             <!--   <div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
@@ -49,14 +49,7 @@
                     <i class="md md-favorite"></i>
                     <span>Add to Project Favorites</span>
                 </button>
-                <button type="button"
-                class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right  "
-                title="Edit"
-                ng-click="selectItem(item)"
-                ng-disabled="isEdited(item)">
-                    <i class="md fa-sca fa-pencil"></i>
-                    <span>Load into edit panel </span>
-                </button>
+
                 <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
 
@@ -98,7 +91,7 @@
                     <span>Fully Defined</span>
                 </button>
             </div>
-            <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
+            <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
       </div>
             <!--<div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
@@ -114,14 +107,7 @@
                     <span ng-if="item.concept.active">View in Taxonomy</span>
                     <span ng-if="!item.concept.active">Inactive Concept</span>
                 </button>
-                <button type="button"
-                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
-                title="Edit"
-                ng-click="selectItem(item)"
-                ng-disabled="isEdited(item)">
-                    <i class="md fa-sca fa-pencil"></i>
-                    <span>Load into edit panel </span>
-                </button>
+
                 <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
 

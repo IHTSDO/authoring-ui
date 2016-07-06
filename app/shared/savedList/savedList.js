@@ -9,9 +9,10 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     // function to select an item from the saved list
     // broadcasts selected conceptId
     $scope.selectItem = function (item) {
-      if (!item) {
+      if (!item || item.isEdited) {
         return;
       }
+
       console.log(item.concept.conceptId);
       $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
 
