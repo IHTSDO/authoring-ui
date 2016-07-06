@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, scaService, snowowlService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -58,6 +58,11 @@ angular.module('singleConceptAuthoringApp')
           }
 
           //console.debug('entered validation.js', scope.validationContainer);
+
+          // the rules to exclude
+          configService.getExcludedValidationRuleIds().then(function(response) {
+            scope.assertionsExcluded = response;
+          });
 
           // local variables for ng-table population
           scope.assertionsFailed = [];
@@ -276,9 +281,10 @@ angular.module('singleConceptAuthoringApp')
             }
 
             //console.debug('validationContainer changed - report:', scope.validationContainer.report);
-
             // extract the failed assertions
-            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
+            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed.filter(function(assertion) {
+              return scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1;
+            });
 
             // reset view to full report
             scope.viewTop = true;

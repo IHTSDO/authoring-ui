@@ -2,7 +2,7 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.taxonomy', [])
 
-  .controller('taxonomyCtrl', ['$scope', '$routeParams', '$location', '$compile', 'endpointService', 'metadataService', function AppCtrl($scope, $routeParams, $location, $compile, endpointService, metadataService) {
+  .controller('taxonomyCtrl', ['$scope', '$routeParams', '$location', '$compile', 'configService', 'metadataService', function AppCtrl($scope, $routeParams, $location, $compile, configService, metadataService) {
 
     $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + "/" + $routeParams.taskKey;
     var options = {
