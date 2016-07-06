@@ -1418,7 +1418,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // set the initial view
         $scope.setInitialView();
-      })
+      });
 
 
       // start monitoring of task
@@ -1426,24 +1426,4 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 
     }
-
-//
-// Pre-initialization: Set branch information
-//
-
-// Get the branch and save in metadata service
-    if ($scope.taskKey) {
-      scaService.getTaskForProject($scope.projectKey, $scope.taskKey).then(function (task) {
-        metadataService.setBranchMetadata(task);
-        initialize();
-      });
-    } else {
-      scaService.getProjectForKey($scope.projectKey).then(function (project) {
-        metadataService.setBranchMetadata(project);
-        initialize();
-      });
-    }
-
-
-  })
-;
+  });
