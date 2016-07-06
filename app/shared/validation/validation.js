@@ -319,7 +319,6 @@ angular.module('singleConceptAuthoringApp')
                 notificationService.sendMessage('Concept names retrieved', 5000);
                 scope.failureTableParams.reload();
               });
-              scope.failureTableParams.reload();
             }
 
             // task handling
