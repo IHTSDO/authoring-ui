@@ -283,7 +283,7 @@ angular.module('singleConceptAuthoringApp')
             //console.debug('validationContainer changed - report:', scope.validationContainer.report);
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed.filter(function(assertion) {
-              return scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1;
+              return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
             });
 
             // reset view to full report
