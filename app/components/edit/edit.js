@@ -1315,7 +1315,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // get the project
       scaService.getProjectForKey($routeParams.projectKey).then(function (project) {
-        console.debug('Retrieved project', project);
         $scope.project = project;
 
         // set the metadata from project if task not set
@@ -1324,28 +1323,28 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
         // TODO Temporary for testing while UAT-MS is out of order, remove once better
-       /* metadataService.setExtensionMetadata({
-          'defaultModuleId': '554471000005108',
-          'defaultModuleName': 'Danish module (core metadata concept)',
-          'defaultNamespace': '1000005',
-          'requiredLanguageRefset.da': '554461000005103'
-        });*/
+        /* metadataService.setExtensionMetadata({
+         'defaultModuleId': '554471000005108',
+         'defaultModuleName': 'Danish module (core metadata concept)',
+         'defaultNamespace': '1000005',
+         'requiredLanguageRefset.da': '554461000005103'
+         });*/
 
+        console.debug('checking metadata');
         // get the name of the extension metadata (if present)
         if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
-          console.debug('Setting metadata', $scope.project.metadata);
           snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
             $scope.project.metadata.defaultModuleName = extConcept.fsn;
             metadataService.setExtensionMetadata($scope.project.metadata);
-            deferred.resolve();
-          }, function(error) {
-            deferred.reject();
+            deferred.resolve('Project loaded, metadata found');
+          }, function (error) {
+            deferred.reject('Could not get module concept');
           })
         } else {
-          deferred.resolve();
+          deferred.resolve('Project loaded, no metadata');
         }
-      }, function(error) {
-        deferred.reject();
+      }, function (error) {
+        deferred.reject('Project retrieval failed');
       });
 
       return deferred.promise;
@@ -1360,6 +1359,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // get the task if appropriate
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          console.debug('retrieved task', response);
           $scope.task = response;
           $rootScope.currentTask = response;
 
@@ -1372,18 +1372,22 @@ angular.module('singleConceptAuthoringApp.edit', [
             setBranchFunctionality($scope.task.branchState);
           });
 
-          setBranchFunctionality($scope.task.branchState);
+          console.debug('initializing containers');
+
+          // populate the container objects
+          $scope.getLatestClassification();
+          $scope.getLatestValidation();
+          $scope.getLatestConflictsReport();
+
+          deferred.resolve('Task retrieved');
+        }, function(error) {
+          deferred.reject('Task load failed');
         });
 
-        // populate the container objects
-        $scope.getLatestClassification();
-        $scope.getLatestValidation();
-        $scope.getLatestConflictsReport();
-
-        deferred.resolve();
       } else {
-        deferred.reject();
+        deferred.reject('No task to load');
       }
+  return deferred.promise;
 
 
     }
@@ -1399,12 +1403,13 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     function initialize() {
 
-
+      notificationService.sendMessage('Loading task details...');
 
       // initialize the task and project
-      $q.all(loadTask(), loadProject()).then(function () {
+      $q.all([loadTask(), loadProject()]).then(function () {
+        notificationService.clear();
 
-        // initialize the branches
+        // initialize the branches (requires metadata service branches set)
         $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + '/' + $scope.taskKey;
         $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
 
@@ -1418,6 +1423,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // set the initial view
         $scope.setInitialView();
+      }, function() {
+        notificationService.sendError('Unexpected error retrieving task details');
       });
 
 
@@ -1426,4 +1433,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 
     }
+
+    initialize();
   });
