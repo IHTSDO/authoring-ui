@@ -110,7 +110,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, endpointService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window) {
 
     console.log('Running application');
 
@@ -157,7 +157,7 @@ angular
     scaService.startPolling(10000);
 
     // get endpoint information and set route provider options
-    endpointService.getEndpoints().then(function (data) {
+    configService.getEndpoints().then(function (data) {
       $rootScope.endpoints = data.endpoints;
       var accountUrl = data.endpoints.imsEndpoint + 'api/account';
       var imsUrl = data.endpoints.imsEndpoint;
