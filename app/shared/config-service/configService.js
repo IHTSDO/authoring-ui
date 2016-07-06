@@ -10,7 +10,8 @@ angular.module('singleConceptAuthoringApp')
       },
       getExcludedValidationRuleIds : function() {
         return $http.get('/config/validationConfig.json').then(function(response) {
-          console.debug('excluded validation rule ids', response, response.data, response.data.excludedRuleIds);
+
+
           return response.data.excludedRuleIds;
         })
       }
