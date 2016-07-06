@@ -151,6 +151,8 @@ angular.module('singleConceptAuthoringApp')
     // by home.js, review-tasks.js, and project.js
     function setExtensionMetadata(metadata) {
 
+      console.debug('Setting extension metadata', metadata);
+
       // only set extension metadata if defaultModuleId is present
       if (!metadata || !metadata.hasOwnProperty('defaultModuleId')) {
         extensionMetadata = null;
@@ -200,6 +202,7 @@ angular.module('singleConceptAuthoringApp')
     // by views like edit.js, and should already be
     // fully functional. Shouldn't need to worry about this.
     function setBranchMetadata(branchMetadataObj) {
+      console.debug('Setting branch metadata', branchMetadataObj);
       branchMetadata = branchMetadataObj;
     }
 
