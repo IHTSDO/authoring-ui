@@ -302,6 +302,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveHelper() {
 
+          console.debug('savehelper', scope.concept);
+
           // special case:  if merge view, broadcast and return no promise
           // TODO Should catch this with a 'when' in saveConcept functions
           if (scope.isMerge) {
@@ -437,7 +439,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
+        // TODO remove
+        console.debug('concept edit', scope.concept);
+
         scope.saveConcept = function () {
+
+          console.debug('saveConcept', scope.concept);
 
           // clear the top level errors and warnings
           scope.errors = null;
@@ -1249,6 +1256,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
+        function getShortDialectName(dialectId) {
+          return scope.dialects[dialectId] ? scope.dialects[dialectId].replace('en-', '') : '??';
+        }
+
         scope.getAcceptabilityTooltipText = function (description, dialectId) {
           if (!description || !dialectId) {
             return null;
@@ -1262,26 +1273,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
-        scope.getAcceptabilityTooltipText = function (description, dialectName) {
-          if (!description || !dialectName) {
-            return null;
-          }
-          var dialectId = scope.dialects[dialectName];
-
-          // if no acceptability map specified, return 'N' for Not Acceptable
-          if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
-            return 'Not Acceptable';
-          }
-
-          return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
-        };
-
         // returns the display abbreviation for a specified dialect
-        scope.getAcceptabilityDisplayText = function (description, dialectName) {
-          if (!description || !dialectName) {
+        scope.getAcceptabilityDisplayText = function (description, dialectId) {
+          if (!description || !dialectId) {
             return null;
           }
-          var dialectId = scope.dialects[dialectName];
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
@@ -1291,19 +1287,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
 
-          //If the desciption is an FSN then set to PREFERRED and
-          // continue.Simplest place in execution to catch the creation of
-          // new FSN's and update acceptability
-          if (description.type === 'FSN') {
-            if (acceptability !== 'PREFERRED') {
-              description.acceptabilityMap[dialectId] = 'PREFERRED';
-            }
-          }
-
           // return the specified abbreviation, or 'N' for Not Acceptable if no
           // abbreviation found
           var displayText = scope.acceptabilityAbbrs[acceptability];
-          return displayText ? displayText : 'N';
+          return getShortDialectName(dialectId) + ':' + (displayText ? displayText : 'N');
 
           //return scope.acceptabilityAbbrs[acceptability];
         };
@@ -2184,6 +2171,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // sensitivity is correctly set
           if (!description.effectiveTime && description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
             for (var dialectId in scope.getDialectKeysForDescription(description)) {
+              console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectKeysForDscription(description))
               description.acceptabilityMap[dialectId] = 'PREFERRED';
             }
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
@@ -2201,9 +2189,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // if a new FSN (determined by blank term)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
-              for (var dialectId in scope.getDialectKeysForDescription(description)) {
+              angular.forEach(scope.getDialectKeysForDescription(description), function(dialectId) {
+                console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectKeysForDescription(description))
+
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
-              }
+              });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }
             componentAuthoringUtil.ptFromFsnAutomation(scope.concept, description);
@@ -2505,7 +2495,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return response;
           });
         };
-          
+
         scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
           return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
 
