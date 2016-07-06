@@ -1262,32 +1262,50 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
-        // returns the name of a dialect given its refset id
-        function getShortDialectName(id) {
-          return scope.dialects[id].replace('en-', '');
+        scope.getAcceptabilityTooltipText = function (description, dialectName) {
+          if (!description || !dialectName) {
+            return null;
+          }
+          var dialectId = scope.dialects[dialectName];
+
+          // if no acceptability map specified, return 'N' for Not Acceptable
+          if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
+            return 'Not Acceptable';
+          }
+
+          return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
         // returns the display abbreviation for a specified dialect
-        scope.getAcceptabilityDisplayText = function (description, dialectId) {
-          if (!description || !dialectId) {
+        scope.getAcceptabilityDisplayText = function (description, dialectName) {
+          if (!description || !dialectName) {
             return null;
           }
-
-          var name = getShortDialectName(dialectId);
+          var dialectId = scope.dialects[dialectName];
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
-            return name + ':N';
+            return 'N';
           }
 
           // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
 
+          //If the desciption is an FSN then set to PREFERRED and
+          // continue.Simplest place in execution to catch the creation of
+          // new FSN's and update acceptability
+          if (description.type === 'FSN') {
+            if (acceptability !== 'PREFERRED') {
+              description.acceptabilityMap[dialectId] = 'PREFERRED';
+            }
+          }
+
           // return the specified abbreviation, or 'N' for Not Acceptable if no
           // abbreviation found
           var displayText = scope.acceptabilityAbbrs[acceptability];
-          return displayText ? name + ':' + displayText : name + ':N';
+          return displayText ? displayText : 'N';
 
+          //return scope.acceptabilityAbbrs[acceptability];
         };
 
         ////////////////////////////////
