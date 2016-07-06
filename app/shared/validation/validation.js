@@ -130,35 +130,77 @@ angular.module('singleConceptAuthoringApp')
             }
           );
 
+          var conceptIds = [];
+
+          function getConceptIdForFailure(failure) {
+            var deferred = $q.defer();
+            switch (String(failure.conceptId).substring(String(failure.conceptId).length - 3, String(failure.conceptId).length - 2)) {
+              // concept: simply return
+              case '0':
+                conceptIds.push(failure.conceptId);
+                deferred.resolve();
+                break;
+              // description: get description by id, replace with concept id
+              case '1':
+                snowowlService.getDescriptionProperties(failure.conceptId, scope.branch).then(function (desc) {
+                  failure.conceptId = desc.conceptId;
+                  conceptIds.push(desc.conceptId);
+                  deferred.resolve();
+                }, function (error) {
+                  deferred.reject();
+                });
+                break;
+              // relationship: get relationship by id, replace with source concept id
+              case '2':
+                snowowlService.getRelationshipProperties(failure.conceptId, scope.branch).then(function (rel) {
+                  failure.conceptId = rel.sourceId;
+                  conceptIds.push(rel.sourceId);
+                  deferred.resolve();
+                }, function (error) {
+                  deferred.reject();
+                });
+                break;
+              default:
+                console.error('Failure has unrecognized id type: ' + failure.conceptId);
+                deferred.reject();
+            }
+            return deferred.promise;
+          }
+
           //
           // Concept FSN and Description Term display names
           //
 
           function getConceptNames() {
             var deferred = $q.defer();
-            var conceptIds = [];
+            var promises = [];
             angular.forEach(scope.failures, function (failure) {
-              conceptIds.push(failure.conceptId);
+              // switch on concept, relationship, or description
+              promises.push(getConceptIdForFailure(failure));
             });
 
-            if (conceptIds.length > 0) {
+            $q.all(promises).then(function () {
 
-              // bulk call for concept ids
-              snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
-                // save the value on the failures in the concept map
-                var idNameMap = {};
-                angular.forEach(concepts.items, function (concept) {
-                  idNameMap[concept.id] = concept.fsn.term;
-                });
-                angular.forEach(scope.failures, function (failure) {
-                  failure.conceptFsn = idNameMap[failure.conceptId];
-                });
+              // skip if no concept ids
+              if (conceptIds.length > 0) {
 
+                // bulk call for concept ids
+                snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+                  // save the value on the failures in the concept map
+                  var idNameMap = {};
+                  angular.forEach(concepts.items, function (concept) {
+                    idNameMap[concept.id] = concept.fsn.term;
+                  });
+                  angular.forEach(scope.failures, function (failure) {
+                    failure.conceptFsn = idNameMap[failure.conceptId];
+                  });
+
+                  deferred.resolve();
+                });
+              } else {
                 deferred.resolve();
-              });
-            } else {
-              deferred.resolve();
-            }
+              }
+            });
 
             return deferred.promise;
           }
@@ -272,7 +314,9 @@ angular.module('singleConceptAuthoringApp')
                 objArray.push(obj);
               });
               scope.failures = objArray;
+              notificationService.sendMessage('Retrieving concept names...');
               getNamesForFailures().then(function () {
+                notificationService.sendMessage('Concept names retrieved', 5000);
                 scope.failureTableParams.reload();
               });
               scope.failureTableParams.reload();
@@ -303,7 +347,9 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   scope.failures = objArray;
+                  notificationService.sendMessage('Retrieving concept names...');
                   getNamesForFailures().then(function () {
+                    notificationService.sendMessage('Concept names retrieved', 5000);
                     scope.failureTableParams.reload();
                   });
                 });
