@@ -108,36 +108,13 @@ angular.module('singleConceptAuthoringApp')
     };
 
     //
-    // Extension metadata
-    // TODO Chris Swires: this is the format expected by setting extensionMetadata
-    // in home.js, project.js, and review-tasks.js
-    // TODO Hard-coded Swedish language module for dev/demo purposes
-    var extensionMetadata = {
-
-      // modules as id/name object array
-      modules: [{
-        id: '45991000052106',
-        name: 'SNOMED CT Sweden NRC maintained module (core metadata concept)'
-      }],
-
-      // languages as string array
-      languages: ['sv', 'en'],
-
-      // dialects as id->name map
-      dialects: {
-        '900000000000509007': 'en-us',
-        '46011000052107': 'sv'
-
-      }
-    };
-
-    //
     // Branch/Task-level metadata
     // Task level information
     // and should be automatically set by edit.js
     // and similar views
     var branchMetadata = {};
 
+    var extensionMetadata = null;
 
     //
     // Metadata setters
@@ -172,6 +149,9 @@ angular.module('singleConceptAuthoringApp')
 
     // checks if specified module is part of extension
     function isExtensionModule(moduleId) {
+      if (!extensionMetadata) {
+        return false;
+      }
       return extensionMetadata.modules.filter(function (module) {
           return module.id === moduleId;
         }).length > 0;
@@ -223,8 +203,10 @@ angular.module('singleConceptAuthoringApp')
     function getAllDialects() {
       // get the test branch dialects
       var dialects = angular.copy(internationalMetadata.dialects);
-      for (var key in extensionMetadata.dialects) {
-        dialects[key] = extensionMetadata.dialects[key];
+      if (extensionMetadata && extensionMetadata.dialects) {
+        for (var key in extensionMetadata.dialects) {
+          dialects[key] = extensionMetadata.dialects[key];
+        }
       }
       return dialects;
     }
@@ -303,12 +285,12 @@ angular.module('singleConceptAuthoringApp')
       getAssociationInactivationReasons: getAssociationInactivationReasons,
 
       // boolean checks exposed for use
-      isLockedModule : isLockedModule,
-      isExtensionDialect : isExtensionDialect,
+      isLockedModule: isLockedModule,
+      isExtensionDialect: isExtensionDialect,
 
       // extension module-dependent retrieval functions
-      getCurrentModuleId : getCurrentModuleId,
-      getModulesForModuleId : getModulesForModuleId,
+      getCurrentModuleId: getCurrentModuleId,
+      getModulesForModuleId: getModulesForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
       getAllDialects: getAllDialects,
@@ -323,15 +305,15 @@ angular.module('singleConceptAuthoringApp')
 
       // TODO Functions exposed for dev work, remove when complete
 
-      getInternationalMetadata : function() {
+      getInternationalMetadata: function () {
         return internationalMetadata;
       },
 
-      getExtensionMetadata: function() {
+      getExtensionMetadata: function () {
         console.debug('extension metadata', extensionMetadata);
         return extensionMetadata;
       },
-      getBranchMetadata : function() {
+      getBranchMetadata: function () {
         return branchMetadata;
       }
 
