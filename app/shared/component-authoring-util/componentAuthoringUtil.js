@@ -128,6 +128,7 @@ angular.module('singleConceptAuthoringApp')
       // add IsA relationship
       concept.relationships.push(getNewIsaRelationship(moduleId));
 
+      console.debug('new concept', concept);
       return concept;
     }
 

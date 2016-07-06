@@ -11,6 +11,7 @@ angular.module('singleConceptAuthoringApp')
     // Create New Concept
     // POST /browser/{path}/concepts
     function createConcept(project, task, concept) {
+      console.debug('create concept', concept);
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
         //console.debug('createConcept success', response);
