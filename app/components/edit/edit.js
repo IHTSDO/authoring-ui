@@ -1324,12 +1324,12 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
         // TODO Temporary for testing while UAT-MS is out of order, remove once better
-        metadataService.setExtensionMetadata({
+       /* metadataService.setExtensionMetadata({
           'defaultModuleId': '554471000005108',
           'defaultModuleName': 'Danish module (core metadata concept)',
           'defaultNamespace': '1000005',
           'requiredLanguageRefset.da': '554461000005103'
-        });
+        });*/
 
         // get the name of the extension metadata (if present)
         if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
