@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService, $filter) {
+  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService, $filter, $timeout) {
     return {
       restrict: 'A',
       transclude: false,
@@ -21,6 +21,38 @@ angular.module('singleConceptAuthoringApp')
         if (!scope.limit) {
           scope.limit = -1;
         }
+
+        // TODO Consider moving this into a directive with passed function
+        // Handle single and double click events
+
+        scope.clickNode = function (node) {
+
+          // set the click count on this node
+          node.clickCt = node.clickCt ? node.clickCt + 1 : 1;
+
+          // if first click, increment and broadcast editConcept if second click not detected
+          if (node.clickCt === 1) {
+
+            // single-click functionality
+            $timeout(function () {
+
+              // execute only if no further clicks detected
+              if (node.clickCt === 1) {
+                console.debug('Single-click event, broadcasting');
+                $rootScope.$broadcast('editConcept', {conceptId: node.conceptId});
+              } else {
+                console.debug('Double-click event, timeout canceled');
+              }
+              node.clickCt = 0;
+            }, 500);
+          }
+
+          // double-click functionality
+          else {
+            scope.setRootConcept(node);
+            node.clickCt = 0;
+          }
+        };
 
         // The root concepts for display
         // NOTE: Must be array (even though SNOMEDCT only has 1 root)
