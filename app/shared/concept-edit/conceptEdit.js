@@ -109,6 +109,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return;
         }
 
+
         //////////////////////////////////////////////////////////////
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////

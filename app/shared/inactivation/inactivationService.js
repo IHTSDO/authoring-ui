@@ -27,13 +27,12 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function setParameters(branch, concept, reasonId, assocRefsetMembers) {
-      // console.debug('inactivationService setParameters', project, task, concept, reasonId, assocRefsetMembers);
+      console.debug('inactivationService setParameters', branch, concept, reasonId, assocRefsetMembers);
       parameters = {};
       parameters.concept = concept;
       parameters.branch = branch;
       parameters.reasonId = reasonId;
       parameters.assocMembers = assocRefsetMembers;
-      $rootScope.$broadcast('concept', {concept: concept});
     }
 
     function getConcept() {

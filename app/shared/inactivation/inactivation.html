@@ -26,13 +26,14 @@
       background-color: #00a6e5 !important;
       border: 1px solid #00a6e5 !important;
     }
-      
-    .table-filter{
-      padding:25px !important;
+
+    .table-filter {
+      padding: 25px !important;
     }
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
-    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} - {{assocName}} {{histAssocTarget.fsn}}
+    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -
+      {{assocName}} {{histAssocTarget.fsn}}
 
 
       <button
@@ -42,6 +43,7 @@
 
       <button
         class="btn btn-default green  pull-right" style="text-transform: none"
+        ng-disabled="!isComplete()"
         ng-click="completeInactivation()"><i class="md md-check m-r-10"></i>Complete Inactivation
       </button>
     </div>
@@ -106,13 +108,17 @@
               </button>
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default red" ng-click="remove(rel)">
-                    <span class="md fa-sca fa-minus"></span>
+              <button class="btn btn-round btn-default base tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-class="[{'green' : isAccepted(rel)}, {'grey' : !isAccepted(rel)}]"
+                      ng-click="acceptRelationship(rel)">
+                <div
+                  class="md md-thumb-up "></div>
+                <span>Accept Relationship Change</span>
               </button>
             </td>
           </tr>
         </table>
-          </br></br></br>
+        </br></br></br>
       </div>
       <div ng-show="actionTab==2" class="table-responsive white" style="margin-right:0px;">
         <table
@@ -140,13 +146,17 @@
               </button>
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default red" ng-click="remove(rel)">
-                    <span class="md fa-sca fa-minus"></span>
+              <button class="btn btn-round btn-default base tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-class="[{'green' : isAccepted(rel)}, {'grey' : !isAccepted(rel)}]"
+                      ng-click="acceptRelationship(rel)">
+                <div
+                  class="md md-thumb-up "></div>
+                <span>Accept Relationship Change</span>
               </button>
             </td>
           </tr>
         </table>
-          </br></br></br>
+        </br></br></br>
       </div>
       <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
         <table
@@ -156,7 +166,8 @@
             <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.referencedComponent.fsn.term}}
             </td>
             <td data-title="'Reason'" sortable="'typeFsn'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.referencedComponent.inactivationIndicator}}
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left">
+                {{rel.referencedComponent.inactivationIndicator}}
                 <span>Reason</span>
               </div>
             </td>
@@ -178,29 +189,27 @@
               </button>
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default red" ng-click="remove(rel)">
-                    <span class="md fa-sca fa-minus"></span>
-              </button>
+              APPROVE BUTTON HERE
             </td>
           </tr>
         </table>
-          </br></br></br>
+        </br></br></br>
       </div>
 
-    <!-- Taxonomy, models, and concepts -->
-    <div class="row m-t-15 no-gutter" ng-show="editedConcept">
-      <!-- Taxonomy -->
-      <div class="col-md-6">
-        <div>
-          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+      <!-- Taxonomy, models, and concepts -->
+      <div class="row m-t-15 no-gutter" ng-show="editedConcept">
+        <!-- Taxonomy -->
+        <div class="col-md-6">
+          <div>
+            <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+          </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div>
-          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+        <div class="col-md-6">
+          <div>
+            <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 </section>
 
