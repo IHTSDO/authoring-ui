@@ -322,12 +322,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // TODO Should catch this with a 'when' in saveConcept functions
           if (scope.isMerge) {
             $rootScope.$broadcast('acceptMerge', {concept: scope.concept});
-            return;
+            deferred.reject(); // don't want validation run
           }
 
           else if (scope.isInactivation) {
-            $rootScope.$broadcast('inactivationConceptChange', {concept: scope.concept});
-            deferred.resolve();
+            deferred.resolve(); // do want validation run
           }
 
           else {
@@ -484,10 +483,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // special case -- don't want save notifications in merge view, all
           // handling done in conflicts.js
-          if (!scope.merge) {
-            notificationService.sendMessage(saveMessage);
-          } else {
+          if (scope.merge) {
             notificationService.sendMessage('Saving accepted merged concept...');
+          } else if (scope.isInactivation) {
+            // do nothing
+          } else {
+            notificationService.sendMessage(saveMessage);
           }
           // validate concept first
           scope.validateConcept().then(function () {
@@ -500,6 +501,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 concept: scope.concept,
                 validationResults: scope.validation
               });
+            }
+
+            // special case -- inactivation:  simply broadcast concept
+            else if (scope.isInactivation) {
+
+              if (scope.validation && scope.validation.hasErrors) {
+                notificationService.sendError('Fix errors before continuing');
+              } else {
+                scope.saving = false;
+                scope.isModified = false;
+                $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
+              }
             }
 
             // if errors, notify and do not save
@@ -2283,6 +2296,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveModifiedConcept() {
 
+          scope.isModified = true;
+
+          // broadcast event to any listeners (currently task detail)
+          $rootScope.$broadcast('conceptEdit.conceptModified', {
+            branch: scope.branch,
+            conceptId: scope.concept.conceptId,
+            concept: scope.concept
+          });
+
           // console.debug('saveModifiedConcept', scope.concept,
           // scope.unmodifiedConcept);
 
@@ -2291,14 +2313,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // console.debug('broadcasting conceptModified');
 
-            // broadcast event to any listeners (currently task detail)
-            $rootScope.$broadcast('conceptEdit.conceptModified', {
-              branch: scope.branch,
-              conceptId: scope.concept.conceptId,
-              concept: scope.concept
-            });
-
-            scope.isModified = true;
 
             // store the modified concept in ui-state if autosave on
             if (scope.autosave === true) {
@@ -2307,8 +2321,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
             }
 
-          } else {
-            scope.isModified = false;
           }
         }
 
@@ -2323,6 +2335,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
+
+          console.debug('setting modified to true');
+          scope.isModified = true;
 
           // save the modified concept
           saveModifiedConcept();

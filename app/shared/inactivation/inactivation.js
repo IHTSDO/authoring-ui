@@ -38,7 +38,8 @@ angular.module('singleConceptAuthoringApp')
           //
           // Concept update function
           //
-          scope.$on('inactivationConceptChange', function (event, data) {
+          scope.$on('saveInactivationEditing', function (event, data) {
+            console.debug('saveInactivationEditing', data.concept);
             if (!data || !data.concept) {
               console.error('inactivationConceptChange notification sent without concept data');
               return;
@@ -57,13 +58,12 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function assocFilter(item) {
-            console.debug('assoc filter', item, scope.associationTargets);
+
             for (var i = 0; i < scope.associationTargets.length; i++) {
               if (item.referenceSetId === scope.associationTargets[i].conceptId) {
                 return true;
               }
             }
-            ;
             return false;
           }
 
@@ -88,7 +88,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.isaRelsTableParams = new NgTableParams({
               page: 1,
-              count: 10
+              count: 5
             },
             {
               filterDelay: 50,
@@ -102,8 +102,8 @@ angular.module('singleConceptAuthoringApp')
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
                   angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
-                    // add all relationships with no id
-                    if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                    // add all relationships with no effective time
+                    if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
                       rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
                       rel.typeFsn = rel.type.fsn;
                       data.push(rel);
@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.attrRelsTableParams = new NgTableParams({
               page: 1,
-              count: 10
+              count: 5
             },
             {
               // initial display text, overwritten in getData
@@ -139,11 +139,10 @@ angular.module('singleConceptAuthoringApp')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
-                  console.debug(scope.affectedConcepts[conceptId]);
                   angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
 
-                    // add all relationships with no id
-                    if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                    // add all relationships with no effective time
+                    if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
                       rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
                       rel.typeFsn = rel.type.fsn;
                       data.push(rel);
@@ -165,7 +164,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.assocsTableParams = new NgTableParams({
               page: 1,
-              count: 10
+              count: 5
             },
             {
               // initial display text, overwritten in getData
@@ -351,7 +350,7 @@ angular.module('singleConceptAuthoringApp')
 
           // inactivate a relationship and add new relationships for children
           function inactivateRelationship(concept, rel) {
-            console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
+             //         console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
 
             /*    // Switch behavior based on historical association targets present
              if (Object.keys(scope.histAssocTarget).length > 0) {
@@ -369,7 +368,7 @@ angular.module('singleConceptAuthoringApp')
               newRel.target.conceptId = parent.conceptId;
               newRel.target.fsn = parent.fsn;
               concept.relationships.push(newRel);
-              console.debug('    added relationship', newRel);
+//              console.debug('    added relationship', newRel);
             });
 
 
@@ -448,9 +447,6 @@ angular.module('singleConceptAuthoringApp')
             scope.associationTargets = metadataService.getAssociationInactivationReasons();
             scope.assocName = null;
             scope.histAssocTarget = {};
-
-            console.debug('assocs from service', scope.assocs);
-            console.debug('assoc targets from service', scope.associationTargets);
 
             for (var key in scope.assocs) {
               scope.assocName = key;
