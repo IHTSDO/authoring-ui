@@ -42,9 +42,11 @@
       </button>
 
       <button
-        class="btn btn-default green  pull-right" style="text-transform: none"
+        class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+        ng-class="[{'lighten-3' : !isComplete()}]" style="text-transform: none"
         ng-disabled="!isComplete()"
-        ng-click="completeInactivation()"><i class="md md-check m-r-10"></i>Complete Inactivation
+        ng-click="completeInactivation()">
+        <i class="md m-r-10" ng-class="[{'md-check' : isComplete()}, {'md-block' : !isComplete()}]"></i>Complete Inactivation
       </button>
     </div>
   </div>
@@ -74,7 +76,7 @@
             ({{assocsTableParams.total()}})</a>
           </li>
           <li>
-            <input type="text" ng-model="filter" class="table-filter" ng-change="reloadTables()"
+            <input type="text" ng-model="tableFilter" ng-change="reloadTables()"
                    ng-model-options='{ debounce: 500 }'
                    placeholder="Search Results"/>
           </li>
@@ -147,7 +149,8 @@
               </div>
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
+              <button type="button"
+                      class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
                       ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
                 <div class="md md-edit"></div>
@@ -180,28 +183,37 @@
           ng-table="assocsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
-            {{rel}}
+
             <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.referencedComponent.fsn.term}}
             </td>
-            <td data-title="'Reason'" sortable="'typeFsn'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left">
-                {{rel.referencedComponent.inactivationIndicator}}
-                <span>Reason</span>
-              </div>
+            <td data-title="'Reason'" sortable="''">
+
+              <select ng-model="rel.referencedComponent.inactivationIndicator"
+                      ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
+
             </td>
-            <td data-title="'Association'" sortable="'typeFsn'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.refsetName}}
-                <span>Association</span>
-              </div>
+            <td data-title="'Association'" sortable="'refsetName'">
+
+              <select ng-model="rel.refsetName"
+                      ng-options="target.text as target.text for target in getAssociationsForReason(rel.referencedComponent.inactivationIndicator)"></select>
             </td>
-            <td data-title="'Value (Proposed)'" sortable="'target'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{histAssocTarget.fsn}}
-                <span>Proposed Value</span>
-              </div>
+            <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
+              <textarea type="text" ng-model="rel.newTargetFsn"
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setTargetComponent(rel, $item)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3">
+
+                                    </textarea>
+
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
-                      ng-click="editConcept(rel.sourceId)"
+              <button type="button"
+                      class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-click="editConcept(rel.referencedComponent.id)"
                       title="View/Edit Concept">
                 <div class="md md-edit"></div>
                 <span>Edit concept</span>
@@ -213,15 +225,15 @@
                       ng-click="acceptRelationship(rel)">
                 <div
                   class="md md-thumb-up "></div>
-                <span>Accept relationship change</span>
+                <span>Accept association change</span>
               </button>
             </td>
             <td>
               <button class="btn btn-round btn-default red base tooltips-bottom large-size-tooltip offset-tooltip-right"
-                      ng-click="removeRelationship(rel)">
+                      ng-click="removeAssociation(rel)">
                 <div
                   class="md fa-sca fa-minus "></div>
-                <span>Remove proposed relationship</span>
+                <span>Remove proposed association</span>
               </button>
             </td>
           </tr>
@@ -238,16 +250,16 @@
         </div>
 
         <!-- Taxonomy -->
-       <!-- <div class="col-md-6">
-          <div>
-            <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div>
-            <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-          </div>
-        </div>-->
+        <!-- <div class="col-md-6">
+           <div>
+             <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+           </div>
+         </div>
+         <div class="col-md-6">
+           <div>
+             <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+           </div>
+         </div>-->
       </div>
     </div>
 </section>
