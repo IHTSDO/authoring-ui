@@ -215,14 +215,14 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-          scope.remove = function (relationship) {
+          scope.removeRelationship = function (relationship) {
             var concept = scope.affectedConcepts[relationship.sourceId];
             for (var i = concept.relationships.length - 1; i >= 0; i--) {
               if (concept.relationships[i].target.conceptId === relationship.target.conceptId && concept.relationships[i].type.conceptId === relationship.type.conceptId) {
                 concept.relationships.splice(i, 1);
               }
             }
-            ;
+
             if (scope.editedConcept && scope.editedConcept.conceptId === relationship.sourceId) {
               scope.editConcept(relationship.sourceId);
             }
@@ -335,23 +335,30 @@ angular.module('singleConceptAuthoringApp')
 
           // inactivate a relationship and add new relationships for children
           function inactivateRelationship(concept, rel) {
-            // console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
+            console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
 
-            // assign copied new relationship to each parent
-            angular.forEach(scope.inactivationConceptParents, function (parent) {
+            // Switch behavior based on historical association targets present
+            if (Object.keys(scope.histAssocTarget).length > 0) {
 
-              var newRel = angular.copy(rel);
-              newRel.relationshipId = null;
-              newRel.effectiveTime = null;
-              newRel.released = false;
-              newRel.target.conceptId = parent.conceptId;
-              newRel.target.fsn = parent.fsn;
-              concept.relationships.push(newRel);
-              // console.debug('    added relationship', newRel);
-            });
+            }
 
+            // otherwise assign copied new relationship to each parent
+            else {
+              angular.forEach(scope.inactivationConceptParents, function (parent) {
+
+                var newRel = angular.copy(rel);
+                newRel.relationshipId = null;
+                newRel.effectiveTime = null;
+                newRel.released = false;
+                newRel.target.conceptId = parent.conceptId;
+                newRel.target.fsn = parent.fsn;
+                concept.relationships.push(newRel);
+                console.debug('    added relationship', newRel);
+              });
+            }
+
+            // set the original relationship to inactive
             rel.active = 0;
-            // console.debug('  Final state of concept', concept);
           }
 
           function inactivateAttributeRelationship(concept, rel) {
@@ -400,8 +407,8 @@ angular.module('singleConceptAuthoringApp')
               relsAccepted.push(rel.relationshipId);
             }
           };
-          scope.isAccepted = function(rel) {
-           return rel && relsAccepted.indexOf(rel.relationshipId) !== -1;
+          scope.isAccepted = function (rel) {
+            return rel && relsAccepted.indexOf(rel.relationshipId) !== -1;
           };
           scope.isComplete = function () {
             return relsAccepted.length === scope.affectedRelationshipIds.length;

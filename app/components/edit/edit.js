@@ -72,7 +72,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 
     $timeout(function () {
-      inactivationService.setParameters($scope.branch, $scope.concepts[0], 'ERRONEOUS');
+      inactivationService.setParameters($scope.branch, $scope.concepts[0], 'AMBIGUOUS', {POSSIBLY_EQUIVALENT_TO: ['73761001']});
       $rootScope.$broadcast('conceptEdit.inactivateConcept');
     }, 4000);
 
