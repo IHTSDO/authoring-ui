@@ -9,19 +9,18 @@ angular.module('singleConceptAuthoringApp')
     $scope.descendants = null;
 
     $scope.filterByInactivationReason = function () {
-        return function (item) {
-            if ($scope.reason.display.indexOf(item.display) !== -1)
-            {
-                return true;
-            }
-            else{
-                return false;
-            }
-        };
+      return function (item) {
+        if ($scope.reason.display.indexOf(item.display) !== -1) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      };
     };
 
     $scope.updateAssociations = function () {
-        $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
+      $scope.associationTargets = $scope.originalAssocs.filter($scope.filterByInactivationReason());
     };
 
     // required arguments
@@ -255,7 +254,7 @@ angular.module('singleConceptAuthoringApp')
 
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
-        angular.forEach(response2 .inboundRelationships, function (item) {
+        angular.forEach(response2.inboundRelationships, function (item) {
 
           // console.debug('checking relationship', item.active, item);
 
@@ -268,9 +267,20 @@ angular.module('singleConceptAuthoringApp')
 
             // if a child, and not already added (i.e. prevent STATED/INFERRED
             // duplication), push to children
-            if (item.type.id === '116680003' && item.characteristicType === 'STATED_RELATIONSHIP' && childrenIds.indexOf(item.source.id) === -1) {
-              childrenIds.push(item.source.id);
-              $scope.children.push(item);
+            if (item.type.id === '116680003') {
+              // if already added and this relationship is STATED, replace
+              if (childrenIds.indexOf(item.source.id) !== -1 && item.characteristicType === 'STATED_RELATIONSHIP') {
+                for (var i = 0; i < $scope.children.length; i++) {
+                  if ($scope.children[i].source.id === item.source.id) {
+                    $scope.children[i] = item;
+                  }
+                }
+              }
+              // otherwise if not already present, simply push
+              else if (childrenIds.indexOf(item.source.id) === -1) {
+                childrenIds.push(item.source.id);
+                $scope.children.push(item);
+              }
 
             }
           }
@@ -301,21 +311,20 @@ angular.module('singleConceptAuthoringApp')
     }
 
     // get the limited number of inbound relationships for display
-    if($scope.componentType === 'Concept')
-    {
-        getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren) {
+    if ($scope.componentType === 'Concept') {
+      getInboundRelationships($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (hasStatedChildren) {
 
-          checkStatedChildren();
+        checkStatedChildren();
 
-          // detect case where no stated parent-child relationship was found, but
-          // more results may exist
-          if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
+        // detect case where no stated parent-child relationship was found, but
+        // more results may exist
+        if ($scope.statedChildrenFound === false && $scope.inboundRelationships.length === $scope.tableLimit) {
 
-            getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
-              checkStatedChildren();
-            });
-          }
-        });
+          getInboundRelationships($scope.conceptId, $scope.branch, -1, -1).then(function () {
+            checkStatedChildren();
+          });
+        }
+      });
     }
 
 
