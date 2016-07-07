@@ -180,6 +180,7 @@
           ng-table="assocsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
+            {{rel}}
             <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.referencedComponent.fsn.term}}
             </td>
             <td data-title="'Reason'" sortable="'typeFsn'">
@@ -199,16 +200,32 @@
               </div>
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default blue"
-                      ng-click="editConcept(rel.referencedComponent.id)"
+              <button type="button" class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
-                <span class="md md-edit"></span>
+                <div class="md md-edit"></div>
+                <span>Edit concept</span>
               </button>
             </td>
             <td>
-              APPROVE BUTTON HERE
+              <button class="btn btn-round btn-default base tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-class="[{'green' : isAccepted(rel)}, {'grey' : !isAccepted(rel)}]"
+                      ng-click="acceptRelationship(rel)">
+                <div
+                  class="md md-thumb-up "></div>
+                <span>Accept relationship change</span>
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-round btn-default red base tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-click="removeRelationship(rel)">
+                <div
+                  class="md fa-sca fa-minus "></div>
+                <span>Remove proposed relationship</span>
+              </button>
             </td>
           </tr>
+
         </table>
         </br></br></br>
       </div>
@@ -221,7 +238,7 @@
         </div>
 
         <!-- Taxonomy -->
-        <div class="col-md-6">
+       <!-- <div class="col-md-6">
           <div>
             <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
           </div>
@@ -230,7 +247,7 @@
           <div>
             <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
 </section>
