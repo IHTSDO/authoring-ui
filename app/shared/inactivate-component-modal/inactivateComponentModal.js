@@ -268,24 +268,10 @@ angular.module('singleConceptAuthoringApp')
 
             // if a child, and not already added (i.e. prevent STATED/INFERRED
             // duplication), push to children
-            if (item.type.id === '116680003' && childrenIds.indexOf(item.source.id) === -1) {
+            if (item.type.id === '116680003' && item.characteristicType === 'STATED_RELATIONSHIP' && childrenIds.indexOf(item.source.id) === -1) {
               childrenIds.push(item.source.id);
               $scope.children.push(item);
 
-            } else {
-
-              // check if this is a stated-relationship child
-              if (item.characteristicType === 'STATED_RELATIONSHIP') {
-
-
-                // find the existing item and replace it with the
-                // STATED_RELATIONSHIP
-                angular.forEach($scope.children, function (childRel) {
-                  if (childRel.source.id === item.source.id) {
-                    childRel.characteristicType = 'STATED_RELATIONSHIP';
-                  }
-                });
-              }
             }
           }
         });

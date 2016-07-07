@@ -65,9 +65,19 @@ angular.module('singleConceptAuthoringApp.edit', [
   .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
 
 
+
+    //
+    // Inactivation testing
+    //
+
+
+    $timeout(function () {
+      inactivationService.setParameters($scope.branch, $scope.concepts[0], 'ERRONEOUS');
+      $rootScope.$broadcast('conceptEdit.inactivateConcept');
+    }, 4000);
+
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
-
 
 
     // clear task-related information
