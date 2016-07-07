@@ -116,6 +116,14 @@
                 <span>Accept Relationship Change</span>
               </button>
             </td>
+            <td>
+              <button class="btn btn-round btn-default red base tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      ng-click="removeRelationship(rel)">
+                <div
+                  class="md fa-sca fa-minus "></div>
+                <span>Remove proposed relationship</span>
+              </button>
+            </td>
           </tr>
         </table>
         </br></br></br>
@@ -139,10 +147,11 @@
               </div>
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default blue"
+              <button type="button" class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
                       ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
-                <span class="md md-edit"></span>
+                <div class="md md-edit"></div>
+                <span>Edit concept</span>
               </button>
             </td>
             <td>
@@ -151,16 +160,15 @@
                       ng-click="acceptRelationship(rel)">
                 <div
                   class="md md-thumb-up "></div>
-                <span>Accept Relationship Change</span>
+                <span>Accept relationship change</span>
               </button>
             </td>
             <td>
               <button class="btn btn-round btn-default red base tooltips-bottom large-size-tooltip offset-tooltip-right"
-
                       ng-click="removeRelationship(rel)">
                 <div
-                  class="md md-thumb-up "></div>
-                <span>Accept Relationship Change</span>
+                  class="md fa-sca fa-minus "></div>
+                <span>Remove proposed relationship</span>
               </button>
             </td>
           </tr>
@@ -206,7 +214,12 @@
       </div>
 
       <!-- Taxonomy, models, and concepts -->
-      <div class="row m-t-15 no-gutter" ng-show="editedConcept">
+      <div class="row m-t-15 no-gutter" ng-if="editedConcept">
+
+        <div concept-edit concept="editedConcept" id="height-{{concept.conceptId}}'"
+             branch="branch" static="false" autosave="false" show-inactive="true" inactivation-editing="true">
+        </div>
+
         <!-- Taxonomy -->
         <div class="col-md-6">
           <div>

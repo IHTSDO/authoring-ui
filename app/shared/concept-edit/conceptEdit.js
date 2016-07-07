@@ -61,6 +61,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // this up
         merge: '@?',
 
+        inactivationEditing: '@?',
+
         // parent function to invoke updating the ui state for this concept's
         // list (not required)
         uiStateUpdateFn: '&?',
@@ -129,6 +131,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.isMerge = true;
         } else {
           scope.isMerge = false;
+        }
+
+        if (scope.inactivationEditing === 'true') {
+          scope.isInactivation = true;
+        } else {
+          scope.isInactivation = false;
         }
 
         if (scope.showInactive === 'true') {
@@ -305,6 +313,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           console.debug('savehelper', scope.concept);
 
+
+          // simple promise with resolve/reject on success/failure
+          var deferred = $q.defer();
+
+
           // special case:  if merge view, broadcast and return no promise
           // TODO Should catch this with a 'when' in saveConcept functions
           if (scope.isMerge) {
@@ -312,90 +325,86 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // simple promise with resolve/reject on success/failure
-          var deferred = $q.defer();
-
-          // clean the concept for snowowl-ready save
-          snowowlService.cleanConcept(scope.concept);
-
-          var saveFn = null;
-
-          // TODO This isn't working when passed in, requires parameterized arguments, e.g.
-          // project: $routeParams.projectKey,
-          // task: $routeParams.taskKey,
-          //  concept: scope.concept
-          // which doesn't work with snowowlService functions. Irritating!
-
-          if (scope.saveFunction) {
-            saveFn = scope.saveFunction;
+          else if (scope.isInactivation) {
+            $rootScope.$broadcast('inactivationConceptChange', {concept: scope.concept});
+            deferred.resolve();
           }
 
-          else if (scope.concept.fsn === null) {
-            saveFn = snowowlService.createConcept;
-          } else {
-            saveFn = snowowlService.updateConcept;
+          else {
+            // clean the concept for snowowl-ready save
+            snowowlService.cleanConcept(scope.concept);
+
+
+            var saveFn = null;
+
+            if (scope.concept.fsn === null) {
+              saveFn = snowowlService.createConcept;
+            } else {
+              saveFn = snowowlService.updateConcept;
+            }
+
+
+            // console.debug('SAVE FUNCTION', saveFn);
+
+            saveFn(
+              $routeParams.projectKey,
+              $routeParams.taskKey,
+              scope.concept
+            ).then(function (response) {
+                //// console.debug('create', response);
+                // successful response will have conceptId
+                if (response && response.conceptId) {
+
+                  // console.debug('Save concept successful');
+
+                  // set concept and unmodified state
+                  scope.concept = response;
+                  scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+                  scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
+                  scope.isModified = false;
+
+                  // clear the saved modified state
+                  scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+
+                  // ensure descriptions & relationships are sorted
+                  sortDescriptions();
+                  sortRelationships();
+
+                  scope.computeRelationshipGroups();
+
+                  // broadcast event to any listeners (currently task detail,
+                  // conflict/feedback resolved lists)
+                  $rootScope.$broadcast('conceptEdit.conceptChange', {
+                    branch: scope.branch,
+                    conceptId: scope.concept.conceptId,
+                    concept: scope.concept
+                  });
+
+                  // if ui state update function specified, call it (after a
+                  // moment to let binding update)
+                  $timeout(function () {
+
+                    if (scope.uiStateUpdateFn) {
+                      scope.uiStateUpdateFn();
+                    }
+                  }, 3000);
+
+                  deferred.resolve();
+                }
+
+                // handle error
+                else {
+
+                  deferred.reject(response.message);
+                }
+              },
+              function (error) {
+                deferred.reject(error);
+              });
           }
-
-          // console.debug('SAVE FUNCTION', saveFn);
-
-          saveFn(
-            $routeParams.projectKey,
-            $routeParams.taskKey,
-            scope.concept
-          ).then(function (response) {
-              //// console.debug('create', response);
-              // successful response will have conceptId
-              if (response && response.conceptId) {
-
-                // console.debug('Save concept successful');
-
-                // set concept and unmodified state
-                scope.concept = response;
-                scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
-                scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
-                scope.isModified = false;
-
-                // clear the saved modified state
-                scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
-
-                // ensure descriptions & relationships are sorted
-                sortDescriptions();
-                sortRelationships();
-
-                scope.computeRelationshipGroups();
-
-                // broadcast event to any listeners (currently task detail,
-                // conflict/feedback resolved lists)
-                $rootScope.$broadcast('conceptEdit.conceptChange', {
-                  branch: scope.branch,
-                  conceptId: scope.concept.conceptId,
-                  concept: scope.concept
-                });
-
-                // if ui state update function specified, call it (after a
-                // moment to let binding update)
-                $timeout(function () {
-
-                  if (scope.uiStateUpdateFn) {
-                    scope.uiStateUpdateFn();
-                  }
-                }, 3000);
-
-                deferred.resolve();
-              }
-
-              // handle error
-              else {
-
-                deferred.reject(response.message);
-              }
-            },
-            function (error) {
-
-              deferred.reject(error);
-            });
 
           return deferred.promise;
+
         }
 
         // function to validate concept and display any errors or warnings
@@ -2190,7 +2199,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // if a new FSN (determined by blank term)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
-              angular.forEach(scope.getDialectKeysForDescription(description), function(dialectId) {
+              angular.forEach(scope.getDialectKeysForDescription(description), function (dialectId) {
                 console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectKeysForDescription(description))
 
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
