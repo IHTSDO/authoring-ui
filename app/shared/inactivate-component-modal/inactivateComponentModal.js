@@ -103,12 +103,12 @@ angular.module('singleConceptAuthoringApp')
         orderBy: 'sortableName'
       },
       {
-        total: $scope.descendants ? $scope.descendants.descendants.items.length : 0, // length
+        total: $scope.descendants && $scope.descendants.descendants && $scope.descendants.items ? $scope.descendants.descendants.items.length : 0, // length
         // of
         // data
         getData: function ($defer, params) {
 
-          if (!$scope.descendants || !$scope.descendants.descendants.items) {
+          if (!$scope.descendants || !$scope.descendants.descendants || !$scope.descendants.descendants.items) {
             $defer.resolve([]);
           } else {
             params.total($scope.descendants.descendants.items.length);
