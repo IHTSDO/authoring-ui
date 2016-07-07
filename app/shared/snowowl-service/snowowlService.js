@@ -35,6 +35,18 @@ angular.module('singleConceptAuthoringApp')
       });
       return deferred.promise;
     }
+    
+    //Update array of concepts
+    //PUT /browser/{path}/concepts/{conceptId}
+    function bulkUpdateConcept(project, task, conceptArray) {
+      var deferred = $q.defer();
+      $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/bulk', conceptArray).then(function (response) {
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
 
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {

@@ -235,6 +235,10 @@ angular.module('singleConceptAuthoringApp')
               $rootScope.$broadcast('inactivation.cancelInactivation');
             }
           };
+            
+          scope.completeInactivation = function(){
+              
+          };
 
 
           //
@@ -366,7 +370,6 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           }
-
 
           function initialize() {
             notificationService.sendMessage('Initializing inactivation...');
