@@ -29,46 +29,55 @@ angular.module('singleConceptAuthoringApp')
       [
         {
           id: 'ALTERNATIVE',
+          conceptId : '900000000000530003',
           text: 'ALTERNATIVE association reference set',
           display: 1
         },
         {
           id: 'MOVED_FROM',
+          conceptId : '900000000000525002',
           text: 'MOVED FROM association reference set',
           display: 2
         },
         {
           id: 'MOVED_TO',
+          conceptId : '900000000000524003',
           text: 'MOVED TO association reference set',
           display: 3
         },
         {
           id: 'POSSIBLY_EQUIVALENT_TO',
+          conceptId : '900000000000523009',
           text: 'POSSIBLY EQUIVALENT TO association reference set',
           display: 4
         },
         {
           id: 'REFERS_TO',
+          conceptId : '900000000000531004',
           text: 'REFERS TO concept association reference set',
           display: 5
         },
         {
           id: 'REPLACED_BY',
+          conceptId : '900000000000526001',
           text: 'REPLACED BY association reference set',
           display: 6
         },
         {
           id: 'SAME_AS',
+          conceptId : '900000000000527005',
           text: 'SAME AS association reference set',
           display: 7
         },
         {
           id: 'SIMILAR_TO',
+          conceptId : '900000000000529008',
           text: 'SIMILAR TO association reference set',
           display: 8
         },
         {
           id: 'WAS_A',
+          conceptId : '900000000000528000',
           text: 'WAS A association reference set',
           display: 9
         }

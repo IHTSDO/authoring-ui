@@ -56,12 +56,12 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function assocFilter(item) {
+            console.debug('assoc filter', item, scope.associationTargets);
             for (var i = 0; i < scope.associationTargets.length; i++) {
               if (item.referenceSetId === scope.associationTargets[i].conceptId) {
                 return true;
               }
             }
-            ;
             return false;
           }
 
@@ -69,13 +69,13 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             for (var i = 0; i < list.length; i++) {
               for (var j = 0; j < scope.associationTargets.length; j++) {
+                console.debug('checking', list[i].referenceSetId, scope.associationTargets[j].conceptId);
                 if (list[i].referenceSetId === scope.associationTargets[j].conceptId) {
                   list[i].refsetName = scope.associationTargets[j].text;
                 }
               }
-              ;
             }
-            ;
+
             deferred.resolve();
             return deferred.promise;
           }
@@ -173,6 +173,7 @@ angular.module('singleConceptAuthoringApp')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 data = scope.affectedAssocs;
+                console.debug('assocs', scope.affectedAssocs);
 
 //                if (scope.filter) {
 //                  data = data.filter(relationshipFilter);
@@ -324,7 +325,9 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             snowowlService.getMembersByTargetComponent(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
 
+
               scope.affectedAssocs = response.items ? response.items.filter(assocFilter) : [];
+              console.debug('affected assocs', response, scope.affectedAssocs);
               parseAssocs(scope.affectedAssocs).then(function () {
                 scope.reloadTables();
                 deferred.resolve();
@@ -337,25 +340,25 @@ angular.module('singleConceptAuthoringApp')
           function inactivateRelationship(concept, rel) {
             console.debug('Inactivating relationship of type ', rel.type.fsn, rel);
 
-            // Switch behavior based on historical association targets present
-            if (Object.keys(scope.histAssocTarget).length > 0) {
+            /*    // Switch behavior based on historical association targets present
+             if (Object.keys(scope.histAssocTarget).length > 0) {
 
-            }
+             }
 
-            // otherwise assign copied new relationship to each parent
-            else {
-              angular.forEach(scope.inactivationConceptParents, function (parent) {
+             // otherwise assign copied new relationship to each parent
+             else {*/
+            angular.forEach(scope.inactivationConceptParents, function (parent) {
 
-                var newRel = angular.copy(rel);
-                newRel.relationshipId = null;
-                newRel.effectiveTime = null;
-                newRel.released = false;
-                newRel.target.conceptId = parent.conceptId;
-                newRel.target.fsn = parent.fsn;
-                concept.relationships.push(newRel);
-                console.debug('    added relationship', newRel);
-              });
-            }
+              var newRel = angular.copy(rel);
+              newRel.relationshipId = null;
+              newRel.effectiveTime = null;
+              newRel.released = false;
+              newRel.target.conceptId = parent.conceptId;
+              newRel.target.fsn = parent.fsn;
+              concept.relationships.push(newRel);
+              console.debug('    added relationship', newRel);
+            });
+
 
             // set the original relationship to inactive
             rel.active = 0;
@@ -380,11 +383,11 @@ angular.module('singleConceptAuthoringApp')
           function prepareAffectedRelationships() {
 
             for (var key in scope.affectedConcepts) {
-              // console.debug('Preparing affected relationships for concept' + key);
+              //console.debug('Preparing affected relationships for concept', key, scope.affectedConcepts);
               if (scope.affectedConcepts.hasOwnProperty(key)) {
                 var concept = scope.affectedConcepts[key];
                 angular.forEach(concept.relationships, function (rel) {
-                  // console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
+                //  console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
                   if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1 && metadataService.isIsaRelationship(rel.type.conceptId)) {
                     // console.debug('  prepping relationship', rel.relationshipId);
                     inactivateRelationship(concept, rel);
@@ -427,16 +430,16 @@ angular.module('singleConceptAuthoringApp')
             scope.associationTargets = metadataService.getAssociationInactivationReasons();
             scope.assocName = null;
             scope.histAssocTarget = {};
+
+            console.debug('assocs from service', scope.assocs);
+            console.debug('assoc targets from service', scope.associationTargets);
+
             for (var key in scope.assocs) {
               scope.assocName = key;
-              scope.histAssocTarget.conceptId = "";
-              scope.histAssocTarget.fsn = "";
               scope.histAssocTarget.conceptId = scope.assocs[key];
               snowowlService.getConceptPreferredTerm(scope.histAssocTarget.conceptId, scope.branch).then(function (response) {
                 scope.histAssocTarget.fsn = response.term;
               });
-
-              break;
             }
 
             // console.debug('  concept to inactivate', scope.inactivationConcept);
