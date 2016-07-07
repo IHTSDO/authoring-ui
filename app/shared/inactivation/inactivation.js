@@ -237,7 +237,23 @@ angular.module('singleConceptAuthoringApp')
           };
             
           scope.completeInactivation = function(){
-              
+              var conceptArray = $.map(scope.affectedConcepts, function(value, index) {
+                    return [value];
+              });
+              angular.forEach(conceptArray, function(concept){
+                  angular.forEach(concept.relationships, function(rel){
+                      if(rel.sourceFsn){
+                          delete rel.sourceFsn;
+                      }
+                      if(rel.typeFsn){
+                          delete rel.typeFsn;
+                      }
+                  });
+              });
+              snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response){
+                  console.log(response);
+                  
+              });
           };
 
 
@@ -342,7 +358,7 @@ angular.module('singleConceptAuthoringApp')
                   newRel.relationshipId = null;
                   newRel.effectiveTime = null;
                   newRel.released = false;
-                  newRel.target.conceptId = scope.histAssocTarget.conceptId;
+                  newRel.target.conceptId = scope.histAssocTarget.conceptId[0];
                   newRel.target.fsn = scope.histAssocTarget.fsn;
                   concept.relationships.push(newRel);
                   rel.active = 0;

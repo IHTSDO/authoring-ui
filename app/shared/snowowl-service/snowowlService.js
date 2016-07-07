@@ -38,9 +38,9 @@ angular.module('singleConceptAuthoringApp')
     
     //Update array of concepts
     //PUT /browser/{path}/concepts/{conceptId}
-    function bulkUpdateConcept(project, task, conceptArray) {
+    function bulkUpdateConcept(branch, conceptArray) {
       var deferred = $q.defer();
-      $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/bulk', conceptArray).then(function (response) {
+      $http.put(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
         deferred.resolve(response.data);
       }, function (error) {
         deferred.reject(error);
@@ -1168,6 +1168,7 @@ angular.module('singleConceptAuthoringApp')
       getRelationshipProperties: getRelationshipProperties,
       getConceptPreferredTerm: getConceptPreferredTerm,
       updateConcept: updateConcept,
+      bulkUpdateConcept: bulkUpdateConcept,
       createConcept: createConcept,
       inactivateConcept: inactivateConcept,
       inactivateDescription: inactivateDescription,
