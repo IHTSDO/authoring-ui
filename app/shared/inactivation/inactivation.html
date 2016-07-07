@@ -103,27 +103,28 @@
               </div>
             </td>
             <td>
-              <button type="button" class="btn btn-round btn-default blue"
+              <button type="button"
+                      class="btn btn-round btn-default blue"
                       ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
-                <span class="md md-edit"></span>
+                <div class="md md-edit"></div>
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default base tooltips-bottom large-size-tooltip offset-tooltip-right"
-                      ng-class="[{'green' : isAccepted(rel)}, {'grey' : !isAccepted(rel)}]"
-                      ng-click="acceptRelationship(rel)">
+              <button class="btn btn-round btn-default base"
+                      ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                      ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
-                <span>Accept Relationship Change</span>
+
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default red base tooltips-bottom large-size-tooltip offset-tooltip-right"
+              <button class="btn btn-round btn-default red base"
                       ng-click="removeRelationship(rel)">
                 <div
                   class="md fa-sca fa-minus "></div>
-                <span>Remove proposed relationship</span>
+
               </button>
             </td>
           </tr>
@@ -150,28 +151,27 @@
             </td>
             <td>
               <button type="button"
-                      class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      class="btn btn-round btn-default blue"
                       ng-click="editConcept(rel.sourceId)"
                       title="View/Edit Concept">
                 <div class="md md-edit"></div>
-                <span>Edit concept</span>
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default base tooltips-bottom large-size-tooltip offset-tooltip-right"
-                      ng-class="[{'green' : isAccepted(rel)}, {'grey' : !isAccepted(rel)}]"
-                      ng-click="acceptRelationship(rel)">
+              <button class="btn btn-round btn-default base"
+                      ng-class="[{'green' : rel.accepted)}, {'grey' : !rel.accepted}]"
+                      ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
-                <span>Accept relationship change</span>
+
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default red base tooltips-bottom large-size-tooltip offset-tooltip-right"
+              <button class="btn btn-round btn-default red base"
                       ng-click="removeRelationship(rel)">
                 <div
                   class="md fa-sca fa-minus "></div>
-                <span>Remove proposed relationship</span>
+
               </button>
             </td>
           </tr>
@@ -212,28 +212,27 @@
             </td>
             <td>
               <button type="button"
-                      class="btn btn-round btn-default blue tooltips-bottom large-size-tooltip offset-tooltip-right"
+                      class="btn btn-round btn-default blue"
                       ng-click="editConcept(rel.referencedComponent.id)"
                       title="View/Edit Concept">
                 <div class="md md-edit"></div>
-                <span>Edit concept</span>
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default base tooltips-bottom large-size-tooltip offset-tooltip-right"
-                      ng-class="[{'green' : isAccepted(rel)}, {'grey' : !isAccepted(rel)}]"
-                      ng-click="acceptRelationship(rel)">
+              <button class="btn btn-round btn-default base"
+                      ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                      ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
-                <span>Accept association change</span>
+
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default red base tooltips-bottom large-size-tooltip offset-tooltip-right"
+              <button class="btn btn-round btn-default red base"
                       ng-click="removeAssociation(rel)">
                 <div
                   class="md fa-sca fa-minus "></div>
-                <span>Remove proposed association</span>
+
               </button>
             </td>
           </tr>

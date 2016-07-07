@@ -425,19 +425,14 @@ angular.module('singleConceptAuthoringApp')
           //
           // Relationship approval and completion marking
           //
-          var relsAccepted = [];
-          scope.acceptRelationship = function (rel) {
-            console.debug('Accepting relationship', rel);
-            if (rel && relsAccepted.indexOf(rel) === -1) {
-              relsAccepted.push(rel);
-            }
-            console.debug('relsAccepted', relsAccepted.length, scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total());
+          var rowsAccepted = 0;
+          scope.toggleRowAccepted = function(row) {
+            row.accepted = !row.accepted;
+            rowsAccepted += row.accepted ? 1 : -1;
           };
-          scope.isAccepted = function (rel) {
-            return rel && relsAccepted.indexOf(rel) !== -1;
-          };
+
           scope.isComplete = function () {
-            return !scope.initializing && relsAccepted.length === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.affectedAssocs.total();
+            return !scope.initializing && rowsAccepted === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.affectedAssocs.total();
           };
 
           //
