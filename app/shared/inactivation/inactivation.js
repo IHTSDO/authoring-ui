@@ -321,7 +321,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             snowowlService.getMembersByTargetComponent(scope.inactivationConcept.conceptId, scope.branch).then(function(response){
                 
-                scope.affectedAssocs = response.items.filter(assocFilter);
+                scope.affectedAssocs = response.items ? response.items.filter(assocFilter) : [];
                 parseAssocs(scope.affectedAssocs).then(function() {
                     scope.reloadTables();
                     deferred.resolve();
