@@ -327,10 +327,14 @@ angular.module('singleConceptAuthoringApp')
                   $defer.resolve([]);
                 } else {
 
-                  var orderedData = scope.failures;
+                  var orderedData = scope.failures.filter(function (failure) {
+                    return !scope.restrictByTraceability || failure.userModified;
+                  });
+                  console.debug('ordered data', orderedData);
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                  console.debug('ordered data', orderedData);
                   $defer.resolve(orderedData);
                 }
               }
@@ -339,8 +343,10 @@ angular.module('singleConceptAuthoringApp')
 
           scope.reloadTables = function () {
             if (scope.viewTop) {
+              console.debug('reloading top table');
               scope.topTableParams.reload();
             } else {
+              console.debug('reloading failure table')
               scope.failureTableParams.reload();
             }
           };
@@ -368,12 +374,11 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.assertionsFailed, function (assertion) {
               assertion.isUserModified = false;
               angular.forEach(assertion.firstNInstances, function (instance) {
-                console.debug('checking instance', instance.conceptId, instance);
                 if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                  console.debug('--> User modified');
+                  console.debug('--> User modified instance', instance);
                   instance.isUserModified = true;
                   assertion.isUserModified = true;
-                  console.debug('    instance', instance);
+
                 } else {
                   instance.isUserModified = false;
                 }
@@ -390,11 +395,16 @@ angular.module('singleConceptAuthoringApp')
             // load the tables
             scope.topTableParams.reload();
             scope.failureTableParams.reload();
+
+
           }
 
           // watch for changes in the validation in order to populate tables
           var failuresInitialized = false;
+
           scope.$watch('validationContainer', function (newVal, oldVal) {
+
+            scope.initializing = true;
 
             console.debug('validationContainer', newVal, oldVal);
             if (!scope.validationContainer || !scope.validationContainer.report) {
@@ -438,23 +448,23 @@ angular.module('singleConceptAuthoringApp')
 
                 // initialize the failures
                 initFailures();
+
+                scope.initializing = false;
               });
             } else {
               // initialize the failures
               initFailures();
+
+              scope.initializing = false;
             }
 
 
           }, true); // make sure to check object inequality, not reference!
 
 
-          function isInstanceViewable(instance) {
-            return !scope.restrictByTraceability || scope.userModifiedConceptIds.indexOf(instance.conceptId) !== -1;
-          }
-
           scope.viewFailures = function (assertionFailure) {
 
-            //console.debug('assertionFailure', assertionFailure);
+            console.debug('assertionFailure', assertionFailure);
 
             scope.assertionFailureViewed = assertionFailure.assertionText;
             scope.viewTop = false;
@@ -463,90 +473,25 @@ angular.module('singleConceptAuthoringApp')
 
             var objArray = [];
 
-            // different handling for projects and tasks
-            if (!$routeParams.taskKey) {
-              //console.debug('project detected');
+            //console.debug(assertionFailure.firstNInstances);
+            angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
-              angular.forEach(assertionFailure.firstNInstances, function (instance) {
+              var obj = {
+                conceptId: instance.conceptId,
+                message: instance.detail,
+                selected: false,
+                userModified: $routeParams.taskKey ? instance.isUserModified : false
+              };
 
-                if (isInstanceViewable(instance)) {
+              objArray.push(obj);
+            });
 
-                  var obj = {
-                    conceptId: instance.conceptId,
-                    message: instance.detail,
-                    selected: false
-                  };
-                  objArray.push(obj);
-                }
-              });
-              scope.failures = objArray;
-              notificationService.sendMessage('Retrieving concept names...');
-              getNamesForFailures().then(function () {
-                notificationService.sendMessage('Concept names retrieved', 5000);
-                scope.failureTableParams.reload();
-              });
-            }
 
-            // task handling
-            else {
+            scope.failures = objArray;
+            getNamesForFailures().then(function () {
+              scope.failureTableParams.reload();
+            });
 
-              // convert instances into table objects
-              if (!scope.changedList) {
-                //console.debug(assertionFailure.firstNInstances);
-
-                scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                  scope.changedList = response;
-                  angular.forEach(assertionFailure.firstNInstances, function (instance) {
-                    var obj = {
-                      conceptId: instance.conceptId,
-                      message: instance.detail,
-                      selected: false,
-                      userModified: instance.isUserModified
-                    };
-                    angular.forEach(scope.changedList.concepts, function (concept) {
-                      if (instance.conceptId === concept.id) {
-                        obj.userModified = true;
-                      }
-                    });
-                    objArray.push(obj);
-                  });
-
-                  scope.failures = objArray;
-                  notificationService.sendMessage('Retrieving concept names...');
-                  getNamesForFailures().then(function () {
-                    notificationService.sendMessage('Concept names retrieved', 5000);
-                    scope.failureTableParams.reload();
-                  });
-                });
-
-              }
-
-              else {
-
-                //console.debug(assertionFailure.firstNInstances);
-                angular.forEach(assertionFailure.firstNInstances, function (instance) {
-
-                  var obj = {
-                    conceptId: instance.conceptId,
-                    message: instance.detail,
-                    selected: false,
-                    userModified: false
-                  };
-                  angular.forEach(scope.changedList.concepts, function (concept) {
-                    if (instance.conceptId === concept.id) {
-                      obj.userModified = true;
-                    }
-                  });
-                  objArray.push(obj);
-                });
-
-                scope.failures = objArray;
-                getNamesForFailures().then(function () {
-                  scope.failureTableParams.reload();
-                });
-              }
-              // TODO Set edit enable/disable for edit panel
-            }
             scope.failureTableParams.reload();
           };
 
