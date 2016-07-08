@@ -276,7 +276,9 @@ angular.module('singleConceptAuthoringApp')
                 notificationService.sendMessage('Updating Historical Associations...');
                 updateHistoricalAssociations(scope.affectedAssocs).then(function(){
                     notificationService.sendMessage('Inactivating Concept...');
-                    inactivationService.inactivateConcept();
+                    inactivationService.inactivateConcept().then(function(){
+                        $scope.setView('edit-default');                             
+                     });
                 });
             });
           };
@@ -291,7 +293,7 @@ angular.module('singleConceptAuthoringApp')
               var deferred = $q.defer();
               angular.forEach(list, function(item){
                 console.log(item);
-                snowowlService.inactivateConcept(scope.branch,  item.referencedComponent.conceptId,  item.referencedComponent.inactivationIndicator,  [parameters.newTargetId]).then(function () {
+                snowowlService.inactivateConcept(scope.branch, item.referencedComponent.id,  item.referencedComponent.inactivationIndicator, [item.newTargetId]).then(function () {
                     
                   });
               });
