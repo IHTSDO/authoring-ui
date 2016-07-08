@@ -58,7 +58,7 @@
       <div class=" p-t-3  ">
         <button type="button"
                 class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                ng-click="saveConcept()" ng-if="isModified && !isStatic" ng-disabled="saving">
+                ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic" ng-disabled="saving">
           <span> Save Concept </span>
         </button>
         <button type="button"
