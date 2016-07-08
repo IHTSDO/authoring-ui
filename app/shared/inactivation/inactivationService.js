@@ -57,9 +57,6 @@ angular.module('singleConceptAuthoringApp')
       } else if (!parameters.reasonId) {
         deferred.reject('Inactivation called without setting reason');
       } else {
-
-
-
         snowowlService.inactivateConcept(parameters.branch,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
 
           parameters.concept.active = false;
