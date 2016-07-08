@@ -460,7 +460,7 @@ angular.module('singleConceptAuthoringApp')
                 var concept = scope.affectedConcepts[key];
                 angular.forEach(concept.relationships, function (rel) {
                   //  console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
-                  if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1 && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets != null) {
+                  if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1 && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0) {
                     // console.debug('  prepping relationship', rel.relationshipId);
                     inactivateRelationship(concept, rel);
                   }
@@ -543,8 +543,6 @@ angular.module('singleConceptAuthoringApp')
             scope.assocName = null;
             scope.histAssocTargets = {};
             scope.histAssocTargets.concepts = [];
-
-            console.debug('AMBIGUOUS', scope.getAssociationsForReason('AMBIGUOUS'));
 
             for (var key in scope.assocs) {
               
