@@ -2,8 +2,8 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal) {
+  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal', '$route',
+    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal, $route) {
       return {
         restrict: 'A',
         transclude: false,
@@ -25,6 +25,11 @@ angular.module('singleConceptAuthoringApp')
           scope.affectedConceptIds = [];
           scope.affectedConcepts = {};
           scope.affectedAssocs = [];
+          scope.finalizing = false;
+            
+          $(".btn").mouseup(function(){
+            $(this).blur();
+        })
 
           // currently edited concept
           scope.editedConcept = null;
@@ -69,6 +74,8 @@ angular.module('singleConceptAuthoringApp')
 
           function parseAssocs(list) {
             var deferred = $q.defer();
+              console.log(list);
+              console.log(scope.associationTargets);
             for (var i = list.length -1; i >= 0; i--) {
               for (var j = 0; j < scope.associationTargets.length; j++) {
                 if (list[i].referenceSetId === scope.associationTargets[j].conceptId) {
@@ -88,6 +95,7 @@ angular.module('singleConceptAuthoringApp')
               }
               list.splice(i, 1);
             }
+            console.log(list);
 
             deferred.resolve();
             return deferred.promise;
@@ -259,6 +267,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.completeInactivation = function () {
+            scope.finalizing = true;
             notificationService.sendMessage('Saving Modified Relationships...');
             var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
               return [value];
@@ -281,7 +290,8 @@ angular.module('singleConceptAuthoringApp')
                 updateHistoricalAssociations(scope.affectedAssocs).then(function(){
                     notificationService.sendMessage('Inactivating Concept...');
                     inactivationService.inactivateConcept().then(function(){
-                        $scope.setView('edit-default');                             
+                        notificationService.sendMessage('Inactivation Complete');
+                        $route.reload();                         
                      });
                 });
             });
@@ -382,8 +392,7 @@ angular.module('singleConceptAuthoringApp')
 
               });
 
-              console.debug('parsing associations');
-              if(scope.affectedAssocs.items && scope.affectedAssocs.items.length > 0){
+              if(scope.affectedAssocs && scope.affectedAssocs.length > 0){
                   parseAssocs(scope.affectedAssocs).then(function () {
                     deferred.resolve();
                   });
@@ -550,9 +559,16 @@ angular.module('singleConceptAuthoringApp')
                   var concept = {};
                   concept.assocName = key;
                   concept.conceptId = id;
-                  snowowlService.getConceptPreferredTerm(id, scope.branch).then(function (response) {
-                    concept.fsn = response.term;
+                  snowowlService.getConceptDescriptions(id, scope.branch).then(function (response) {
+                    angular.forEach(response, function(desc){
+                        if(desc.typeId === '900000000000003001' && desc.active === true)
+                        {
+                            concept.fsn = desc.term;
+                        }
+                    });
+                    
                   });
+                  console.log(concept);
                   scope.histAssocTargets.concepts.push(concept);
               });
               
