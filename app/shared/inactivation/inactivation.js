@@ -255,6 +255,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.completeInactivation = function () {
+            notificationService.sendMessage('Saving Modified Relationships...');
             var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
               return [value];
             });
@@ -266,17 +267,36 @@ angular.module('singleConceptAuthoringApp')
                 if (rel.typeFsn) {
                   delete rel.typeFsn;
                 }
+                if (rel.accepted) {
+                  delete rel.accepted;
+                }
               });
             });
             snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-              console.log(response);
-
+                notificationService.sendMessage('Updating Historical Associations...');
+                updateHistoricalAssociations(scope.affectedAssocs).then(function(){
+                    notificationService.sendMessage('Inactivating Concept...');
+                    inactivationService.inactivateConcept();
+                });
             });
           };
+            
           scope.dropAssociationTarget = function (relationship, data) {
             relationship.newTargetId = data.id;
             relationship.newTargetFsn = data.name;
             scope.reloadTables();
+          };
+        
+          function updateHistoricalAssociations(list){
+              var deferred = $q.defer();
+              angular.forEach(list, function(item){
+                console.log(item);
+                snowowlService.inactivateConcept(scope.branch,  item.referencedComponent.conceptId,  item.referencedComponent.inactivationIndicator,  [parameters.newTargetId]).then(function () {
+                    
+                  });
+              });
+              deferred.resolve();
+              return deferred.promise;
           };
 
 
