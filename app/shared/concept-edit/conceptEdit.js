@@ -2339,6 +2339,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           console.debug('setting modified to true');
           scope.isModified = true;
+          if (scope.isInactivation) {
+              if (scope.validation && scope.validation.hasErrors) {
+                notificationService.sendError('Fix errors before continuing');
+              } else {
+                scope.saving = false;
+                scope.isModified = false;
+                $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
+              }
+            }
 
           // save the modified concept
           saveModifiedConcept();
