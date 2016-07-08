@@ -26,6 +26,10 @@ angular.module('singleConceptAuthoringApp')
           scope.affectedConcepts = {};
           scope.affectedAssocs = [];
           scope.finalizing = false;
+            
+          $(".btn").mouseup(function(){
+            $(this).blur();
+        })
 
           // currently edited concept
           scope.editedConcept = null;
