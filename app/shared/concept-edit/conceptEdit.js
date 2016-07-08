@@ -505,6 +505,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // special case -- inactivation:  simply broadcast concept
             else if (scope.isInactivation) {
+                console.log('inactivation');
 
               if (scope.validation && scope.validation.hasErrors) {
                 notificationService.sendError('Fix errors before continuing');
@@ -574,7 +575,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         // pass inactivation service function to determine whether in process of inactivation
-        scope.isInactivation = inactivationService.isInactivation;
+        //scope.isInactivation = inactivationService.isInactivation;
 
 
         // function to toggle active status of concept
