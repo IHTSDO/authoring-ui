@@ -32,17 +32,17 @@
     }
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
-    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -
-      {{assocName}} <span ng-repeat="concept in histAssocTargets.concepts"> {{concept.fsn}} </span>
+    <div class="col-md-12 classification-header">
+        <div class="col-md-8">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
 
 
       <button
-        class="btn btn-default red darken-4 pull-right" style="text-transform: none"
+        class="btn btn-default red darken-4 pull-right col-md-2" style="text-transform: none"
         ng-click="cancelInactivation()"><i class="md md-cross m-r-10"></i>Cancel Inactivation
       </button>
 
       <button
-        class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+        class="col-md-2 btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
         ng-class="[{'lighten-3' : !isComplete()}]" style="text-transform: none"
         ng-disabled="!isComplete()"
         ng-click="completeInactivation()">
