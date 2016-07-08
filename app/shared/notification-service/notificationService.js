@@ -21,6 +21,7 @@ angular.module('singleConceptAuthoringApp')
         console.error('Cannot send empty application notification');
       }
 
+
       var notification = {
         type: 'MESSAGE',
         message: message,
@@ -36,6 +37,7 @@ angular.module('singleConceptAuthoringApp')
         console.error('Cannot send empty application notification');
       }
 
+
       var notification = {
         type: 'WARNING',
         message: message,
@@ -50,6 +52,7 @@ angular.module('singleConceptAuthoringApp')
       if (!message || message.length === 0) {
         console.error('Cannot send empty application notification');
       }
+
 
       var notification = {
         type: 'ERROR',

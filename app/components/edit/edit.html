@@ -7,7 +7,7 @@
     <!-- Inactivation button (shown only if service has concept set) -->
     <button
       type="button" ng-click="setView('inactivation')"
-      ng-show="isInactivation()"
+      ng-show="isInactivation"
       class="btn btn-default red widget-toolbar tooltips-right tooltips-light normal-case">
       <div class="md fa-sca fa-power-off"></div>
       <span>Inactivation</span></button>
@@ -147,9 +147,7 @@
             <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')"
                  style="margin-right:0px;">
               <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
-                   save-function="conceptUpdateFunction(project, task, concept)"
-              >
+                   branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()">
               </div>
             </div>
 
@@ -205,7 +203,6 @@
                  style="margin-right:0px;">
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
                    branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
-                   save-function="conceptUpdateFunction(project, task, concept)"
               >
               </div>
             </div>
@@ -272,7 +269,6 @@
                style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
                  branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
-                 save-function="conceptUpdateFunction(project, task, concept)"
             >
             </div>
           </div>
@@ -305,6 +301,11 @@
 
     <!-- Inactivation view -->
     <div ng-if="thisView === 'inactivation'">
+
+      <!-- sidebar -->
+      <div class="editpanel sca-column no-padding "
+
+           ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
 
       <div class="row no-padding no-gutter">
 

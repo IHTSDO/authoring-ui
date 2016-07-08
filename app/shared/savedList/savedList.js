@@ -9,17 +9,19 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     // function to select an item from the saved list
     // broadcasts selected conceptId
     $scope.selectItem = function (item) {
-      if (!item) {
+      if (!item || item.editing) {
         return;
       }
+
       console.log(item.concept.conceptId);
       $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
-
+      item.editing = true;
     };
 
     $scope.clone = function (item) {
       if (item) {
         $rootScope.$broadcast('cloneConcept', {conceptId: item.concept.conceptId});
+        item.editing = true;
       }
     };
 
@@ -70,7 +72,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       return $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
     $scope.viewConceptInTaxonomy = function (item) {
-      console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+      //console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
       $rootScope.$broadcast('viewTaxonomy', {
         concept: {
           conceptId: item.concept.conceptId,
@@ -108,33 +110,35 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       if (!data || !data.concept) {
         console.error('Cannot handle concept modification event: concept must be supplied');
       } else {
-        console.debug('conceptModified notification', data);
-        // sample structure for favorites
-        //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
-        angular.forEach($scope.savedList.items, function (item) {
+        if ($scope.savedList) {
+          //console.debug('conceptModified notification', data);
+          // sample structure for favorites
+          //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
+          angular.forEach($scope.savedList.items, function (item) {
 
-          // if concept on list, update the relevant display fields
-          if (item.concept.conceptId === data.concept.conceptId) {
-            item.active = data.concept.active;
-            item.concept.definitionStatus = data.concept.definitionStatus;
-            item.concept.fsn = data.concept.fsn;
-            item.editing = true;
-            scaService.saveUiStateForTask(
-              $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
-            );
-          }
-        });
+            // if concept on list, update the relevant display fields
+            if (item.concept.conceptId === data.concept.conceptId) {
+              item.active = data.concept.active;
+              item.concept.definitionStatus = data.concept.definitionStatus;
+              item.concept.fsn = data.concept.fsn;
+              item.editing = true;
+              scaService.saveUiStateForTask(
+                $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
+              );
+            }
+          });
 
-        angular.forEach($scope.favorites.items, function (item) {
+          angular.forEach($scope.favorites.items, function (item) {
 
-          // if concept on list, update the relevant display fields
-          if (item.concept.conceptId === data.concept.conceptId) {
-            item.active = data.concept.active;
-            item.concept.definitionStatus = data.concept.definitionStatus;
-            item.concept.fsn = data.concept.fsn;
-            scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
-          }
-        })
+            // if concept on list, update the relevant display fields
+            if (item.concept.conceptId === data.concept.conceptId) {
+              item.active = data.concept.active;
+              item.concept.definitionStatus = data.concept.definitionStatus;
+              item.concept.fsn = data.concept.fsn;
+              scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
+            }
+          });
+        }
       }
     });
 
@@ -142,11 +146,14 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       if (!data || !data.concept) {
         console.error('Cannot handle stop editing event: concept must be supplied');
       } else {
-        angular.forEach($scope.savedList.items, function (item) {
-          if (item.concept.conceptId === data.concept.conceptId) {
-            item.editing = false;
-          }
-        });
+        if ($scope.savedList) {
+
+          angular.forEach($scope.savedList.items, function (item) {
+            if (item.concept.conceptId === data.concept.conceptId) {
+              item.editing = false;
+            }
+          });
+        }
       }
     });
 

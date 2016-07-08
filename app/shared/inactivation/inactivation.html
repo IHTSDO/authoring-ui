@@ -1,17 +1,4 @@
 <section class="tables-data">
-  <!-- for ng-table checkboxes -->
-  <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
-    <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
-           id="select_all_failures"
-           name="filter-checkbox" value=""/>
-  </script>
-  <script type="text/ng-template" id="editheader.html">
-    <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
-            class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
-            <span
-              class="md md-edit"></span>
-    </button>
-  </script>
   <style>
 
     .table > tbody > tr > td,
@@ -40,128 +27,241 @@
       border: 1px solid #00a6e5 !important;
     }
 
-    .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
-      margin-left: -33px;
+    .table-filter {
+      padding: 25px !important;
     }
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
-    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}
+    <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -
+      {{assocName}} {{histAssocTarget.fsn}}
 
 
       <button
         class="btn btn-default red darken-4 pull-right" style="text-transform: none"
-        ng-click="cancelInactivation()"><i class="md md-check m-r-10"></i>Cancel Inactivation
+        ng-click="cancelInactivation()"><i class="md md-cross m-r-10"></i>Cancel Inactivation
       </button>
 
       <button
-        class="btn btn-default green  pull-right" style="text-transform: none"
-        ng-click="cancelInactivation()"><i class="md md-check m-r-10"></i>Complete Inactivation
+        class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+        ng-class="[{'lighten-3' : !isComplete()}]" style="text-transform: none"
+        ng-disabled="!isComplete()"
+        ng-click="completeInactivation()">
+        <i class="md m-r-10" ng-class="[{'md-check' : isComplete()}, {'md-block' : !isComplete()}]"></i>Complete Inactivation
       </button>
     </div>
   </div>
   <div class="card m-10 validation-report">
 
-    <div class="ng-table-no-results" ng-show="assocsTableParams.total() == 0 && relsTableParams.total() == 0">
-      No validation results to display
+    <div class="ng-table-no-results" ng-show="!initializing && affectedRelationshipIds.length == 0">
+      Inactivation affects no relationships or concepts.
     </div>
 
-    <!-- Nav tabs -->
-    <div class="row classification-report">
+    <div ng-show="!initializing && affectedRelationshipIds.length > 0">
+
+      <!-- Nav tabs -->
+      <div class="row classification-report">
         <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
           <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
                                                                    aria-controls="home" role="tab"
-                                                                   data-toggle="tab"> Relationships Affected By
-            Inactivation ({{relsTableParams.total()}})
+                                                                   data-toggle="tab"> Children
+            Effected ({{isaRelsTableParams.total()}})
+          <li role="presentation" class="classification"><a style="margin: 0px" ng-click="actionTab=2"
+                                                            aria-controls="home" role="tab"
+                                                            data-toggle="tab"> Attributes Effected
+            ({{attrRelsTableParams.total()}})
           </a></li>
-          <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Historical Associations ({{assocsTableParams.total()}})</a>
+          <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
+                                                       data-toggle="tab">Historical Associations Effected
+            ({{assocsTableParams.total()}})</a>
+          </li>
+          <li>
+            <input type="text" ng-model="tableFilter" ng-change="reloadTables()"
+                   ng-model-options='{ debounce: 500 }'
+                   placeholder="Search Results"/>
           </li>
         </ul>
+
       </div>
 
-  </div>
-    <div class="table-responsive white" style="margin-right:0px;">
-      <table
-        ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
-        class="table table-full table-full-small">
-        <tr ng-repeat="rel in $data">
-          <td class="col-checkbox" header="'ng-table/headers/checkboxHeader.html'">
-            <input type="checkbox" ng-model="rel.selected" ui-on-drop="">
-          </td>
-          <td data-title="'RG'" sortable="'groupId'">{{rel.group}}</td>
-          <td data-title="'Concept'" sortable="FSN">{{rel.sourceFsn}}
-          </td>
-          <td data-title="'Attribute'" sortable="'failureCount'">
-            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
-              <span>Relationship type</span>
-            </div>
-          </td>
-          <td data-title="'Value (Proposed)'" sortable="'failureCount'">
-            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> ???
-              <span>Proposed Value</span>
-            </div>
-          </td>
-          <td ng-if="editable" data-header="'editheader.html'">
-            <button type="button" class="btn btn-round btn-default blue"
-                    ng-click="editConcept(failure.errorMessage.conceptId)"
-                    title="View/Edit Concept">
-              <span class="md md-edit"></span>
-            </button>
-          </td>
-        </tr>
-      </table>
-      NOTE: Inactive relationships not shown.
-    </div>
-    <div class="table-responsive white" style="margin-right:0px;" ng-if="assocs">
-      <table
-        ng-table="relsTableParams" template-pagination="utilities/data-table-pager.html"
-        class="table table-full table-full-small">
-        <tr ng-repeat="assoc in $data">
-          <td data-title="'Concept'" sortable="'assertionText'">{{rel.source.FSN}}
-          </td>
-          <td data-title="'Attribute'" sortable="'failureCount'">
-            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-              <span>Relationship type</span>
-            </div>
-          </td>
-          <td data-title="'Value (Proposed)'" sortable="'failureCount'">
-            <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.type}}
-              <span>Relationship type</span>
-            </div>
-          </td>
-          <td ng-if="editable" data-header="'editheader.html'">
-            <button type="button" class="btn btn-round btn-default blue"
-                    ng-click="editConcept(failure.errorMessage.conceptId)"
-                    title="View/Edit Concept">
-              <span class="md md-edit"></span>
-            </button>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
-  </div>
-  <!-- Taxonomy, models, and concepts -->
-  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
-    <!-- Taxonomy -->
-    <div class="col-md-4">
-      <div>
-        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+
+      <div ng-show="actionTab==1" class="table-responsive white" style="margin-right:0px;">
+        <table
+          ng-table="isaRelsTableParams" template-pagination="utilities/data-table-pager.html"
+          class="table table-full table-full-small">
+          <tr ng-repeat="rel in $data">
+            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
+            </td>
+            <td data-title="'Attribute'" sortable="'typeFsn'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
+                <span>Relationship type</span>
+              </div>
+            </td>
+            <td data-title="'Value (Proposed)'" sortable="'target'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left">{{rel.target.fsn}}
+                <span>Proposed Value</span>
+              </div>
+            </td>
+            <td>
+              <button type="button"
+                      class="btn btn-round btn-default blue"
+                      ng-click="editConcept(rel.sourceId)"
+                      title="View/Edit Concept">
+                <div class="md md-edit"></div>
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-round btn-default base"
+                      ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                      ng-click="toggleRowAccepted(rel)">
+                <div
+                  class="md md-thumb-up "></div>
+
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-round btn-default red base"
+                      ng-click="removeRelationship(rel)">
+                <div
+                  class="md fa-sca fa-minus "></div>
+
+              </button>
+            </td>
+          </tr>
+        </table>
+        </br></br></br>
+      </div>
+      <div ng-show="actionTab==2" class="table-responsive white" style="margin-right:0px;">
+        <table
+          ng-table="attrRelsTableParams" template-pagination="utilities/data-table-pager.html"
+          class="table table-full table-full-small">
+          <tr ng-repeat="rel in $data">
+            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.sourceFsn}}
+            </td>
+            <td data-title="'RG'" sortable="'groupId'">{{rel.groupId}}</td>
+            <td data-title="'Attribute'" sortable="'typeFsn'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.typeFsn}}
+                <span>Relationship type</span>
+              </div>
+            </td>
+            <td data-title="'Value (Proposed)'" sortable="'target'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.target.fsn}}
+                <span>Proposed Value</span>
+              </div>
+            </td>
+            <td>
+              <button type="button"
+                      class="btn btn-round btn-default blue"
+                      ng-click="editConcept(rel.sourceId)"
+                      title="View/Edit Concept">
+                <div class="md md-edit"></div>
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-round btn-default base"
+                      ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                      ng-click="toggleRowAccepted(rel)">
+                <div
+                  class="md md-thumb-up "></div>
+
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-round btn-default red base"
+                      ng-click="removeRelationship(rel)">
+                <div
+                  class="md fa-sca fa-minus "></div>
+
+              </button>
+            </td>
+          </tr>
+        </table>
+        </br></br></br>
+      </div>
+      <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
+        <table
+          ng-table="assocsTableParams" template-pagination="utilities/data-table-pager.html"
+          class="table table-full table-full-small">
+          <tr ng-repeat="rel in $data">
+
+            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.referencedComponent.fsn.term}}
+            </td>
+            <td data-title="'Reason'" sortable="''">
+
+              <select ng-model="rel.referencedComponent.inactivationIndicator"
+                      ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
+
+            </td>
+            <td data-title="'Association'" sortable="'refsetName'">
+
+              <select ng-model="rel.refsetName"
+                      ng-options="target.text as target.text for target in getAssociationsForReason(rel.referencedComponent.inactivationIndicator)"></select>
+            </td>
+            <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
+                <div drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropAssociationTarget(rel, $data)">
+              <textarea type="text" ng-model="rel.newTargetFsn" 
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setTargetComponent(rel, $item)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3">
+
+                                    </textarea>
+                    </div>
+            </td>
+            <td>
+              <button type="button"
+                      class="btn btn-round btn-default blue"
+                      ng-click="editConcept(rel.referencedComponent.id)"
+                      title="View/Edit Concept">
+                <div class="md md-edit"></div>
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-round btn-default base"
+                      ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                      ng-click="toggleRowAccepted(rel)">
+                <div
+                  class="md md-thumb-up "></div>
+
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-round btn-default red base"
+                      ng-click="removeAssociation(rel)">
+                <div
+                  class="md fa-sca fa-minus "></div>
+
+              </button>
+            </td>
+          </tr>
+
+        </table>
+        </br></br></br>
+      </div>
+
+      <!-- Taxonomy, models, and concepts -->
+      <div class="row m-t-15 no-gutter" ng-if="editedConcept">
+
+        <div concept-edit concept="editedConcept" id="height-{{concept.conceptId}}'"
+             branch="branch" static="false" autosave="false" show-inactive="true" inactivation-editing="true">
+        </div>
+
+        <!-- Taxonomy -->
+        <!-- <div class="col-md-6">
+           <div>
+             <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+           </div>
+         </div>
+         <div class="col-md-6">
+           <div>
+             <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+           </div>
+         </div>-->
       </div>
     </div>
-    <div class="col-md-8">
-      <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
-        <div class="col-md-6">
-          <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-        </div>
-        <div class="col-md-6">
-          <div concept-edit concept="concept" branch="branch" static="false"
-               component-styles="styles[concept.conceptId]"
-               save-function="conceptUpdateFunction(project, task, concept)"></div>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
 

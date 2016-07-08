@@ -2,13 +2,13 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.taxonomy', [])
 
-  .controller('taxonomyCtrl', ['$scope', '$routeParams', '$location', '$compile', 'endpointService', function AppCtrl($scope, $routeParams, $location, $compile, endpointService) {
+  .controller('taxonomyCtrl', ['$scope', '$routeParams', '$location', '$compile', 'configService', 'metadataService', function AppCtrl($scope, $routeParams, $location, $compile, configService, metadataService) {
 
-    $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
+    $scope.branch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + "/" + $routeParams.taskKey;
     var options = {
       serverUrl: "/snowowl",
       edition: "snomed-ct/v2/browser",
-      release: "MAIN",
+      release: metadataService.getBranchRoot(),
       selectedView: "inferred",
       displayChildren: false,
       langRefset: "900000000000509007",
@@ -33,7 +33,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
     // therefore only send the concept Id and let the drop target
     // function handle name retrieval
     $scope.getConceptPropertiesObj = function (conceptId) {
-      console.debug('Getting concept properties obj', conceptId);
+      //console.debug('Getting concept properties obj', conceptId);
       return {id: conceptId, name: null};
     };
 
@@ -254,7 +254,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             var selectedId = $(event.target).attr('data-concept-id');
             var selectedLabel = $(event.target).attr('data-term');
             if (typeof selectedId != "undefined") {
-                
+
               $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + selectedId + "/parents?form=" + panel.options.selectedView, function (result) {
                 // done
               }).done(function (result) {

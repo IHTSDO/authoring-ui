@@ -1,9 +1,9 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.search', [])
 
-  .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$compile', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, $compile, scaService) {
+  .controller( 'searchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', '$compile', 'metadataService', 'scaService', function AppCtrl ( $scope, $rootScope, $location, $routeParams, $compile, metadataService, scaService) {
 
-    $scope.branch = "MAIN/" + $routeParams.projectKey + "/" + $routeParams.taskKey;
+    $scope.branch = metadataService.getBranch();
     var options = {
       serverUrl: "/snowowl",
       edition: "snomed-ct/v2/browser",
@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       taskSet: false,
       taskKey: null
     };
-    
+
     $scope.saveUiStateForTask = function (projectKey, taskKey, panelId, uiState) {
       scaService.saveUiStateForTask(
         projectKey, taskKey, panelId, uiState)
@@ -48,14 +48,14 @@ angular.module('singleConceptAuthoringApp.search', [])
         $scope.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, "saved-list", $scope.savedList);
       }
     };
-    
+
     /*$scope.$on('savedListRemove', function (event, data) {
       if (!data || !data.conceptId) {
         return;
       }
     else{
         $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").attr("disabled", false);
-        $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");   
+        $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");
     }
 
     });*/
@@ -91,12 +91,12 @@ angular.module('singleConceptAuthoringApp.search', [])
       }
       return false;
     };
-    
+
     // drag and drop object
     // NOTE: Search plugin returns weird names it seems
     // so leave retrieval to the drop target function
     $scope.getConceptPropertiesObj = function (conceptId) {
-      console.debug('Getting concept properties obj', conceptId);
+      //console.debug('Getting concept properties obj', conceptId);
       return {id: conceptId, name: null};
     };
 
@@ -239,7 +239,7 @@ angular.module('singleConceptAuthoringApp.search', [])
         searchHtml = searchHtml + "</div>";
         searchHtml = searchHtml + "</div>";
         $(divElement).html(searchHtml);
-        //added to re-enable automatic triggering of the search after three chars have been entered. Swap with the below to 
+        //added to re-enable automatic triggering of the search after three chars have been entered. Swap with the below to
         //change back to triggering only on the pressing of return.
         $('#' + panel.divElement.id + '-searchBox').keyup(function () {
             clearTimeout(thread);
@@ -260,7 +260,7 @@ angular.module('singleConceptAuthoringApp.search', [])
 //          }
 //
 //        });
-        
+
         $("#" + panel.divElement.id + "-expandButton").hide();
         $("#" + panel.divElement.id + "-subscribersMarker").hide();
 
@@ -532,7 +532,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                 xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + t,function (result) {
                 $scope.conceptIdSearch = true;
                 }).done(function (result) {
-                  
+
                   $.each(result.descriptions, function (index, field) {
                     if(field.type === "FSN" && field.active === true)
                     {
@@ -545,7 +545,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                     }
                     }
                   });
-                  
+
                   $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                   $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
                   $('#' + panel.divElement.id + '-resultsTable').find(".jqui-draggable").draggable({

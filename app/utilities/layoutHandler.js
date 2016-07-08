@@ -24,8 +24,6 @@ angular.module('singleConceptAuthoringApp')
      */
     function getLayoutHelper(name, node, parentNode) {
 
-      console.debug('getLayoutHelper', name, node, parentNode);
-
       if (!node) {
         node = $rootScope.layout;
       }
@@ -64,7 +62,6 @@ angular.module('singleConceptAuthoringApp')
      */
     function resizeLayoutElement(name, increment) {
 
-      console.debug('resizeLayoutElement', name, increment);
 
       if (!name || !increment) {
         console.error('resizeLayoutElement requires both name and increment specified');
@@ -108,9 +105,6 @@ angular.module('singleConceptAuthoringApp')
       pairedElement.width -= increment;
 
 
-      console.debug('passed checks!', $rootScope.layout);
-
-
       // set and apply the layout
       setLayout($rootScope.layout);
     };
@@ -136,10 +130,6 @@ angular.module('singleConceptAuthoringApp')
         $rootScope.layoutWidths[child.name] = child.width;
         applyLayout(child);
       });
-
-      if (node === $rootScope.layout) {
-        console.debug('layout widths',  $rootScope.layoutWidths);
-      }
     };
 
     function setLayout(newLayout) {

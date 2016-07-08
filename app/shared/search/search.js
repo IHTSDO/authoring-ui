@@ -1,11 +1,11 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'notificationService', 'scaService', 'snowowlService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, notificationService, scaService, snowowlService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http',  'metadataService','notificationService', 'scaService', 'snowowlService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService) {
 
       // controller $scope.options
-      $scope.branch = 'MAIN/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+      $scope.branch = metadataService.getBranch();
       $scope.resultsPage = 1;
       $scope.resultsSize = 100;
       $scope.loadPerformed = false;
@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         taskSet: false,
         taskKey: null
       };
-        
+
       $scope.searchType = 'Active Only';
 
       $scope.toggleGroupByConcept = function () {
@@ -53,11 +53,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.processResults();
 
       };
-      
+
       $scope.toggleSearchType = function (){
         if($scope.searchType === 'Active and Inactive')
         {
-            $scope.searchType = 'Active Only'; 
+            $scope.searchType = 'Active Only';
             $scope.userOptions.searchType = 1;
         }
         else if($scope.searchType === 'Active Only')
@@ -67,20 +67,20 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }
         else
         {
-            $scope.searchType = 'Active and Inactive';   
+            $scope.searchType = 'Active and Inactive';
             $scope.userOptions.searchType = 0;
         }
         $scope.processResults();
       };
 
-      console.debug('saved list in search', $scope.savedList);
+      //console.debug('saved list in search', $scope.savedList);
 
       /**
        * Helper function to manipulate displayed concepts
        */
       $scope.processResults = function () {
 
-        console.debug('processing results', $scope.userOptions);
+        //console.debug('processing results', $scope.userOptions);
 
         // group concepts by SCTID
         var displayedResults = [];
@@ -130,7 +130,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         else{
             $scope.results = displayedResults;
         }
-        
+
 
         // user cue for status
         if ($scope.results.length === 0) {
@@ -176,7 +176,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.processResults();
 
         }, function (error) {
-          console.debug('error', error);
+          //console.debug('error', error);
           $scope.searchStatus = 'Error performing search: ' + error;
           if (error.statusText) {
             $scope.searchStatus += ': ' + error.statusText;
@@ -212,10 +212,10 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
     };
 	 $scope.isEdited = function(item) {
-      return $scope.editList.indexOf(item.concept.conceptId) !== -1;
+      return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
 	  $scope.viewConceptInTaxonomy = function (item) {
-        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+        //console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.viewConceptInTaxonomy = function (item) {
-        console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
+        //console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
@@ -330,7 +330,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        * @returns {{id: conceptId, name: fsn}}
        */
       $scope.getConceptPropertiesObj = function (concept) {
-        console.debug('Getting concept properties obj', concept);
+        //console.debug('Getting concept properties obj', concept);
         return {id: concept.conceptId, name: concept.fsn};
       };
 

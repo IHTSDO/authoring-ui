@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, notificationService, $timeout, $modal) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'scaService', 'snowowlService', 'notificationService', '$timeout', '$modal',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, scaService, snowowlService, notificationService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -24,7 +24,7 @@ angular.module('singleConceptAuthoringApp')
         link: function (scope, element, attrs, linkCtrl) {
 
           // sets view to top and clears viewed concept list
-          scope.setViewTop = function() {
+          scope.setViewTop = function () {
             scope.viewTop = true;
             scope.viewedConcepts = [];
           };
@@ -36,28 +36,33 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
           scope.setViewTop();
-            
-          scope.getSNF = function(id){
-              var deferred = $q.defer();
-              snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
-                deferred.resolve(response);
-              });
-              return deferred.promise; 
-            };
+
+          scope.getSNF = function (id) {
+            var deferred = $q.defer();
+            snowowlService.getConceptSNF(id, scope.branch).then(function (response) {
+              deferred.resolve(response);
+            });
+            return deferred.promise;
+          };
 
           scope.conceptUpdateFunction = function (project, task, concept) {
-              var deferred = $q.defer();
-              snowowlService.updateConcept(project, task, concept).then(function (response) {
-                deferred.resolve(response);
-              });
-              return deferred.promise;
-            };
+            var deferred = $q.defer();
+            snowowlService.updateConcept(project, task, concept).then(function (response) {
+              deferred.resolve(response);
+            });
+            return deferred.promise;
+          };
           // instantiate validation container if not supplied
           if (!scope.validationContainer) {
             scope.validationContainer = {executionStatus: '', report: ''};
           }
 
-          console.debug('entered validation.js', scope.validationContainer);
+          //console.debug('entered validation.js', scope.validationContainer);
+
+          // the rules to exclude
+          configService.getExcludedValidationRuleIds().then(function(response) {
+            scope.assertionsExcluded = response;
+          });
 
           // local variables for ng-table population
           scope.assertionsFailed = [];
@@ -195,6 +200,114 @@ angular.module('singleConceptAuthoringApp')
             return $q.all([getDescriptionNames(), getConceptNames()]);
           }
 
+          var conceptIds = [];
+
+          function getConceptIdForFailure(failure) {
+            var deferred = $q.defer();
+            switch (String(failure.conceptId).substring(String(failure.conceptId).length - 3, String(failure.conceptId).length - 2)) {
+              // concept: simply return
+              case '0':
+                conceptIds.push(failure.conceptId);
+                deferred.resolve();
+                break;
+              // description: get description by id, replace with concept id
+              case '1':
+                snowowlService.getDescriptionProperties(failure.conceptId, scope.branch).then(function (desc) {
+                  failure.conceptId = desc.conceptId;
+                  conceptIds.push(desc.conceptId);
+                  deferred.resolve();
+                }, function (error) {
+                  deferred.reject();
+                });
+                break;
+              // relationship: get relationship by id, replace with source concept id
+              case '2':
+                snowowlService.getRelationshipProperties(failure.conceptId, scope.branch).then(function (rel) {
+                  failure.conceptId = rel.sourceId;
+                  conceptIds.push(rel.sourceId);
+                  deferred.resolve();
+                }, function (error) {
+                  deferred.reject();
+                });
+                break;
+              default:
+                console.error('Failure has unrecognized id type: ' + failure.conceptId);
+                deferred.reject();
+            }
+            return deferred.promise;
+          }
+
+          //
+          // Concept FSN and Description Term display names
+          //
+
+          function getConceptNames() {
+            var deferred = $q.defer();
+            var promises = [];
+            angular.forEach(scope.failures, function (failure) {
+              // switch on concept, relationship, or description
+              promises.push(getConceptIdForFailure(failure));
+            });
+
+            $q.all(promises).then(function () {
+
+              // skip if no concept ids
+              if (conceptIds.length > 0) {
+
+                // bulk call for concept ids
+                snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+                  // save the value on the failures in the concept map
+                  var idNameMap = {};
+                  angular.forEach(concepts.items, function (concept) {
+                    idNameMap[concept.id] = concept.fsn.term;
+                  });
+                  angular.forEach(scope.failures, function (failure) {
+                    failure.conceptFsn = idNameMap[failure.conceptId];
+                  });
+
+                  deferred.resolve();
+                });
+              } else {
+                deferred.resolve();
+              }
+            });
+
+            return deferred.promise;
+          }
+
+          function getDescriptionNames() {
+            var deferred = $q.defer();
+            var descsDone = 0;
+
+            angular.forEach(scope.failures, function (failure) {
+
+
+              // match the description
+              var descIds = failure.message.match(/Description: id=(\d+)/);
+
+              // if description found and display name not already retrieved and added
+              if (descIds && descIds[1]) {
+                snowowlService.getDescriptionProperties(descIds[1], scope.branch).then(function (description) {
+                  failure.message = failure.message.replace(/Description: id=\d+/g, 'Description: ' + description.term);
+
+                  if (++descsDone === scope.failures.length) {
+                    deferred.resolve();
+                  }
+                });
+
+              } else if (++descsDone === scope.failures.length) {
+                deferred.resolve();
+              }
+
+            });
+            return deferred.promise;
+          }
+
+          // called by failureTableParams.getData(), retrieves names if needed
+          function getNamesForFailures() {
+            return $q.all([getDescriptionNames(), getConceptNames()]);
+          }
+
           // declare table parameters
           scope.failureTableParams = new NgTableParams({
               page: 1,
@@ -214,7 +327,7 @@ angular.module('singleConceptAuthoringApp')
 
                   var orderedData = scope.failures;
                   params.total(orderedData.length);
-                  
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
                   $defer.resolve(orderedData);
                 }
@@ -230,10 +343,11 @@ angular.module('singleConceptAuthoringApp')
 
             }
 
-            console.debug('validationContainer changed - report:', scope.validationContainer.report);
-
+            //console.debug('validationContainer changed - report:', scope.validationContainer.report);
             // extract the failed assertions
-            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
+            scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed.filter(function(assertion) {
+              return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
+            });
 
             // reset view to full report
             scope.viewTop = true;
@@ -247,7 +361,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewFailures = function (assertionFailure) {
 
-            console.debug('assertionFailure', assertionFailure);
+            //console.debug('assertionFailure', assertionFailure);
 
             scope.assertionFailureViewed = assertionFailure.assertionText;
             scope.viewTop = false;
@@ -258,7 +372,7 @@ angular.module('singleConceptAuthoringApp')
 
             // different handling for projects and tasks
             if (!$routeParams.taskKey) {
-              console.debug('project detected');
+              //console.debug('project detected');
 
               angular.forEach(assertionFailure.firstNInstances, function (instance) {
                 var obj = {
@@ -269,10 +383,11 @@ angular.module('singleConceptAuthoringApp')
                 objArray.push(obj);
               });
               scope.failures = objArray;
+              notificationService.sendMessage('Retrieving concept names...');
               getNamesForFailures().then(function () {
+                notificationService.sendMessage('Concept names retrieved', 5000);
                 scope.failureTableParams.reload();
               });
-              scope.failureTableParams.reload();
             }
 
             // task handling
@@ -280,7 +395,7 @@ angular.module('singleConceptAuthoringApp')
 
               // convert instances into table objects
               if (!scope.changedList) {
-                console.debug(assertionFailure.firstNInstances);
+                //console.debug(assertionFailure.firstNInstances);
 
                 scaService.getReviewForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   scope.changedList = response;
@@ -300,16 +415,18 @@ angular.module('singleConceptAuthoringApp')
                   });
 
                   scope.failures = objArray;
+                  notificationService.sendMessage('Retrieving concept names...');
                   getNamesForFailures().then(function () {
+                    notificationService.sendMessage('Concept names retrieved', 5000);
                     scope.failureTableParams.reload();
-                  })
+                  });
                 });
 
               }
 
               else {
 
-                console.debug(assertionFailure.firstNInstances);
+                //console.debug(assertionFailure.firstNInstances);
                 angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
                   var obj = {
@@ -329,7 +446,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.failures = objArray;
                 getNamesForFailures().then(function () {
                   scope.failureTableParams.reload();
-                })
+                });
               }
               // TODO Set edit enable/disable for edit panel
             }
@@ -410,7 +527,7 @@ angular.module('singleConceptAuthoringApp')
             var nConcepts = 0;
             notificationService.sendMessage('Loading concepts...');
 
-            console.debug(scope.failures);
+            //console.debug(scope.failures);
 
             // construct array of concept ids for previously loaded concepts
             var existingIds = scope.viewedConcepts.map(function (viewed) {
@@ -424,13 +541,13 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
-            console.debug('existing ids', existingIds);
+            //console.debug('existing ids', existingIds);
 
             // cycle over all failures
             var conceptsLoaded = 0;
             angular.forEach(conceptsToAdd, function (conceptId) {
 
-              console.debug('loading concept ', conceptId);
+              //console.debug('loading concept ', conceptId);
 
               // add the concept
               editConceptHelper(conceptId).then(function () {
@@ -463,7 +580,7 @@ angular.module('singleConceptAuthoringApp')
 
               notificationService.sendMessage('Task ' + task.key + ' created', -1, '#/tasks/task/' + task.projectKey + '/' + task.key + '/edit');
 
-              console.debug('Task created', task.projectKey, task.key);
+              //console.debug('Task created', task.projectKey, task.key);
 
               scaService.saveUiStateForTask(task.projectKey, task.key, 'edit-panel', editList).then(function (response) {
                 scaService.saveUiStateForTask(task.projectKey, task.key, 'saved-list', {items: savedList}); // TODO Seriously rethink the saved list
@@ -477,7 +594,7 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Constructing task from project validation...');
 
-            console.debug('scope.failures.firstNInstances', scope.failures, scope.failures.firstNInstances);
+            //console.debug('scope.failures.firstNInstances', scope.failures, scope.failures.firstNInstances);
 
             // attempt to construct the edit list from user selections
             var editList = [];
@@ -494,7 +611,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
 
-            console.debug('editList', editList);
+            //console.debug('editList', editList);
 
             // temporary restriction on number of items to prevent giant server
             // load
@@ -534,7 +651,7 @@ angular.module('singleConceptAuthoringApp')
 
                   notificationService.sendMessage('Creating task...');
 
-                  console.debug('idConceptMap', idConceptMap);
+                  //console.debug('idConceptMap', idConceptMap);
 
                   // construct the saved list and task details
                   var taskDetails = 'Error Type: ' + scope.assertionFailureViewed + '\n\n';

@@ -79,7 +79,7 @@ angular.module('singleConceptAuthoringApp')
 //                        blocksPromotion: false
 //                      });
 //                    }
-              console.debug('resolving');
+              //console.debug('resolving');
 
               deferred.resolve(flags);
             });
@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp')
           // get the branch details
           snowowlService.getBranch(branch).then(function (branchStatus) {
 
-              console.debug('branch', branchStatus);
+              //console.debug('branch', branchStatus);
 
               if (!branchStatus) {
                 flags.push({
@@ -115,14 +115,14 @@ angular.module('singleConceptAuthoringApp')
 
               if (latestClassificationJson.status === 'COMPLETED' || latestClassificationJson.status === 'SAVING_IN_PROGRESS' || latestClassificationJson.status === 'SAVED') {
 
-                console.debug('classification run -- YES');
+                //console.debug('classification run -- YES');
                 flags.push({
                   checkTitle: 'Classification Run',
                   checkWarning: null,
                   blocksPromotion: false
                 });
               } else {
-                console.debug('classification run -- NO');
+                //console.debug('classification run -- NO');
                 flags.push({
                   checkTitle: 'Classification Not Completed',
                   checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
@@ -203,9 +203,9 @@ angular.module('singleConceptAuthoringApp')
               }
 
               // check if classification has results
-              else if (latestClassificationJson.equivalentConceptsFound
-                || latestClassificationJson.inferredRelationshipChangesFound
-                || latestClassificationJson.redundantStatedRelationshipsFound) {
+              else if (latestClassificationJson.equivalentConceptsFound ||
+                latestClassificationJson.inferredRelationshipChangesFound ||
+                latestClassificationJson.redundantStatedRelationshipsFound) {
                 flags.push({
                   checkTitle: 'Classification Not Accepted',
                   checkWarning: 'Classification results were not accepted to this branch',
@@ -219,7 +219,7 @@ angular.module('singleConceptAuthoringApp')
                   checkTitle: 'Classification Has No Results to Accept',
                   checkWarning: null,
                   blocksPromotion: null
-                })
+                });
               }
 
 
@@ -268,7 +268,7 @@ angular.module('singleConceptAuthoringApp')
                   //                        blocksPromotion: false
                   //                      });
                   //                    }
-                  console.debug('resolving');
+                  //console.debug('resolving');
 
                   deferred.resolve(flags);
                 });
@@ -291,10 +291,11 @@ angular.module('singleConceptAuthoringApp')
     function checkPrerequisitesForTask(projectKey, taskKey) {
       var deferred = $q.defer();
 
-      var branch = 'MAIN/' + projectKey + '/' + taskKey;
       scaService.getTaskForProject(projectKey, taskKey).then(function (task) {
 
-        console.debug('Task', task);
+        var branch = task.branchPath;
+
+        //console.debug('Task', task);
 
         if (task.branchState === 'BEHIND' || task.branchState === 'DIVERGED' || task.branchState === 'STALE') {
           deferred.resolve([{
@@ -327,8 +328,9 @@ angular.module('singleConceptAuthoringApp')
     function checkPrerequisitesForProject(projectKey) {
       var deferred = $q.defer();
 
-      var branch = 'MAIN/' + projectKey;
       scaService.getProjectForKey(projectKey).then(function (project) {
+
+        var branch = project.branchPath;
 
         if (project.branchState === 'BEHIND' || project.branchState === 'DIVERGED' || project.branchState === 'STALE') {
           deferred.resolve([{

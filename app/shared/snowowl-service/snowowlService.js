@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', function ($http, $q, $timeout, notificationService) {
+  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', function ($http, $q, $timeout, notificationService, metadataService) {
     var apiEndpoint = '../snowowl/snomed-ct/v2/';
 
     /////////////////////////////////////
@@ -11,8 +11,9 @@ angular.module('singleConceptAuthoringApp')
     // Create New Concept
     // POST /browser/{path}/concepts
     function createConcept(project, task, concept) {
+      console.debug('create concept', concept);
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/', concept).then(function (response) {
+      $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
         //console.debug('createConcept success', response);
         deferred.resolve(response.data);
       }, function (error) {
@@ -26,8 +27,20 @@ angular.module('singleConceptAuthoringApp')
     // PUT /browser/{path}/concepts/{conceptId}
     function updateConcept(project, task, concept) {
       var deferred = $q.defer();
-      $http.put(apiEndpoint + 'browser/MAIN/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
+      $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
         //console.debug('createConcept success', response);
+        deferred.resolve(response.data);
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
+    }
+    
+    //Update array of concepts
+    //PUT /browser/{path}/concepts/{conceptId}
+    function bulkUpdateConcept(branch, conceptArray) {
+      var deferred = $q.defer();
+      $http.put(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
         deferred.resolve(response.data);
       }, function (error) {
         deferred.reject(error);
@@ -38,7 +51,7 @@ angular.module('singleConceptAuthoringApp')
     // function to remove disallowed elements from a concept
     function cleanConcept(concept) {
 
-      console.debug('cleaning concept', concept);
+      //console.debug('cleaning concept', concept);
 
       // strip unknown tags
       var allowableProperties = [
@@ -74,12 +87,19 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-      // TODO Add relationship cleaning fields
+      var allowableRelationshipProperties = [
+        'active', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'released'
+      ];
       angular.forEach(concept.relationships, function (relationship) {
 
         // if a locally assigned UUID, strip
         if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
           delete relationship.relationshipId;
+        }
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
         }
       });
     }
@@ -121,7 +141,7 @@ angular.module('singleConceptAuthoringApp')
     // get a specific classification result for projectKey, taskKey, and
     // classifierId
     function getClassificationForTask(projectKey, taskKey, classifierId) {
-      return $http.get(apiEndpoint + 'MAIN' + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
+      return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
       });
     }
@@ -129,7 +149,7 @@ angular.module('singleConceptAuthoringApp')
     // get a specific classification result for project id, classifier id, and
     // branch
     function getClassificationForProject(projectKey, classifierId) {
-      return $http.get(apiEndpoint + 'MAIN' + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
+      return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/classifications/' + classifierId).then(function (response) {
         return response.data;
       });
     }
@@ -144,7 +164,7 @@ angular.module('singleConceptAuthoringApp')
 
     // get all classification results for a project and task
     function getClassificationsForTask(projectKey, taskKey, branch) {
-      return $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
+      return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
         return response.data.items;
       });
     }
@@ -169,7 +189,7 @@ angular.module('singleConceptAuthoringApp')
       // console.debug('downloadClassification', classifierId, branch);
       return $http({
         'method': 'GET',
-        'url': apiEndpoint + branch + '/' + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
+        'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
         'headers': {
           'Accept': 'text/csv'
         }
@@ -258,6 +278,10 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
+    function getHistoricalAssociationsForConcept(branch, conceptId) {
+      var reasons = metadataService.getAssociationInactivationReasons();
+    }
+
     /**
      * Inactivate a concept
      * @param conceptId the SCTID of the concept
@@ -270,7 +294,7 @@ angular.module('singleConceptAuthoringApp')
      */
     function inactivateConcept(branch, conceptId, inactivationIndicator, associationTargets) {
 
-      console.debug('inactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
+      //console.debug('inactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
 
       var deferred = $q.defer();
 
@@ -315,7 +339,7 @@ angular.module('singleConceptAuthoringApp')
 
     function inactivateDescription(branch, descriptionId, inactivationIndicator) {
 
-      console.debug('deactivating description', descriptionId, branch, inactivationIndicator);
+      //console.debug('deactivating description', descriptionId, branch, inactivationIndicator);
 
       var deferred = $q.defer();
 
@@ -412,11 +436,11 @@ angular.module('singleConceptAuthoringApp')
 
       $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?expand=source.fsn,type.fsn' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit)).then(function (response) {
 
-        console.debug('inbound', response);
+        //console.debug('inbound', response);
 
         // if zero-count, return empty array (no blank array returned)
         if (response.data.total === 0) {
-          console.debug('returning []');
+          //console.debug('returning []');
           deferred.resolve({total: 0, inboundRelationships: []});
         } else {
 
@@ -449,6 +473,23 @@ angular.module('singleConceptAuthoringApp')
       }, function (error) {
         // TODO Handle error
       });
+      
+    }
+      
+    // Retrieve historical association references to a concept
+    // GET /{path}/concepts/{conceptId}/members
+    function getMembersByTargetComponent(conceptId, branch) {
+      var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/members?targetComponent=' + conceptId + '&expand=referencedComponent(expand(fsn()))').then(function (response) {
+        if (response.data.total === 0) {
+          deferred.resolve([]);
+        } else {
+          deferred.resolve(response.data);
+        }
+      }, function (error) {
+        deferred.reject(error);
+      });
+      return deferred.promise;
     }
 
     // helper call to populate relationship display names
@@ -619,10 +660,10 @@ angular.module('singleConceptAuthoringApp')
         // if concept id
         if (searchStr.substr(-2, 1) === '0') {
 
-          console.debug('concept id detected');
+          //console.debug('concept id detected');
 
           // use browser/{path}/concepts/{id} call
-          $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
+          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
 
             // convert to browser search form
             var item = {
@@ -646,14 +687,14 @@ angular.module('singleConceptAuthoringApp')
         // if description id
         else if (searchStr.substr(-2, 1) === '1') {
 
-          console.debug('description id detected');
+          //console.debug('description id detected');
 
           // use {path}/descriptions/id call
-          $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
+          $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
 
             // descriptions endpoint returns different format, which does not
             // include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function (response2) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function (response2) {
 
               // convert to browser search form
               var item = {
@@ -681,17 +722,17 @@ angular.module('singleConceptAuthoringApp')
         // if relationship id
         else if (searchStr.substr(-2, 1) === '2') {
 
-          console.debug('relationship id detected');
+          //console.debug('relationship id detected');
 
           // use {path}/descriptions/id call
-          $http.get(apiEndpoint + 'MAIN/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
+          $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
 
             var source = null;
             var target = null;
 
             // descriptions endpoint returns different format, which does not
             // include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function (sourceResponse) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function (sourceResponse) {
 
               // convert to browser search form
               source = {
@@ -706,7 +747,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               };
 
-              console.debug('source', source);
+              //console.debug('source', source);
 
               if (source && target) {
                 deferred.resolve([source, target]);
@@ -717,7 +758,7 @@ angular.module('singleConceptAuthoringApp')
 
             // descriptions endpoint returns different format, which does not
             // include definitionStatus, recall browser
-            $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/concepts/' + response.data.destinationId).then(function (targetResponse) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.destinationId).then(function (targetResponse) {
 
               // convert to browser search form
               target = {
@@ -732,7 +773,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               };
 
-              console.debug('target', target);
+              //console.debug('target', target);
 
               if (source && target) {
                 deferred.resolve([source, target]);
@@ -749,7 +790,7 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, unsupported component type
         else {
-          console.debug('Numeric value could not be determined, rejecting');
+          //console.debug('Numeric value could not be determined, rejecting');
           deferred.reject('Could not parse numeric value (not a concept, description, or relationship SCTID)');
         }
       }
@@ -758,10 +799,10 @@ angular.module('singleConceptAuthoringApp')
       else {
 
         // use browser/{path}/descriptions?{options} call
-        $http.get(apiEndpoint + 'browser/MAIN/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
+        $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          console.debug(error);
+          //console.debug(error);
           if (error.status === 500) {
             deferred.reject('Unexpected server error.  Please check your search terms and try again.');
           } else {
@@ -796,7 +837,7 @@ angular.module('singleConceptAuthoringApp')
     // Get traceability log for branch
     // GET /traceability-service/activities?onBranch=
     function getTraceabilityForBranch(projectKey, taskKey) {
-      return $http.get('/traceability-service/activities?onBranch=MAIN/' + projectKey + '/' + taskKey).then(function (response) {
+      return $http.get('/traceability-service/activities?onBranch=' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey).then(function (response) {
         return response.data;
       }, function (error) {
         console.log(error);
@@ -957,7 +998,7 @@ angular.module('singleConceptAuthoringApp')
      */
     function generateMergeReview(parentBranch, childBranch) {
 
-      console.debug('Generating merge review', parentBranch, childBranch);
+      //console.debug('Generating merge review', parentBranch, childBranch);
       var deferred = $q.defer();
       $http.post(apiEndpoint + 'merge-reviews', {
         source: parentBranch,
@@ -1101,11 +1142,11 @@ angular.module('singleConceptAuthoringApp')
       });
 
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'browser/MAIN/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
-        console.debug('validate success');
+      $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
+        //console.debug('validate success');
         deferred.resolve(response.data);
       }, function (error) {
-        console.debug('validate error', error);
+        //console.debug('validate error', error);
         deferred.reject(error.message);
       });
       return deferred.promise;
@@ -1127,6 +1168,7 @@ angular.module('singleConceptAuthoringApp')
       getRelationshipProperties: getRelationshipProperties,
       getConceptPreferredTerm: getConceptPreferredTerm,
       updateConcept: updateConcept,
+      bulkUpdateConcept: bulkUpdateConcept,
       createConcept: createConcept,
       inactivateConcept: inactivateConcept,
       inactivateDescription: inactivateDescription,
@@ -1159,6 +1201,7 @@ angular.module('singleConceptAuthoringApp')
       downloadClassification: downloadClassification,
       findConceptsForQuery: findConceptsForQuery,
       getReview: getReview,
+      getMembersByTargetComponent: getMembersByTargetComponent,
 
       // attribute retrieval
       getDomainAttributes: getDomainAttributes,

@@ -61,6 +61,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // this up
         merge: '@?',
 
+        inactivationEditing: '@?',
+
         // parent function to invoke updating the ui state for this concept's
         // list (not required)
         uiStateUpdateFn: '&?',
@@ -109,6 +111,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return;
         }
 
+
         //////////////////////////////////////////////////////////////
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////
@@ -130,13 +133,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.isMerge = false;
         }
 
+        if (scope.inactivationEditing === 'true') {
+          scope.isInactivation = true;
+        } else {
+          scope.isInactivation = false;
+        }
+
         if (scope.showInactive === 'true') {
           scope.hideInactive = false;
         } else {
           scope.hideInactive = true;
         }
 
-        console.log('hiding inactive: ', scope.showInactive, scope.hideInactive);
 
         //////////////////////////////////////////////////////////////
         // Handle additional fields, if required
@@ -181,6 +189,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return concept;
           }
         };
+
+        //
+        // Extension handling
+        // TODO Move relevant content here
+        //
+        scope.isLockedModule = metadataService.isLockedModule;
+        scope.isExtensionDialect = metadataService.isExtensionDialect;
 
         /////////////////////////////////////////////////////////////////
         // Autosaving and Modified Concept Storage Initialization
@@ -257,10 +272,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // console.debug(scope.concept, scope.branch, scope.parentBranch,
         // scope.static);
 
-        // retrieve metadata (only modules for now)
-        scope.modules = snowowlService.getModules();
-        scope.languages = snowowlService.getLanguages();
-        scope.dialects = snowowlService.getDialects();
+        // allowable attributes for relationships
         scope.allowedAttributes = [];
 
         scope.toggleHideInactive = function () {
@@ -299,108 +311,99 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveHelper() {
 
-          // special case:  if merge view, broadcast and return no promise
-          // TODO Should catch this with a 'when' in saveConcept functions
-          if (scope.isMerge) {
-            $rootScope.$broadcast('acceptMerge', {concept: scope.concept});
-            return;
-          }
+          console.debug('savehelper', scope.concept);
+
 
           // simple promise with resolve/reject on success/failure
           var deferred = $q.defer();
 
-          // clean the concept for snowowl-ready save
-          snowowlService.cleanConcept(scope.concept);
 
-          var saveFn = null;
-          if (scope.concept.fsn === null) {
-            saveFn = snowowlService.createConcept;
-          } else {
-            saveFn = snowowlService.updateConcept;
+          // special case:  if merge view, broadcast and return no promise
+          // TODO Should catch this with a 'when' in saveConcept functions
+          if (scope.isMerge) {
+            $rootScope.$broadcast('acceptMerge', {concept: scope.concept});
+            deferred.reject(); // don't want validation run
           }
 
-          saveFn($routeParams.projectKey,
-            $routeParams.taskKey,
-            scope.concept).then(function (response) {
-              //// console.debug('create', response);
-              // successful response will have conceptId
-              if (response && response.conceptId) {
+          else if (scope.isInactivation) {
+            deferred.resolve(); // do want validation run
+          }
 
-                console.debug('Save concept successful');
+          else {
+            // clean the concept for snowowl-ready save
+            snowowlService.cleanConcept(scope.concept);
 
-                /*
-                 TODO Removed after discussion of this functionality on 12/17 -- limited scope of unsaved work only (not more comprehensive work list) indicates combinining this functionality with modified-concept UI-state
 
-                 // get the unsaved work list
-                 scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function (unsavedWork) {
+            var saveFn = null;
 
-                 if (!unsavedWork) {
-                 unsavedWork = [];
-                 }
+            if (scope.concept.fsn === null) {
+              saveFn = snowowlService.createConcept;
+            } else {
+              saveFn = snowowlService.updateConcept;
+            }
 
-                 // filter out this concept's id (if it exists)
-                 unsavedWork = unsavedWork.filter(function (id) {
-                 if (scope.concept.conceptId) {
-                 return id !== scope.concept.conceptId;
-                 } else {
-                 return id !== 'unsaved';
-                 }
-                 });
 
-                 console.debug('removed concept from unsaved work list', unsavedWork);
+            // console.debug('SAVE FUNCTION', saveFn);
 
-                 // update the unsaved work list
-                 scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', newUnsavedList);
-                 });
-                 */
+            saveFn(
+              $routeParams.projectKey,
+              $routeParams.taskKey,
+              scope.concept
+            ).then(function (response) {
+                //// console.debug('create', response);
+                // successful response will have conceptId
+                if (response && response.conceptId) {
 
-                // set concept and unmodified state
-                scope.concept = response;
-                scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
-                scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
-                scope.isModified = false;
+                  // console.debug('Save concept successful');
 
-                // clear the saved modified state
-                scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+                  // set concept and unmodified state
+                  scope.concept = response;
+                  scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
+                  scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
+                  scope.isModified = false;
 
-                // ensure descriptions & relationships are sorted
-                sortDescriptions();
-                sortRelationships();
+                  // clear the saved modified state
+                  scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
 
-                scope.computeRelationshipGroups();
+                  // ensure descriptions & relationships are sorted
+                  sortDescriptions();
+                  sortRelationships();
 
-                // broadcast event to any listeners (currently task detail,
-                // conflict/feedback resolved lists)
-                $rootScope.$broadcast('conceptEdit.conceptChange', {
-                  branch: scope.branch,
-                  conceptId: scope.concept.conceptId,
-                  concept: scope.concept
-                });
+                  scope.computeRelationshipGroups();
 
-                // if ui state update function specified, call it (after a
-                // moment to let binding update)
-                $timeout(function () {
+                  // broadcast event to any listeners (currently task detail,
+                  // conflict/feedback resolved lists)
+                  $rootScope.$broadcast('conceptEdit.conceptChange', {
+                    branch: scope.branch,
+                    conceptId: scope.concept.conceptId,
+                    concept: scope.concept
+                  });
 
-                  if (scope.uiStateUpdateFn) {
-                    scope.uiStateUpdateFn();
-                  }
-                }, 3000);
+                  // if ui state update function specified, call it (after a
+                  // moment to let binding update)
+                  $timeout(function () {
 
-                deferred.resolve();
-              }
+                    if (scope.uiStateUpdateFn) {
+                      scope.uiStateUpdateFn();
+                    }
+                  }, 3000);
 
-              // handle error
-              else {
+                  deferred.resolve();
+                }
 
-                deferred.reject(response.message);
-              }
-            },
-            function (error) {
+                // handle error
+                else {
 
-              deferred.reject(error);
-            });
+                  deferred.reject(response.message);
+                }
+              },
+              function (error) {
+                deferred.reject(error);
+              });
+          }
 
           return deferred.promise;
+
         }
 
         // function to validate concept and display any errors or warnings
@@ -445,7 +448,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
+        // TODO remove
+        console.debug('concept edit', scope.concept);
+
         scope.saveConcept = function () {
+
+          console.debug('saveConcept', scope.concept);
 
           // clear the top level errors and warnings
           scope.errors = null;
@@ -475,15 +483,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // special case -- don't want save notifications in merge view, all
           // handling done in conflicts.js
-          if (!scope.merge) {
-            notificationService.sendMessage(saveMessage);
-          } else {
+          if (scope.merge) {
             notificationService.sendMessage('Saving accepted merged concept...');
+          } else if (scope.isInactivation) {
+            // do nothing
+          } else {
+            notificationService.sendMessage(saveMessage);
           }
           // validate concept first
           scope.validateConcept().then(function () {
 
-            console.debug('validation results', scope.validation);
+            // console.debug('validation results', scope.validation);
 
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
@@ -491,6 +501,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 concept: scope.concept,
                 validationResults: scope.validation
               });
+            }
+
+            // special case -- inactivation:  simply broadcast concept
+            else if (scope.isInactivation) {
+                console.log('inactivation');
+
+              if (scope.validation && scope.validation.hasErrors) {
+                notificationService.sendError('Fix errors before continuing');
+              } else {
+                scope.saving = false;
+                scope.isModified = false;
+                $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
+              }
             }
 
             // if errors, notify and do not save
@@ -552,7 +575,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         // pass inactivation service function to determine whether in process of inactivation
-        scope.isInactivation = inactivationService.isInactivation;
+        //scope.isInactivation = inactivationService.isInactivation;
 
 
         // function to toggle active status of concept
@@ -560,6 +583,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // NOTE: This function hard-saves the concept, to prevent sync errors
         // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function () {
+
+          if (!scope.concept.released) {
+            notificationService.sendWarning('Removal of unreleased content is not yet supported');
+            return;
+          }
           if (scope.isStatic) {
             return;
           }
@@ -578,7 +606,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!scope.concept.active) {
             scope.warnings = ['Please select which relationships you would like to activate along with the concept, or create a new Is A and click save.'];
             if (!scope.concept.relationships) {
-              console.log('here');
+
               scope.concept.relationships = [];
               scope.concept.relationships.push(componentAuthoringUtil.getNewIsaRelationship(null));
               autoSave();
@@ -637,48 +665,51 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
 
-                notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
+                // set the concept in the inactivation service for listener update and retrieval
+                // NOTE: Also broadcasts a route change to edit.js from the service
+                inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget);
+                $rootScope.$broadcast('conceptEdit.inactivateConcept');
 
-                snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
-                  scope.concept.active = false;
+                // WRP-2161 testing bypass -- to disable new fe atures, modify isInactivation service to return false only
+                // This inactivationService function also triggers the accessibility of the inactivation view
+                // TODO As of 6/28 4:50PST This is disabled, moved to inactivationService
+                /*if (!inactivationService.isInactivation()) {
 
-                  // if reason is selected, deactivate all descriptions and
-                  // relationships
-                  if (results.reason) {
+                 snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
 
-                    // straightforward inactivation of relationships
-                    // NOTE: Descriptions stay active so a FSN can still be
-                    // found
-                    angular.forEach(scope.concept.relationships, function (relationship) {
-                      relationship.active = false;
-                    });
+                 scope.concept.active = false;
 
-                    // save concept but bypass validation checks
-                    saveHelper().then(function () {
-                      notificationService.sendMessage('Concept inactivated');
-                    }, function (error) {
-                      notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                    });
-                  }
-                }, function () {
-                  notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
-                });
+                 // if reason is selected, deactivate all descriptions and
+                 // relationships
+                 if (results.reason) {
+
+                 inactivationService.setInactivationReasons()
+
+                 // straightforward inactivation of relationships
+                 // NOTE: Descriptions stay active so a FSN can still be
+                 // found
+                 angular.forEach(scope.concept.relationships, function (relationship) {
+                 relationship.active = false;
+                 });
+
+                 // save concept but bypass validation checks
+                 saveHelper().then(function () {
+                 notificationService.sendMessage('Concept inactivated');
+                 }, function (error) {
+                 notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+                 });
+                 }
+                 }, function () {
+                 notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
+                 });
+                 }*/
+
 
               });
-
             });
 
-            /**
-             * WRP-2161 content
-             *
-             // persist the ui state for reload events
-             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'inactivationConcept', scope.concept);
 
-             // set the concept in the inactivation service for listener update and retrieval
-             // NOTE: Also broadcasts a route change to edit.js from the service
-             inactivationService.setConceptToInactivate(scope.concept);
-             */
           }
 
         };
@@ -714,14 +745,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
+        //
+        // Component more functions
+        //
+
+        // get the avialable languages for this module id
+        scope.getAvailableLanguages = function (moduleId) {
+
+          return metadataService.getLanguagesForModuleId(moduleId);
+        };
+
+        // get the available modules based on whether this is an extension element
+        scope.getAvailableModules = function (moduleId) {
+          return metadataService.getModulesForModuleId(moduleId);
+        };
+
 ////////////////////////////////
 // Description Elements
 ////////////////////////////////
-
-// define available languages
-        scope.languages = [
-          'en'
-        ];
 
 // Define definition types
 // NOTE:  PT is not a SNOMEDCT type, used to set acceptabilities
@@ -731,17 +772,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
         ];
 
-// define the available dialects
-        scope.dialects = {
-          'en-us': '900000000000509007',
-          'en-gb': '900000000000508004'
+        // define the available dialects
+        scope.dialects = metadataService.getAllDialects();
+
+        // always return en-us dialect first
+        scope.dialectComparator = function (a, b) {
+          if (a === '900000000000509007') {
+            return -1;
+          } else if (b === '900000000000509007') {
+            return 1;
+          } else {
+            return a < b;
+          }
+          ;
+        }
+
+        // function to retrieve branch dialect ids as array instead of map
+        // NOTE: Required for orderBy in ng-repeat
+        scope.getDialectKeysForDescription = function (description) {
+          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId)).sort(scope.dialectComparator);
         };
 
-// define acceptability types
+        // define acceptability types
         scope.acceptabilityAbbrs = {
           'PREFERRED': 'P',
           'ACCEPTABLE': 'A'
         };
+
+        scope.getExtensionMetadata = metadataService.getExtensionMetadata;
 
 // Reorder descriptions based on type and acceptability
 // Must preserve position of untyped/new descriptions
@@ -805,57 +863,46 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
 
-            if (a.acceptabilityMap && b.acceptabilityMap) {
+            // sort by values for ordered keys in dialects
+            var acceptabilityComparator = function (descA, descB, dialect) {
 
-              // sort on en-us value first
-              var aUS = a.acceptabilityMap[scope.dialects['en-us']];
-              var bUS = b.acceptabilityMap[scope.dialects['en-us']];
-              // console.debug('sorting on en-us', aUS, bUS);
-              if (aUS !== bUS) {
+              var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
+              var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
 
-                // specified value first
-                if (aUS && !bUS) {
+              if (aVal != bVal) {
+                if (aVal && !bVal) {
                   return -1;
                 }
-                if (bUS && !aUS) {
+                if (!aVal && bVal) {
                   return 1;
                 }
-
                 // if both defined, one must be PREFERRED
-                if (aUS === 'PREFERRED') {
+                if (aVal === 'PREFERRED') {
                   return -1;
                 }
-                if (bUS === 'PREFERRED') {
+                if (bVal === 'PREFERRED') {
                   return 1;
                 }
               }
+              return 0;
+            };
 
-              // sort on en-us value first
-              var aGB = a.acceptabilityMap[scope.dialects['en-gb']];
-              var bGB = b.acceptabilityMap[scope.dialects['en-gb']];
-              // console.debug('sorting on en-gb', aGB, bGB);
-              if (aGB !== bGB) {
-                // console.debug('not equal');
+            // sort by en-us value first
+            var comp = acceptabilityComparator(a, b, '900000000000509007');
+            if (comp !== 0) {
+              return comp;
+            }
 
-                // specified value first
-                if (aGB && !bGB) {
-                  return -1;
-                }
-                if (bGB && !aGB) {
-                  return 1;
-                }
-
-                // if both defined, one must be PREFERRED
-                if (aGB === 'PREFERRED') {
-                  // console.debug('a preferred');
-                  return -1;
-                }
-                if (bGB === 'PREFERRED') {
-                  // console.debug('b preferred');
-                  return 1;
+            // sort by non en-us values second
+            for (var dialect in Object.keys(scope.dialects)) {
+              if (dialect !== '900000000000509007') {
+                comp = acceptabilityComparator(a, b, dialect);
+                if (comp !== 0) {
+                  return comp;
                 }
               }
             }
+
             // all else being equal, sort on term
             // console.debug('sorting on term', a.term, b.term);
             return a.term < b.term ? -1 : 1;
@@ -993,7 +1040,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // after
         scope.addDescription = function (afterIndex) {
 
+
           var description = componentAuthoringUtil.getNewDescription(null);
+
+          console.debug('New description', description);
+
 
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
@@ -1005,6 +1056,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept.descriptions.splice(afterIndex + 1, 0, description);
             autoSave();
           }
+          console.debug('Concept', scope.concept);
 
         };
 
@@ -1041,6 +1093,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if inactive, simply set active
           if (!description.active) {
             description.active = true;
+            description.effectiveTime = null;
             autoSave();
           }
 
@@ -1183,52 +1236,58 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          Function to cycle acceptability map for a description & dialect through acceptable values
          Preferred -> Acceptable -> Not Acceptable -> Preferred
          */
-        scope.toggleAcceptability = function (description, dialectName) {
+        scope.toggleAcceptability = function (description, dialectId) {
 
+          console.debug('toggle acceptability', description.type, dialectId, description.acceptabilityMap[dialectId], description.acceptabilityMap);
           if (!description.acceptabilityMap) {
             description.acceptabilityMap = {};
           }
           if (description.type !== 'TEXT_DEFINITION') {
-            switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+            switch (description.acceptabilityMap[dialectId]) {
 
               // if preferred, switch to acceptable
               case 'PREFERRED':
-                description.acceptabilityMap[scope.dialects[dialectName]] = 'ACCEPTABLE';
+                description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
                 break;
 
               // if acceptable, switch to not acceptable (i.e. clear the dialect
               // key)
               case 'ACCEPTABLE':
-                delete description.acceptabilityMap[scope.dialects[dialectName]];
+                delete description.acceptabilityMap[dialectId];
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
-                description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
                 break;
             }
           }
           else {
-            switch (description.acceptabilityMap[scope.dialects[dialectName]]) {
+            switch (description.acceptabilityMap[dialectId]) {
               case 'PREFERRED':
-                delete description.acceptabilityMap[scope.dialects[dialectName]];
+                delete description.acceptabilityMap[dialectId];
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
-                description.acceptabilityMap[scope.dialects[dialectName]] = 'PREFERRED';
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
                 break;
             }
           }
 
+          console.debug(description.acceptabilityMap);
+
           autoSave();
         };
 
-        scope.getAcceptabilityTooltipText = function (description, dialectName) {
-          if (!description || !dialectName) {
+        function getShortDialectName(dialectId) {
+          return scope.dialects[dialectId] ? scope.dialects[dialectId].replace('en-', '') : '??';
+        }
+
+        scope.getAcceptabilityTooltipText = function (description, dialectId) {
+          if (!description || !dialectId) {
             return null;
           }
-          var dialectId = scope.dialects[dialectName];
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap || !description.acceptabilityMap[dialectId]) {
@@ -1239,11 +1298,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         // returns the display abbreviation for a specified dialect
-        scope.getAcceptabilityDisplayText = function (description, dialectName) {
-          if (!description || !dialectName) {
+        scope.getAcceptabilityDisplayText = function (description, dialectId) {
+          if (!description || !dialectId) {
             return null;
           }
-          var dialectId = scope.dialects[dialectName];
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
@@ -1253,19 +1311,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // retrieve the value (or null if does not exist) and return
           var acceptability = description.acceptabilityMap[dialectId];
 
-          //If the desciption is an FSN then set to PREFERRED and
-          // continue.Simplest place in execution to catch the creation of
-          // new FSN's and update acceptability
-          if (description.type === 'FSN') {
-            if (acceptability !== 'PREFERRED') {
-              description.acceptabilityMap[dialectId] = 'PREFERRED';
-            }
-          }
-
           // return the specified abbreviation, or 'N' for Not Acceptable if no
           // abbreviation found
           var displayText = scope.acceptabilityAbbrs[acceptability];
-          return displayText ? displayText : 'N';
+          return getShortDialectName(dialectId) + ':' + (displayText ? displayText : 'N');
 
           //return scope.acceptabilityAbbrs[acceptability];
         };
@@ -1326,7 +1375,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.addRelationship = function (relGroup, relationshipBefore) {
 
-          console.debug('adding relationship', relGroup, relationshipBefore);
+          // console.debug('adding relationship', relGroup, relationshipBefore);
 
           var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
 
@@ -1483,7 +1532,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
 
           modalInstance.result.then(function (results) {
-            console.log(results);
+
             deferred.resolve(results);
           }, function () {
             deferred.reject();
@@ -1691,7 +1740,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Scope is static, cannot drop');
             return;
           }
-          console.log(source);
+
           scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn).then(function (response) {
             if (response.length === 0) {
               // copy relationship object and replace target relationship
@@ -1817,7 +1866,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var errors = [];
           var relsChecked = 0;
-          console.log('mrcm validation');
+
           angular.forEach(relGroup, function (rel) {
             scope.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.type.fsn, rel.target.fsn).then(function (response) {
               errors = errors.concat(response);
@@ -2144,15 +2193,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
-          if (description.type === 'TEXT_DEFINITION') {
-            description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-            description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+          if (!description.effectiveTime && description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
+            for (var dialectId in scope.getDialectKeysForDescription(description)) {
+              console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectKeysForDscription(description))
+              description.acceptabilityMap[dialectId] = 'PREFERRED';
+            }
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           }
 
           // if a new description (determined by blank term), ensure sensitivity
           // do not modify acceptability map
-          else if (description.type === 'SYNONYM' && !description.term) {
+          else if (!description.effectiveTime && description.type === 'SYNONYM' && !metadataService.isLockedModule(description.moduleId)) {
             description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
           }
 
@@ -2161,9 +2212,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else if (description.type === 'FSN') {
 
             // if a new FSN (determined by blank term)
-            if (!description.term) {
-              description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-              description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+            if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
+              angular.forEach(scope.getDialectKeysForDescription(description), function (dialectId) {
+                console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectKeysForDescription(description))
+
+                description.acceptabilityMap[dialectId] = 'PREFERRED';
+              });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }
             componentAuthoringUtil.ptFromFsnAutomation(scope.concept, description);
@@ -2177,7 +2231,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
-          console.debug('concept after description update', scope.concept);
+          // console.debug('concept after description update', scope.concept);
 
           autoSave();
         };
@@ -2201,7 +2255,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           scope.computeRelationshipGroups();
 
-          console.debug(scope.concept.relationships, scope.relationshipGroups);
+          // console.debug(scope.concept.relationships, scope.relationshipGroups);
 
           autoSave(relationship);
 
@@ -2243,54 +2297,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveModifiedConcept() {
 
+          scope.isModified = true;
+
+          // broadcast event to any listeners (currently task detail)
+          $rootScope.$broadcast('conceptEdit.conceptModified', {
+            branch: scope.branch,
+            conceptId: scope.concept.conceptId,
+            concept: scope.concept
+          });
+
           // console.debug('saveModifiedConcept', scope.concept,
           // scope.unmodifiedConcept);
 
           // if changed
           if (scope.concept !== scope.unmodifiedConcept) {
 
-            console.debug('broadcasting conceptModified');
-
-            // broadcast event to any listeners (currently task detail)
-            $rootScope.$broadcast('conceptEdit.conceptModified', {
-              branch: scope.branch,
-              conceptId: scope.concept.conceptId,
-              concept: scope.concept
-            });
-
-            scope.isModified = true;
-
-            // store the modified concept in ui-state
-            scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
-
-            });
-            /*
-             TODO Removed after discussion of this functionality on 12/17 -- limited scope of unsaved work only (not more comprehensive work list) indicates combinining this functionality with modified-concept UI-state
+            // console.debug('broadcasting conceptModified');
 
 
-             // get the unsaved work list
-             scaService.getUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work').then(function(unsavedWork) {
+            // store the modified concept in ui-state if autosave on
+            if (scope.autosave === true) {
+              scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
+                // do nothing
+              });
+            }
 
-             if (!unsavedWork) {
-             unsavedWork = [];
-             }
-
-             if (scope.concept.conceptId && unsavedWork.indexOf(scope.conceptId) === -1) {
-             unsavedWork.push(scope.concept.conceptId);
-             } else if (!scope.concept.conceptId && unsavedWork.indexOf('unsaved') === -1) {
-             unsavedWork.push('unsaved');
-             }
-
-             console.debug('added concept to unsaved work list', unsavedWork);
-
-             // update the unsaved work list
-             scaService.saveUiStateForTask($routeParams.projectKey, $routeParams.taskKey, 'unsaved-work', unsavedWork);
-             });
-
-             */
-
-          } else {
-            scope.isModified = false;
           }
         }
 
@@ -2299,18 +2330,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * NOTE: outside $watch to prevent spurious updates
          */
         function autoSave() {
-          if (scope.autosave === true) {
-            // console.debug('conceptEdit: autosave called', scope.concept
-            // === scope.lastModifiedConcept, scope.concept);
 
-            scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
-            scope.conceptHistoryPtr++;
+          // console.debug('conceptEdit: autosave called', scope.concept
+          // === scope.lastModifiedConcept, scope.concept);
 
-            // save the modified concept
-            saveModifiedConcept();
-          }
+          scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
+          scope.conceptHistoryPtr++;
 
+          console.debug('setting modified to true');
+          scope.isModified = true;
+
+          // save the modified concept
+          saveModifiedConcept();
         }
+
 
         /**
          * Resets concept history
@@ -2409,7 +2442,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
-          console.log('watcher: relationships changed');
+
           var changed = false;
           angular.forEach(scope.concept.relationships, function (relationship) {
             if (relationship.type.conceptId === '116680003' && relationship.active === true) {
@@ -2489,6 +2522,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
           
+        scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
+          return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
+
+            if (!response) {
+              return [];
+            }
+
+            // remove duplicates
+            for (var i = 0; i < response.length; i++) {
+              var status = 'FD';
+              if (response[i].definitionStatus === 'PRIMITIVE') {
+                status = 'P';
+              }
+              if (response[i].fsn) {
+                response[i].tempFsn = response[i].fsn.term + ' - ' + status;
+                // console.debug('checking for duplicates', i, response[i]);
+                for (var j = response.length - 1; j > i; j--) {
+                  if (response[j].id === response[i].id) {
+                    response.splice(j, 1);
+                    j--;
+                  }
+                }
+              }
+            }
+            return response;
+          });
+        };
+
         scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
           return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
 

@@ -1,9 +1,9 @@
 'use strict';
-
+// jshint ignore: start
 angular.module('singleConceptAuthoringApp.project', [
-  //insert dependencies here
-  'ngRoute'
-])
+    //insert dependencies here
+    'ngRoute'
+  ])
 
   .config(function config($routeProvider) {
     $routeProvider
@@ -13,8 +13,8 @@ angular.module('singleConceptAuthoringApp.project', [
       });
   })
 
-  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout',
-    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout) {
+  .controller('ProjectCtrl', ['$scope', '$rootScope', '$routeParams', '$modal', '$filter', 'metadataService', 'scaService', 'snowowlService', 'notificationService', '$location', 'ngTableParams', 'accountService', 'promotionService', '$q', '$timeout',
+    function ProjectCtrl($scope, $rootScope, $routeParams, $modal, $filter, metadataService, scaService, snowowlService, notificationService, $location, ngTableParams, accountService, promotionService, $q, $timeout) {
 
       $rootScope.pageTitle = 'Project/' + $routeParams.projectKey;
 
@@ -32,14 +32,10 @@ angular.module('singleConceptAuthoringApp.project', [
       $rootScope.validationRunning = false;
       $scope.browserLink = '..';
 
-      // set the branch
-      $scope.branch = 'MAIN/' + $routeParams.projectKey;
-
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
           $scope.project = response;
-
 
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'BUILDING');
@@ -48,7 +44,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // get the latest classification for this project (if exists)
           if ($scope.project.latestClassificationJson) {
-            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, 'MAIN').then(function (response) {
+            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, metadataService.getBranchRoot()).then(function (response) {
               console.log(response);
               $scope.classificationContainer = response;
             });
@@ -63,10 +59,9 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
-      $scope.getProject();
 
       $scope.$on('reloadProject', function (event, data) {
-        console.debug('Received reload project request, current project: ', $scope.project);
+        // console.debug('Received reload project request, current project: ', $scope.project);
         $scope.getProject();
       });
 
@@ -114,7 +109,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on load, retrieve latest validation
       scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
-        console.debug('latest validation', response);
+        // console.debug('latest validation', response);
         $scope.validationContainer = response;
 
       });
@@ -138,18 +133,16 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.mergeAndRebase = function () {
         $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
       };
-      $scope.mergeAndRebase = function(task){
-        snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
-            if(!response.metadata || response.metadata && !response.metadata.lock)
-            {
-               $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
-            }
-            else{
-                notificationService.sendWarning('Unable to start rebase on project as the MAIN is locked due to ongoing changes.', 7000);
-            }
-         });
-    };
-
+      $scope.mergeAndRebase = function (task) {
+        snowowlService.getBranch($scope.branch).then(function (response) {
+          if (!response.metadata || response.metadata && !response.metadata.lock) {
+            $location.url('projects/project/' + $routeParams.projectKey + '/conflicts');
+          }
+          else {
+            notificationService.sendWarning('Unable to start rebase on project as the root branch is locked due to ongoing changes.', 7000);
+          }
+        });
+      };
 
 
       $scope.promote = function () {
@@ -158,7 +151,7 @@ angular.module('singleConceptAuthoringApp.project', [
 
         promotionService.checkPrerequisitesForProject($routeParams.projectKey).then(function (flags) {
 
-          console.debug('promotion flags', flags);
+          // console.debug('promotion flags', flags);
 
           // detect whether any user warnings were detected
           var warningsFound = false;
@@ -170,27 +163,25 @@ angular.module('singleConceptAuthoringApp.project', [
 
           // if response contains no flags, simply promote
           if (!warningsFound) {
-            snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
-            if(!response.metadata || response.metadata && !response.metadata.lock)
-            {
-                snowowlService.getBranch('MAIN/').then(function(response){
-                    if(!response.metadata || response.metadata && !response.metadata.lock)
-                    {
-                        notificationService.sendMessage('Promoting project...');
-                        scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                          notificationService.sendMessage('Project successfully promoted', 5000);
-                          $scope.getProject();
-                        });
-                    }
-                    else{
-                        notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
-                    }
+            snowowlService.getBranch($scope.branch).then(function (response) {
+              if (!response.metadata || response.metadata && !response.metadata.lock) {
+                snowowlService.getBranch(metadataService.getBranchRoot()).then(function (response) {
+                  if (!response.metadata || response.metadata && !response.metadata.lock) {
+                    notificationService.sendMessage('Promoting project...');
+                    scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                      notificationService.sendMessage('Project successfully promoted', 5000);
+                      $scope.getProject();
+                    });
+                  }
+                  else {
+                    notificationService.sendWarning('Unable to start rebase as branch root is locked due to ongoing changes.', 7000);
+                  }
                 });
-            }
-            else{
+              }
+              else {
                 notificationService.sendWarning('Unable to start rebase as the project branch is locked due to ongoing changes.', 7000);
-            }
-        });
+              }
+            });
 
           } else {
 
@@ -209,26 +200,24 @@ angular.module('singleConceptAuthoringApp.project', [
 
             modalInstance.result.then(function (proceed) {
               if (proceed) {
-                snowowlService.getBranch('MAIN/' + $routeParams.projectKey).then(function(response){
-                if(!response.metadata || response.metadata && !response.metadata.lock)
-                {
-                    snowowlService.getBranch('MAIN/').then(function(response){
-                        if(!response.metadata || response.metadata && !response.metadata.lock)
-                        {
-                            notificationService.sendMessage('Promoting project...');
-                            scaService.promoteProject($routeParams.projectKey).then(function (response) {
-                              notificationService.sendMessage('Project successfully promoted', 5000);
-                              $scope.getProject();
-                            });
-                        }
-                        else{
-                            notificationService.sendWarning('Unable to start rebase as MAIN is locked due to ongoing changes.', 7000);
-                        }
+                snowowlService.getBranch($scope.branch).then(function (response) {
+                  if (!response.metadata || response.metadata && !response.metadata.lock) {
+                    snowowlService.getBranch(metadataService.getBranchRoot()).then(function (response) {
+                      if (!response.metadata || response.metadata && !response.metadata.lock) {
+                        notificationService.sendMessage('Promoting project...');
+                        scaService.promoteProject($routeParams.projectKey).then(function (response) {
+                          notificationService.sendMessage('Project successfully promoted', 5000);
+                          $scope.getProject();
+                        });
+                      }
+                      else {
+                        notificationService.sendWarning('Unable to start rebase as branch root is locked due to ongoing changes.', 7000);
+                      }
                     });
-                }
-                else{
+                  }
+                  else {
                     notificationService.sendWarning('Unable to start rebase as the project branch is locked due to ongoing changes.', 7000);
-                }
+                  }
                 });
               } else {
                 notificationService.clear();
@@ -284,22 +273,6 @@ angular.module('singleConceptAuthoringApp.project', [
         }
       );
 
-      // on load, retrieve tasks for project
-      function initialize() {
-        scaService.getTasksForProject($routeParams.projectKey).then(function (response) {
-          $scope.tasks = response;
-          angular.forEach($scope.tasks, function (task) {
-            task.authorKey = task.assignee ? task.assignee.displayName : '';
-            task.reviewerKey = task.reviewer ? task.reviewer.displayName : '';
-          });
-          $scope.taskTableParams.reload();
-        });
-      }
-
-      // on reload task broadcast, re-initialize
-      $scope.$on('reloadTasks', function (event, data) {
-        initialize();
-      });
 
       $scope.editTask = function (task) {
         var modalInstance = $modal.open({
@@ -316,7 +289,7 @@ angular.module('singleConceptAuthoringApp.project', [
         });
 
         modalInstance.result.then(function (response) {
-          console.debug('modal closed with response', response);
+          // console.debug('modal closed with response', response);
           if (response) {
             if (response === 'DELETED') {
               initialize();
@@ -348,6 +321,40 @@ angular.module('singleConceptAuthoringApp.project', [
         });
       };
 
-      initialize();
+
+      // on load, retrieve tasks for project
+      function initialize() {
+
+        // set the branch
+        $scope.branch = metadataService.getBranch();
+
+        // initialize the project
+        $scope.getProject();
+
+        // get the project task list
+        scaService.getTasksForProject($routeParams.projectKey).then(function (response) {
+          $scope.tasks = response;
+          angular.forEach($scope.tasks, function (task) {
+            task.authorKey = task.assignee ? task.assignee.displayName : '';
+            task.reviewerKey = task.reviewer ? task.reviewer.displayName : '';
+          });
+          $scope.taskTableParams.reload();
+        });
+      }
+
+      // on reload task broadcast, re-initialize
+      $scope.$on('reloadTasks', function (event, data) {
+        initialize();
+      });
+
+      //
+      // Pre-initialization: Set branch information
+      //
+
+      scaService.getProjectForKey($routeParams.projectKey).then(function (project) {
+        metadataService.setBranchMetadata(project);
+        initialize();
+      });
+
 
     }]);

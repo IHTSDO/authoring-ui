@@ -37,7 +37,7 @@ angular.module('singleConceptAuthoringApp')
             }
         }, true);
         scope.$watch('view', function(newVal, oldVal){
-            console.log(scope.view);
+
             if(scope.view !== 'snf')
             {
                 element.append($("<div></div>").addClass('modelContainer'));
@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
                         field.target.fsn = field.value.term;
                         if(field.value.primitive)
                         {
-                            field.target.definitionStatus = 'PRIMITIVE';   
+                            field.target.definitionStatus = 'PRIMITIVE';
                         }
                         else{
                             field.target.definitionStatus = 'FULLY_DEFINED';
@@ -125,7 +125,7 @@ angular.module('singleConceptAuthoringApp')
                         field.target.fsn = field.value.concepts[0].term;
                         if(field.value.concepts[0].primitive)
                         {
-                            field.target.definitionStatus = 'PRIMITIVE';   
+                            field.target.definitionStatus = 'PRIMITIVE';
                         }
                         else{
                             field.target.definitionStatus = 'FULLY_DEFINED';
@@ -142,7 +142,7 @@ angular.module('singleConceptAuthoringApp')
                                 innerField.target.fsn = innerField.value.term;
                                 if(innerField.value.primitive)
                                 {
-                                    innerField.target.definitionStatus = 'PRIMITIVE';   
+                                    innerField.target.definitionStatus = 'PRIMITIVE';
                                 }
                                 else{
                                     innerField.target.definitionStatus = 'FULLY_DEFINED';
@@ -167,7 +167,7 @@ angular.module('singleConceptAuthoringApp')
                             field.target.fsn = field.value.term;
                             if(field.value.primitive)
                             {
-                                field.target.definitionStatus = 'PRIMITIVE';   
+                                field.target.definitionStatus = 'PRIMITIVE';
                             }
                             else{
                                 field.target.definitionStatus = 'FULLY_DEFINED';
@@ -185,7 +185,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
           }
-        
+
           var parentDiv = div;
 
           parentDiv.svg({
@@ -686,10 +686,10 @@ angular.module('singleConceptAuthoringApp')
             scope.openImage(data.conceptId);
           }
         });
-        
+
         scope.openImage = function(pageName){
             var w = window.open(pageName);
-            w.document.write(scope.img.outerHTML);  
+            w.document.write(scope.img.outerHTML);
         };
 
         function cropImageFromCanvas(ctx, canvas) {
