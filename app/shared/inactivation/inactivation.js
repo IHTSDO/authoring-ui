@@ -267,6 +267,11 @@ angular.module('singleConceptAuthoringApp')
 
             });
           };
+          scope.dropAssociationTarget = function (relationship, data) {
+            relationship.newTargetId = data.id;
+            relationship.newTargetFsn = data.name;
+            scope.reloadTables();
+          };
 
 
           //
