@@ -134,7 +134,7 @@
       </button></div></div>-->
   <div class="card m-10 validation-report" ng-show="!isCollapsed">
     <div role="tabpanel" class="">
-      <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && topTableParams.total() > 0">
+      <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && topTableParams.total() === 0">
         No validation results to display
       </div>
       <div class="table-responsive white" style="margin-right:0px;" ng-if="viewTop">
