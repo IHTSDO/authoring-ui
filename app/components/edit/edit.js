@@ -71,11 +71,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     // TODO Remove when done
     //
 
-/*
-    $timeout(function () {
-      inactivationService.setParameters($scope.branch, $scope.concepts[0], 'AMBIGUOUS', {POSSIBLY_EQUIVALENT_TO: ['73761001']});
-      $rootScope.$broadcast('conceptEdit.inactivateConcept');
-    }, 4000);*/
+    /*
+     $timeout(function () {
+     inactivationService.setParameters($scope.branch, $scope.concepts[0], 'AMBIGUOUS', {POSSIBLY_EQUIVALENT_TO: ['73761001']});
+     $rootScope.$broadcast('conceptEdit.inactivateConcept');
+     }, 4000);*/
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
@@ -887,6 +887,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.splice(index, 1);
         $scope.updateClassificationEditListUiState();
 
+      } else if ($scope.thisView === 'conflicts') {
+        // do nothing, concept management handled in conflicts.js
       }
       else {
 
@@ -901,7 +903,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         // remove the concept
         var editIndex = $scope.concepts.indexOf(data.concept);
         $scope.concepts.splice(editIndex, 1);
-        $scope.updateEditListUiState();
+
+        // only update the edit list if actually in an edit view
+        if ($scope.thisView === 'edit-default' || $scope.thisView === 'edit-no-sidebar' || $scope.thisView === 'edit-no-model') {
+          $scope.updateEditListUiState();
+        }
 
       }
     });
