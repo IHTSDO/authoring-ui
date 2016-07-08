@@ -134,6 +134,71 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+          //
+          // Concept FSN and Description Term display names
+          //
+
+          function getConceptNames() {
+            var deferred = $q.defer();
+            var conceptIds = [];
+            angular.forEach(scope.failures, function (failure) {
+              conceptIds.push(failure.conceptId);
+            });
+
+            if (conceptIds.length > 0) {
+
+              // bulk call for concept ids
+              snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
+                // save the value on the failures in the concept map
+                var idNameMap = {};
+                angular.forEach(concepts.items, function (concept) {
+                  idNameMap[concept.id] = concept.fsn.term;
+                });
+                angular.forEach(scope.failures, function (failure) {
+                  failure.conceptFsn = idNameMap[failure.conceptId];
+                });
+
+                deferred.resolve();
+              });
+            } else {
+              deferred.resolve();
+            }
+
+            return deferred.promise;
+          }
+
+          function getDescriptionNames() {
+            var deferred = $q.defer();
+            var descsDone = 0;
+
+            angular.forEach(scope.failures, function (failure) {
+
+
+              // match the description
+              var descIds = failure.message.match(/Description: id=(\d+)/);
+
+              // if description found and display name not already retrieved and added
+              if (descIds && descIds[1]) {
+                snowowlService.getDescriptionProperties(descIds[1], scope.branch).then(function (description) {
+                  failure.message = failure.message.replace(/Description: id=\d+/g, 'Description: ' + description.term);
+
+                  if (++descsDone == scope.failures.length) {
+                    deferred.resolve();
+                  }
+                });
+
+              } else if (++descsDone == scope.failures.length) {
+                deferred.resolve();
+              }
+
+            });
+            return deferred.promise;
+          }
+
+          // called by failureTableParams.getData(), retrieves names if needed
+          function getNamesForFailures() {
+            return $q.all([getDescriptionNames(), getConceptNames()]);
+          }
 
           var conceptIds = [];
 
@@ -253,8 +318,6 @@ angular.module('singleConceptAuthoringApp')
             {
               total: scope.failures ? scope.failures.length : 0,
               getData: function ($defer, params) {
-
-
                 // clear the loading variable on reload
                 scope.failuresLoading = false;
 
@@ -387,8 +450,6 @@ angular.module('singleConceptAuthoringApp')
               }
               // TODO Set edit enable/disable for edit panel
             }
-
-
             scope.failureTableParams.reload();
           };
 

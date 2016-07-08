@@ -45,6 +45,9 @@ angular.module('singleConceptAuthoringApp')
     function getAssocs() {
       return parameters.assocMembers;
     }
+    function getAssocs() {
+      return parameters.assocMembers;
+    }
 
     //
     // Actions
@@ -57,33 +60,11 @@ angular.module('singleConceptAuthoringApp')
       } else if (!parameters.reasonId) {
         deferred.reject('Inactivation called without setting reason');
       } else {
-
-
-
         snowowlService.inactivateConcept(parameters.branch,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
 
-          parameters.concept.active = false;
-
-
-          // straightforward inactivation of relationships
-          // NOTE: Descriptions stay active so a FSN can still be
-          // found
-          angular.forEach( parameters.concept.relationships, function (relationship) {
-            relationship.active = false;
-          });
-
-          snowowlService.updateConcept(parameters.project, parameters.task, parameters.concept).then(function (response) {
-            notificationService.sendMessage('Concept inactivated');
-            deferred.resolve(response);
-          }, function (error) {
-            notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-            deferred.reject(error);
-          });
+          deferred.resolve();
         });
-
-
       }
-
       return deferred.promise;
     }
 
