@@ -65,14 +65,14 @@
           <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
                                                                    aria-controls="home" role="tab"
                                                                    data-toggle="tab"> Children
-            Effected ({{isaRelsTableParams.total()}})
+            Affected ({{isaRelsTableParams.total()}})
           <li role="presentation" class="classification"><a style="margin: 0px" ng-click="actionTab=2"
                                                             aria-controls="home" role="tab"
-                                                            data-toggle="tab"> Attributes Effected
+                                                            data-toggle="tab"> Attributes Affected
             ({{attrRelsTableParams.total()}})
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Historical Associations Effected
+                                                       data-toggle="tab">Historical Associations Affected
             ({{assocsTableParams.total()}})</a>
           </li>
           <li>
@@ -120,7 +120,7 @@
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default red base"
+              <button ng-disabled="rel.accepted" class="btn btn-round btn-default red base"
                       ng-click="removeRelationship(rel)">
                 <div
                   class="md fa-sca fa-minus "></div>
@@ -167,7 +167,7 @@
               </button>
             </td>
             <td>
-              <button class="btn btn-round btn-default red base"
+              <button ng-disabled="rel.accepted" class="btn btn-round btn-default red base"
                       ng-click="removeRelationship(rel)">
                 <div
                   class="md fa-sca fa-minus "></div>
