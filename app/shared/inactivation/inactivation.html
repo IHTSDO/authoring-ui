@@ -33,7 +33,7 @@
   </style>
   <div class="row red lighten-1" style="vertical-align: middle">
     <div class="col-md-12 classification-header">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -
-      {{assocName}} {{histAssocTarget.fsn}}
+      {{assocName}} <span ng-repeat="concept in histAssocTargets.concepts"> {{concept.fsn}} </span>
 
 
       <button
