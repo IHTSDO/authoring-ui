@@ -68,13 +68,14 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     //
     // Inactivation testing
+    // TODO Remove when done
     //
 
-
+/*
     $timeout(function () {
       inactivationService.setParameters($scope.branch, $scope.concepts[0], 'AMBIGUOUS', {POSSIBLY_EQUIVALENT_TO: ['73761001']});
       $rootScope.$broadcast('conceptEdit.inactivateConcept');
-    }, 4000);
+    }, 4000);*/
 
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
