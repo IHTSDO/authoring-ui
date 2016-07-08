@@ -198,7 +198,9 @@
                       ng-options="target.text as target.text for target in getAssociationsForReason(rel.referencedComponent.inactivationIndicator)"></select>
             </td>
             <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
-              <textarea type="text" ng-model="rel.newTargetFsn"
+                <div drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropAssociationTarget(rel, $data)">
+              <textarea type="text" ng-model="rel.newTargetFsn" 
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
@@ -208,7 +210,7 @@
                         typeahead-min-length="3">
 
                                     </textarea>
-
+                    </div>
             </td>
             <td>
               <button type="button"
