@@ -75,11 +75,11 @@
         <button type="button" style="vertical-align: bottom"
                 ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
                 ng-click="toggleConceptActive(concept)"
-                ng-disabled="isInactivation()"
+                ng-disabled="isInactivation"
                 class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
-          <span ng-if="!isStatic  && !isInactivation()"> Activate/ inactivate concept </span>
-          <span ng-if="!isStatic && isInactivation()">Inactivation in progress, cannot change active status</span>
-          <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
+          <span ng-if="!isStatic && !isInactivation"> Activate/ inactivate concept </span>
+          <span ng-if="!isStatic && isInactivation">Inactivation in progress, cannot change active status</span>
+          <span ng-if="isStatic"> {{concept.active ? 'Active Concept' : 'Inactive Concept'}} </span>
         </button>
         <button type="button"
                 style="vertical-align: bottom"
@@ -195,10 +195,12 @@
 
           <!-- Active/Inactive -->
           <button type="button" style="vertical-align: bottom"
-                  ng-disabled="isStatic" ng-click="toggleDescriptionActive(description)"
+                  ng-disabled="isStatic || !description.released" ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
                   class="tooltips-bottom small-size-tooltip">
-            <span>Active/Inactive</span>
+            <span ng-if="isStatic">Active/Inactive</span>
+            <span ng-if="!isStatic && description.released">Toggle Active/Inactive</span>
+            <span ng-if="!isStatic && !description.released">Cannot inactivate unreleased description</span>
           </button>
 
           <!-- Case Significance -->
@@ -250,24 +252,27 @@
 
           <!-- Dialect / Acceptability -- never alterable for FSN -->
           <div>
+
             <!-- en-us acceptability -->
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                     ng-disabled="isStatic"
-                    ng-click="toggleAcceptability(description, 'en-us')">
-              <div class="md col-md-12 no-padding text-center">us: {{getAcceptabilityDisplayText(description, 'en-us')}}
+                    ng-click="toggleAcceptability(description, '900000000000509007')">
+              <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description,
+                '900000000000509007')}}
               </div>
-              <span>{{getAcceptabilityTooltipText(description, 'en-us')}} US</span>
+              <span>{{getAcceptabilityTooltipText(description, '900000000000509007')}} US</span>
             </button>
 
             <!-- en-gb acceptability -->
             <button type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
                     ng-disabled="isStatic"
-                    ng-click="toggleAcceptability(description, 'en-gb')">
-              <div class="md col-md-12 no-padding text-center">gb: {{getAcceptabilityDisplayText(description, 'en-gb')}}
+                    ng-click="toggleAcceptability(description, '900000000000508004')">
+              <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description,
+                '900000000000508004')}}
               </div>
-              <span>{{getAcceptabilityTooltipText(description, 'en-gb')}} GB</span>
+              <span>{{getAcceptabilityTooltipText(description, '900000000000508004')}} GB</span>
             </button>
 
 
@@ -348,10 +353,12 @@
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip"
                         style="vertical-align: bottom"
-                        ng-disabled="isStatic"
+                        ng-disabled="isStatic || !relationship.released"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
-                  <span>Active/Inactive</span>
+                  <span ng-if="isStatic">Active/Inactive</span>
+                  <span ng-if="!isStatic && relationship.released">Toggle Active/Inactive</span>
+                  <span ng-if="!isStatic && !relationship.released">Cannot inactivate unreleased relationship</span>
                 </button>
 
                 <!-- relationship group -->

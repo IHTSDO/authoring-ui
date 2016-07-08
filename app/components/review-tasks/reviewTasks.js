@@ -1,10 +1,10 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp.reviewTasks', [
-  //insert dependencies here
-  'ngRoute',
-  'ngTable'
-])
+    //insert dependencies here
+    'ngRoute',
+    'ngTable'
+  ])
 
   .config(function config($routeProvider) {
     $routeProvider
@@ -77,7 +77,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       }
     );
 
-    $scope.toggleShowPromotedReviews = function() {
+    $scope.toggleShowPromotedReviews = function () {
       $scope.showPromotedReviews = !$scope.showPromotedReviews;
       $scope.reviewTableParams.reload();
     };
@@ -97,25 +97,30 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
 
     };
-    
-    $scope.goToConflicts = function(task){
-        snowowlService.getBranch('MAIN/' + task.projectKey).then(function(response){
-            if(!response.metadata || response.metadata && !response.metadata.lock)
-            {
-                snowowlService.getBranch('MAIN/' + task.projectKey + '/' + task.key).then(function(response){
-                    if(!response.metadata || response.metadata && !response.metadata.lock)
-                    {
-                        $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
-                    }
-                    else{
-                        notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
-                    }
-                });
+
+    $scope.goToConflicts = function (task) {
+
+      // set the branch for retrieval by other elements
+      metadataService.setBranchMetadata(task);
+
+      // check for project lock
+      snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey).then(function (response) {
+        if (!response.metadata || response.metadata && !response.metadata.lock) {
+
+          // check for task lock
+          snowowlService.getBranch(metadataService.getBranchRoot() + '/' + task.projectKey + '/' + task.key).then(function (response) {
+            if (!response.metadata || response.metadata && !response.metadata.lock) {
+              $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/conflicts');
             }
-            else{
-                notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
+            else {
+              notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
             }
-        });
+          });
+        }
+        else {
+          notificationService.sendWarning('Unable to start rebase on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
+        }
+      });
     };
 
     // on successful set, reload table parameters
@@ -127,23 +132,23 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       var modalInstance = $modal.open({
         templateUrl: 'shared/task/task.html',
         controller: 'taskCtrl',
-          resolve: {
-            task: function() {
-              return null;
-            },
-            canDelete: function() {
-              return false;
-            }
+        resolve: {
+          task: function () {
+            return null;
+          },
+          canDelete: function () {
+            return false;
           }
+        }
       });
 
       modalInstance.result.then(function (response) {
-          loadTasks();
+        loadTasks();
       }, function () {
       });
     };
 
-    $scope.$on('reloadTasks', function(event, data) {
+    $scope.$on('reloadTasks', function (event, data) {
       loadTasks();
     });
 

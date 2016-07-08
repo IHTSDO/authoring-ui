@@ -14,8 +14,9 @@
         <div class="module pull-left">
             <label class="control-label">Module Id</label>
             <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
+                    ng-disabled="isLockedModule(concept.moduleId)"
               ng-model="concept.moduleId" ng-disabled="isStatic"
-              ng-change="setConceptModule(concept)" ng-options="module.id as (module.name) for module in modules"></select>
+              ng-change="setConceptModule(concept)" ng-options="module.id as (module.name) for module in getAvailableModules(concept.moduleId)"></select>
         </div>
 
   </div>
@@ -23,7 +24,9 @@
             <div class="col-md-12 no-padding pull-left">
                 <label class="control-label">Inactivation Reason
 
-                    <button type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editConceptInactivationReason(concept)" aria-disabled="false">
+                    <button
+                      ng-if="isLockedModule(concept.moduleId)"
+                      type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editConceptInactivationReason(concept)" aria-disabled="false">
                         <i class="md fa-sca fa-pencil"></i>
                         <span>Edit</span>
                     </button>

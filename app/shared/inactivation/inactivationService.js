@@ -6,27 +6,44 @@
 angular.module('singleConceptAuthoringApp')
   .service('inactivationService', ['$http', '$q', '$rootScope', 'scaService', 'snowowlService', 'notificationService', function ($http, $q, $rootScope, scaService, snowowlService, notificationService) {
 
-    // the concept selected for inactivation in this session
-    var conceptToInactivate = null;
+    var parameters = {
+      project : null,
+      task : null,
+      concept : null,
+      reasonId : null,
+      assocMembers : null
+    };
+
 
     //
     // Getters & setters
     //
     function isInactivation() {
 
-      return false;
+      //return false;
 
       // TODO REENABLE once inactivation is desired, this is used to trigger state detection
-      // return conceptToInactivate != null && conceptToInactivate != undefined;
+      return parameters.concept !== null &&  parameters.concept !== undefined;
     }
 
-    function setConceptToInactivate(concept) {
-      conceptToInactivate = concept;
-      $rootScope.$broadcast('inactivationConcept', {inactivationConcept: concept});
+    function setParameters(branch, concept, reasonId, assocRefsetMembers) {
+      console.debug('inactivationService setParameters', branch, concept, reasonId, assocRefsetMembers);
+      parameters = {};
+      parameters.concept = concept;
+      parameters.branch = branch;
+      parameters.reasonId = reasonId;
+      parameters.assocMembers = assocRefsetMembers;
     }
 
-    function getConceptToInactivate() {
-      return conceptToInactivate;
+    function getConcept() {
+      return parameters.concept;
+    }
+
+    function getReasonId() {
+      return parameters.reasonId;
+    }
+    function getAssocs() {
+      return parameters.assocMembers;
     }
     function getAssocs() {
       return parameters.assocMembers;
@@ -38,76 +55,45 @@ angular.module('singleConceptAuthoringApp')
 
     function inactivateConcept() {
       var deferred = $q.defer();
-      if (conceptToInactivate) {
+      if (!parameters.concept) {
         deferred.reject('Inactivation called without selecting concept');
+      } else if (!parameters.reasonId) {
+        deferred.reject('Inactivation called without setting reason');
       } else {
+        snowowlService.inactivateConcept(parameters.branch,  parameters.concept.conceptId,  parameters.reasonId,  parameters.assocMembers).then(function () {
 
-        // TODO Decide whether to return the inactivated concept here, or to use getter
-        deferred.resolve(true);
+          parameters.concept.active = false;
+
+
+          // straightforward inactivation of relationships
+          // NOTE: Descriptions stay active so a FSN can still be
+          // found
+          angular.forEach( parameters.concept.relationships, function (relationship) {
+            relationship.active = false;
+          });
+
+          snowowlService.updateConcept(parameters.project, parameters.task, parameters.concept).then(function (response) {
+            notificationService.sendMessage('Concept inactivated');
+            deferred.resolve(response);
+          }, function (error) {
+            notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
+            deferred.reject(error);
+          });
+        });
+
+
       }
 
       return deferred.promise;
-
-      // TODO Perform validations as required
-      // TODO Perform necessary actions here
-      /*
-       NOTE: Earlier found in conceptEdit.js, moved here
-
-       // validate the concept
-       snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
-       // check for errors -- NOTE: Currently unused, but errors are
-       // printed to log if detected
-       var errors = validationResults.filter(
-       function (result) {
-       return result.type === 'ERROR';
-       });
-
-       if (errors.length > 0) {
-       console.log('Detected errors in concept when inactivating', errors);
-       } else {
-       console.log('No errors detected');
-       }
-
-       selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
-
-       notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
-
-       snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
-
-       scope.concept.active = false;
-
-       // if reason is selected, deactivate all descriptions and
-       // relationships
-       if (results.reason) {
-
-       // straightforward inactivation of relationships
-       // NOTE: Descriptions stay active so a FSN can still be
-       // found
-       angular.forEach(scope.concept.relationships, function (relationship) {
-       relationship.active = false;
-       });
-
-       // save concept but bypass validation checks
-       saveHelper().then(function () {
-       notificationService.sendMessage('Concept inactivated');
-       }, function (error) {
-       notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-       });
-       }
-       }, function () {
-       notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
-       });
-
-       });
-       */
-
     }
 
     function cancelInactivation() {
-      // clear the concept to inactivate
-      setConceptToInactivate(null);
-
-      // TOOD Perform whatever else is necessary here
+      parameters = {
+        branch : null,
+        concept : null,
+        reasonId : null,
+        assocMembers : null
+      };
     }
 
     //
@@ -116,11 +102,13 @@ angular.module('singleConceptAuthoringApp')
 
     return {
       isInactivation: isInactivation,
-      setConceptToInactivate: setConceptToInactivate,
-      getConceptToInactivate: getConceptToInactivate,
+      setParameters: setParameters,
+      getConcept: getConcept,
+      getReasonId: getReasonId,
+      getAssocs: getAssocs,
       inactivateConcept: inactivateConcept,
       cancelInactivation: cancelInactivation
-    }
+    };
 
   }])
 ;

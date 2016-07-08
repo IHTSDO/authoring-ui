@@ -333,7 +333,7 @@ angular.module('singleConceptAuthoringApp')
           conceptId = 'unsaved';
         }
 
-        console.debug('getModifiedConceptForTask', projectKey, taskKey, conceptId);
+        //console.debug('getModifiedConceptForTask', projectKey, taskKey, conceptId);
 
         return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
           function (response) {
@@ -371,13 +371,13 @@ angular.module('singleConceptAuthoringApp')
 
             /*
              TODO Finish implementing this
-             console.debug('autosave response', response);
+             //console.debug('autosave response', response);
 
              // update the modified list
              $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (responseIds) {
 
              var conceptIds = responseIds;
-             console.debug('modified list response', conceptIds);
+             //console.debug('modified list response', conceptIds);
 
              if (!conceptIds || !Array.isArray(conceptIds)) {
              console.debug('bad response');
@@ -426,7 +426,7 @@ angular.module('singleConceptAuthoringApp')
           conceptId = 'unsaved';
         }
 
-        console.debug('deleting modified concept', projectKey, taskKey);
+        //console.debug('deleting modified concept', projectKey, taskKey);
 
         // TODO Refine this when support for multiple unsaved concepts goes in
         return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
@@ -601,7 +601,7 @@ angular.module('singleConceptAuthoringApp')
           // updated.', 5000, null, null);
           deferred.resolve(response);
         }, function (error) {
-          console.debug(error);
+          //console.debug(error);
           deferred.reject(error.statusText);
         });
         return deferred.promise;
@@ -757,7 +757,7 @@ angular.module('singleConceptAuthoringApp')
             notificationService.sendError('Error promoting project', 10000);
             return null;
           }
-          
+
         });
       },
 
@@ -787,7 +787,7 @@ angular.module('singleConceptAuthoringApp')
           else if(error.status === 409){
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
               return null;
-              
+
           }
           else{
             notificationService.sendError('Error rebasing Task: ' + projectKey);
@@ -896,7 +896,7 @@ angular.module('singleConceptAuthoringApp')
           $http.get(apiEndpoint + 'notifications').then(function (response) {
             if (response && response.data && response.data[0]) {
 
-              console.debug('NEW NOTIFICATION', response);
+              console.log('Server notification:', response.data);
 
               // getNotifications returns an array, get the latest
               // TODO Fold all results into a drop-down list in top right corner
@@ -983,7 +983,7 @@ angular.module('singleConceptAuthoringApp')
                       $rootScope.$broadcast('notification.branchState', newNotification);
                     }
                     break;
-                        
+
                   /*
                    Rebase Complete object structure
                    project: "WRPAS"

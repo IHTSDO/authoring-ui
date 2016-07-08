@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp.searchModal', [])
 
   .controller( 'searchModalCtrl', function AppCtrl ( $scope, $rootScope, $location, $routeParams, $compile, $modalInstance, snowowlService, searchStr) {
 
-      console.debug('searchModalCtrl', searchStr);
+      //console.debug('searchModalCtrl', searchStr);
 
       // closes the modal instance (if applicable)
       $scope.close = function (selectedItem) {
@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.searchModal', [])
           return;
         }
         $scope.results = [];
-        console.debug('searching with scope value', searchStr);
+        //console.debug('searching with scope value', searchStr);
         snowowlService.getDescriptionsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr).then(function(response) {
           $scope.results = response;
         })

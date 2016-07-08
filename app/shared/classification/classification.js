@@ -21,13 +21,6 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
-          // console.debug('classification display using branch', scope.branch);
-
-          if (!scope.branch) {
-            console.error('Classification display requires branch');
-            return;
-          }
-
           scope.editable = attrs.editable === 'true';
 
           // local concept-edit and model list
@@ -46,7 +39,7 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            console.debug(scope.classificationContainer.status);
+            // console.debug(scope.classificationContainer.status);
 
             switch (scope.classificationContainer.status) {
               case 'COMPLETED':
@@ -123,7 +116,7 @@ angular.module('singleConceptAuthoringApp')
                   conceptModelObj.conceptAfter = secondResponse;
 
                   scope.viewedConcepts.push(conceptModelObj);
-                  console.debug('conceptPairObj', conceptModelObj);
+                  // console.debug('conceptPairObj', conceptModelObj);
                   notificationService.clear();
 
                   // after a slight delay, broadcast a draw and taxonomy
@@ -135,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
                 });
               } else {
                 scope.viewedConcepts.push(conceptModelObj);
-                console.debug('conceptPairObj', conceptModelObj);
+                // console.debug('conceptPairObj', conceptModelObj);
                 notificationService.clear();
 
                 // after a slight delay, broadcast a draw event
@@ -197,7 +190,7 @@ angular.module('singleConceptAuthoringApp')
            * task/project eligible
            */
           function saveClassificationHelper() {
-            console.debug('saveClassificationHelper');
+            // console.debug('saveClassificationHelper');
             snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
               if (!data) {
                 notificationService.sendError('Saving classification aborted', 0);
@@ -400,6 +393,11 @@ angular.module('singleConceptAuthoringApp')
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
 
+            if (!scope.classificationContainer || !scope.classificationContainer.id) {
+              //console.debug('Either container or its id is null');
+              return;
+            }
+
             // set the item arrays to null to trigger loading status detection
             scope.relationshipChanges = null;
             scope.redundantStatedRelationships = null;
@@ -407,19 +405,10 @@ angular.module('singleConceptAuthoringApp')
             scope.equivalentConcepts = null;
 
             // set flag for whether any results were found
-            scope.resultsNotEmpty = scope.classificationContainer.equivalentConceptsFound
-              || scope.classificationContainer.inferredRelationshipChangesFound
-              || scope.classificationContainer.redundantStatedRelationshipsFound;
-            console.debug('RESULTS', scope.classificationContainer.equivalentConceptsFound
-              , scope.classificationContainer.inferredRelationshipChangesFound
-              , scope.classificationContainer.redundantStatedRelationshipsFound
-            )
+            scope.resultsNotEmpty = scope.classificationContainer.equivalentConceptsFound ||
+              scope.classificationContainer.inferredRelationshipChangesFound ||
+              scope.classificationContainer.redundantStatedRelationshipsFound;
 
-
-            if (!scope.classificationContainer || !scope.classificationContainer.id) {
-              //console.debug('Either container or its id is null');
-              return;
-            }
 
             // set the display status text
             scope.setStatusText();
