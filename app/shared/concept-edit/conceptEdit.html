@@ -221,7 +221,7 @@
 
                         <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                                   ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic" maxlength="255"
+                                  ng-disabled="isStatic || description.released" maxlength="255"
                                   ng-model="description.term"
                                   class="color_{{relationship.groupId}} form-control msd-elastic: \n;" type="text"
                                   placeholder="Description">
@@ -229,13 +229,15 @@
 
                         <textarea autofocus ng-if="description.type === 'SYNONYM'"
                                   ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic" maxlength="255"
+                                  ng-disabled="isStatic || description.released" maxlength="255"
                                   ng-model="description.term"
                                   class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
                                   placeholder="Description">
                         </textarea>
                         <textarea ng-if="description.type === 'TEXT_DEFINITION'"
-                                  ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
+                                  ng-change="updateDescription(description)"
+                                  ng-disabled="isStatic || description.releasede" maxlength="255"
+                                  ng-model-options="{updateOn: 'blur'}"
                                   ng-model="description.term" type="text" placeholder="Description"
                                   class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
                         </textarea>
@@ -243,7 +245,7 @@
 
           <!-- TypeId -->
           <div class="pull-left typeid">
-            <select ng-disabled="description.effectiveTime || isStatic"
+            <select ng-disabled="description.released || isStatic"
                     ng-options="descTypeId.name as descTypeId.abbr for descTypeId in descTypeIds"
                     ng-model="description.type" ng-change="updateDescription(description)" name="select-type"
                     id="select-type-choice" class="form-control color_{{relationship.groupId}}" ui-on-drop="">
