@@ -444,6 +444,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     //
 
     $scope.getConceptsForReview = function (idList, review, feedbackList) {
+
+      // set the last viewed date from the feedback list
+      console.debug('edit.js getConcepts', idList, review, feedbackList);
+
       snowowlService.bulkGetConcept(idList, $scope.branch).then(function (response) {
         angular.forEach(response.items, function (concept) {
           angular.forEach(review.concepts, function (reviewConcept) {
@@ -454,6 +458,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               angular.forEach(feedbackList, function (feedback) {
                 if (reviewConcept.conceptId === feedback.id) {
                   reviewConcept.messages = feedback.messages;
+                  reviewConcept.viewDate = feedback.viewDate;
                 }
               });
             }
@@ -464,6 +469,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               angular.forEach(feedbackList, function (feedback) {
                 if (reviewConcept.conceptId === feedback.id) {
                   reviewConcept.messages = feedback.messages;
+                  reviewConcept.viewDate = feedback.viewDate;
                 }
               });
             }
@@ -489,7 +495,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
       } else if ($routeParams.mode === 'feedback') {
-        snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+       snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
           var review = {};
           if (traceability) {
             review.concepts = [];
