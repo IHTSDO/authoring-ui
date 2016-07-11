@@ -1120,6 +1120,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise, open a select reason modal
           else {
+
+            // temporarily inactivate the description to
             description.active = false;
             var innerActiveFsn = [];
             for (var j = 0; j < scope.concept.descriptions.length; j++) {
@@ -1129,9 +1131,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             if (innerActiveFsn.length !== 1) {
               scope.errors = ['Concept must have an active FSN. Please create a new FSN before inactivating the old one.'];
+
+              // reactivate the description, inactivation aborted
               description.active = true;
             }
             else {
+              // reactivate the description before selecting a reason
               description.active = true;
 
               selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
