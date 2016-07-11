@@ -883,6 +883,7 @@ angular.module('singleConceptAuthoringApp')
             // conceptsReviewed do not yet exist)
             if (scope.feedbackContainer.review && !scope.feedbackContainer.review.conceptsToReview && !scope.feedbackContainer.review.conceptsReviewed) {
 
+              console.debug('feedback container', scope.feedbackContainer);
               // console.debug('Initial load detected, setting concepts to review & concepts reviewed', scope.feedbackContainer.review.concepts);
 
               // get the ui state
@@ -1198,6 +1199,7 @@ angular.module('singleConceptAuthoringApp')
                     angular.forEach(feedbackList, function (feedback) {
                       if (reviewConcept.conceptId === feedback.id) {
                         reviewConcept.messages = feedback.messages;
+                        reviewConcept.viewDate = feedback.viewDate;
                       }
                     });
                   }
@@ -1208,6 +1210,7 @@ angular.module('singleConceptAuthoringApp')
                     angular.forEach(feedbackList, function (feedback) {
                       if (reviewConcept.conceptId === feedback.id) {
                         reviewConcept.messages = feedback.messages;
+                        reviewConcept.viewDate = feedback.viewDate;
                       }
                     });
                   }
