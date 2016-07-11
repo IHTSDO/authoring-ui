@@ -365,10 +365,12 @@ angular.module('singleConceptAuthoringApp')
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
-            // filter by configurable exclusion rules
-            scope.assertionsFailed = scope.assertionsFailed.filter(function (assertion) {
-              return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
-            });
+            // filter by configurable exclusion rules -- only in task view
+            if ($routeParams.taskKey) {
+              scope.assertionsFailed = scope.assertionsFailed.filter(function (assertion) {
+                return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
+              });
+            }
 
             // set the viewable flags for all returned failure instances
             angular.forEach(scope.assertionsFailed, function (assertion) {
