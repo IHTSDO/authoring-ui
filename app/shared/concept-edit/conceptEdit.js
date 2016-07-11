@@ -1311,7 +1311,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if no acceptability map specified, return 'N' for Not Acceptable
           if (!description.acceptabilityMap) {
-            return 'N';
+            return getShortDialectName(dialectId) + ':N';
           }
 
           // retrieve the value (or null if does not exist) and return
