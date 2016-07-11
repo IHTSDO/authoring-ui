@@ -1244,8 +1244,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.toggleAcceptability = function (description, dialectId) {
 
-          console.debug('toggle acceptability', description.type, dialectId, description.acceptabilityMap[dialectId], description.acceptabilityMap);
-          if (!description.acceptabilityMap) {
+           if (!description.acceptabilityMap) {
             description.acceptabilityMap = {};
           }
           if (description.type !== 'TEXT_DEFINITION') {
