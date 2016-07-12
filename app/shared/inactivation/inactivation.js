@@ -305,7 +305,12 @@ angular.module('singleConceptAuthoringApp')
                         }
                         if (rel.accepted) {
                           delete rel.accepted;
+                          if(rel.relationshipId !== null)
+                          {
+                              rel.relationshipId = null;
+                          }
                         }
+                        
                       });
                   }
                 });
