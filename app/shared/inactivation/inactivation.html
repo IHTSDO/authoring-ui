@@ -198,16 +198,14 @@
             <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropAssociationTarget(rel, $data)">
-              <textarea type="text" ng-model="rel.newTargetFsn" 
+              <textarea type="text" class="form-control" ng-model="rel.newTargetFsn" 
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
                         typeahead-wait-ms="700"
                         typeahead-on-select="setTargetComponent(rel, $item)"
                         typeahead-editable="false"
-                        typeahead-min-length="3">
-
-                                    </textarea>
+                        typeahead-min-length="3"></textarea>
                     </div>
             </td>
             <td>
