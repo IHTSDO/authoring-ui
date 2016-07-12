@@ -5,14 +5,14 @@
            id="select_all_failures"
            name="filter-checkbox" value=""/>
   </script>
-  <script type="text/ng-template" id="editheader.html">
+  <script type="text/ng-template" id="excludeheader.html">
     <button type="button" ng-click="excludeSelectedFailures()"
             class="btn btn-round btn-default red" title="Add all selected failures to exclusion list">
             <span
               class="md md-block"></span>
     </button>
-    </script>
-  <script type="text/ng-template" id="excludeheader.html">
+  </script>
+  <script type="text/ng-template" id="editheader.html">
     <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
             class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
             <span
@@ -130,7 +130,13 @@
     <div class="col-md-1 classification-header">
       <input type="checkbox" ng-model="restrictByTraceability" ng-change="reloadTables()">
     </div>
-    <div class="col-md-5 classification-header">
+    <div class="col-md-3 classification-header">
+      <span class="pull-right">Show User-Excluded Failures:</span>
+    </div>
+    <div class="col-md-1 classification-header">
+      <input type="checkbox" ng-model="showUserExcludedFailures" ng-change="reloadTables()">
+    </div>
+    <div class="col-md-1 classification-header">
       <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
               class="btn btn-default deep-purple pull-right"
               ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
@@ -203,16 +209,18 @@
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
               {{failure.message}}
             </td>
-            <td ng-if="taskKey" header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
-              {{failure.userModified}}
-            </td>
             <td data-header="'excludeheader.html'">
-              <button type="button" ng-click="excludeSelectedFailure(failure)"
+              <button type="button" ng-click="excludeFailure(failure)"
                       class="btn btn-round btn-default red" title="Add failure to exclusion list">
             <span
               class="md md-block"></span>
               </button>
-              </td>
+              isExcluded: {{isExcluded(failure)}}
+            </td>
+            <td ng-if="taskKey" header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
+              {{failure.userModified}}
+            </td>
+
             <td ng-if="editable" data-header="'editheader.html'">
               &nbsp;&nbsp;
               <button type="button" class="btn btn-round btn-default blue"
