@@ -236,6 +236,21 @@
 
   <!-- Exclusions table -->
   <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
+    <div class="row">
+      <div class="col-md-10 p-10">
+        <strong>Validation Errors Excluded By Users</strong>: {{exclusionsTableParams.total()}}
+
+      </div>
+      <div class="col-md-2 p-10">
+        <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right"
+                ng-click="toggleExclusionsView()">
+          <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Exclusions
+        </button>
+      </div>
+      <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
+        Create Task From Failures
+     </button></div>-->
+    </div>
     <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
       <tr ng-repeat="failure in $data">
@@ -244,9 +259,9 @@
         <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
           {{failure.conceptId}}
         </td>
-        <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{failure.conceptFsn}}</td>
+        <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{idNameMap[failure.conceptId]}}</td>
         <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
-          {{failure.message}}
+          {{failure.failureText}}
         </td>
 
         <td header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'">
