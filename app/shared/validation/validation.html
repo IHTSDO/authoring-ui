@@ -214,7 +214,6 @@
             </td>
             <td header-title="'Click to sort'" data-title="'Excluded'" sortable="'userExcluded'">
               <input type="checkbox" ng-model="failure.userExcluded" ng-change="toggleUserExclusion(failure)">
-              excluded: {{failure.userExcluded}}
             </td>
             <td ng-if="taskKey" header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
               {{failure.userModified}}
@@ -256,6 +255,9 @@
       <tr ng-repeat="failure in $data">
 
         <!-- other columns here -->
+        <td header-title="'Click to sort'" data-title="'Assertion Failure'" sortable="'assertionText'">
+          {{failure.assertionText}}
+        </td>
         <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
           {{failure.conceptId}}
         </td>
@@ -271,7 +273,14 @@
           {{failure.user}}
         </td>
         <td header-title="'Click to sort'" data-title="'Excluded'" sortable="'userExcluded'">
-          <input type="checkbox" ng-init="failure.userExcluded = true" ng-model="failure.userExcluded" ng-change="removeUserExclusionFromTable(failure)">
+          <button
+            title="Remove exception" type="button" ng-click="removeUserExclusionFromTable(failure)"
+            class="btn btn-round btn-default blue case-failures">
+            <i
+              class="md md-close"></i>
+          </button>
+
+
         </td>
 
       </tr>
