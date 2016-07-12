@@ -242,7 +242,7 @@
 
       </div>
       <div class="col-md-2 p-10">
-        <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right"
+        <button class="btn btn-default blue back-button pull-right"
                 ng-click="toggleViewExclusions()">
           <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Exclusions
         </button>
@@ -259,8 +259,8 @@
         <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
           {{failure.conceptId}}
         </td>
-        <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{idNameMap[failure.conceptId]}}</td>
-        <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
+        <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{failure.conceptFsn}}</td>
+        <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'">
           {{failure.failureText}}
         </td>
 
