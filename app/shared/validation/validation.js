@@ -143,7 +143,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
-          
+
           var conceptIds = [];
 
           function getConceptIdForFailure(failure) {
@@ -318,24 +318,22 @@ angular.module('singleConceptAuthoringApp')
                   }
                   console.debug('failures to retrieve names for', failures);
 
-                  getConceptNames(failures).then(function () {
-                    console.debug('got names for exclusions', scope.idNameMap);
+                  for (var key in exclusions) {
+                    angular.forEach(exclusions[key].excludedFailures, function (failure) {
+                      failure.assertionUuid = key;
+                      failure.assertionText = exclusions[key].assertionText;
+                      orderedData.push(failure);
+                    })
+                  }
 
-                    for (var key in exclusions) {
-                      angular.forEach(exclusions[key].excludedFailures, function (failure) {
-                        failure.conceptFsn = scope.idNameMap[failure.conceptId];
-                        orderedData.push(failure);
-                      })
-                    }
+                  //     console.debug('ordered data', orderedData);
+                  params.total(orderedData.length);
+                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                  orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                  //      console.debug('ordered data', orderedData);
+                  $defer.resolve(orderedData);
+                })
 
-                    //     console.debug('ordered data', orderedData);
-                    params.total(orderedData.length);
-                    orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-                    orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                    //      console.debug('ordered data', orderedData);
-                    $defer.resolve(orderedData);
-                  })
-                });
               }
             }
           );
@@ -579,6 +577,28 @@ angular.module('singleConceptAuthoringApp')
                 });
               }
             });
+
+            angular.forEach(scope.failures, function (displayedFailure) {
+              console.debug('checking displayed failure', displayedFailure.failureText, displayedFailure.conceptId);
+              if (displayedFailure.conceptId === failure.conceptId && displayedFailure.failureText === failure.message) {
+                displayedFailure.userExcluded = false;
+              }
+            });
+
+            // re-set the flags for user exclusion
+            // TODO This is INCREDIBLY inefficient, but trying to wokr around existing validation functionality
+            // since the report is likely going away / being redesigned soon anyway
+            angular.forEach(scope.assertionsFailed, function (assertion) {
+              angular.forEach(assertion.firstNInstances, function (instance) {
+
+                // detect if category references user-excluded failures
+                if (scaService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail)) {
+                  instance.isUserExclusion = true;
+                } else {
+                  instance.isUserExclusion = false;
+                }
+              });
+            });
           };
 
           // exclude a single failure, with optional commit
@@ -604,6 +624,7 @@ angular.module('singleConceptAuthoringApp')
                 scaService.addValidationFailureExclusion(scope.assertionFailureViewedUuid,
                   scope.assertionFailureViewed,
                   failure.conceptId,
+                  failure.conceptFsn,
                   failure.message,
                   userName);
 
