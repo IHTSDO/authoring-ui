@@ -330,14 +330,19 @@ angular.module('singleConceptAuthoringApp')
           function updateHistoricalAssociations(list){
               var deferred = $q.defer();
               if(list && list.length > 0){
-                  angular.forEach(list, function(item){
-                    console.log(item);
-                    var assoc = {};
-                    assoc[item.refsetSaveable] = [item.newTargetId];
-                    snowowlService.inactivateConcept(scope.branch, item.referencedComponent.id,  item.referencedComponent.inactivationIndicator, assoc).then(function () {
-                        deferred.resolve();
-                      });
-                  });
+                  var cntr = 0;
+                  function next() {
+                    if (cntr < list.length) {
+                        var assoc = {};
+                        assoc[list[cntr].refsetSaveable] = [list[cntr].newTargetId];
+                        snowowlService.inactivateConcept(scope.branch, list[cntr].referencedComponent.id,  list[cntr].referencedComponent.inactivationIndicator, assoc).then(function () {
+                                cntr++;
+                                next();
+                              });
+                        }
+                      else{deferred.resolve();};
+                    }
+                    next();
               }
               else{deferred.resolve();};
               return deferred.promise;
