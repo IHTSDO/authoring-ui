@@ -1087,11 +1087,12 @@ angular.module('singleConceptAuthoringApp')
       // { assertionUuid : '', user : '', conceptId : '', detail : '', timestamp : date }
       //
 
-      addValidationFailureExclusion: function (assertionUuid, assertionText, conceptId, failureText, user) {
+      addValidationFailureExclusion: function (assertionUuid, assertionText, conceptId, conceptFsn, failureText, user) {
         console.debug('add exclusion', assertionUuid, assertionText, conceptId, failureText, 'to', validationFailureExclusions);
         // create the exclusion
         var exclusion = {
           conceptId: conceptId,
+          conceptFsn : conceptFsn,
           failureText: failureText,
           user: user,
           timestamp: new Date().getTime()
