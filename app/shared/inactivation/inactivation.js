@@ -110,7 +110,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.isaRelsTableParams = new NgTableParams({
               page: 1,
-              count: 5
+              count: 10
             },
             {
               filterDelay: 50,
@@ -154,7 +154,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.attrRelsTableParams = new NgTableParams({
               page: 1,
-              count: 5
+              count: 10
             },
             {
               // initial display text, overwritten in getData
@@ -193,7 +193,7 @@ angular.module('singleConceptAuthoringApp')
           // declare table parameters
           scope.assocsTableParams = new NgTableParams({
               page: 1,
-              count: 5
+              count: 10
             },
             {
               // initial display text, overwritten in getData
