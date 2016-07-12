@@ -81,6 +81,7 @@ angular.module('singleConceptAuthoringApp')
                         angular.forEach(scope.histAssocTargets.concepts, function (concept){
                             var item = angular.copy(list[i])
                             item.refsetName = scope.associationTargets[j].text;
+                            item.refsetSaveable = scope.associationTargets[j].id;
                             item.newTargetId = concept.conceptId;
                             item.newTargetFsn = concept.fsn;
                             list.push(item);
@@ -88,6 +89,7 @@ angular.module('singleConceptAuthoringApp')
                     }
                     else{
                         list[i].refsetName = scope.associationTargets[j].text;
+                        list[i].refsetSaveable = scope.associationTargets[j].id;
                     }
                 }
               }
@@ -117,14 +119,16 @@ angular.module('singleConceptAuthoringApp')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
-                  angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
-                    // add all relationships with no effective time
-                    if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
-                      rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
-                      rel.typeFsn = rel.type.fsn;
-                      data.push(rel);
-                    }
-                  });
+                  if(scope.affectedConcepts[conceptId]){
+                      angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                        // add all relationships with no effective time
+                        if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                          rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
+                          rel.typeFsn = rel.type.fsn;
+                          data.push(rel);
+                        }
+                      });
+                  }
                 }
 
                 params.total(data.length);
@@ -157,15 +161,17 @@ angular.module('singleConceptAuthoringApp')
                 var data = [];
                 // recompute the affected relationships from ids or blank ids
                 for (var conceptId in scope.affectedConcepts) {
-                  angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                  if(scope.affectedConcepts[conceptId]){
+                      angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
 
-                    // add all relationships with no effective time
-                    if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
-                      rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
-                      rel.typeFsn = rel.type.fsn;
-                      data.push(rel);
-                    }
-                  });
+                        // add all relationships with no effective time
+                        if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                          rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
+                          rel.typeFsn = rel.type.fsn;
+                          data.push(rel);
+                        }
+                      });
+                  }
                 }
 
                 params.total(data.length);
@@ -265,32 +271,47 @@ angular.module('singleConceptAuthoringApp')
           scope.completeInactivation = function () {
             scope.finalizing = true;
             notificationService.sendMessage('Saving Modified Relationships...');
-            var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
-              return [value];
-            });
-            angular.forEach(conceptArray, function (concept) {
-              angular.forEach(concept.relationships, function (rel) {
-                if (rel.sourceFsn) {
-                  delete rel.sourceFsn;
-                }
-                if (rel.typeFsn) {
-                  delete rel.typeFsn;
-                }
-                if (rel.accepted) {
-                  delete rel.accepted;
-                }
-              });
-            });
-            snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-                notificationService.sendMessage('Updating Historical Associations...');
-                updateHistoricalAssociations(scope.affectedAssocs).then(function(){
-                    notificationService.sendMessage('Inactivating Concept...');
-                    inactivationService.inactivateConcept().then(function(){
-                        notificationService.sendMessage('Inactivation Complete');
-                        $route.reload();                         
-                     });
+            console.log(scope.affectedConcepts);
+            if(scope.affectedConcepts && scope.affectedConcepts !== null){
+                var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
+                  return [value];
                 });
-            });
+                angular.forEach(conceptArray, function (concept) {
+                  if(concept && concept.relationships){
+                      angular.forEach(concept.relationships, function (rel) {
+                        if (rel.sourceFsn) {
+                          delete rel.sourceFsn;
+                        }
+                        if (rel.typeFsn) {
+                          delete rel.typeFsn;
+                        }
+                        if (rel.accepted) {
+                          delete rel.accepted;
+                        }
+                      });
+                  }
+                });
+                snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
+                    notificationService.sendMessage('Updating Historical Associations...');
+                    updateHistoricalAssociations(scope.affectedAssocs).then(function(){
+                        notificationService.sendMessage('Inactivating Concept...');
+                        inactivationService.inactivateConcept().then(function(){
+                            notificationService.sendMessage('Inactivation Complete');
+                            $route.reload();                         
+                         });
+                    });
+                });
+            }
+            else{
+                notificationService.sendMessage('Updating Historical Associations...');
+                    updateHistoricalAssociations(scope.affectedAssocs).then(function(){
+                        notificationService.sendMessage('Inactivating Concept...');
+                        inactivationService.inactivateConcept().then(function(){
+                            notificationService.sendMessage('Inactivation Complete');
+                            $route.reload();                         
+                         });
+                    });
+            }
           };
             
           scope.dropAssociationTarget = function (relationship, data) {
@@ -301,13 +322,17 @@ angular.module('singleConceptAuthoringApp')
         
           function updateHistoricalAssociations(list){
               var deferred = $q.defer();
-              angular.forEach(list, function(item){
-                console.log(item);
-                snowowlService.inactivateConcept(scope.branch, item.referencedComponent.id,  item.referencedComponent.inactivationIndicator, [item.newTargetId]).then(function () {
-                    
+              if(list && list.length > 0){
+                  angular.forEach(list, function(item){
+                    console.log(item);
+                    var assoc = {};
+                    assoc[item.refsetSaveable] = [item.newTargetId];
+                    snowowlService.inactivateConcept(scope.branch, item.referencedComponent.id,  item.referencedComponent.inactivationIndicator, assoc).then(function () {
+                        deferred.resolve();
+                      });
                   });
-              });
-              deferred.resolve();
+              }
+              else{deferred.resolve();};
               return deferred.promise;
           };
 
@@ -382,11 +407,6 @@ angular.module('singleConceptAuthoringApp')
 
               // retrieve affected concepts from associations
               var conceptIds = [];
-              angular.forEach(scope.affectedAssocs, function (assoc) {
-
-                scope.affectedConcepts[assoc.referencedComponent.id] = null;
-
-              });
 
               if(response.items && response.items.length > 0){
                   parseAssocs(scope.affectedAssocs).then(function (list) {
@@ -464,16 +484,18 @@ angular.module('singleConceptAuthoringApp')
               //console.debug('Preparing affected relationships for concept', key, scope.affectedConcepts);
               if (scope.affectedConcepts.hasOwnProperty(key)) {
                 var concept = scope.affectedConcepts[key];
-                angular.forEach(concept.relationships, function (rel) {
-                  //  console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
-                  if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1 && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0) {
-                    // console.debug('  prepping relationship', rel.relationshipId);
-                    inactivateRelationship(concept, rel);
-                  }
-                  else if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1) {
-                    inactivateAttributeRelationship(concept, rel);
-                  }
-                });
+                if(concept && concept.relationships){
+                    angular.forEach(concept.relationships, function (rel) {
+                      //  console.debug('  Checking relationship ' + rel.relationshipId, scope.affectedRelationshipIds);
+                      if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1 && metadataService.isIsaRelationship(rel.type.conceptId) && scope.histAssocTargets.concepts.length === 0) {
+                        // console.debug('  prepping relationship', rel.relationshipId);
+                        inactivateRelationship(concept, rel);
+                      }
+                      else if (scope.affectedRelationshipIds.indexOf(rel.relationshipId) !== -1) {
+                        inactivateAttributeRelationship(concept, rel);
+                      }
+                    });
+                }
               }
             }
             deferred.resolve();
