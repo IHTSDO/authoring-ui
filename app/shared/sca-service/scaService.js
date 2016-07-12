@@ -6,6 +6,43 @@ angular.module('singleConceptAuthoringApp')
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
+    //
+    // Validation Failure Exclusion getter, setter, and cached values
+    //
+
+    var validationFailureExclusions = null;
+
+    // exposed below, used for other validation failure exclusion functions
+    function getValidationFailureExclusions() {
+      var deferred = $q.defer();
+
+      $http.get(apiEndpoint + 'projects/validation/tasks/exclusions/shared-ui-state/failures').then(function (response) {
+        console.debug('get validation exclusions', response);
+        validationFailureExclusions = response ? response.data : {};
+        deferred.resolve(validationFailureExclusions);
+      }, function (error) {
+        console.debug('no validation failure exclusions', error);
+        validationFailureExclusions = {};
+        deferred.resolve({});
+      });
+      return deferred.promise;
+
+    }
+
+
+    // Commit function to update the stored exclusions
+    function updateValidationFailureExclusions() {
+      var deferred = $q.defer();
+      $http.post(apiEndpoint + 'projects/validation/tasks/exclusions/shared-ui-state/failures', validationFailureExclusions).then(function (response) {
+        deferred.resolve(response);
+      }, function (error) {
+        notificationService.sendError('Unexpected error updating validation failure exclusions');
+        deferred.reject(response);
+      });
+      return deferred.promise;
+    }
+
+
     return {
 
       /////////////////////////////////////
@@ -243,8 +280,8 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
-  // save the UI state for a project, task, and panel triplet
-       // get the UI state for a project, task, and panel triplet
+      // save the UI state for a project, task, and panel triplet
+      // get the UI state for a project, task, and panel triplet
       getUiStateForReviewTask: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
           console.error('Must specify projectKey to get UI state');
@@ -368,42 +405,6 @@ angular.module('singleConceptAuthoringApp')
         // TODO Refine this when support for multiple unsaved concepts goes in
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId, concept).then(
           function (response) {
-
-            /*
-             TODO Finish implementing this
-             //console.debug('autosave response', response);
-
-             // update the modified list
-             $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (responseIds) {
-
-             var conceptIds = responseIds;
-             //console.debug('modified list response', conceptIds);
-
-             if (!conceptIds || !Array.isArray(conceptIds)) {
-             console.debug('bad response');
-             }
-
-             var index = conceptIds.indexOf(concept.conceptId);
-             if (index === -1) {
-             $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds.concat(concept.conceptId)).then(function (response) {
-             // do nothing
-             }, function (error) {
-             // do nothing
-             })
-             }
-             }, function (error) {
-             console.debug(' modified list error', error);
-
-             // if a 404 error, do not throw error
-             if (error.status === 404) {
-             console.debug('creating new modified list');
-             $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', [ conceptId ]).then(function (response) {
-             // do nothing
-             }, function (error) {
-             // do nothing
-             })
-             }
-             });*/
 
             return response.data;
           }, function (error) {
@@ -627,7 +628,7 @@ angular.module('singleConceptAuthoringApp')
           return response;
         }, function (error) {
           notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 3000);
-            return null;
+          return null;
         });
       },
 
@@ -744,15 +745,15 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendMessage('Project Promoted Successfully', 10000);
           return response.data;
         }, function (error) {
-          if(error.status === 504){
-              notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
-              return 1;
+          if (error.status === 504) {
+            notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
+            return 1;
           }
-          else if(error.status === 409){
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null;
+          else if (error.status === 409) {
+            notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+            return null;
           }
-          else{
+          else {
             console.error('Error promoting project ' + projectKey);
             notificationService.sendError('Error promoting project', 10000);
             return null;
@@ -780,16 +781,16 @@ angular.module('singleConceptAuthoringApp')
           notificationService.sendMessage('Project Rebased Successfully', 10000);
           return response.data;
         }, function (error) {
-          if(error.status === 504){
-              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
-              return 1;
+          if (error.status === 504) {
+            notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes.');
+            return 1;
           }
-          else if(error.status === 409){
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null;
+          else if (error.status === 409) {
+            notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+            return null;
 
           }
-          else{
+          else {
             notificationService.sendError('Error rebasing Task: ' + projectKey);
             return null;
           }
@@ -802,15 +803,15 @@ angular.module('singleConceptAuthoringApp')
         $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          if(error.status === 504){
-              notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
-              return error.message;
+          if (error.status === 504) {
+            notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
+            return error.message;
           }
-          else if(error.status === 409){
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return error.message;
+          else if (error.status === 409) {
+            notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+            return error.message;
           }
-          else{
+          else {
             console.error('Error promoting project ' + projectKey);
             notificationService.sendError('Error promoting project', 10000);
             return error.message;
@@ -836,15 +837,15 @@ angular.module('singleConceptAuthoringApp')
         return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/rebase', {}).then(function (response) {
           return response;
         }, function (error) {
-          if(error.status === 504){
-              notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will unlock when the rebase completes.');
-              return 1;
+          if (error.status === 504) {
+            notificationService.sendWarning('Your rebase operation is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will unlock when the rebase completes.');
+            return 1;
           }
-          else if(error.status === 409){
-              notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return null;
+          else if (error.status === 409) {
+            notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
+            return null;
           }
-          else{
+          else {
             notificationService.sendError('Error rebasing Task: ' + projectKey + ', task ' + taskKey);
             return null;
           }
@@ -1050,13 +1051,94 @@ angular.module('singleConceptAuthoringApp')
 
             }
           }, function (error) {
-                    if (error.status === 403) {
-                      $location.path('/login');
-                    }
+            if (error.status === 403) {
+              $location.path('/login');
+            }
           });
         }, intervalInMs);
-      }
+      },
 
+      //
+      // Validation exclusion/whitelisting
+      //
+
+      isValidationFailureExcluded: function (assertionUuid, conceptId, failureText) {
+        if (!validationFailureExclusions) {
+          return false;
+        }
+        var exclusionsForAssertion = validationFailureExclusions[assertionUuid];
+
+        if (exclusionsForAssertion && exclusionsForAssertion.excludedFailures) {
+
+      /*    console.debug('exclusions', exclusionsForAssertion, conceptId, failureText,
+            exclusionsForAssertion.excludedFailures.filter(function (failure) {
+              return failure.conceptId === conceptId && failure.failureText === failureText;
+            }));*/
+        }
+
+        return exclusionsForAssertion && exclusionsForAssertion.excludedFailures && exclusionsForAssertion.excludedFailures.filter(function (failure) {
+            return failure.conceptId === conceptId && failure.failureText === failureText;
+          }).length > 0;
+      },
+
+
+      //
+      // Failure structure
+      // { assertionUuid : '', user : '', conceptId : '', detail : '', timestamp : date }
+      //
+
+      addValidationFailureExclusion: function (assertionUuid, assertionText, conceptId, failureText, user) {
+        console.debug('add exclusion', assertionUuid, assertionText, conceptId, failureText, 'to', validationFailureExclusions);
+        // create the exclusion
+        var exclusion = {
+          conceptId: conceptId,
+          failureText: failureText,
+          user: user,
+          timestamp: new Date().getTime()
+        };
+
+        // if no assertions for this uuid, create container
+        if (!validationFailureExclusions[assertionUuid]) {
+          validationFailureExclusions[assertionUuid] = {
+            assertionText: assertionText,
+            excludedFailures: []
+          };
+        }
+
+        // doublecheck this assertion does not already exist
+        if (validationFailureExclusions[assertionUuid].excludedFailures.filter(function (failure) {
+            return failure.conceptId === conceptId && failure.failureText === failureText;
+          }).length === 0) {
+
+          // add and set the exclusions
+          validationFailureExclusions[assertionUuid].excludedFailures.push(exclusion);
+        }
+      },
+
+      removeValidationFailureExclusion: function (assertionUuid, conceptId, failureText) {
+
+        console.debug('remove exclusion', assertionUuid, conceptId, failureText);
+        // find and remove the assertion
+        var exclusionsForAssertion = validationFailureExclusions[assertionUuid];
+        for (var i = 0; i < exclusionsForAssertion.length; i++) {
+          if (exclusionsForAssertion[i].conceptId === conceptId && exclusionsForAssertion[i].failureText === failureText) {
+            exclusionsForAssertion.splice(i, 1);
+            break;
+          }
+          if (i === exclusionsForAssertion.length - 1) {
+            notificationService.sendWarning('Could not find exclusion to remove');
+            deferred.reject('Could not find exclusion to remove');
+          }
+        }
+        deferred.resolve();
+
+      },
+
+      // Retrieval function to force refresh of ui-state
+      refreshValidationFailureExclusions: getValidationFailureExclusions,
+
+      // Commit function to save changes made
+      updateValidationFailureExclusions: updateValidationFailureExclusions
     };
 
   }])
