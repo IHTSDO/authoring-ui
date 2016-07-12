@@ -6,6 +6,13 @@
            name="filter-checkbox" value=""/>
   </script>
   <script type="text/ng-template" id="editheader.html">
+    <button type="button" ng-click="excludeSelectedFailures()"
+            class="btn btn-round btn-default red" title="Add all selected failures to exclusion list">
+            <span
+              class="md md-block"></span>
+    </button>
+    </script>
+  <script type="text/ng-template" id="excludeheader.html">
     <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
             class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
             <span
@@ -117,7 +124,7 @@
   <div class="row purple deep-purple lighten-1" style="vertical-align: middle">
     <div class="col-md-3 classification-header">Validation Report: {{getStatusText()}}
     </div>
-    <div class="col-md-3 classification-header" >
+    <div class="col-md-3 classification-header">
       <span class="pull-right">Show Task Failures Only:</span>
     </div>
     <div class="col-md-1 classification-header">
@@ -134,7 +141,8 @@
       </button></div></div>-->
   <div class="card m-10 validation-report" ng-show="!isCollapsed">
     <div role="tabpanel" class="">
-      <div class="ng-table-no-results" ng-if="viewTop && validationContainer.report && topTableParams.total() === 0 && !initializing">
+      <div class="ng-table-no-results"
+           ng-if="viewTop && validationContainer.report && topTableParams.total() === 0 && !initializing">
         No validation results to display
       </div>
       <div class="table-responsive white" style="margin-right:0px;" ng-if="viewTop">
@@ -198,7 +206,15 @@
             <td ng-if="taskKey" header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
               {{failure.userModified}}
             </td>
+            <td data-header="'excludeheader.html'">
+              <button type="button" ng-click="excludeSelectedFailure(failure)"
+                      class="btn btn-round btn-default red" title="Add failure to exclusion list">
+            <span
+              class="md md-block"></span>
+              </button>
+              </td>
             <td ng-if="editable" data-header="'editheader.html'">
+              &nbsp;&nbsp;
               <button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure.conceptId)"
                       title="View/Edit Concept">
