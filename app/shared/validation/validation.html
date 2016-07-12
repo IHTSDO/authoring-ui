@@ -271,7 +271,7 @@
           {{failure.user}}
         </td>
         <td header-title="'Click to sort'" data-title="'Excluded'" sortable="'userExcluded'">
-          <input type="checkbox" ng-model="failure.userExcluded" ng-change="toggleUserExclusion(failure)">
+          <input type="checkbox" ng-init="failure.userExcluded = true" ng-model="failure.userExcluded" ng-change="removeUserExclusionFromTable(failure)">
         </td>
 
       </tr>

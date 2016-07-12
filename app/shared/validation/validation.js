@@ -143,13 +143,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
-
-
-          // called by failureTableParams.getData(), retrieves names if needed
-          function getNamesForFailures() {
-            return $q.all([getDescriptionNames(), getConceptNames()]);
-          }
-
+          
           var conceptIds = [];
 
           function getConceptIdForFailure(failure) {
@@ -574,6 +568,18 @@ angular.module('singleConceptAuthoringApp')
           scaService.getValidationFailureExclusions().then(function (response) {
             console.debug('exclusions:', response);
           });
+
+          scope.removeUserExclusionFromTable = function (failure, skipCommitFlag) {
+            scaService.removeValidationFailureExclusion(failure.assertionUuid, failure.conceptId, failure.failureText);
+            scaService.updateValidationFailureExclusions().then(function () {
+              // TODO Currently unused, decide if we want batch behavior here
+              if (!skipCommitFlag) {
+                scaService.updateValidationFailureExclusions().then(function () {
+                  scope.reloadTables();
+                });
+              }
+            });
+          };
 
           // exclude a single failure, with optional commit
           scope.toggleUserExclusion = function (failure, skipCommitFlag) {
