@@ -1070,10 +1070,10 @@ angular.module('singleConceptAuthoringApp')
 
         if (exclusionsForAssertion && exclusionsForAssertion.excludedFailures) {
 
-      /*    console.debug('exclusions', exclusionsForAssertion, conceptId, failureText,
-            exclusionsForAssertion.excludedFailures.filter(function (failure) {
-              return failure.conceptId === conceptId && failure.failureText === failureText;
-            }));*/
+          /*    console.debug('exclusions', exclusionsForAssertion, conceptId, failureText,
+           exclusionsForAssertion.excludedFailures.filter(function (failure) {
+           return failure.conceptId === conceptId && failure.failureText === failureText;
+           }));*/
         }
 
         return exclusionsForAssertion && exclusionsForAssertion.excludedFailures && exclusionsForAssertion.excludedFailures.filter(function (failure) {
@@ -1119,23 +1119,26 @@ angular.module('singleConceptAuthoringApp')
 
         console.debug('remove exclusion', assertionUuid, conceptId, failureText);
         // find and remove the assertion
-        var exclusionsForAssertion = validationFailureExclusions[assertionUuid];
-        for (var i = 0; i < exclusionsForAssertion.length; i++) {
-          if (exclusionsForAssertion[i].conceptId === conceptId && exclusionsForAssertion[i].failureText === failureText) {
-            exclusionsForAssertion.splice(i, 1);
-            break;
+        if (validationFailureExclusions && validationFailureExclusions[assertionUuid]) {
+          var exclusionsForAssertion = validationFailureExclusions[assertionUuid].excludedFailures;
+          for (var i = 0; i < exclusionsForAssertion.length; i++) {
+            if (exclusionsForAssertion[i].conceptId === conceptId && exclusionsForAssertion[i].failureText === failureText) {
+              console.debug('  removing exclusion');
+              exclusionsForAssertion.splice(i, 1);
+              break;
+            }
+            if (i === exclusionsForAssertion.length - 1) {
+              console.debug('  could not find exclusion to remove');
+            }
           }
-          if (i === exclusionsForAssertion.length - 1) {
-            notificationService.sendWarning('Could not find exclusion to remove');
-            deferred.reject('Could not find exclusion to remove');
-          }
+        } else {
+          console.debug('  object empty, no need for removal');
         }
-        deferred.resolve();
 
       },
 
       // Retrieval function to force refresh of ui-state
-      refreshValidationFailureExclusions: getValidationFailureExclusions,
+      getValidationFailureExclusions: getValidationFailureExclusions,
 
       // Commit function to save changes made
       updateValidationFailureExclusions: updateValidationFailureExclusions
