@@ -211,7 +211,7 @@
             <td>
               <button type="button"
                       class="btn btn-round btn-default blue"
-                      ng-click="editConcept(rel.referencedComponent.id)"
+                      ng-click="viewAssociationConcept(rel.referencedComponent.id)"
                       title="View/Edit Concept">
                 <div class="md md-edit"></div>
               </button>
@@ -243,7 +243,7 @@
       <div class="row m-t-15 no-gutter" ng-if="editedConcept">
 
         <div concept-edit concept="editedConcept" id="height-{{concept.conceptId}}'"
-             branch="branch" static="false" autosave="false" show-inactive="true" inactivation-editing="true">
+             branch="branch" static="isStatic" autosave="false" show-inactive="true" inactivation-editing="true">
         </div>
 
         <!-- Taxonomy -->
