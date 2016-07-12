@@ -143,66 +143,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
-          //
-          // Concept FSN and Description Term display names
-          //
 
-          function getConceptNames() {
-            var deferred = $q.defer();
-            var conceptIds = [];
-            angular.forEach(scope.failures, function (failure) {
-              conceptIds.push(failure.conceptId);
-            });
-
-            if (conceptIds.length > 0) {
-
-              // bulk call for concept ids
-              snowowlService.bulkGetConcept(conceptIds, scope.branch).then(function (concepts) {
-                // save the value on the failures in the concept map
-                var idNameMap = {};
-                angular.forEach(concepts.items, function (concept) {
-                  idNameMap[concept.id] = concept.fsn.term;
-                });
-                angular.forEach(scope.failures, function (failure) {
-                  failure.conceptFsn = idNameMap[failure.conceptId];
-                });
-
-                deferred.resolve();
-              });
-            } else {
-              deferred.resolve();
-            }
-
-            return deferred.promise;
-          }
-
-          function getDescriptionNames() {
-            var deferred = $q.defer();
-            var descsDone = 0;
-
-            angular.forEach(scope.failures, function (failure) {
-
-
-              // match the description
-              var descIds = failure.message.match(/Description: id=(\d+)/);
-
-              // if description found and display name not already retrieved and added
-              if (descIds && descIds[1]) {
-                snowowlService.getDescriptionProperties(descIds[1], scope.branch).then(function (description) {
-                  failure.message = failure.message.replace(/Description: id=\d+/g, 'Description: ' + description.term);
-
-                  if (++descsDone == scope.failures.length) {
-                    deferred.resolve();
-                  }
-                });
-
-              } else if (++descsDone == scope.failures.length) {
-                deferred.resolve();
-              }
-
-            });
-            return deferred.promise;
-          }
 
           // called by failureTableParams.getData(), retrieves names if needed
           function getNamesForFailures() {
@@ -252,9 +193,14 @@ angular.module('singleConceptAuthoringApp')
 
           scope.idNameMap = {};
 
-          function getConceptNames() {
+          function getConceptNames(failures) {
             var deferred = $q.defer();
             var promises = [];
+
+            angular.forEach(failures, function (failure) {
+              promises.push(getConceptIdForFailure(failure));
+            });
+
             angular.forEach(scope.failures, function (failure) {
               // switch on concept, relationship, or description
               promises.push(getConceptIdForFailure(failure));
@@ -349,7 +295,7 @@ angular.module('singleConceptAuthoringApp')
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                 // console.debug('ordered data', orderedData);
+                  // console.debug('ordered data', orderedData);
                   $defer.resolve(orderedData);
                 }
               }
@@ -370,18 +316,31 @@ angular.module('singleConceptAuthoringApp')
 
                 var orderedData = [];
                 scaService.getValidationFailureExclusions().then(function (exclusions) {
-                  for (var key in exclusions) {
-                    angular.forEach(exclusions[key].excludedFailures, function (failure) {
-                      orderedData.push(failure);
-                    })
-                  }
+                  console.debug('exclusions table: exclusions', exclusions);
 
-             //     console.debug('ordered data', orderedData);
-                  params.total(orderedData.length);
-                  orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
-                  orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-            //      console.debug('ordered data', orderedData);
-                  $defer.resolve(orderedData);
+                  var failures = [];
+                  for (var key in exclusions) {
+                    failures = failures.concat(exclusions[key].excludedFailures);
+                  }
+                  console.debug('failures to retrieve names for', failures);
+
+                  getConceptNames(failures).then(function () {
+                    console.debug('got names for exclusions', scope.idNameMap);
+
+                    for (var key in exclusions) {
+                      angular.forEach(exclusions[key].excludedFailures, function (failure) {
+                        failure.conceptFsn = scope.idNameMap[failure.conceptId];
+                        orderedData.push(failure);
+                      })
+                    }
+
+                    //     console.debug('ordered data', orderedData);
+                    params.total(orderedData.length);
+                    orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
+                    orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
+                    //      console.debug('ordered data', orderedData);
+                    $defer.resolve(orderedData);
+                  })
                 });
               }
             }
@@ -529,7 +488,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // initialize the failures
                 notificationService.sendMessage('Initializing validation failures...');
-                initFailures().then(function() {
+                initFailures().then(function () {
                   notificationService.sendMessage('Initialization complete', 3000);
                   scope.initializing = false;
                 });
@@ -539,7 +498,7 @@ angular.module('singleConceptAuthoringApp')
             } else {
               // initialize the failures
               notificationService.sendMessage('Initializing validation failures...');
-              initFailures().then(function() {
+              initFailures().then(function () {
                 notificationService.sendMessage('Initialization complete', 3000);
                 scope.initializing = false;
               });
@@ -564,25 +523,25 @@ angular.module('singleConceptAuthoringApp')
             var objArray = [];
 
 
-              //console.debug(assertionFailure.firstNInstances);
-              angular.forEach(assertionFailure.firstNInstances, function (instance) {
+            //console.debug(assertionFailure.firstNInstances);
+            angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
-                var obj = {
-                  conceptId: instance.conceptId,
-                  message: instance.detail,
-                  selected: false,
-                  userModified: $routeParams.taskKey ? instance.isUserModified : false,
-                  userExcluded: instance.isUserExclusion
-                };
+              var obj = {
+                conceptId: instance.conceptId,
+                message: instance.detail,
+                selected: false,
+                userModified: $routeParams.taskKey ? instance.isUserModified : false,
+                userExcluded: instance.isUserExclusion
+              };
 
-                objArray.push(obj);
-              });
+              objArray.push(obj);
+            });
 
 
-              scope.failures = objArray;
-              getNamesForFailures().then(function () {
-                scope.failureTableParams.reload();
-              });
+            scope.failures = objArray;
+            getNamesForFailures().then(function () {
+              scope.failureTableParams.reload();
+            });
           };
 
           scope.selectAll = function (selectAllActive) {
