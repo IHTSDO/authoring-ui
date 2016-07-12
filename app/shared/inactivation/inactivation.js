@@ -26,6 +26,7 @@ angular.module('singleConceptAuthoringApp')
           scope.affectedConcepts = {};
           scope.affectedAssocs = [];
           scope.finalizing = false;
+          scope.isStatic = false;
             
           $(".btn").mouseup(function(){
             $(this).blur();
@@ -243,6 +244,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
           scope.editConcept = function (conceptId) {
+            scope.isStatic = false;
             console.debug('edit concept', conceptId, scope.affectedConcepts[conceptId]);
             scope.editedConcept = null;
             $timeout(function () {
@@ -250,6 +252,15 @@ angular.module('singleConceptAuthoringApp')
             }, 250);
 
           };
+        
+          scope.viewAssociationConcept = function (conceptId) {
+            scope.isStatic = true;
+            scope.editedConcept = null;
+            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+                scope.editedConcept = response;
+            });
+          };
+            
 
           scope.removeRelationship = function (relationship) {
             var concept = scope.affectedConcepts[relationship.sourceId];
