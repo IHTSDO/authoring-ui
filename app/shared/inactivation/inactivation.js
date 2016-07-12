@@ -63,7 +63,6 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function assocFilter(item) {
-
             for (var i = 0; i < scope.associationTargets.length; i++) {
               if (item.referenceSetId === scope.associationTargets[i].conceptId) {
                 return true;
@@ -74,12 +73,11 @@ angular.module('singleConceptAuthoringApp')
 
           function parseAssocs(list) {
             var deferred = $q.defer();
-              console.log(list);
-              console.log(scope.associationTargets);
             for (var i = list.length -1; i >= 0; i--) {
               for (var j = 0; j < scope.associationTargets.length; j++) {
                 if (list[i].referenceSetId === scope.associationTargets[j].conceptId) {
-                    if(scope.histAssocTargets && scope.histAssocTargets.concepts > 0){
+                    console.log(scope.histAssocTargets);
+                    if(scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0){
                         angular.forEach(scope.histAssocTargets.concepts, function (concept){
                             var item = angular.copy(list[i])
                             item.refsetName = scope.associationTargets[j].text;
@@ -95,9 +93,7 @@ angular.module('singleConceptAuthoringApp')
               }
               list.splice(i, 1);
             }
-            console.log(list);
-
-            deferred.resolve();
+            deferred.resolve(list);
             return deferred.promise;
           }
 
@@ -392,8 +388,9 @@ angular.module('singleConceptAuthoringApp')
 
               });
 
-              if(scope.affectedAssocs && scope.affectedAssocs.length > 0){
-                  parseAssocs(scope.affectedAssocs).then(function () {
+              if(response.items && response.items.length > 0){
+                  parseAssocs(scope.affectedAssocs).then(function (list) {
+                    scope.affectedAssocs = list;
                     deferred.resolve();
                   });
               }
