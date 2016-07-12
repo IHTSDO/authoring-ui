@@ -124,19 +124,22 @@
   <div class="row purple deep-purple lighten-1" style="vertical-align: middle">
     <div class="col-md-3 classification-header">Validation Report: {{getStatusText()}}
     </div>
-    <div class="col-md-3 classification-header">
+    <div class="col-md-2 classification-header">
       <span class="pull-right">Show Task Failures Only:</span>
     </div>
     <div class="col-md-1 classification-header">
       <input type="checkbox" ng-model="restrictByTraceability" ng-change="reloadTables()">
     </div>
-    <div class="col-md-3 classification-header">
+    <div class="col-md-2 classification-header">
       <span class="pull-right">Show User-Excluded Failures:</span>
     </div>
     <div class="col-md-1 classification-header">
       <input type="checkbox" ng-model="showUserExcludedFailures" ng-change="reloadTables()">
     </div>
     <div class="col-md-1 classification-header">
+      <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right">{{viewExclusions ? 'Hide' : 'Show'}} Exclusions List</button>
+    </div>
+    <div class="col-md-2 classification-header">
       <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
               class="btn btn-default deep-purple pull-right"
               ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
@@ -209,13 +212,9 @@
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
               {{failure.message}}
             </td>
-            <td data-header="'excludeheader.html'">
-              <button type="button" ng-click="excludeFailure(failure)"
-                      class="btn btn-round btn-default red" title="Add failure to exclusion list">
-            <span
-              class="md md-block"></span>
-              </button>
-              isExcluded: {{isExcluded(failure)}}
+            <td header-title="'Click to sort'" data-title="'Excluded'" sortable="'userExcluded'">
+              <input type="checkbox" ng-model="failure.userExcluded" ng-change="toggleUserExclusion(failure)">
+              excluded: {{failure.userExcluded}}
             </td>
             <td ng-if="taskKey" header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
               {{failure.userModified}}
@@ -234,6 +233,36 @@
       </div>
     </div>
   </div>
+
+  <!-- Exclusions table -->
+  <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
+    <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
+           class="table table-full table-full-small">
+      <tr ng-repeat="failure in $data">
+
+        <!-- other columns here -->
+        <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
+          {{failure.conceptId}}
+        </td>
+        <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{failure.conceptFsn}}</td>
+        <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
+          {{failure.message}}
+        </td>
+
+        <td header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'">
+          {{failure.timestamp | date:'medium'}}
+        </td>
+        <td header-title="'Click to sort'" data-title="'User'" sortable="'user'">
+          {{failure.user}}
+        </td>
+        <td header-title="'Click to sort'" data-title="'Excluded'" sortable="'userExcluded'">
+          <input type="checkbox" ng-model="failure.userExcluded" ng-change="toggleUserExclusion(failure)">
+        </td>
+
+      </tr>
+    </table>
+  </div>
+
   <!-- Taxonomy, models, and concepts -->
   <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
     <!-- Taxonomy -->
