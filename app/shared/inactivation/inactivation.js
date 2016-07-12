@@ -79,7 +79,7 @@ angular.module('singleConceptAuthoringApp')
                     console.log(scope.histAssocTargets);
                     if(scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0){
                         angular.forEach(scope.histAssocTargets.concepts, function (concept){
-                            var item = angular.copy(list[i])
+                            var item = angular.copy(list[i]);
                             item.refsetName = scope.associationTargets[j].text;
                             item.refsetSaveable = scope.associationTargets[j].id;
                             item.newTargetId = concept.conceptId;
@@ -88,13 +88,16 @@ angular.module('singleConceptAuthoringApp')
                         });
                     }
                     else{
+                        var item = angular.copy(list[i])
                         list[i].refsetName = scope.associationTargets[j].text;
                         list[i].refsetSaveable = scope.associationTargets[j].id;
+                        list.push(item);
                     }
                 }
               }
               list.splice(i, 1);
             }
+            
             deferred.resolve(list);
             return deferred.promise;
           }
@@ -213,6 +216,10 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+            
+          scope.setTargetComponent = function(){
+              
+          };
 
           scope.selectAll = function (selectAllActive) {
             angular.forEach(scope.failures, function (failure) {
@@ -400,8 +407,6 @@ angular.module('singleConceptAuthoringApp')
           function getAffectedAssociations() {
             var deferred = $q.defer();
             snowowlService.getMembersByTargetComponent(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
-
-
               scope.affectedAssocs = response.items ? response.items.filter(assocFilter) : [];
               console.debug('affected assocs', response, scope.affectedAssocs);
 
@@ -554,6 +559,17 @@ angular.module('singleConceptAuthoringApp')
             rel.newTargetId = concept.concept.conceptId;
             rel.newTargetFsn = concept.concept.fsn;
           }
+          scope.updateRefTarget = function(rel){
+            console.log('updating');
+            for (var j = 0; j < scope.associationTargets.length; j++) {
+                if (rel.refsetName === scope.associationTargets[j].text) {
+                    rel.refsetSaveable = scope.associationTargets[j].id;
+                    break;
+                }
+              }
+            console.log(rel);
+          };
+          
 
 
           //

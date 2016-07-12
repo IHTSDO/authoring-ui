@@ -192,8 +192,8 @@
             </td>
             <td data-title="'Association'" sortable="'refsetName'">
 
-              <select ng-model="rel.refsetName" class="form-control"
-                      ng-options="target.text as target.text for target in getAssociationsForReason(rel.referencedComponent.inactivationIndicator)"></select>
+              <select ng-model="rel.refsetName" class="form-control" 
+                      ng-options="target.text as target.text for target in getAssociationsForReason(rel.referencedComponent.inactivationIndicator)" ng-change="updateRefTarget(rel)"></select>
             </td>
             <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
@@ -203,7 +203,7 @@
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
                         typeahead-wait-ms="700"
-                        typeahead-on-select="setTargetComponent(rel, $item)"
+                        typeahead-on-select="setTargetConcept(rel, $item)"
                         typeahead-editable="false"
                         typeahead-min-length="3"></textarea>
                     </div>
