@@ -76,6 +76,12 @@
             ({{assocsTableParams.total()}})</a>
           </li>
           <li>
+              <button class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left" style="text-transform: none"
+        ng-click="acceptAll()">
+                    <i class="md md-thumb-up"></i>Accept All
+              </button>
+          </li>
+          <li>
             <input type="text" ng-model="tableFilter" ng-change="reloadTables()"
                    ng-model-options='{ debounce: 500 }'
                    placeholder="Search Results"/>

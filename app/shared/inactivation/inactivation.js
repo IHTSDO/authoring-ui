@@ -150,6 +150,43 @@ angular.module('singleConceptAuthoringApp')
               }
             }
           );
+            
+          scope.acceptAll = function(){
+              if(scope.actionTab === 1){
+                  for (var conceptId in scope.affectedConcepts) {
+                      if(scope.affectedConcepts[conceptId]){
+                          angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                            // add all relationships with no effective time
+                            if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                              rel.accepted = true;
+                              rowsAccepted++;
+                            }
+                          });
+                      }
+                }
+              }
+              else if(scope.actionTab === 2){
+                  for (var conceptId in scope.affectedConcepts) {
+                      if(scope.affectedConcepts[conceptId]){
+                          angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+
+                            // add all relationships with no effective time
+                            if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                              rel.accepted = true;
+                              rowsAccepted++;
+                            }
+                          });
+                      }
+                }
+              }
+              else if(scope.actionTab === 3){
+                  angular.forEach(scope.affectedAssocs, function(rel){
+                      rel.accepted = true;
+                      rowsAccepted++;
+                  });
+              }
+              scope.reloadTables();
+          };
 
           // declare table parameters
           scope.attrRelsTableParams = new NgTableParams({
