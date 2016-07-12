@@ -96,7 +96,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.$watch(function () {
           return $rootScope.branchLocked;
         }, function () {
-          scope.isStatic = $rootScope.branchLocked;
+          if ($rootScope.branchLocked !== null && $rootScope.branchLocked !== undefined) {
+            scope.isStatic = $rootScope.branchLocked;
+          }
         }, true);
 
         //    console.debug('conceptEdit styles', scope.componentStyles);
@@ -115,31 +117,34 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //////////////////////////////////////////////////////////////
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////
-        if (scope.static === 'true') {
+        console.debug('static', scope.static, scope.static === 'true')
+        if (scope.static === 'true' || scope.static === true) {
           scope.isStatic = true;
         } else {
           scope.isStatic = false;
         }
 
-        if (scope.autosave === 'false') {
+        console.debug(scope.isStatic);
+
+        if (scope.autosave === 'false' || scope.autosave === false) {
           scope.autosave = false;
         } else {
           scope.autosave = true;
         }
 
-        if (scope.merge === 'true') {
+        if (scope.merge === 'true' || scope.merge === true) {
           scope.isMerge = true;
         } else {
           scope.isMerge = false;
         }
 
-        if (scope.inactivationEditing === 'true') {
+        if (scope.inactivationEditing === 'true' || scope.merge === true) {
           scope.isInactivation = true;
         } else {
           scope.isInactivation = false;
         }
 
-        if (scope.showInactive === 'true') {
+        if (scope.showInactive === 'true' || scope.showInactive === true) {
           scope.hideInactive = false;
         } else {
           scope.hideInactive = true;
@@ -505,7 +510,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // special case -- inactivation:  simply broadcast concept
             else if (scope.isInactivation) {
-                console.log('inactivation');
+              console.log('inactivation');
 
               if (scope.validation && scope.validation.hasErrors) {
                 notificationService.sendError('Fix errors before continuing');
@@ -1244,7 +1249,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.toggleAcceptability = function (description, dialectId) {
 
-           if (!description.acceptabilityMap) {
+          if (!description.acceptabilityMap) {
             description.acceptabilityMap = {};
           }
           if (description.type !== 'TEXT_DEFINITION') {
@@ -2345,14 +2350,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           console.debug('setting modified to true');
           scope.isModified = true;
           if (scope.isInactivation) {
-              if (scope.validation && scope.validation.hasErrors) {
-                notificationService.sendError('Fix errors before continuing');
-              } else {
-                scope.saving = false;
-                scope.isModified = false;
-                $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
-              }
+            if (scope.validation && scope.validation.hasErrors) {
+              notificationService.sendError('Fix errors before continuing');
+            } else {
+              scope.saving = false;
+              scope.isModified = false;
+              $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
             }
+          }
 
           // save the modified concept
           saveModifiedConcept();
@@ -2535,7 +2540,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return response;
           });
         };
-          
+
         scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
           return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
 
