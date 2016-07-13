@@ -122,23 +122,19 @@
     }
   </style>
   <div class="row purple deep-purple lighten-1" style="vertical-align: middle">
-    <div class="col-md-3 classification-header">Validation Report: {{getStatusText()}}
-    </div>
-    <div class="col-md-2 classification-header">
-      <span class="pull-right">Show Task Failures Only:</span>
+    <div class="col-md-4 classification-header">Validation Report: {{getStatusText()}}
     </div>
     <div class="col-md-1 classification-header">
-      <input type="checkbox" ng-model="restrictByTraceability" ng-change="reloadTables()">
-    </div>
-    <div class="col-md-2 classification-header">
-      <span class="pull-right">Show User-Excluded Failures:</span>
-    </div>
-    <div class="col-md-1 classification-header">
-      <input type="checkbox" ng-model="showUserExcludedFailures" ng-change="reloadTables()">
+      <button ng-click="toggleFullReport()" class="btn btn-default deep-purple pull-right">{{viewFullReport ? 'Show Task
+        Report' : 'Show Full Report'}}
+      </button>
     </div>
     <div class="col-md-1 classification-header">
-      <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right">{{viewExclusions ? 'Hide' : 'Show'}} Exclusions List</button>
+      <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right">{{viewExclusions ? 'Hide'
+        : 'Show'}} Exclusions List
+      </button>
     </div>
+    <div class="col-md-4"></div>
     <div class="col-md-2 classification-header">
       <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
               class="btn btn-default deep-purple pull-right"
