@@ -40,11 +40,45 @@ angular.module('singleConceptAuthoringApp')
     //PUT /browser/{path}/concepts/{conceptId}
     function bulkUpdateConcept(branch, conceptArray) {
       var deferred = $q.defer();
-      $http.put(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
-        deferred.resolve(response.data);
+      $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
+          console.log(response);
+        pollForBulkUpdate(response.headers('Location'), 1000).then(function(result){
+            deferred.resolve(response.data);
+        });
       }, function (error) {
         deferred.reject(error);
       });
+      return deferred.promise;
+    }
+      
+    function pollForBulkUpdate(url, intervalTime) {
+
+      var deferred = $q.defer();
+      if (!intervalTime) {
+        intervalTime = 1000;
+      }
+
+      //console.debug('polling for ' + mergeReviewId + ' with interval ' + intervalTime);
+
+      $timeout(function () {
+        $http.get(url).then(function (response) {
+          //console.debug('poll response', response.data);
+
+          // if review is ready, get the details
+          if (response && response.data && response.data.status === 'COMPLETED') {
+              deferred.resolve(response.data);
+          } else {
+            pollForBulkUpdate(url, intervalTime).then(function (pollResults) {
+              deferred.resolve(pollResults);
+            }, function (error) {
+              deferred.reject(error);
+            });
+          }
+        }, function (error) {
+          deferred.reject();
+        });
+      }, intervalTime);
+
       return deferred.promise;
     }
 
