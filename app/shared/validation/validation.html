@@ -130,7 +130,8 @@
       </button>
     </div>
     <div class="col-md-1 classification-header">
-      <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right ">{{viewExclusions ? 'Hide'
+      <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right ">{{viewExclusions ?
+        'Hide'
         : 'Show'}} Whitelist
       </button>
     </div>
@@ -178,7 +179,7 @@
       <div class="table-responsive white" style="margin-right:0px;" ng-if="!viewTop">
         <div class="row">
           <div class="col-md-10 p-10">
-            <strong>Assertion Failure</strong>: {{assertionFailureViewed}}
+            <strong>Assertion Failure</strong>: {{assertionFailureViewed.assertionText}}
 
           </div>
           <div class="col-md-2 p-10">
@@ -204,12 +205,15 @@
             <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
               {{failure.conceptId}}
             </td>
-            <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{failure.conceptFsn}}</td>
-            <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
-              {{failure.message}}
+            <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"><span
+              ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}</span></td>
+            <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'">
+              {{failure.detail}}
             </td>
             <td>
-              <button type="button" class="btn btn-default back-button red" ng-click="excludeFailure(failure)">Add to Whitelist</button>
+              <button type="button" class="btn btn-default back-button red" ng-click="excludeFailure(failure)">Add to
+                Whitelist
+              </button>
             </td>
 
             <td ng-if="editable" data-header="'editheader.html'">
@@ -254,7 +258,8 @@
         <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
           {{failure.conceptId}}
         </td>
-        <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'">{{failure.conceptFsn}}</td>
+        <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"><span
+          ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}</span></td>
         <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'">
           {{failure.failureText}}
         </td>
