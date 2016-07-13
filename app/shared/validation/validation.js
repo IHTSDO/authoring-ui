@@ -466,43 +466,33 @@ angular.module('singleConceptAuthoringApp')
               scope.whitelistEligibleRuleIds = response ? response : [];
             });
 
-            if ($routeParams.taskKey) {
-              notificationService.sendMessage('Retrieving traceability information ...');
-              snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-                console.debug('traceability', traceability);
+
+            notificationService.sendMessage('Retrieving traceability information ...');
+            snowowlService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
+              console.debug('traceability', traceability);
 
 
-                // if traceability found, extract the user modified concept ids
-                if (traceability) {
-                  angular.forEach(traceability.content, function (change) {
-                    //  console.debug('processing change', change.activityType, change.conceptChanges, change);
-                    // if content change and concept change, push the id
-                    if (change.activityType === 'CONTENT_CHANGE') {
-                      angular.forEach(change.conceptChanges, function (conceptChange) {
-                        // console.debug('  processing concept change', conceptChange);
-                        if (scope.userModifiedConceptIds.indexOf(conceptChange.conceptId) === -1) {
-                          scope.userModifiedConceptIds.push(String(conceptChange.conceptId));
-                        }
-                      });
-                    }
-                  });
-
-                  console.debug(' modified concept ids ', scope.userModifiedConceptIds);
-
-                } else {
-                  notificationService.sendWarning('Could not retrieve traceability for task')
-                }
-
-                // initialize the failures
-                notificationService.sendMessage('Initializing validation failures...');
-                initFailures().then(function () {
-                  notificationService.sendMessage('Initialization complete', 3000);
-                  scope.initializing = false;
+              // if traceability found, extract the user modified concept ids
+              if (traceability) {
+                angular.forEach(traceability.content, function (change) {
+                  //  console.debug('processing change', change.activityType, change.conceptChanges, change);
+                  // if content change and concept change, push the id
+                  if (change.activityType === 'CONTENT_CHANGE') {
+                    angular.forEach(change.conceptChanges, function (conceptChange) {
+                      // console.debug('  processing concept change', conceptChange);
+                      if (scope.userModifiedConceptIds.indexOf(conceptChange.conceptId) === -1) {
+                        scope.userModifiedConceptIds.push(String(conceptChange.conceptId));
+                      }
+                    });
+                  }
                 });
 
+                console.debug(' modified concept ids ', scope.userModifiedConceptIds);
 
-              });
-            } else {
+              } else {
+                notificationService.sendWarning('Could not retrieve traceability for task')
+              }
+
               // initialize the failures
               notificationService.sendMessage('Initializing validation failures...');
               initFailures().then(function () {
@@ -511,7 +501,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
 
-            }
+            });
 
 
           }, true); // make sure to check object inequality, not reference!
