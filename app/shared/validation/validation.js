@@ -124,16 +124,28 @@ angular.module('singleConceptAuthoringApp')
                   $defer.resolve([]);
                 } else {
 
+                  // cycle over each failed assertion to get count / display status
+                  angular.forEach(scope.assertionsFailed, function(assertionFailed) {
+                    var filteredInstances = [];
+                    angular.forEach(assertionFailed.firstNInstances, function(instance) {
+
+                      // check for full report and exclusion
+                      if (!instance.isUserExclusion &&
+                        (scope.viewFullReport || instance.isUserModified)) {
+                        // push to array -- note, values currently unused, but may want later
+                        filteredInstances.push(instance);
+                      }
+                    });
+                    assertionFailed.filteredCount = filteredInstances.length;
+                  });
+
+
+
+
                   // filter by user modification
                   var orderedData = scope.assertionsFailed.filter(function (assertionFailed) {
-                    return !scope.restrictByTraceability || assertionFailed.isUserModified;
+                    return assertionFailed.filteredCount > 0;
                   });
-
-                  // filter by user exclusion
-                  orderedData = orderedData.filter(function (assertionFailed) {
-                    return true; // TODO Filter when ALL instances are user excluded
-                  });
-
 
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
@@ -276,20 +288,20 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user modification
                   var orderedData = scope.failures.filter(function (failure) {
-                    return !scope.restrictByTraceability || failure.userModified;
+                    return !scope.viewFullReport || failure.userModified;
                   });
 
 
                   // filter by user exclusion
                   orderedData = orderedData.filter(function (failure) {
-                    return scope.showUserExcludedFailures || !failure.userExcluded;
+                    return !failure.userExcluded;
                   });
 
 //                  console.debug('ordered data', orderedData);
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  // console.debug('ordered data', orderedData);
+                  console.debug('failure data', orderedData);
                   $defer.resolve(orderedData);
                 }
               }
@@ -363,7 +375,13 @@ angular.module('singleConceptAuthoringApp')
           //
           // Assertion failure and individual failure computation
           //
-          scope.restrictByTraceability = true;
+
+          // controls for viewing full vs. task report
+          scope.viewFullReport = false;
+          scope.toggleFullReport = function() {
+            scope.viewFullReport = !scope.viewFullReport;
+            scope.reloadTables();
+          };
 
           scope.userModifiedConceptIds = [];
 
@@ -374,16 +392,14 @@ angular.module('singleConceptAuthoringApp')
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
-            // filter by configurable exclusion rules -- only in task view
-            if ($routeParams.taskKey) {
-              scope.assertionsFailed = scope.assertionsFailed.filter(function (assertion) {
-                return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
-              });
-            }
+            // filter out technical errors
+            scope.assertionsFailed = scope.assertionsFailed.filter(function (assertion) {
+              return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
+            });
+
 
             // set the viewable flags for all returned failure instances
             angular.forEach(scope.assertionsFailed, function (assertion) {
-
 
               assertion.isUserModified = false;
               assertion.hasUserExclusions = false;
@@ -522,8 +538,8 @@ angular.module('singleConceptAuthoringApp')
                 conceptId: instance.conceptId,
                 message: instance.detail,
                 selected: false,
-                userModified: $routeParams.taskKey ? instance.isUserModified : false,
-                userExcluded: instance.isUserExclusion
+                isUserModified: $routeParams.taskKey ? instance.isUserModified : false,
+                isUserExclusion: instance.isUserExclusion
               };
 
               objArray.push(obj);
@@ -559,8 +575,6 @@ angular.module('singleConceptAuthoringApp')
           // User-modified validation exclusion list
           //
 
-          // user toggle -- default false
-          scope.showUserExcludedFailures = false;
 
           // on load, refresh the validation failure exclusions
           scaService.getValidationFailureExclusions().then(function (response) {
@@ -602,41 +616,30 @@ angular.module('singleConceptAuthoringApp')
           };
 
           // exclude a single failure, with optional commit
-          scope.toggleUserExclusion = function (failure, skipCommitFlag) {
-            console.debug('Toggling failure exclusion', failure.userExcluded, failure, skipCommitFlag);
+          scope.excludeFailure = function (failure, skipCommitFlag) {
+            console.debug('Excluding failure exclusion', failure.userExcluded, failure, skipCommitFlag);
 
-            // NOTE: Logic reversed here as click event sets to NEW value, not old value
-            if (!failure.userExcluded) {
-              scaService.removeValidationFailureExclusion(scope.assertionFailureViewedUuid, failure.conceptId, failure.message);
-              // TODO Currently unused, decide if we want batch behavior here
+            accountService.getAccount().then(function (accountDetails) {
+              // get the user name
+              var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
+
+              // synchronously update the exclusions
+              scaService.addValidationFailureExclusion(scope.assertionFailureViewedUuid,
+                scope.assertionFailureViewed,
+                failure.conceptId,
+                failure.conceptFsn,
+                failure.message,
+                userName);
+
+              // "commit" the exclusion if flag set (flag not set used by exclude multiple failures)
+              // TODO CUrrently unused, decide if we want batch behavior here
               if (!skipCommitFlag) {
                 scaService.updateValidationFailureExclusions().then(function () {
                   scope.reloadTables();
                 });
               }
-            } else {
+            });
 
-              accountService.getAccount().then(function (accountDetails) {
-                // get the user name
-                var userName = !accountDetails || !accountDetails.login ? 'Unknown User' : accountDetails.login;
-
-                // synchronously update the exclusions
-                scaService.addValidationFailureExclusion(scope.assertionFailureViewedUuid,
-                  scope.assertionFailureViewed,
-                  failure.conceptId,
-                  failure.conceptFsn,
-                  failure.message,
-                  userName);
-
-                // "commit" the exclusion if flag set (flag not set used by exclude multiple failures)
-                // TODO CUrrently unused, decide if we want batch behavior here
-                if (!skipCommitFlag) {
-                  scaService.updateValidationFailureExclusions().then(function () {
-                    scope.reloadTables();
-                  });
-                }
-              });
-            }
 
           };
 
