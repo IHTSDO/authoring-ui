@@ -1,7 +1,0 @@
-{
-    "endpoints": {
-        "authoringEndpoint": "/snowowl/ihtsdo-authoring/",
-        "snowOwlEndpoint": "/snowowl/snomed-ct/",
-        "imsEndpoint": "https://dev-ims.ihtsdotools.org"
-    }
-}

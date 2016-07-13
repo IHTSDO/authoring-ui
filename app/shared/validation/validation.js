@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp')
                       // otherwise return true
                       return true;
                     });
-                    console.debug('filtered instances', scope.viewFullReport, filteredInstances);
+                   // console.debug('filtered instances', scope.viewFullReport, filteredInstances);
                     assertionFailed.filteredCount = filteredInstances.length;
                   });
 
@@ -332,7 +332,7 @@ angular.module('singleConceptAuthoringApp')
 
                 var orderedData = [];
                 scaService.getValidationFailureExclusions().then(function (exclusions) {
-                  console.debug('exclusions table: exclusions', exclusions);
+                  //console.debug('exclusions table: exclusions', exclusions);
 
                   var failures = [];
                   for (var key in exclusions) {
@@ -399,6 +399,10 @@ angular.module('singleConceptAuthoringApp')
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
+
+
+
+            // retrieve the hard-excluded technical error rules
             configService.getExcludedValidationRuleIds().then(function (response) {
               scope.assertionsExcluded = response;
 
@@ -447,7 +451,6 @@ angular.module('singleConceptAuthoringApp')
 
             console.debug('validationContainer', newVal, oldVal);
             if (!scope.validationContainer || !scope.validationContainer.report) {
-              console.debug('skipping');
               return;
             }
 
@@ -457,6 +460,12 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
             failuresInitialized = true;
+
+            // retrieve the whitelistable rule ids -- used to display Add to Whitelist button
+            configService.getWhiteListEligibleRuleIds().then(function(response) {
+              console.debug('white list eligible rule ids', response);
+              scope.whitelistEligibleRuleIds = response ? response : [];
+            });
 
             if ($routeParams.taskKey) {
               notificationService.sendMessage('Retrieving traceability information ...');
@@ -519,6 +528,10 @@ angular.module('singleConceptAuthoringApp')
 
             var objArray = [];
 
+            // check if this failure is whitelistable
+            if (scope.whitelistEligibleRuleIds && scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1) {
+              scope.whitelistEnabled = true;
+            }
 
             //console.debug(assertionFailure.firstNInstances);
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
