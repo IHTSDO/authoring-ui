@@ -497,7 +497,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
       } else if ($routeParams.mode === 'feedback') {
-        snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+        snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
           var review = {};
           if (traceability) {
             review.concepts = [];
@@ -1056,7 +1056,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // get latest review
     $scope.getLatestReview = function () {
-      snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+      snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
         var review = {};
         if (traceability) {
           review.concepts = [];
@@ -1430,7 +1430,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         notificationService.clear();
 
         // initialize the branch variables (requires metadata service branches set)
-        $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + '/' + $scope.taskKey;
+        $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + ($routeParams.taskKey ? '/' + $scope.taskKey : '');
         $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
 
         if ($routeParams.taskKey) {
