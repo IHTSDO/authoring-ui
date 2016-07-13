@@ -2204,8 +2204,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
           if (!description.effectiveTime && description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
-            for (var dialectId in scope.getDialectKeysForDescription(description)) {
-              console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectKeysForDscription(description))
+            for (var dialectId in scope.getDialectIdsForDescription(description)) {
+              console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectIdsForDscription(description))
               description.acceptabilityMap[dialectId] = 'PREFERRED';
             }
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
@@ -2223,8 +2223,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // if a new FSN (determined by blank term)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
-              angular.forEach(scope.getDialectKeysForDescription(description), function (dialectId) {
-                console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectKeysForDescription(description))
+              angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
+                console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectIdsForDescription(description))
 
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
