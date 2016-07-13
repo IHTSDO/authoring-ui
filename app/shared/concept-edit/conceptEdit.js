@@ -202,6 +202,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
 
+
+
         /////////////////////////////////////////////////////////////////
         // Autosaving and Modified Concept Storage Initialization
         /////////////////////////////////////////////////////////////////
@@ -763,6 +765,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // get the available modules based on whether this is an extension element
         scope.getAvailableModules = function (moduleId) {
           return metadataService.getModulesForModuleId(moduleId);
+
         };
 
 ////////////////////////////////
@@ -794,7 +797,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // function to retrieve branch dialect ids as array instead of map
         // NOTE: Required for orderBy in ng-repeat
-        scope.getDialectKeysForDescription = function (description) {
+        scope.getDialectIdsForDescription = function (description) {
           return Object.keys(metadataService.getDialectsForModuleId(description.moduleId)).sort(scope.dialectComparator);
         };
 
@@ -1290,9 +1293,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
-        function getShortDialectName(dialectId) {
-          return scope.dialects[dialectId] ? scope.dialects[dialectId].replace('en-', '') : '??';
-        }
+        // returns the name of a dialect given its refset id
+        function getShortDialectName(id) {
+          if (!scope.dialects[id]) {
+            return '??';
+          }
+          return scope.dialects[id].replace('en-', '');
+        };
 
         scope.getAcceptabilityTooltipText = function (description, dialectId) {
           if (!description || !dialectId) {
@@ -1328,6 +1335,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           //return scope.acceptabilityAbbrs[acceptability];
         };
+
+
 
         ////////////////////////////////
         // Relationship Elements
