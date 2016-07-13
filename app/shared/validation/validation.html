@@ -208,11 +208,8 @@
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'message'">
               {{failure.message}}
             </td>
-            <td header-title="'Click to sort'" data-title="'Excluded'" sortable="'userExcluded'">
-              <input type="checkbox" ng-model="failure.userExcluded" ng-change="toggleUserExclusion(failure)">
-            </td>
-            <td ng-if="taskKey" header-title="'Click to sort'" data-title="'Changed Here'" sortable="'userModified'">
-              {{failure.userModified}}
+            <td>
+              <button type="button" class="btn btn-default back-button red" ng-click="excludeFailure(failure)">Add to Whitelist</button>
             </td>
 
             <td ng-if="editable" data-header="'editheader.html'">
