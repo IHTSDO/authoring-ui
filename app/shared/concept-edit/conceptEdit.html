@@ -194,7 +194,7 @@
 
           <!-- Active/Inactive -->
           <button type="button" style="vertical-align: bottom"
-                  ng-disabled="isStatic || isLockedModule(description.moduleId)" ng-click="toggleDescriptionActive(description)"
+                  ng-disabled="isStatic || !description.released || isLockedModule(description.moduleId)" ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
                   class="tooltips-bottom small-size-tooltip">
             <span ng-if="isStatic">Active/Inactive</span>

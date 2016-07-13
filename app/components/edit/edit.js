@@ -1363,7 +1363,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             deferred.resolve('Project loaded, metadata found');
           }, function (error) {
             deferred.reject('Could not get module concept');
-          })
+          });
         } else {
           deferred.resolve('Project loaded, no metadata');
         }
