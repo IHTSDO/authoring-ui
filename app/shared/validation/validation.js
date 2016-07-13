@@ -123,17 +123,18 @@ angular.module('singleConceptAuthoringApp')
                       // if viewing task report and instance is not user modified, return false
                       if (!scope.viewFullReport && !instance.isUserModified) {
                         return false;
-                      };
+                      }
+                      ;
 
                       // if validation failure is excluded, return false
-                      if (scaService.isValidationFailureExcluded(assertionFailed.assertionUuid,instance.conceptId,instance.detail)) {
+                      if (scaService.isValidationFailureExcluded(assertionFailed.assertionUuid, instance.conceptId, instance.detail)) {
                         return false;
                       }
 
                       // otherwise return true
                       return true;
                     });
-                   // console.debug('filtered instances', scope.viewFullReport, filteredInstances);
+                    // console.debug('filtered instances', scope.viewFullReport, filteredInstances);
                     assertionFailed.filteredCount = filteredInstances.length;
                   });
 
@@ -304,7 +305,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user exclusion
                   orderedData = orderedData.filter(function (failure) {
-                     return !scaService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
+                    return !scaService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
                   });
 
 //                  console.debug('ordered data', orderedData);
@@ -400,8 +401,6 @@ angular.module('singleConceptAuthoringApp')
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
 
-
-
             // retrieve the hard-excluded technical error rules
             configService.getExcludedValidationRuleIds().then(function (response) {
               scope.assertionsExcluded = response;
@@ -462,7 +461,7 @@ angular.module('singleConceptAuthoringApp')
             failuresInitialized = true;
 
             // retrieve the whitelistable rule ids -- used to display Add to Whitelist button
-            configService.getWhiteListEligibleRuleIds().then(function(response) {
+            configService.getWhiteListEligibleRuleIds().then(function (response) {
               console.debug('white list eligible rule ids', response);
               scope.whitelistEligibleRuleIds = response ? response : [];
             });
@@ -529,9 +528,9 @@ angular.module('singleConceptAuthoringApp')
             var objArray = [];
 
             // check if this failure is whitelistable
-            if (scope.whitelistEligibleRuleIds && scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1) {
-              scope.whitelistEnabled = true;
-            }
+            scope.whitelistEnabled = scope.whitelistEligibleRuleIds
+              && scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
+
 
             //console.debug(assertionFailure.firstNInstances);
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
@@ -551,10 +550,11 @@ angular.module('singleConceptAuthoringApp')
             scope.failures = objArray;
             getNamesForFailures().then(function () {
               scope.failureTableParams.reload();
-            }, function() {
+            }, function () {
               scope.failureTableParams.reload();
             });
-          };
+          }
+          ;
 
           scope.selectAll = function (selectAllActive) {
             angular.forEach(scope.failures, function (failure) {
@@ -575,12 +575,12 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          //
-          // User-modified validation exclusion list
-          //
+//
+// User-modified validation exclusion list
+//
 
 
-          // on load, refresh the validation failure exclusions
+// on load, refresh the validation failure exclusions
           scaService.getValidationFailureExclusions().then(function (response) {
             console.debug('exclusions:', response);
           });
@@ -591,7 +591,7 @@ angular.module('singleConceptAuthoringApp')
             });
           };
 
-          // exclude a single failure, with optional commit
+// exclude a single failure, with optional commit
           scope.excludeFailure = function (failure, skipCommitFlag) {
             console.debug('Excluding failure exclusion', failure.userExcluded, failure, skipCommitFlag);
 
@@ -825,7 +825,8 @@ angular.module('singleConceptAuthoringApp')
           };
         }
 
-      };
+      }
+        ;
 
     }])
 ;
