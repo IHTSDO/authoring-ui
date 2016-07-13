@@ -29,55 +29,55 @@ angular.module('singleConceptAuthoringApp')
       [
         {
           id: 'ALTERNATIVE',
-          conceptId : '900000000000530003',
+          conceptId: '900000000000530003',
           text: 'ALTERNATIVE association reference set',
           display: 1
         },
         {
           id: 'MOVED_FROM',
-          conceptId : '900000000000525002',
+          conceptId: '900000000000525002',
           text: 'MOVED FROM association reference set',
           display: 2
         },
         {
           id: 'MOVED_TO',
-          conceptId : '900000000000524003',
+          conceptId: '900000000000524003',
           text: 'MOVED TO association reference set',
           display: 3
         },
         {
           id: 'POSSIBLY_EQUIVALENT_TO',
-          conceptId : '900000000000523009',
+          conceptId: '900000000000523009',
           text: 'POSSIBLY EQUIVALENT TO association reference set',
           display: 4
         },
         {
           id: 'REFERS_TO',
-          conceptId : '900000000000531004',
+          conceptId: '900000000000531004',
           text: 'REFERS TO concept association reference set',
           display: 5
         },
         {
           id: 'REPLACED_BY',
-          conceptId : '900000000000526001',
+          conceptId: '900000000000526001',
           text: 'REPLACED BY association reference set',
           display: 6
         },
         {
           id: 'SAME_AS',
-          conceptId : '900000000000527005',
+          conceptId: '900000000000527005',
           text: 'SAME AS association reference set',
           display: 7
         },
         {
           id: 'SIMILAR_TO',
-          conceptId : '900000000000529008',
+          conceptId: '900000000000529008',
           text: 'SIMILAR TO association reference set',
           display: 8
         },
         {
           id: 'WAS_A',
-          conceptId : '900000000000528000',
+          conceptId: '900000000000528000',
           text: 'WAS A association reference set',
           display: 9
         }
@@ -125,22 +125,22 @@ angular.module('singleConceptAuthoringApp')
 
     /**
 
-      // modules as id/name object array
-      modules: [{
+     // modules as id/name object array
+     modules: [{
         id: '45991000052106',
         name: 'SNOMED CT Sweden NRC maintained module (core metadata concept)'
       }],
 
-      // languages as string array
-      languages: ['sv', 'en'],
+     // languages as string array
+     languages: ['sv', 'en'],
 
-      // dialects as id->name map
-      dialects: {
+     // dialects as id->name map
+     dialects: {
         '900000000000509007': 'en-us',
         '46011000052107': 'sv'
 
       }
-    };
+     };
      */
 
     // Branch/Task-level metadata
@@ -174,12 +174,12 @@ angular.module('singleConceptAuthoringApp')
         // extract the default language and dialect
         var language, dialect = null;
         for (var key in metadata) {
-         // console.debug('Checking property', key, metadata[key])
+          // console.debug('Checking property', key, metadata[key])
           if (metadata.hasOwnProperty(key)) {
             var match = key.match(/requiredLanguageRefset\.(.+)/);
             //console.debug('  Checking match', match);
             if (match && match[1]) {
-             // console.debug('    Found match', match[1]);
+              // console.debug('    Found match', match[1]);
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
             }
@@ -281,7 +281,15 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getBranchRoot() {
-      return branchMetadata.branchPath.match(/(.*)\/[^\/]+\/[^\/]+$/)[1];
+      // if branch metadata has a project key, match for task: BRANCH_ROOT/pkey/tkey
+      if (branchMetadata.projectKey) {
+        return branchMetadata.branchPath.match(/(.*)\/[^\/]+\/[^\/]+$/)[1];
+      }
+
+      // otherwise, match for project: BRANCH_ROOT/pKey
+      else {
+        return branchMetadata.branchPath.match(/(.*)\/[^\/]+$/)[1];
+      }
     }
 
     // returns extension dialects plus international dialects
@@ -390,7 +398,7 @@ angular.module('singleConceptAuthoringApp')
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
       getAllDialects: getAllDialects,
-      isExtensionSet : function() {
+      isExtensionSet: function () {
         return extensionMetadata != null;
       },
 

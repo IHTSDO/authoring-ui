@@ -678,41 +678,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 $rootScope.$broadcast('conceptEdit.inactivateConcept');
 
 
-                // WRP-2161 testing bypass -- to disable new fe atures, modify isInactivation service to return false only
-                // This inactivationService function also triggers the accessibility of the inactivation view
-                // TODO As of 6/28 4:50PST This is disabled, moved to inactivationService
-                /*if (!inactivationService.isInactivation()) {
-
-                 snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
-
-                 scope.concept.active = false;
-
-                 // if reason is selected, deactivate all descriptions and
-                 // relationships
-                 if (results.reason) {
-
-                 inactivationService.setInactivationReasons()
-
-                 // straightforward inactivation of relationships
-                 // NOTE: Descriptions stay active so a FSN can still be
-                 // found
-                 angular.forEach(scope.concept.relationships, function (relationship) {
-                 relationship.active = false;
-                 });
-
-                 // save concept but bypass validation checks
-                 saveHelper().then(function () {
-                 notificationService.sendMessage('Concept inactivated');
-                 }, function (error) {
-                 notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                 });
-                 }
-                 }, function () {
-                 notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
-                 });
-                 }*/
-
-
               });
             });
 
