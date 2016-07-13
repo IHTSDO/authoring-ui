@@ -213,7 +213,7 @@
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'">
               {{failure.detail}}
             </td>
-            <td>
+            <td ng-if="whitelistEnabled">
               <button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
                 Whitelist
               </button>
