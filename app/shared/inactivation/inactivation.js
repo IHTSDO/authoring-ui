@@ -27,6 +27,9 @@ angular.module('singleConceptAuthoringApp')
           scope.affectedAssocs = [];
           scope.finalizing = false;
           scope.isStatic = false;
+          scope.tabOneAccepted = false;
+          scope.tabTwoAccepted = false;
+          scope.tabThreeAccepted = false;
             
           $(".btn").mouseup(function(){
             $(this).blur();
@@ -153,37 +156,79 @@ angular.module('singleConceptAuthoringApp')
             
           scope.acceptAll = function(){
               if(scope.actionTab === 1){
-                  for (var conceptId in scope.affectedConcepts) {
-                      if(scope.affectedConcepts[conceptId]){
-                          angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
-                            // add all relationships with no effective time
-                            if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
-                              rel.accepted = true;
-                              rowsAccepted++;
-                            }
-                          });
-                      }
-                }
+                  if(!scope.tabOneAccepted){
+                      for (var conceptId in scope.affectedConcepts) {
+                          if(scope.affectedConcepts[conceptId]){
+                              angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                                // add all relationships with no effective time
+                                if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                  rel.accepted = true;
+                                  rowsAccepted++;
+                                }
+                              });
+                          }
+                        }
+                  }
+                  else{
+                        for (var conceptId in scope.affectedConcepts) {
+                              if(scope.affectedConcepts[conceptId]){
+                                  angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                                    // add all relationships with no effective time
+                                    if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                      rel.accepted = false;
+                                      rowsAccepted--;
+                                    }
+                                  });
+                              }
+                        }
+                  }
+                  scope.tabOneAccepted = !scope.tabOneAccepted;
               }
               else if(scope.actionTab === 2){
-                  for (var conceptId in scope.affectedConcepts) {
-                      if(scope.affectedConcepts[conceptId]){
-                          angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+                  if(!scope.tabTwoAccepted){
+                      for (var conceptId in scope.affectedConcepts) {
+                          if(scope.affectedConcepts[conceptId]){
+                              angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
 
-                            // add all relationships with no effective time
-                            if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
-                              rel.accepted = true;
-                              rowsAccepted++;
-                            }
-                          });
-                      }
-                }
+                                // add all relationships with no effective time
+                                if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                  rel.accepted = true;
+                                  rowsAccepted++;
+                                }
+                              });
+                          }
+                        }
+                  }
+                  else{
+                      for (var conceptId in scope.affectedConcepts) {
+                          if(scope.affectedConcepts[conceptId]){
+                              angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
+
+                                // add all relationships with no effective time
+                                if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                  rel.accepted = false;
+                                  rowsAccepted--;
+                                }
+                              });
+                          }
+                        }
+                  }
+                  scope.tabTwoAccepted = !scope.tabTwoAccepted;
               }
               else if(scope.actionTab === 3){
-                  angular.forEach(scope.affectedAssocs, function(rel){
-                      rel.accepted = true;
-                      rowsAccepted++;
-                  });
+                  if(!scope.tabThreeAccepted){
+                      angular.forEach(scope.affectedAssocs, function(rel){
+                          rel.accepted = true;
+                          rowsAccepted++;
+                      });
+                  }
+                  else{
+                      angular.forEach(scope.affectedAssocs, function(rel){
+                          rel.accepted = false;
+                          rowsAccepted--;
+                      });
+                  }
+                  scope.tabThreeAccepted = !scope.tabThreeAccepted;
               }
               scope.reloadTables();
           };
@@ -410,7 +455,7 @@ angular.module('singleConceptAuthoringApp')
           function getAffectedObjectIds() {
             console.log('Getting affected object ids');
             var deferred = $q.defer();
-            snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0, -1).then(function (response) {
+            snowowlService.getConceptRelationshipsInbound(scope.inactivationConcept.conceptId, scope.branch, 0).then(function (response) {
               scope.affectedRelationshipIds = [];
 
               angular.forEach(response.inboundRelationships, function (item) {
@@ -605,9 +650,18 @@ angular.module('singleConceptAuthoringApp')
 
           scope.getTargetConceptSuggestions = function (text) {
             console.debug('getTargetConceptSuggestions:', text);
-            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, text, 0, 10).then(function (concepts) {
-              console.debug('typeahead', concepts);
-              return concepts;
+            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, text, 0, 10).then(function (response) {
+              for (var i = 0; i < response.length; i++) {
+              // console.debug('checking for duplicates', i, response[i]);
+                  for (var j = response.length - 1; j > i; j--) {
+                    if (response[j].concept.conceptId === response[i].concept.conceptId) {
+                      // console.debug(' duplicate ', j, response[j]);
+                      response.splice(j, 1);
+                      j--;
+                    }
+                  }
+              }
+              return response;
             });
           };
 
@@ -679,7 +733,7 @@ angular.module('singleConceptAuthoringApp')
 
 
             // ensure that children have been retrieved
-            snowowlService.getConceptChildren(scope.inactivationConcept.conceptId, scope.branch).then(function (children) {
+            snowowlService.getStatedConceptChildren(scope.inactivationConcept.conceptId, scope.branch).then(function (children) {
               scope.inactivationConceptChildren = children;
               notificationService.sendMessage('Retrieving inbound relationships...');
               getAffectedObjectIds().then(function () {

@@ -277,6 +277,18 @@ angular.module('singleConceptAuthoringApp')
       });
 
     }
+    
+    // Retrieve stated children of a concept
+    // GET /{path}/concepts/{conceptId}/children?form=stated
+    function getStatedConceptChildren(conceptId, branch) {
+      return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/children?form=stated').then(function (response) {
+        return response.data;
+      }, function (error) {
+        // TODO Handle error
+      });
+
+    }
+      
 
     function getHistoricalAssociationsForConcept(branch, conceptId) {
       var reasons = metadataService.getAssociationInactivationReasons();
@@ -431,7 +443,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       if (!limit) {
-        limit = 50;
+        limit = 10000;
       }
 
       $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?expand=source.fsn,type.fsn' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit)).then(function (response) {
@@ -1174,6 +1186,7 @@ angular.module('singleConceptAuthoringApp')
       inactivateDescription: inactivateDescription,
       getConceptParents: getConceptParents,
       getConceptChildren: getConceptChildren,
+      getStatedConceptChildren: getStatedConceptChildren,
       getConceptDescriptions: getConceptDescriptions,
       getConceptRelationshipsInbound: getConceptRelationshipsInbound,
       getConceptRelationshipsOutbound: getConceptRelationshipsOutbound,
