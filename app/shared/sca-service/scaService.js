@@ -1074,7 +1074,7 @@ angular.module('singleConceptAuthoringApp')
       },
 
       // clears the exclusions for a concept id
-      clearWhiteListForConceptId: function(conceptId) {
+      clearValidationFailureExclusionsForConceptId: function(conceptId) {
         if (validationFailureExclusions.hasOwnProperty(conceptId)) {
           delete validationFailureExclusions[conceptId];
         }
