@@ -37,7 +37,7 @@ angular.module('singleConceptAuthoringApp')
         deferred.resolve(response);
       }, function (error) {
         notificationService.sendError('Unexpected error updating validation failure exclusions');
-        deferred.reject(response);
+        deferred.reject();
       });
       return deferred.promise;
     }
