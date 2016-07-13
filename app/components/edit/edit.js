@@ -495,7 +495,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
       } else if ($routeParams.mode === 'feedback') {
-       snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+        snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
           var review = {};
           if (traceability) {
             review.concepts = [];
@@ -1346,14 +1346,6 @@ angular.module('singleConceptAuthoringApp.edit', [
           metadataService.setBranchMetadata($scope.project);
         }
 
-        // TODO Temporary for testing while UAT-MS is out of order, remove once better
-        /* metadataService.setExtensionMetadata({
-         'defaultModuleId': '554471000005108',
-         'defaultModuleName': 'Danish module (core metadata concept)',
-         'defaultNamespace': '1000005',
-         'requiredLanguageRefset.da': '554461000005103'
-         });*/
-
         console.debug('checking metadata');
         // get the name of the extension metadata (if present)
         if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
@@ -1404,14 +1396,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.getLatestConflictsReport();
 
           deferred.resolve('Task retrieved');
-        }, function(error) {
+        }, function (error) {
           deferred.reject('Task load failed');
         });
 
       } else {
         deferred.reject('No task to load');
       }
-  return deferred.promise;
+      return deferred.promise;
 
 
     }
@@ -1424,16 +1416,18 @@ angular.module('singleConceptAuthoringApp.edit', [
 // Initialization
 //////////////////////////////////////////
 
-
     function initialize() {
 
       notificationService.sendMessage('Loading task details...');
+
+      // start monitoring of task
+      scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
       // initialize the task and project
       $q.all([loadTask(), loadProject()]).then(function () {
         notificationService.clear();
 
-        // initialize the branches (requires metadata service branches set)
+        // initialize the branch variables (requires metadata service branches set)
         $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + '/' + $scope.taskKey;
         $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
 
@@ -1445,17 +1439,31 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.sourceBranch = metadataService.getBranchRoot() + '/';
         }
 
-        // set the initial view
-        $scope.setInitialView();
-      }, function() {
-        notificationService.sendError('Unexpected error retrieving task details');
+        if ($routeParams.taskKey) {
+          accountService.getRoleForTask($scope.task).then(function (response) {
+            console.log('User role for task: ' + response);
+              // set the initial view if any role is resolved
+              $scope.setInitialView();
+            },
+            // send error and return to dashboard on rejection
+            function () {
+              console.log('User has no role on task, routing to dashboard');
+              notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
+              $timeout(function () {
+                $location.url('/');
+              }, 4000);
+            })
+
+
+        }
+
+          // if project, no authentication required
+        else {
+
+          // set the initial view
+          $scope.setInitialView();
+        }
       });
-
-
-      // start monitoring of task
-      scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
-
-
     }
 
     initialize();
