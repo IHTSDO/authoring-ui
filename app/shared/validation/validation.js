@@ -109,7 +109,7 @@ angular.module('singleConceptAuthoringApp')
             },
             {
               filterDelay: 50,
-              total: scope.assertionsFailed ? scope.assertionsFailed.length : 0,
+              total: '-',
               getData: function ($defer, params) {
 
                 if (!scope.assertionsFailed || scope.assertionsFailed.length === 0) {
@@ -284,7 +284,7 @@ angular.module('singleConceptAuthoringApp')
               orderBy: 'userModified'
             },
             {
-              total: scope.failures ? scope.failures.length : 0,
+              total: '-',
               getData: function ($defer, params) {
                 // clear the loading variable on reload
                 scope.failuresLoading = false;
@@ -298,13 +298,9 @@ angular.module('singleConceptAuthoringApp')
                     return scope.viewFullReport || failure.isUserModified;
                   });
 
-
-                  console.debug('failure data before exclusion', orderedData);
                   // filter by user exclusion
                   orderedData = orderedData.filter(function (failure) {
-                    console.debug('checking', scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail,
-                      !scaService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail));
-                    return !scaService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
+                     return !scaService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
                   });
 
 //                  console.debug('ordered data', orderedData);
