@@ -167,7 +167,8 @@ angular.module('singleConceptAuthoringApp')
 
           function getConceptIdForFailure(failure) {
             var deferred = $q.defer();
-            switch (String(failure.conceptId).substring(String(failure.conceptId).length - 3, String(failure.conceptId).length - 2)) {
+            console.debug(failure.conceptId, String(failure.conceptId).substring(String(failure.conceptId).length - 2, String(failure.conceptId).length - 1))
+            switch (String(failure.conceptId).substring(String(failure.conceptId).length - 2, String(failure.conceptId).length - 1)) {
               // concept: simply return
               case '0':
                 conceptIds.push(failure.conceptId);
@@ -219,7 +220,10 @@ angular.module('singleConceptAuthoringApp')
               promises.push(getConceptIdForFailure(failure));
             });
 
+            console.debug('all promises pushed');
             $q.all(promises).then(function () {
+
+              console.debug('all promises resolved');
 
               // skip if no concept ids
               if (conceptIds.length > 0) {
@@ -533,6 +537,8 @@ angular.module('singleConceptAuthoringApp')
 
             scope.failures = objArray;
             getNamesForFailures().then(function () {
+              scope.failureTableParams.reload();
+            }, function() {
               scope.failureTableParams.reload();
             });
           };
