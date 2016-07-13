@@ -661,11 +661,15 @@ angular.module('singleConceptAuthoringApp')
                     }
                   }
               }
+              for (var i = 0; i >= response.length -1; i--) {
+                    if (response[i].active === false) {
+                      response.splice(i, 1);
+                    }
+              }
+              console.log(response);
               return response;
             });
           };
-
-          console.debug(scope.getTargetConceptSuggestions('ear'));
 
           scope.setTargetConcept = function (rel, concept) {
             rel.newTargetId = concept.concept.conceptId;
