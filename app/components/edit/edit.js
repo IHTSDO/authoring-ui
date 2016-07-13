@@ -80,6 +80,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
+    console.debug($scope.projectKey, $scope.taskKey);
+
 
     // clear task-related information
     $rootScope.validationRunning = false;
