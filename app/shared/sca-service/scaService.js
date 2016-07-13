@@ -8,6 +8,7 @@ angular.module('singleConceptAuthoringApp')
 
     //
     // Validation Failure Exclusion getter, setter, and cached values
+    // NOTE: This is initialized in app.js
     //
 
     var validationFailureExclusions = null;
@@ -1065,32 +1066,29 @@ angular.module('singleConceptAuthoringApp')
         if (!validationFailureExclusions) {
           return false;
         }
-        var exclusionsForAssertion = validationFailureExclusions[assertionUuid];
 
-        if (exclusionsForAssertion && exclusionsForAssertion.excludedFailures) {
-
-          /*    console.debug('exclusions', exclusionsForAssertion, conceptId, failureText,
-           exclusionsForAssertion.excludedFailures.filter(function (failure) {
-           return failure.conceptId === conceptId && failure.failureText === failureText;
-           }));*/
-        }
-
-        return exclusionsForAssertion && exclusionsForAssertion.excludedFailures && exclusionsForAssertion.excludedFailures.filter(function (failure) {
+        return validationFailureExclusions[conceptId] && validationFailureExclusions[conceptId].filter(function (failure) {
             return failure.conceptId === conceptId && failure.failureText === failureText;
           }).length > 0;
       },
 
-
-      //
-      // Failure structure
-      // { assertionUuid : '', user : '', conceptId : '', detail : '', timestamp : date }
-      //
+      // clears the exclusions for a concept id
+      clearWhiteListForConceptId: function(conceptId) {
+        if (validationFailureExclusions.hasOwnProperty(conceptId)) {
+          delete validationFailureExclusions[conceptId];
+        }
+      },
 
       addValidationFailureExclusion: function (assertionUuid, assertionText, conceptId, conceptFsn, failureText, user) {
         console.debug('add exclusion', assertionUuid, assertionText, conceptId, failureText, 'to', validationFailureExclusions);
+
+        var deferred = $q.defer();
+
         // create the exclusion
         var exclusion = {
-          conceptId: conceptId,
+          assertionUuid: assertionUuid,
+          assertionText : assertionText,
+          conceptId : conceptId,
           conceptFsn : conceptFsn,
           failureText: failureText,
           user: user,
@@ -1098,50 +1096,64 @@ angular.module('singleConceptAuthoringApp')
         };
 
         // if no assertions for this uuid, create container
-        if (!validationFailureExclusions[assertionUuid]) {
-          validationFailureExclusions[assertionUuid] = {
-            assertionText: assertionText,
-            excludedFailures: []
-          };
+        if (!validationFailureExclusions[conceptId]) {
+          validationFailureExclusions[conceptId] = new Array();
         }
 
+        console.debug(validationFailureExclusions, 'vfe');
+
         // doublecheck this assertion does not already exist
-        if (validationFailureExclusions[assertionUuid].excludedFailures.filter(function (failure) {
+        if (validationFailureExclusions[conceptId].filter(function (failure) {
             return failure.conceptId === conceptId && failure.failureText === failureText;
           }).length === 0) {
 
           // add and set the exclusions
-          validationFailureExclusions[assertionUuid].excludedFailures.push(exclusion);
+          validationFailureExclusions[conceptId].push(exclusion);
         }
+
+        updateValidationFailureExclusions().then(function() {
+          deferred.resolve();
+        }, function() {
+          deferred.reject();
+        });
+
+        return deferred.promise;
       },
 
       removeValidationFailureExclusion: function (assertionUuid, conceptId, failureText) {
 
+        var deferred = $q.defer();
+
         console.debug('remove exclusion', assertionUuid, conceptId, failureText);
         // find and remove the assertion
-        if (validationFailureExclusions && validationFailureExclusions[assertionUuid]) {
-          var exclusionsForAssertion = validationFailureExclusions[assertionUuid].excludedFailures;
-          for (var i = 0; i < exclusionsForAssertion.length; i++) {
-            if (exclusionsForAssertion[i].conceptId === conceptId && exclusionsForAssertion[i].failureText === failureText) {
+        if (validationFailureExclusions && validationFailureExclusions[conceptId]) {
+          for (var i = 0; i < validationFailureExclusions[conceptId].length; i++) {
+            if (validationFailureExclusions[conceptId][i].assertionUuid === assertionUuid
+              && validationFailureExclusions[conceptId][i].failureText === failureText) {
               console.debug('  removing exclusion');
-              exclusionsForAssertion.splice(i, 1);
+              validationFailureExclusions[conceptId].splice(i, 1);
               break;
             }
-            if (i === exclusionsForAssertion.length - 1) {
+            if (i === validationFailureExclusions[conceptId].length - 1) {
               console.debug('  could not find exclusion to remove');
             }
           }
         } else {
           console.debug('  object empty, no need for removal');
         }
+        updateValidationFailureExclusions().then(function() {
+          deferred.resolve();
+        }, function() {
+          deferred.reject();
+        });
+
+
+        return deferred.promise;
 
       },
 
       // Retrieval function to force refresh of ui-state
       getValidationFailureExclusions: getValidationFailureExclusions,
-
-      // Commit function to save changes made
-      updateValidationFailureExclusions: updateValidationFailureExclusions
     };
 
   }])
