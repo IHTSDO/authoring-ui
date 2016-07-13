@@ -130,8 +130,8 @@
       </button>
     </div>
     <div class="col-md-1 classification-header">
-      <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right">{{viewExclusions ? 'Hide'
-        : 'Show'}} Exclusions List
+      <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right ">{{viewExclusions ? 'Hide'
+        : 'Show'}} Whitelist
       </button>
     </div>
     <div class="col-md-4"></div>
@@ -154,12 +154,12 @@
         <table
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
-          <tr ng-repeat="assertion in $data">
+          <tr ng-repeat="assertion in $data" ng-if="assertion.filteredCount > 0">
             <td header-title="'Click to sort'" data-title="'Failed Assertions'" sortable="'assertionText'">
               {{assertion.assertionText}}
             </td>
-            <td header-title="'Click to sort'" data-title="'# of Cases'" sortable="'failureCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.failureCount}}
+            <td header-title="'Click to sort'" data-title="'# of Cases'" sortable="'filteredCount'">
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.filteredCount}}
                 <span># of cases with errors</span>
               </div>
             </td>
