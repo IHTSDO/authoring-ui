@@ -199,7 +199,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     // get all classification results for a project and task
-    function getClassificationsForTask(projectKey, taskKey, branch) {
+    function getClassificationsForTask(projectKey, taskKey) {
       return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
         return response.data.items;
       });
