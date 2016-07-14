@@ -997,19 +997,17 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
-      if ($scope.taskKey) {
+      snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        if (!response || response.length === 0) {
+          $scope.classificationContainer = {status: 'No classification found'};
+        } else {
+          // assign results to the classification container (note,
+          // chronological order, use last value)
+          $scope.classificationContainer = response[response.length - 1];
+          $scope.setClassificationComponents();
+        }
+      });
 
-        snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.targetBranch).then(function (response) {
-          if (!response || response.length === 0) {
-            $scope.classificationContainer = {status: 'No classification found'};
-          } else {
-            // assign results to the classification container (note,
-            // chronological order, use last value)
-            $scope.classificationContainer = response[response.length - 1];
-            $scope.setClassificationComponents();
-          }
-        });
-      }
     };
 
     // on classification reload notification, reload latest classification
@@ -1455,7 +1453,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           accountService.getRoleForTask($scope.task).then(function (role) {
               console.log('User role for task: ' + role);
 
-            notificationService.sendMessage('Task details loaded', 3000);
+              notificationService.sendMessage('Task details loaded', 3000);
 
               // set role functionality and initial view
               $scope.isOwnTask = role === 'AUTHOR';
