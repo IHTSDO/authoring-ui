@@ -2755,12 +2755,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // on load, check task status
         scope.checkPromotedStatus();
 
-        // on task reload notifications, reload task and set static flag if
-        // necessary
-        /* scope.$on('reloadTask', function () {
-         scope.checkPromotedStatus();
-         });*/
-
         // watch for classification completion request to reload concepts
         // will not affect modified concept data
         scope.$on('reloadConcepts', function () {

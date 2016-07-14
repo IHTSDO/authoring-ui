@@ -1380,7 +1380,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
 
-
     function loadBranch(branchPath) {
 
       console.debug('loading branch', branchPath);
