@@ -201,7 +201,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
-
         /////////////////////////////////////////////////////////////////
         // Autosaving and Modified Concept Storage Initialization
         /////////////////////////////////////////////////////////////////
@@ -2204,10 +2203,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
           if (!description.effectiveTime && description.type === 'TEXT_DEFINITION' && !metadataService.isLockedModule(description.moduleId)) {
-            for (var dialectId in scope.getDialectIdsForDescription(description)) {
-              console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectIdsForDscription(description))
+            angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
               description.acceptabilityMap[dialectId] = 'PREFERRED';
-            }
+            });
             description.caseSignificance = 'ENTIRE_TERM_CASE_SENSITIVE';
           }
 
