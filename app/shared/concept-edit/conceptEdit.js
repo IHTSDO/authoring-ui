@@ -117,7 +117,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //////////////////////////////////////////////////////////////
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////
-        console.debug('static', scope.static, scope.static === 'true')
+
         if (scope.static === 'true' || scope.static === true) {
           scope.isStatic = true;
         } else {
@@ -756,8 +756,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             return a < b;
           }
-          ;
-        }
+        };
 
         // function to retrieve branch dialect ids as array instead of map
         // NOTE: Required for orderBy in ng-repeat
@@ -841,7 +840,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
               var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
 
-              if (aVal != bVal) {
+              if (aVal !== bVal) {
                 if (aVal && !bVal) {
                   return -1;
                 }
@@ -1263,7 +1262,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return '??';
           }
           return scope.dialects[id].replace('en-', '');
-        };
+        }
 
         scope.getAcceptabilityTooltipText = function (description, dialectId) {
           if (!description || !dialectId) {
@@ -2195,8 +2194,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if a new FSN (determined by blank term)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
               angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
-                console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectIdsForDescription(description))
-
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';

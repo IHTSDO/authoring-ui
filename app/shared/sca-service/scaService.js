@@ -1128,8 +1128,8 @@ angular.module('singleConceptAuthoringApp')
         // find and remove the assertion
         if (validationFailureExclusions && validationFailureExclusions[conceptId]) {
           for (var i = 0; i < validationFailureExclusions[conceptId].length; i++) {
-            if (validationFailureExclusions[conceptId][i].assertionUuid === assertionUuid
-              && validationFailureExclusions[conceptId][i].failureText === failureText) {
+            if (validationFailureExclusions[conceptId][i].assertionUuid === assertionUuid &&
+               validationFailureExclusions[conceptId][i].failureText === failureText) {
               console.debug('  removing exclusion');
               validationFailureExclusions[conceptId].splice(i, 1);
               if (validationFailureExclusions[conceptId].length === 0) {
