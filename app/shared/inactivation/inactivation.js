@@ -162,8 +162,10 @@ angular.module('singleConceptAuthoringApp')
                               angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
                                 // add all relationships with no effective time
                                 if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
-                                  rel.accepted = true;
-                                  rowsAccepted++;
+                                  if(rel.accepted !== true){
+                                      rel.accepted = true;
+                                      rowsAccepted++;
+                                  }
                                 }
                               });
                           }
@@ -175,9 +177,11 @@ angular.module('singleConceptAuthoringApp')
                                   angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
                                     // add all relationships with no effective time
                                     if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                  if(rel.accepted !== false){
                                       rel.accepted = false;
-                                      rowsAccepted--;
-                                    }
+                                      rowsAccepted++;
+                                  }
+                                }
                                   });
                               }
                         }
@@ -192,8 +196,10 @@ angular.module('singleConceptAuthoringApp')
 
                                 // add all relationships with no effective time
                                 if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
-                                  rel.accepted = true;
-                                  rowsAccepted++;
+                                  if(rel.accepted !== true){
+                                      rel.accepted = true;
+                                      rowsAccepted++;
+                                  }
                                 }
                               });
                           }
@@ -206,8 +212,10 @@ angular.module('singleConceptAuthoringApp')
 
                                 // add all relationships with no effective time
                                 if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
-                                  rel.accepted = false;
-                                  rowsAccepted--;
+                                  if(rel.accepted !== false){
+                                      rel.accepted = false;
+                                      rowsAccepted++;
+                                  }
                                 }
                               });
                           }
@@ -218,14 +226,18 @@ angular.module('singleConceptAuthoringApp')
               else if(scope.actionTab === 3){
                   if(!scope.tabThreeAccepted){
                       angular.forEach(scope.affectedAssocs, function(rel){
-                          rel.accepted = true;
-                          rowsAccepted++;
+                          if(rel.accepted !== true){
+                              rel.accepted = true;
+                              rowsAccepted++;
+                          }
                       });
                   }
                   else{
                       angular.forEach(scope.affectedAssocs, function(rel){
-                          rel.accepted = false;
-                          rowsAccepted--;
+                          if(rel.accepted !== false){
+                              rel.accepted = false;
+                              rowsAccepted++;
+                          }
                       });
                   }
                   scope.tabThreeAccepted = !scope.tabThreeAccepted;
