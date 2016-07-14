@@ -125,9 +125,11 @@
     <div class="col-md-4 classification-header">Validation Report: {{getStatusText()}}
     </div>
     <div class="col-md-1 classification-header">
-      <button ng-click="toggleFullReport()" class="btn btn-default deep-purple pull-right">{{viewFullReport ? 'Show Task
-        Report' : 'Show Full Report'}}
+      <button ng-click="toggleFullReport()" class="btn btn-default deep-purple pull-right">{{viewFullReport ?
+        'Show ' + (taskKey ? 'Task' : 'Project')
+        + ' Report' : 'Show Full Report'}}
       </button>
+    
     </div>
     <div class="col-md-1 classification-header">
       <button ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right ">{{viewExclusions ?
@@ -209,7 +211,9 @@
             <td header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
               {{failure.conceptId}}
             </td>
-            <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'" ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}</td>
+            <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
+                ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}
+            </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'">
               {{failure.detail}}
             </td>
@@ -255,26 +259,29 @@
       <tr ng-repeat="failure in $data">
 
         <!-- Removed due to space considerations -->
-       <!-- <td class="col-md-3" header-title="'Click to sort'" data-title="'Assertion Failure'" sortable="'assertionText'">
-          {{failure.assertionText}}
-        </td>-->
-        <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'" ng-click="editConcept(failure.conceptId)">
+        <!-- <td class="col-md-3" header-title="'Click to sort'" data-title="'Assertion Failure'" sortable="'assertionText'">
+           {{failure.assertionText}}
+         </td>-->
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'"
+            ng-click="editConcept(failure.conceptId)">
           {{failure.conceptId}}
         </td>
-        <td class="col-md-3"  header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'" ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}</td>
-        <td class="col-md-6"  header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'">
+        <td class="col-md-3" header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
+            ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}
+        </td>
+        <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'">
           {{failure.failureText}}
         </td>
 
-        <td class="col-md-1"  header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'">
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'">
           {{failure.timestamp | date:'medium'}}
         </td>
-        <td class="col-md-1"  header-title="'Click to sort'" data-title="'User'" sortable="'user'">
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'">
           {{failure.user}}
         </td>
         <td>
           <button
-            title="Remove failure from whitelist"ng-click="removeUserExclusionFromTable(failure)"
+            title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
             type="button" class="btn btn-round btn-default blue">
             <i
               class="md md-close"></i>
