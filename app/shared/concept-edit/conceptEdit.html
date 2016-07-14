@@ -130,12 +130,12 @@
             ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
     </select>
 -->
-        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'" ng-disabled="isStatic || isLockedModule(description.moduleId)"
+        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'" ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
           <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
           <span>Fully Defined</span>
         </button>
-        <button ng-if="concept.definitionStatus == 'PRIMITIVE'" ng-disabled="isStatic || isLockedModule(description.moduleId)"
+        <button ng-if="concept.definitionStatus == 'PRIMITIVE'" ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
           <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
           <span>Primitive</span>
