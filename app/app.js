@@ -130,10 +130,6 @@ angular
       $window.ga('send', 'error', error)
     };
 
-    // set the default redirect/route
-    $routeProvider.otherwise({
-      redirectTo: '/home'
-    });
     $rootScope.notProd = false;
     $timeout(function () {
       var env = $location.host().split(/[.]/)[0];
@@ -153,14 +149,11 @@ angular
     }, 3000);
 
 
-    // begin polling the sca endpoint at 10s intervals
-    scaService.startPolling(10000);
-
     // get endpoint information and set route provider options
-    configService.getEndpoints().then(function (data) {
-      $rootScope.endpoints = data.endpoints;
-      var accountUrl = data.endpoints.imsEndpoint + 'api/account';
-      var imsUrl = data.endpoints.imsEndpoint;
+    configService.getEndpoints().then(function (response) {
+      var endpoints = response;
+      var accountUrl = endpoints.imsEndpoint + 'api/account';
+      var imsUrl = endpoints.imsEndpoint;
       var imsUrlParams = '?serviceReferer=' + window.location.href;
 
       // don't want either true or false here please!
@@ -213,17 +206,27 @@ angular
             window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
           }
         });
-    });
 
-    ///////////////////////////////////////////
-    // Cache local data
-    ///////////////////////////////////////////
-    scaService.getProjects().then(function (response) {
-      metadataService.setProjects(response);
-    });
+      // set the default redirect/route
+      $routeProvider.otherwise({
+        redirectTo: '/home'
+      });
 
-    scaService.getValidationFailureExclusions().then(function(response) {
-      // do nothing, service initialization
+
+      // begin polling the sca endpoint at 10s intervals
+      scaService.startPolling(10000);
+
+      ///////////////////////////////////////////
+      // Cache local data
+      ///////////////////////////////////////////
+      scaService.getProjects().then(function (response) {
+        metadataService.setProjects(response);
+      });
+
+
+
+    }, function(error) {
+      notificationService.sendError('Fatal error: ' + error);
     });
 
 

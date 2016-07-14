@@ -1132,6 +1132,9 @@ angular.module('singleConceptAuthoringApp')
               && validationFailureExclusions[conceptId][i].failureText === failureText) {
               console.debug('  removing exclusion');
               validationFailureExclusions[conceptId].splice(i, 1);
+              if (validationFailureExclusions[conceptId].length === 0) {
+                delete validationFailureExclusions[conceptId];
+              }
               break;
             }
             if (i === validationFailureExclusions[conceptId].length - 1) {
