@@ -9,12 +9,12 @@ angular.module('singleConceptAuthoringApp')
         });
       },
       getExcludedValidationRuleIds : function() {
-        return $http.get('/sca/validationConfig/validationConfig.json').then(function(response) {
+        return $http.get('/config/endpointConfig.json').then(function(response) {
           return response.data.excludedRuleIds;
         })
       },
       getWhiteListEligibleRuleIds : function() {
-        return $http.get('/sca/validationConfig/validationConfig.json').then(function(response) {
+        return $http.get('/config/endpointConfig.json').then(function(response) {
           return response.data.whitelistEligibleIds;
         })
       }
