@@ -894,7 +894,7 @@ angular.module('singleConceptAuthoringApp')
 
         }
         else {
-          notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
+          notificationService.sendError('Error retrieving traceability for branch ' + branch, 10000);
         }
       });
     }

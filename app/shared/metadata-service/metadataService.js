@@ -149,7 +149,6 @@ angular.module('singleConceptAuthoringApp')
     // and similar views
     var branchMetadata = {};
 
-    var extensionMetadata = null;
 
     //
     // Metadata setters
@@ -200,7 +199,7 @@ angular.module('singleConceptAuthoringApp')
           ],
           languages: languages,
           dialects: dialects
-        }
+        };
         console.debug('Set extension metadata', extensionMetadata, metadata);
         $rootScope.$broadcast('extensionMetadataChange');
       }
@@ -399,7 +398,7 @@ angular.module('singleConceptAuthoringApp')
       getDialectsForModuleId: getDialectsForModuleId,
       getAllDialects: getAllDialects,
       isExtensionSet: function () {
-        return extensionMetadata != null;
+        return extensionMetadata !== null;
       },
 
       // module and branch metadata setters

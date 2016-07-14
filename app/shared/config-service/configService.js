@@ -17,14 +17,14 @@ angular.module('singleConceptAuthoringApp')
           return response.data.excludedRuleIds;
         }, function(error) {
           return [];
-        })
+        });
       },
       getWhiteListEligibleRuleIds : function() {
         return $http.get('/config/endpointConfig.json').then(function(response) {
           return response.data.whitelistEligibleIds;
         }, function(error) {
           return [];
-        })
+        });
       }
     };
   }]);

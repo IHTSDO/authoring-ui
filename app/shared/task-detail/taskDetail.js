@@ -206,14 +206,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // if lock found, set rootscope variable and continue polling
           if (response.metadata && response.metadata.lock) {
-            console.log('Task locked', response.metadata.lock)
             $rootScope.branchLocked = true;
             $timeout(function() {
               $scope.checkForLock()
             }, 10000);
           }
           else {
-            console.log('Task unlocked');
             $rootScope.branchLocked = false;
           }
         });
