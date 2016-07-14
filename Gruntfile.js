@@ -379,7 +379,8 @@ module.exports = function (grunt) {
             'utilities/{,*/}*.html',
             'layout/{,*/}*.html',
             'images/{,*/}*.{webp}',
-            'fonts/{,*/}*.*'
+            'fonts/{,*/}*.*',
+            'config/validationConfig.json'
           ]
         }, {
           expand: true,
