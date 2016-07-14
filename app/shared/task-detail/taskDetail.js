@@ -250,6 +250,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $scope.role = role;
           });
         snowowlService.getBranch($scope.branch).then(function (response) {
+            console.log(response);
             if(response.metadata && !response.metadata.lock)
             {
                 $rootScope.branchLocked = true;
