@@ -168,7 +168,6 @@ angular.module('singleConceptAuthoringApp')
 
           function getConceptIdForFailure(failure) {
             var deferred = $q.defer();
-            console.debug(failure.conceptId, String(failure.conceptId).substring(String(failure.conceptId).length - 2, String(failure.conceptId).length - 1))
             switch (String(failure.conceptId).substring(String(failure.conceptId).length - 2, String(failure.conceptId).length - 1)) {
               // concept: simply return
               case '0':
@@ -369,10 +368,8 @@ angular.module('singleConceptAuthoringApp')
 
           scope.reloadTables = function () {
             if (scope.viewTop) {
-              console.debug('reloading top table');
               scope.topTableParams.reload();
             } else {
-              console.debug('reloading failure table')
               scope.failureTableParams.reload();
             }
             if (scope.viewExclusions) {
@@ -400,17 +397,13 @@ angular.module('singleConceptAuthoringApp')
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
-
-            // retrieve the hard-excluded technical error rules
+            // filter out technical errors
             configService.getExcludedValidationRuleIds().then(function (response) {
               scope.assertionsExcluded = response;
 
-
-              // filter out technical errors
               scope.assertionsFailed = scope.assertionsFailed.filter(function (assertion) {
                 return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
               });
-
 
               // set the viewable flags for all returned failure instances
               angular.forEach(scope.assertionsFailed, function (assertion) {
@@ -435,7 +428,6 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve();
             });
 
-
             return deferred.promise;
 
 
@@ -448,7 +440,6 @@ angular.module('singleConceptAuthoringApp')
 
             scope.initializing = true;
 
-            console.debug('validationContainer', newVal, oldVal);
             if (!scope.validationContainer || !scope.validationContainer.report) {
               return;
             }
@@ -462,8 +453,7 @@ angular.module('singleConceptAuthoringApp')
 
             // retrieve the whitelistable rule ids -- used to display Add to Whitelist button
             configService.getWhiteListEligibleRuleIds().then(function (response) {
-              console.debug('white list eligible rule ids', response);
-              scope.whitelistEligibleRuleIds = response ? response : [];
+              scope.whitelistEligibleRuleIds = response;
             });
 
 
@@ -518,6 +508,7 @@ angular.module('singleConceptAuthoringApp')
             var objArray = [];
 
             // check if this failure is whitelistable
+            console.debug(scope.whitelistEligibleRuleIds, assertionFailure.assertionUuid);
             scope.whitelistEnabled = scope.whitelistEligibleRuleIds
               && scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
 
