@@ -1391,7 +1391,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (response.status === 404) {
           console.log('Creating branch for new task');
           notificationService.sendWarning('Task initializing');
-          snowowlService.createBranch(branchPath).then(function (response) {
+          snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
             notificationService.sendWarning('Task initialization complete', 3000);
             $rootScope.$broadcast('reloadTaxonomy');
             $scope.branch = response.path;
