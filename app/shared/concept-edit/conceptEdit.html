@@ -130,14 +130,18 @@
             ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
     </select>
 -->
-        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'" ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+        <button ng-if="concept.definitionStatus == 'FULLY_DEFINED'"
+                ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light">
-          <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">≡&nbsp; </div>
+          ng-click="toggleConceptDefinitionStatus(isStatic)"
+          <div class="badge alert-warning ng-binding">≡&nbsp; </div>
           <span>Fully Defined</span>
         </button>
-        <button ng-if="concept.definitionStatus == 'PRIMITIVE'" ng-disabled="isStatic || isLockedModule(concept.moduleId)"
-                class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light">
-          <div class="badge alert-warning ng-binding" ng-click="toggleConceptDefinitionStatus(isStatic)">&nbsp; </div>
+        <button ng-if="concept.definitionStatus == 'PRIMITIVE'"
+                ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+                class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
+                ng-click="toggleConceptDefinitionStatus(isStatic)">
+          <div class="badge alert-warning ng-binding">&nbsp; </div>
           <span>Primitive</span>
         </button>
 
@@ -194,7 +198,8 @@
 
           <!-- Active/Inactive -->
           <button type="button" style="vertical-align: bottom"
-                  ng-disabled="isStatic || !description.released || isLockedModule(description.moduleId)" ng-click="toggleDescriptionActive(description)"
+                  ng-disabled="isStatic || !description.released || isLockedModule(description.moduleId)"
+                  ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
                   class="tooltips-bottom small-size-tooltip">
             <span ng-if="isStatic">Active/Inactive</span>
@@ -205,7 +210,8 @@
           <!-- Case Significance -->
           <button type="button"
                   class=" blue accent-2 button-width custom-button text-center tooltips-bottom tooltips-light xxlarge-size-tooltip normal-case"
-                  ng-disabled="isStatic || isLockedModule(description.moduleId)" ng-click="toggleCaseSignificance(description)">
+                  ng-disabled="isStatic || isLockedModule(description.moduleId)"
+                  ng-click="toggleCaseSignificance(description)">
 
             <div class="text-center">{{getCaseSignificanceDisplayText(description)}}</div>
 
@@ -220,7 +226,8 @@
 
                         <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                                   ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)" maxlength="255"
+                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                                  maxlength="255"
                                   ng-model="description.term"
                                   class="color_{{relationship.groupId}} form-control msd-elastic: \n;" type="text"
                                   placeholder="Description">
@@ -228,14 +235,16 @@
 
                         <textarea autofocus ng-if="description.type === 'SYNONYM'"
                                   ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)" maxlength="255"
+                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                                  maxlength="255"
                                   ng-model="description.term"
                                   class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
                                   placeholder="Description">
                         </textarea>
                         <textarea ng-if="description.type === 'TEXT_DEFINITION'"
                                   ng-change="updateDescription(description)"
-                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)" maxlength="255"
+                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                                  maxlength="255"
                                   ng-model-options="{updateOn: 'blur'}"
                                   ng-model="description.term" type="text" placeholder="Description"
                                   class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
