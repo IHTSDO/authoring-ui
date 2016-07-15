@@ -152,8 +152,9 @@ angular
     // get endpoint information and set route provider options
     configService.getEndpoints().then(function (response) {
       var endpoints = response;
-      var accountUrl = endpoints.imsEndpoint + 'api/account';
-      var imsUrl = endpoints.imsEndpoint;
+        console.log(response);
+      var accountUrl = endpoints.endpoints.imsEndpoint + 'api/account';
+      var imsUrl = endpoints.endpoints.imsEndpoint;
       var imsUrlParams = '?serviceReferer=' + window.location.href;
 
       // don't want either true or false here please!
