@@ -129,6 +129,10 @@ angular
       }
       $window.ga('send', 'error', error)
     };
+    
+    $routeProvider.otherwise({
+       redirectTo: '/home'
+     });
 
     $rootScope.notProd = false;
     $timeout(function () {
@@ -207,11 +211,6 @@ angular
             window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
           }
         });
-
-      // set the default redirect/route
-      $routeProvider.otherwise({
-        redirectTo: '/home'
-      });
 
 
       // begin polling the sca endpoint at 10s intervals
