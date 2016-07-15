@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classificationReport', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'scaService', function ($rootScope, $filter, NgTableParams, $routeParams, scaService) {
+  .directive('classificationReport', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'scaService', 'notificationService', function ($rootScope, $filter, NgTableParams, $routeParams, scaService, notificationService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -38,11 +38,18 @@ angular.module('singleConceptAuthoringApp')
         // scope function to broadcast element to edit panel
         scope.editSourceConcept = function (item) {
 
-          item.isLoaded = true;
+          // do nothing if editable
+          if (!scope.editable) {
+            // do nothing
+          }
+          else if (item.isLoaded === true) {
+            notificationService.sendWarning('Concept already loaded', 5000);
+          } else {
+            item.isLoaded = true;
 
-          // issue notification of edit concept request
-          $rootScope.$broadcast('viewClassificationConcept', {conceptId: item.sourceId});
-
+            // issue notification of edit concept request
+            $rootScope.$broadcast('viewClassificationConcept', {conceptId: item.sourceId});
+          }
         };
 
         // scope function to broadcast element to edit panel
@@ -69,32 +76,31 @@ angular.module('singleConceptAuthoringApp')
             if (!scope.items || scope.items.length === 0) {
               $defer.resolve([]);
             } else {
-              if(scope.type === 'equivalence')
-              {
-                  if (searchStr) {
+              if (scope.type === 'equivalence') {
+                if (searchStr) {
                   mydata = scope.items.filter(function (item) {
                     return item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.leftConceptLabel.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                   });
                 } else {
-                    mydata = scope.items;
+                  mydata = scope.items;
                 }
               }
-              else{
-                  if (searchStr) {
-                      mydata = scope.items.filter(function (item) {
-                        return item.source.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.type.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.destination.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
-                      });
-                    } else {
-                        mydata = scope.items;
-                    }
+              else {
+                if (searchStr) {
+                  mydata = scope.items.filter(function (item) {
+                    return item.source.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.type.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1 || item.destination.fsn.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                  });
+                } else {
+                  mydata = scope.items;
+                }
               }
 
               var orderedData = params.sorting() ?
                 $filter('orderBy')(mydata, params.orderBy()) :
                 mydata;
-                params.total(orderedData.length);
-             // console.debug(orderedData);
-                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+              params.total(orderedData.length);
+              // console.debug(orderedData);
+              $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
           }
         });
