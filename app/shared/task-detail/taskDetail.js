@@ -268,6 +268,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             }
           });
 
+          console.debug('task detail task retrieved', $scope.task);
+
           // set button flags
           if ($scope.task && $scope.task.latestClassificationJson) {
             $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
