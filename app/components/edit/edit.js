@@ -1360,6 +1360,12 @@ angular.module('singleConceptAuthoringApp.edit', [
           console.debug('retrieved task', response);
           $scope.task = response;
           $rootScope.currentTask = response;
+
+          // set the classification and validation flags
+          $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
+          $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
+
+
           deferred.resolve(response);
         }, function (error) {
           deferred.reject('Task load failed');
@@ -1420,9 +1426,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // initialize the task and project
       $q.all([loadTask(), loadProject()]).then(function () {
-        console.debug('Task: ', $scope.task);
-        console.debug('Project: ', $scope.project);
-
 
         // set the metadata for use by other elements
         metadataService.setBranchMetadata($scope.task);
@@ -1430,8 +1433,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // load the branch from task branch path
         loadBranch($scope.task.branchPath).then(function (branch) {
-
-          console.debug('Branch: ', $scope.branch);
 
           // check for extension metadata
           if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
@@ -1451,7 +1452,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           // retrieve user role
           accountService.getRoleForTask($scope.task).then(function (role) {
-              console.log('User role for task: ' + role);
 
               notificationService.sendMessage('Task details loaded', 3000);
 
