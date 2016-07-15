@@ -35,10 +35,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             notificationService.sendMessage('Task submitted for classification', 10000);
           }
 
-          // save the id for convenience
-          $scope.classificationId = response.data.id;
-          $rootScope.classificationRunning = true;
-
           $rootScope.$broadcast('reloadTask');
 
 
@@ -121,7 +117,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // NOTE: Validation does not lock task
 
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $rootScope.validationRunning = true;
           $rootScope.$broadcast('reloadTask');
           notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
         }, function () {
@@ -255,15 +250,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $scope.role = role;
           });
 
-          console.debug('task detail task retrieved', $scope.task);
-
-          // set button flags
-          if ($scope.task && $scope.task.latestClassificationJson) {
-            $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
-          }
-          if ($scope.task) {
-            $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
-          }
           if ($scope.task.branchState === 'DIVERGED') {
             $rootScope.$broadcast('branchDiverged');
           }
