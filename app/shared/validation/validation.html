@@ -241,13 +241,13 @@
   <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
     <div class="row">
       <div class="col-md-10 p-10">
-        <strong>Validation Errors Excluded By Users</strong>: {{exclusionsTableParams.total()}}
+        <strong>Whitelisted Errors</strong>: {{exclusionsTableParams.total()}}
 
       </div>
       <div class="col-md-2 p-10">
         <button class="btn btn-default blue back-button pull-right"
                 ng-click="toggleViewExclusions()">
-          <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Exclusions
+          <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Whitelist
         </button>
       </div>
       <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
