@@ -27,7 +27,8 @@
           <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
           <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">Removed</span>
         </td>
-        <td header-title="'Click to sort'" data-title="'Source'" sortable="'sourceName'">
+        <td header-title="'Click to sort'" data-title="'Source'" sortable="'sourceName'"
+            ng-click="editSourceConcept(result)">
           {{result.source.fsn}}
         </td>
         <td header-title="'Click to sort'" data-title="'Type'" sortable="'typeName'">
