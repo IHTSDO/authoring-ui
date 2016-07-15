@@ -125,16 +125,28 @@
     <div class="col-md-4 classification-header">Validation Report: {{getStatusText()}}
     </div>
     <div class="col-md-1 classification-header">
-      <button ng-show="!isCollapsed" ng-click="toggleFullReport()" class="btn btn-default deep-purple pull-right">{{viewFullReport ?
-        'Show ' + (taskKey ? 'Task' : 'Project')
-        + ' Report' : 'Show Full Report'}}
+      <button ng-show="!isCollapsed" ng-click="toggleFullReport()"
+              class="btn btn-default deep-purple pull-right tooltips-left small-size-tooltip offset-tooltip-left">
+        <div>{{viewFullReport ?
+          'Show ' + (taskKey ? 'Task' : 'Project')
+          + ' Report' : 'Show Full Report'}}
+        </div>
+        <span ng-if="viewFullReport">View only concepts modified in {{taskKey ? 'task' : 'project'}}</span>
+        <span ng-if="!viewFullReport">View all validation errors in {{taskKey ? 'task' : 'project'}}</span>
+
       </button>
-    
+
     </div>
     <div class="col-md-1 classification-header">
-      <button ng-show="!isCollapsed" ng-click="toggleViewExclusions()" class="btn btn-default deep-purple pull-right ">{{viewExclusions ?
-        'Hide'
-        : 'Show'}} Whitelist
+      <button ng-show="!isCollapsed" ng-click="toggleViewExclusions()"
+              class="btn btn-default deep-purple pull-right tooltips-right small-size-tooltip offset-tooltip-left">
+        <div>{{viewExclusions ?
+          'Hide'
+          : 'Show'}} Whitelist
+        </div>
+        <span ng-if="viewExclusions">Hide whitelisted validation errors</span>
+        <span ng-if="!viewExclusions">Display whitelisted validation errors</span>
+
       </button>
     </div>
     <div class="col-md-4"></div>
