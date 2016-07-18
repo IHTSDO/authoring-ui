@@ -180,6 +180,11 @@ angular.module('singleConceptAuthoringApp.home', [
             });
         };
 
+        $scope.isProjectsLoaded = function() {
+            var projects = metadataService.getProjects();
+            return projects && projects.length > 0;
+        };
+
         $scope.$on('reloadTasks', function (event, data) {
             loadTasks();
         });
