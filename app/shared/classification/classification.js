@@ -246,6 +246,11 @@ angular.module('singleConceptAuthoringApp')
             savingClassificationPoll = $interval(function () {
               if ($routeParams.taskKey) {
                 snowowlService.getClassificationForTask($routeParams.projectKey, $routeParams.taskKey, scope.classificationContainer.id).then(function (response) {
+
+                  // update the status
+                  scope.classificationContainer.status = response.status;
+
+
                   //console.debug('status', response.status);
                   if (response.status === 'SAVED') {
 
