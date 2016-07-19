@@ -5,7 +5,7 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('validationService', ['scaService', 'snowowlService', 'notificationService', '$q', function (scaService, snowowlService, notificationService, $q) {
+  .service('validationService', ['scaService', 'notificationService', '$q', function (scaService, notificationService, $q) {
 
     //
     // Validation Failure Exclusion getter, setter, and cached values

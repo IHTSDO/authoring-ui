@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', 'scaService',
-    function ($http, $q, $timeout, notificationService, metadataService, scaService) {
+  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService',
+    function ($http, $q, $timeout, notificationService, metadataService) {
     var apiEndpoint = '../snowowl/snomed-ct/v2/';
 
     /////////////////////////////////////
@@ -29,8 +29,6 @@ angular.module('singleConceptAuthoringApp')
     function updateConcept(project, task, concept) {
       var deferred = $q.defer();
       $http.put(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/' + concept.conceptId, concept).then(function (response) {
-        // all concept updates should clear the validation failure exclusions
-        scaService.clearValidationFailureExclusionsForConceptId(concept.conceptId);
         deferred.resolve(response.data);
       }, function (error) {
         deferred.reject(error);

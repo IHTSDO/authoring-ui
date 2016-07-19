@@ -368,6 +368,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
 
+                  // all concept updates should clear the validation failure exclusions
+                  validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
+
                   // clear the saved modified state
                   scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
 

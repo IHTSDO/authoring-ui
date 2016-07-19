@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', function ($http, $rootScope, $location, $q, $interval, notificationService) {
+  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService',
+    function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService) {
 
     // TODO Wire this to endpoint service, endpoint config
     var apiEndpoint = '../snowowl/ihtsdo-sca/';
@@ -957,8 +958,28 @@ angular.module('singleConceptAuthoringApp')
                   case 'Classification':
                     msg = newNotification.event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
 
+
+                    // retrieve the latest classification
+
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
+                      snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
+                        if (!classifications || classifications.length === 0) {
+                          msg += ' but no classifications could be retrieved';
+                          notificationService.sendError(msg);
+                          return;
+                        } else {
+                          // assign results to the classification container (note,
+                          // chronological order, use last value)
+                          var classification = response[response.length - 1];
+                          if (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification) {
+
+                          } else {
+                            msg += ' '
+                          }
+
+                        }
+                      });
                       url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                       $rootScope.$broadcast('reloadTask');
                     } else {
