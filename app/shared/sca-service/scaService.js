@@ -982,7 +982,7 @@ angular.module('singleConceptAuthoringApp')
 
                         }
                       });
-                     
+
                       $rootScope.$broadcast('reloadTask');
                     } else {
                       url = '#/project/' + newNotification.project;
