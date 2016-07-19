@@ -190,8 +190,8 @@ angular.module('singleConceptAuthoringApp')
 
       // get all classification results for a project (as of 7/21, snowowl
       // functionality not complete)
-      function getClassificationsForProject(projectKey, branch) {
-        return $http.get(apiEndpoint + branch + '/' + projectKey + '/classifications/').then(function (response) {
+      function getClassificationsForProject(projectKey) {
+        return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/classifications/').then(function (response) {
           return response.data.items;
         });
       }

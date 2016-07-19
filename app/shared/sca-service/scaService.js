@@ -964,6 +964,7 @@ angular.module('singleConceptAuthoringApp')
                     // set url and broadcast classification complete to taskDetail.js or project.js
                     if (newNotification.task) {
                       snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
+                        console.debug('Retrieved classifications from notification', classifications);
                         if (!classifications || classifications.length === 0) {
                           msg += ' but no classifications could be retrieved';
                           notificationService.sendError(msg);
@@ -972,6 +973,7 @@ angular.module('singleConceptAuthoringApp')
                           // assign results to the classification container (note,
                           // chronological order, use last value)
                           var classification = classifications[classifications.length - 1];
+                          console.debug('  Classification: ', classification);
                           if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
                             msg += ': Changes found';
                             url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
@@ -980,12 +982,37 @@ angular.module('singleConceptAuthoringApp')
                             url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
                           }
 
+                          console.debug('  ', message, url);
+
                         }
                       });
 
                       $rootScope.$broadcast('reloadTask');
                     } else {
-                      url = '#/project/' + newNotification.project;
+                      snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
+                        console.debug('Retrieved classifications from notification', classifications);
+                        if (!classifications || classifications.length === 0) {
+                          msg += ' but no classifications could be retrieved';
+                          notificationService.sendError(msg);
+                          return;
+                        } else {
+                          // assign results to the classification container (note,
+                          // chronological order, use last value)
+                          var classification = classifications[classifications.length - 1];
+                          console.debug('  Classification: ', classification);
+                          if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
+                            msg += ': Changes found';
+                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                          } else {
+                            msg += ': No changes found';
+                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                          }
+
+                          console.debug('  ', message, url);
+
+                        }
+                      });
+
                       $rootScope.$broadcast('reloadProject');
                     }
 
