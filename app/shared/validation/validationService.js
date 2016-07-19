@@ -18,12 +18,11 @@ angular.module('singleConceptAuthoringApp')
     function getValidationFailureExclusions() {
       var deferred = $q.defer();
 
-      $http.get(apiEndpoint + 'projects/validation/tasks/exclusions/shared-ui-state/failures').then(function (response) {
-        console.debug('get validation exclusions', response);
-        validationFailureExclusions = response ? response.data : {};
+      scaService.getSharedUiStateForTask('validation', 'exclusions', 'failures').then(function (response) {
+
+        validationFailureExclusions = response ? response : {};
         deferred.resolve(validationFailureExclusions);
       }, function (error) {
-        console.debug('no validation failure exclusions', error);
         validationFailureExclusions = {};
         deferred.resolve({});
       });
@@ -35,11 +34,10 @@ angular.module('singleConceptAuthoringApp')
     // Commit function to update the stored exclusions
     function updateValidationFailureExclusions() {
       var deferred = $q.defer();
-      $http.post(apiEndpoint + 'projects/validation/tasks/exclusions/shared-ui-state/failures', validationFailureExclusions).then(function (response) {
+      scaService.saveSharedUiStateForTask('validation', 'exclusions', 'failures', validationFailureExclusions).then(function (response) {
         deferred.resolve(response);
       }, function (error) {
-        notificationService.sendError('Unexpected error updating validation failure exclusions');
-        deferred.reject();
+        deferred.reject('Unexpected error updating validation failure exclusions');
       });
       return deferred.promise;
     }
