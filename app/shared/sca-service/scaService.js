@@ -944,7 +944,7 @@ angular.module('singleConceptAuthoringApp')
                         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                       });
                     }
-                    msg = newNotification.event + ' feedback for project ' + newNotification.project + ' and task ' + newNotification.task;
+                    msg = newNotification.event + 'feedback for task ' + newNotification.task;
                     url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
                     break;
 
@@ -956,7 +956,7 @@ angular.module('singleConceptAuthoringApp')
                    task: "WRPAS-98" (omitted for project)
                    */
                   case 'Classification':
-                    msg = newNotification.event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
+                    msg = newNotification.event + 'for ' + (newNotification.task ? 'task ' + newNotification.task : 'project ' + newNotification.project);
 
 
                     // retrieve the latest classification
@@ -975,20 +975,21 @@ angular.module('singleConceptAuthoringApp')
                           var classification = classifications[classifications.length - 1];
                           console.debug('  Classification: ', classification);
                           if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
-                            msg += ': Changes found';
+                            msg += ' - Changes found';
                             url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                           } else {
-                            msg += ': No changes found';
+                            msg += ' - No changes found';
                             url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
                           }
 
-                          console.debug('  ', message, url);
+                          console.debug('  ', msg, url);
+                          notificationService.sendMessage(msg, 0, url);
 
                         }
                       });
 
                       $rootScope.$broadcast('reloadTask');
-                    } else {
+                    } else if (newNotification.project) {
                       snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
                         console.debug('Retrieved classifications from notification', classifications);
                         if (!classifications || classifications.length === 0) {
@@ -1002,18 +1003,21 @@ angular.module('singleConceptAuthoringApp')
                           console.debug('  Classification: ', classification);
                           if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
                             msg += ': Changes found';
-                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                            url = '#/project/' + newNotification.project;
                           } else {
                             msg += ': No changes found';
-                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
+                            url = '#/project/' + newNotification.project;
                           }
 
-                          console.debug('  ', message, url);
+                          console.debug('  ', msg, url);
+                          notificationService.sendMessage(msg, 0, url);
 
                         }
                       });
 
                       $rootScope.$broadcast('reloadProject');
+                    } else {
+                      console.error('Classification notification could not be processed', newNotification);
                     }
 
 
@@ -1067,7 +1071,7 @@ angular.module('singleConceptAuthoringApp')
                     var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                     });
-                    msg = 'Validation ' + event + ' for project ' + newNotification.project + (newNotification.task ? ' and task ' + newNotification.task : '');
+                    msg = 'Validation ' + event + ' for ' + (newNotification.project ? 'project ' + newNotification.project : 'task ' + newNotification.task);
 
                     // do not supply a url (button link) for FAILED status
                     if (event !== 'FAILED') {
@@ -1085,10 +1089,14 @@ angular.module('singleConceptAuthoringApp')
                     return;
                 }
 
-                // send the notification (if message supplied) with optional url
-                if (msg) {
+                // Special handling for classification -- also this whole structure is suboptimal...
+                if (newNotification.entityType !== 'Classification') {
 
-                  notificationService.sendMessage(msg, 0, url);
+                  // send the notification (if message supplied) with optional url
+                  if (msg) {
+
+                    notificationService.sendMessage(msg, 0, url);
+                  }
                 }
               } else {
                 console.error('Unknown notification type received', newNotification);
