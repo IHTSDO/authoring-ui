@@ -119,7 +119,7 @@ angular.module('singleConceptAuthoringApp.project', [
         notificationService.sendMessage('Starting validation for project...');
         scaService.startValidationForProject($scope.project.key).then(function (response) {
           notificationService.sendMessage('Validation running');
-          $scope.validationContainer.status = response;
+          $scope.validationContainer = { status : response };
           $rootScope.validationRunning = true;
           $timeout(function () {
             $scope.getProject();
