@@ -302,7 +302,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user exclusion
                   orderedData = orderedData.filter(function (failure) {
-                    return !validationServiceervice.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
+                    return !validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
                   });
 
 //                  console.debug('ordered data', orderedData);
@@ -330,7 +330,7 @@ angular.module('singleConceptAuthoringApp')
 
                 var orderedData = [];
                 validationService.getValidationFailureExclusions().then(function (exclusions) {
-                  //console.debug('exclusions table: exclusions', exclusions);
+                  console.debug('exclusions table: exclusions', exclusions);
 
                   for (var key in exclusions) {
                     angular.forEach(exclusions[key], function (failure) {
@@ -552,12 +552,6 @@ angular.module('singleConceptAuthoringApp')
 //
 // User-modified validation exclusion list
 //
-
-
-// on load, refresh the validation failure exclusions
-          validationService.getValidationFailureExclusions().then(function (response) {
-            console.debug('exclusions:', response);
-          });
 
           scope.removeUserExclusionFromTable = function (failure, skipCommitFlag) {
             validationService.removeValidationFailureExclusion(failure.assertionUuid, failure.conceptId, failure.failureText).then(function () {

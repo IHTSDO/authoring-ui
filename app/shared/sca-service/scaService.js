@@ -245,7 +245,7 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
-      // save the UI state for a project, task, and panel triplet
+
       // get the UI state for a project, task, and panel triplet
       getUiStateForReviewTask: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
@@ -268,6 +268,8 @@ angular.module('singleConceptAuthoringApp')
           }
         );
       },
+
+      // save the UI state for a project, task, and panel triplet
       saveUiStateForReviewTask: function (projectKey, taskKey, panelId, uiState) {
         if (!projectKey) {
           console.error('Must specify projectKey to save UI state');
@@ -296,6 +298,39 @@ angular.module('singleConceptAuthoringApp')
 
       // get the UI state for a project, task, and panel triplet
       deleteUiStateForTask: function (projectKey, taskKey, panelId) {
+        return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return {};
+          }
+        );
+      },
+
+      // get the UI state for a project, task, and panel triplet
+      getSharedUiStateForTask: function (projectKey, taskKey, panelId) {
+        return $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/shared-ui-state/' + panelId).then(
+          function (response) {
+            return response.data;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
+
+      // save the UI state for a project, task, and panel triplet
+      saveSharedUiStateForTask: function (projectKey, taskKey, panelId, uiState) {
+        return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/shared-ui-state/' + panelId, uiState).then(
+          function (response) {
+            return response;
+          }, function (error) {
+            return null;
+          }
+        );
+      },
+
+      // get the UI state for a project, task, and panel triplet
+      deleteSharedUiStateForTask: function (projectKey, taskKey, panelId) {
         if (!projectKey) {
           console.error('Must specify projectKey to delete UI state');
           return {};
