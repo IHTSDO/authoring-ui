@@ -971,16 +971,18 @@ angular.module('singleConceptAuthoringApp')
                         } else {
                           // assign results to the classification container (note,
                           // chronological order, use last value)
-                          var classification = response[response.length - 1];
-                          if (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification) {
-
+                          var classification = classifications[classifications.length - 1];
+                          if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
+                            msg += ': Changes found';
+                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
                           } else {
-                            msg += ' '
+                            msg += ': No changes found';
+                            url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
                           }
 
                         }
                       });
-                      url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
+                     
                       $rootScope.$broadcast('reloadTask');
                     } else {
                       url = '#/project/' + newNotification.project;
