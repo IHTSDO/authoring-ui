@@ -105,7 +105,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       var allowableDescriptionProperties = [
-        'conceptId', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap'
+        'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap'
       ];
 
       angular.forEach(concept.descriptions, function (description) {
@@ -122,7 +122,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       var allowableRelationshipProperties = [
-        'active', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId', 'released'
+        'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
       ];
       angular.forEach(concept.relationships, function (relationship) {
 
