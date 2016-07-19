@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'scaService', 'snowowlService', 'notificationService', 'accountService', '$timeout', '$modal',
-    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, scaService, snowowlService, notificationService, accountService, $timeout, $modal) {
+  .directive('validation', ['$rootScope', '$filter', '$q', 'ngTableParams', '$routeParams', 'configService', 'validationService', 'scaService', 'snowowlService', 'notificationService', 'accountService', '$timeout', '$modal',
+    function ($rootScope, $filter, $q, NgTableParams, $routeParams, configService, validationService, scaService, snowowlService, notificationService, accountService, $timeout, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -125,7 +125,7 @@ angular.module('singleConceptAuthoringApp')
                         return false;
                       }
                       // if validation failure is excluded, return false
-                      if (scaService.isValidationFailureExcluded(assertionFailed.assertionUuid, instance.conceptId, instance.detail)) {
+                      if (validationService.isValidationFailureExcluded(assertionFailed.assertionUuid, instance.conceptId, instance.detail)) {
                         return false;
                       }
 
@@ -302,7 +302,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user exclusion
                   orderedData = orderedData.filter(function (failure) {
-                    return !scaService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
+                    return !validationServiceervice.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
                   });
 
 //                  console.debug('ordered data', orderedData);
@@ -329,7 +329,7 @@ angular.module('singleConceptAuthoringApp')
               getData: function ($defer, params) {
 
                 var orderedData = [];
-                scaService.getValidationFailureExclusions().then(function (exclusions) {
+                validationService.getValidationFailureExclusions().then(function (exclusions) {
                   //console.debug('exclusions table: exclusions', exclusions);
 
                   for (var key in exclusions) {
@@ -409,7 +409,7 @@ angular.module('singleConceptAuthoringApp')
                   instance.isUserModified = scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1;
 
                   // detect if instance is a formal exclusion (whitelisted error)
-                  instance.isUserExclusion = scaService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail);
+                  instance.isUserExclusion = validationService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail);
                 });
               });
 
@@ -555,12 +555,12 @@ angular.module('singleConceptAuthoringApp')
 
 
 // on load, refresh the validation failure exclusions
-          scaService.getValidationFailureExclusions().then(function (response) {
+          validationService.getValidationFailureExclusions().then(function (response) {
             console.debug('exclusions:', response);
           });
 
           scope.removeUserExclusionFromTable = function (failure, skipCommitFlag) {
-            scaService.removeValidationFailureExclusion(failure.assertionUuid, failure.conceptId, failure.failureText).then(function () {
+            validationService.removeValidationFailureExclusion(failure.assertionUuid, failure.conceptId, failure.failureText).then(function () {
               scope.reloadTables();
             });
           };
@@ -577,7 +577,7 @@ angular.module('singleConceptAuthoringApp')
               failure.isUserExclusion = true;
 
               // add the exclusion and update tables
-              scaService.addValidationFailureExclusion(scope.assertionFailureViewed.assertionUuid,
+              validationService.addValidationFailureExclusion(scope.assertionFailureViewed.assertionUuid,
                 scope.assertionFailureViewed.assertionText,
                 failure.conceptId,
                 failure.conceptFsn,
@@ -592,7 +592,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.isExcluded = function (failure) {
-            scaService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
+            validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
           };
 
           /**
