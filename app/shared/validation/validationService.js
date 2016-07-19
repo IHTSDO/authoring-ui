@@ -7,7 +7,6 @@
 angular.module('singleConceptAuthoringApp')
   .service('validationService', ['scaService', 'snowowlService', '$q', function (scaService, snowowlService, $q) {
 
-
     //
     // Validation Failure Exclusion getter, setter, and cached values
     // NOTE: This is initialized in app.js
@@ -141,12 +140,10 @@ angular.module('singleConceptAuthoringApp')
         });
 
         return deferred.promise;
-
       },
 
-      // Retrieval function to force refresh of ui-state
-      getValidationFailureExclusions: getValidationFailureExclusions,
-
+      // Expose retrieval function to allow initialization
+      getValidationFailureExclusions: getValidationFailureExclusions
 
     };
   }]);
