@@ -900,12 +900,8 @@ angular.module('singleConceptAuthoringApp')
               console.log('Server notification:', response.data);
 
               // getNotifications returns an array, get the latest
-              // TODO Fold all results into a drop-down list in top right corner
               var newNotification = response.data[0];
-
               var msg = null;
-
-              // TODO Modify url once WRP-2842 resolved, links currently non-functional
               var url = null;
 
               /**
