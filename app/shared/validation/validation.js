@@ -705,7 +705,7 @@ angular.module('singleConceptAuthoringApp')
               $timeout(function () {
                 $rootScope.$broadcast('viewTaxonomy', {
                   concept: {
-                    conceptId: conceptId,
+                    conceptId: failure.conceptId,
                     fsn: response.fsn
                   }
                 });
