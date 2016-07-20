@@ -260,7 +260,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.failures, function (failure) {
 
               // try to detect referenced descriptions/relationships
-              var matchInfo = failure.detail.match(/id[=:](\d+[12]\d)/);
+              var matchInfo = failure.detail.match(/id[=:](\d+[12]\d)[^\d]/i);
 
               if (matchInfo) {
 
