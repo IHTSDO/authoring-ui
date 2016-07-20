@@ -223,20 +223,11 @@ angular
         metadataService.setProjects(response);
       });
 
-//      scaService.getValidationFailureExclusions().then(function (response) {
-//        // do nothing, service initialization
-//      });
-
 
 
     }, function(error) {
       notificationService.sendError('Fatal error: ' + error);
     });
-
-    scaService.getValidationFailureExclusions().then(function(response) {
-      // do nothing, service initialization
-    });
-
 
     ///////////////////////////////////////////
     // Instantiate basic metadata in SnowOwl //
