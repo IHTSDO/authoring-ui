@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q, $window) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window', 'metadataService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q, $window, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -22,6 +22,8 @@ angular.module('singleConceptAuthoringApp')
         link: function (scope) {
 
           $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
+          scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+          scope.sourceBranch = metadataService.getBranchRoot() + '/';
 
           scope.toggleSidebar = function () {
             scope.hideSidebar = !scope.hideSidebar;
@@ -527,7 +529,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function rebase() {
-            console.log('Rebasing ' + ($routeParams.taskKey ? 'task' : 'project') + '.');
+            console.log('Rebasing ' + (scope.sourceBranch + ' ' + scope.targetBranch));
             scope.rebaseRunning = true;
 
             if ($routeParams.taskKey) {
