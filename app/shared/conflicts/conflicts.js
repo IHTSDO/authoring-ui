@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp')
 
           $rootScope.pageTitle = 'Concept Merges/' + $routeParams.projectKey + ($routeParams.taskKey ? '/' + $routeParams.taskKey : '');
           scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-          scope.sourceBranch = metadataService.getBranchRoot() + '/';
+          scope.sourceBranch = metadataService.getBranchRoot();
 
           scope.toggleSidebar = function () {
             scope.hideSidebar = !scope.hideSidebar;
