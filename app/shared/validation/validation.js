@@ -124,8 +124,6 @@ angular.module('singleConceptAuthoringApp')
                       if (!scope.viewFullReport && !instance.isUserModified) {
                         return false;
                       }
-                      ;
-
                       // if validation failure is excluded, return false
                       if (scaService.isValidationFailureExcluded(assertionFailed.assertionUuid, instance.conceptId, instance.detail)) {
                         return false;
@@ -168,7 +166,6 @@ angular.module('singleConceptAuthoringApp')
 
           function getConceptIdForFailure(failure) {
             var deferred = $q.defer();
-            console.debug(failure.conceptId, String(failure.conceptId).substring(String(failure.conceptId).length - 2, String(failure.conceptId).length - 1))
             switch (String(failure.conceptId).substring(String(failure.conceptId).length - 2, String(failure.conceptId).length - 1)) {
               // concept: simply return
               case '0':
@@ -335,15 +332,10 @@ angular.module('singleConceptAuthoringApp')
                 scaService.getValidationFailureExclusions().then(function (exclusions) {
                   //console.debug('exclusions table: exclusions', exclusions);
 
-                  var failures = [];
-                  for (var key in exclusions) {
-                    failures = failures.concat(exclusions[key]);
-                  }
-
                   for (var key in exclusions) {
                     angular.forEach(exclusions[key], function (failure) {
                       orderedData.push(failure);
-                    })
+                    });
                   }
 
                   //     console.debug('ordered data', orderedData);
@@ -352,7 +344,7 @@ angular.module('singleConceptAuthoringApp')
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
                   console.debug('exclusions data', orderedData);
                   $defer.resolve(orderedData);
-                })
+                });
 
               }
             }
@@ -361,7 +353,7 @@ angular.module('singleConceptAuthoringApp')
           scope.viewExclusions = false;
 
           scope.toggleViewExclusions = function () {
-            scope.viewExclusions = !scope.viewExclusions
+            scope.viewExclusions = !scope.viewExclusions;
             if (scope.viewExclusions) {
               scope.exclusionsTableParams.reload();
             }
@@ -369,10 +361,8 @@ angular.module('singleConceptAuthoringApp')
 
           scope.reloadTables = function () {
             if (scope.viewTop) {
-              console.debug('reloading top table');
               scope.topTableParams.reload();
             } else {
-              console.debug('reloading failure table')
               scope.failureTableParams.reload();
             }
             if (scope.viewExclusions) {
@@ -400,21 +390,16 @@ angular.module('singleConceptAuthoringApp')
             // extract the failed assertions
             scope.assertionsFailed = scope.validationContainer.report.rvfValidationResult.sqlTestResult.assertionsFailed;
 
-
-            // retrieve the hard-excluded technical error rules
+            // filter out technical errors
             configService.getExcludedValidationRuleIds().then(function (response) {
               scope.assertionsExcluded = response;
 
-
-              // filter out technical errors
               scope.assertionsFailed = scope.assertionsFailed.filter(function (assertion) {
                 return scope.assertionsExcluded && Array.isArray(scope.assertionsExcluded) ? scope.assertionsExcluded.indexOf(assertion.assertionUuid) === -1 : true;
               });
 
-
               // set the viewable flags for all returned failure instances
               angular.forEach(scope.assertionsFailed, function (assertion) {
-
                 assertion.isUserModified = false;
                 assertion.hasUserExclusions = false;
                 angular.forEach(assertion.firstNInstances, function (instance) {
@@ -431,10 +416,8 @@ angular.module('singleConceptAuthoringApp')
 
               // load the tables
               scope.reloadTables();
-
               deferred.resolve();
             });
-
 
             return deferred.promise;
 
@@ -448,7 +431,6 @@ angular.module('singleConceptAuthoringApp')
 
             scope.initializing = true;
 
-            console.debug('validationContainer', newVal, oldVal);
             if (!scope.validationContainer || !scope.validationContainer.report) {
               return;
             }
@@ -462,47 +444,35 @@ angular.module('singleConceptAuthoringApp')
 
             // retrieve the whitelistable rule ids -- used to display Add to Whitelist button
             configService.getWhiteListEligibleRuleIds().then(function (response) {
-              console.debug('white list eligible rule ids', response);
-              scope.whitelistEligibleRuleIds = response ? response : [];
+              scope.whitelistEligibleRuleIds = response;
             });
 
-            if ($routeParams.taskKey) {
-              notificationService.sendMessage('Retrieving traceability information ...');
-              snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
-                console.debug('traceability', traceability);
+            notificationService.sendMessage('Retrieving traceability information ...');
+            snowowlService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
+              console.debug('traceability', traceability);
 
 
-                // if traceability found, extract the user modified concept ids
-                if (traceability) {
-                  angular.forEach(traceability.content, function (change) {
-                    //  console.debug('processing change', change.activityType, change.conceptChanges, change);
-                    // if content change and concept change, push the id
-                    if (change.activityType === 'CONTENT_CHANGE') {
-                      angular.forEach(change.conceptChanges, function (conceptChange) {
-                        // console.debug('  processing concept change', conceptChange);
-                        if (scope.userModifiedConceptIds.indexOf(conceptChange.conceptId) === -1) {
-                          scope.userModifiedConceptIds.push(String(conceptChange.conceptId));
-                        }
-                      });
-                    }
-                  });
-
-                  console.debug(' modified concept ids ', scope.userModifiedConceptIds);
-
-                } else {
-                  notificationService.sendWarning('Could not retrieve traceability for task')
-                }
-
-                // initialize the failures
-                notificationService.sendMessage('Initializing validation failures...');
-                initFailures().then(function () {
-                  notificationService.sendMessage('Initialization complete', 3000);
-                  scope.initializing = false;
+              // if traceability found, extract the user modified concept ids
+              if (traceability) {
+                angular.forEach(traceability.content, function (change) {
+                  //  console.debug('processing change', change.activityType, change.conceptChanges, change);
+                  // if content change and concept change, push the id
+                  if (change.activityType === 'CONTENT_CHANGE') {
+                    angular.forEach(change.conceptChanges, function (conceptChange) {
+                      // console.debug('  processing concept change', conceptChange);
+                      if (scope.userModifiedConceptIds.indexOf(conceptChange.conceptId) === -1) {
+                        scope.userModifiedConceptIds.push(String(conceptChange.conceptId));
+                      }
+                    });
+                  }
                 });
 
+                console.debug(' modified concept ids ', scope.userModifiedConceptIds);
 
-              });
-            } else {
+              } else {
+                notificationService.sendWarning('Could not retrieve traceability for task');
+              }
+
               // initialize the failures
               notificationService.sendMessage('Initializing validation failures...');
               initFailures().then(function () {
@@ -511,7 +481,7 @@ angular.module('singleConceptAuthoringApp')
               });
 
 
-            }
+            });
 
 
           }, true); // make sure to check object inequality, not reference!
@@ -528,8 +498,9 @@ angular.module('singleConceptAuthoringApp')
             var objArray = [];
 
             // check if this failure is whitelistable
-            scope.whitelistEnabled = scope.whitelistEligibleRuleIds
-              && scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
+            console.debug(scope.whitelistEligibleRuleIds, assertionFailure.assertionUuid);
+            scope.whitelistEnabled = scope.whitelistEligibleRuleIds &&
+              scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
 
 
             //console.debug(assertionFailure.firstNInstances);
@@ -611,9 +582,8 @@ angular.module('singleConceptAuthoringApp')
                 userName).then(function () {
 
                 scope.reloadTables();
-              })
+              });
             });
-
 
           };
 

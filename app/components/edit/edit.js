@@ -80,6 +80,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
+    console.debug($scope.projectKey, $scope.taskKey);
+
 
     // clear task-related information
     $rootScope.validationRunning = false;
@@ -495,7 +497,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
 
       } else if ($routeParams.mode === 'feedback') {
-       snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+        snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
           var review = {};
           if (traceability) {
             review.concepts = [];
@@ -931,6 +933,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var concept = componentAuthoringUtil.getNewConcept();
 
+      console.debug('New concept', concept);
+
       $scope.concepts.unshift(concept);
       $scope.updateEditListUiState();
     };
@@ -993,19 +997,17 @@ angular.module('singleConceptAuthoringApp.edit', [
     // function to get the latest classification result
     $scope.getLatestClassification = function () {
 
-      if ($scope.taskKey) {
+      snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        if (!response || response.length === 0) {
+          $scope.classificationContainer = {status: 'No classification found'};
+        } else {
+          // assign results to the classification container (note,
+          // chronological order, use last value)
+          $scope.classificationContainer = response[response.length - 1];
+          $scope.setClassificationComponents();
+        }
+      });
 
-        snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey, $scope.targetBranch).then(function (response) {
-          if (!response || response.length === 0) {
-            $scope.classificationContainer = {status: 'No classification found'};
-          } else {
-            // assign results to the classification container (note,
-            // chronological order, use last value)
-            $scope.classificationContainer = response[response.length - 1];
-            $scope.setClassificationComponents();
-          }
-        });
-      }
     };
 
     // on classification reload notification, reload latest classification
@@ -1052,7 +1054,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     // get latest review
     $scope.getLatestReview = function () {
-      snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+      snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
         var review = {};
         if (traceability) {
           review.concepts = [];
@@ -1331,82 +1333,164 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.setView('feedback');
     };
 
-    $scope.$on('reloadTask', function (event, data) {
+    function loadProject() {
+
+      var deferred = $q.defer();
+
+      // get the project
+      scaService.getProjectForKey($routeParams.projectKey).then(function (project) {
+        $scope.project = project;
+        deferred.resolve(project);
+      }, function (error) {
+        deferred.reject('Project retrieval failed');
+      });
+
+      return deferred.promise;
+
+
+    }
+
+    function loadTask() {
+
+      var deferred = $q.defer();
+
+      // get the task if appropriate
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+          console.debug('retrieved task', response);
           $scope.task = response;
           $rootScope.currentTask = response;
 
-          $scope.getLatestClassification();
-          $scope.getLatestValidation();
+          // set the classification and validation flags
+          $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
+          $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
 
-          setBranchFunctionality($scope.task.branchState);
+
+          deferred.resolve(response);
+        }, function (error) {
+          deferred.reject('Task load failed');
         });
+
+      } else {
+        deferred.reject('No task to load');
       }
+      return deferred.promise;
+
+
+    }
+
+    $scope.$on('reloadTask', function (event, data) {
+      loadTask();
     });
 
-    //////////////////////////////////////////
-    // Initialization
-    //////////////////////////////////////////
 
+    function loadBranch(branchPath) {
+
+      console.debug('loading branch', branchPath);
+
+      var deferred = $q.defer();
+
+      snowowlService.getBranch(branchPath).then(function (response) {
+
+
+        // if not found, create branch
+        if (response.status === 404) {
+          console.log('Creating branch for new task');
+          notificationService.sendWarning('Task initializing');
+          snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            notificationService.sendWarning('Task initialization complete', 3000);
+            $rootScope.$broadcast('reloadTaxonomy');
+            $scope.branch = response.path;
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject('Could not create branch');
+          });
+        } else {
+          $scope.branch = response.path;
+          deferred.resolve();
+        }
+      });
+      return deferred.promise;
+    }
+
+//////////////////////////////////////////
+// Initialization
+//////////////////////////////////////////
 
     function initialize() {
 
-      // initialize the branches
-      $scope.branch = metadataService.getBranchRoot() + '/' + $scope.projectKey + '/' + $scope.taskKey;
-      $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
-
-      if ($routeParams.taskKey) {
-        $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-        $scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-      } else {
-        $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-        $scope.sourceBranch = metadataService.getBranchRoot() + '/';
-      }
-
-      // if a task, get the task for assigned user information
-      if ($routeParams.taskKey) {
-        scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $scope.task = response;
-          $rootScope.currentTask = response;
-
-          accountService.getRoleForTask(response).then(function (role) {
-            // console.debug(response, role);
-            $scope.isOwnTask = role === 'AUTHOR';
-            setBranchFunctionality($scope.task.branchState);
-          });
-
-        });
-      }
-
-      // set the initial view
-      $scope.setInitialView();
+      notificationService.sendMessage('Loading task details...');
 
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
 
-      // populate the container objects
-      $scope.getLatestClassification();
-      $scope.getLatestValidation();
-      $scope.getLatestConflictsReport();
+      // initialize the task and project
+      $q.all([loadTask(), loadProject()]).then(function () {
+
+        // set the metadata for use by other elements
+        metadataService.setBranchMetadata($scope.task);
+
+
+        // load the branch from task branch path
+        loadBranch($scope.task.branchPath).then(function (branch) {
+
+          // check for extension metadata
+          if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
+
+            // get the extension default module concept
+            snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
+
+              // set the name for display
+              $scope.project.metadata.defaultModuleName = extConcept.fsn;
+
+              // set the extension metadata for use by other elements
+              metadataService.setExtensionMetadata($scope.project.metadata);
+            }, function (error) {
+              notificationService.sendError('Fatal error: Could not load extension module concept');
+            });
+          }
+
+          // retrieve user role
+          accountService.getRoleForTask($scope.task).then(function (role) {
+
+              notificationService.sendMessage('Task details loaded', 3000);
+
+              // set role functionality and initial view
+              $scope.isOwnTask = role === 'AUTHOR';
+              setBranchFunctionality($scope.task.branchState);
+              $scope.setInitialView();
+            },
+            // if no role, send error and return to dashboard after slight delay
+            function () {
+              notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
+              $timeout(function () {
+                $location.url('/');
+              }, 4000);
+            });
+
+          // populate the container objects
+          $scope.getLatestClassification();
+          $scope.getLatestValidation();
+          $scope.getLatestConflictsReport();
+
+          // initialize the branch variables (TODO some may be unused) (requires metadata service branches set)
+          $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
+
+          if ($routeParams.taskKey) {
+            $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+            $scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+          } else {
+            $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+            $scope.sourceBranch = metadataService.getBranchRoot() + '/';
+          }
+
+        });
+
+
+      }, function (error) {
+        notificationService.sendError('Unexpected error: ' + error);
+      });
     }
 
-    //
-    // Pre-initialization: Set branch information
-    //
-
-    // Get the branch and save in metadata service
-    if ($scope.taskKey) {
-      scaService.getTaskForProject($scope.projectKey, $scope.taskKey).then(function (task) {
-        metadataService.setBranchMetadata(task);
-        initialize();
-      });
-    } else {
-      scaService.getProjectForKey($scope.projectKey).then(function (project) {
-        metadataService.setBranchMetadata(project);
-        initialize();
-      });
-    }
-
-
+    initialize();
   });
