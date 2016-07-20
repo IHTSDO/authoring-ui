@@ -472,7 +472,6 @@ angular.module('singleConceptAuthoringApp')
 
               // set the viewable flags for all returned failure instances
               angular.forEach(scope.assertionsFailed, function (assertion) {
-
                 assertion.isUserModified = false;
                 assertion.hasUserExclusions = false;
                 angular.forEach(assertion.firstNInstances, function (instance) {
@@ -489,7 +488,6 @@ angular.module('singleConceptAuthoringApp')
 
               // load the tables
               scope.reloadTables();
-
               deferred.resolve();
             });
 
@@ -520,7 +518,6 @@ angular.module('singleConceptAuthoringApp')
             configService.getWhiteListEligibleRuleIds().then(function (response) {
               scope.whitelistEligibleRuleIds = response;
             });
-
 
             notificationService.sendMessage('Retrieving traceability information ...');
             snowowlService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
@@ -653,7 +650,6 @@ angular.module('singleConceptAuthoringApp')
                 scope.reloadTables();
               });
             });
-
 
           };
 

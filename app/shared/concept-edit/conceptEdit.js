@@ -201,8 +201,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
-
-
         /////////////////////////////////////////////////////////////////
         // Autosaving and Modified Concept Storage Initialization
         /////////////////////////////////////////////////////////////////

@@ -233,6 +233,10 @@ angular
       notificationService.sendError('Fatal error: ' + error);
     });
 
+    scaService.getValidationFailureExclusions().then(function(response) {
+      // do nothing, service initialization
+    });
+
 
     ///////////////////////////////////////////
     // Instantiate basic metadata in SnowOwl //
