@@ -1362,8 +1362,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.currentTask = response;
 
           // set the classification and validation flags
-          $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
+          if($scope.task && $scope.task.latestClassificationJson){
+                $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';   
+          }
+          
+            if($scope.task && $scope.task.latestValidationStatus)
+            {
           $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
+            }
 
 
           deferred.resolve(response);
@@ -1392,7 +1398,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       snowowlService.getBranch(branchPath).then(function (response) {
 
-
+        console.log(response);
+          console.log('here');
         // if not found, create branch
         if (response.status === 404) {
           console.log('Creating branch for new task');
@@ -1433,7 +1440,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // load the branch from task branch path
         loadBranch($scope.task.branchPath).then(function (branch) {
-
+            console.log('Branch loaded');
           // check for extension metadata
           if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
 
