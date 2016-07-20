@@ -30,6 +30,9 @@ angular.module('singleConceptAuthoringApp')
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
 
+          // highlighting map
+          scope.styles = {};
+
 
           scope.getSNF = function (id) {
             var deferred = $q.defer();
@@ -271,6 +274,7 @@ angular.module('singleConceptAuthoringApp')
                       console.debug(matchInfo[0], description.term);
                       // apply the reference
                       failure.referencedComponentId = matchInfo[1];
+                      failure.referencedComponentType = 'Description';
                       failure.detail = failure.detail.replace(matchInfo[0], '\"' + description.term + '\"');
 
                       if (++failuresPrepared === scope.failures.length) {
@@ -280,6 +284,7 @@ angular.module('singleConceptAuthoringApp')
                     break;
                   case '2':
                     failure.referencedComponentId = matchInfo[1];
+                    failure.referencedComponentType = 'Relationship';
                     if (++failuresPrepared === scope.failures.length) {
                       deferred.resolve();
                     }
@@ -662,10 +667,21 @@ angular.module('singleConceptAuthoringApp')
            * @param conceptId
            * @returns {*|promise}
            */
-          function editConceptHelper(conceptId) {
+          function editConceptHelper(failure) {
             var deferred = $q.defer();
 
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
+            // clear existing styles
+            scope.styles[failure.conceptId] = {};
+
+            // if failure has a component id, set new styling
+            if (failure.referencedComponentId) {
+              var componentStyling =
+              scope.styles[failure.conceptId][failure.referencedComponentId] = {
+                message: failure.detail, style: 'redhl'
+              }
+            }
+
+            snowowlService.getFullConcept(failure.conceptId, scope.branch).then(function (response) {
               if (!scope.viewedConcepts || !Array.isArray(scope.viewedConcepts)) {
                 scope.viewedConcepts = [];
               }
@@ -678,33 +694,26 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           }
 
-          scope.editConcept = function (conceptId) {
+          scope.editConcept = function (failure) {
 
-            var existingIds = scope.viewedConcepts.map(function (viewed) {
-              return viewed.conceptId;
+            console.debug('Edit concept from failure', failure);
+
+            notificationService.sendMessage('Loading concept...');
+            editConceptHelper(failure).then(function (response) {
+              notificationService.sendMessage('Concept loaded', 5000);
+
+              $timeout(function () {
+                $rootScope.$broadcast('viewTaxonomy', {
+                  concept: {
+                    conceptId: conceptId,
+                    fsn: response.fsn
+                  }
+                });
+              }, 500);
+            }, function (error) {
+              notificationService.sendError('Error loading concept', 5000);
             });
 
-            // NOTE: Requires string conversion based on RVF format
-            if (existingIds.indexOf(conceptId.toString()) !== -1) {
-              notificationService.sendWarning('Concept already loaded', 5000);
-            } else {
-
-              notificationService.sendMessage('Loading concept...');
-              editConceptHelper(conceptId).then(function (response) {
-                notificationService.sendMessage('Concept loaded', 5000);
-
-                $timeout(function () {
-                  $rootScope.$broadcast('viewTaxonomy', {
-                    concept: {
-                      conceptId: conceptId,
-                      fsn: response.fsn
-                    }
-                  });
-                }, 500);
-              }, function (error) {
-                notificationService.sendError('Error loading concept', 5000);
-              });
-            }
           };
 
           scope.editSelectedConcepts = function () {
@@ -718,30 +727,23 @@ angular.module('singleConceptAuthoringApp')
               return viewed.conceptId;
             });
 
-            var conceptsToAdd = [];
-            angular.forEach(scope.failures, function (failure) {
-              if (failure.selected && existingIds.indexOf(failure.conceptId.toString()) === -1) {
-                conceptsToAdd.push(failure.conceptId);
-              }
+            var failuresToLoad = scope.failures.map(function (failure) {
+              return failure.selected && existingIds.indexOf(failure.conceptId.toString()) === -1;
             });
 
-            //console.debug('existing ids', existingIds);
-
-            // cycle over all failures
             var conceptsLoaded = 0;
-            angular.forEach(conceptsToAdd, function (conceptId) {
-
-              //console.debug('loading concept ', conceptId);
+            angular.forEach(failuresToLoad, function (failure) {
 
               // add the concept
-              editConceptHelper(conceptId).then(function () {
+              editConceptHelper(failure).then(function () {
 
-                if (++conceptsLoaded === conceptsToAdd.length) {
+                if (++conceptsLoaded === failuresToLoad.length) {
                   notificationService.sendMessage('Concepts loaded.', 5000);
                 }
               }, function (error) {
                 notificationService.sendError('Error loading at least one concept');
               });
+
             });
           };
 

@@ -221,11 +221,11 @@
             </td>
             <!-- other columns here -->
             <td header-title="'Click to sort'" data-title="'Concept Id'" sortable="'conceptId'">
-              {{failure.conceptId}}
+             {{failure.conceptId}} <span class="tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="failure.referencedComponentId"> ({{failure.referencedComponentId}}) <span>{{failure.referencedComponentType}}</span></span>
 
             </td>
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
-                ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}
+                ng-click="editConcept(failure)">{{failure.conceptFsn}}
             </td>
             <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'">
               {{failure.detail}}
@@ -239,7 +239,7 @@
             <td ng-if="editable" data-header="'editheader.html'">
 
               <button type="button" class="btn btn-round btn-default blue"
-                      ng-click="editConcept(failure.conceptId)"
+                      ng-click="editConcept(failure)"
                       title="View/Edit Concept">
                 <span class="md md-edit"></span>
               </button>
@@ -275,12 +275,11 @@
         <!-- <td class="col-md-3" header-title="'Click to sort'" data-title="'Assertion Failure'" sortable="'assertionText'">
            {{failure.assertionText}}
          </td>-->
-        <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'"
-            ng-click="editConcept(failure.conceptId)">
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
           {{failure.conceptId}}
         </td>
         <td class="col-md-3" header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
-            ng-click="editConcept(failure.conceptId)">{{failure.conceptFsn}}
+            ng-click="editConcept(failure)">{{failure.conceptFsn}}
         </td>
         <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'">
           {{failure.failureText}}

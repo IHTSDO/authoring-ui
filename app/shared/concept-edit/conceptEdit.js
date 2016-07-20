@@ -457,8 +457,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
-        // TODO remove
-        console.debug('concept edit', scope.concept);
+        console.debug('concept edit', scope.concept, scope.componentStyles);
 
         scope.saveConcept = function () {
 
