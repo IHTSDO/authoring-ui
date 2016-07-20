@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
         deferred.resolve(response);
       }, function (error) {
         notificationService.sendError('Unexpected error updating validation failure exclusions');
-        deferred.reject(response);
+        deferred.reject();
       });
       return deferred.promise;
     }
@@ -57,7 +57,6 @@ angular.module('singleConceptAuthoringApp')
         }
         return $http.get(apiEndpoint + 'projects/' + projectKey).then(
           function (response) {
-            console.log(response);
             return response.data;
           }, function (error) {
             // TODO Handle errors
@@ -1129,10 +1128,13 @@ angular.module('singleConceptAuthoringApp')
         // find and remove the assertion
         if (validationFailureExclusions && validationFailureExclusions[conceptId]) {
           for (var i = 0; i < validationFailureExclusions[conceptId].length; i++) {
-            if (validationFailureExclusions[conceptId][i].assertionUuid === assertionUuid
-              && validationFailureExclusions[conceptId][i].failureText === failureText) {
+            if (validationFailureExclusions[conceptId][i].assertionUuid === assertionUuid &&
+               validationFailureExclusions[conceptId][i].failureText === failureText) {
               console.debug('  removing exclusion');
               validationFailureExclusions[conceptId].splice(i, 1);
+              if (validationFailureExclusions[conceptId].length === 0) {
+                delete validationFailureExclusions[conceptId];
+              }
               break;
             }
             if (i === validationFailureExclusions[conceptId].length - 1) {

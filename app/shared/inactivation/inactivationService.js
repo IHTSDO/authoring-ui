@@ -45,9 +45,7 @@ angular.module('singleConceptAuthoringApp')
     function getAssocs() {
       return parameters.assocMembers;
     }
-    function getAssocs() {
-      return parameters.assocMembers;
-    }
+
 
     //
     // Actions

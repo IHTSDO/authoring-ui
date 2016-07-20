@@ -199,7 +199,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     // get all classification results for a project and task
-    function getClassificationsForTask(projectKey, taskKey, branch) {
+    function getClassificationsForTask(projectKey, taskKey) {
       return $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/classifications').then(function (response) {
         return response.data.items;
       });
@@ -884,8 +884,8 @@ angular.module('singleConceptAuthoringApp')
 
     // Get traceability log for branch
     // GET /traceability-service/activities?onBranch=
-    function getTraceabilityForBranch(projectKey, taskKey) {
-      return $http.get('/traceability-service/activities?onBranch=' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey).then(function (response) {
+    function getTraceabilityForBranch(branch) {
+      return $http.get('/traceability-service/activities?onBranch=' + branch).then(function (response) {
         return response.data;
       }, function (error) {
         console.log(error);
@@ -894,7 +894,7 @@ angular.module('singleConceptAuthoringApp')
 
         }
         else {
-          notificationService.sendError('Error retrieving review for task ' + taskKey + ' in project ' + projectKey, 10000);
+          notificationService.sendError('Error retrieving traceability for branch ' + branch, 10000);
         }
       });
     }

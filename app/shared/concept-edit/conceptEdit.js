@@ -117,7 +117,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //////////////////////////////////////////////////////////////
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////
-        console.debug('static', scope.static, scope.static === 'true')
+
         if (scope.static === 'true' || scope.static === true) {
           scope.isStatic = true;
         } else {
@@ -675,41 +675,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 $rootScope.$broadcast('conceptEdit.inactivateConcept');
 
 
-                // WRP-2161 testing bypass -- to disable new fe atures, modify isInactivation service to return false only
-                // This inactivationService function also triggers the accessibility of the inactivation view
-                // TODO As of 6/28 4:50PST This is disabled, moved to inactivationService
-                /*if (!inactivationService.isInactivation()) {
-
-                 snowowlService.inactivateConcept(scope.branch, scope.concept.conceptId, results.reason.id, results.associationTarget).then(function () {
-
-                 scope.concept.active = false;
-
-                 // if reason is selected, deactivate all descriptions and
-                 // relationships
-                 if (results.reason) {
-
-                 inactivationService.setInactivationReasons()
-
-                 // straightforward inactivation of relationships
-                 // NOTE: Descriptions stay active so a FSN can still be
-                 // found
-                 angular.forEach(scope.concept.relationships, function (relationship) {
-                 relationship.active = false;
-                 });
-
-                 // save concept but bypass validation checks
-                 saveHelper().then(function () {
-                 notificationService.sendMessage('Concept inactivated');
-                 }, function (error) {
-                 notificationService.sendError('Concept inactivation indicator persisted, but concept could not be saved');
-                 });
-                 }
-                 }, function () {
-                 notificationService.sendError('Could not save inactivation reason for concept, concept will remain active');
-                 });
-                 }*/
-
-
               });
             });
 
@@ -762,6 +727,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // get the available modules based on whether this is an extension element
         scope.getAvailableModules = function (moduleId) {
           return metadataService.getModulesForModuleId(moduleId);
+
         };
 
 ////////////////////////////////
@@ -788,12 +754,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           } else {
             return a < b;
           }
-          ;
-        }
+        };
 
         // function to retrieve branch dialect ids as array instead of map
         // NOTE: Required for orderBy in ng-repeat
-        scope.getDialectKeysForDescription = function (description) {
+        scope.getDialectIdsForDescription = function (description) {
           return Object.keys(metadataService.getDialectsForModuleId(description.moduleId)).sort(scope.dialectComparator);
         };
 
@@ -873,7 +838,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
               var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
 
-              if (aVal != bVal) {
+              if (aVal !== bVal) {
                 if (aVal && !bVal) {
                   return -1;
                 }
@@ -1289,8 +1254,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
-        function getShortDialectName(dialectId) {
-          return scope.dialects[dialectId] ? scope.dialects[dialectId].replace('en-', '') : '??';
+        // returns the name of a dialect given its refset id
+        function getShortDialectName(id) {
+          if (!scope.dialects[id]) {
+            return '??';
+          }
+          return scope.dialects[id].replace('en-', '');
         }
 
         scope.getAcceptabilityTooltipText = function (description, dialectId) {
@@ -1327,6 +1296,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           //return scope.acceptabilityAbbrs[acceptability];
         };
+
 
         ////////////////////////////////
         // Relationship Elements
@@ -2222,8 +2192,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if a new FSN (determined by blank term)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
               angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
-                console.debug('update description', dialectId, description.acceptabilityMap[dialectId], scope.getDialectIdsForDescription(description))
-
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
@@ -2778,12 +2746,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // on load, check task status
         scope.checkPromotedStatus();
-
-        // on task reload notifications, reload task and set static flag if
-        // necessary
-        /* scope.$on('reloadTask', function () {
-         scope.checkPromotedStatus();
-         });*/
 
         // watch for classification completion request to reload concepts
         // will not affect modified concept data

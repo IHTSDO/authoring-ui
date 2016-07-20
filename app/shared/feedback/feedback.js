@@ -1273,7 +1273,7 @@ angular.module('singleConceptAuthoringApp')
               // TODO For some reason getting duplicate entries on simple push
               // of feedback into list.... for now, just retrieving, though
               // this is inefficient
-              snowowlService.getTraceabilityForBranch($routeParams.projectKey, $routeParams.taskKey).then(function (traceability) {
+              snowowlService.getTraceabilityForBranch(scope.task.branchPath).then(function (traceability) {
                 var review = {};
                 if (traceability) {
                   console.log(traceability);

@@ -35,10 +35,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             notificationService.sendMessage('Task submitted for classification', 10000);
           }
 
-          // save the id for convenience
-          $scope.classificationId = response.data.id;
-          $rootScope.classificationRunning = true;
-
           $rootScope.$broadcast('reloadTask');
 
 
@@ -121,7 +117,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // NOTE: Validation does not lock task
 
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          $rootScope.validationRunning = true;
           $rootScope.$broadcast('reloadTask');
           notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
         }, function () {
@@ -199,21 +194,24 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
       };
 
-      $scope.pollStatus = function() {
-            snowowlService.getBranch($scope.branch).then(function (response) {
+      $scope.checkForLock = function () {
 
-            if(response.metadata && response.metadata.lock)
-            {
-                $rootScope.branchLocked = true;
-                $timeout($scope.pollStatus, 4000);
-            }
-            else{
+        console.debug('checking lock status');
+        snowowlService.getBranch($scope.branch).then(function (response) {
 
-                $rootScope.branchLocked = false;
-            }
-          });
+          // if lock found, set rootscope variable and continue polling
+          if (response.metadata && response.metadata.lock) {
+            $rootScope.branchLocked = true;
+            $timeout(function() {
+              $scope.checkForLock()
+            }, 10000);
+          }
+          else {
+            $rootScope.branchLocked = false;
+          }
+        });
 
-        };
+      };
 
 
       //
@@ -222,7 +220,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // TODO Update: Changing project metadata does not trigger a notification
       //
 //      var projectPoll = null;
-  //      function pollProjectStatus() {
+      //      function pollProjectStatus() {
 //        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey).then(function (response) {
 //
 //          $scope.projectBranch = response;
@@ -237,10 +235,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       function initialize() {
 
-        //console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
+        console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
 
         // clear the branch variables (but not the task to avoid display re-initialization)
         $scope.taskBranch = null;
+
+        $scope.checkForLock();
 
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -249,58 +249,15 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           accountService.getRoleForTask($scope.task).then(function (role) {
             $scope.role = role;
           });
-        snowowlService.getBranch($scope.branch).then(function (response) {
-            if(response.metadata && !response.metadata.lock)
-            {
-                $rootScope.branchLocked = true;
-                $scope.pollStatus();
-            }
-            else if(response.status === 404)
-            {
-                notificationService.sendWarning('Task initializing');
-                snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                    notificationService.sendWarning('Task initialization complete', 3000);
-                    $rootScope.$broadcast('reloadTaxonomy');
-              });
-            }
-            else{
-                $scope.pollStatus();
-            }
-          });
 
-          console.debug('task detail task retrieved', $scope.task);
-
-          // set button flags
-          if ($scope.task && $scope.task.latestClassificationJson) {
-            $rootScope.classificationRunning = $scope.task.latestClassificationJson && $scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING';
-          }
-          if ($scope.task) {
-            $rootScope.validationRunning = $scope.task.latestValidationStatus === 'SCHEDULED' || $scope.task.latestValidationStatus === 'RUNNING' || $scope.task.latestValidationStatus === 'BUILDING';
-          }
           if ($scope.task.branchState === 'DIVERGED') {
             $rootScope.$broadcast('branchDiverged');
-          }
-
-        });
-
-        // retrieve the task branch
-        snowowlService.getBranch($scope.branch).then(function (response) {
-          console.log('Task branch', $rootScope.branchLocked ? 'Locked' : 'Unlocked', response);
-
-          // store the latest task branch
-          $scope.taskBranch = response;
-
-          if ($scope.taskBranch.status === 404) {
-            notificationService.sendWarning('Task initializing');
-            snowowlService.createBranch(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey).then(function () {
-              notificationService.sendWarning('Task initialization complete', 3000);
-              $rootScope.$broadcast('reloadTaxonomy');
-            });
           }
         });
       }
 
       $scope.$on('reloadTask', function (event, data) {
+        console.debug('task detail detected reloadTask event', event, data);
         initialize();
       });
 
