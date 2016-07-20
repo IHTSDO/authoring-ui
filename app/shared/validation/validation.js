@@ -185,7 +185,7 @@ angular.module('singleConceptAuthoringApp')
               // relationship: get relationship by id, replace with source concept id
               case '2':
                 snowowlService.getRelationshipProperties(failure.conceptId, scope.branch).then(function (rel) {
-                  failure.conceptId = rel.sourceId;
+                  failure.relationshipId = rel.sourceId;
                   conceptIds.push(rel.sourceId);
                   deferred.resolve();
                 }, function (error) {
@@ -245,29 +245,96 @@ angular.module('singleConceptAuthoringApp')
             return deferred.promise;
           }
 
-          function getDescriptionNames() {
+          //
+          // Prepare description and relationship id references and names from the error messages
+          //
+          function prepareReferencedComponents() {
             var deferred = $q.defer();
-            var descsDone = 0;
+            var failuresPrepared = 0;
+
+            console.debug('checking failures for referenced components')
 
             angular.forEach(scope.failures, function (failure) {
 
+              // try to detect referenced descriptions/relationships
+              var matchInfo = failure.detail.match(/id[=:](\d+[12]\d)/);
 
-              // match the description
-              var descIds = failure.detail.match(/Description: id=(\d+)/);
+              if (matchInfo) {
 
-              // if description found and display name not already retrieved and added
-              if (descIds && descIds[1]) {
-                snowowlService.getDescriptionProperties(descIds[1], scope.branch).then(function (description) {
-                  failure.detail = failure.detail.replace(/Description: id=\d+/g, 'Description: ' + description.term);
+                console.debug('  match information: ', matchInfo);
 
-                  if (++descsDone === scope.failures.length) {
-                    deferred.resolve();
-                  }
-                });
+                // different behavior depending on description vs. relationship
+                switch (matchInfo[1].substring(matchInfo[1].length - 2, matchInfo[1].length - 1)) {
+                  case '1':
+                    snowowlService.getDescriptionProperties(matchInfo[1], scope.branch).then(function (description) {
 
-              } else if (++descsDone === scope.failures.length) {
-                deferred.resolve();
+                      console.debug(matchInfo[0], description.term);
+                      // apply the reference
+                      failure.referencedComponentId = matchInfo[1];
+                      failure.detail = failure.detail.replace(matchInfo[0], '\"' + description.term + '\"');
+
+                      if (++failuresPrepared === scope.failures.length) {
+                        deferred.resolve();
+                      }
+                    });
+                    break;
+                  case '2':
+                    failure.referencedComponentId = matchInfo[1];
+                    if (++failuresPrepared === scope.failures.length) {
+                      deferred.resolve();
+                    }
+                    break;
+                  default:
+                    console.error('improperly matched descriptions/relationships');
+                    deferred.reject('Improper matching for descriptions/relationships');
+                }
+              } else {
+                if (++failuresPrepared === scope.failures.length) {
+                  deferred.resolve();
+                }
               }
+
+
+              deferred.resolve();
+              /*
+               if (componentIds) {
+
+               }
+
+
+               // try to match a description
+               var descId = failure.detail.match(/description: id=(\d+)/i);
+
+               // if description found and display name not already retrieved and added
+               if (descId && descId[1]) {
+               console.debug('  description found: ', descId[1]);
+               failure.referencedComponentId = descId[1];
+               snowowlService.getDescriptionProperties(descId[1], scope.branch).then(function (description) {
+               failure.detail = failure.detail.replace(/description: id=(\d+)/i, 'Description: ' + description.term);
+
+               if (++failuresPrepared === scope.failures.length) {
+               deferred.resolve();
+               }
+               });
+
+               }
+
+               // otherwise, try to match relationship
+               else {
+               var relId = failure.detail.match(/relationship: id=(\d+)/i);
+               if (relId && relId[1]) {
+               console.debug('  relationship found: ', relId[1]);
+               failure.referencedComponentId = relId[1];
+               if (++failuresPrepared === scope.failures.length) {
+               deferred.resolve();
+               }
+               }
+
+               // otherwise, do nothing
+               else if (++failuresPrepared === scope.failures.length) {
+               deferred.resolve();
+               }
+               }*/
 
             });
             return deferred.promise;
@@ -275,7 +342,7 @@ angular.module('singleConceptAuthoringApp')
 
           // called by failureTableParams.getData(), retrieves names if needed
           function getNamesForFailures() {
-            return $q.all([getDescriptionNames(), getConceptNames()]);
+            return $q.all([prepareReferencedComponents(), getConceptNames()]);
           }
 
           // declare table parameters
