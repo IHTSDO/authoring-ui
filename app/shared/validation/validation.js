@@ -264,14 +264,12 @@ angular.module('singleConceptAuthoringApp')
 
               if (matchInfo) {
 
-                console.debug('  match information: ', matchInfo);
 
                 // different behavior depending on description vs. relationship
                 switch (matchInfo[1].substring(matchInfo[1].length - 2, matchInfo[1].length - 1)) {
                   case '1':
                     snowowlService.getDescriptionProperties(matchInfo[1], scope.branch).then(function (description) {
 
-                      console.debug(matchInfo[0], description.term);
                       // apply the reference
                       failure.referencedComponentId = matchInfo[1];
                       failure.referencedComponentType = 'Description';
