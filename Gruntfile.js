@@ -314,7 +314,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= yeoman.app %>/images',
           src: '{,*/}*.{png,jpg,jpeg,gif}',
-          dest: '<%= yeoman.dist %>/images'
+          dest: 'dist/images'
         }]
       }
     },
@@ -378,13 +378,13 @@ module.exports = function (grunt) {
             'shared/**/{,*/}*.html',
             'utilities/{,*/}*.html',
             'layout/{,*/}*.html',
-            'images/{,*/}*.{webp}',
+            'images/{,*/}*.{png,jpg,jpeg,gif}',
             'fonts/{,*/}*.*',
             'validationConfig/validationConfig.json'
           ]
         }, {
           expand: true,
-          cwd: '.tmp/images',
+          cwd: '<%= yeoman.app %>/images',
           dest: '<%= yeoman.dist %>/images',
           src: ['generated/*']
         }, {
@@ -426,9 +426,7 @@ module.exports = function (grunt) {
         'compass'
       ],
       dist: [
-        'compass:dist',
-        'imagemin',
-        'svgmin'
+        'compass:dist'
       ]
     },
 
