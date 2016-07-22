@@ -245,7 +245,6 @@
                         <textarea ng-if="description.type === 'TEXT_DEFINITION'"
                                   ng-change="updateDescription(description)"
                                   ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
-                                  maxlength="255"
                                   ng-model-options="{updateOn: 'blur'}"
                                   ng-model="description.term" type="text" placeholder="Description"
                                   class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
