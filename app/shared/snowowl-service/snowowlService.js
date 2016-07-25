@@ -205,17 +205,25 @@ angular.module('singleConceptAuthoringApp')
 
       // get equivalent concepts reported for a classifier id
       function getEquivalentConcepts(classifierId, branch) {
-        return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/equivalent-concepts').then(function (response) {
-          return response.data.items;
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/equivalent-concepts').then(function (response) {
+          deferred.resolve(response.data.items);
+        }, function(error) {
+          deferred.reject('Classification details could not be retrieved');
         });
+        return deferred.promise;
       }
 
       // GET /{path}/classifications/{classificationId}/relationship-changes
       // get relationship changes reported for a classifier id
       function getRelationshipChanges(classifierId, branch) {
-        return $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=1000').then(function (response) {
-          return response.data.items;
+        var deferred = $q.defer();
+        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=1000').then(function (response) {
+          deferred.resolve(response.data.items);
+        }, function(error) {
+          deferred.reject('Classification details could not be retrieved');
         });
+        return deferred.promise;
       }
 
       // get relationship changes as csv results

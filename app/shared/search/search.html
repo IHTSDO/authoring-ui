@@ -1,24 +1,25 @@
 <div class=" col-md-12 no-padding  search-scroll " ng-controller="searchPanelCtrl">
     <div class="row no-padding">
-        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 no-padding">
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
             <input type="search" class="form-control m-5" placeholder="Enter at least three characters"
                    ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
         </div>
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-            <button class="btn btn-default md md-close" ng-click="clearSearch()"
+            <button ng-show="searchStr" class="btn btn-default md md-close" ng-click="clearSearch()"
                     style="background: transparent"></button>
         </div>
+      <!--  Removed pending design and reuqirements discussion
         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 no-padding">
             <select ng-options="id as name for (id, name) in dialects" ng-model="selectedDialect"></select>
-        </div>
+        </div>-->
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
             <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right "
-                    ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept"
+                    ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0"
                     style="background: transparent">
                 <span>View Matching Terms</span>
             </button>
             <button class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right"
-                    ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept"
+                    ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0"
                     style="background: transparent">
                 <span>Group by Concept</span>
             </button>
