@@ -25,7 +25,7 @@ angular.module('singleConceptAuthoringApp')
         'moduleId': moduleId,
         'type': 'SYNONYM',
         'term': null,
-        'lang': metadataService.getLanguagesForModuleId(moduleId)[0],
+        'lang': metadataService.getDefaultLanguageForModuleId(moduleId),
         'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
         'conceptId': null,
         'acceptabilityMap': getNewAcceptabilityMap(moduleId, 'ACCEPTABLE')

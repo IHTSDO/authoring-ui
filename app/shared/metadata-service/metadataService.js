@@ -110,6 +110,7 @@ angular.module('singleConceptAuthoringApp')
         id: '900000000000012004',
         name: 'SNOMED CT model component module (core metadata concept)'
       }],
+      defaultLanguage: 'en',
       languages: ['en'],
       dialects: {
         '900000000000509007': 'en-us', '900000000000508004': 'en-gb'
@@ -143,10 +144,10 @@ angular.module('singleConceptAuthoringApp')
      };
      */
 
-    // Branch/Task-level metadata
-    // Task level information
-    // and should be automatically set by edit.js
-    // and similar views
+      // Branch/Task-level metadata
+      // Task level information
+      // and should be automatically set by edit.js
+      // and similar views
     var branchMetadata = {};
 
 
@@ -169,6 +170,7 @@ angular.module('singleConceptAuthoringApp')
         // default dialect and language always includes en-us
         var dialects = {'900000000000509007': 'en-us'};
         var languages = ['en'];
+        var defaultLanguage = null;
 
         // extract the default language and dialect
         var language, dialect = null;
@@ -181,6 +183,11 @@ angular.module('singleConceptAuthoringApp')
               // console.debug('    Found match', match[1]);
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
+
+              // set the default language if not already set
+              if (!defaultLanguage) {
+                defaultLanguage = match[1];
+              }
             }
           }
         }
@@ -197,6 +204,7 @@ angular.module('singleConceptAuthoringApp')
               name: metadata.defaultModuleName
             }
           ],
+          defaultLanguage: defaultLanguage,
           languages: languages,
           dialects: dialects
         };
@@ -326,6 +334,14 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    function getDefaultLanguageForModuleId(moduleId) {
+      if (isExtensionModule(moduleId)) {
+        return extensionMetadata.defaultLanguage ? extensionMetadata.defaultLanguage : extensionMetadata.languages[0];
+      } else {
+        return internationalMetadata.defaultLanguage ? internationalMetadata.defaultLanguage : internationalMetadata.languages[0];
+      }
+    }
+
 
     //
     // Relationship metadata functions
@@ -394,6 +410,7 @@ angular.module('singleConceptAuthoringApp')
       // extension module-dependent retrieval functions
       getCurrentModuleId: getCurrentModuleId,
       getModulesForModuleId: getModulesForModuleId,
+      getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
       getAllDialects: getAllDialects,
