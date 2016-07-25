@@ -170,7 +170,7 @@ angular.module('singleConceptAuthoringApp')
         // default dialect and language always includes en-us
         var dialects = {'900000000000509007': 'en-us'};
         var languages = ['en'];
-        var defaultLanguage = null;
+        var defaultLanguage = '';
 
         // extract the default language and dialect
         var language, dialect = null;
@@ -183,6 +183,7 @@ angular.module('singleConceptAuthoringApp')
               // console.debug('    Found match', match[1]);
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
+
 
               // set the default language if not already set
               if (!defaultLanguage) {

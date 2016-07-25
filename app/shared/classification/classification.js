@@ -28,6 +28,8 @@ angular.module('singleConceptAuthoringApp')
 
           scope.statusText = 'Loading...';
 
+          scope.errorState = false;
+
           // function to get formatted summary tex
           scope.setStatusText = function () {
 
@@ -463,6 +465,9 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
               }
+            }, function(error) {
+              notificationService.sendError('Unexpected error: ' + error);
+              scope.errorState = true;
             });
 
             // get inferred previously not stated relationships
@@ -496,6 +501,10 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
                 console.log(scope.equivalentConcepts);
+              }, function(error) {
+                notificationService.sendError('Unexpected error: ' + error);
+                scope.errorState = true;
+
               });
             } else {
               scope.equivalentConcepts = [];

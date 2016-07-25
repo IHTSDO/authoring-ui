@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
 
       // clears the exclusions for a concept id
       clearValidationFailureExclusionsForConceptId: function (conceptId) {
-        if (validationFailureExclusions.hasOwnProperty(conceptId)) {
+        if (validationFailureExclusions && validationFailureExclusions.hasOwnProperty(conceptId)) {
           delete validationFailureExclusions[conceptId];
         }
       },
