@@ -590,6 +590,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function () {
 
+          console.debug('toggling concept active');
+
           if (!scope.concept.released) {
             notificationService.sendWarning('Removal of unreleased content is not yet supported');
             return;

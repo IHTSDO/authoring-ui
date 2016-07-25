@@ -75,11 +75,12 @@
         <button type="button" style="vertical-align: bottom"
                 ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
                 ng-click="toggleConceptActive(concept)"
-                ng-disabled="isInactivation  || isLockedModule(description.moduleId)"
+                ng-disabled="isInactivation  || isLockedModule(concept.moduleId)"
                 class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
+
           <span ng-if="!isStatic  && !isInactivation"> Activate/ inactivate concept </span>
           <span ng-if="!isStatic && isInactivation">Inactivation in progress, cannot change active status</span>
-          <span ng-if="isStatic || isLockedModule(description.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
+          <span ng-if="isStatic || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
         </button>
         <button type="button"
                 style="vertical-align: bottom"
