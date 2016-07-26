@@ -163,9 +163,9 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // For now, just use the current module id (i.e. the extension module id if it exists, otherwise the international module id)
         // scope variable for expected future toggle
         //
-        $scope.searchExtensionFlag = true;
+        $scope.searchExtensionFlag = metadataService.isExtensionSet();
         var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
-          $scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInt);
+          $scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
 
         // set the return synonym flag to true for extensions
         // TODO Later this will be toggle-able between extension synonym and fsn
