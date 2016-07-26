@@ -698,15 +698,22 @@ angular.module('singleConceptAuthoringApp')
        */
       function findConceptsForQuery(projectKey, taskKey, searchStr, offset, maxResults, acceptLanguageValue, synonymFlag) {
 
+        console.debug('findConcepts', acceptLanguageValue, synonymFlag);
+
         var deferred = $q.defer();
 
         // construct headers based on options
-        var headers = {};
+        var config = {};
         var descTypeStr = '';
 
         // if accept language value set, set header
         if (acceptLanguageValue) {
-          headers['Accept-Language'] = acceptLanguageValue;
+          // declare headers if not specified
+          if (!config.headers) {
+          config.headers = {};
+          }
+          // set the accept language header
+          config.headers['Accept-Language'] = acceptLanguageValue;
         }
 
         // set preferred description type to synonym if indicated (note: blank defaults to FSN)
@@ -731,7 +738,7 @@ angular.module('singleConceptAuthoringApp')
             //console.debug('concept id detected');
 
             // use browser/{path}/concepts/{id} call
-            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr, headers).then(function (response) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr, config).then(function (response) {
 
               // convert to browser search form
               var item = {
@@ -762,7 +769,7 @@ angular.module('singleConceptAuthoringApp')
 
               // descriptions endpoint returns different format, which does not
               // include definitionStatus, recall browser
-              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId, headers).then(function (response2) {
+              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId, config).then(function (response2) {
 
                 // convert to browser search form
                 var item = {
@@ -800,7 +807,7 @@ angular.module('singleConceptAuthoringApp')
 
               // descriptions endpoint returns different format, which does not
               // include definitionStatus, recall browser
-              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId, headers).then(function (sourceResponse) {
+              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId, config).then(function (sourceResponse) {
 
                 // convert to browser search form
                 source = {
@@ -867,7 +874,7 @@ angular.module('singleConceptAuthoringApp')
         else {
 
           // use browser/{path}/descriptions?{options} call
-          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset + descTypeStr, headers).then(function (response) {
+          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset + descTypeStr, config).then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
             //console.debug(error);
