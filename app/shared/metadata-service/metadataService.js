@@ -425,8 +425,9 @@ angular.module('singleConceptAuthoringApp')
       isExtensionDialect: isExtensionDialect,
 
       // extension module-dependent retrieval functions
-      getInternationalModuleId : getInternationalModuleId(),
+
       getCurrentModuleId: getCurrentModuleId,
+      getInternationalModuleId : getInternationalModuleId,
       getModulesForModuleId: getModulesForModuleId,
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
