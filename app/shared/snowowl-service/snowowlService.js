@@ -692,21 +692,35 @@ angular.module('singleConceptAuthoringApp')
        * @param searchStr the component id or query text
        * @param offset the start index
        * @param maxResults the number of results to return
-       * @param options other options (currently unused)
+       * @param acceptLanguagesMap value of the Accept-Language header
+       * @param synonymFlag whether to return synonyms (true) or fsns (false, default behavior)
        * @returns {*|promise} a single result or list of results
        */
-      function findConceptsForQuery(projectKey, taskKey, searchStr, offset, maxResults, options) {
+      function findConceptsForQuery(projectKey, taskKey, searchStr, offset, maxResults, acceptLanguageValue, synonymFlag) {
 
         var deferred = $q.defer();
 
-        // url to be called
-        var url;
+        // construct headers based on options
+        var headers = {};
+        var descTypeStr = '';
+
+        // if accept language value set, set header
+        if (acceptLanguageValue) {
+          headers['Accept-Language'] = acceptLanguageValue;
+        }
+
+        // set preferred description type to synonym if indicated (note: blank defaults to FSN)
+        if (synonymFlag) {
+          descTypeStr = '&preferredDescriptionType=SYNONYM'
+        }
 
         // ensure & not present in search string, to prevent bad requests
         // TODO Decide how we want to handle validation of user search requests
         if (searchStr.indexOf('&') !== -1) {
           deferred.reject('Character "&" cannot appear in search terms; please remove and try again.');
         }
+
+
 
         // if a numeric value, search by component id
         else if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
@@ -717,7 +731,7 @@ angular.module('singleConceptAuthoringApp')
             //console.debug('concept id detected');
 
             // use browser/{path}/concepts/{id} call
-            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr).then(function (response) {
+            $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr, headers).then(function (response) {
 
               // convert to browser search form
               var item = {
@@ -748,7 +762,7 @@ angular.module('singleConceptAuthoringApp')
 
               // descriptions endpoint returns different format, which does not
               // include definitionStatus, recall browser
-              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId).then(function (response2) {
+              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.conceptId, headers).then(function (response2) {
 
                 // convert to browser search form
                 var item = {
@@ -786,7 +800,7 @@ angular.module('singleConceptAuthoringApp')
 
               // descriptions endpoint returns different format, which does not
               // include definitionStatus, recall browser
-              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId).then(function (sourceResponse) {
+              $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + response.data.sourceId, headers).then(function (sourceResponse) {
 
                 // convert to browser search form
                 source = {
@@ -853,7 +867,7 @@ angular.module('singleConceptAuthoringApp')
         else {
 
           // use browser/{path}/descriptions?{options} call
-          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset).then(function (response) {
+          $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset + descTypeStr, headers).then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
             //console.debug(error);
