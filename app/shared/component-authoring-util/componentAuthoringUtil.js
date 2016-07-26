@@ -7,19 +7,21 @@ angular.module('singleConceptAuthoringApp')
     // calls to return JSON objects
     /////////////////////////////////////
 
-    function getNewAcceptabilityMap(moduleId, defaultValue) {
+    function getNewAcceptabilityMap(moduleId, defaultValue, initial) {
       var acceptabilityMap = {};
       var dialects = metadataService.getDialectsForModuleId(moduleId);
       for (var key in dialects) {
 
         // different behavior between extension and international content
-        if (metadataService.isExtensionSet()) {
-
+        if (metadataService.isExtensionSet() && !initial) {
           // if this key is the default language, set acceptability to preferred
           if (dialects[key] === metadataService.getDefaultLanguageForModuleId(moduleId)) {
             acceptabilityMap[key] = 'PREFERRED';
           }
-        } else {
+        }
+        else if(initial && dialects[key] === metadataService.getDefaultLanguageForModuleId(moduleId)){
+            
+        }else {
           acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
         }
 
@@ -46,21 +48,21 @@ angular.module('singleConceptAuthoringApp')
       };
     }
 
-    function getNewFsn(moduleId) {
+    function getNewFsn(moduleId, initial) {
       // add FSN acceptability and type
       var desc = getNewDescription(moduleId);
       desc.type = 'FSN';
-      desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED');
+      desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial);
+      
 
       return desc;
     }
 
-    function getNewPt(moduleId) {
+    function getNewPt(moduleId, initial) {
       // add PT acceptability and type
       var desc = getNewDescription(moduleId);
       desc.type = 'SYNONYM';
-      desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED');
-
+      desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial);
       return desc;
     }
 
@@ -134,10 +136,10 @@ angular.module('singleConceptAuthoringApp')
       };
 
       // add FSN description
-      concept.descriptions.push(getNewFsn(moduleId));
+      concept.descriptions.push(getNewFsn(moduleId, true));
 
       // add a Preferred Term
-      concept.descriptions.push(getNewPt(moduleId));
+      concept.descriptions.push(getNewPt(moduleId, true));
 
       // add IsA relationship
       concept.relationships.push(getNewIsaRelationship(moduleId));

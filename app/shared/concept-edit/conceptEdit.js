@@ -762,8 +762,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // function to retrieve branch dialect ids as array instead of map
         // NOTE: Required for orderBy in ng-repeat
-        scope.getDialectIdsForDescription = function (description) {
-          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId)).sort(scope.dialectComparator);
+        scope.getDialectIdsForDescription = function (description, FSN) {
+          return Object.keys(metadataService.getDialectsForModuleId(description.moduleId, FSN)).sort(scope.dialectComparator);
         };
 
         // define acceptability types
@@ -2195,7 +2195,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // if a new FSN (determined by blank term)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
-              angular.forEach(scope.getDialectIdsForDescription(description), function (dialectId) {
+              angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
               });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
