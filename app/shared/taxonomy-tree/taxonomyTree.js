@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService, $filter, $timeout) {
+  .directive('taxonomyTree', function ($rootScope, $q, $modal, snowowlService, $filter, $timeout, metadataService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -75,7 +75,22 @@ angular.module('singleConceptAuthoringApp')
 
           var conceptId = node.conceptId;
 
-          snowowlService.getConceptChildren(node.conceptId, scope.branch).then(function (children) {
+          // get the metadata required for the call
+          // TODO Eventually will allow this to toggle, see search.js
+          scope.searchExtensionFlag = metadataService.isExtensionSet();
+          var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
+            scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
+
+          // determine whether to show synonyms
+          // TODO Eventually will allow this to toggle, see search.js
+          scope.synonymFlag = metadataService.isExtensionSet();
+
+          // TODO Implement this later
+          scope.statedFlag = false;
+
+          snowowlService.getConceptChildren(node.conceptId, scope.branch, acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
+
+            console.debug('get concept children');
               if (!children) {
                 console.error('Could not retrieve children for node', node);
                 return;
@@ -83,6 +98,9 @@ angular.module('singleConceptAuthoringApp')
 
               angular.forEach(children, function (child) {
                 child.isCollapsed = true;
+                if (!child.fsn) {
+                  child.fsn = child.preferredSynonym;
+                }
               });
 
               node.children = children;
@@ -110,6 +128,9 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(parents, function (parent) {
                 parent.isCollapsed = true;
                 parent.focusParent = true;
+                if (!parent.fsn) {
+                  parent.fsn = parent.preferredSynonym;
+                }
                 scope.array.push(parent);
               });
 

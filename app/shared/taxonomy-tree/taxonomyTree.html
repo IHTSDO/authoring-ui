@@ -14,7 +14,7 @@
             ng-click="toggleNode(node, this, node.focusParent)"></span>
 
       <!-- primitive alert -->
-	  
+
 	  <button ng-show="node.definitionStatus !== 'PRIMITIVE'"
               ng-disabled="isStatic"
               class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
@@ -25,7 +25,7 @@
               class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip offset-tooltip-left">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(node)">&nbsp; </div>
         <span>Primitive</span></button>
-       
+
       <!-- fsn (draggable) -->
       <span ui-draggable="true" ng-click="clickNode(node)" drag="{ id : node.conceptId, name : node.fsn}" drag-channel="conceptPropertiesObj" ng-class="[{'highlight' : node.conceptId === concept.conceptId}]" drag-image="node.fsn">
         {{node.fsn}}

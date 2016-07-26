@@ -300,9 +300,31 @@ angular.module('singleConceptAuthoringApp')
 
       // Retrieve parents of a concept
       // GET /{path}/concepts/{conceptId}/parents
-      function getConceptParents(conceptId, branch) {
-        // TODO Test call
-        return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/parents').then(function (response) {
+      function getConceptParents(conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag) {
+        var config = {};
+        var queryParams = '';
+
+        // construct header values
+        if (acceptLanguageValue) {
+          // declare headers if not specified
+          if (!config.headers) {
+            config.headers = {};
+          }
+
+          // set the accept language header
+          config.headers['Accept-Language'] = acceptLanguageValue;
+        }
+
+        // construct query params
+        if (synonymFlag) {
+          queryParams += (queryParams.length > 0 ? '&' : '') + 'preferredDescriptionType=SYNONYM';
+        }
+        if (statedFlag) {
+          queryParams += (queryParams.length > 0 ? '&' : '') + 'form=stated';
+        }
+
+        // call and return promise
+        return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/parents' + (queryParams ? '?' + queryParams : ''), config).then(function (response) {
           return response.data;
         }, function (error) {
           // TODO Handle error
@@ -311,8 +333,32 @@ angular.module('singleConceptAuthoringApp')
 
       // Retrieve children of a concept
       // GET /{path}/concepts/{conceptId}/children
-      function getConceptChildren(conceptId, branch) {
-        return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/children').then(function (response) {
+      function getConceptChildren(conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag) {
+        console.debug('get concept children', conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag);
+
+        var config = {};
+        var queryParams = '';
+
+        // construct header values
+        if (acceptLanguageValue) {
+          // declare headers if not specified
+          if (!config.headers) {
+            config.headers = {};
+          }
+          // set the accept language header
+          config.headers['Accept-Language'] = acceptLanguageValue;
+        }
+
+        // construct query params
+        if (synonymFlag) {
+          queryParams += (queryParams.length > 0 ? '&' : '') + 'preferredDescriptionType=SYNONYM';
+        }
+        if (statedFlag) {
+          queryParams += (queryParams.length > 0 ? '&' : '') + 'form=stated';
+        }
+
+        // call and return promise
+        return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/children' + (queryParams ? '?' + queryParams : ''), config).then(function (response) {
           return response.data;
         }, function (error) {
           // TODO Handle error
@@ -323,6 +369,7 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve stated children of a concept
       // GET /{path}/concepts/{conceptId}/children?form=stated
       function getStatedConceptChildren(conceptId, branch) {
+        // TODO Need to apply MS/extension parameters here eventually?
         return $http.get(apiEndpoint + '/browser/' + branch + '/concepts/' + conceptId + '/children?form=stated').then(function (response) {
           return response.data;
         }, function (error) {
@@ -749,6 +796,7 @@ angular.module('singleConceptAuthoringApp')
                   conceptId: response.data.conceptId,
                   definitionStatus: response.data.definitionStatus,
                   fsn: response.data.fsn,
+                  preferredSynonym : response.data.preferredSynonym,
                   moduleId: response.data.moduleId
                 }
               };
@@ -780,6 +828,7 @@ angular.module('singleConceptAuthoringApp')
                     conceptId: response2.data.conceptId,
                     definitionStatus: response2.data.definitionStatus,
                     fsn: response2.data.fsn,
+                    preferredSynonym: response2.data.preferredSynonym,
                     moduleId: response2.data.moduleId
                   }
                 };
@@ -818,6 +867,7 @@ angular.module('singleConceptAuthoringApp')
                     conceptId: sourceResponse.data.conceptId,
                     definitionStatus: sourceResponse.data.definitionStatus,
                     fsn: sourceResponse.data.fsn,
+                    preferredSynonym: sourceResponse.data.preferredSynonym,
                     moduleId: sourceResponse.data.moduleId
                   }
                 };
@@ -844,6 +894,7 @@ angular.module('singleConceptAuthoringApp')
                     conceptId: targetResponse.data.conceptId,
                     definitionStatus: targetResponse.data.definitionStatus,
                     fsn: targetResponse.data.fsn,
+                    preferredSynonym: targetResponse.data.preferredSynonym,
                     moduleId: targetResponse.data.moduleId
                   }
                 };
