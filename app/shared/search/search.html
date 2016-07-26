@@ -42,16 +42,16 @@
         <div class="row no-padding">
             <div class="col-md-4 no-padding" ng-if="!userOptions.groupByConcept">
                 <div class="p-5">
-                    <strong>Term</strong>
+                    <strong>{{searchExtensionFlag ? 'SYN' : 'Term'}}</strong>
                 </div>
-            </div>
+            </div>asfd
             <div class="col-md-1 no-padding">
                 <!-- No content -->
             </div>
             <div class="no-padding"
                  ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
                 <div class="p-5">
-                    <strong>FSN</strong>
+                    <strong>{{searchExtensionFlag ? 'Term' : 'FSN'}}</strong>
                 </div>
             </div>
             <div class="col-md-1 no-padding">
@@ -92,7 +92,7 @@
                                                             ng-disabled="isEdited(result)">
 
 
-                        {{result.concept.fsn}} </a>
+                        {{result.concept.fsn ? result.concept.fsn : result.term}} </a>
                     </div>
                 </div>
                 <div class="col-md-3 no-padding">
