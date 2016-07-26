@@ -18,29 +18,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // the stored results
       $scope.storedResults = [];
 
-      // the available dialects
-      $scope.$on('extensionMetadataChange', function() {
-        console.debug('search dialects: ', metadataService.getDialectsForModuleId(metadataService.getCurrentModuleId()));
-
-        $scope.dialects = metadataService.getDialectsForModuleId(metadataService.getCurrentModuleId());
-        if (!$scope.dialects || Object.keys($scope.dialects).length === 0) {
-          return;
-        }
-        if (metadataService.isExtensionSet()) {
-          for (var key in $scope.dialects) {
-            console.debug('checking', key);
-            if (metadataService.isExtensionDialect(key)) {
-              console.debug('found extension dialect', key);
-              $scope.selectedDialect = key;
-            }
-          }
-        } else {
-          console.debug('not extension, setting en-us');
-          $scope.selectedDialect = '900000000000509007';
-        }
-      });
-
-
       // user controls
       $scope.userOptions = {
         groupByConcept: true,
@@ -181,7 +158,22 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.results = [];
         }
 
-        snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize).then(function (concepts) {
+        // get metadata-specific options
+        // TODO Later this will be sensitive to international/extension toggling
+        // For now, just use the current module id (i.e. the extension module id if it exists, otherwise the international module id)
+        // scope variable for expected future toggle
+        //
+        $scope.searchExtensionFlag = true;
+        var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
+          $scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInt);
+
+        // set the return synonym flag to true for extensions
+        // TODO Later this will be toggle-able between extension synonym and fsn
+        // For now, just assume always want the extension-language synonym if available
+        // set as scope variable for expected future toggle
+        $scope.synonymFlag = metadataService.isExtensionSet();
+
+        snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, $scope.synonymFlag).then(function (concepts) {
 
           if (!concepts) {
             notificationService.sendError('Unexpected error searching for concepts', 10000);

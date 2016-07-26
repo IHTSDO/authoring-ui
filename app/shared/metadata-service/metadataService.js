@@ -110,6 +110,7 @@ angular.module('singleConceptAuthoringApp')
         id: '900000000000012004',
         name: 'SNOMED CT model component module (core metadata concept)'
       }],
+      acceptLanguageMap: 'en-us;q=0.8,en-gb;q=0.5',
       defaultLanguage: 'en',
       languages: ['en'],
       dialects: {
@@ -205,12 +206,14 @@ angular.module('singleConceptAuthoringApp')
               name: metadata.defaultModuleName
             }
           ],
+
+          // TODO This needs to be taken from project metadata
+          acceptLanguageMap : 'da-DK-x-554461000005103;q=0.8,en-US;q=0.5',
           defaultLanguage: defaultLanguage,
           languages: languages,
           dialects: dialects
         };
         console.debug('Set extension metadata', extensionMetadata, metadata);
-        $rootScope.$broadcast('extensionMetadataChange');
       }
     }
 
@@ -234,6 +237,11 @@ angular.module('singleConceptAuthoringApp')
       console.debug(extensionMetadata, internationalMetadata);
       return extensionMetadata ?
         extensionMetadata.modules[0].id : internationalMetadata.modules[0].id;
+    }
+
+    // return the international module id
+    function getInternationalModuleId() {
+      return internationalMetadata.modules[0].id;
     }
 
     // checks if specified module is part of extension
@@ -343,6 +351,14 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    function getAcceptLanguageValueForModuleId(moduleId) {
+      if (isExtensionModule(moduleId)) {
+        return extensionMetadata.acceptLanguageMap;
+      } else {
+        return internationalMetadata.acceptLanguageMap;
+      }
+    }
+
 
     //
     // Relationship metadata functions
@@ -409,11 +425,13 @@ angular.module('singleConceptAuthoringApp')
       isExtensionDialect: isExtensionDialect,
 
       // extension module-dependent retrieval functions
+      getInternationalModuleId : getInternationalModuleId(),
       getCurrentModuleId: getCurrentModuleId,
       getModulesForModuleId: getModulesForModuleId,
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
       getDialectsForModuleId: getDialectsForModuleId,
+      getAcceptLanguageValueForModuleId: getAcceptLanguageValueForModuleId,
       getAllDialects: getAllDialects,
       isExtensionSet: function () {
         return extensionMetadata !== null;
