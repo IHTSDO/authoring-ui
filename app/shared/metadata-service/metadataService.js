@@ -313,13 +313,13 @@ angular.module('singleConceptAuthoringApp')
       return dialects;
     }
 
-    function getDialectsForModuleId(moduleId) {
+    function getDialectsForModuleId(moduleId, FSN) {
       // TODO Confirm this behavior (WRP-2808)
       // Always return the extension dialects if available
       // even for non-extension content, in order to allow
       // authors to add acceptabilities for existing descriptions
       // if (isExtensionModule(moduleId)) {
-      if (extensionMetadata) {
+      if (extensionMetadata && !FSN) {
         return extensionMetadata.dialects;
       } else {
         return internationalMetadata.dialects;
