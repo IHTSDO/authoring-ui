@@ -25,7 +25,7 @@
             </button>
         </div>
     </div>
-    {{getAllDialects()}}
+
     <div class="row no-padding">
         <div class="col-md-8">
             <button type="button" class="blue accent-2 custom-button ng-click-active" title="Search Type"
@@ -42,16 +42,16 @@
         <div class="row no-padding">
             <div class="col-md-4 no-padding" ng-if="!userOptions.groupByConcept">
                 <div class="p-5">
-                    <strong>{{searchExtensionFlag ? 'SYN' : 'Term'}}</strong>
+                    <strong>Term</strong>
                 </div>
-            </div>asfd
+            </div>
             <div class="col-md-1 no-padding">
                 <!-- No content -->
             </div>
             <div class="no-padding"
                  ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
                 <div class="p-5">
-                    <strong>{{searchExtensionFlag ? 'Term' : 'FSN'}}</strong>
+                    <strong>{{searchExtensionFlag ? 'Preferred SYN' : 'FSN'}}</strong>
                 </div>
             </div>
             <div class="col-md-1 no-padding">
@@ -92,7 +92,7 @@
                                                             ng-disabled="isEdited(result)">
 
 
-                        {{result.concept.fsn ? result.concept.fsn : result.term}} </a>
+                        {{searchExtensionFlag ? result.concept.preferredSynonym : result.concept.fsn }} </a>
                     </div>
                 </div>
                 <div class="col-md-3 no-padding">
