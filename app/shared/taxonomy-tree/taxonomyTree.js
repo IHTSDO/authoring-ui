@@ -23,7 +23,6 @@ angular.module('singleConceptAuthoringApp')
         }
 
 
-
         //
         // Function to set set search parameters before each request
         // Ideally would be done once (then toggled), but async/promise metadata retrieval not yet implemented
@@ -97,7 +96,7 @@ angular.module('singleConceptAuthoringApp')
 
           snowowlService.getConceptChildren(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
 
-            console.debug('get concept children');
+              console.debug('get concept children');
               if (!children) {
                 console.error('Could not retrieve children for node', node);
                 return;
@@ -128,9 +127,11 @@ angular.module('singleConceptAuthoringApp')
           snowowlService.getConceptParents(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (parents) {
               scope.array = [];
               if (!parents) {
-                console.error('Could not retrieve children for node', node);
+                console.error('Could not retrieve parents for node', node);
                 deferred.resolve([]);
               }
+
+              console.debug('parents returned', parents)
 
               angular.forEach(parents, function (parent) {
                 parent.isCollapsed = true;
@@ -151,6 +152,7 @@ angular.module('singleConceptAuthoringApp')
 
               node.collapsed = false;
               var newArray = $filter('orderBy')(scope.array, 'fsn', false);
+            console.debug('filter', scope.array, newArray);
               newArray[newArray.length - 1].children = [];
               newArray[newArray.length - 1].children.push(node);
               newArray[newArray.length - 1].collapsed = false;
@@ -329,9 +331,6 @@ angular.module('singleConceptAuthoringApp')
         };
 
 
-
-
-
         function initialize() {
 
           scope.searchExtensionFlag = metadataService.isExtensionSet();
@@ -387,21 +386,20 @@ angular.module('singleConceptAuthoringApp')
           // if concept id not specified, use root
           else {
 
-            // declare parent concept
-            parent = {
-              active: true,
-              conceptId: 138875005,
-              definitionStatus: 'PRIMITIVE',
-              fsn: 'SNOMED CT Concept',
-              isLeafInferred: false,
-              isLeafStated: false,
-            };
+            snowowlService.getFullConcept(metadataService.getSnomedCtRootId(), scope.branch, scope.acceptLanguageValue).then(function (parent) {
+              console.debug('Root concept retrieved', parent);
 
-            // get the children
-            scope.getAndSetChildren(parent);
+              // get the children
+              scope.getAndSetChildren(parent);
 
-            // add as root tree
-            scope.terminologyTree.push(parent);
+              // clear any existing trees
+              // TODO This is because of asynchronous retrieval due to metadata not being set prior to instantiation
+              scope.terminologyTree = [];
+
+              // add as root tree
+              scope.terminologyTree.push(parent);
+
+            })
           }
         }
 
@@ -415,7 +413,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
         // on extension metadata set, update the search parameters
-        scope.$on('setExtensionMetadata', function(event, data) {
+        scope.$on('setExtensionMetadata', function (event, data) {
           console.debug('taxonomy received setExtensionMetadata event');
           initialize();
         });
