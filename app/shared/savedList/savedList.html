@@ -26,7 +26,9 @@
                 </button>
             </div>
             <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
+              <!-- Use the preferred synonym if present, otherwise use fsn -->
+              {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}}
       </div>
             <!--   <div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
                   class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
@@ -92,7 +94,9 @@
                 </button>
             </div>
             <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">{{item.concept.fsn}}
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
+              <!-- Use the preferred synonym if present, otherwise use fsn -->
+              {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}}
       </div>
             <!--<div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
                 class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
