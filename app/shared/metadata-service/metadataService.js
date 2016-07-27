@@ -214,6 +214,8 @@ angular.module('singleConceptAuthoringApp')
           dialects: dialects
         };
         console.debug('Set extension metadata', extensionMetadata, metadata);
+        $rootScope.$broadcast('setExtensionMetadata');
+
       }
     }
 
