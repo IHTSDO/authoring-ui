@@ -384,7 +384,7 @@ angular.module('singleConceptAuthoringApp')
             scope.finalizing = true;
             notificationService.sendMessage('Saving Modified Relationships...');
             console.log(scope.affectedConcepts);
-            if(scope.affectedConcepts && scope.affectedConcepts !== null){
+            if(scope.affectedConcepts && scope.affectedConcepts.length > 0 && scope.affectedConcepts !== null){
                 var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
                   return [value];
                 });
