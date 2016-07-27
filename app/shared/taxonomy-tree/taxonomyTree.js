@@ -22,6 +22,26 @@ angular.module('singleConceptAuthoringApp')
           scope.limit = -1;
         }
 
+
+
+        //
+        // Function to set set search parameters before each request
+        // Ideally would be done once (then toggled), but async/promise metadata retrieval not yet implemented
+        //
+
+        // Accept-Language header value
+        scope.acceptLanguageValue = null;
+
+        // booelan search flag indicating extension
+        scope.searchExtensionFlag = null;
+
+        // boolean search flag indicating whether to retrieve Preferred Term (true) or FSN (false)
+        scope.synonymFlag = null;
+
+        // boolean search flag indicating stated (true) vs inferred (false) mode
+        scope.statedFlag = false; // not yet implemented
+
+
         // TODO Consider moving this into a directive with passed function
         // Handle single and double click events
 
@@ -75,20 +95,7 @@ angular.module('singleConceptAuthoringApp')
 
           var conceptId = node.conceptId;
 
-          // get the metadata required for the call
-          // TODO Eventually will allow this to toggle, see search.js
-          scope.searchExtensionFlag = metadataService.isExtensionSet();
-          var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
-            scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
-
-          // determine whether to show synonyms
-          // TODO Eventually will allow this to toggle, see search.js
-          scope.synonymFlag = metadataService.isExtensionSet();
-
-          // TODO Implement this later
-          scope.statedFlag = false;
-
-          snowowlService.getConceptChildren(node.conceptId, scope.branch, acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
+          snowowlService.getConceptChildren(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
 
             console.debug('get concept children');
               if (!children) {
@@ -118,7 +125,7 @@ angular.module('singleConceptAuthoringApp')
           var deferred = $q.defer();
           var conceptId = node.conceptId;
 
-          snowowlService.getConceptParents(node.conceptId, scope.branch).then(function (parents) {
+          snowowlService.getConceptParents(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (parents) {
               scope.array = [];
               if (!parents) {
                 console.error('Could not retrieve children for node', node);
@@ -217,8 +224,10 @@ angular.module('singleConceptAuthoringApp')
           if (parentsCache[node.conceptId]) {
             deferred.resolve(parentsCache[node.conceptId]);
           } else {
+
+
             // get all parents
-            snowowlService.getConceptParents(node.conceptId, scope.branch).then(function (parents) {
+            snowowlService.getConceptParents(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (parents) {
               parentsCache[node.conceptId] = parents;
               deferred.resolve(parents);
             });
@@ -319,9 +328,16 @@ angular.module('singleConceptAuthoringApp')
           }
         };
 
+
+
+
+
         function initialize() {
 
-
+          scope.searchExtensionFlag = metadataService.isExtensionSet();
+          scope.synonymFlag = metadataService.isExtensionSet();
+          scope.acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
+            scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
 
           // clear any existing trees
           scope.terminologyTree = [];
@@ -395,6 +411,12 @@ angular.module('singleConceptAuthoringApp')
         }, false);
 
         scope.$on('reloadTaxonomy', function (event, data) {
+          initialize();
+        });
+
+        // on extension metadata set, update the search parameters
+        scope.$on('setExtensionMetadata', function(event, data) {
+          console.debug('taxonomy received setExtensionMetadata event');
           initialize();
         });
 
