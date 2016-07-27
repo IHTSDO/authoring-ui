@@ -231,7 +231,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
-            fsn: item.concept.fsn
+            fsn: item.concept.fsn,
+            preferredSynonym : item.concept.preferredSynonym
           }
         });
       };
@@ -241,7 +242,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $rootScope.$broadcast('viewTaxonomy', {
           concept: {
             conceptId: item.concept.conceptId,
-            fsn: item.concept.fsn
+            fsn: item.concept.fsn,
+            preferredSynonym : item.concept.preferredSynonym
           }
         });
       };
