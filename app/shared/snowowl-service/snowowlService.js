@@ -629,19 +629,20 @@ angular.module('singleConceptAuthoringApp')
 
       // Helper call to retrieve a concept with all elements
       // Puts all elements in save-ready format
-      function getFullConcept(conceptId, branch) {
+      function getFullConcept(conceptId, branch, acceptLanguageValue) {
 
         var deferred = $q.defer();
-        var concept = {};
-        $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId).then(function (response) {
-          concept = response.data;
-          // console.debug('snowowl', response.data);
-          deferred.resolve(concept);
+        var config = {};
+        if (acceptLanguageValue) {
+          config.headers = { 'Accept-Language' : acceptLanguageValue};
+        }
+
+        $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, config).then(function (response) {
+          deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
         });
         return deferred.promise;
-        //return concept;
       }
 
       /////////////////////////////////////

@@ -357,7 +357,7 @@ angular.module('singleConceptAuthoringApp')
 
               // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
               else {
-                snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+                snowowlService.getFullConcept(scope.concept.conceptId, scope.branch, scope.acceptLanguageValue).then(function (response) {
                   scope.concept = response;
                   scope.constructRootTrees(scope.concept);
                 });
@@ -373,7 +373,7 @@ angular.module('singleConceptAuthoringApp')
 
               // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
               else {
-                snowowlService.getFullConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+                snowowlService.getFullConcept(scope.concept.conceptId, scope.branch, scope.acceptLanguageValue).then(function (response) {
                   scope.getAndSetChildren(response);
                   scope.getAndSetParents(response, false).then(function (array) {
                     scope.terminologyTree = array;
