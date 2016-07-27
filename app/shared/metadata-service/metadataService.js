@@ -12,6 +12,12 @@ angular.module('singleConceptAuthoringApp')
     // relationship metadata
     var isaRelationshipId = '116680003';
 
+    var snomedCtRootId = '138875005';
+    function getSnomedCtRootId() {
+      return snomedCtRootId;
+    }
+
+
     // component inactivation metadata
     var conceptInactivationReasons = [
       {id: 'AMBIGUOUS', text: 'Ambiguous component', display: [4]},
@@ -411,6 +417,7 @@ angular.module('singleConceptAuthoringApp')
 
       // relationship functions
       isIsaRelationship: isIsaRelationship,
+      getSnomedCtRootId : getSnomedCtRootId,
 
       // project cache getters/setters
       setProjects: setProjects,

@@ -301,7 +301,7 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve parents of a concept
       // GET /{path}/concepts/{conceptId}/parents
       function getConceptParents(conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag) {
-        console.debug('get concept children', conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag);
+        console.debug('get concept parents', conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag);
         var config = {};
         var queryParams = '';
 
