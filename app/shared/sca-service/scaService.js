@@ -959,7 +959,7 @@ angular.module('singleConceptAuthoringApp')
                           return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                         });
                       }
-                      msg = newNotification.event + 'feedback for task ' + newNotification.task;
+                      msg = newNotification.event + ' feedback for task ' + newNotification.task;
                       url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/feedback';
                       break;
 
