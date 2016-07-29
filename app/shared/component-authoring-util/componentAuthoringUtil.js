@@ -20,7 +20,7 @@ angular.module('singleConceptAuthoringApp')
           }
         }
         else if(initial && dialects[key] === metadataService.getDefaultLanguageForModuleId(moduleId)){
-            
+
         }else {
           acceptabilityMap[key] = defaultValue ? defaultValue : 'ACCEPTABLE';
         }
@@ -53,7 +53,7 @@ angular.module('singleConceptAuthoringApp')
       var desc = getNewDescription(moduleId);
       desc.type = 'FSN';
       desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial);
-      
+
 
       return desc;
     }
@@ -140,6 +140,11 @@ angular.module('singleConceptAuthoringApp')
 
       // add a Preferred Term
       concept.descriptions.push(getNewPt(moduleId, true));
+
+      // if extension is set, add a Synonym
+      if (metadataService.isExtensionSet()) {
+        concept.descriptions.push(getNewDescription(moduleId, true));
+      }
 
       // add IsA relationship
       concept.relationships.push(getNewIsaRelationship(moduleId));
