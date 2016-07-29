@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
         total: $scope.projects ? $scope.projects.length : 0, // length of data
         getData: function ($defer, params) {
 
-          if (!$scope.projects || $scope.projects.length == 0) {
+          if (!$scope.projects || $scope.projects.length === 0) {
             $defer.resolve(new Array());
           } else {
 
@@ -93,7 +93,7 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
     // on successful set, reload table parameters
     $scope.$watch('projects', function () {
-      if (!$scope.projects || $scope.projects.length == 0) {
+      if (!$scope.projects || $scope.projects.length === 0) {
       }
       else {
         $scope.tableParams.reload();

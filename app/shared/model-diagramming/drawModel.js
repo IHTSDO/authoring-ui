@@ -61,21 +61,21 @@ angular.module('singleConceptAuthoringApp')
         function drawConceptDiagram(concept, div, options, snfConcept) {
           var svgIsaModel = [];
           var svgAttrModel = [];
-          if (scope.view == 'stated') {
+          if (scope.view === 'stated') {
             $.each(concept.relationships, function (i, field) {
-              if (field.active == true && field.characteristicType == "STATED_RELATIONSHIP") {
-                if (field.type.conceptId == 116680003) {
+              if (field.active === true && field.characteristicType === "STATED_RELATIONSHIP") {
+                if (field.type.conceptId === 116680003) {
                   svgIsaModel.push(field);
                 } else {
                   svgAttrModel.push(field);
                 }
               }
             });
-          } else if (scope.view == 'inferred'){
+          } else if (scope.view === 'inferred'){
             if (concept.relationships) {
               $.each(concept.relationships, function (i, field) {
-                if (field.active == true && field.characteristicType == "INFERRED_RELATIONSHIP") {
-                  if (field.type.conceptId == 116680003) {
+                if (field.active === true && field.characteristicType === "INFERRED_RELATIONSHIP") {
+                  if (field.type.conceptId === 116680003) {
                     svgIsaModel.push(field);
                   } else {
                     svgAttrModel.push(field);
@@ -84,7 +84,7 @@ angular.module('singleConceptAuthoringApp')
               });
             }
           }
-          else if (scope.view == 'snf') {
+          else if (scope.view === 'snf') {
              concept.relationships = [];
              $.each(snfConcept.concepts, function (i, field) {
                  field.target = {};
@@ -178,7 +178,7 @@ angular.module('singleConceptAuthoringApp')
                   });
               }
               $.each(concept.relationships, function (i, field) {
-                if (field.type.conceptId == 116680003) {
+                if (field.type.conceptId === 116680003) {
                   svgIsaModel.push(field);
                 } else {
                   svgAttrModel.push(field);
@@ -201,7 +201,7 @@ angular.module('singleConceptAuthoringApp')
           var y = 10;
           var maxX = 10;
           var sctClass = "";
-          if (concept.definitionStatus == "PRIMITIVE") {
+          if (concept.definitionStatus === "PRIMITIVE") {
             sctClass = "sct-primitive-concept";
           } else {
             sctClass = "sct-defined-concept";
@@ -210,7 +210,7 @@ angular.module('singleConceptAuthoringApp')
           x = x + 90;
           y = y + rect1.getBBox().height + 40;
           var circle1;
-          if (concept.definitionStatus == "PRIMITIVE") {
+          if (concept.definitionStatus === "PRIMITIVE") {
             circle1 = drawSubsumedByNode(svg, x, y);
           } else {
             circle1 = drawEquivalentNode(svg, x, y);
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp')
           // load stated parents
           sctClass = "sct-defined-concept";
           $.each(svgIsaModel, function (i, relationship) {
-                if (relationship.target.definitionStatus == "PRIMITIVE") {
+                if (relationship.target.definitionStatus === "PRIMITIVE") {
                     sctClass = "sct-primitive-concept";
                 } else {
             sctClass = "sct-defined-concept";
@@ -241,12 +241,12 @@ angular.module('singleConceptAuthoringApp')
           // load ungrouped attributes
           var maxRoleNumber = 0;
           $.each(svgAttrModel, function (i, relationship) {
-                if (relationship.target.definitionStatus == "PRIMITIVE") {
+                if (relationship.target.definitionStatus === "PRIMITIVE") {
                     sctClass = "sct-primitive-concept";
                 } else {
             sctClass = "sct-defined-concept";
                 }
-            if (relationship.groupId == 0) {
+            if (relationship.groupId === 0) {
               if(relationship.nest){
                   var rectAttr = drawSctBox(svg, x, y, relationship.type.fsn, relationship.type.conceptId, "sct-attribute");
                   connectElements(svg, circle2, rectAttr, 'center', 'left');
@@ -276,7 +276,7 @@ angular.module('singleConceptAuthoringApp')
               }
             }
             if(relationship.nest){
-                  if (relationship.nest[0].target.definitionStatus == "PRIMITIVE") {
+                  if (relationship.nest[0].target.definitionStatus === "PRIMITIVE") {
                         sctClass = "sct-primitive-concept";
                     } else {
                 sctClass = "sct-defined-concept";
@@ -298,7 +298,7 @@ angular.module('singleConceptAuthoringApp')
             var conjunctionNode = drawConjunctionNode(svg, x + 55, y);
             connectElements(svg, groupNode, conjunctionNode, 'right', 'left');
             $.each(svgAttrModel, function (m, relationship) {
-              if (relationship.groupId == i) {
+              if (relationship.groupId === i) {
                         if (relationship.target.definitionStatus ==
  "PRIMITIVE") { sctClass = "sct-primitive-concept"; } else {
                 sctClass = "sct-defined-concept";
@@ -355,14 +355,14 @@ angular.module('singleConceptAuthoringApp')
             heightpadding = 15;
           }
 
-          if (cssClass == "sct-primitive-concept") {
+          if (cssClass === "sct-primitive-concept") {
             rect = svg.rect(x, y, textWidth + widthPadding, textHeight + heightpadding, {
               id: 'rect' + idSequence,
               fill: '#99ccff',
               stroke: '#333',
               strokeWidth: 2
             });
-          } else if (cssClass == "sct-defined-concept") {
+          } else if (cssClass === "sct-defined-concept") {
             rect = svg.rect(x - 2, y - 2, textWidth + widthPadding + 4, textHeight + heightpadding + 4, {
               fill: 'white',
               stroke: '#333',
@@ -374,7 +374,7 @@ angular.module('singleConceptAuthoringApp')
               stroke: '#333',
               strokeWidth: 1
             });
-          } else if (cssClass == "sct-attribute") {
+          } else if (cssClass === "sct-attribute") {
             rect = svg.rect(x - 2, y - 2, textWidth + widthPadding + 4, textHeight + heightpadding + 4, 18, 18, {
               fill: 'white',
               stroke: '#333',
@@ -386,7 +386,7 @@ angular.module('singleConceptAuthoringApp')
               stroke: '#333',
               strokeWidth: 1
             });
-          } else if (cssClass == "sct-slot") {
+          } else if (cssClass === "sct-slot") {
             rect = svg.rect(x, y, textWidth + widthPadding, textHeight + heightpadding, {
               id: 'rect' + idSequence,
               fill: '#99ccff',
@@ -502,7 +502,7 @@ angular.module('singleConceptAuthoringApp')
               break;
           }
 
-          if (endMarker == null) endMarker = "BlackTriangle";
+          if (endMarker === null) endMarker = "BlackTriangle";
 
           var polyline1 = svg.polyline([[originX, originY],
               [originX, destinationY], [destinationX, destinationY]]

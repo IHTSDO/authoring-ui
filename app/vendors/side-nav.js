@@ -56,14 +56,14 @@
 
 
         // Set to width
-        if (options.menuWidth != 250) {
+        if (options.menuWidth !== 250) {
           menu_id.css('width', options.menuWidth);
         }
 
         // Add Touch Area
         $('body').append($('<div class="drag-target"></div>'));
 
-        if (options.edge == 'left') {
+        if (options.edge === 'left') {
           menu_id.css('left', -1 * (options.menuWidth + 10));
           $('.drag-target').css({'left': 0}); // Add Touch Area
         }
@@ -176,7 +176,7 @@
           prevent_default: false
         }).bind('pan', function(e) {
 
-          if (e.gesture.pointerType == "touch") {
+          if (e.gesture.pointerType === "touch") {
 
             var direction = e.gesture.direction;
             var x = e.gesture.center.x;
@@ -238,7 +238,7 @@
           }
 
         }).bind('panend', function(e) {
-          if (e.gesture.pointerType == "touch") {
+          if (e.gesture.pointerType === "touch") {
             var velocityX = e.gesture.velocityX;
             panning = false;
             if (options.edge === 'left') {

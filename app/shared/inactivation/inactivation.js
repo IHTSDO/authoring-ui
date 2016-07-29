@@ -618,7 +618,7 @@ angular.module('singleConceptAuthoringApp')
             var reasonArr = scope.inactivationReasons.filter(function (item) {
               return item.id === reason;
             });
-            if (reasonArr.length != 1) {
+            if (reasonArr.length !== 1) {
               console.error('Unexpected number of reasons found for text ' + reason);
             }
 

@@ -83,7 +83,7 @@
             
               <td header-title="'Click to sort'" data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                     <button ng-show="task.latestClassificationJson != null"
+                     <button ng-show="task.latestClassificationJson !== null"
                           type="button"
                           ng-class="[
                           {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},

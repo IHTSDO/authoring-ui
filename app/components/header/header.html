@@ -99,8 +99,8 @@
       </li>
       <li class="pull-right">
         <a id="profile_not_active" title="display name will link to profile services in later updates">
-          <span ng-if="accountDetails == null">Logged in as unknown user</span>
-          <span ng-if="accountDetails != null">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
+          <span ng-if="accountDetails === null">Logged in as unknown user</span>
+          <span ng-if="accountDetails !== null">{{accountDetails.firstName}} {{accountDetails.lastName}}</span>
         </a>
       </li>
     </ul>
