@@ -52,6 +52,12 @@ angular.module('singleConceptAuthoringApp')
       // add FSN acceptability and type
       var desc = getNewDescription(moduleId);
       desc.type = 'FSN';
+
+      // if extension, override language to international (pass null module id)
+      if (metadataService.isExtensionSet()) {
+        desc.lang = metadataService.getDefaultLanguageForModuleId(null);
+      }
+
       desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial);
 
 
@@ -62,6 +68,12 @@ angular.module('singleConceptAuthoringApp')
       // add PT acceptability and type
       var desc = getNewDescription(moduleId);
       desc.type = 'SYNONYM';
+
+      // if extension, override language to international (pass null module id)
+      if (metadataService.isExtensionSet()) {
+        desc.lang = metadataService.getDefaultLanguageForModuleId(null);
+      }
+
       desc.acceptabilityMap = getNewAcceptabilityMap(moduleId, 'PREFERRED', initial);
       return desc;
     }
