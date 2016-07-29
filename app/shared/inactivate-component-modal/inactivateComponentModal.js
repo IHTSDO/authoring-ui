@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.filterByInactivationReason = function () {
       return function (item) {
-        if ($scope.reason.display.indexOf(item.display) !== -1) {
+        if ($scope.inactivationReason && $scope.inactivationReason.display.indexOf(item.display) !== -1) {
           return true;
         }
         else {
@@ -27,6 +27,7 @@ angular.module('singleConceptAuthoringApp')
     $scope.componentType = componentType;
     $scope.componentType = componentType;
     $scope.deletion = deletion;
+    $scope.reasons = reasons;
 
     // optional arguments (but if conceptId or branch specified, the other must
     // be as well)
@@ -147,10 +148,12 @@ angular.module('singleConceptAuthoringApp')
     );
 
 
-    $scope.selectReason = function () {
+    $scope.selectReason = function (reason) {
+
+      console.debug('reason' , $scope.inactivationReason, reason);
 
       // NOTE: associationTarget is optional
-      if (!$scope.reason) {
+      if (!$scope.inactivationReason) {
         window.alert('You must specify a reason for inactivation');
       } else {
 
@@ -190,13 +193,13 @@ angular.module('singleConceptAuthoringApp')
         }
 
         var results = {};
-        results.reason = $scope.reason;
+        results.reason = $scope.inactivationReason;
         results.associationTarget = associationTarget;
 
         $modalInstance.close(results);
       }
     };
-    
+
     $scope.delete = function () {
 
         var results = {};
@@ -342,7 +345,7 @@ angular.module('singleConceptAuthoringApp')
     ////////////////////////////////////
 
     // selected reason
-    $scope.reason = null;
+    $scope.inactivationReason = null;
 
     // construct the associations array and add a blank row
     $scope.associations = [];

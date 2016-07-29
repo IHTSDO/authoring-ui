@@ -12,6 +12,7 @@
   <div class="modal-body">
 
     <div class="row classification-report">
+
       <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
 
       <li ng-if="!deletion" role="presentation" ng-class="{active : actionTab === 1}" class=""><a style="margin: 0px"
@@ -56,18 +57,22 @@
     <!-- Tab panes -->
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
 
+
       <!-- reasons select -->
-      <div ng-if="!deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
+      <div ng-show="!deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
+
         <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
 
 
           <div class="col-md-12 ">
             <label> Select Inactivation Reason </label>
           </div>
+
+
           <div class="col-md-12">
             <select id="taskProject" name="select-reason" class="form-control"
                     ng-options="reason as reason.text for reason in reasons"
-                    ng-model="reason" ng-change="updateAssociations()">
+                    ng-model="inactivationReason" ng-change="updateAssociations()">
               <option value="disabled">- Select a reason (required) -</option>
             </select>
           </div>
@@ -115,12 +120,12 @@
             </div>
           </div>
         </div>
-      
+
 
 
       </div>
-        
-      <div ng-if="deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
+
+      <div ng-show="deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
         <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading">
             Checking inbound relationships...
         </div>
@@ -208,11 +213,11 @@ Cancel {{componentType}} Inactivation
           <div class=" col-md-6 right-button">
           <button type="button"
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
-                  ng-click="selectReason()">
+                  ng-click="selectReason(inactivationReason)">
 Continue with {{componentType}} Inactivation
           </button>
 </div>
-   
+
         </div>
   </div>
     <div class="modal-footer" ng-if="deletion">
@@ -236,7 +241,7 @@ Cancel Deletion
 Confirm Deletion
           </button>
 </div>
-   
+
         </div>
   </div>
 
