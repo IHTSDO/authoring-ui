@@ -129,10 +129,10 @@ angular
       }
       $window.ga('send', 'error', error)
     };
-    
+
     $routeProvider.otherwise({
-       redirectTo: '/home'
-     });
+      redirectTo: '/home'
+    });
 
     $rootScope.notProd = false;
     $timeout(function () {
@@ -154,80 +154,86 @@ angular
 
 
     // get endpoint information and set route provider options
-    configService.getEndpoints().then(function (response) {
-      var endpoints = response;
+    configService.getEndpoints().then(
+      // Success block -- config properties retrieved
+      function (response) {
+        var endpoints = response;
         console.log(response);
-      var accountUrl = endpoints.endpoints.imsEndpoint + 'api/account';
-      var imsUrl = endpoints.endpoints.imsEndpoint;
-      var imsUrlParams = '?serviceReferer=' + window.location.href;
+        var accountUrl = endpoints.endpoints.imsEndpoint + 'api/account';
+        var imsUrl = endpoints.endpoints.imsEndpoint;
+        var imsUrlParams = '?serviceReferer=' + window.location.href;
 
-      // don't want either true or false here please!
-      $rootScope.loggedIn = null;
+        // don't want either true or false here please!
+        $rootScope.loggedIn = null;
 
-      // get the account details
-      accountService.getAccount(accountUrl).then(function (account) {
+        // get the account details
+        accountService.getAccount(accountUrl).then(function (account) {
 
-        // get the user preferences (once logged in status confirmed)
-        accountService.getUserPreferences().then(function (preferences) {
+          // get the user preferences (once logged in status confirmed)
+          accountService.getUserPreferences().then(function (preferences) {
 
-          // apply the user preferences
-          // NOTE: Missing values or not logged in leads to defaults
+            // apply the user preferences
+            // NOTE: Missing values or not logged in leads to defaults
+            accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
+
+              // check for modification by application routine
+              if (appliedPreferences !== preferences) {
+                accountService.saveUserPreferences(appliedPreferences);
+              }
+            })
+          });
+
+        }, function (error) {
+          // apply default preferences
           accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
 
-            // check for modification by application routine
-            if (appliedPreferences !== preferences) {
-              accountService.saveUserPreferences(appliedPreferences);
-            }
           })
         });
 
-      }, function (error) {
-        // apply default preferences
-        accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
 
-        })
+        // add required endpoints to route provider
+        $routeProvider
+          .when('/login', {
+            redirectTo: function () {
+              window.location = decodeURIComponent(imsUrl + 'login' + imsUrlParams);
+            }
+          })
+          .when('/logout', {
+            redirectTo: function () {
+              window.location = decodeURIComponent(imsUrl + 'logout' + imsUrlParams);
+            }
+          })
+          .when('/settings', {
+            redirectTo: function () {
+              window.location = imsUrl + 'settings' + imsUrlParams;
+            }
+          })
+          .when('/register', {
+            redirectTo: function () {
+              window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
+            }
+          });
+      },
+
+      // ERROR block -- if config properties cannot be retrieved
+      function (error) {
+        notificationService.sendError('Fatal error: ' + error);
       });
 
+    // TODO Move these into the configuration success block once fully wired
+    // Moved outside to prevent irritating issue on dev where projects and polling fail to instantiate due to
+    // grunt not serving the config properties file
 
-      // add required endpoints to route provider
-      $routeProvider
-        .when('/login', {
-          redirectTo: function () {
-            window.location = decodeURIComponent(imsUrl + 'login' + imsUrlParams);
-          }
-        })
-        .when('/logout', {
-          redirectTo: function () {
-            window.location = decodeURIComponent(imsUrl + 'logout' + imsUrlParams);
-          }
-        })
-        .when('/settings', {
-          redirectTo: function () {
-            window.location = imsUrl + 'settings' + imsUrlParams;
-          }
-        })
-        .when('/register', {
-          redirectTo: function () {
-            window.location = decodeURIComponent(imsUrl + 'register' + imsUrlParams);
-          }
-        });
+    // begin polling the sca endpoint at 10s intervals
+    scaService.startPolling(10000);
 
-
-      // begin polling the sca endpoint at 10s intervals
-      scaService.startPolling(10000);
-
-      ///////////////////////////////////////////
-      // Cache local data
-      ///////////////////////////////////////////
-      scaService.getProjects().then(function (response) {
-        metadataService.setProjects(response);
-      });
-
-
-
-    }, function(error) {
-      notificationService.sendError('Fatal error: ' + error);
+    ///////////////////////////////////////////
+    // Cache local data
+    ///////////////////////////////////////////
+    scaService.getProjects().then(function (response) {
+      metadataService.setProjects(response);
     });
+
 
     ///////////////////////////////////////////
     // Instantiate basic metadata in SnowOwl //

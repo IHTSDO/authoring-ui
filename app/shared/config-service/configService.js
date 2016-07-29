@@ -1,30 +1,52 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .factory('configService', ['$http', function ($http, $q) {
+  .factory('configService', ['$http', '$q', function ($http, $q) {
+
+    var properties = null;
+
+    function getConfigProperties() {
+      var deferred = $q.defer();
+      if (!properties) {
+        $http.get('/config/endpointConfig.json').then(function (response) {
+          properties = response.data;
+          deferred.resolve(properties);
+        }, function(error) {
+          deferred.reject('Failed to retrieve configuration properties');
+        });
+      } else {
+        deferred.resolve(properties);
+      }
+      return deferred.promise;
+    }
+
     return {
       getEndpoints: function () {
-
-        return $http.get('/config/endpointConfig.json').then(function (response) {
-          return response.data;
+        var deferred = $q.defer();
+        getConfigProperties().then(function(properties) {
+          deferred.resolve(properties.endpoints);
         }, function(error) {
-          return {};
+          deferred.reject(error);
         });
-
+        return deferred.promise;
       },
       getExcludedValidationRuleIds : function() {
-        return $http.get('/config/endpointConfig.json').then(function(response) {
-          return response.data.excludedRuleIds;
+        var deferred = $q.defer();
+        getConfigProperties().then(function(properties) {
+          deferred.resolve(properties.excludedRuleIds);
         }, function(error) {
-          return [];
+          deferred.reject(error);
         });
+        return deferred.promise;
       },
       getWhiteListEligibleRuleIds : function() {
-        return $http.get('/config/endpointConfig.json').then(function(response) {
-          return response.data.whitelistEligibleIds;
+        var deferred = $q.defer();
+        getConfigProperties().then(function(properties) {
+          deferred.resolve(properties.whitelistEligibleIds);
         }, function(error) {
-          return [];
+          deferred.reject(error);
         });
+        return deferred.promise;
       }
     };
   }]);
