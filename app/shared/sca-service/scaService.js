@@ -369,9 +369,6 @@ angular.module('singleConceptAuthoringApp')
             conceptId = 'unsaved';
           }
 
-          //console.debug('getModifiedConceptForTask', projectKey, taskKey, conceptId);
-
-
 
           // TODO Refine this when support for multiple unsaved concepts goes in
           return $http({
@@ -442,8 +439,6 @@ angular.module('singleConceptAuthoringApp')
             console.warn('No concept id specified for saving concept to UI state, using "unsaved"');
             conceptId = 'unsaved';
           }
-
-          //console.debug('deleting modified concept', projectKey, taskKey);
 
           // TODO Refine this when support for multiple unsaved concepts goes in
           return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
@@ -614,11 +609,8 @@ angular.module('singleConceptAuthoringApp')
         updateTask: function (projectKey, taskKey, object) {
           var deferred = $q.defer();
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-            //notificationService.sendMessage('Task ' + taskKey + ' sucessfully
-            // updated.', 5000, null, null);
             deferred.resolve(response);
           }, function (error) {
-            //console.debug(error);
             deferred.reject(error.statusText);
           });
           return deferred.promise;

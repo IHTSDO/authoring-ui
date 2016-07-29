@@ -56,10 +56,8 @@ angular.module('singleConceptAuthoringApp')
             if (task) {
               scope.task = task;
               scope.reviewComplete = task.status !== 'In Review';
-              // console.debug('review complete', scope.reviewComplete);
               accountService.getRoleForTask(task).then(function (role) {
                 scope.role = role;
-                // console.debug('Role found: ', scope.role);
               });
 
 
@@ -82,7 +80,6 @@ angular.module('singleConceptAuthoringApp')
                   scope.reviewComplete = task.status !== 'In Review';
                   accountService.getRoleForTask(task).then(function (role) {
                     scope.role = role;
-                    // console.debug('Role found: ', scope.role);
                   });
                   console.log(oldStatus);
                   if (oldStatus === 'In Review' && task.status === 'In Progress') {
@@ -100,19 +97,6 @@ angular.module('singleConceptAuthoringApp')
           scope.conceptsToReviewViewed = [];
           scope.conceptsReviewedViewed = [];
           scope.allChecked = false;
-
-          // Cumbersome function to set selected flag on actual element
-          // May still be required in future to allow for filtering?
-          // SEE NOTE AT START
-//          scope.setSelected = function(concept) {
-//
-//            // cycle over concepts to review
-//            angular.forEach(scope.feedbackContainer.review.conceptsToReview,
-// function(c) { if (c.id === concept.id) {  // reverse the flag on both
-// elements c.selected = !c.selected; concept.selected = !concept.selected;
-// return; } });  // cycle over concepts reviewed
-// angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function(c)
-// { if (c.id === concept.id) { c.selected = !c.selected; return; } }); };
 
           // declare table parameters
           scope.conceptsToReviewTableParams = new NgTableParams({
@@ -146,8 +130,6 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter based on presence of feedback if requested
                   if (scope.viewOnlyConceptsWithFeedback) {
-                    // console.debug('Retrieving only concepts with messages');
-                    //myData =  $filter('filter')(myData, { 'messages': '!'});
 
                     var newData = [];
                     angular.forEach(myData, function (item) {
@@ -165,9 +147,6 @@ angular.module('singleConceptAuthoringApp')
                         }
                       });
                     });
-
-                    //  $scope.filteredItems = $filter('filter')($scope.items,
-                    // { 'colours': '!!' });
                   }
 
                   // hard set the new total
@@ -299,10 +278,8 @@ angular.module('singleConceptAuthoringApp')
                 if (task) {
                   scope.task = task;
                   scope.reviewComplete = task.status !== 'In Review';
-                  // console.debug('review complete', scope.reviewComplete);
                   accountService.getRoleForTask(task).then(function (role) {
                     scope.role = role;
-                    // console.debug('Role found: ', scope.role);
                   });
 
 
@@ -440,7 +417,6 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.selectAll = function (actionTab, isChecked) {
-            // console.debug('selectAll', actionTab, isChecked);
             if (actionTab === 1) {
               angular.forEach(scope.conceptsToReviewViewed, function (item) {
                 item.selected = isChecked;
@@ -540,8 +516,6 @@ angular.module('singleConceptAuthoringApp')
               addConceptStyles(response);
 
               deferred.resolve(response);
-
-              // console.debug('new viewed concepts', scope.viewedConcepts);
 
               // after a slight delay, broadcast a draw event
               $timeout(function () {
@@ -661,7 +635,6 @@ angular.module('singleConceptAuthoringApp')
               scope.addToReviewed({}, true, itemList);
             } else if (actionTab === 2) {
               angular.forEach(scope.conceptsReviewedViewed, function (item) {
-                // console.debug('checking item', item);
                 if (item.selected === true) {
 
                   scope.returnToReview(item, true);
@@ -677,8 +650,6 @@ angular.module('singleConceptAuthoringApp')
           // targetIndex: the point at which to insert the dropped concept
           // draggedConcept: {startIndex: N, concept: {...}}
           scope.dropConcept = function (droppedConcept, draggedConcept, actionTab) {
-
-            // console.debug('drop event', droppedConcept, draggedConcept, actionTab);
 
             if (droppedConcept === draggedConcept) {
               // do nothing if same target as source
@@ -711,12 +682,10 @@ angular.module('singleConceptAuthoringApp')
                 // NOTE: Compare by id, as dragged/dropped concepts have
                 // $hashkey which prevents true equality checking
                 if (newConceptArray[i].conceptId === droppedConcept.conceptId) {
-                  // console.debug('found dropped');
                   droppedIndex = i;
                 }
                 if (newConceptArray[i].conceptId === draggedConcept.conceptId) {
                   draggedIndex = i;
-                  // console.debug('found dragged');
                 }
               }
 
@@ -759,7 +728,6 @@ angular.module('singleConceptAuthoringApp')
 
           // allow for grouped reordering
           scope.groupSelectedConcepts = function (actionTab) {
-            // console.debug('reordering based on selected items for tab', actionTab);
 
             // copy array (for convenience) and disable sorting
             // otherwise grouping will be overriden
@@ -796,8 +764,6 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // console.debug('insert index', insertIndex);
-
             // check that a selected item was found and is not the last item
             if (insertIndex === -1 || insertIndex === newConceptArray.length - 1) {
               return;
@@ -814,7 +780,6 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // console.debug('elements to shift', conceptsToInsert);
 
             // splice in the array at the insert point
             Array.prototype.splice.apply(newConceptArray, [insertIndex, 0].concat(conceptsToInsert));
@@ -884,7 +849,6 @@ angular.module('singleConceptAuthoringApp')
             if (scope.feedbackContainer.review && !scope.feedbackContainer.review.conceptsToReview && !scope.feedbackContainer.review.conceptsReviewed) {
 
               console.debug('feedback container', scope.feedbackContainer);
-              // console.debug('Initial load detected, setting concepts to review & concepts reviewed', scope.feedbackContainer.review.concepts);
 
               // get the ui state
               var reviewedListIds = null;
@@ -1088,15 +1052,12 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.getConceptsForTypeahead = function (searchStr) {
-            // console.debug('entered getConceptsForTypeAhead', searchStr);
             return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
 
               // remove duplicates
               for (var i = 0; i < response.length; i++) {
-                // console.debug('checking for duplicates', i, response[i]);
                 for (var j = response.length - 1; j > i; j--) {
                   if (response[j].concept.conceptId === response[i].concept.conceptId) {
-                    // console.debug(' duplicate ', j, response[j]);
                     response.splice(j, 1);
                     j--;
                   }
@@ -1109,8 +1070,6 @@ angular.module('singleConceptAuthoringApp')
 
           function createConceptPlaceholder(conceptId, fsn) {
 
-            // console.debug('creating concept placeholder', conceptId, fsn);
-
             return '<span style="color: #00a6e5" id="id">' + fsn + '</span>';
           }
 
@@ -1121,8 +1080,6 @@ angular.module('singleConceptAuthoringApp')
            * @returns {string}
            */
           function createConceptImg(conceptId, fsn) {
-
-            // console.debug('creating concept img', conceptId, fsn);
 
             // testing creation of image
             var can = document.createElement('canvas');
@@ -1150,14 +1107,11 @@ angular.module('singleConceptAuthoringApp')
 
             var temp = scope.htmlVariable;
 
-            //var img = createConceptPlaceholder(concept.concept.conceptId,
-            // concept.concept.fsn);
             var img = createConceptImg(concept.concept.conceptId, concept.concept.fsn);
 
             temp = temp + img + '&nbsp';
 
             scope.htmlVariable = temp;
-            // console.debug(scope.htmlVariable);
           };
 
           /**
@@ -1182,7 +1136,6 @@ angular.module('singleConceptAuthoringApp')
            * @param concept the concept object
            */
           scope.dropConceptIntoEditor = function (concept) {
-            // console.debug('dropped concept into editor', concept);
             var img = createConceptImg(concept.conceptId, concept.term);
             scope.htmlVariable += '&nbsp ' + img + ' ';
 
@@ -1222,8 +1175,6 @@ angular.module('singleConceptAuthoringApp')
 
           scope.submitFeedback = function (requestFollowup) {
 
-            // console.debug('sending feedback', requestFollowup, scope.htmlVariable, 'here');
-
             if (!scope.htmlVariable || scope.htmlVariable.length === 0) {
               window.alert('Cannot submit empty feedback');
               return;
@@ -1245,24 +1196,16 @@ angular.module('singleConceptAuthoringApp')
              * @type {string}
              */
             var feedbackStr = scope.htmlVariable.replace(/<img [^>]* id="(\d+)-(.*?(?=-endConceptLink"))[^>]*>/g, '<a ng-click="addToEditFromConceptId($1)" style="cursor:pointer">$2</a>');
-            // console.debug(feedbackStr);
 
             notificationService.sendMessage('Submitting feedback...', null);
 
             // extract the subject concept ids
             var subjectConceptIds = [];
             angular.forEach(scope.subjectConcepts, function (subjectConcept) {
-              // console.debug('adding concept id', subjectConcept.conceptId, subjectConcept);
               subjectConceptIds.push(subjectConcept.conceptId);
             });
 
             scaService.addFeedbackToTaskReview($routeParams.projectKey, $routeParams.taskKey, feedbackStr, subjectConceptIds, requestFollowup).then(function (response) {
-
-//            angular.forEach(scope.subjectConcepts, function (subjectConcept) {
-//              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, subjectConcept.conceptId).then(function (response) {
-//                    subjectConcept.read = true;
-//                  });
-//            });
 
 
               // clear the htmlVariable and requestFolllowUp flag

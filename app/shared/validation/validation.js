@@ -54,8 +54,6 @@ angular.module('singleConceptAuthoringApp')
             scope.validationContainer = {executionStatus: '', report: ''};
           }
 
-          //console.debug('entered validation.js', scope.validationContainer);
-
           // the rules to exclude
 
 
@@ -135,7 +133,6 @@ angular.module('singleConceptAuthoringApp')
                       // otherwise return true
                       return true;
                     });
-                    // console.debug('filtered instances', scope.viewFullReport, filteredInstances);
                     assertionFailed.filteredCount = filteredInstances.length;
                   });
 
@@ -525,11 +522,9 @@ angular.module('singleConceptAuthoringApp')
               // if traceability found, extract the user modified concept ids
               if (traceability) {
                 angular.forEach(traceability.content, function (change) {
-                  //  console.debug('processing change', change.activityType, change.conceptChanges, change);
                   // if content change and concept change, push the id
                   if (change.activityType === 'CONTENT_CHANGE') {
                     angular.forEach(change.conceptChanges, function (conceptChange) {
-                      // console.debug('  processing concept change', conceptChange);
                       if (scope.userModifiedConceptIds.indexOf(conceptChange.conceptId) === -1) {
                         scope.userModifiedConceptIds.push(String(conceptChange.conceptId));
                       }
@@ -572,8 +567,6 @@ angular.module('singleConceptAuthoringApp')
             scope.whitelistEnabled = scope.whitelistEligibleRuleIds &&
               scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
 
-
-            //console.debug(assertionFailure.firstNInstances);
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
               var obj = {
@@ -714,8 +707,6 @@ angular.module('singleConceptAuthoringApp')
             var nConcepts = 0;
             notificationService.sendMessage('Loading concepts...');
 
-            //console.debug(scope.failures);
-
             // construct array of concept ids for previously loaded concepts
             var existingIds = scope.viewedConcepts.map(function (viewed) {
               return viewed.conceptId;
@@ -760,8 +751,6 @@ angular.module('singleConceptAuthoringApp')
 
               notificationService.sendMessage('Task ' + task.key + ' created', -1, '#/tasks/task/' + task.projectKey + '/' + task.key + '/edit');
 
-              //console.debug('Task created', task.projectKey, task.key);
-
               scaService.saveUiStateForTask(task.projectKey, task.key, 'edit-panel', editList).then(function (response) {
                 scaService.saveUiStateForTask(task.projectKey, task.key, 'saved-list', {items: savedList}); // TODO Seriously rethink the saved list
               });
@@ -773,8 +762,6 @@ angular.module('singleConceptAuthoringApp')
           scope.createTaskFromFailures = function () {
 
             notificationService.sendMessage('Constructing task from project validation...');
-
-            //console.debug('scope.failures.firstNInstances', scope.failures, scope.failures.firstNInstances);
 
             // attempt to construct the edit list from user selections
             var editList = [];
@@ -790,8 +777,6 @@ angular.module('singleConceptAuthoringApp')
                 editList.push(failure.errorMessage.conceptId);
               }
             });
-
-            //console.debug('editList', editList);
 
             // temporary restriction on number of items to prevent giant server
             // load
@@ -830,8 +815,6 @@ angular.module('singleConceptAuthoringApp')
                 if (savedList.length === editList.length) {
 
                   notificationService.sendMessage('Creating task...');
-
-                  //console.debug('idConceptMap', idConceptMap);
 
                   // construct the saved list and task details
                   var taskDetails = 'Error Type: ' + scope.assertionFailureViewed + '\n\n';

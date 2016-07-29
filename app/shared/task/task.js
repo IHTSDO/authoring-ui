@@ -3,7 +3,6 @@
 angular.module('singleConceptAuthoringApp')
   .controller('taskCtrl', function ($scope, $rootScope, $modalInstance, scaService, metadataService, task, canDelete) {
 
-    //console.debug('task.js with task', task);
     // scope variables
     $scope.projects = null;
     $scope.task = task;
@@ -51,8 +50,6 @@ angular.module('singleConceptAuthoringApp')
       $scope.disabled = true;
       scaService.createTaskForProject($scope.task.projectKey, $scope.task).then(
         function (response) {
-
-          //console.debug('MODAL: task created', response);
           // close modal
           $modalInstance.close(response);
         }, function (error) {
@@ -64,8 +61,6 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.updateTask = function () {
-
-      //console.debug('updateTask', $scope.task);
 
       // check that all required fields are present
       if (!$scope.task.summary) {

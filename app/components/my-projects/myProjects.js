@@ -16,8 +16,6 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
   .controller('MyProjectsCtrl', function MyProjectsCtrl($scope, $rootScope, ngTableParams, $filter, $modal, scaService, snowowlService, metadataService, notificationService) {
 
-    // console.debug('entered my projects ctrl');
-
     // clear task-related i nformation
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
@@ -95,7 +93,6 @@ angular.module('singleConceptAuthoringApp.myProjects', [
 
     // on successful set, reload table parameters
     $scope.$watch('projects', function () {
-      // console.debug('projects changed', $scope.projects);
       if (!$scope.projects || $scope.projects.length == 0) {
       }
       else {
@@ -123,16 +120,6 @@ angular.module('singleConceptAuthoringApp.myProjects', [
             });
           notificationService.sendMessage('Projects loaded', 5000);
       });
-
-//      angular.forEach(projectKeys, function(projectKey) {
-//        scaService.getProjectForKey(projectKey).then(function(project) {
-//          $scope.projects.push(project);
-//
-//          if ($scope.projects.length === projectKeys.length) {
-//            notificationService.sendMessage('Projects loaded', 5000);
-//          }
-//        });
-//      });
     }
 
     // Initialization:  get projects

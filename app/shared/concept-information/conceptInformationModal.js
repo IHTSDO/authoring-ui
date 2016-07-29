@@ -6,7 +6,6 @@ angular.module('singleConceptAuthoringApp.conceptInformationModal', [])
 
     $scope.conceptId = conceptId;
     $scope.branch = branch;
-    // console.debug('concept information entered', $scope.conceptId, $scope.branch);
 
     $scope.loadComplete = false;
 

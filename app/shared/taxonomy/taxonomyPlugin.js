@@ -33,7 +33,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
     // therefore only send the concept Id and let the drop target
     // function handle name retrieval
     $scope.getConceptPropertiesObj = function (conceptId) {
-      //console.debug('Getting concept properties obj', conceptId);
       return {id: conceptId, name: null};
     };
 
@@ -157,7 +156,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         });
 
         $("#" + panel.divElement.id + "-apply-button").click(function () {
-          //console.log("apply!");
           panel.readOptionsPanel();
           panel.setupParents([], {
             conceptId: 138875005,
@@ -227,8 +225,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           treeHtml = treeHtml.slice(0, -5);
         }
         treeHtml = treeHtml + "<ul>";
-
-        //ui-draggable='true' drag='getConceptPropertiesObj(" + focusConcept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel=''
         treeHtml = treeHtml + "<li data-concept-id='" + focusConcept.conceptId + "' data-term='" + focusConcept.defaultTerm + "' class='treeLabel'>";
         treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton'  id='" + panel.divElement.id + "-treeicon-" + focusConcept.conceptId + "'></i></button>";
         if (focusConcept.definitionStatus == "PRIMITIVE") {
@@ -275,12 +271,10 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             var iconId = panel.divElement.id + "-treeicon-" + conceptId;
             event.preventDefault();
             if ($("#" + iconId).hasClass("glyphicon-chevron-down")) {
-              //console.log("close");
               $(event.target).closest("li").find("ul").remove();
               $("#" + iconId).removeClass("glyphicon-chevron-down");
               $("#" + iconId).addClass("glyphicon-chevron-right");
             } else if ($("#" + iconId).hasClass("glyphicon-chevron-right")) {
-              //console.log("open");
               $("#" + iconId).removeClass("glyphicon-chevron-right");
               $("#" + iconId).addClass("glyphicon-refresh");
               $("#" + iconId).addClass("icon-spin");
@@ -311,7 +305,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         $("#" + iconId).removeClass("glyphicon-chevron-right");
         $("#" + iconId).addClass("glyphicon-refresh");
         $("#" + iconId).addClass("icon-spin");
-        //console.log("getChildren..." + focusConcept.conceptId);
         panel.getChildren(focusConcept.conceptId);
       }
 
@@ -336,7 +329,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
               return 1;
             return 0;
           })
-          //console.log(JSON.stringify(result));
           var listIconIds = [];
           $.each(result, function (i, field) {
             if (field.active == true) {
@@ -367,7 +359,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           }
           $("#" + panel.divElement.id + "-treenode-" + conceptId).after(
             $compile(nodeHtml)($scope));
-          //console.log(JSON.stringify(listIconIds));
           $.each(listIconIds, function (i, nodeId) {
             $('#' + panel.divElement.id + "-treenode-" + nodeId).draggable({
               appendTo: 'body',
@@ -464,10 +455,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       this.handleDropEvent = function (event, ui) {
         var draggable = ui.draggable;
 
-        //console.log(draggable.html() + " |  " +
-        // draggable.attr('data-concept-id') + ' was dropped onto me!');
         if (!draggable.attr('data-concept-id')) {
-          //console.log("ignore");
         } else {
           var conceptId = draggable.attr('data-concept-id');
           var term = draggable.attr('data-term');
@@ -482,9 +470,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         }
 
         if (!draggable.attr('data-panel')) {
-          //console.log("ignore");
         } else {
-          //console.log("OK : " + draggable.attr('data-panel'));
           $.each(componentsRegistry, function (i, field) {
             if (field.divElement.id == draggable.attr('data-panel')) {
               if (field.type == "concept-details") {
@@ -508,7 +494,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
               globalMarkerColor = 'black';
             }
             panel.markerColor = panel.getNextMarkerColor(globalMarkerColor);
-            //console.log(panel.markerColor);
             $("#" + panel.divElement.id + "-subscribersMarker").css('color', panel.markerColor);
             $("#" + panel.divElement.id + "-subscribersMarker").show();
           }
@@ -543,7 +528,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       }
 
       this.getNextMarkerColor = function (color) {
-//console.log(color);
         var returnColor = 'black';
         if (color == 'black') {
           returnColor = 'green';
@@ -556,7 +540,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         } else if (color == 'blue') {
           returnColor = 'green';
         }
-//console.log(returnColor);
         globalMarkerColor = returnColor;
         return returnColor;
       }
@@ -618,9 +601,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       } else {
         aux = $(ev.target).closest("div");
       }
-      //    while (typeof $(aux).closest('div').attr('ondrop') != "undefined"){
-      //        aux = $(aux).closest('div');
-      //    }
       $(aux).addClass("drop-highlighted");
     }
 
@@ -655,7 +635,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         icon = iconToDrag(term);
         ev.dataTransfer.setDragImage(icon, 0, 0);
       } else {
-        //            icon = iconToDrag(term);
       }
       ev.dataTransfer.setDragImage(icon, 0, 0);
       dataText = conceptId + "|" + term;
@@ -781,7 +760,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           module: module
         };
         if (!found) {
-          //            console.log(concept);
           favs.push(conceptId);
           localStorage.setItem("favs", favs);
           localStorage.setItem("conceptId:" + conceptId, JSON.stringify(concept));
@@ -838,7 +816,6 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         }
         if (!panelD) {
         } else {
-          //console.log("OK : " + draggable.attr('data-panel'));
           $.each(componentsRegistry, function (i, field) {
             if (field.divElement.id == panelD) {
               if (field.type == "concept-details") {

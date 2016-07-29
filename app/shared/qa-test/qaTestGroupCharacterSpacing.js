@@ -191,7 +191,6 @@ angular.module('singleConceptAuthoringApp')
             testFound = true;
             test.status = 'Pending';
             runHelper([test], 0).then(function() {
-              //console.debug('test complete', test);
               deferred.resolve(test);
             });
           }
@@ -220,7 +219,6 @@ angular.module('singleConceptAuthoringApp')
 
 
           // append results of test function to the test
-          //console.debug('runHelper response', response);
           test.results = response;
 
 
@@ -240,11 +238,7 @@ angular.module('singleConceptAuthoringApp')
               // strip unicode apostrophe characters and replace with normal apostrophe
               receivedError.message = receivedError.message.replace(/\u2019/g, '\'');
 
-              //console.debug('comparing errors');
-              //console.debug(test.expectedError);
-              //console.debug(receivedError.message);
               if (test.expectedError === receivedError.message) {
-                //console.debug('--> Match Found');
                 errorFound = true;
               }
             });
@@ -285,7 +279,6 @@ angular.module('singleConceptAuthoringApp')
        */
       function runTests(projectKey, taskKey) {
 
-        //console.debug('qaPackageCharacterSpacing: run test', projectKey,
         // taskKey);
 
         var deferred = $q.defer();

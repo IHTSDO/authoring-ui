@@ -49,17 +49,6 @@ angular.module('singleConceptAuthoringApp.search', [])
       }
     };
 
-    /*$scope.$on('savedListRemove', function (event, data) {
-      if (!data || !data.conceptId) {
-        return;
-      }
-    else{
-        $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").attr("disabled", false);
-        $("#bp-search_canvas-resultsTable").find("[data-concept-id='" + data.conceptId + "'].addButton").css("background-color", "rgb(250, 250, 250)");
-    }
-
-    });*/
-
     $scope.findItem = function (id) {
       if (!$scope.results) {
         return null;
@@ -96,7 +85,6 @@ angular.module('singleConceptAuthoringApp.search', [])
     // NOTE: Search plugin returns weird names it seems
     // so leave retrieval to the drop target function
     $scope.getConceptPropertiesObj = function (conceptId) {
-      //console.debug('Getting concept properties obj', conceptId);
       return {id: conceptId, name: null};
     };
 
@@ -130,109 +118,13 @@ angular.module('singleConceptAuthoringApp.search', [])
       this.history = [];
       this.setupCanvas = function () {
         var searchHtml = "<div style='5px 0px; height:95%;' class='panel panel-default'>";
-        /*  searchHtml = searchHtml + "<div class='panel-heading'>";
-         searchHtml = searchHtml + "<div class='row'>";
-         searchHtml = searchHtml + "<div class='col-md-8' id='" + panel.divElement.id + "-panelTitle'><strong><span class='i18n' data-i18n-id='i18n_search'>Search</span></span></strong></div>";
-         *///            searchHtml = searchHtml + "<div class='col-md-4 text-right'>";
-//            searchHtml = searchHtml + "<button id='" + panel.divElement.id +
-// "-linkerButton' class='btn btn-link jqui-draggable linker-button'
-// data-panel='" + panel.divElement.id + "' style='padding:2px'><i
-// class='glyphicon glyphicon-link'></i></button>" searchHtml = searchHtml +
-// "<button id='" + panel.divElement.id + "-historyButton' class='btn btn-link
-// history-button' style='padding:2px'><i class='glyphicon
-// glyphicon-time'></i></button>" searchHtml = searchHtml + "<button id='" +
-// panel.divElement.id + "-configButton' class='btn btn-link'
-// style='padding:2px' data-target='#" + panel.divElement.id +
-// "-configModal'><i class='glyphicon glyphicon-cog'></i></button>" searchHtml
-// = searchHtml + "<button id='" + panel.divElement.id + "-collapseButton'
-// class='btn btn-link' style='padding:2px'><i class='glyphicon
-// glyphicon-resize-small'></i></button>" searchHtml = searchHtml + "<button
-// id='" + panel.divElement.id + "-expandButton' class='btn btn-link'
-// style='padding:2px'><i class='glyphicon
-// glyphicon-resize-full'></i></button>" searchHtml = searchHtml + "<button
-// id='" + panel.divElement.id + "-closeButton' class='btn btn-link'
-// style='padding:2px'><i class='glyphicon glyphicon-remove'></i></button>"
-// searchHtml = searchHtml + "</div>";
-        /*            searchHtml = searchHtml + "</div>";
-         searchHtml = searchHtml + "</div>";*/
-        searchHtml = searchHtml + "<div style='height:100%; padding-left:8px;' id='" + panel.divElement.id + "-panelBody'>"; /* class='panel-body' */
+        searchHtml = searchHtml + "<div style='height:100%; padding-left:8px;' id='" + panel.divElement.id + "-panelBody'>";
         searchHtml = searchHtml + '<form>';
         searchHtml = searchHtml + '<div class="form-group" style="margin-bottom: 2px;">';
         searchHtml = searchHtml + '<div class="btn-group col-md-12 grey lighten-5 no-padding"><span class="pull-left search-snomed no-padding"><input type="search" class="form-control m-5" id="' + panel.divElement.id + '-searchBox" placeholder="Enter search terms here" autocomplete="off"></span>';
         searchHtml = searchHtml + '<span class="pull-right"><span id="'+ panel.divElement.id + '-clearButton" class="btn btn-round search-button btn-default grey lighten-5 snomed-clear"><span class="md md-clear"></span></span></span></div>';
         searchHtml = searchHtml + '</div>';
         searchHtml = searchHtml + '</form>';
-//            searchHtml = searchHtml + "<div id='" + panel.divElement.id +
-// "-searchConfigBar' style='margin-bottom: 10px;'><nav class='navbar
-// navbar-default' role='navigation' style='min-height: 28px;border-radius:
-// 0px;border-bottom: 1px lightgray solid;'>"; searchHtml = searchHtml + " <ul
-// class='nav navbar-nav navbar-left'>"; searchHtml = searchHtml + "     <li
-// class='dropdown' style='margin-bottom: 2px; margin-top: 2px;'>"; searchHtml
-// = searchHtml + "         <a href='javascript:void(0);'
-// class='dropdown-toggle' data-toggle='dropdown' style='padding-top: 2px;
-// padding-bottom: 2px;'><span id='" + panel.divElement.id +
-// "-navSearchModeLabel'></span> <b class='caret'></b></a>"; searchHtml =
-// searchHtml + "         <ul class='dropdown-menu' role='menu' style='float:
-// none;'>"; searchHtml = searchHtml + "             <li><button class='btn
-// btn-link' id='" + panel.divElement.id + "-fullTextButton'><span class='i18n'
-// data-i18n-id='i18n_full_text_search_mode'>Full text search
-// mode</span></button></li>"; searchHtml = searchHtml + "
-// <li><button class='btn btn-link' id='" + panel.divElement.id +
-// "-partialMatchingButton'><span class='i18n'
-// data-i18n-id='i18n_partial_match_search_mode'>Partial matching search
-// mode</span></button></li>"; searchHtml = searchHtml + "
-// <li><button class='btn btn-link' id='" + panel.divElement.id +
-// "-regexButton'><span class='i18n'
-// data-i18n-id='i18n_regex_search_mode'>Regular Expressions search
-// mode</span></button></li>"; searchHtml = searchHtml + "         </ul>";
-// searchHtml = searchHtml + "     </li>"; searchHtml = searchHtml + "     <li
-// class='dropdown' style='margin-bottom: 2px; margin-top: 2px;'>"; searchHtml
-// = searchHtml + "         <a href='javascript:void(0);'
-// class='dropdown-toggle' data-toggle='dropdown' style='padding-top: 2px;
-// padding-bottom: 2px;'><span id='" + panel.divElement.id +
-// "-navLanguageLabel'></span> <b class='caret'></b></a>"; searchHtml =
-// searchHtml + "         <ul class='dropdown-menu' role='menu' style='float:
-// none;'>"; searchHtml = searchHtml + "             <li><button class='btn
-// btn-link' id='" + panel.divElement.id + "-danishLangButton'><span
-// class='i18n' data-i18n-id='i18n_danish_stemmer'>Danish language
-// stemmer</span></button></li>"; searchHtml = searchHtml + "
-// <li><button class='btn btn-link' id='" + panel.divElement.id +
-// "-englishLangButton'><span class='i18n'
-// data-i18n-id='i18n_english_stemmer'>English language
-// stemmer</span></button></li>"; searchHtml = searchHtml + "
-// <li><button class='btn btn-link' id='" + panel.divElement.id +
-// "-spanishLangButton'><span class='i18n'
-// data-i18n-id='i18n_spanish_stemmer'>Spanish language
-// stemmer</span></button></li>"; searchHtml = searchHtml + "
-// <li><button class='btn btn-link' id='" + panel.divElement.id +
-// "-swedishLangButton'><span class='i18n'
-// data-i18n-id='i18n_swedish_stemmer'>Swedish language
-// stemmer</span></button></li>"; searchHtml = searchHtml + "         </ul>";
-// searchHtml = searchHtml + "     </li>"; searchHtml = searchHtml + "     <li
-// class='dropdown' style='margin-bottom: 2px; margin-top: 2px;'>"; searchHtml
-// = searchHtml + "         <a href='javascript:void(0);'
-// class='dropdown-toggle' data-toggle='dropdown' style='padding-top: 2px;
-// padding-bottom: 2px;'><span id='" + panel.divElement.id +
-// "-navStatusFilterLabel'></span> <b class='caret'></b></a>"; searchHtml =
-// searchHtml + "         <ul class='dropdown-menu' role='menu' style='float:
-// none;'>"; searchHtml = searchHtml + "             <li><button class='btn
-// btn-link' id='" + panel.divElement.id + "-activeOnlyButton'><span
-// class='i18n' data-i18n-id='i18n_active_only'>Active components
-// only</span></button></li>"; searchHtml = searchHtml + "
-// <li><button class='btn btn-link' id='" + panel.divElement.id +
-// "-activeInactiveButton'><span class='i18n'
-// data-i18n-id='i18n_active_and_inactive'>Active and inactive
-// components</span></button></li>"; searchHtml = searchHtml + "
-// <li><button class='btn btn-link' id='" + panel.divElement.id +
-// "-inactiveOnlyButton'><span class='i18n'
-// data-i18n-id='i18n_inactive_only'>Inactive components
-// only</span></button></li>"; searchHtml = searchHtml + "         </ul>";
-// searchHtml = searchHtml + "     </li>"; searchHtml = searchHtml + " </ul>";
-// searchHtml = searchHtml + "</nav></div>"; searchHtml = searchHtml + "<div
-// class='panel panel-default' style='height:70%;overflow:auto;margin-bottom:
-// 15px;min-height: 300px;' id='" + panel.divElement.id +
-// "-resultsScrollPane'>"; searchHtml = searchHtml + '<div id="' +
-// panel.divElement.id + '-searchBar"></div>'; searchHtml = searchHtml + '<div id="' + panel.divElement.id + '-searchFilters"></div>';
         searchHtml = searchHtml + "<table id='" + panel.divElement.id + "-resultsTable' class='table table-bordered grey lighten-5 col-md-12 no-padding'>";
         searchHtml = searchHtml + "</table>";
         searchHtml = searchHtml + "</div>";
@@ -248,18 +140,6 @@ angular.module('singleConceptAuthoringApp.search', [])
                 panel.search($this.val(),0,100,false);
             }, 500);
         });
-        //code to trigger search only if the last pressed key was enter
-//        $('#' + panel.divElement.id + '-searchBox').keyup(function (e) {
-//          //search only on pressing the enter key (key 13)
-//          if(e.which == 13) {
-//            clearTimeout(thread);
-//            var $this = $(this);
-//            thread = setTimeout(function () {
-//              panel.search($this.val(),0,100,false);
-//            }, 500);
-//          }
-//
-//        });
 
         $("#" + panel.divElement.id + "-expandButton").hide();
         $("#" + panel.divElement.id + "-subscribersMarker").hide();
@@ -268,7 +148,6 @@ angular.module('singleConceptAuthoringApp.search', [])
           console.log("Semtag click: " + $(this).html());
         });
 
-        //$("#" + panel.divElement.id + "-searchConfigBar").slideUp('fast');
         if (options.searchMode != "fullText") {
           $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').hide();
         }
@@ -337,9 +216,6 @@ angular.module('singleConceptAuthoringApp.search', [])
           panel.readOptionsPanel();
           var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
           console.log("searchTerm: " + searchTerm);
-//                if (searchTerm.length > 0) {
-//                    panel.search(searchTerm + " ",0,100,false);
-//                }
         });
         $("#" + panel.divElement.id + "-clearButton").click(function () {
           panel.options.semTagFilter = "none";
@@ -367,7 +243,6 @@ angular.module('singleConceptAuthoringApp.search', [])
               historyHtml = historyHtml + '<table>';
               var reversedHistory = panel.history.slice(0);
               reversedHistory.reverse();
-              //console.log(JSON.stringify(reversedHistory));
               $.each(reversedHistory, function (i, field) {
                 var d = new Date();
                 var curTime = d.getTime();
@@ -422,17 +297,6 @@ angular.module('singleConceptAuthoringApp.search', [])
           $("#" + panel.divElement.id + "-linkerButton").popover('toggle');
         });
 
-//            $("#" + panel.divElement.id + "-fullTextButton").click(function (event) {
-//                panel.options.searchMode = 'fullText';
-//                var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
-//                $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').show();
-//                if (searchTerm.charAt(0) == "^") {
-//                    $("#" + panel.divElement.id + '-searchBox').val(searchTerm.slice(1));
-//                }
-//                if (searchTerm.length > 0) {
-//                    panel.search(searchTerm,0,100,true);
-//                }
-//            });
         $("#" + panel.divElement.id + "-partialMatchingButton").click(function (event) {
           panel.options.searchMode = 'partialMatching';
           var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
@@ -440,30 +304,14 @@ angular.module('singleConceptAuthoringApp.search', [])
           if (searchTerm.charAt(0) == "^") {
             $("#" + panel.divElement.id + '-searchBox').val(searchTerm.slice(1));
           }
-//                if (searchTerm.length > 0) {
-//                    panel.search(searchTerm,0,100,true);
-//                }
         });
-//            $("#" + panel.divElement.id + "-regexButton").click(function (event) {
-//                panel.options.searchMode = 'regex';
-//                var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
-//                $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').hide();
-//                if (searchTerm.charAt(0) != "^") {
-//                    $("#" + panel.divElement.id + '-searchBox').val("^" + searchTerm);
-//                }
-//                if (searchTerm.length > 0) {
-//                    panel.search(searchTerm,0,100,true);
-//                }
-//            });
 
       }
 
       this.handlePanelDropEvent = function (event, ui) {
         var draggable = ui.draggable;
         if (!draggable.attr('data-panel')) {
-          //console.log("ignore");
         } else {
-          //console.log("OK : " + draggable.attr('data-panel'));
           $.each(componentsRegistry, function (i, field) {
             if (field.divElement.id == draggable.attr('data-panel')) {
               if (field.type == "concept-details") {
@@ -488,7 +336,6 @@ angular.module('singleConceptAuthoringApp.search', [])
         if (typeof forceSearch == "undefined") {
           forceSearch = false;
         }
-        // panel.divElement.id + '-typeIcon
         if (t != "" && (t != lastT || forceSearch)) {
           if (t.length < 3) {
             $('#' + panel.divElement.id + '-typeIcon').removeClass('glyphicon-ok');
@@ -505,12 +352,9 @@ angular.module('singleConceptAuthoringApp.search', [])
               panel.options.langFilter = "none";
             }
             lastT = t;
-            //console.log(t);
             var d = new Date();
             var time = d.getTime();
             panel.history.push({searchTerm: t, time: time});
-            //t = t.charAt(0).toUpperCase() + t.slice(1);
-            //console.log("Capitalized t: " + t);
             $('#' + panel.divElement.id + '-searchFilters').html("");
             if (skipTo == 0) {
               $('#' + panel.divElement.id + '-resultsTable').html("<i class='glyphicon glyphicon-refresh icon-spin'></i>");
@@ -523,8 +367,6 @@ angular.module('singleConceptAuthoringApp.search', [])
               console.log("aborting call...");
             }
             $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'>Searching..</span>");
-            //console.log("panel.options.searchMode " +
-            // panel.options.searchMode);
             t = t.trim();
             if (isNumber(t)) {
               if (t.substr(-2, 1) == "0") {
@@ -555,8 +397,6 @@ angular.module('singleConceptAuthoringApp.search', [])
                   });
                   $('#' + panel.divElement.id + '-resultsTable').find(".result-item").click(function (event) {
                     $.each(panel.subscribers, function (i, field) {
-                      //console.log("Notify to " + field.divElement.id + " selected " +
-                      // $(event.target).attr('data-concept-id'));
                       field.conceptId = $(event.target).attr('data-concept-id');
                       field.updateCanvas();
                     });
@@ -584,8 +424,6 @@ angular.module('singleConceptAuthoringApp.search', [])
                   });
                   $('#' + panel.divElement.id + '-resultsTable').find(".result-item").click(function (event) {
                     $.each(panel.subscribers, function (i, field) {
-                      //console.log("Notify to " + field.divElement.id + " selected " +
-                      // $(event.target).attr('data-concept-id'));
                       field.conceptId = $(event.target).attr('data-concept-id');
                       field.updateCanvas();
                     });
@@ -614,15 +452,8 @@ angular.module('singleConceptAuthoringApp.search', [])
                 $('#' + panel.divElement.id + '-resultsTable').find('.more-row').remove();
                 var endTime = Date.now();
                 var elapsed = (endTime - startTime)/1000;
-//                                if (result.details) {
-//                                    var searchComment = "<span
-// class='text-muted'>" + result.details.total + " matches found in " + elapsed
-// + " seconds.</span>"; }
-                //$('#' + panel.divElement.id +
-                // '-searchBar').html(searchComment);
                 xhr = null;
                 var matchedDescriptions = result;
-                //console.log(JSON.stringify(result));
 
                 if (!matchedDescriptions || matchedDescriptions.length <= 0) {
                   resultsHtml = resultsHtml + "<tr><td class='text-muted'>No results</td></tr>";
@@ -672,8 +503,6 @@ angular.module('singleConceptAuthoringApp.search', [])
                   $.each(matchedDescriptions, function (i, field) {
                     $scope.results = matchedDescriptions;
                     resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + field.concept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
-                    //console.log(field.active + " " +
-                    // field.conceptActive);
                     if (field.concept.active == false) {
                     }
                     else{
@@ -681,16 +510,6 @@ angular.module('singleConceptAuthoringApp.search', [])
                       resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' style='word-break: break-all' data-concept-id='" + field.concept.conceptId + "' data-term='" + "OHAI3 " +  field.term + "'>" + field.term + "</div></td><td style='word-break: break-all' class='text-muted small-text col-md-6 result-item'  data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr>"
                     }
                   });
-//                                    var remaining = result.length() - (skipTo
-// + returnLimit); if (remaining > 0) { resultsHtml = resultsHtml + "<tr
-// class='more-row'><td colspan='2' class='text-center'><button class='btn
-// btn-link' id='" + panel.divElement.id + "-more'>Load " + returnLimit +  "
-// more (" + remaining + " remaining on server)</button></td></tr>" } else {
-// resultsHtml = resultsHtml + "<tr class='more-row'><td colspan='2'
-// class='text-center text-muted'>All " + result.details.total + " results are
-// displayed</td></tr>" } if (skipTo == 0) { $('#' + panel.divElement.id +
-// '-resultsTable').html(resultsHtml); } else { $('#' + panel.divElement.id +
-// '-resultsTable').append(resultsHtml); }
 
 
                   // PG Need to compile added html for angular
@@ -708,10 +527,6 @@ angular.module('singleConceptAuthoringApp.search', [])
                   });
                   $('#' + panel.divElement.id + '-resultsTable').find(".result-item").click(function (event) {
                     $.each(panel.subscribers, function (i, field) {
-                      //console.log("Notify to " +
-                      // field.divElement.id + " selected
-                      // " +
-                      // $(event.target).attr('data-concept-id'));
                       field.conceptId = $(event.target).attr('data-concept-id');
                       field.updateCanvas();
                       lastClickedSctid = $(event.target).attr('data-concept-id');
@@ -744,7 +559,6 @@ angular.module('singleConceptAuthoringApp.search', [])
               globalMarkerColor = 'black';
             }
             panel.markerColor = panel.getNextMarkerColor(globalMarkerColor);
-            //console.log(panel.markerColor);
             $("#" + panel.divElement.id + "-subscribersMarker").css('color', panel.markerColor);
             $("#" + panel.divElement.id + "-subscribersMarker").show();
           }
@@ -779,7 +593,6 @@ angular.module('singleConceptAuthoringApp.search', [])
       }
 
       this.getNextMarkerColor = function (color) {
-        //console.log(color);
         var returnColor = 'black';
         if (color == 'black') {
           returnColor = 'green';
@@ -792,7 +605,6 @@ angular.module('singleConceptAuthoringApp.search', [])
         } else if (color == 'blue') {
           returnColor = 'green';
         }
-        //console.log(returnColor);
         globalMarkerColor = returnColor;
         return returnColor;
       }
@@ -818,7 +630,6 @@ angular.module('singleConceptAuthoringApp.search', [])
 
     function searchInPanel(divElementId, searchTerm) {
       $.each(componentsRegistry, function (i, field) {
-        //console.log(field.divElement.id + ' == ' + divElementId);
         if (field.divElement.id == divElementId) {
           $('#' + divElementId + '-searchBox').val(searchTerm);
           field.search(searchTerm,0,100,false);

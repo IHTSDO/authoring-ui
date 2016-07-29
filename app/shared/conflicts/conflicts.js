@@ -55,8 +55,6 @@ angular.module('singleConceptAuthoringApp')
                   return !conflict.accepted;
                 });
 
-                //   console.debug('conflictsTableParams getData', concepts);
-
                 if (!concepts) {
                   $defer.resolve([]);
                 } else {
@@ -98,8 +96,6 @@ angular.module('singleConceptAuthoringApp')
                   return conflict.accepted;
                 });
 
-                //   console.debug('conflictsTableParams getData', concepts);
-
                 if (!concepts) {
                   $defer.resolve([]);
                 } else {
@@ -107,7 +103,6 @@ angular.module('singleConceptAuthoringApp')
                   params.total(concepts.length);
                   concepts = params.sorting() ? $filter('orderBy')(concepts, params.orderBy()) : concepts;
                   concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  //    console.debug('concepts accepted page', concepts);
 
                   $defer.resolve(concepts);
                 }
@@ -116,8 +111,6 @@ angular.module('singleConceptAuthoringApp')
           );
 
           scope.$on('acceptMerge', function (event, data) {
-
-            //   console.debug('acceptMerge event', data);
 
             if (!data.concept) {
               console.error('AcceptMerge event must have concept attached');
@@ -202,8 +195,6 @@ angular.module('singleConceptAuthoringApp')
            */
           function mapComponents(merge) {
 
-            // console.debug('mapping components', merge);
-
             // initialize the mapped components array
             var mappedComponents = {};
 
@@ -261,8 +252,6 @@ angular.module('singleConceptAuthoringApp')
            */
           function highlightChanges(merge) {
 
-            // console.debug('highlighting merge changes for ', merge.fsn);
-
             // create blank styling object
             var styles = {
               source: {},
@@ -273,34 +262,23 @@ angular.module('singleConceptAuthoringApp')
             // map the components for convenience
             var mappedComponents = mapComponents(merge);
 
-            //console.debug('mapped components', mappedComponents);
-
             // cycle over each discovered componentId and check
             // equality/presence
             for (var key in mappedComponents) {
 
               var c = mappedComponents[key];
 
-              // console.debug('----------------------');
-              // console.debug('Checking component:', c);
-              // console.debug('----------------------');
-
               // Case 1: Source component not present in merged component -->
               // Removed in merge
               if (c.source && !c.merged) {
-                //   console.debug('key -> case 1');
                 styles.source[key] = {message: null, style: 'redhl'};
               }
 
               // Case 2: Source component present in merged
               if (c.source && c.merged) {
 
-                //   console.debug('Case 2: present in source, present in
-                // merged');
-
                 // Case 2a: Component not present in target --> Added by source
                 if (!c.target) {
-                  //     console.debug('key -> case 2a');
                   styles.source[key] = {message: null, style: 'bluehl'};
                   styles.merged[key] = {message: null, style: 'bluehl'};
                 }
@@ -308,7 +286,6 @@ angular.module('singleConceptAuthoringApp')
                 // Case 2b: Component present in target, but not equal -->
                 // Modified by merge Modified by target
                 else if (!componentAuthoringUtil.isComponentsEqual(c.source, c.merged)) {
-                  //     console.debug('key -> case 2b');
                   styles.source[key] = {message: null, style: 'bluehl'};
                   styles.merged[key] = {message: null, style: 'bluehl'};
                 }
@@ -316,19 +293,14 @@ angular.module('singleConceptAuthoringApp')
               // Case 3: Target component not present in merged component -->
               // Removed in merge
               if (c.target && !c.merged) {
-                //  console.debug('key -> case 3');
                 styles.target[key] = {message: null, styles: 'redhl'};
               }
 
               // Case 4: Target component present in merged
               if (c.target && c.merged) {
 
-                //  console.debug('Case 4: present in target, present in
-                // merged');
-
                 // Case 4a: Component not present in source --> Added by target
                 if (!c.source) {
-                  //    console.debug('key -> case 4a');
                   styles.target[key] = {message: null, style: 'tealhl'};
                   styles.merged[key] = {message: null, style: 'tealhl'};
                 }
@@ -336,7 +308,6 @@ angular.module('singleConceptAuthoringApp')
                 // Case 4b: Component present in target, but not equal -->
                 // Modified by merge Modified by target
                 else if (!componentAuthoringUtil.isComponentsEqual(c.target, c.merged)) {
-                  //    console.debug('key -> case 4b');
                   styles.target[key] = {message: null, style: 'tealhl'};
                   styles.merged[key] = {message: null, style: 'tealhl'};
 
@@ -344,7 +315,6 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // console.debug('styles after concept calculation', styles);
             return styles;
 
           }
@@ -409,8 +379,6 @@ angular.module('singleConceptAuthoringApp')
           var conceptMap = {};
 
           scope.viewConflict = function (conflict) {
-
-            //console.debug('viewing conflict', conflict);
 
             // if viewed, do not add
             if (!conflict.viewed) {
@@ -481,10 +449,6 @@ angular.module('singleConceptAuthoringApp')
               conflict.styles = highlightChanges(conflict);
               checkForInactiveMergedElements(conflict);
             });
-
-            //console.debug('viewedMerges', scope.viewedMerges);
-            // console.debug('conflicts', scope.conflicts);
-            // console.debug('styles', scope.styles);
 
             // get previously accepted merges, if they exist, and apply to
             // conflicts
@@ -615,30 +579,22 @@ angular.module('singleConceptAuthoringApp')
             // if ui-state has merge review id from previous visit
             if (mergeReviewId) {
 
-              //// console.debug('Previous merge-review exists with id: ' +
-              // mergeReviewId);
-
               snowowlService.getMergeReviewDetails(mergeReviewId).then(function (mergeReview) {
 
                 // Previous review is current and has concepts,
                 // initialize from this review
                 if (mergeReview && mergeReview.length > 0) {
-                  //// console.debug('Previous merge-review is current');
                   initializeMergeReview(mergeReview);
                 }
 
                 // Previous review is not current, generate new review
                 // and initialize from new review
                 else {
-                  //// console.debug('Previous merge-review is not current,
-                  // generating new merge-review');
                   snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                     if (newReview && newReview.length > 0) {
                       initializeMergeReview(newReview);
                     } else {
-                      //notificationService.sendMessage('TODO: Reenable
-                      // automatic rebase');
                       rebase(); // TODO Consider how we want to handle this
                       // scenario -- this rebase effectively is a
                       // null op but calls backend
@@ -654,14 +610,10 @@ angular.module('singleConceptAuthoringApp')
             // if no review or review not current, generate new merge
             // review
             else {
-              //  // console.debug('No review ui-state, generating new
-              // merge-review');
               snowowlService.generateMergeReview(scope.sourceBranch, scope.targetBranch).then(function (newReview) {
 
                 // DIVERGED, but no merges to resolve
                 if (!newReview || newReview.length === 0) {
-                  // notificationService.sendMessage('TODO: Reenable automatic
-                  // rebase');
                   rebase();
                 }
 

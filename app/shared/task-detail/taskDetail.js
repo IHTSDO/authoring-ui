@@ -50,8 +50,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         promotionService.checkPrerequisitesForTask($routeParams.projectKey, $routeParams.taskKey).then(function (flags) {
 
-          //console.debug('promotion flags', flags);
-
           // detect whether any user warnings were detected
           var warningsFound = false;
           angular.forEach(flags, function (flag) {
@@ -63,9 +61,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // if response contains no flags, simply promote
           if (!warningsFound) {
             notificationService.sendMessage('Promoting task...');
-
-            // manually lock the task in expectation of server lock post-promotion
-            //lockTask();
 
             scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               notificationService.sendMessage('Task successfully promoted', 5000);
@@ -91,9 +86,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             modalInstance.result.then(function (proceed) {
               if (proceed) {
                 notificationService.sendMessage('Promoting task...');
-
-                // manually lock the task in expectation of server lock post-promotion
-                //lockTask();
 
                 scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   notificationService.sendMessage('Task successfully promoted', 5000);
@@ -178,7 +170,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
         modalInstance.result.then(function (response) {
-          //console.debug('UPDATE TASK:', response);
 
           // check for task deletion
           if (response === 'DELETED') {
@@ -212,26 +203,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         });
 
       };
-
-
-      //
-      // Project polling for lock status updates
-      // TODO Inquire as to whether notifications can serve this purpose? Seems like locking would be a branch state notification
-      // TODO Update: Changing project metadata does not trigger a notification
-      //
-//      var projectPoll = null;
-      //      function pollProjectStatus() {
-//        snowowlService.getBranch('MAIN' + '/' + $routeParams.projectKey).then(function (response) {
-//
-//          $scope.projectBranch = response;
-//
-//          // if a timeout already scheduled, cancel it
-//          if (projectPoll) {
-//            $timeout.cancel(projectPoll);
-//          }
-//          projectPoll = $timeout(pollProjectStatus, 4000);
-//        });
-//      };
 
       function initialize() {
 
@@ -273,9 +244,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
 // re-initialize if concept change occurs and task is new
       $scope.$on('conceptEdit.conceptModified', function (event, data) {
-        //console.debug('taskDetail received conceptModified broadcast', $scope.task, data);
         if ($scope.task.status === 'Review Completed') {
-          //console.debug('updating task');
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
             $scope.task = response;
           });
