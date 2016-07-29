@@ -1,26 +1,28 @@
 <div id="inactivateComponentModal" class="clearfix">
 
-  <div class="modal-header">
+  <div ng-if="!deletion" class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4 class="modal-title">Select Reason For Inactivating {{componentType}}</h4>
   </div>
-
+  <div ng-if="deletion" class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Deleting {{componentType}}</h4>
+  </div>
 
   <div class="modal-body">
 
-    <!-- Display if concept cannot be activated due to stated parent condition -->
-    <div class="alert alert-warning p-10" ng-if="statedChildrenFound">
-      Warning:  Concept is a stated parent. Inactivation will reassign children to the nearest proximal concept.
-    </div>
-
-    <div class="row classification-report ">
+    <div class="row classification-report">
       <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
 
-      <li role="presentation" ng-class="{active : actionTab === 1}" class=""><a style="margin: 0px"
+      <li ng-if="!deletion" role="presentation" ng-class="{active : actionTab === 1}" class=""><a style="margin: 0px"
                                                                                 ng-click="actionTab=1"
                                                                                 aria-controls="home" role="tab"
                                                                                 data-toggle="tab"> Inactivation
                                                                                                    Reason</a></li>
+      <li ng-if="deletion" role="presentation" ng-class="{active : actionTab === 1}" class=""><a style="margin: 0px"
+                                                                                ng-click="actionTab=1"
+                                                                                aria-controls="home" role="tab"
+                                                                                data-toggle="tab"> Deletion</a></li>
       <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 2}" class=""><a
         ng-click="actionTab=2" aria-controls="home"
         role="tab"
@@ -55,7 +57,7 @@
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
 
       <!-- reasons select -->
-      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
+      <div ng-if="!deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
         <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
 
 
@@ -116,6 +118,18 @@
       
 
 
+      </div>
+        
+      <div ng-if="deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
+        <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading">
+            Checking inbound relationships...
+        </div>
+        <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsTotal === 0">
+            No inbound relationships found - Concept may be deleted.
+        </div>
+        <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
+            Inbound relationships found - Please review and remove these relationships in the edit panel prior to deleting this concept.
+        </div>
       </div>
 
 
@@ -178,8 +192,8 @@
 
   </div>
 
-  <div class="modal-footer">
-  <div class="row col-md-12 no-padding top-modal">
+  <div class="modal-footer" ng-if="!deletion">
+    <div class="row col-md-12 no-padding top-modal">
         <style>
 		.top-modal .col-md-6.left-button{padding-left:0px}
 		.top-modal .col-md-6.right-button{padding-right:0px}
@@ -196,6 +210,30 @@ Cancel {{componentType}} Inactivation
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
                   ng-click="selectReason()">
 Continue with {{componentType}} Inactivation
+          </button>
+</div>
+   
+        </div>
+  </div>
+    <div class="modal-footer" ng-if="deletion">
+    <div class="row col-md-12 no-padding top-modal">
+        <style>
+		.top-modal .col-md-6.left-button{padding-left:0px}
+		.top-modal .col-md-6.right-button{padding-right:0px}
+		</style>
+         <div class=" col-md-6 left-button ">
+          <button type="button"
+                  class="btn btn-default red p-10 inactivation-button-modal m-t-20"
+                  ng-click="cancel()">
+Cancel Deletion
+          </button>
+</div>
+          <div class=" col-md-6 right-button">
+          <button type="button"
+                  ng-disabled="inboundRelationshipsTotal !== 0"
+                  class="btn btn-default green p-10 inactivation-button-modal m-t-20"
+                  ng-click="delete()">
+Confirm Deletion
           </button>
 </div>
    

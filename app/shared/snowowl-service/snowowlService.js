@@ -331,6 +331,17 @@ angular.module('singleConceptAuthoringApp')
           // TODO Handle error
         });
       }
+        
+      // Delete an unpublished concept
+      // DELETE /{path}/concepts/{conceptId}
+      function deleteConcept(conceptId, branch) {
+        // call and return promise
+        return $http.delete(apiEndpoint + branch + '/concepts/' + conceptId).then(function (response) {
+          return response.data;
+        }, function (error) {
+          // TODO Handle error
+        });
+      }
 
       // Retrieve children of a concept
       // GET /{path}/concepts/{conceptId}/children
@@ -1313,6 +1324,7 @@ angular.module('singleConceptAuthoringApp')
         createConcept: createConcept,
         inactivateConcept: inactivateConcept,
         inactivateDescription: inactivateDescription,
+        deleteConcept: deleteConcept,
         getConceptParents: getConceptParents,
         getConceptChildren: getConceptChildren,
         getStatedConceptChildren: getStatedConceptChildren,
