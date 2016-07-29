@@ -588,14 +588,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // cascades to children components
         // NOTE: This function hard-saves the concept, to prevent sync errors
         // between inactivation reason persistence and concept state
-        scope.toggleConceptActive = function () {
+        scope.toggleConceptActive = function (concept, deletion) {
 
           console.debug('toggling concept active');
 
-          if (!scope.concept.released) {
-            notificationService.sendWarning('Removal of unreleased content is not yet supported');
-            return;
-          }
+//          if (!scope.concept.released) {
+//            notificationService.sendWarning('Removal of unreleased content is not yet supported');
+//            return;
+//          }
           if (scope.isStatic) {
             return;
           }
@@ -640,7 +640,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise, proceed with checks and inactivation reason persistence
           else {
-            // mimic actual inactivation
+            if(deletion)
+            {
+                selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch, deletion).then(function (results) {
+                    if(results.deletion){
+                        notificationService.sendMessage('Deleting Concept...');
+                        snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function(response){
+                            if(response.status === 409)
+                            {
+                                notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
+                            }
+                            else{
+                                scope.removeConcept(scope.concept);
+                                notificationService.sendMessage('Concept Deleted', 5000);
+                            }
+                        });
+                    }
+                });
+            }
+            else{
+                // mimic actual inactivation
             var conceptCopy = angular.copy(scope.concept);
             conceptCopy.isLeafInferred = true;
 
@@ -681,8 +700,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               });
             });
-
-
+            }
           }
 
         };
@@ -1476,7 +1494,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 ////////////////////////////////
 
 // deactivation modal for reason s elect
-        var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, branch) {
+        var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, branch, deletion) {
 
           // console.debug('selectInactivationReason', componentType,
           // reasons, associationTargets, conceptId, branch);
@@ -1509,8 +1527,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               },
               branch: function () {
                 return branch;
+              },
+              deletion: function(){
+                return deletion;  
               }
-
             }
           });
 

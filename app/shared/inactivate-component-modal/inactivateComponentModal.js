@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch, $routeParams, $q) {
+  .controller('inactivateComponentModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, snowowlService, componentType, reasons, associationTargets, conceptId, branch, deletion, $routeParams, $q) {
 
     // the selected tab
     $scope.actionTab = 1;
@@ -25,7 +25,8 @@ angular.module('singleConceptAuthoringApp')
 
     // required arguments
     $scope.componentType = componentType;
-    $scope.reasons = reasons;
+    $scope.componentType = componentType;
+    $scope.deletion = deletion;
 
     // optional arguments (but if conceptId or branch specified, the other must
     // be as well)
@@ -205,6 +206,13 @@ angular.module('singleConceptAuthoringApp')
 
         $modalInstance.close(results);
       }
+    };
+    
+    $scope.delete = function () {
+
+        var results = {};
+        results.deletion = true;
+        $modalInstance.close(results);
     };
 
     $scope.tableLimit = 200;
