@@ -13,6 +13,10 @@
 
 	<properties>
 		<packageName>${project.artifactId}</packageName>
+		<sonar.sources>app</sonar.sources>
+		<sonar.tests>test</sonar.tests>
+		<sonar.javascript.lcov.reportPath>reports/coverage/lcov.info</sonar.javascript.lcov.reportPath>
+		<sonar.surefire.reportsPath>reports/junit</sonar.surefire.reportsPath>
 	</properties>
 
 	<build>
