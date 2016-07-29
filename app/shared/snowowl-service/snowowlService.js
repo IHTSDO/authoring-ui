@@ -15,10 +15,8 @@ angular.module('singleConceptAuthoringApp')
         console.debug('create concept', concept);
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
-          //console.debug('createConcept success', response);
           deferred.resolve(response.data);
         }, function (error) {
-          // console.debug('createConcept failure', error);
           deferred.reject(error);
         });
         return deferred.promise;
@@ -58,11 +56,8 @@ angular.module('singleConceptAuthoringApp')
           intervalTime = 1000;
         }
 
-        //console.debug('polling for ' + mergeReviewId + ' with interval ' + intervalTime);
-
         $timeout(function () {
           $http.get(url).then(function (response) {
-            //console.debug('poll response', response.data);
 
             // if review is ready, get the details
             if (response && response.data && response.data.status === 'COMPLETED') {
@@ -84,8 +79,6 @@ angular.module('singleConceptAuthoringApp')
 
       // function to remove disallowed elements from a concept
       function cleanConcept(concept) {
-
-        //console.debug('cleaning concept', concept);
 
         // strip unknown tags
         var allowableProperties = [
@@ -228,7 +221,6 @@ angular.module('singleConceptAuthoringApp')
 
       // get relationship changes as csv results
       function downloadClassification(classifierId, branch) {
-        // console.debug('downloadClassification', classifierId, branch);
         return $http({
           'method': 'GET',
           'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
@@ -407,8 +399,6 @@ angular.module('singleConceptAuthoringApp')
        */
       function inactivateConcept(branch, conceptId, inactivationIndicator, associationTargets) {
 
-        //console.debug('inactivating concept', conceptId, branch, inactivationIndicator, associationTargets);
-
         var deferred = $q.defer();
 
         if (!conceptId) {
@@ -451,8 +441,6 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function inactivateDescription(branch, descriptionId, inactivationIndicator) {
-
-        //console.debug('deactivating description', descriptionId, branch, inactivationIndicator);
 
         var deferred = $q.defer();
 
@@ -549,11 +537,8 @@ angular.module('singleConceptAuthoringApp')
 
         $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/inbound-relationships?expand=source.fsn,type.fsn' + (offset === -1 ? '' : '&offset=' + offset) + (limit === -1 ? '' : '&limit=' + limit)).then(function (response) {
 
-          //console.debug('inbound', response);
-
           // if zero-count, return empty array (no blank array returned)
           if (response.data.total === 0) {
-            //console.debug('returning []');
             deferred.resolve({total: 0, inboundRelationships: []});
           } else {
 
@@ -683,8 +668,6 @@ angular.module('singleConceptAuthoringApp')
             module.branch = branch;
             module.name = response.fsn;
 
-            // console.log('Added module', module);
-
             modules.push(module);
           });
 
@@ -704,7 +687,6 @@ angular.module('singleConceptAuthoringApp')
           }
         });
         $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()&escg=' + queryString).then(function (response) {
-          // console.debug('sn  owowl', response.data);
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
@@ -721,7 +703,6 @@ angular.module('singleConceptAuthoringApp')
       // TODO:  Currently unused, language options are extracted from dialects
       function addLanguages(newLanguages) {
         languages = languages.concat(newLanguages);
-        // console.log('Language Options set to', languages);
       }
 
       // get language options
@@ -733,7 +714,6 @@ angular.module('singleConceptAuthoringApp')
       // add new dialect options
       function addDialects(newDialects) {
         dialects = dialects.concat(newDialects);
-        // console.debug('Dialect options set to: ', dialects);
       }
 
       // get dialect options
@@ -795,8 +775,6 @@ angular.module('singleConceptAuthoringApp')
           // if concept id
           if (searchStr.substr(-2, 1) === '0') {
 
-            //console.debug('concept id detected');
-
             // use browser/{path}/concepts/{id} call
             $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/concepts/' + searchStr, config).then(function (response) {
 
@@ -822,8 +800,6 @@ angular.module('singleConceptAuthoringApp')
 
           // if description id
           else if (searchStr.substr(-2, 1) === '1') {
-
-            //console.debug('description id detected');
 
             // use {path}/descriptions/id call
             $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions/' + searchStr).then(function (response) {
@@ -859,8 +835,6 @@ angular.module('singleConceptAuthoringApp')
           // if relationship id
           else if (searchStr.substr(-2, 1) === '2') {
 
-            //console.debug('relationship id detected');
-
             // use {path}/descriptions/id call
             $http.get(apiEndpoint + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/relationships/' + searchStr).then(function (response) {
 
@@ -884,8 +858,6 @@ angular.module('singleConceptAuthoringApp')
                     moduleId: sourceResponse.data.moduleId
                   }
                 };
-
-                //console.debug('source', source);
 
                 if (source && target) {
                   deferred.resolve([source, target]);
@@ -912,8 +884,6 @@ angular.module('singleConceptAuthoringApp')
                   }
                 };
 
-                //console.debug('target', target);
-
                 if (source && target) {
                   deferred.resolve([source, target]);
                 }
@@ -929,7 +899,6 @@ angular.module('singleConceptAuthoringApp')
 
           // otherwise, unsupported component type
           else {
-            //console.debug('Numeric value could not be determined, rejecting');
             deferred.reject('Could not parse numeric value (not a concept, description, or relationship SCTID)');
           }
         }
@@ -941,7 +910,6 @@ angular.module('singleConceptAuthoringApp')
           $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset + descTypeStr, config).then(function (response) {
             deferred.resolve(response.data);
           }, function (error) {
-            //console.debug(error);
             if (error.status === 500) {
               deferred.reject('Unexpected server error.  Please check your search terms and try again.');
             } else {
@@ -1097,11 +1065,8 @@ angular.module('singleConceptAuthoringApp')
           intervalTime = 1000;
         }
 
-        //console.debug('polling for ' + mergeReviewId + ' with interval ' + intervalTime);
-
         $timeout(function () {
           $http.get(apiEndpoint + 'merge-reviews/' + mergeReviewId).then(function (response) {
-            //console.debug('poll response', response.data);
 
             // if review is ready, get the details
             if (response && response.data && response.data.status === 'CURRENT') {
@@ -1133,24 +1098,17 @@ angular.module('singleConceptAuthoringApp')
        * @returns {*}
        */
       function generateMergeReview(parentBranch, childBranch) {
-
-        //console.debug('Generating merge review', parentBranch, childBranch);
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'merge-reviews', {
           source: parentBranch,
           target: childBranch
         }).then(function (response) {
-          //console.debug(response, response.headers);
-          //console.debug(response.headers('Location'));
 
           // extract the merge-review id from the location header
           var locHeader = response.headers('Location');
           var mergeReviewId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
 
-          // console.debug('merge-review id', mergeReviewId);
-
           pollForReview(mergeReviewId, 1000).then(function (response) {
-            //console.debug('end poll result', response);
             response.id = mergeReviewId;
             deferred.resolve(response);
           }, function (error) {
@@ -1279,7 +1237,6 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
-          //console.debug('validate success');
 
           // TODO Remove this once WRP-2912 addressed
           // remove any duplicate values
@@ -1298,7 +1255,6 @@ angular.module('singleConceptAuthoringApp')
 
           deferred.resolve(items);
         }, function (error) {
-          //console.debug('validate error', error);
           deferred.reject(error.message);
         });
         return deferred.promise;

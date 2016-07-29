@@ -41,8 +41,6 @@ angular.module('singleConceptAuthoringApp')
               return;
             }
 
-            // console.debug(scope.classificationContainer.status);
-
             switch (scope.classificationContainer.status) {
               case 'COMPLETED':
               case 'SAVING_IN_PROGRESS':
@@ -60,12 +58,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           $rootScope.$on('stopEditing', function (event, data) {
-            //   console.debug('classification received stopEditing event',
-            // data.concept);
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
-              //   console.debug('comparing',
-              // scope.viewedConcepts[i].conceptBefore.conceptId,
-              // data.concept.conceptId);
               if (scope.viewedConcepts[i].conceptId === data.concept.conceptId) {
 
                 scope.viewedConcepts.splice(i, 1);
@@ -118,7 +111,6 @@ angular.module('singleConceptAuthoringApp')
                   conceptModelObj.conceptAfter = secondResponse;
 
                   scope.viewedConcepts.push(conceptModelObj);
-                  // console.debug('conceptPairObj', conceptModelObj);
                   notificationService.clear();
 
                   // after a slight delay, broadcast a draw and taxonomy
@@ -130,7 +122,6 @@ angular.module('singleConceptAuthoringApp')
                 });
               } else {
                 scope.viewedConcepts.push(conceptModelObj);
-                // console.debug('conceptPairObj', conceptModelObj);
                 notificationService.clear();
 
                 // after a slight delay, broadcast a draw event
@@ -166,20 +157,14 @@ angular.module('singleConceptAuthoringApp')
           // creates element for dialog download of classification data
           scope.dlcDialog = (function (data, fileName) {
 
-            //console.debug('classification data: ', data, fileName);
-
             // create the hidden element
             var a = document.createElement('a');
             document.body.appendChild(a);
-            //a.style = "display: none";
 
             return function (data, fileName) {
               var
                 blob = new Blob([data], {type: 'text/csv'}),
                 url = window.URL.createObjectURL(blob);
-
-              // console.debug('blob', blob);
-              // console.debug('url', url);
               a.href = url;
               a.download = fileName;
               a.click();
@@ -192,7 +177,6 @@ angular.module('singleConceptAuthoringApp')
            * task/project eligible
            */
           function saveClassificationHelper() {
-            // console.debug('saveClassificationHelper');
             snowowlService.saveClassification(scope.branch, scope.classificationContainer.id).then(function (data) {
               if (!data) {
                 notificationService.sendError('Saving classification aborted', 0);
@@ -252,8 +236,6 @@ angular.module('singleConceptAuthoringApp')
                   // update the status
                   scope.classificationContainer.status = response.status;
 
-
-                  //console.debug('status', response.status);
                   if (response.status === 'SAVED') {
 
                     notificationService.sendMessage('Classification saved', 5000);
@@ -281,26 +263,22 @@ angular.module('singleConceptAuthoringApp')
                     scope.stopSavingClassificationPolling();
 
                     // save the ui state based on response status
-//                    scope.saveClassificationUiState(response.status);
                   }
                   else if (response.status === 'STALE') {
                     notificationService.sendWarning('Report Stale, please re-classify and save.');
 
                     scope.stopSavingClassificationPolling();
 
-//                    scope.saveClassificationUiState(response.status);
                   }
                   else if (response.status === 'SAVE_FAILED') {
                     notificationService.sendError('Saving classification aborted');
 
                     scope.stopSavingClassificationPolling();
 
-//                    scope.saveClassificationUiState(response.status);
                   }
                 });
               } else {
                 snowowlService.getClassificationForProject($routeParams.projectKey, scope.classificationContainer.id).then(function (response) {
-                  //   console.debug('status', response.status);
                   if (response.status === 'SAVED') {
 
                     notificationService.sendMessage('Classification saved', 5000);
@@ -329,11 +307,8 @@ angular.module('singleConceptAuthoringApp')
 
                     scope.stopSavingClassificationPolling();
 
-                    // save the ui state based on response status
-//                    scope.saveClassificationUiState(response.status);
                   }
 
-                  //   console.debug('response not saved');
                 });
               }
             }, 5000);
@@ -381,8 +356,6 @@ angular.module('singleConceptAuthoringApp')
           scope.downloadClassification = function () {
 
             snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
-              // console.debug('classification csv retrieved, opening dialog
-              // with', data);
               var fileName = 'classifier_' + $routeParams.taskKey;
               scope.dlcDialog(data.data, fileName);
             });
@@ -401,7 +374,6 @@ angular.module('singleConceptAuthoringApp')
           scope.$watch('classificationContainer', function () {
 
             if (!scope.classificationContainer || !scope.classificationContainer.id) {
-              //console.debug('Either container or its id is null');
               return;
             }
 
@@ -424,18 +396,6 @@ angular.module('singleConceptAuthoringApp')
             if (scope.classificationContainer.status === 'SAVING_IN_PROGRESS') {
               scope.startSavingClassificationPolling();
             }
-
-            // otherwise, if saved, check if save event previously detected
-//            else if (scope.classificationContainer.status === 'SAVED') {
-//
-//              scope.getClassificationUiState().then(function (response) {
-//
-//                // if no ui state for this classification id, save one
-//                if (!response) {
-//                  scope.saveClassificationUiState(scope.classificationContainer.status);
-//                }
-//              });
-//            }
 
             // get relationship changes
             snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {
@@ -483,14 +443,12 @@ angular.module('singleConceptAuthoringApp')
                 equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
                 scope.equivalentConcepts = [];
                 angular.forEach(equivalentConcepts, function (item) {
-                  //console.log(item.equivalentConcepts);
                   if (item.equivalentConcepts.length === 2) {
                     scope.equivalentConcepts.push(item.equivalentConcepts);
                   }
                   else {
                     var key = item.equivalentConcepts[0];
                     angular.forEach(item.equivalentConcepts, function (equivalence) {
-                      // console.log(item);
                       if (equivalence !== key) {
                         var newEq = [];
                         newEq.push(key);
@@ -513,8 +471,6 @@ angular.module('singleConceptAuthoringApp')
           }, true);
 
           scope.viewConceptInTaxonomy = function (concept) {
-            // console.debug('broadcasting viewTaxonomy event to taxonomy.js',
-            // concept);
             $rootScope.$broadcast('viewTaxonomy', {
               concept: {
                 conceptId: concept.conceptId,

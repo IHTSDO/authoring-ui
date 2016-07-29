@@ -72,7 +72,6 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       return $scope.editList.indexOf(item.concept.conceptId) !== -1;
     };
     $scope.viewConceptInTaxonomy = function (item) {
-      //console.debug('broadcasting viewTaxonomy event to taxonomy.js', item);
       $rootScope.$broadcast('viewTaxonomy', {
         concept: {
           conceptId: item.concept.conceptId,
@@ -111,7 +110,6 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         console.error('Cannot handle concept modification event: concept must be supplied');
       } else {
         if ($scope.savedList) {
-          //console.debug('conceptModified notification', data);
           // sample structure for favorites
           //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
           angular.forEach($scope.savedList.items, function (item) {

@@ -42,7 +42,6 @@ angular.module( 'singleConceptAuthoringApp.test', [
     angular.forEach($scope.testPackages, function (testPackage) {
       var results = testPackage.getResults();
       testPackage.results = results;
-      // console.debug('testpackage w/results', testPackage);
     });
 
 
@@ -52,16 +51,12 @@ angular.module( 'singleConceptAuthoringApp.test', [
       var resultsPolling = $interval(function() {
 
         var results = testPackage.getResults();
-        //console.debug('polling for results', results);
         testPackage.results = results;
-        //console.debug('polling result', $scope.results);
       }, 2000);
     };
 
     $scope.runSingleTest = function (testPackage, testGroupName, test) {
-      // console.debug('running single test', test);
       testPackage.runSingleTest(testGroupName, test.name, $scope.projectKey, $scope.taskKey).then(function(response) {
-        // console.debug('single test complete & response', test, response);
         test = response;
       });
     };

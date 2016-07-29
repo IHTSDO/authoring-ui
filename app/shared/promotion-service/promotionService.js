@@ -69,18 +69,6 @@ angular.module('singleConceptAuthoringApp')
                 });
               }
 
-              ////////////////////////////////////////////////////////////
-              // CHECK:  Unread Review messages?
-              ////////////////////////////////////////////////////////////
-//                    if (branchStatus.feedbackMessagesStatus === 'unread') {
-//                      flags.push({
-//                        checkTitle: 'Review contains unread feedback',
-//                        checkWarning: 'All feedback against concepts within this task has not been read',
-//                        blocksPromotion: false
-//                      });
-//                    }
-              //console.debug('resolving');
-
               deferred.resolve(flags);
             });
           }
@@ -91,13 +79,10 @@ angular.module('singleConceptAuthoringApp')
 
           // get the ui state for classiifcation saving timestamp and status
           // information
-//          scaService.getUiStateForUser('classification-' + latestClassificationJson.id).then(function (classificationStatus) {
 
 
           // get the branch details
           snowowlService.getBranch(branch).then(function (branchStatus) {
-
-              //console.debug('branch', branchStatus);
 
               if (!branchStatus) {
                 flags.push({
@@ -115,14 +100,12 @@ angular.module('singleConceptAuthoringApp')
 
               if (latestClassificationJson.status === 'COMPLETED' || latestClassificationJson.status === 'SAVING_IN_PROGRESS' || latestClassificationJson.status === 'SAVED') {
 
-                //console.debug('classification run -- YES');
                 flags.push({
                   checkTitle: 'Classification Run',
                   checkWarning: null,
                   blocksPromotion: false
                 });
               } else {
-                //console.debug('classification run -- NO');
                 flags.push({
                   checkTitle: 'Classification Not Completed',
                   checkWarning: 'Classification was started for this branch, but either failed or has not completed.',
@@ -258,18 +241,6 @@ angular.module('singleConceptAuthoringApp')
                     });
                   }
 
-                  ////////////////////////////////////////////////////////////
-                  // CHECK:  Unread Review messages?
-                  ////////////////////////////////////////////////////////////
-                  //                    if (branchStatus.feedbackMessagesStatus === 'unread') {
-                  //                      flags.push({
-                  //                        checkTitle: 'Review contains unread feedback',
-                  //                        checkWarning: 'All feedback against concepts within this task has not been read',
-                  //                        blocksPromotion: false
-                  //                      });
-                  //                    }
-                  //console.debug('resolving');
-
                   deferred.resolve(flags);
                 });
               }
@@ -294,8 +265,6 @@ angular.module('singleConceptAuthoringApp')
       scaService.getTaskForProject(projectKey, taskKey).then(function (task) {
 
         var branch = task.branchPath;
-
-        //console.debug('Task', task);
 
         if (task.branchState === 'BEHIND' || task.branchState === 'DIVERGED' || task.branchState === 'STALE') {
           deferred.resolve([{

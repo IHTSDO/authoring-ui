@@ -10,7 +10,6 @@ angular.module('singleConceptAuthoringApp')
         //is also triggered after the item selection
         element.bind('click', function () {
 
-          // console.debug('typeaheadFocus click event', ngModel.$viewValue);
 
           var viewValue = ngModel.$viewValue;
 
@@ -28,7 +27,6 @@ angular.module('singleConceptAuthoringApp')
 
         //compare function that treats the empty space as a match
         scope.emptyOrMatch = function (actual, expected) {
-          // console.debug('emptyormatch', actual, expected);
           if (expected === ' ') {
             return true;
           }
@@ -100,8 +98,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.isStatic = $rootScope.branchLocked;
           }
         }, true);
-
-        //    console.debug('conceptEdit styles', scope.componentStyles);
         scope.saving = false;
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
@@ -217,13 +213,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         if (scope.autosave === true) {
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
 
-            // console.debug('getting modified concept for task');
 
             // if not an empty JSON object, process the modified version
             if (modifiedConcept) {
-
-              // console.debug('passed concept', scope.concept);
-              // console.debug('modified concept', modifiedConcept);
 
               // replace the displayed content with the modified concept
               scope.concept = modifiedConcept;
@@ -273,9 +265,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
-        // console.debug(scope.concept, scope.branch, scope.parentBranch,
-        // scope.static);
-
         // allowable attributes for relationships
         scope.allowedAttributes = [];
 
@@ -297,9 +286,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
-
-        // console.debug('conceptEdit inactivateConceptReasons',
-        // inactivateConceptReasons, inactivateAssociationReasons);
 
         scope.removeConcept = function (concept) {
           $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -347,18 +333,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
 
-            // console.debug('SAVE FUNCTION', saveFn);
-
             saveFn(
               $routeParams.projectKey,
               $routeParams.taskKey,
               scope.concept
             ).then(function (response) {
-                //// console.debug('create', response);
                 // successful response will have conceptId
                 if (response && response.conceptId) {
-
-                  // console.debug('Save concept successful');
 
                   // set concept and unmodified state
                   scope.concept = response;
@@ -498,8 +479,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
           // validate concept first
           scope.validateConcept().then(function () {
-
-            // console.debug('validation results', scope.validation);
 
             // special case -- merge:  display warnings and continue
             if (scope.merge) {
@@ -812,8 +791,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // sort typed descriptions
           newArray.sort(function (a, b) {
 
-            // console.debug('sort on active', a.active, b.active);
-
             // active before inactive
             if (a.active === false && b.active === true) {
               return 1;
@@ -823,8 +800,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             // sort based on type
-
-            // console.debug('sort on type', a.type, b.type);
             if (a.type !== b.type) {
 
               // check both provided
@@ -845,8 +820,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             // sort on acceptability map existence
-            // console.debug('sort on acceptability map', a.acceptabilityMap,
-            // b.acceptabilityMap, !a.acceptabilityMap, !b.acceptabilityMap);
             if (a.acceptabilityMap && !b.acceptabilityMap) {
               return -1;
             }
@@ -895,7 +868,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             // all else being equal, sort on term
-            // console.debug('sorting on term', a.term, b.term);
             return a.term < b.term ? -1 : 1;
           });
 
@@ -906,8 +878,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               newArray.splice(i, 0, scope.concept.descriptions[i]);
             }
           }
-
-          //// console.debug('new array', newArray);
 
           // replace descriptions
           scope.concept.descriptions = newArray;
@@ -921,8 +891,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          // console.debug('sorting relationships');
-
           var isaRels = scope.concept.relationships.filter(function (rel) {
             return rel.type.conceptId === '116680003';
           });
@@ -930,10 +898,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var attrRels = scope.concept.relationships.filter(function (rel) {
             return rel.type.conceptId !== '116680003';
           });
-
-          // console.debug(isaRels, attrRels);
-
-          // console.debug(isaRels, attrRels);
 
           // NOTE: All isaRels should be group 0, but sort by group anyway
           isaRels.sort(function (a, b) {
@@ -1075,7 +1039,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param description
          */
         scope.toggleDescriptionActive = function (description) {
-          // console.debug('toggling description active', description);
 
           if (scope.isMerge) {
             notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you want to modify an activation status please accept the merge and then make these changes within the task.');
@@ -1364,8 +1327,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.relationshipGroups[parseInt(rel.groupId)].push(rel);
             }
           });
-
-          // console.debug('rel groups', scope.relationshipGroups);
         };
 
 // define characteristic types
@@ -1375,8 +1336,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         ];
 
         scope.addRelationship = function (relGroup, relationshipBefore) {
-
-          // console.debug('adding relationship', relGroup, relationshipBefore);
 
           var relationship = componentAuthoringUtil.getNewAttributeRelationship(null);
 
@@ -1400,7 +1359,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.removeRelationship = function (relationship) {
-          //     console.debug(scope.concept.relationships, relationship);
           var index = scope.concept.relationships.indexOf(relationship);
           if (index !== -1) {
             scope.concept.relationships.splice(index, 1);
@@ -1430,15 +1388,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.getConceptsForTypeahead = function (searchStr) {
-          // console.debug('entered getConceptsForTypeAhead', searchStr);
           return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
 
             // remove duplicates
             for (var i = 0; i < response.length; i++) {
-              // console.debug('checking for duplicates', i, response[i]);
               for (var j = response.length - 1; j > i; j--) {
                 if (response[j].concept.conceptId === response[i].concept.conceptId) {
-                  // console.debug(' duplicate ', j, response[j]);
                   response.splice(j, 1);
                   j--;
                 }
@@ -1460,9 +1415,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
 
-          // console.debug('setting relationship type concept',
-          // relationship, item);
-
           relationship.type.conceptId = item.concept.conceptId;
           relationship.type.fsn = item.concept.fsn;
 
@@ -1480,9 +1432,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
 
-          // console.debug('setting relationship target concept',
-          // relationship, item);
-
           relationship.target.conceptId = item.concept.conceptId;
           relationship.target.fsn = item.concept.fsn;
 
@@ -1496,8 +1445,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // deactivation modal for reason s elect
         var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, branch, deletion) {
 
-          // console.debug('selectInactivationReason', componentType,
-          // reasons, associationTargets, conceptId, branch);
           var popups = document.querySelectorAll('.popover');
           if (popups) {
             for (var i = 0; i < popups.length; i++) {
@@ -1558,7 +1505,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // construct an id-name pair json object from relationship target
         scope.getConceptIdNamePairFromRelationshipTarget = function (relationship) {
-          // console.debug('getConceptIdNamePair');
           return {
             id: relationship.target.conceptId,
             name: relationship.target.fsn
@@ -1567,7 +1513,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // construct an id-name pair json object from attribute type
         scope.getConceptIdNamePairFromAttributeType = function (relationship) {
-          // console.debug('getConceptIdNamePair');
           return {
             id: relationship.type.conceptId,
             name: relationship.type.fsn
@@ -1576,13 +1521,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
-          //  console.debug('dropped target', data, relationship);
-
           // cancel if static
           if (scope.isStatic) {
             return;
           }
-          // console.debug('Drag-n-drop: Relationship Target');
 
           // check if modifications can be made (via effectiveTime)
           if (relationship.effectiveTime) {
@@ -1634,8 +1576,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipType = function (relationship, data) {
 
-          // console.debug('dropped type', data);
-
           // cancel if static
           if (scope.isStatic) {
             return;
@@ -1680,8 +1620,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         scope.dropDescription = function (target, source) {
 
-          // console.debug('dropDescription', target, source);
-
           // check arguments
           if (!target || !source) {
             console.error('Cannot drop description, either source or target not specified');
@@ -1701,9 +1639,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Unexpected error dropping description; cannot find target');
             return;
           }
-
-          // console.debug(target,
-          // componentAuthoringUtil.getNewDescription(scope.concept.conceptId));
 
           // if target not blank, add afterward
           if (target.term) {
@@ -1726,8 +1661,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param source the dragged relationship
          */
         scope.dropRelationship = function (target, source) {
-
-          // console.debug('dropRelationship', target, source);
 
           if (!target || !source) {
             console.error('Cannot drop relationship, either source or target not specified');
@@ -1825,8 +1758,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
               });
               var newGroupId = maxGroup + 1;
-
-              //   console.debug('new group id ', newGroupId);
 
               // strip identifying information from each relationship and push
               // to relationships with new group id
@@ -1975,8 +1906,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!concept.active) {
             snowowlService.getConceptProperties(concept.conceptId, scope.branch).then(function (response) {
 
-              // console.debug('inactive concept properties', response);
-
               if (!response.inactivationIndicator) {
                 concept.inactivationIndicator = 'Reason not stated';
               } else {
@@ -1985,8 +1914,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               if (response.associationTargets) {
                 concept.associationTargets = response.associationTargets;
-                // console.debug('key check',
-                // Object.keys(concept.associationTargets));
                 scope.hasAssociationTargets = Object.keys(concept.associationTargets).length > 0;
               }
             });
@@ -2188,8 +2115,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to update description and autoSave if indicated
         scope.updateDescription = function (description) {
-
-          // console.debug('updateDescription');
           if (!description) {
             return;
           }
@@ -2231,8 +2156,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
-          // console.debug('concept after description update', scope.concept);
-
           autoSave();
         };
 
@@ -2254,8 +2177,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           scope.computeRelationshipGroups();
-
-          // console.debug(scope.concept.relationships, scope.relationshipGroups);
 
           autoSave(relationship);
 
@@ -2306,14 +2227,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             concept: scope.concept
           });
 
-          // console.debug('saveModifiedConcept', scope.concept,
-          // scope.unmodifiedConcept);
-
           // if changed
           if (scope.concept !== scope.unmodifiedConcept) {
-
-            // console.debug('broadcasting conceptModified');
-
 
             // store the modified concept in ui-state if autosave on
             if (scope.autosave === true) {
@@ -2330,9 +2245,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * NOTE: outside $watch to prevent spurious updates
          */
         function autoSave() {
-
-          // console.debug('conceptEdit: autosave called', scope.concept
-          // === scope.lastModifiedConcept, scope.concept);
 
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
@@ -2371,8 +2283,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (scope.conceptHistoryPtr > 0) {
             scope.conceptHistoryPtr--;
             scope.concept = scope.conceptHistory[scope.conceptHistoryPtr];
-            // console.debug('undo results', scope.concept);
-
             saveModifiedConcept();
 
             scope.computeRelationshipGroups();
@@ -2469,8 +2379,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }, true);
 
         scope.getConceptsForAttributeTypeahead = function (searchStr) {
-          //   console.debug('getConceptsForAttributeTypeahead', searchStr,
-          // scope.allowedAttributes);
           var response = scope.allowedAttributes;
           for (var i = 0; i < response.length; i++) {
             for (var j = response.length - 1; j > i; j--) {
@@ -2487,8 +2395,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.getConceptForFullAttribute = function (searchStr) {
-          //   console.debug('getConceptsForAttributeTypeahead', searchStr,
-          // scope.allowedAttributes);
           var response = scope.allowedAttributes;
           for (var i = 0; i < response.length; i++) {
             for (var j = response.length - 1; j > i; j--) {
@@ -2518,7 +2424,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
               if (response[i].fsn) {
                 response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-                // console.debug('checking for duplicates', i, response[i]);
                 for (var j = response.length - 1; j > i; j--) {
                   if (response[j].id === response[i].id) {
                     response.splice(j, 1);
@@ -2546,7 +2451,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
               if (response[i].fsn) {
                 response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-                // console.debug('checking for duplicates', i, response[i]);
                 for (var j = response.length - 1; j > i; j--) {
                   if (response[j].id === response[i].id) {
                     response.splice(j, 1);
@@ -2574,7 +2478,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
               if (response[i].fsn) {
                 response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-                // console.debug('checking for duplicates', i, response[i]);
                 for (var j = response.length - 1; j > i; j--) {
                   if (response[j].id === response[i].id) {
                     response.splice(j, 1);
@@ -2592,9 +2495,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
 
-          // console.debug('setting relationship type concept',
-          // relationship, item);
-
           relationship.type.conceptId = item.id;
           relationship.type.fsn = item.fsn.term;
 
@@ -2605,9 +2505,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
-
-          // console.debug('setting relationship type concept',
-          // relationship, item);
           relationship.target.conceptId = item.id;
           relationship.target.fsn = item.fsn.term;
           relationship.target.definitionStatus = item.definitionStatus;
@@ -2728,14 +2625,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             var key = id + (field ? '-' + field : '');
 
             if (nStyles === 0) {
-              // console.debug(scope.componentStyles);
             }
 
             if (nStyles++ < 10) {
-              // console.debug(id, field, defaultStyle, key,
-              // scope.componentStyles.hasOwnProperty(key),
-              // scope.componentStyles[key] ?
-              // scope.componentStyles[key].style : 'No styles');
             }
 
             if (scope.componentStyles.hasOwnProperty(key)) {
@@ -2757,11 +2649,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               scope.task = response;
 
-              //      console.debug('Task', scope.task);
-
               if (scope.task.status === 'Promoted') {
-                //      console.debug('setting static to true, task is
-                // Promoted');
                 scope.isStatic = true;
               }
             });

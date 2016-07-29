@@ -182,12 +182,9 @@ angular.module('singleConceptAuthoringApp')
         // extract the default language and dialect
         var language, dialect = null;
         for (var key in metadata) {
-          // console.debug('Checking property', key, metadata[key])
           if (metadata.hasOwnProperty(key)) {
             var match = key.match(/requiredLanguageRefset\.(.+)/);
-            //console.debug('  Checking match', match);
             if (match && match[1]) {
-              // console.debug('    Found match', match[1]);
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
 

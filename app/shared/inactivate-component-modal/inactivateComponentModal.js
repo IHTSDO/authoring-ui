@@ -48,10 +48,8 @@ angular.module('singleConceptAuthoringApp')
     $scope.getConceptsForTypeahead = function (searchStr) {
       return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
         for (var i = 0; i < response.length; i++) {
-          // console.debug('checking for duplicates', i, response[i]);
           for (var j = response.length - 1; j > i; j--) {
             if (response[j].concept.conceptId === response[i].concept.conceptId) {
-              // console.debug(' duplicate ', j, response[j]);
               response.splice(j, 1);
               j--;
             }
@@ -114,8 +112,6 @@ angular.module('singleConceptAuthoringApp')
             params.total($scope.descendants.descendants.items.length);
             var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.descendants.items, params.orderBy()) : $scope.descendants.descendants.items;
 
-            // console.debug(descendantsDisplayed);
-
             $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
 
@@ -166,11 +162,9 @@ angular.module('singleConceptAuthoringApp')
           // extract association for convenience
           var association = $scope.associations[i];
 
-          // console.debug('processing association', association);
 
           // if neither type nor concept specified
           if (!association.type && !association.concept) {
-            // console.debug('blank association, ignoring');
           }
 
           // if either field is blank, alert and return
@@ -182,18 +176,14 @@ angular.module('singleConceptAuthoringApp')
           // add the association type/target
           else {
 
-            // console.debug('adding association', association, associationTarget.hasOwnProperty(association.type));
-
             // if this type already specified, add to array
             if (associationTarget.hasOwnProperty(association.type.id)) {
-              // console.debug('adding to existing array', associationTarget.type);
               associationTarget[association.type.id].push(association.concept.concept.conceptId);
             }
 
             // otherwise, set this type to a single-element array containing
             // this concept
             else {
-              // console.debug('inserting new type');
               associationTarget[association.type.id] = [association.concept.concept.conceptId];
             }
           }
@@ -202,7 +192,6 @@ angular.module('singleConceptAuthoringApp')
         var results = {};
         results.reason = $scope.reason;
         results.associationTarget = associationTarget;
-        // console.debug('select result', results);
 
         $modalInstance.close(results);
       }
@@ -222,7 +211,6 @@ angular.module('singleConceptAuthoringApp')
 
       // limit the number of descendants retrieved to prevent overload
       snowowlService.getConceptDescendants($scope.conceptId, $scope.branch, 0, $scope.tableLimit).then(function (response) {
-        // console.debug('descendants', response);
         $scope.descendants = response;
         $rootScope.descendants = response;
         $scope.descendantsLoading = false;
@@ -263,8 +251,6 @@ angular.module('singleConceptAuthoringApp')
         // ng-table cannot handle e.g. source.fsn sorting, so extract fsns and
         // make top-level properties
         angular.forEach(response2.inboundRelationships, function (item) {
-
-          // console.debug('checking relationship', item.active, item);
 
           if (item.active) {
             item.sourceFsn = item.source.fsn;
@@ -345,7 +331,6 @@ angular.module('singleConceptAuthoringApp')
     };
 
     $scope.removeAssociation = function (index) {
-      // console.debug('removing association at position ' + index);
       $scope.associations.splice(index, 1);
       if ($scope.associations.length === 0) {
         $scope.addAssociation();

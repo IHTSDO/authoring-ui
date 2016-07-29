@@ -258,7 +258,6 @@ angular.module('singleConceptAuthoringApp')
 
 
           // append results of test function to the test
-          //console.debug('runHelper response', response);
           test.results = response;
 
           console.log(test.name, Array.isArray(test.results.errorsReceived), test.results, test.results.errorsReceived);
@@ -276,13 +275,7 @@ angular.module('singleConceptAuthoringApp')
               // replace unicode characters
               receivedError.message = receivedError.message.replace(/\u2019/g, '\'').replace(/[\u201C\u201d]/g, '"');
 
-              //console.debug(test.name, test.results, test.expectedError);
-
-              /*      console.debug('comparing errors');
-               console.debug(test.expectedError);
-               console.debug(receivedError.message);*/
               if (test.expectedError === receivedError.message) {
-                /*                console.debug('--> Match Found');*/
                 errorFound = true;
               }
             });
@@ -301,8 +294,6 @@ angular.module('singleConceptAuthoringApp')
             // default to passed
             test.status = 'PASSED';
           }
-
-          //console.debug('Test complete', test.status);
 
           // run next test
           return runHelper(tests, ++index);
@@ -324,7 +315,6 @@ angular.module('singleConceptAuthoringApp')
             testFound = true;
             test.status = 'Pending';
             runHelper([test], 0).then(function () {
-              //console.debug('test complete', test);
               deferred.resolve(test);
             });
           }
@@ -342,9 +332,6 @@ angular.module('singleConceptAuthoringApp')
        * Run the test package against specified task
        */
       function runTests(projectKey, taskKey) {
-
-        //console.debug('qaPackageCharacterSpacing: run test', projectKey,
-        // taskKey);
 
         var deferred = $q.defer();
 

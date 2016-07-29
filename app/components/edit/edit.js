@@ -1189,9 +1189,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.getLatestConflictsReport = function () {
 
       if (!$scope.taskKey) {
-        // scaService.getConflictReportForProject($routeParams.projectKey).then(function
-        // (response) { $scope.conflictsContainer.conflicts = response ?
-        // response : {}; });
       } else {
 
       }
@@ -1211,8 +1208,6 @@ angular.module('singleConceptAuthoringApp.edit', [
      * Set page functionality based on branch state
      */
     function setBranchFunctionality(branchState) {
-
-      // console.debug('setBranchFunctionality', branchState, $scope.task, $scope.isOwnTask);
 
       // as of 11/19/2015, new tasks are not being returned with UP_TO_DATE
       // status

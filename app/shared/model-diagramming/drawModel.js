@@ -323,7 +323,6 @@ angular.module('singleConceptAuthoringApp')
         }
 
         function drawSctBox(svg, x, y, label, sctid, cssClass) {
-          //console.log("In svg: " + label + " " + sctid + " " + cssClass);
           // x,y coordinates of the top-left corner
           var testText = "Test";
           if (label && sctid) {
@@ -338,7 +337,6 @@ angular.module('singleConceptAuthoringApp')
             testText = sctid.toString();
           }
           var fontFamily = '"Helvetica Neue",Helvetica,Arial,sans-serif';
-          //var fontFamily = 'sans-serif';
           var tempText = svg.text(x, y, testText, {
             fontFamily: fontFamily,
             fontSize: '12',
