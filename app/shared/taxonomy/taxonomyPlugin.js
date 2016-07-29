@@ -47,7 +47,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       var panel = this;
       this.subscribers = [];
       var xhr = null;
-      if (typeof componentsRegistry == "undefined") {
+      if (typeof componentsRegistry === "undefined") {
         componentsRegistry = [];
       }
 
@@ -57,11 +57,11 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       this.options = jQuery.extend(true, {}, options);
       var componentLoaded = false;
       $.each(componentsRegistry, function (i, field) {
-        if (field.divElement.id == panel.divElement.id) {
+        if (field.divElement.id === panel.divElement.id) {
           componentLoaded = true;
         }
       });
-      if (componentLoaded == false) {
+      if (componentLoaded === false) {
         componentsRegistry.push(panel);
       }
 
@@ -84,19 +84,19 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           $("#" + panel.divElement.id + "-taxonomyConfigBar").slideToggle('slow');
         });
 
-        if (typeof panel.options.closeButton != "undefined" && panel.options.closeButton == false) {
+        if (typeof panel.options.closeButton !== "undefined" && panel.options.closeButton === false) {
           $("#" + panel.divElement.id + "-closeButton").hide();
         }
 
-        if (typeof panel.options.linkerButton != "undefined" && panel.options.linkerButton == false) {
+        if (typeof panel.options.linkerButton !== "undefined" && panel.options.linkerButton === false) {
           $("#" + panel.divElement.id + "-linkerButton").hide();
         }
 
-        if (typeof panel.options.subscribersMarker != "undefined" && panel.options.subscribersMarker == false) {
+        if (typeof panel.options.subscribersMarker !== "undefined" && panel.options.subscribersMarker === false) {
           $("#" + panel.divElement.id + "-subscribersMarker").remove();
         }
 
-        if (typeof panel.options.collapseButton != "undefined" && panel.options.collapseButton == false) {
+        if (typeof panel.options.collapseButton !== "undefined" && panel.options.collapseButton === false) {
           $("#" + panel.divElement.id + "-expandButton").hide();
           $("#" + panel.divElement.id + "-collapseButton").hide();
         }
@@ -171,7 +171,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             html: true,
             content: function () {
               linkerHtml = '<div class="text-center text-muted"><em>Drag to link with other panels<br>';
-              if (panel.subscribers.length == 1) {
+              if (panel.subscribers.length === 1) {
                 linkerHtml = linkerHtml + panel.subscribers.length + ' link established</em></div>';
               } else {
                 linkerHtml = linkerHtml + panel.subscribers.length + ' links established</em></div>';
@@ -213,7 +213,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           lastParent = parent;
           treeHtml = treeHtml + "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.fsn + "' class='treeLabel'>";
           treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
-          if (parent.definitionStatus == "PRIMITIVE") {
+          if (parent.definitionStatus === "PRIMITIVE") {
             treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
           } else {
             treeHtml = treeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
@@ -227,7 +227,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         treeHtml = treeHtml + "<ul>";
         treeHtml = treeHtml + "<li data-concept-id='" + focusConcept.conceptId + "' data-term='" + focusConcept.defaultTerm + "' class='treeLabel'>";
         treeHtml = treeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton'  id='" + panel.divElement.id + "-treeicon-" + focusConcept.conceptId + "'></i></button>";
-        if (focusConcept.definitionStatus == "PRIMITIVE") {
+        if (focusConcept.definitionStatus === "PRIMITIVE") {
           treeHtml = treeHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
         } else {
           treeHtml = treeHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
@@ -249,7 +249,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           if ($(event.target).hasClass("treeLabel")) {
             var selectedId = $(event.target).attr('data-concept-id');
             var selectedLabel = $(event.target).attr('data-term');
-            if (typeof selectedId != "undefined") {
+            if (typeof selectedId !== "undefined") {
 
               $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + selectedId + "/parents?form=" + panel.options.selectedView, function (result) {
                 // done
@@ -289,9 +289,9 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
 
           } else if ($(event.target).hasClass("treeLabel")) {
             var selectedId = $(event.target).attr('data-concept-id');
-            if (typeof selectedId != "undefined") {
+            if (typeof selectedId !== "undefined") {
               $.each(panel.subscribers, function (i, suscriberPanel) {
-                if (suscriberPanel.conceptId != selectedId) {
+                if (suscriberPanel.conceptId !== selectedId) {
                   suscriberPanel.conceptId = selectedId;
                   suscriberPanel.updateCanvas();
                 }
@@ -309,11 +309,11 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       }
 
       this.getChildren = function (conceptId) {
-        if (typeof panel.options.selectedView == "undefined") {
+        if (typeof panel.options.selectedView === "undefined") {
           panel.options.selectedView = "inferred";
         }
 
-        if (panel.options.selectedView == "inferred") {
+        if (panel.options.selectedView === "inferred") {
           $("#" + panel.divElement.id + "-txViewLabel").html("<span class='i18n' data-i18n-id='i18n_inferred_view'>Inferred view</span>");
         } else {
           $("#" + panel.divElement.id + "-txViewLabel").html("<span class='i18n' data-i18n-id='i18n_stated_view'>Stated view</span>");
@@ -331,7 +331,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           })
           var listIconIds = [];
           $.each(result, function (i, field) {
-            if (field.active == true) {
+            if (field.active === true) {
               nodeHtml = nodeHtml + "<li data-concept-id='" + field.conceptId + "' data-term='" + field.fsn + "' class='treeLabel'>";
               if (field.hasChild === true) {
                 nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-right treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
@@ -339,7 +339,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
               else {
                 nodeHtml = nodeHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-minus treeButton' id='" + panel.divElement.id + "-treeicon-" + field.conceptId + "'></i></button>";
               }
-              if (field.definitionStatus == "PRIMITIVE") {
+              if (field.definitionStatus === "PRIMITIVE") {
                 nodeHtml = nodeHtml + "<span class='badge alert-warning'>&nbsp;</span>&nbsp;&nbsp;";
               } else {
                 nodeHtml = nodeHtml + "<span class='badge alert-warning'>&equiv;</span>&nbsp;&nbsp;";
@@ -382,7 +382,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             $.each(parents, function (i, parent) {
               var parentLiHtml = "<li data-concept-id='" + parent.conceptId + "' data-term='" + parent.fsn + "' class='treeLabel'>";
               parentLiHtml = parentLiHtml + "<button class='btn btn-link btn-xs treeButton'><i class='glyphicon glyphicon-chevron-up treeButton'  id='" + panel.divElement.id + "-treeicon-" + parent.conceptId + "'></i></button>";
-              if (parent.definitionStatus == "PRIMITIVE") {
+              if (parent.definitionStatus === "PRIMITIVE") {
                 parentLiHtml = parentLiHtml + '<span class="badge alert-warning">&nbsp;</span>&nbsp;&nbsp;';
               } else {
                 parentLiHtml = parentLiHtml + '<span class="badge alert-warning">&equiv;</span>&nbsp;&nbsp;';
@@ -390,7 +390,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
               parentLiHtml = parentLiHtml + '<a href="javascript:void(0);" style="color: inherit;text-decoration: inherit;"><span data-concept-id="' + parent.conceptId + '" data-term="' + parent.fsn + '" class="treeLabel selectable-row" id="' + panel.divElement.id + '-treenode-' + parent.conceptId + '">' + parent.fsn + '</span></a>';
               parentLiHtml = parentLiHtml + "</li>";
               parentsStrs.push(parentLiHtml);
-              if (firstParent == "empty") {
+              if (firstParent === "empty") {
                 firstParent = parent.conceptId;
               }
             });
@@ -400,7 +400,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             $('#' + panel.divElement.id + '-treenode-' + firstParent).closest('li').append("<ul id='parent-ul-id-" + firstParent + "' style='list-style-type: none; padding-left: 15px;'></ul>");
             var newMainChild;
             $.each(staticChildren, function (i, child) {
-              if ($(child).attr('data-concept-id') == conceptId) {
+              if ($(child).attr('data-concept-id') === conceptId) {
                 newMainChild = $(child);
                 var newUl = $('#' + panel.divElement.id + '-treenode-' + firstParent).closest('li').find('ul:first');
                 newUl.append($(child));
@@ -409,7 +409,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
               }
             });
             $.each(staticChildren, function (i, child) {
-              if ($(child).attr('data-concept-id') != conceptId) {
+              if ($(child).attr('data-concept-id') !== conceptId) {
                 $.each($(child).children(), function (i, subchild) {
                   if ($(subchild).is('ul')) {
                     newMainChild.append(subchild);
@@ -419,7 +419,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
               }
             });
             $.each(parentsStrs, function (i, parentsStr) {
-              if (parentsStr != parentsStrs[0]) {
+              if (parentsStr !== parentsStrs[0]) {
                 topUl.prepend(parentsStr);
               }
             });
@@ -440,7 +440,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         $.getJSON(options.serverUrl + "/" + options.edition + "/" + $scope.branch + "/concepts/" + conceptId + "/parents?form=inferred", function (result) {
           // done
         }).done(function (result) {
-          if (definitionStatus != "PRIMITIVE" && definitionStatus != "Fully defined") {
+          if (definitionStatus !== "PRIMITIVE" && definitionStatus !== "Fully defined") {
             definitionStatus = "PRIMITIVE";
           }
           panel.setupParents(result, {
@@ -460,10 +460,10 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           var conceptId = draggable.attr('data-concept-id');
           var term = draggable.attr('data-term');
           var definitionStatus = draggable.attr('data-def-status');
-          if (panel.options.selectedView == "undefined") {
+          if (panel.options.selectedView === "undefined") {
             panel.options.selectedView = "inferred";
           }
-          if (typeof conceptId != "undefined") {
+          if (typeof conceptId !== "undefined") {
             panel.setToConcept(conceptId, term, definitionStatus);
           }
           $(ui.helper).remove(); //destroy clone
@@ -472,8 +472,8 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         if (!draggable.attr('data-panel')) {
         } else {
           $.each(componentsRegistry, function (i, field) {
-            if (field.divElement.id == draggable.attr('data-panel')) {
-              if (field.type == "concept-details") {
+            if (field.divElement.id === draggable.attr('data-panel')) {
+              if (field.type === "concept-details") {
                 panel.subscribe(field);
               }
             }
@@ -484,13 +484,13 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       this.subscribe = function (subscriber) {
         var alreadySubscribed = false;
         $.each(panel.subscribers, function (i, field) {
-          if (subscriber.divElement.id == field.divElement.id) {
+          if (subscriber.divElement.id === field.divElement.id) {
             alreadySubscribed = true;
           }
         });
         if (!alreadySubscribed) {
-          if (panel.subscribers.length == 0) {
-            if (typeof globalMarkerColor == "undefined") {
+          if (panel.subscribers.length === 0) {
+            if (typeof globalMarkerColor === "undefined") {
               globalMarkerColor = 'black';
             }
             panel.markerColor = panel.getNextMarkerColor(globalMarkerColor);
@@ -506,7 +506,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         var indexToRemove = -1;
         var i = 0;
         $.each(panel.subscribers, function (i, field) {
-          if (subscriber.divElement.id == field.divElement.id) {
+          if (subscriber.divElement.id === field.divElement.id) {
             indexToRemove = i;
           }
           i = i + 1;
@@ -514,7 +514,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         if (indexToRemove > -1) {
           panel.subscribers.splice(indexToRemove, 1);
         }
-        if (panel.subscribers.length == 0) {
+        if (panel.subscribers.length === 0) {
           $("#" + panel.divElement.id + "-subscribersMarker").hide();
         }
         subscriber.clearSubscription();
@@ -529,15 +529,15 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
 
       this.getNextMarkerColor = function (color) {
         var returnColor = 'black';
-        if (color == 'black') {
+        if (color === 'black') {
           returnColor = 'green';
-        } else if (color == 'green') {
+        } else if (color === 'green') {
           returnColor = 'purple';
-        } else if (color == 'purple') {
+        } else if (color === 'purple') {
           returnColor = 'red';
-        } else if (color == 'red') {
+        } else if (color === 'red') {
           returnColor = 'blue';
-        } else if (color == 'blue') {
+        } else if (color === 'blue') {
           returnColor = 'green';
         }
         globalMarkerColor = returnColor;
@@ -545,14 +545,14 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       }
 
       this.setupCanvas();
-      if (!conceptId || conceptId == 138875005) {
+      if (!conceptId || conceptId === 138875005) {
         this.setupParents([], {
           conceptId: 138875005,
           defaultTerm: "SNOMED CT Concept",
           definitionStatus: "PRIMITIVE"
         });
       } else {
-        if (xhr != null) {
+        if (xhr !== null) {
           xhr.abort();
           console.log("aborting call...");
         }
@@ -569,7 +569,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
     function clearTaxonomyPanelSubscriptions(divElementId1) {
       var d1;
       $.each(componentsRegistry, function (i, field) {
-        if (field.divElement.id == divElementId1) {
+        if (field.divElement.id === divElementId1) {
           d1 = field;
         }
       });
@@ -596,7 +596,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       ev.preventDefault();
 
       var aux;
-      if ($(ev.target).attr("data-droppable") == "true") {
+      if ($(ev.target).attr("data-droppable") === "true") {
         aux = $(ev.target);
       } else {
         aux = $(ev.target).closest("div");
@@ -620,12 +620,12 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       var dataText = "";
       var term = "", conceptId = "";
       $.each(ev.target.attributes, function () {
-        if (this.name.substr(0, 4) == "data") {
+        if (this.name.substr(0, 4) === "data") {
           ev.dataTransfer.setData(this.name.substr(5), this.value);
-          if (this.name.substr(5) == "concept-id") {
+          if (this.name.substr(5) === "concept-id") {
             conceptId = this.value;
           }
-          if (this.name.substr(5) == "term") {
+          if (this.name.substr(5) === "term") {
             term = this.value;
           }
         }
@@ -646,23 +646,23 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       $(document).find('.drop-highlighted').removeClass('drop-highlighted');
       ev.preventDefault();
       var text = ev.dataTransfer.getData("Text");
-      if (text != "javascript:void(0);") {
+      if (text !== "javascript:void(0);") {
         var i = 0;
-        while (text.charAt(i) != "|") {
+        while (text.charAt(i) !== "|") {
           i++;
         }
         var conceptId = ev.dataTransfer.getData("concept-id");
-        if (typeof conceptId == "undefined") {
+        if (typeof conceptId === "undefined") {
           conceptId = text.substr(0, i);
         }
         var term = ev.dataTransfer.getData("term");
-        if (typeof term == "undefined") {
+        if (typeof term === "undefined") {
           term = text.substr(i);
         }
         $(ev.target).val(term);
         var id = $(ev.target).attr("id").replace("-searchBox", "");
         $.each(componentsRegistry, function (i, field) {
-          if (field.divElement.id == id) {
+          if (field.divElement.id === id) {
             field.search(term, 0, 100, false);
           }
         });
@@ -684,24 +684,24 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       $(document).find('.drop-highlighted').removeClass('drop-highlighted');
       ev.preventDefault();
       var text = ev.dataTransfer.getData("Text");
-      if (text != "javascript:void(0);") {
+      if (text !== "javascript:void(0);") {
         var i = 0;
-        while (text.charAt(i) != "|") {
+        while (text.charAt(i) !== "|") {
           i++;
         }
         var conceptId = ev.dataTransfer.getData("concept-id");
-        if (typeof conceptId == "undefined") {
+        if (typeof conceptId === "undefined") {
           conceptId = text.substr(0, i);
         }
         var term = ev.dataTransfer.getData("term");
-        if (typeof term == "undefined") {
+        if (typeof term === "undefined") {
           term = text.substr(i);
         }
         var panelD = ev.dataTransfer.getData("panel");
         var divElementID = id;
         var panelAct;
         $.each(componentsRegistry, function (i, field) {
-          if (field.divElement.id == divElementID) {
+          if (field.divElement.id === divElementID) {
             panelAct = field;
           }
         });
@@ -709,8 +709,8 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
           if (!panelD) {
           } else {
             $.each(componentsRegistry, function (i, field) {
-              if (field.divElement.id == panelD) {
-                if (field.type == "search" || field.type == "taxonomy") {
+              if (field.divElement.id === panelD) {
+                if (field.type === "search" || field.type === "taxonomy") {
                   panelAct.subscribe(field);
                   panelAct.setupOptionsPanel();
                 }
@@ -718,7 +718,7 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
             });
           }
         } else {
-          if (panelAct.conceptId != conceptId) {
+          if (panelAct.conceptId !== conceptId) {
             panelAct.conceptId = conceptId;
             panelAct.updateCanvas();
             channel.publish(panelAct.divElement.id, {
@@ -734,23 +734,23 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
 
     function dropF(ev, id) {
       var text = ev.dataTransfer.getData("Text");
-      if (text != "javascript:void(0);") {
+      if (text !== "javascript:void(0);") {
         var i = 0;
-        while (text.charAt(i) != "|") {
+        while (text.charAt(i) !== "|") {
           i++;
         }
         var conceptId = ev.dataTransfer.getData("concept-id");
-        if (typeof conceptId == "undefined") {
+        if (typeof conceptId === "undefined") {
           conceptId = text.substr(0, i);
         }
         var term = ev.dataTransfer.getData("term");
         var module = ev.dataTransfer.getData("module");
-        if (typeof term == "undefined") {
+        if (typeof term === "undefined") {
           term = text.substr(i);
         }
         var favs = stringToArray(localStorage.getItem("favs")), found = false;
         $.each(favs, function (i, field) {
-          if (field == conceptId) {
+          if (field === conceptId) {
             found = true;
           }
         });
@@ -772,37 +772,37 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
       $(document).find('.drop-highlighted').removeClass('drop-highlighted');
       ev.preventDefault();
       var text = ev.dataTransfer.getData("Text");
-      if (text != "javascript:void(0);") {
+      if (text !== "javascript:void(0);") {
         var i = 0;
-        while (text.charAt(i) != "|") {
+        while (text.charAt(i) !== "|") {
           i++;
         }
         var divElementId = id;
         var panel;
         var panelD = ev.dataTransfer.getData("panel");
         var conceptId = ev.dataTransfer.getData("concept-id");
-        if (typeof conceptId == "undefined") {
+        if (typeof conceptId === "undefined") {
           conceptId = text.substr(0, i);
         }
         var term = ev.dataTransfer.getData("term");
-        if (typeof term == "undefined") {
+        if (typeof term === "undefined") {
           term = text.substr(i);
         }
         var definitionStatus = ev.dataTransfer.getData("def-status");
         var module = ev.dataTransfer.getData("module");
 
         $.each(componentsRegistry, function (i, field) {
-          if (field.divElement.id == divElementId) {
+          if (field.divElement.id === divElementId) {
             panel = field;
           }
         });
 
         if (!conceptId) {
         } else {
-          if (panel.options.selectedView == "undefined") {
+          if (panel.options.selectedView === "undefined") {
             panel.options.selectedView = "inferred";
           }
-          if (typeof conceptId != "undefined") {
+          if (typeof conceptId !== "undefined") {
             var d = new Date();
             var time = d.getTime();
             panel.history.push({term: term, conceptId: conceptId, time: time});
@@ -817,8 +817,8 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
         if (!panelD) {
         } else {
           $.each(componentsRegistry, function (i, field) {
-            if (field.divElement.id == panelD) {
-              if (field.type == "concept-details") {
+            if (field.divElement.id === panelD) {
+              if (field.type === "concept-details") {
                 panel.subscribe(field);
                 field.setupOptionsPanel();
               }
@@ -829,11 +829,11 @@ angular.module('singleConceptAuthoringApp.taxonomy', [])
     }
 
     function stringToArray(string) {
-      if (typeof string == "string") {
+      if (typeof string === "string") {
         var ind = 0, auxString, array = [];
         while (ind < string.length) {
           auxString = "";
-          while (string.substr(ind, 1) != "," && ind < string.length) {
+          while (string.substr(ind, 1) !== "," && ind < string.length) {
             auxString = auxString + string.substr(ind, 1);
             ind++;
           }

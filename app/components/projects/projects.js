@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp.projects', [
         total: $scope.projects ? $scope.projects.length : 0, // length of data
         getData: function ($defer, params) {
 
-          if (!$scope.projects || $scope.projects.length == 0) {
+          if (!$scope.projects || $scope.projects.length === 0) {
             $defer.resolve(new Array());
           } else {
 
@@ -71,7 +71,7 @@ angular.module('singleConceptAuthoringApp.projects', [
 
     // on successful set, reload table parameters
     $scope.$watch('projects', function () {
-      if (!$scope.projects || $scope.projects.length == 0) {
+      if (!$scope.projects || $scope.projects.length === 0) {
       }
       else {
         // add top-level element for ng-table sorting
@@ -135,7 +135,7 @@ angular.module('singleConceptAuthoringApp.projects', [
 
       // get projects from all projects and append sample data
       scaService.getProjects().then(function (response) {
-        if (!response || response.length == 0) {
+        if (!response || response.length === 0) {
           $scope.projects = [];
           return;
         }

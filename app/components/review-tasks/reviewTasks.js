@@ -40,7 +40,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
                                                                    // data
         getData: function ($defer, params) {
 
-          if (!$scope.reviewTasks || $scope.reviewTasks.length == 0) {
+          if (!$scope.reviewTasks || $scope.reviewTasks.length === 0) {
             $defer.resolve([]);
           } else {
 
@@ -200,7 +200,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       // get all projects for task creation
 //      scaService.getProjects().then(function (response) {
-//        if (!response || response.length == 0) {
+//        if (!response || response.length === 0) {
 //          $scope.projects = [];
 //          return;
 //        } else {
@@ -218,7 +218,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
        // get tasks across all projects
        $scope.tasks = [];
        scaService.getTasks().then(function (response) {
-       if (!response || response.length == 0) {
+       if (!response || response.length === 0) {
        $scope.tasks = [];
        return;
        }
@@ -231,7 +231,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
        // disable polling
        $timeout(function () {
        scaService.getTasks().then(function (response) {
-       if (!response || response.length == 0) {
+       if (!response || response.length === 0) {
        $scope.tasks = [];
        return;
        }

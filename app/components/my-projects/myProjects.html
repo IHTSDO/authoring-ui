@@ -43,7 +43,7 @@
               </td>
            <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/project/{{project.key}}">
-             <button ng-show="project.latestClassificationJson != null"
+             <button ng-show="project.latestClassificationJson !== null"
                           type="button"
                           ng-class="[
                           {indicator_green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
@@ -66,7 +66,7 @@
               <td data-title="'Validation Results'" sortable="'validationStatus'">
                 <a ng-href="#/project/{{project.key}}">
         
-                  <button ng-show="project.validationStatus != null"
+                  <button ng-show="project.validationStatus !== null"
                        type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
                           {indicator_blue : project.validationStatus === 'SCHEDULED'},

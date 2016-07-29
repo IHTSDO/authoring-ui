@@ -97,7 +97,7 @@ angular.module('singleConceptAuthoringApp.search', [])
       this.subscribers = [];
       var lastT = "";
       var xhr = null;
-      if (typeof componentsRegistry == "undefined") {
+      if (typeof componentsRegistry === "undefined") {
         componentsRegistry = [];
       }
 
@@ -107,11 +107,11 @@ angular.module('singleConceptAuthoringApp.search', [])
       this.options = jQuery.extend(true, {}, options);
       var componentLoaded = false;
       $.each(componentsRegistry, function (i, field) {
-        if (field.divElement.id == panel.divElement.id) {
+        if (field.divElement.id === panel.divElement.id) {
           componentLoaded = true;
         }
       });
-      if (componentLoaded == false) {
+      if (componentLoaded === false) {
         componentsRegistry.push(panel);
       }
 
@@ -148,7 +148,7 @@ angular.module('singleConceptAuthoringApp.search', [])
           console.log("Semtag click: " + $(this).html());
         });
 
-        if (options.searchMode != "fullText") {
+        if (options.searchMode !== "fullText") {
           $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').hide();
         }
 
@@ -156,19 +156,19 @@ angular.module('singleConceptAuthoringApp.search', [])
           $("#" + panel.divElement.id + "-searchConfigBar").slideToggle('slow');
         });
 
-        if (typeof panel.options.closeButton != "undefined" && panel.options.closeButton == false) {
+        if (typeof panel.options.closeButton !== "undefined" && panel.options.closeButton === false) {
           $("#" + panel.divElement.id + "-closeButton").hide();
         }
 
-        if (typeof panel.options.linkerButton != "undefined" && panel.options.linkerButton == false) {
+        if (typeof panel.options.linkerButton !== "undefined" && panel.options.linkerButton === false) {
           $("#" + panel.divElement.id + "-linkerButton").hide();
         }
 
-        if (typeof panel.options.subscribersMarker != "undefined" && panel.options.subscribersMarker == false) {
+        if (typeof panel.options.subscribersMarker !== "undefined" && panel.options.subscribersMarker === false) {
           $("#" + panel.divElement.id + "-subscribersMarker").remove();
         }
 
-        if (typeof panel.options.collapseButton != "undefined" && panel.options.collapseButton == false) {
+        if (typeof panel.options.collapseButton !== "undefined" && panel.options.collapseButton === false) {
           $("#" + panel.divElement.id + "-expandButton").hide();
           $("#" + panel.divElement.id + "-collapseButton").hide();
         }
@@ -237,7 +237,7 @@ angular.module('singleConceptAuthoringApp.search', [])
             html: true,
             content: function () {
               historyHtml = '<div style="height:100px;overflow:auto;">';
-              if (panel.history.length == 0) {
+              if (panel.history.length === 0) {
                 historyHtml = historyHtml + '<div class="text-center text-muted" style="width:100%"><em>'+ '' + '</span>...</em></div>';
               }
               historyHtml = historyHtml + '<table>';
@@ -249,19 +249,19 @@ angular.module('singleConceptAuthoringApp.search', [])
                 var ago = curTime - field.time;
                 var agoString = "";
                 if (ago < (1000 * 60)) {
-                  if (Math.round((ago / 1000)) == 1) {
+                  if (Math.round((ago / 1000)) === 1) {
                     agoString = Math.round((ago / 1000)) + ' second ago';
                   } else {
                     agoString = Math.round((ago / 1000)) + ' seconds ago';
                   }
                 } else if (ago < (1000 * 60 * 60)) {
-                  if (Math.round((ago / 1000) / 60) == 1) {
+                  if (Math.round((ago / 1000) / 60) === 1) {
                     agoString = Math.round((ago / 1000) / 60) + ' minute ago';
                   } else {
                     agoString = Math.round((ago / 1000) / 60) + ' minutes ago';
                   }
                 } else if (ago < (1000 * 60 * 60 * 60)) {
-                  if (Math.round(((ago / 1000) / 60) / 60) == 1) {
+                  if (Math.round(((ago / 1000) / 60) / 60) === 1) {
                     agoString = Math.round(((ago / 1000) / 60) / 60) + ' hour ago';
                   } else {
                     agoString = Math.round(((ago / 1000) / 60) / 60) + ' hours ago';
@@ -285,7 +285,7 @@ angular.module('singleConceptAuthoringApp.search', [])
             html: true,
             content: function () {
               var linkerHtml = '<div class="text-center text-muted"><em><span class="i18n" data-i18n-id="i18n_drag_to_link">Drag to link with other panels</span><br>';
-              if (panel.subscribers.length == 1) {
+              if (panel.subscribers.length === 1) {
                 linkerHtml = linkerHtml + panel.subscribers.length + ' link established</em></div>';
               } else {
                 linkerHtml = linkerHtml + panel.subscribers.length + ' links established</em></div>';
@@ -301,7 +301,7 @@ angular.module('singleConceptAuthoringApp.search', [])
           panel.options.searchMode = 'partialMatching';
           var searchTerm = $('#' + panel.divElement.id + '-searchBox').val();
           $("#" + panel.divElement.id + '-navLanguageLabel').closest('a').hide();
-          if (searchTerm.charAt(0) == "^") {
+          if (searchTerm.charAt(0) === "^") {
             $("#" + panel.divElement.id + '-searchBox').val(searchTerm.slice(1));
           }
         });
@@ -313,8 +313,8 @@ angular.module('singleConceptAuthoringApp.search', [])
         if (!draggable.attr('data-panel')) {
         } else {
           $.each(componentsRegistry, function (i, field) {
-            if (field.divElement.id == draggable.attr('data-panel')) {
-              if (field.type == "concept-details") {
+            if (field.divElement.id === draggable.attr('data-panel')) {
+              if (field.type === "concept-details") {
                 panel.subscribe(field);
               }
             }
@@ -323,20 +323,20 @@ angular.module('singleConceptAuthoringApp.search', [])
       }
 
       this.search = function (t, skipTo, returnLimit, forceSearch) {
-        if (typeof panel.options.searchMode == "undefined") {
+        if (typeof panel.options.searchMode === "undefined") {
           panel.options.searchMode = "partialMatching";
         }
-        if (typeof panel.options.semTagFilter == "undefined") {
+        if (typeof panel.options.semTagFilter === "undefined") {
           panel.options.semTagFilter = "none";
         }
-        if (typeof panel.options.langFilter == "undefined") {
+        if (typeof panel.options.langFilter === "undefined") {
           panel.options.langFilter = "none";
         }
 
-        if (typeof forceSearch == "undefined") {
+        if (typeof forceSearch === "undefined") {
           forceSearch = false;
         }
-        if (t != "" && (t != lastT || forceSearch)) {
+        if (t !== "" && (t !== lastT || forceSearch)) {
           if (t.length < 3) {
             $('#' + panel.divElement.id + '-typeIcon').removeClass('glyphicon-ok');
             $('#' + panel.divElement.id + '-typeIcon').removeClass('text-success');
@@ -347,7 +347,7 @@ angular.module('singleConceptAuthoringApp.search', [])
             $('#' + panel.divElement.id + '-typeIcon').removeClass('text-danger');
             $('#' + panel.divElement.id + '-typeIcon').addClass('glyphicon-ok');
             $('#' + panel.divElement.id + '-typeIcon').addClass('text-success');
-            if (t != lastT) {
+            if (t !== lastT) {
               panel.options.semTagFilter = "none";
               panel.options.langFilter = "none";
             }
@@ -356,20 +356,20 @@ angular.module('singleConceptAuthoringApp.search', [])
             var time = d.getTime();
             panel.history.push({searchTerm: t, time: time});
             $('#' + panel.divElement.id + '-searchFilters').html("");
-            if (skipTo == 0) {
+            if (skipTo === 0) {
               $('#' + panel.divElement.id + '-resultsTable').html("<i class='glyphicon glyphicon-refresh icon-spin'></i>");
             } else {
               $('#' + panel.divElement.id + '-resultsTable').find('.more-row').html("<td colspan='2' class='text-center'><i class='glyphicon glyphicon-refresh icon-spin'></i>&nbsp;&nbsp;</td>");
             }
             var resultsHtml = "";
-            if (xhr != null) {
+            if (xhr !== null) {
               xhr.abort();
               console.log("aborting call...");
             }
             $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'>Searching..</span>");
             t = t.trim();
             if (isNumber(t)) {
-              if (t.substr(-2, 1) == "0") {
+              if (t.substr(-2, 1) === "0") {
                 // Search conceptId
                 xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/concepts/" + t,function (result) {
                 $scope.conceptIdSearch = true;
@@ -380,7 +380,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                     {
                     $scope.results = field;
                     resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + result.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
-                    if (result.active == false) {
+                    if (result.active === false) {
                     }
                     else{
                       resultsHtml = resultsHtml + "'><td class='col-md-5'><div style='word-break: break-all' class='result-item' data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item' style='word-break: break-all' data-concept-id='" + result.conceptId + "' data-term='" + field.term + "'>" + field.term + "</td><td class='col-md-1'><button data-concept-id='" + result.conceptId + "' class='addButton btn btn-round btn-default widget-button grey lighten-5'></i><span class='md md-playlist-add'></span></button></td></tr></td></tr>"
@@ -402,14 +402,14 @@ angular.module('singleConceptAuthoringApp.search', [])
                     });
                   });
                 });
-              } else if (t.substr(-2, 1) == "1") {
+              } else if (t.substr(-2, 1) === "1") {
                 xhr = $.getJSON(options.serverUrl + "/" + options.edition + "/" + options.release + "/descriptions/" + t,function (result) {
 
                 }).done(function (result) {
                   $scope.results = result.matches;
                   $.each(result.matches, function (field) {
                     resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + field.concept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
-                    if (field.concept.active == false) {
+                    if (field.concept.active === false) {
                     }
                     else{
                       resultsHtml = resultsHtml + "'><td class='col-md-5'><div class='result-item' style='word-break: break-all' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.term + "</div></td><td class='text-muted small-text col-md-6 result-item' style='word-break: break-all' data-concept-id='" + field.concept.conceptId + "' data-term='" + field.term + "'>" + field.concept.fsn + "</td><td class='col-md-1'><button data-concept-id='" + field.concept.conceptId + "' class='addButton'><i class='glyphicon glyphicon-pencil'</button></td></tr>"
@@ -435,15 +435,15 @@ angular.module('singleConceptAuthoringApp.search', [])
                 $('#' + panel.divElement.id + '-searchBar').html("<span class='text-muted'></span>");
               }
             } else {
-              if (panel.options.searchMode == "partialMatching") {
+              if (panel.options.searchMode === "partialMatching") {
                 t = t.toLowerCase();
               }
               var startTime = Date.now();
               var searchUrl = options.serverUrl + "/" + options.edition + "/" + options.release + "/descriptions?query=" + t + "&limit=50&searchMode=" + panel.options.searchMode + "&lang=" + panel.options.searchLang + "&statusFilter=" + panel.options.statusSearchFilter + "&skipTo=" + skipTo + "&returnLimit=" + returnLimit;
-              if (panel.options.semTagFilter != "none") {
+              if (panel.options.semTagFilter !== "none") {
                 searchUrl = searchUrl + "&semanticFilter=" + panel.options.semTagFilter;
               }
-              if (panel.options.langFilter != "none") {
+              if (panel.options.langFilter !== "none") {
                 searchUrl = searchUrl + "&langFilter=" + panel.options.langFilter;
               }
               xhr = $.getJSON(searchUrl,function (result) {
@@ -460,10 +460,10 @@ angular.module('singleConceptAuthoringApp.search', [])
                   $('#' + panel.divElement.id + '-resultsTable').html(resultsHtml);
                 } else {
                   var searchFiltersHtml = "<span class='pull right'><a class='btm btn-xs' style='margin: 3px; color: #777; background-color: #fff; border: 1px #ccc solid; margin-left: 25px;' data-toggle='collapse' href='#" + panel.divElement.id + "-searchFiltersPanel'><span class='i18n' data-i18n-id='i18n_filters'>Filters</span></a>";
-                  if (panel.options.semTagFilter != "none") {
+                  if (panel.options.semTagFilter !== "none") {
                     searchFiltersHtml = searchFiltersHtml + "&nbsp;&nbsp;<span class='label label-danger'>" + panel.options.semTagFilter + "&nbsp;<a href='javascript:void(0);' style='color: white;text-decoration: none;' class='remove-semtag'>&times;</a></span>&nbsp;&nbsp;";
                   }
-                  if (panel.options.langFilter != "none") {
+                  if (panel.options.langFilter !== "none") {
                     searchFiltersHtml = searchFiltersHtml + "&nbsp;&nbsp;<span class='label label-danger'>" + panel.options.langFilter + "&nbsp;<a href='javascript:void(0);' style='color: white;text-decoration: none;' class='remove-lang'>&times;</a></span>&nbsp;&nbsp;";
                   }
                   searchFiltersHtml = searchFiltersHtml + "</span><div id='" + panel.divElement.id + "-searchFiltersPanel' class='panel-collapse collapse'>";
@@ -491,7 +491,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                     panel.search(t, 0, returnLimit, true);
                   });
 
-                  if (panel.options.searchMode == "regex") {
+                  if (panel.options.searchMode === "regex") {
                     matchedDescriptions.sort(function (a, b) {
                       if (a.term.length < b.term.length)
                         return -1;
@@ -503,7 +503,7 @@ angular.module('singleConceptAuthoringApp.search', [])
                   $.each(matchedDescriptions, function (i, field) {
                     $scope.results = matchedDescriptions;
                     resultsHtml = resultsHtml + "<tr ui-draggable='true' drag='getConceptPropertiesObj(" + field.concept.conceptId + ")' drag-channel='conceptPropertiesObj' drop-channel='' class='resultRow selectable-row";
-                    if (field.concept.active == false) {
+                    if (field.concept.active === false) {
                     }
                     else{
 
@@ -549,13 +549,13 @@ angular.module('singleConceptAuthoringApp.search', [])
       this.subscribe = function (subscriber) {
         var alreadySubscribed = false;
         $.each(panel.subscribers, function (i, field) {
-          if (subscriber.divElement.id == field.divElement.id) {
+          if (subscriber.divElement.id === field.divElement.id) {
             alreadySubscribed = true;
           }
         });
         if (!alreadySubscribed) {
-          if (panel.subscribers.length == 0) {
-            if (typeof globalMarkerColor == "undefined") {
+          if (panel.subscribers.length === 0) {
+            if (typeof globalMarkerColor === "undefined") {
               globalMarkerColor = 'black';
             }
             panel.markerColor = panel.getNextMarkerColor(globalMarkerColor);
@@ -571,7 +571,7 @@ angular.module('singleConceptAuthoringApp.search', [])
         var indexToRemove = -1;
         var i = 0;
         $.each(panel.subscribers, function (i, field) {
-          if (subscriber.divElement.id == field.divElement.id) {
+          if (subscriber.divElement.id === field.divElement.id) {
             indexToRemove = i;
           }
           i = i + 1;
@@ -579,7 +579,7 @@ angular.module('singleConceptAuthoringApp.search', [])
         if (indexToRemove > -1) {
           panel.subscribers.splice(indexToRemove, 1);
         }
-        if (panel.subscribers.length == 0) {
+        if (panel.subscribers.length === 0) {
           $("#" + panel.divElement.id + "-subscribersMarker").hide();
         }
         subscriber.clearSubscription();
@@ -594,15 +594,15 @@ angular.module('singleConceptAuthoringApp.search', [])
 
       this.getNextMarkerColor = function (color) {
         var returnColor = 'black';
-        if (color == 'black') {
+        if (color === 'black') {
           returnColor = 'green';
-        } else if (color == 'green') {
+        } else if (color === 'green') {
           returnColor = 'purple';
-        } else if (color == 'purple') {
+        } else if (color === 'purple') {
           returnColor = 'red';
-        } else if (color == 'red') {
+        } else if (color === 'red') {
           returnColor = 'blue';
-        } else if (color == 'blue') {
+        } else if (color === 'blue') {
           returnColor = 'green';
         }
         globalMarkerColor = returnColor;
@@ -620,7 +620,7 @@ angular.module('singleConceptAuthoringApp.search', [])
     function clearSearchPanelSubscriptions(divElementId1) {
       var d1;
       $.each(componentsRegistry, function(i, field) {
-        if (field.divElement.id == divElementId1) {
+        if (field.divElement.id === divElementId1) {
           d1 = field;
         }
       });
@@ -630,7 +630,7 @@ angular.module('singleConceptAuthoringApp.search', [])
 
     function searchInPanel(divElementId, searchTerm) {
       $.each(componentsRegistry, function (i, field) {
-        if (field.divElement.id == divElementId) {
+        if (field.divElement.id === divElementId) {
           $('#' + divElementId + '-searchBox').val(searchTerm);
           field.search(searchTerm,0,100,false);
         }
@@ -639,7 +639,7 @@ angular.module('singleConceptAuthoringApp.search', [])
     }
 
     $(document).keypress(function (event) {
-      if (event.which == '13') {
+      if (event.which === '13') {
         event.preventDefault();
       }
     });

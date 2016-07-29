@@ -40,7 +40,7 @@ angular.module('singleConceptAuthoringApp.home', [
                 total: $scope.tasks ? $scope.tasks.length : 0, // length of data
                 getData: function ($defer, params) {
 
-                    if (!$scope.tasks || $scope.tasks.length == 0) {
+                    if (!$scope.tasks || $scope.tasks.length === 0) {
                         $defer.resolve([]);
                     } else {
 

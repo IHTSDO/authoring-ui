@@ -15,7 +15,7 @@
     No results.
   </div>
 
-  <div ng-if="type != 'equivalence' && items.length > 0" class="table-responsive white">
+  <div ng-if="type !== 'equivalence' && items.length > 0" class="table-responsive white">
     <div class="table-search">
       <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
              placeholder="Search Results" autofocus/>
