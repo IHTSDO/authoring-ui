@@ -127,7 +127,7 @@
                     drag-channel="feedbackConcept" drop-channel="feedbackConcept"
                     ui-on-drop="dropConcept(concept, $data, actionTab)">
                                                 <span ng-show="concept.modifiedSinceReview" class="new-edits pull-left">New Edits</span>
-                                                <span class="pull-left p-5">{{concept.term}} </span>
+                                                <span class="pull-left p-5" ng-click="selectConceptForFeedback(concept); addToEdit(concept); viewConceptInTaxonomy(concept)">{{concept.term}} </span>
                                             </td>
                                             <!--Author Controls -->
                                             <td ng-if="role === 'AUTHOR'" class="  col-md-3 no-padding"
