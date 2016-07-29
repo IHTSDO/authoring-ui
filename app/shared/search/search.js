@@ -337,7 +337,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        * @returns {{id: conceptId, name: fsn}}
        */
       $scope.getConceptPropertiesObj = function (concept) {
-        return {id: concept.conceptId, name: concept.fsn};
+        return {id: concept.conceptId, name: concept.preferredSynonym ? concept.preferredSynonym : concept.fsn};
       };
 
     }
