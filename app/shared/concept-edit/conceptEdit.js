@@ -621,7 +621,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             if(deletion)
             {
-                selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch, deletion).then(function (results) {
+                selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, deletion).then(function (results) {
                     if(results.deletion){
                         notificationService.sendMessage('Deleting Concept...');
                         snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function(response){
@@ -669,7 +669,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 console.log('No errors detected');
               }
 
-              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch).then(function (results) {
 
                 // set the concept in the inactivation service for listener update and retrieval
                 // NOTE: Also broadcasts a route change to edit.js from the service
@@ -1093,7 +1093,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // reactivate the description before selecting a reason
               description.active = true;
 
-              selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
+              selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null, null).then(function (results) {
 
                 notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
@@ -1120,7 +1120,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
         scope.editDescriptionInactivationReason = function (item) {
-          selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null).then(function (results) {
+          selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null, null).then(function (results) {
 
             notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 
@@ -1140,7 +1140,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.editConceptInactivationReason = function (item) {
-          selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.branch).then(function (results) {
+          selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch).then(function (results) {
 
             notificationService.sendMessage('Inactivating concept (' + results.reason.text + ')');
 
@@ -1443,7 +1443,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 ////////////////////////////////
 
 // deactivation modal for reason s elect
-        var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, branch, deletion) {
+        var selectInactivationReason = function (componentType, reasons, associationTargets, conceptId, concept, branch, deletion) {
 
           var popups = document.querySelectorAll('.popover');
           if (popups) {
@@ -1471,6 +1471,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               },
               conceptId: function () {
                 return conceptId;
+              },
+              concept: function () {
+                return concept;
               },
               branch: function () {
                 return branch;
