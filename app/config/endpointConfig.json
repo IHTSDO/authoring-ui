@@ -3,15 +3,5 @@
     "authoringEndpoint": "/snowowl/ihtsdo-authoring/",
     "snowOwlEndpoint": "/snowowl/snomed-ct/",
     "imsEndpoint": "https://dev-ims.ihtsdotools.org"
-  },
-  "excludedRuleIds": [
-    "31f5e2c8-b0b9-42ee-a9bf-87d95edad83b",
-    "2ddc9a28-150d-47a4-9b0e-7dbff2efdd72",
-    "d76f1430-7e9a-11e1-b0c4-0800200c9a66",
-    "d5c80582-ad32-4f26-a729-a91fe04a06b2"
-  ],
-  "whitelistEligibleIds": [
-    "cc9c5340-84f0-11e1-b0c4-0800200c9a66",
-    "c3249e80-84f0-11e1-b0c4-0800200c9a66"
-  ]
+  }
 }
