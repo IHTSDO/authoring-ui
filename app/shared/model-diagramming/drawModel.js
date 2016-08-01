@@ -502,7 +502,7 @@ angular.module('singleConceptAuthoringApp')
               break;
           }
 
-          if (endMarker === null) endMarker = "BlackTriangle";
+          if (endMarker == null) endMarker = "BlackTriangle";
 
           var polyline1 = svg.polyline([[originX, originY],
               [originX, destinationY], [destinationX, destinationY]]
