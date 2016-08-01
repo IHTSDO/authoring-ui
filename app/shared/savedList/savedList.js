@@ -154,5 +154,24 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         }
       }
     });
+      
+    $scope.$on('removeItem', function (event, data) {
+      if (!data || !data.concept) {
+        console.error('Cannot handle stop editing event: concept must be supplied');
+      } else {
+        if ($scope.savedList) {
+          angular.forEach($scope.savedList.items, function (item) {
+            if (item.concept.conceptId === data.concept.conceptId) {
+              var index = $scope.savedList.items.indexOf(item);
+              $scope.savedList.items.splice(index, 1);
+              item.editing = false;
+              scaService.saveUiStateForTask(
+                $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
+              );
+            }
+          });
+        }
+      }
+    });
 
   }]);
