@@ -630,7 +630,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                                 notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
                             }
                             else{
+                                $rootScope.$broadcast('removeItem', {concept: scope.concept});
                                 scope.removeConcept(scope.concept);
+                                
                                 notificationService.sendMessage('Concept Deleted', 5000);
                             }
                         });
