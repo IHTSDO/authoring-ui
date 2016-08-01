@@ -159,8 +159,8 @@ angular
       function (response) {
         var endpoints = response;
         console.log(response);
-        var accountUrl = endpoints.endpoints.imsEndpoint + 'api/account';
-        var imsUrl = endpoints.endpoints.imsEndpoint;
+        var accountUrl = endpoints.imsEndpoint + 'api/account';
+        var imsUrl = endpoints.imsEndpoint;
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
         // don't want either true or false here please!
