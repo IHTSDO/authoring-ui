@@ -204,6 +204,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       };
 
+      $scope.gotoLinkedIssue = function(issue) {
+        // TODO Make this configurable?
+        var issueKey = issue.outwardIssue.key;
+        var rootUrl = /^https:\/\/([^\/]*).*$/.exec(issue.outwardIssue.self);
+        $window.open(rootUrl + '/browse/' + issueKey, issueKey);
+      };
+
       function initialize() {
 
         console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
