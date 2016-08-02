@@ -369,7 +369,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user exclusion
                   orderedData = orderedData.filter(function (failure) {
-                    return !validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
+                    return !validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detailUnmodified);
                   });
 
 //                  console.debug('ordered data', orderedData);
@@ -471,6 +471,9 @@ angular.module('singleConceptAuthoringApp')
                 assertion.hasUserExclusions = false;
                 angular.forEach(assertion.firstNInstances, function (instance) {
 
+                  // store the unmodified text to preserve original data
+                  instance.detailUnmodified = instance.detail;
+
                   // detect if instance references user modified concepts
                   instance.isUserModified = scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1;
 
@@ -484,6 +487,9 @@ angular.module('singleConceptAuthoringApp')
               // load the tables
               scope.reloadTables();
               deferred.resolve();
+            }, function() {
+              scope.reloadTables();
+              notificationService.sendWarning('Error retrieving validation configuration; whitelist and excluded rules are shown');
             });
 
             return deferred.promise;
@@ -569,9 +575,12 @@ angular.module('singleConceptAuthoringApp')
 
             angular.forEach(assertionFailure.firstNInstances, function (instance) {
 
+
+              // NOTE: store the unmodified failure text
               var obj = {
                 conceptId: instance.conceptId,
                 detail: instance.detail,
+                detailUnmodified : instance.detailUnmodified,
                 selected: false,
                 isUserModified: $routeParams.taskKey ? instance.isUserModified : false,
                 isUserExclusion: instance.isUserExclusion
@@ -631,11 +640,12 @@ angular.module('singleConceptAuthoringApp')
               failure.isUserExclusion = true;
 
               // add the exclusion and update tables
+              // NOTE: Must use the unmodified detail, not the referenced component modified detail
               validationService.addValidationFailureExclusion(scope.assertionFailureViewed.assertionUuid,
                 scope.assertionFailureViewed.assertionText,
                 failure.conceptId,
                 failure.conceptFsn,
-                failure.detail,
+                failure.detailUnmodified,
                 userName).then(function () {
 
                 scope.reloadTables();
@@ -645,7 +655,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.isExcluded = function (failure) {
-            validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detail);
+            validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detailUnmodified);
           };
 
           /**
