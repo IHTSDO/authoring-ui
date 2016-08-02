@@ -7,7 +7,7 @@
   .Available.badge {
     margin: 3px 3px 3px 3px;
   }
-  
+
   .not_in_review {
     background-color: #e5e5e5;
 	color:#a3a3a3;
@@ -69,7 +69,7 @@
                 <a class="tooltips-right"
                    ng-click="viewReviewTask(task)"> {{task.summary}}<span> Click to open reviewer view</span></a>
               </td>
-            
+
    <td header-title="'Click to sort'" data-title="'Task Id'" sortable="'taskKey'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
@@ -79,8 +79,8 @@
               <td header-title="'Click to sort'" data-title="'Author'" sortable="'assignee.displayName'" filter="{ 'author': 'text' }">
                 {{task.assignee.displayName}}
               </td>
-            
-            
+
+
               <td header-title="'Click to sort'" data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
                      <button ng-show="task.latestClassificationJson !== null"
@@ -95,7 +95,7 @@
                            {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.status !== 'STALE'},
                            ]"
   class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                    <div class="md md-notifications "></div> 
+                    <div class="md md-notifications "></div>
                                         <span > <div class="message_classification_{{task.latestClassificationJson.status}}"><div ng-if="task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
                   </button>
                 </a>
@@ -113,16 +113,16 @@
                           {indicator_blue : task.latestValidationStatus === 'BUILDING'},
                           {indicator_green : task.latestValidationStatus === 'COMPLETED'}]"
                           class="btn btn-round   btn-default lighten-2 pull-left ">
-                                     
 
-                    <div class="md md-school "></div> 
+
+                    <div class="md md-school "></div>
                       <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>
                 </a>
               </td>
 
             <td header-title="'Click to sort'" data-title="'Feedback'" sortable="'feedbackMessagesStatus'" >
-               
+
                 <a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
@@ -138,8 +138,11 @@
                     <div class="md md-email"></div>
                     <span>New feedback is available </span>
                   </button>
-                
+
                 </a>
+              <span ng-show="task.feedbackMessagesStatus === 'unread'">
+                    &nbsp;{{task.feedbackMessageDate | date : 'short'}}
+                  </span>
               </td>
       <td header-title="'Click to sort'" data-title="'Status'" sortable="'status'">
                 <div ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for
@@ -151,14 +154,14 @@
                 <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
   <td header-title="'Click to sort'" data-title="'Review'" sortable="'reviewer'"  >
-  
+
            <div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
                 <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
 
               </td>
-                      
-             
+
+
             </tr>
           </table>
 
