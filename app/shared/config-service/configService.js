@@ -3,17 +3,19 @@
 angular.module('singleConceptAuthoringApp')
   .factory('configService', ['$http', '$q', function ($http, $q) {
 
-    var properties = null;
-    var validationProperties = null;
+    var properties = {};
+    properties.endpoints = null;
+    properties.validationProperties = null;
 
     function getConfigProperties() {
       var deferred = $q.defer();
-      if (!properties) {
+      if (!properties.endpoints) {
         $http.get('/config/endpointConfig.json').then(function (response) {
-          properties = response.data;
+          properties.endpoints = response.data;
           $http.get('/sca/validationConfig/validationConfig.json').then(function (validationResponse) {
-              validationProperties = validationResponse.data;
-              deferred.resolve(properties, validationProperties);
+              properties.validationProperties = validationResponse.data;
+              console.log(properties);
+              deferred.resolve(properties);
             }, function(error) {
               deferred.reject('Failed to retrieve validation configuration properties');
             });
@@ -22,7 +24,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject('Failed to retrieve configuration properties');
         });
       } else {
-        deferred.resolve(properties, validationProperties);
+        deferred.resolve(properties);
       }
       return deferred.promise;
     }
@@ -30,8 +32,8 @@ angular.module('singleConceptAuthoringApp')
     return {
       getEndpoints: function () {
         var deferred = $q.defer();
-        getConfigProperties().then(function(properties, validationProperties) {
-          deferred.resolve(properties.endpoints);
+        getConfigProperties().then(function(properties) {
+          deferred.resolve(properties.endpoints.endpoints);
         }, function(error) {
           deferred.reject(error);
         });
@@ -40,8 +42,8 @@ angular.module('singleConceptAuthoringApp')
         
       getExcludedValidationRuleIds : function() {
         var deferred = $q.defer();
-        getConfigProperties().then(function(properties, validationProperties) {
-          deferred.resolve(validationProperties.excludedRuleIds);
+        getConfigProperties().then(function(properties) {
+          deferred.resolve(properties.validationProperties.excludedRuleIds);
         }, function(error) {
           deferred.reject(error);
         });
@@ -50,8 +52,8 @@ angular.module('singleConceptAuthoringApp')
         
       getWhiteListEligibleRuleIds : function() {
         var deferred = $q.defer();
-        getConfigProperties().then(function(properties, validationProperties) {
-          deferred.resolve(validationProperties.whitelistEligibleIds);
+        getConfigProperties().then(function(properties) {
+          deferred.resolve(properties.validationProperties.whitelistEligibleIds);
         }, function(error) {
           deferred.reject(error);
         });
