@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     };
 
     $scope.getConceptPropertiesObj = function (item) {
-      return {id: item.concept.conceptId, name: item.concept.fsn};
+      return {id: item.concept.conceptId, name: item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn};
     };
 
     $scope.openConceptInformationModal = function (result) {
@@ -154,7 +154,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         }
       }
     });
-      
+
     $scope.$on('removeItem', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot handle stop editing event: concept must be supplied');
