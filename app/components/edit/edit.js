@@ -1353,8 +1353,13 @@ angular.module('singleConceptAuthoringApp.edit', [
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           console.debug('retrieved task', response);
+
+          console.debug('Linked issues');
+          console.debug(response.issueLinks);
           $scope.task = response;
           $rootScope.currentTask = response;
+
+          console.debug($scope.task);
 
           // set the classification and validation flags
           $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING');
@@ -1459,10 +1464,19 @@ angular.module('singleConceptAuthoringApp.edit', [
             },
             // if no role, send error and return to dashboard after slight delay
             function () {
-              notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
+            /*  TODO Reenable this later
+            notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
               $timeout(function () {
                 $location.url('/');
-              }, 4000);
+              }, 4000);*/
+
+              notificationService.sendMessage('Task details loaded', 3000);
+
+              // set role functionality and initial view
+              var role = 'AUTHOR';
+              $scope.isOwnTask = role === 'AUTHOR';
+              setBranchFunctionality($scope.task.branchState);
+              $scope.setInitialView();
             });
 
           // populate the container objects
