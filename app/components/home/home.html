@@ -10,16 +10,23 @@
 
   .not_in_review {
     background-color: #e5e5e5;
-	color:#a3a3a3;
-}
-.sca-light   .not_in_review {
+    color: #a3a3a3;
+  }
+
+  .sca-light .not_in_review {
     background-color: #fff;
-	color:#a3a3a3;
-}
- .not_in_review.btn-round  {
+    color: #a3a3a3;
+  }
+
+  .not_in_review.btn-round {
     background-color: #eeeeee;
-	color:#cdcdcd;}
-	.btn-center{margin: 0 auto; list-style:none;}
+    color: #cdcdcd;
+  }
+
+  .btn-center {
+    margin: 0 auto;
+    list-style: none;
+  }
 </style>
 
 <div class="row no-gutter sca-container ">
@@ -52,13 +59,15 @@
           </div>
           <div class="col-md-1">
             <div class="pull-right p-t-20">
-              <button type="button" class="btn btn-round tasks-bubble  btn-info ng-scope tooltips-bottom large-size-tooltip offset-tooltip-right ">
+              <button type="button"
+                      class="btn btn-round tasks-bubble  btn-info ng-scope tooltips-bottom large-size-tooltip offset-tooltip-right ">
                 <div> {{tasks.length}}</div>
                 <span>{{tasks.length}} tasks are assigned to you </span>
 
                 <div class="ripple-wrapper"></div>
               </button>
-              <button type="button" class="btn btn-round tasks-bubble  btn-default tooltips-bottom medium-size-tooltip offset-tooltip-right "
+              <button type="button"
+                      class="btn btn-round tasks-bubble  btn-default tooltips-bottom medium-size-tooltip offset-tooltip-right "
 
                       ng-click="openCreateTaskModal()"
                       ng-disabled="!isProjectsLoaded()">
@@ -75,34 +84,36 @@
 
 
           <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
-               class="table table-full table-full-small" >
-            <tr ng-repeat="task in $data" class="clickable-row" >
+                 class="table table-full table-full-small">
+            <tr ng-repeat="task in $data" class="clickable-row">
 
 
-              <td data-title="'Name'" sortable="'summary'" header-class="'header-tooltips'"  header-title="'Click to sort'" filter="{ 'summary': 'text' }"><a class="tooltips-right"
-                                                                                             ng-click="goToTask(task)">
+              <td data-title="'Name'" sortable="'summary'" header-class="'header-tooltips'"
+                  header-title="'Click to sort'" filter="{ 'summary': 'text' }"><a class="tooltips-right"
+                                                                                   ng-click="goToTask(task)">
                 {{task.summary}}<span> Click to open editing view</span></a>
               </td>
 
-              <td data-title="'Task Id'" sortable="'taskKey'"  header-title="'Click to sort'" filter="{ 'key': 'text' }">
+              <td data-title="'Task Id'" sortable="'taskKey'" header-title="'Click to sort'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
-              <td data-title="'Modified'" sortable="'updated'"  header-title="'Click to sort'" >
+              <td data-title="'Modified'" sortable="'updated'" header-title="'Click to sort'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
 
-              <td data-title="'Rebase'"  header-title="'Click to sort'"  >
-                  <button
-                    ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'" type="button" ng-click="goToConflicts(task)"
-                    class="btn btn-round  btn-center btn-default lighten-1 amber tooltips-left">
-                    <div class="md md-sync "></div>
-                    <span>Click to pull in changes from project</span>
-                  </button>
+              <td data-title="'Rebase'" header-title="'Click to sort'">
+                <button
+                  ng-show="(task.branchState === 'DIVERGED' || task.branchState === 'BEHIND' || task.branchState === 'STALE') && task.status !== 'Promoted'"
+                  type="button" ng-click="goToConflicts(task)"
+                  class="btn btn-round  btn-center btn-default lighten-1 amber tooltips-left">
+                  <div class="md md-sync "></div>
+                  <span>Click to pull in changes from project</span>
+                </button>
               </td>
 
               <td data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                       <button ng-show="task.latestClassificationJson !== null"
+                  <button ng-show="task.latestClassificationJson !== null"
                           type="button"
                           ng-class="[
                           {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
@@ -113,17 +124,20 @@
                             {indicator_grey : task.latestClassificationJson.status === 'STALE'},
                            {indicator_amber : task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.status !== 'STALE'},
                            ]"
-  class="btn btn-round btn-default pull-left tooltips-right normalcase ">
+                          class="btn btn-round btn-default pull-left tooltips-right normalcase ">
                     <div class="md md-notifications "></div>
-                                        <span > <div class="message_classification_{{task.latestClassificationJson.status}}"><div ng-if="task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
+                    <span> <div class="message_classification_{{task.latestClassificationJson.status}}"><div
+                      ng-if="task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div
+                      ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div
+                      ng-if="task.latestClassificationJson.redundantStatedRelationshipsFound === true && task.latestClassificationJson.equivalentConceptsFound === true && task.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
                   </button>
                 </a>
 
 
               </td>
-      <td data-title="'Validation'" sortable="'latestValidationStatus'">
+              <td data-title="'Validation'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-           <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
                           ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
                           {indicator_red : task.latestValidationStatus === 'FAILED'},
@@ -134,36 +148,39 @@
 
 
                     <div class="md md-school "></div>
-                      <span > <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
+                    <span> <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>
                 </a>
               </td>
 
- <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'"  header-title="'Click to sort'"  >
+              <td data-title="'Feedback'" sortable="'feedbackMessagesStatus'" header-title="'Click to sort'">
 
                 <a class="tooltips-left " ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/feedback">
 
                   <button ng-if="task.feedbackMessagesStatus === 'read'" type="button"
                           class="btn btn-round   btn-default  pink darken-1  "
-                    >
+                  >
                     <div class="md md-drafts"></div>
                     <span>View feedback</span>
 
                   </button>
                   <button ng-if="task.feedbackMessagesStatus === 'unread'" type="button"
-                          class="btn btn-round   btn-default   pink darken-1  "
-                          >
+                          class="btn btn-round   btn-default   pink darken-1 ">
                     <div class="md md-email"></div>
                     <span>New feedback is available </span>
                   </button>
 
                 </a>
+                <span ng-show="task.feedbackMessagesStatus === 'unread'">
+                    &nbsp;{{task.feedbackMessageDate | date : 'short'}}
+                  </span>
+
 
               </td>
 
-              <td data-title="'Status'" sortable="'status'" header-title="'Click to sort'" >
+              <td data-title="'Status'" sortable="'status'" header-title="'Click to sort'">
                 <div ng-if="task.status === 'In Review' && !task.reviewer" class="badge {{task.status}}"> Ready for
-                                                                                                          Review
+                  Review
                 </div>
                 <div ng-if="task.status === 'In Review' && task.reviewer" class="badge {{task.status}}">
                   {{task.status}}
@@ -171,12 +188,12 @@
                 <div ng-if="task.status !== 'In Review'" class="badge {{task.status}}"> {{task.status}}</div>
               </td>
 
-     <td data-title="'Review'" sortable="'reviewer'"   header-title="'Click to sort'" >
-  <div ng-show="task.status === 'Review Completed' || task.status === 'In Review'">
-           <div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
-                <div ng-if="!task.reviewer" class="badge Available">Available</div>
+              <td data-title="'Review'" sortable="'reviewer'" header-title="'Click to sort'">
+                <div ng-show="task.status === 'Review Completed' || task.status === 'In Review'">
+                  <div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
+                  <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
-</div>
+                </div>
               </td>
 
             </tr>
