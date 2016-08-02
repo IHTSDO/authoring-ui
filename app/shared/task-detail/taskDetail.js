@@ -207,8 +207,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.gotoLinkedIssue = function(issue) {
         // TODO Make this configurable?
         var issueKey = issue.outwardIssue.key;
-        var rootUrl = /^https:\/\/([^\/]*).*$/.exec(issue.outwardIssue.self);
-        $window.open(rootUrl + '/browse/' + issueKey, issueKey);
+        var rootUrl = /^(https:\/\/[^\/]*).*$/.exec(issue.outwardIssue.self);
+
+        console.debug(issueKey, rootUrl[1]);
+        window.open(rootUrl[1] + '/browse/' + issueKey, issueKey);
       };
 
       function initialize() {

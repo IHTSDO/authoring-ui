@@ -35,20 +35,20 @@
             <i class="icon-circle theme-border"></i>
           </div>
           <div class="timeline-panel">
-            <label class="control-label">Linked Issues</label>
-            <div ng-class="row" ng-repeat="issueLink in task.issueLinks">
-              <div class="col-md-3">
-                {{issueLink.outwardIssue.issueType.iconUrl}}
-                {{issueLink.outwardIssue.issueType.name}}
+            <label class="control-label">Linked Issues ({{task.issueLinks.length}})</label>
+            <div class="row no-gutter no-padding" ng-repeat="issueLink in task.issueLinks">
+              <div class="col-md-3" ng-click="gotoLinkedIssue(issueLink)">
+
+                <img ng-src="{{issueLink.outwardIssue.issueType.iconUrl}}"
+                     alt="{{issueLink.outwardIssue.issueType.summary}}"/>
+                {{issueLink.outwardIssue.key}}
               </div>
-              <div class="col-md-6">
-                <img url="{{issueLink.outwardIssue.fields.issueType.iconUrl}}" />
-                <a href="gotoLinkedIssue(issueLink)">{{issueLink.outwardIssue.key}}</a>
-                {{issueLink.outwardIssue.fields.summary}}
+              <div class="col-md-4" ng-click="gotoLinkedIssue(issueLink)">
+                {{issueLink.outwardIssue.summary}}
               </div>
-              <div class="col-md-3">
-                <img url="{{issueLink.outwardIssue.fields.priority.iconUrl}}" />
-                {{issueLink.outwardIssue.fields.status.name}}
+              <div class="col-md-4">
+                <img ng-src="{{issueLink.outwardIssue.priority.iconUrl}}"/>
+                {{issueLink.outwardIssue.status.name}}
               </div>
             </div>
 
