@@ -82,6 +82,7 @@
         <button type="button" style="vertical-align: bottom"
                 ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
                 ng-click="toggleConceptActive(concept)"
+                ng-if="concept.released"
                 ng-disabled="isInactivation  || isLockedModule(concept.moduleId) && concept.released"
                 class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
 
