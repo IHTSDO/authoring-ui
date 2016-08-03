@@ -40,6 +40,9 @@ angular.module('singleConceptAuthoringApp')
         // boolean search flag indicating stated (true) vs inferred (false) mode
         scope.statedFlag = false; // not yet implemented
 
+        // whether in an extension -- uses preferred synonyms instead of fsns
+        scope.isExtension = metadataService.isExtensionSet();
+
 
         // TODO Consider moving this into a directive with passed function
         // Handle single and double click events
@@ -350,11 +353,12 @@ angular.module('singleConceptAuthoringApp')
             // add as root tree
             if (scope.view) {
               // if concept supplied has leaf inferred property, start constructing trees
+              // NOTE: Specifically checked at this field is used for display
               if (scope.concept.hasOwnProperty('isLeafInferred')) {
                 scope.constructRootTrees(scope.concept);
               }
 
-              // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return laf status)
+              // otherwise retrieve the full concept to ensure all required information is available (search sometimes fails to return leaf status)
               else {
                 snowowlService.getFullConcept(scope.concept.conceptId, scope.branch, scope.acceptLanguageValue).then(function (response) {
                   scope.concept = response;
