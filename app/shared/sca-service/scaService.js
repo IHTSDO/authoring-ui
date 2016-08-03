@@ -7,6 +7,70 @@ angular.module('singleConceptAuthoringApp')
       // TODO Wire this to endpoint service, endpoint config
       var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
+      function getModifiedList(projectKey, taskKey) {
+
+        var deferred = $q.defer();
+
+        // get the list
+        $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          console.debug(error);
+          if (error.status === 404) {
+            deferred.resolve([]);
+          } else {
+            deferred.reject('Error retrieving modified concept id list');
+          }
+        });
+        return deferred.promise;
+      }
+
+      // Modified list functions
+      function saveModifiedConceptId(projectKey, taskKey, conceptId) {
+        var deferred = $q.defer();
+
+        console.debug('saving modified concept id', projectKey, taskKey, conceptId);
+
+        getModifiedList(projectKey, taskKey).then(function(modifiedList) {
+          console.debug('existing modified list', modifiedList);
+          var index = modifiedList.indexOf(conceptId);
+
+          // if not in list, update the list
+          if (index === -1) {
+            modifiedList.push(conceptId);
+            $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', modifiedList).then(function (revisedList) {
+              deferred.resolve(revisedList);
+            }, function (error) {
+              deferred.reject('Unexpected error updating the list of modified concepts for this task');
+            })
+          }
+        }, function(error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
+      function removeModifiedConceptId(projectKey, taskKey, conceptId) {
+        var deferred = $q.defer();
+
+        getModifiedList(projectKey, taskKey).then(function(modifiedList) {
+          var index = modifiedList.indexOf(conceptId);
+
+          // if not in list, update the list
+          if (index !== -1) {
+            modifiedList.splice(index, 1);
+            $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', modifiedList).then(function (revisedList) {
+              deferred.resolve(revisedList);
+            }, function (error) {
+              deferred.reject('Unexpected error updating the list of modified concepts for this task');
+            })
+          }
+        }, function(error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
 
       return {
 
@@ -373,7 +437,7 @@ angular.module('singleConceptAuthoringApp')
           // TODO Refine this when support for multiple unsaved concepts goes in
           return $http({
             method: 'GET',
-            headers: { 'Accept-Charset': undefined },
+            headers: {'Accept-Charset': undefined},
             url: apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId,
           }).then(
             function (response) {
@@ -405,23 +469,12 @@ angular.module('singleConceptAuthoringApp')
             concept = {current: true};
           }
 
-          var headers = {
-            'Accept': 'application/json;charset=utf-8',
-            'Accept-Charset': 'charset=utf-8'
-          };
-
-          // TODO Refine this when support for multiple unsaved concepts goes in
-          return $http({
-            method: 'POST',
-            headers: { 'Accept-Charset': undefined },
-            url: apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId,
-            data: concept
-          }).then(
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId,
+            concept).then(
             function (response) {
-
-              return response.data;
+              saveModifiedConceptId(projectKey, taskKey, conceptId);
             }, function (error) {
-              return null;
+
             }
           );
         },
@@ -441,37 +494,29 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // TODO Refine this when support for multiple unsaved concepts goes in
-          return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
+          $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId).then(
             function (response) {
-
-              /* // update the modified list
-               $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (conceptIds) {
-               var index = conceptIds.indexOf(conceptId);
-               if (index === -1) {
-               conceptIds.splice(index, 1);
-               $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list', conceptIds).then(function (response) {
-               // do nothing
-               }, function (error) {
-               notificationService.sendError('Unexpected error updating the list of modified concepts for this task');
-               })
-               }
-               });*/
-
-              return response.data;
+              removeModifiedConceptId(projectKey, taskKey, conceptId);
             }, function (error) {
               notificationService.sendError('Unexpected error autosaving modified work; please ensure you save your work before leaving this page.', 0, null);
-              return null;
             }
           );
         },
 
         getModifiedConceptIdsForTask: function (projectKey, taskKey) {
+          var deferred = $q.defer();
           // update the modified list
-          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (conceptIds) {
-            return conceptIds;
+          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (response) {
+            deferred.resolve(response.data);
           }, function (error) {
-            notificationService.sendError('Unexpected error updating the list of modified concepts for this task');
+            // 404 indicates no ui state persisted, return empty array
+            if (error.status === '404') {
+              deferred.resolve([]);
+            } else {
+              deferred.reject('Unexpected error retrieving modified concept ids for task');
+            }
           });
+          return deferred.promise;
         },
 
         ///////////////////////////////////////////////

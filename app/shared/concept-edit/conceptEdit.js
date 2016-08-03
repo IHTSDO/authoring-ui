@@ -2238,9 +2238,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // store the modified concept in ui-state if autosave on
             if (scope.autosave === true) {
-              scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept).then(function () {
-                // do nothing
-              });
+              scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept);
             }
 
           }
