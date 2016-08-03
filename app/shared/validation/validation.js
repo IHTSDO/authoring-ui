@@ -122,7 +122,7 @@ angular.module('singleConceptAuthoringApp')
                     var filteredInstances = assertionFailed.firstNInstances.filter(function (instance) {
 
                       // if viewing task report and instance is not user modified, return false
-                      if (!scope.viewFullReport && !instance.isUserModified) {
+                      if (!scope.viewFullReport && !instance.isBranchModification) {
                         return false;
                       }
                       // if validation failure is excluded, return false
@@ -364,7 +364,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // filter by user modification
                   var orderedData = scope.failures.filter(function (failure) {
-                    return scope.viewFullReport || failure.isUserModified;
+                    return scope.viewFullReport || failure.isBranchModification;
                   });
 
                   // filter by user exclusion
@@ -372,7 +372,6 @@ angular.module('singleConceptAuthoringApp')
                     return !validationService.isValidationFailureExcluded(scope.assertionFailureViewed.assertionUuid, failure.conceptId, failure.detailUnmodified);
                   });
 
-//                  console.debug('ordered data', orderedData);
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
@@ -467,7 +466,7 @@ angular.module('singleConceptAuthoringApp')
 
               // set the viewable flags for all returned failure instances
               angular.forEach(scope.assertionsFailed, function (assertion) {
-                assertion.isUserModified = false;
+                assertion.isBranchModification = false;
                 assertion.hasUserExclusions = false;
                 angular.forEach(assertion.firstNInstances, function (instance) {
 
@@ -475,10 +474,15 @@ angular.module('singleConceptAuthoringApp')
                   instance.detailUnmodified = instance.detail;
 
                   // detect if instance references user modified concepts
-                  instance.isUserModified = scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1;
+                  if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                    instance.isBranchModification = true;
+                    assertion.isBranchModification = true;
+                  }
 
-                  // detect if instance is a formal exclusion (whitelisted error)
-                  instance.isUserExclusion = validationService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail);
+                  if (validationService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail)) {
+                    instance.isUserExclusion = true;
+                    instance.hasUserExclusions = true;
+                  }
                 });
               });
 
@@ -582,7 +586,7 @@ angular.module('singleConceptAuthoringApp')
                 detail: instance.detail,
                 detailUnmodified : instance.detailUnmodified,
                 selected: false,
-                isUserModified: $routeParams.taskKey ? instance.isUserModified : false,
+                isBranchModification: instance.isBranchModification,
                 isUserExclusion: instance.isUserExclusion
               };
 
