@@ -209,8 +209,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         // on load, check if a modified, unsaved version of this concept
-        // exists
-        if (scope.autosave === true) {
+        // exists -- only applies to task level, safety check
+        if ($routeParams.taskKey && scope.autosave === true) {
+
+
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
 
 
@@ -248,6 +250,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
         }
+
 
         scope.collapse = function (concept) {
           if (scope.isCollapsed === true) {
@@ -619,68 +622,66 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise, proceed with checks and inactivation reason persistence
           else {
-            if(deletion)
-            {
-                selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, deletion).then(function (results) {
-                    if(results.deletion){
-                        notificationService.sendMessage('Deleting Concept...');
-                        snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function(response){
-                            if(response.status === 409)
-                            {
-                                notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
-                            }
-                            else{
-                                $rootScope.$broadcast('removeItem', {concept: scope.concept});
-                                scope.removeConcept(scope.concept);
-                                
-                                notificationService.sendMessage('Concept Deleted', 5000);
-                            }
-                        });
+            if (deletion) {
+              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, deletion).then(function (results) {
+                if (results.deletion) {
+                  notificationService.sendMessage('Deleting Concept...');
+                  snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+                    if (response.status === 409) {
+                      notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
                     }
-                });
+                    else {
+                      $rootScope.$broadcast('removeItem', {concept: scope.concept});
+                      scope.removeConcept(scope.concept);
+
+                      notificationService.sendMessage('Concept Deleted', 5000);
+                    }
+                  });
+                }
+              });
             }
-            else{
-                // mimic actual inactivation
-            var conceptCopy = angular.copy(scope.concept);
-            conceptCopy.isLeafInferred = true;
+            else {
+              // mimic actual inactivation
+              var conceptCopy = angular.copy(scope.concept);
+              conceptCopy.isLeafInferred = true;
 
-            conceptCopy.active = false;
-            angular.forEach(conceptCopy.relationships, function (relationship) {
-              relationship.active = false;
-            });
+              conceptCopy.active = false;
+              angular.forEach(conceptCopy.relationships, function (relationship) {
+                relationship.active = false;
+              });
 
-            // special case:  do not allow inactivation of fully defined
-            // concepts
-            if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
-              scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
-              return;
-            }
-
-            // validate the concept
-            snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
-              // check for errors -- NOTE: Currently unused, but errors are
-              // printed to log if detected
-              var errors = validationResults.filter(
-                function (result) {
-                  return result.type === 'ERROR';
-                });
-
-              if (errors.length > 0) {
-                console.log('Detected errors in concept when inactivating', errors);
-              } else {
-                console.log('No errors detected');
+              // special case:  do not allow inactivation of fully defined
+              // concepts
+              if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
+                scope.errors = ['Convention Error: Cannot inactivate a fully defined concept; inactive concepts must be defined as primitive.'];
+                return;
               }
 
-              selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch).then(function (results) {
+              // validate the concept
+              snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
+                // check for errors -- NOTE: Currently unused, but errors are
+                // printed to log if detected
+                var errors = validationResults.filter(
+                  function (result) {
+                    return result.type === 'ERROR';
+                  });
 
-                // set the concept in the inactivation service for listener update and retrieval
-                // NOTE: Also broadcasts a route change to edit.js from the service
-                inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget);
-                $rootScope.$broadcast('conceptEdit.inactivateConcept');
+                if (errors.length > 0) {
+                  console.log('Detected errors in concept when inactivating', errors);
+                } else {
+                  console.log('No errors detected');
+                }
+
+                selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch).then(function (results) {
+
+                  // set the concept in the inactivation service for listener update and retrieval
+                  // NOTE: Also broadcasts a route change to edit.js from the service
+                  inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget);
+                  $rootScope.$broadcast('conceptEdit.inactivateConcept');
 
 
+                });
               });
-            });
             }
           }
 
@@ -1480,8 +1481,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               branch: function () {
                 return branch;
               },
-              deletion: function(){
-                return deletion;  
+              deletion: function () {
+                return deletion;
               }
             }
           });

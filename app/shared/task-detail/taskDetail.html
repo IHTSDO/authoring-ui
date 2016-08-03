@@ -116,6 +116,19 @@
         <span class="button-link">Cancel This Review</span>
       </button>
 
+      <div class="alert alert-warning" ng-show="unsavedChanges">
+        <h4>Concepts with Unsaved Changes</h4>
+        <div class="row" ng-repeat="unsavedChange in unsavedChanges">
+          <div class="col-md-3">
+            {{unsavedChange.conceptId}}
+          </div>
+          <div class="col-md-9">
+            {{unsavedChange.displayName}}
+          </div>
+        </div>
+
+      </div>
+
       <button ng-if="editable !== 'false'"
               ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked"
               class="btn btn-default blue darken-1 promote" ng-click="promote()" style="text-transform: none">
