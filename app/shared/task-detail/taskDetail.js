@@ -118,27 +118,69 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
       $scope.submitForReview = function () {
         notificationService.sendMessage('Submitting task for review...');
-        var updateObj = {
-          'reviewer': {
-            'username': ''
-          }
-        };
-        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
 
-          scaService.updateTask(
-            $routeParams.projectKey, $routeParams.taskKey,
-            {
+
+        // check if unsaved content exists
+        scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (conceptIds) {
+
+          // if no unsaved changes, proceed
+          if (conceptIds && conceptIds.length === 0) {
+
+            // create the request body
+            var updateObj = {
+              'reviewer': {
+                'username': ''
+              },
               'status': 'IN_REVIEW'
-            }).then(function (response) {
-            notificationService.sendMessage('Task submitted for review', 5000);
-            scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
-            $rootScope.$broadcast('reloadTask');
-            $scope.reviewClicked = true;
-            $scope.task = response;
-          }, function (error) {
-            notificationService.sendError('Error submitting task for review');
-          });
+            };
+
+            // update the task
+            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function (response) {
+              notificationService.sendMessage('Task submitted for review', 5000);
+              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
+              $rootScope.$broadcast('reloadTask');
+              $scope.reviewClicked = true;
+              $scope.task = response;
+            }, function (error) {
+              notificationService.sendError('Error submitting task for review');
+            });
+
+          }
+
+          // if unsaved changes
+          else {
+            // if bad result, throw user error
+            if (!conceptIds) {
+              notificationService.sendError('Unexpected error checking for unsaved changes');
+            }
+
+            // otherwise get the unsaved content for display
+            else {
+              notificationService.sendWarning('Save your changes before submitting for review');
+              $scope.unsavedConcepts = [];
+              angular.forEach(conceptIds, function (conceptId) {
+                scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
+
+                  // find the FSN for display
+                  if (!concept.fsn) {
+                    angular.forEach(concept.descriptions, function (d) {
+                      if (d.type === 'FSN') {
+                        concept.fsn = d.term;
+                      }
+                    })
+                  }
+                  if (!concept.fsn) {
+                    concept.fsn = 'Could not determine FSN';
+                  }
+
+                  $scope.unsavedConcepts.push(concept);
+                });
+              });
+            }
+          }
+
         });
+
 
       };
       // cancel review
@@ -193,7 +235,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           // if lock found, set rootscope variable and continue polling
           if (response.metadata && response.metadata.lock) {
             $rootScope.branchLocked = true;
-            $timeout(function() {
+            $timeout(function () {
               $scope.checkForLock()
             }, 10000);
           }
@@ -204,7 +246,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       };
 
-      $scope.gotoLinkedIssue = function(issue) {
+      $scope.gotoLinkedIssue = function (issue) {
         // TODO Make this configurable?
         var issueKey = issue.outwardIssue.key;
         var rootUrl = /^(https:\/\/[^\/]*).*$/.exec(issue.outwardIssue.self);

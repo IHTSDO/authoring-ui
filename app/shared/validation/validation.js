@@ -29,6 +29,7 @@ angular.module('singleConceptAuthoringApp')
           scope.displayStatus = '';
           scope.taskKey = $routeParams.taskKey;
           scope.isCollapsed = false;
+          scope.autosaveEnabled = $routeParams.taskKey ? true : false;
 
           // highlighting map
           scope.styles = {};
@@ -257,9 +258,11 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(scope.failures, function (failure) {
 
               // try to detect referenced descriptions/relationships
-              var matchInfo = failure.detail.match(/id[=:](\d+[12]\d)[^\d]/i);
+              var matchInfo = failure.detail.match(/[id[=:]+]*(\d+[12]\d)[^\d]/i);
 
               if (matchInfo) {
+
+                console.debug('match info', matchInfo);
 
 
                 // different behavior depending on description vs. relationship
