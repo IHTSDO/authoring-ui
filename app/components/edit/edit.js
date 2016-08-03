@@ -840,6 +840,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           var description = clonedConcept.descriptions[k];
           description.effectiveTime = null;
           description.descriptionId = null;
+          description.released = false;
           delete description.conceptId;
           if (description.active === false) {
             clonedConcept.descriptions.splice(k, 1);
@@ -850,6 +851,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           var relationship = clonedConcept.relationships[j];
           relationship.sourceId = null;
           relationship.effectiveTime = null;
+          relationship.released = false;
           delete relationship.relationshipId;
           delete relationship.target.effectiveTime;
           delete relationship.target.moduleId;
@@ -863,6 +865,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         clonedConcept.conceptId = null;
         clonedConcept.fsn = null;
+        clonedConcept.released = false;
 
         var successMsg = 'Concept ' + clonedConcept.fsn + ' successfully cloned';
 
