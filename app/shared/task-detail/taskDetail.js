@@ -116,6 +116,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           $rootScope.$broadcast('reloadTask');
         });
       };
+
+
+      $scope.unsavedConcepts = null;
       $scope.submitForReview = function () {
         notificationService.sendMessage('Submitting task for review...');
 
@@ -123,8 +126,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // check if unsaved content exists
         scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (conceptIds) {
 
-          // if no unsaved changes, proceed
-          if (conceptIds && conceptIds.length === 0) {
+          // if unsaved concepts previously found, override warning and continue
+          if ((conceptIds && conceptIds.length === 0) || $scope.unsavedConcepts) {
+
+            // clear array of unsaved content
+            $scope.unsavedConcepts = null;
 
             // create the request body
             var updateObj = {
@@ -149,6 +155,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
           // if unsaved changes
           else {
+
+            // initialize the unsaved concept array
+            $scope.unsavedConcepts = [];
+
             // if bad result, throw user error
             if (!conceptIds) {
               notificationService.sendError('Unexpected error checking for unsaved changes');
@@ -157,10 +167,13 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             // otherwise get the unsaved content for display
             else {
               notificationService.sendWarning('Save your changes before submitting for review');
-              $scope.unsavedConcepts = [];
+
               angular.forEach(conceptIds, function (conceptId) {
                 scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
 
+                  if (!concept.conceptId) {
+                    concept.conceptId = '(New concept)';
+                  }
                   // find the FSN for display
                   if (!concept.fsn) {
                     angular.forEach(concept.descriptions, function (d) {
@@ -174,6 +187,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   }
 
                   $scope.unsavedConcepts.push(concept);
+                  console.debug('unsaved concepts', $scope.unsavedConcepts);
+                }, function (error) {
+                  notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
                 });
               });
             }
@@ -183,6 +199,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
 
       };
+
       // cancel review
       $scope.cancelReview = function () {
         var taskObj = {
