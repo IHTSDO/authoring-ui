@@ -45,7 +45,7 @@
   </script>
 
   <div class="row no-gutter no-padding">
-
+    
     <!-- if merge review is not current (out of date, stale, etc), prompt user -->
     <div ng-if="badStateDetected" class="loading-merges blue darken-1">
       <h3>{{badStateText}}
@@ -57,16 +57,16 @@
       </button>
       </div>
     </div>
-
+    
     <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete && !warning && !fiveOFour" class="loading-merges blue darken-1">
 
-
+   
         <div class="clock">
           <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
 <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
 <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
-  <animatetransform attributeName="transform"
+  <animatetransform attributeName="transform" 
        dur="2s"
        type="rotate"
        from="0 50 50"
@@ -74,7 +74,7 @@
        repeatCount="indefinite" />
 </line>
 <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
-  <animatetransform attributeName="transform"
+  <animatetransform attributeName="transform" 
        dur="15s"
        type="rotate"
        from="0 50 50"
@@ -90,13 +90,13 @@
     </div>
     <div ng-if="!badStateDetected && !conflicts && rebaseRunning && !warning" class="loading-merges green">
 
-
+  
         <div class="clock">
           <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
 <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
 <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
-  <animatetransform attributeName="transform"
+  <animatetransform attributeName="transform" 
        dur="2s"
        type="rotate"
        from="0 50 50"
@@ -104,7 +104,7 @@
        repeatCount="indefinite" />
 </line>
 <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
-  <animatetransform attributeName="transform"
+  <animatetransform attributeName="transform" 
        dur="15s"
        type="rotate"
        from="0 50 50"
@@ -123,7 +123,7 @@
       </div>
       <h3>Your merge will complete successfully but is taking longer than usual. Please navigate away and continue working on other tasks. The dashboard will update when your merge completes.</h3>
     </div>
-
+      
     <div ng-if="warning" class="loading-merges amber">
       <div class="all-done">
         <div class="md md-sync"></div>
@@ -304,7 +304,6 @@
                  concept="merge.sourceConcept"
                  branch="sourceBranch"
                  static="true"
-                 merge="true"
                  autosave="false"
                  show-inactive="{{merge.showInactive.source}}"
                  component-styles="merge.styles.source">
@@ -327,7 +326,6 @@
             <div concept-edit
                  concept="merge.targetConcept"
                  branch="targetBranch"
-                 merge="true"
                  static="true"
                  autosave="false"
                  show-inactive="{{merge.showInactive.target}}"
