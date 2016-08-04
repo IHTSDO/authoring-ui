@@ -89,6 +89,6 @@ http {
 	}
 }
 ```
-In order to access these location after running nginx you should use the url 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on running 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server). 
+In order to access these location after running nginx you should use the URL 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on running 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server). 
 
 These urls are used so that the browser picks up the authentication cookies used by IMS correctly. Using localhost instead will leave the developer unable to log in. 
