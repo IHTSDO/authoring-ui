@@ -263,6 +263,18 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       };
 
+      //
+      // Issue Links
+      //
+
+      $scope.issueLinkFilter = function (issue) {
+
+        // only return issues on the allowed projects (currently only CRT)
+        // NOTE: Used project key as more stable than project name (SCT Content Request Ticket)
+        // TODO Consider moving this to config file
+        return issue && issue.outwardIssue && issue.outwardIssue.key && issue.outwardIssue.key.startsWith('CRT');
+      };
+
       $scope.gotoLinkedIssue = function (issue) {
         // TODO Make this configurable?
         var issueKey = issue.outwardIssue.key;
