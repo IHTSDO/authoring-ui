@@ -846,7 +846,7 @@ angular.module('singleConceptAuthoringApp')
 
             // pre-processing on initial load (conceptsToReview and
             // conceptsReviewed do not yet exist)
-            if (scope.feedbackContainer.review && !scope.feedbackContainer.review.conceptsToReview && !scope.feedbackContainer.review.conceptsReviewed) {
+            if (scope.feedbackContainer.review && !scope.feedbackContainer.errorMsg && !scope.feedbackContainer.review.conceptsToReview && !scope.feedbackContainer.review.conceptsReviewed) {
 
               console.debug('feedback container', scope.feedbackContainer);
 

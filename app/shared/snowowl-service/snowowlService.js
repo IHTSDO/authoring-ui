@@ -944,18 +944,18 @@ angular.module('singleConceptAuthoringApp')
       // Get traceability log for branch
       // GET /traceability-service/activities?onBranch=
       function getTraceabilityForBranch(branch) {
-        return $http.get('/traceability-service/activities?onBranch=' + branch + '&size=50000').then(function (response) {
-          return response.data;
+        var deferred = $q.defer();
+        $http.get('/traceability-service/activities?onBranch=' + branch + '&size=50000').then(function (response) {
+          deferred.resolve(response.data);
         }, function (error) {
-          console.log(error);
-          console.log(error.data.message.indexOf('404'));
-          if (error.status === 404 || error.status === 500 && error.data.message.indexOf('404') === 0) {
-
+           if (error.status === 404) {
+            deferred.reject('Traceability does not exist for branch');
           }
           else {
-            notificationService.sendError('Error retrieving traceability for branch ' + branch, 10000);
+            deferred.reject('Unexpected error retrieving traceability for branch');
           }
         });
+        return deferred.promise;
       }
 
       //////////////////////////////////////////////////////
