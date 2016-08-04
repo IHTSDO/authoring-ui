@@ -323,7 +323,7 @@ angular.module('singleConceptAuthoringApp')
           // TODO Handle error
         });
       }
-        
+
       // Delete an unpublished concept
       // DELETE /{path}/concepts/{conceptId}
       function deleteConcept(conceptId, branch) {
@@ -944,7 +944,7 @@ angular.module('singleConceptAuthoringApp')
       // Get traceability log for branch
       // GET /traceability-service/activities?onBranch=
       function getTraceabilityForBranch(branch) {
-        return $http.get('/traceability-service/activities?onBranch=' + branch).then(function (response) {
+        return $http.get('/traceability-service/activities?onBranch=' + branch + '&size=50000').then(function (response) {
           return response.data;
         }, function (error) {
           console.log(error);
