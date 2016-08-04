@@ -179,7 +179,7 @@ angular.module('singleConceptAuthoringApp')
             if ($routeParams.taskKey) {
               $timeout(function () {
                 $location.path('/tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
-              }, 1500)
+              }, 5000)
             }
             // TODO Decide how to handle projects
             else {
@@ -521,9 +521,14 @@ angular.module('singleConceptAuthoringApp')
                   scope.warning = false;
                   scope.fiveOFour = false;
 
+
                   // broadcast reload task to any current listeners, to pull in
                   // new branch state
-                  $rootScope.$broadcast('reloadTask');
+                  // TODO This does not actually hit any listeners
+                  // $rootScope.$broadcast('reloadTask');
+
+                  // switch to edit view on success
+                  switchToEditView();
                 }
                 else if (response === 1) {
                   console.log('1');
@@ -556,13 +561,6 @@ angular.module('singleConceptAuthoringApp')
                   scope.warning = false;
                   scope.fiveOFour = false;
 
-                  // broadcast reload task to any current listeners, to pull in
-                  // new branch state
-                  // TODO This does not actually hit any listeners
-                  // $rootScope.$broadcast('reloadTask');
-
-                  // switch to edit view on success
-                  switchToEditView();
                 }
                 else if (response === 1) {
                   scope.rebaseRunning = false;
