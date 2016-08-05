@@ -94,9 +94,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.$watch(function () {
           return $rootScope.branchLocked;
         }, function () {
-          if ($rootScope.branchLocked !== null && $rootScope.branchLocked !== undefined) {
-            scope.isStatic = $rootScope.branchLocked;
+
+          if ($rootScope.branchLocked) {
+            scope.isStatic = true;
           }
+
         }, true);
         scope.saving = false;
         if (!scope.concept) {
@@ -114,6 +116,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////
 
+        console.debug(scope.static === 'true', scope.static === true, scope.static)
         if (scope.static === 'true' || scope.static === true) {
           scope.isStatic = true;
         } else {
