@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
 
-  .directive('crsConceptList', function ($rootScope, $q, scaService, metadataService, crsService) {
+  .directive('crsConceptList', function ($rootScope, $q, scaService, metadataService, crsService, notificationService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -9,7 +9,7 @@ angular.module('singleConceptAuthoringApp')
       scope: {
         task: '='
       },
-      templateUrl: 'shared/crsConceptList/crsConceptList.html',
+      templateUrl: 'shared/crs-concept-list/crsConceptList.html',
 
       link: function (scope) {
 
@@ -41,11 +41,14 @@ angular.module('singleConceptAuthoringApp')
         function initialize() {
           crsService.getCrsConceptsForTask(scope.task).then(function (concepts) {
             scope.concepts = concepts;
+          }, function(error) {
+            notificationService.sendError(error);
           })
         }
 
         // re-initialize on task changes
         scope.$watch('task', function () {
+          console.debug('crs concept list: task changed', scope.task)
           if (scope.task) {
             initialize();
           }

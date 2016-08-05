@@ -1,6 +1,10 @@
 <div>
-  <h4>CRS Concept Changes</h4>
-  <div class="col-md-12 saved-list no-padding  " ng-repeat="item in concepts" style="margin-bottom: 15px;">
+  <div class="row">
+    <div class="p-l-5 m-t-10 m-b-10">
+      <label class="control-label">CRS Concept List</label>
+    </div>
+  </div>
+  <div class="row saved-list no-padding  " ng-repeat="item in concepts" style="margin-bottom: 15px;">
 
     <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
       <button ng-if="item.conceptJsonJson.definitionStatus === 'PRIMITIVE'"
