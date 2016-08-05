@@ -116,14 +116,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Convert all string booleans into scope boolean values
         /////////////////////////////////////////////////////////////
 
-        console.debug(scope.static === 'true', scope.static === true, scope.static)
         if (scope.static === 'true' || scope.static === true) {
           scope.isStatic = true;
         } else {
           scope.isStatic = false;
         }
-
-        console.debug(scope.isStatic);
 
         if (scope.autosave === 'false' || scope.autosave === false) {
           scope.autosave = false;
@@ -2359,8 +2356,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (relationship.active === true && relationship.type.conceptId === '116680003' && relationship.target.conceptId && relationship.characteristicType !== 'INFERRED_RELATIONSHIP') {
 
               idList += relationship.target.conceptId + ',';
-              console.debug('match', idList);
-            }
+             }
           });
           idList = idList.substring(0, idList.length - 1);
           console.debug(idList);
