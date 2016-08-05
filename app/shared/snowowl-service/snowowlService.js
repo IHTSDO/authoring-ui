@@ -1334,7 +1334,7 @@ angular.module('singleConceptAuthoringApp')
         mergeAndApply: mergeAndApply,
 
         // validation
-        validateConcept: validateConcept
+        validateConcept: validateConcept,
 
         // utility
         createGuid : createGuid
