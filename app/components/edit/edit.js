@@ -838,6 +838,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           description.effectiveTime = null;
           description.descriptionId = null;
           description.released = false;
+          description.moduleId = metadataService.getCurrentModuleId();
+
           delete description.conceptId;
           if (description.active === false) {
             clonedConcept.descriptions.splice(k, 1);
@@ -849,6 +851,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           relationship.sourceId = null;
           relationship.effectiveTime = null;
           relationship.released = false;
+          relationship.moduleId = metadataService.getCurrentModuleId();
           delete relationship.relationshipId;
           delete relationship.target.effectiveTime;
           delete relationship.target.moduleId;
@@ -861,6 +864,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
         clonedConcept.conceptId = null;
+        clonedConcept.moduleId = metadataService.getCurrentModuleId();
         clonedConcept.fsn = null;
         clonedConcept.released = false;
 
