@@ -1336,6 +1336,9 @@ angular.module('singleConceptAuthoringApp')
         // validation
         validateConcept: validateConcept
 
+        // utility
+        createGuid : createGuid
+
       };
     }
 

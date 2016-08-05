@@ -2683,8 +2683,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         });
 
       }
-    }
-      ;
+    };
 
   }
 )
