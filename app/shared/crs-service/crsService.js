@@ -40,18 +40,20 @@ angular.module('singleConceptAuthoringApp')
 
       // Stores the CRS Concept list
       function storeCrsConcepts(concepts) {
-        scaService.saveUiStateForTask(task.projectKey, task.key, 'crs-concepts', concepts);
+        scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', concepts);
       }
 
       // initialize ui states from a task
-      function initializeFromTask(task) {
+      function initialize() {
         var deferred = $q.defer();
+
+        console.debug('initializing from task', currentTask);
 
         // the list of containers to storea nd return
         var containers = [];
 
         // cycle over each linked issue attachment
-        angular.forEach(task.issueLinkAttachments, function (url) {
+        angular.forEach(currentTask.issueLinkAttachments, function (url) {
 
           var promise = $q.defer();
           containers.push(promise);
@@ -65,8 +67,8 @@ angular.module('singleConceptAuthoringApp')
               // create a GUID for this concept
               var guid = snowowlService.createGuid();
 
-              // store the concept against its guid
-              var crsContainer = storeCrsConcept(jsonConcept, guid);
+              // get the container object
+              var crsContainer = getNewCrsConcept(jsonConcept, guid);
 
               // add the container to the list
               promise.resolve(crsContainer);
@@ -76,6 +78,7 @@ angular.module('singleConceptAuthoringApp')
 
         // after all promises complete, store and return the container list
         $q.all(containers, function () {
+          console.debug(containers);
           storeCrsConcepts(containers);
           deferred.resolve(containers);
         }, function (error) {
@@ -104,6 +107,8 @@ angular.module('singleConceptAuthoringApp')
       function getCrsConceptsForTask(task) {
         var deferred = $q.defer();
 
+        console.debug('get crs concepts for task', task);
+
         // PREREQUISITE: Task must have CRS label
         if (task.labels.indexOf('CRS') === -1) {
           currentTask = null;
@@ -111,20 +116,26 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject('Not a CRS task');
         }
 
+
+
         // set the local task variable for use by other functions
         currentTask = task;
 
         // check if this task has previously been initialized
         scaService.getUiStateForTask(task.projectKey, task.key, 'crs-concepts').then(function (concepts) {
 
+          console.debug('crs ui-state', concepts);
+
           // if already initialized, simply return
           if (concepts) {
             currentTaskConcepts = concepts;
             deferred.resolve(concepts);
           } else {
-            initializeFromTask().then(function (concepts) {
+            initialize().then(function (concepts) {
               currentTaskConcepts = concepts;
               deferred.resolve(concepts);
+            }, function(error) {
+              deferred.reject('Error initializing CRS content');
             });
           }
 
