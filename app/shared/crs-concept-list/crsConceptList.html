@@ -1,10 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div>
+  <h4>CRS Concept Changes</h4>
+  <div class="col-md-12 saved-list no-padding  " ng-repeat="item in concepts" style="margin-bottom: 15px;">
 
-</body>
-</html>
+    <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
+      <button ng-if="item.conceptJsonJson.definitionStatus === 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
+        <span>Primitive</span>
+      </button>
+      <button ng-if="item.conceptJson.definitionStatus !== 'PRIMITIVE'"
+              ng-disabled="isStatic"
+              class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
+        <span>Fully Defined</span>
+      </button>
+    </div>
+    <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
+         style="word-wrap: break-word" ui-draggable="true"
+         drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
+      <!-- Use the preferred synonym if present, otherwise use fsn -->
+      {{item.conceptJson.fsn}}
+    </div>
+  </div>
