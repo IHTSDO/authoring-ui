@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window', 'metadataService',
-    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q, $window, metadataService) {
+  .directive('conflicts', ['$rootScope', 'ngTableParams', '$routeParams', '$filter', '$interval', '$timeout', '$modal', '$compile', '$sce', 'scaService', 'componentAuthoringUtil', 'snowowlService', 'notificationService', '$q', '$window', '$location', 'metadataService',
+    function ($rootScope, NgTableParams, $routeParams, $filter, $interval, $timeout, $modal, $compile, $sce, scaService, componentAuthoringUtil, snowowlService, notificationService, $q, $window, $location, metadataService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -127,7 +127,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             if (Object.keys(data.validationResults.errors).length > 0) {
-                notificationService.sendError('Please resolve convention errors prior to accepting concept merge.');
+              notificationService.sendError('Please resolve convention errors prior to accepting concept merge.');
             } else {
 
               notificationService.sendMessage('Accepting merged version for concept ' + data.concept.conceptId);
@@ -174,6 +174,18 @@ angular.module('singleConceptAuthoringApp')
           /////////////////////////////////////////////////////
           // Helper functions
           /////////////////////////////////////////////////////
+
+          function switchToEditView() {
+            if ($routeParams.taskKey) {
+              $timeout(function () {
+                $location.path('/tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
+              }, 5000)
+            }
+            // TODO Decide how to handle projects
+            else {
+
+            }
+          }
 
           /**
            * Saves a concept to the update merge endpoint, params are passed
@@ -503,30 +515,35 @@ angular.module('singleConceptAuthoringApp')
 
             if ($routeParams.taskKey) {
               scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                if(response !== null && response !== 1){
-                    scope.rebaseRunning = false;
-                    scope.rebaseComplete = true;
-                    scope.warning = false;
-                    scope.fiveOFour = false;
+                if (response !== null && response !== 1) {
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = true;
+                  scope.warning = false;
+                  scope.fiveOFour = false;
 
-                    // broadcast reload task to any current listeners, to pull in
-                    // new branch state
-                    $rootScope.$broadcast('reloadTask');
+
+                  // broadcast reload task to any current listeners, to pull in
+                  // new branch state
+                  // TODO This does not actually hit any listeners
+                  // $rootScope.$broadcast('reloadTask');
+
+                  // switch to edit view on success
+                  switchToEditView();
                 }
-                  else if(response === 1){
-                      console.log('1');
-                      scope.rebaseRunning = false;
-                      scope.rebaseComplete = false;
-                      scope.warning = false;
-                      scope.fiveOFour = true;
-                  }
-                  else{
-                      scope.rebaseRunning = false;
-                      scope.rebaseComplete = false;
-                      scope.warning = true;
-                      $rootScope.canConflict = true;
-                      scope.fiveOFour = false;
-                  }
+                else if (response === 1) {
+                  console.log('1');
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = false;
+                  scope.warning = false;
+                  scope.fiveOFour = true;
+                }
+                else {
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = false;
+                  scope.warning = true;
+                  $rootScope.canConflict = true;
+                  scope.fiveOFour = false;
+                }
 
               }, function (error) {
                 scope.rebaseRunning = false;
@@ -538,33 +555,36 @@ angular.module('singleConceptAuthoringApp')
             } else {
 
               scaService.rebaseProject($routeParams.projectKey).then(function (response) {
-                if(response !== null && response !== 1){
-                    scope.rebaseRunning = false;
-                    scope.rebaseComplete = true;
-                    scope.warning = false;
-                    scope.fiveOFour = false;
+                if (response !== null && response !== 1) {
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = true;
+                  scope.warning = false;
+                  scope.fiveOFour = false;
 
-                    // broadcast reload task to any current listeners, to pull in
-                    // new branch state
-                    $rootScope.$broadcast('reloadTask');
                 }
-                  else if(response === 1){
-                      scope.rebaseRunning = false;
-                      scope.rebaseComplete = false;
-                      scope.warning = false;
-                      scope.fiveOFour = true;
-                  }
-                  else{
-                      scope.rebaseRunning = false;
-                      scope.rebaseComplete = false;
-                      scope.warning = true;
-                      scope.fiveOFour = false;
-                  }
+                else if (response === 1) {
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = false;
+                  scope.warning = false;
+                  scope.fiveOFour = true;
+
+                  // NOTE: Do not switch to edit view on error
+
+                }
+                else {
+                  scope.rebaseRunning = false;
+                  scope.rebaseComplete = false;
+                  scope.warning = true;
+                  scope.fiveOFour = false;
+
+                  // NOTE: Do not switch to edit view on warning
+                  // TODO Need to revisit this
+                }
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
                 scope.warning = true;
-                  scope.fiveOFour = false;
+                scope.fiveOFour = false;
                 notificationService.sendError('Error pulling changes from mainline content: ' + error);
               });
             }
@@ -659,36 +679,39 @@ angular.module('singleConceptAuthoringApp')
               // accepted
               scope.rebaseWithMerges = true;
 
+              // TODO This is currently non-functional -- there are no listeners in conflict mode
+              // Instead, re-routing to edit view after slight delay to force task reload
               $rootScope.$broadcast('reloadTask');
+              switchToEditView();
             }, function (error) {
-              if(error !== null && error !== 1){
-                    scope.rebaseRunning = false;
-                    scope.rebaseComplete = true;
-                    scope.warning = false;
-                    scope.fiveOFour = false;
+              if (error !== null && error !== 1) {
+                scope.rebaseRunning = false;
+                scope.rebaseComplete = true;
+                scope.warning = false;
+                scope.fiveOFour = false;
 
-                    // broadcast reload task to any current listeners, to pull in
-                    // new branch state
-                    $rootScope.$broadcast('reloadTask');
-                }
-                  else if(error === 1){
-                      scope.rebaseRunning = false;
-                      scope.rebaseComplete = false;
-                      scope.warning = false;
-                      scope.fiveOFour = true;
-                  }
-                  else{
-                      scope.rebaseRunning = false;
-                      scope.rebaseComplete = false;
-                      scope.warning = true;
-                      scope.fiveOFour = false;
-                  }
+                // broadcast reload task to any current listeners, to pull in
+                // new branch state
+                $rootScope.$broadcast('reloadTask');
+              }
+              else if (error === 1) {
+                scope.rebaseRunning = false;
+                scope.rebaseComplete = false;
+                scope.warning = false;
+                scope.fiveOFour = true;
+              }
+              else {
+                scope.rebaseRunning = false;
+                scope.rebaseComplete = false;
+                scope.warning = true;
+                scope.fiveOFour = false;
+              }
             });
           };
 
-          scope.reloadRoute = function() {
-           window.location.reload();
-        };
+          scope.reloadRoute = function () {
+            window.location.reload();
+          };
           // Clears the current review state and
           scope.reinitialize = function () {
 

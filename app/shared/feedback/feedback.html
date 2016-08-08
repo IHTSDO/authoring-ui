@@ -120,8 +120,9 @@
 
         </div>
         <div class="col-md-6">
-          <div concept-edit concept="concept" branch="branch" static="true" component-styles="styles[concept.conceptId]"
-               autosave="false"></div>
+          Role: {{role}}, {{role !== 'AUTHOR'}}
+          <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
+               autosave="role !== 'AUTHOR'"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" style="display: flex;" ng-show="!isCollapsed">
           <div class="col-md-6 no-padding no-gutter">

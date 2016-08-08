@@ -94,9 +94,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.$watch(function () {
           return $rootScope.branchLocked;
         }, function () {
-          if ($rootScope.branchLocked !== null && $rootScope.branchLocked !== undefined) {
-            scope.isStatic = $rootScope.branchLocked;
+
+          if ($rootScope.branchLocked) {
+            scope.isStatic = true;
           }
+
         }, true);
         scope.saving = false;
         if (!scope.concept) {
@@ -119,8 +121,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         } else {
           scope.isStatic = false;
         }
-
-        console.debug(scope.isStatic);
 
         if (scope.autosave === 'false' || scope.autosave === false) {
           scope.autosave = false;
@@ -1604,7 +1604,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // check that attribute is acceptable for MRCM rules
-          var attributes = scope.getConceptForFullAttribute(data.name);
+          var attributes = scope.getConceptForFullAttribute(data.id);
           if (attributes && attributes.length > 0) {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
@@ -2354,10 +2354,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // add to id list if: active, Is A relationship, target
             // specified, and not inferred
             if (relationship.active === true && relationship.type.conceptId === '116680003' && relationship.target.conceptId && relationship.characteristicType !== 'INFERRED_RELATIONSHIP') {
+
               idList += relationship.target.conceptId + ',';
-            }
+             }
           });
           idList = idList.substring(0, idList.length - 1);
+          console.debug(idList);
 
           snowowlService.getDomainAttributes(scope.branch, idList).then(function (response) {
             scope.allowedAttributes = response.items;
@@ -2409,7 +2411,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
           response = response.filter(function (item) {
-            return item.fsn.term.toLowerCase() === searchStr.toLowerCase();
+            return item.fsn.term.toLowerCase() === searchStr.toLowerCase() || item.id === searchStr;
           });
           return response;
         };
@@ -2681,8 +2683,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         });
 
       }
-    }
-      ;
+    };
 
   }
 )
