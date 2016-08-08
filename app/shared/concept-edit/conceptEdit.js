@@ -149,11 +149,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
         // CRS concept initialization
         //
-        if (crsService.isCrsConcept(scope.concept.crsGuid)) {
+        if (crsService.isCrsConcept(scope.concept.conceptId)) {
 
           scope.hideInactive = false;
 
-          var crsContainer = crsService.getCrsConcept(scope.concept.crsGuid);
+          var crsContainer = crsService.getCrsConcept(scope.concept.conceptId);
           scope.isModified = !crsContainer.saved;
         }
 
@@ -220,7 +220,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // on load, check if a modified, unsaved version of this concept
         // exists -- only applies to task level, safety check
-        if ($routeParams.taskKey && scope.autosave === true && !crsService.isCrsConcept(scope.concept.conceptId)) {
+        if ($routeParams.taskKey && scope.autosave === true) {
 
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
 

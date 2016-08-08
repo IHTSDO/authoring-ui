@@ -6,7 +6,7 @@
   </div>
 
 
-  <div class="row saved-list no-padding  " ng-repeat="item in concepts" style="margin-bottom: 15px;">
+  <div class="row saved-list no-padding  " ng-repeat="item in getCrsConcepts()" style="margin-bottom: 15px;">
 
     <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
       <button ng-if="item.conceptJson.definitionStatus === 'PRIMITIVE'"

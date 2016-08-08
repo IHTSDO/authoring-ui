@@ -155,6 +155,11 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     });
 
+    $scope.$on('crsTaskInitialized', function(event, data) {
+      console.debug('savedList -- received crs service initialization notification');
+      $scope.crsServiceInitialized = true;
+    });
+
     $scope.$on('removeItem', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot handle stop editing event: concept must be supplied');

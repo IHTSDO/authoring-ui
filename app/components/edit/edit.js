@@ -200,14 +200,13 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
+
       $scope.getEditPanel();
 
       // get saved list
       scaService.getUiStateForTask(
         $routeParams.projectKey, $routeParams.taskKey, 'saved-list')
         .then(function (uiState) {
-
-
             if (!uiState) {
               $scope.savedList = {items: []};
             }
@@ -232,6 +231,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           }
         );
+
     };
 
     $scope.getEditPanel = function () {
@@ -624,6 +624,8 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     $scope.addConceptToListFromId = function (conceptId) {
 
+      console.debug('EDIT: add concept to list from id', conceptId);
+
       if (!conceptId) {
         console.error('Could not add concept to edit list, id required');
         return;
@@ -737,9 +739,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         var conceptIds = [];
         angular.forEach($scope.concepts, function (concept) {
-          if (concept.crsGuid) {
-            conceptIds.push(concept.crsGuid);
-          }
+
           if (concept.conceptId) {
             conceptIds.push(concept.conceptId);
           } else {
@@ -784,7 +784,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 
-
     //
     // Editing Notifications
     //
@@ -795,7 +794,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // verify that this SCTID does not exist in the edit list
       for (var i = 0; i < $scope.concepts.length; i++) {
-        if ($scope.concepts[i].conceptId === conceptId || $scope.concepts[i].crsGuid === data.conceptId) {
+        if ($scope.concepts[i].conceptId === conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
 
@@ -1453,70 +1452,74 @@ angular.module('singleConceptAuthoringApp.edit', [
         // set the metadata for use by other elements
         metadataService.setBranchMetadata($scope.task);
 
+        // initialize the CRS service
+        // NOTE: Must be done before loading initial view
+        crsService.setTask($scope.task).then(function (response) {
 
-        // load the branch from task branch path
-        loadBranch($scope.task.branchPath).then(function (branch) {
-          console.log('Branch loaded');
-          // check for extension metadata
-          if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
+          // load the branch from task branch path
+          loadBranch($scope.task.branchPath).then(function (branch) {
+            console.log('Branch loaded');
+            // check for extension metadata
+            if ($scope.project.metadata && $scope.project.metadata.defaultModuleId) {
 
-            // get the extension default module concept
-            snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
+              // get the extension default module concept
+              snowowlService.getFullConcept($scope.project.metadata.defaultModuleId, $scope.task.branchPath).then(function (extConcept) {
 
-              // set the name for display
-              $scope.project.metadata.defaultModuleName = extConcept.fsn;
+                // set the name for display
+                $scope.project.metadata.defaultModuleName = extConcept.fsn;
 
-              // set the extension metadata for use by other elements
-              metadataService.setExtensionMetadata($scope.project.metadata);
-            }, function (error) {
-              notificationService.sendError('Fatal error: Could not load extension module concept');
-            });
-          }
+                // set the extension metadata for use by other elements
+                metadataService.setExtensionMetadata($scope.project.metadata);
+              }, function (error) {
+                notificationService.sendError('Fatal error: Could not load extension module concept');
+              });
+            }
 
-          // retrieve user role
-          accountService.getRoleForTask($scope.task).then(function (role) {
+            // retrieve user role
+            accountService.getRoleForTask($scope.task).then(function (role) {
 
-              notificationService.sendMessage('Task details loaded', 3000);
+                notificationService.sendMessage('Task details loaded', 3000);
 
-              // set role functionality and initial view
-              $scope.isOwnTask = role === 'AUTHOR';
-              setBranchFunctionality($scope.task.branchState);
-              $scope.setInitialView();
-            },
-            // if no role, send error and return to dashboard after slight delay
-            function () {
-              /*  TODO Reenable this later
-               notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
-               $timeout(function () {
-               $location.url('/');
-               }, 4000);*/
+                // set role functionality and initial view
+                $scope.isOwnTask = role === 'AUTHOR';
+                setBranchFunctionality($scope.task.branchState);
+                $scope.setInitialView();
+              },
+              // if no role, send error and return to dashboard after slight delay
+              function () {
+                /*  TODO Reenable this later
+                 notificationService.sendError('You do not have permissions to view this task, and will be returned to the dashboard');
+                 $timeout(function () {
+                 $location.url('/');
+                 }, 4000);*/
 
-              notificationService.sendMessage('Task details loaded', 3000);
+                notificationService.sendMessage('Task details loaded', 3000);
 
-              // set role functionality and initial view
-              var role = 'AUTHOR';
-              $scope.isOwnTask = role === 'AUTHOR';
-              setBranchFunctionality($scope.task.branchState);
-              $scope.setInitialView();
-            });
+                // set role functionality and initial view
+                var role = 'AUTHOR';
+                $scope.isOwnTask = role === 'AUTHOR';
+                setBranchFunctionality($scope.task.branchState);
+                $scope.setInitialView();
+              });
 
-          // populate the container objects
-          $scope.getLatestClassification();
-          $scope.getLatestValidation();
-          $scope.getLatestConflictsReport();
+            // populate the container objects
+            $scope.getLatestClassification();
+            $scope.getLatestValidation();
+            $scope.getLatestConflictsReport();
 
-          // initialize the branch variables (TODO some may be unused) (requires metadata service branches set)
-          $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
+            // initialize the branch variables (TODO some may be unused) (requires metadata service branches set)
+            $scope.parentBranch = metadataService.getBranchRoot() + '/' + $scope.projectKey;
 
-          if ($routeParams.taskKey) {
-            $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-            $scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-          } else {
-            $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
-            $scope.sourceBranch = metadataService.getBranchRoot() + '/';
-          }
+            if ($routeParams.taskKey) {
+              $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+              $scope.sourceBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+            } else {
+              $scope.targetBranch = metadataService.getBranchRoot() + '/' + $routeParams.projectKey;
+              $scope.sourceBranch = metadataService.getBranchRoot() + '/';
+            }
 
-        });
+          });
+        })
 
 
       }, function (error) {
