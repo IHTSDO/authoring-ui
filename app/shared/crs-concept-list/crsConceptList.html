@@ -26,4 +26,25 @@
       <!-- Use the preferred synonym if present, otherwise use fsn -->
       {{item.conceptJson.fsn}}
     </div>
+
+    <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
+      <button type="button"
+              ng-click="viewConceptInTaxonomy(item)"
+              ng-disabled="!item.concept.active"
+              class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
+              ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
+        <span ng-if="item.conceptJson.active">View in Taxonomy</span>
+        <span ng-if="!item.conceptJson.active">Inactive Concept</span>
+      </button>
+
+      <button type="button"
+              class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
+              title="Remove"
+              ng-show="item.saved">
+        <i
+          class="md md-check"></i>
+        <span>CRS Concept saved </span>
+      </button>
+    </div>
   </div>
+</div>
