@@ -19,9 +19,10 @@ angular.module('singleConceptAuthoringApp')
           return {id: item.concept.conceptId, name: item.concept.fsn};
         };
 
-        // open a concept from the list
-        scope.openConcept = function (concept) {
-          $rootScope.$broadcast('editConcept', concept);
+        scope.selectItem = function (item) {
+          $rootScope.$broadcast('editConcept', {
+            conceptId : item.crsGuid
+          });
         };
 
         // on saveConcept events, mark the concept as saved
@@ -34,14 +35,28 @@ angular.module('singleConceptAuthoringApp')
           // TODO
         };
 
+        // on concept change notifications from conceptEdit.js
+        scope.$on('conceptEdit.conceptChange', function(event, data) {
+          for (var i = 0; i < scope.concepts.length; i++) {
+            if (scope.concepts[i].crsGuid === data.concept.crsGuid) {
+              scope.concepts[i].savedConcept = angular.merge(scope.concepts[i].conceptJson, data.concept);
+              scope.concepts[i].saved = true;
+              crsService.saveCrsConcepts(scope.concepts);
+            }
+          }
+        });
+
+
+
 
         //
         // Initialization
         //
         function initialize() {
           crsService.getCrsConceptsForTask(scope.task).then(function (concepts) {
+            console.debug('****** CRS Concept List', concepts);
             scope.concepts = concepts;
-          }, function(error) {
+          }, function (error) {
             notificationService.sendError(error);
           })
         }

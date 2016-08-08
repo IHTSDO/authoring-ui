@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService) {
 
 
 
@@ -641,8 +641,20 @@ angular.module('singleConceptAuthoringApp.edit', [
       // send loading notification for user display
       notificationService.sendMessage('Loading concepts...', 10000, null);
 
+
+      // if a CRS concept for this task, retrieve from service
+      if (crsService.isCrsConcept(conceptId)) {
+
+        // get the CRS Concept
+        var crsConcept = crsService.getCrsConcept(conceptId);
+        $scope.concepts.push(crsConcept.concept);
+
+        notificationService.sendMessage('All concepts loaded', 5000, null);
+
+      }
+
       // if unsaved concept, push
-      if (conceptId === 'unsaved') {
+      else if (conceptId === 'unsaved') {
         $scope.concepts.push({conceptId: 'unsaved'});
 
         // send loading notification
@@ -725,6 +737,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         var conceptIds = [];
         angular.forEach($scope.concepts, function (concept) {
+          if (concept.crsGuid) {
+            conceptIds.push(concept.crsGuid);
+          }
           if (concept.conceptId) {
             conceptIds.push(concept.conceptId);
           } else {
@@ -768,13 +783,19 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
+
+
+    //
+    // Editing Notifications
+    //
+
     // watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
       var conceptId = data.conceptId;
 
       // verify that this SCTID does not exist in the edit list
       for (var i = 0; i < $scope.concepts.length; i++) {
-        if ($scope.concepts[i].conceptId === conceptId) {
+        if ($scope.concepts[i].conceptId === conceptId || $scope.concepts[i].crsGuid === data.conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
 
