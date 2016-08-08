@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -146,6 +146,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.hideInactive = true;
         }
 
+        //
+        // CRS concept initialization
+        //
+        if (crsService.isCrsConcept(scope.concept.crsGuid)) {
+
+          scope.hideInactive = false;
+
+          var crsContainer = crsService.getCrsConcept(scope.concept.crsGuid);
+          scope.isModified = !crsContainer.saved;
+        }
 
         //////////////////////////////////////////////////////////////
         // Handle additional fields, if required
@@ -210,8 +220,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // on load, check if a modified, unsaved version of this concept
         // exists -- only applies to task level, safety check
-        if ($routeParams.taskKey && scope.autosave === true) {
-
+        if ($routeParams.taskKey && scope.autosave === true && !crsService.isCrsConcept(scope.concept.conceptId)) {
 
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
 
@@ -362,7 +371,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   scope.computeRelationshipGroups();
 
-                  // broadcast event to any listeners (currently task detail,
+                  // broadcast event to any listeners (currently task detail, crs concept list,
                   // conflict/feedback resolved lists)
                   $rootScope.$broadcast('conceptEdit.conceptChange', {
                     branch: scope.branch,
@@ -2356,7 +2365,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (relationship.active === true && relationship.type.conceptId === '116680003' && relationship.target.conceptId && relationship.characteristicType !== 'INFERRED_RELATIONSHIP') {
 
               idList += relationship.target.conceptId + ',';
-             }
+            }
           });
           idList = idList.substring(0, idList.length - 1);
           console.debug(idList);
@@ -2681,6 +2690,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
         });
+
+
+        function capitalize(word) {
+          return word.charAt(0).toUpperCase() + word.substring(1);
+        }
+
+        scope.toCapitalizedWords = function (name) {
+          var words = name.match(/[A-Za-z][a-z]*/g);
+
+          return words.map(capitalize).join(" ");
+        }
 
       }
     };

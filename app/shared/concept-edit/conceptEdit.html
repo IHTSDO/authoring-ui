@@ -181,6 +181,27 @@
   <!-- Toggle-able collapsed concept elements -->
   <div ng-show="!isCollapsed" class="editHeightSelector darken-3 grey ">
 
+    <div ng-show="concept.definitionOfChanges" class="darken-3 grey">
+      <div class="row">
+        <div class="col-md-12">
+          CRS Change Notes:
+        </div>
+
+      </div>
+      <div class="row" ng-repeat="(key, value) in concept.definitionOfChanges">
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
+          {{toCapitalizedWords(key)}}
+        </div>
+        <div class="col-md-8">
+          {{value}}
+
+        </div>
+
+      </div>
+    </div>
+
+
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in getDescriptions()" ng-class="getComponentStyle(description.descriptionId, null, '')"
          class="">
@@ -243,21 +264,21 @@
                                   placeholder="Description">
                         </textarea>
 
-                        <textarea autofocus ng-if="description.type === 'SYNONYM'"
-                                  ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
-                                  maxlength="255"
-                                  ng-model="description.term"
-                                  class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
-                                  placeholder="Description">
+            <textarea autofocus ng-if="description.type === 'SYNONYM'"
+                      ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
+                      ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                      maxlength="255"
+                      ng-model="description.term"
+                      class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
+                      placeholder="Description">
                         </textarea>
-                        <textarea ng-if="description.type === 'TEXT_DEFINITION'"
-                                  maxlength="2048"
-                                  ng-change="updateDescription(description)"
-                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
-                                  ng-model-options="{updateOn: 'blur'}"
-                                  ng-model="description.term" type="text" placeholder="Description"
-                                  class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
+            <textarea ng-if="description.type === 'TEXT_DEFINITION'"
+                      maxlength="2048"
+                      ng-change="updateDescription(description)"
+                      ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                      ng-model-options="{updateOn: 'blur'}"
+                      ng-model="description.term" type="text" placeholder="Description"
+                      class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
                         </textarea>
           </div>
 
@@ -323,6 +344,23 @@
           <div ng-bind="warning"></div>
         </div>
       </div>
+
+      <div ng-show="description.definitionOfChanges" class="darken-3 grey">
+        <div ng-repeat="(key, value) in description.definitionOfChanges">
+          <div class="row" ng-show="value !== null && value !== undefined">
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+              {{toCapitalizedWords(key)}}
+            </div>
+            <div class="col-md-8">
+              {{value}}
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- rows: Relationships -->
@@ -428,7 +466,8 @@
                   <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                        ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
-                       drag-channel="conceptPropertiesObj" drag-image="getDragImageForConcept(relationship.target.fsn)">
+                       drag-channel="conceptPropertiesObj"
+                       drag-image="getDragImageForConcept(relationship.target.fsn)">
                     <span>Drag This Component</span>
                   </div>
                 </div>
@@ -498,6 +537,22 @@
                  ng-repeat="warning in validation.warnings[relationship.relationshipId]">
               <strong>Convention Warning:</strong>
               <div ng-bind="warning"></div>
+            </div>
+          </div>
+
+          <div ng-show="relationship.definitionOfChanges" class="darken-3 grey">
+            <div ng-repeat="(key, value) in relationship.definitionOfChanges">
+              <div class="row" ng-show="value !== null && value !== undefined">
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                  {{toCapitalizedWords(key)}}
+                </div>
+                <div class="col-md-8">
+                  {{value}}
+
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
