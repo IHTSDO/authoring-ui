@@ -122,110 +122,110 @@ angular.module('singleConceptAuthoringApp')
           }
         },
         {
-          "effectiveTime" : "20040731",
-          "moduleId" : "900000000000207008",
-          "active" : false,
-          "conceptId" : "257495001",
-          "fsn" : "New concept of organism topic",
-          "definitionStatus" : "PRIMITIVE",
-          "preferredSynonym" : "Organism",
-          "descriptions" : [ {
-            "effectiveTime" : null,
-            "moduleId" : "900000000000207008",
-            "active" : true,
-            "descriptionId" : null,
-            "conceptId" : "257495001",
-            "type" : "FSN",
-            "lang" : "en",
-            "term" : "New concept of organism topic",
-            "caseSignificance" : "INITIAL_CHARACTER_CASE_INSENSITIVE",
-            "additionalFields" : null,
-            "acceptabilityMap" : {
-              "900000000000509007" : "PREFERRED",
-              "900000000000508004" : "PREFERRED"
+          "effectiveTime": "20040731",
+          "moduleId": "900000000000207008",
+          "active": false,
+          "conceptId": "257495001",
+          "fsn": "New concept of organism topic",
+          "definitionStatus": "PRIMITIVE",
+          "preferredSynonym": "Organism",
+          "descriptions": [{
+            "effectiveTime": null,
+            "moduleId": "900000000000207008",
+            "active": true,
+            "descriptionId": null,
+            "conceptId": "257495001",
+            "type": "FSN",
+            "lang": "en",
+            "term": "New concept of organism topic",
+            "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+            "additionalFields": null,
+            "acceptabilityMap": {
+              "900000000000509007": "PREFERRED",
+              "900000000000508004": "PREFERRED"
             },
-            "definitionOfChanges" : {
-              "changeId" : null,
-              "changeType" : "NEW_DESCRIPTION",
-              "changed" : true
+            "definitionOfChanges": {
+              "changeId": null,
+              "changeType": "NEW_DESCRIPTION",
+              "changed": true
             }
           }, {
-            "effectiveTime" : "20020131",
-            "moduleId" : "900000000000207008",
-            "active" : true,
-            "descriptionId" : "383345014",
-            "conceptId" : "257495001",
-            "type" : "SYNONYM",
-            "lang" : "en",
-            "term" : "Organism",
-            "caseSignificance" : "INITIAL_CHARACTER_CASE_INSENSITIVE",
-            "additionalFields" : null,
-            "acceptabilityMap" : {
-              "900000000000508004" : "PREFERRED",
-              "900000000000509007" : "PREFERRED"
+            "effectiveTime": "20020131",
+            "moduleId": "900000000000207008",
+            "active": true,
+            "descriptionId": "383345014",
+            "conceptId": "257495001",
+            "type": "SYNONYM",
+            "lang": "en",
+            "term": "Organism",
+            "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+            "additionalFields": null,
+            "acceptabilityMap": {
+              "900000000000508004": "PREFERRED",
+              "900000000000509007": "PREFERRED"
             },
-            "definitionOfChanges" : null
+            "definitionOfChanges": null
           }, {
-            "effectiveTime" : "20020131",
-            "moduleId" : "900000000000207008",
-            "active" : false,
-            "descriptionId" : "648796018",
-            "conceptId" : "257495001",
-            "type" : "FSN",
-            "lang" : "en",
-            "term" : "Organism (organism)",
-            "caseSignificance" : "INITIAL_CHARACTER_CASE_INSENSITIVE",
-            "additionalFields" : null,
-            "acceptabilityMap" : {
-              "900000000000508004" : "PREFERRED",
-              "900000000000509007" : "PREFERRED"
+            "effectiveTime": "20020131",
+            "moduleId": "900000000000207008",
+            "active": false,
+            "descriptionId": "648796018",
+            "conceptId": "257495001",
+            "type": "FSN",
+            "lang": "en",
+            "term": "Organism (organism)",
+            "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+            "additionalFields": null,
+            "acceptabilityMap": {
+              "900000000000508004": "PREFERRED",
+              "900000000000509007": "PREFERRED"
             },
-            "definitionOfChanges" : {
-              "changeId" : null,
-              "changeType" : "CHANGE_DESCRIPTION",
-              "changed" : true,
-              "descriptionStatus" : "Retired"
+            "definitionOfChanges": {
+              "changeId": null,
+              "changeType": "CHANGE_DESCRIPTION",
+              "changed": true,
+              "descriptionStatus": "Retired"
             }
-          } ],
-          "relationships" : [ {
-            "effectiveTime" : "20040731",
-            "moduleId" : "900000000000207008",
-            "active" : false,
-            "relationshipId" : "144496025",
-            "type" : {
-              "conceptId" : "116680003",
-              "fsn" : "Is a (attribute)"
+          }],
+          "relationships": [{
+            "effectiveTime": "20040731",
+            "moduleId": "900000000000207008",
+            "active": false,
+            "relationshipId": "144496025",
+            "type": {
+              "conceptId": "116680003",
+              "fsn": "Is a (attribute)"
             },
-            "target" : {
-              "effectiveTime" : "20020131",
-              "moduleId" : "900000000000207008",
-              "active" : true,
-              "conceptId" : "138875005",
-              "fsn" : "SNOMED CT Concept (SNOMED RT+CTV3)",
-              "definitionStatus" : "PRIMITIVE"
+            "target": {
+              "effectiveTime": "20020131",
+              "moduleId": "900000000000207008",
+              "active": true,
+              "conceptId": "138875005",
+              "fsn": "SNOMED CT Concept (SNOMED RT+CTV3)",
+              "definitionStatus": "PRIMITIVE"
             },
-            "sourceId" : "257495001",
-            "groupId" : 0,
-            "characteristicType" : "INFERRED_RELATIONSHIP",
-            "modifier" : "EXISTENTIAL",
-            "additionalFields" : null,
-            "definitionOfChanges" : null
-          } ],
-          "additionalFields" : null,
-          "definitionOfChanges" : {
-            "changeId" : null,
-            "changeType" : "CHANGE_RETIRE_CONCEPT",
-            "changed" : true,
-            "topic" : "Automation_Topic",
-            "summary" : "Summary for request",
-            "notes" : "New notes for request",
-            "reference" : "Articles from Internet",
-            "reasonForChange" : "New modification",
-            "namespace" : "New namespace",
-            "currentFsn" : "New concept of organism topic",
-            "proposedStatus" : "Duplicate",
-            "historyAttribute" : "Maybe a",
-            "historyAttributeValue" : "A new attribute value"
+            "sourceId": "257495001",
+            "groupId": 0,
+            "characteristicType": "INFERRED_RELATIONSHIP",
+            "modifier": "EXISTENTIAL",
+            "additionalFields": null,
+            "definitionOfChanges": null
+          }],
+          "additionalFields": null,
+          "definitionOfChanges": {
+            "changeId": null,
+            "changeType": "CHANGE_RETIRE_CONCEPT",
+            "changed": true,
+            "topic": "Automation_Topic",
+            "summary": "Summary for request",
+            "notes": "New notes for request",
+            "reference": "Articles from Internet",
+            "reasonForChange": "New modification",
+            "namespace": "New namespace",
+            "currentFsn": "New concept of organism topic",
+            "proposedStatus": "Duplicate",
+            "historyAttribute": "Maybe a",
+            "historyAttributeValue": "A new attribute value"
           }
         },
         {
@@ -857,8 +857,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.resolve({
             // the id fields
             crsKey: crsKey,
-            crsGuid: crsGuid,
-            conceptId: conceptJson.conceptId,
+            conceptId: conceptJson.conceptId ? conceptJson.conceptId : snowowlService.createGuid(),
             fsn: conceptJson.fsn,
             preferredSynonym: conceptJson.preferredSynonym,
 
@@ -888,8 +887,8 @@ angular.module('singleConceptAuthoringApp')
         scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', currentTaskConcepts);
       }
 
-      // initialize ui states from a task
-      function initialize() {
+      // initialize ui states for a CRS task
+      function initializeCrsTask() {
         var deferred = $q.defer();
 
         console.debug('initializing from task', currentTask);
@@ -907,7 +906,7 @@ angular.module('singleConceptAuthoringApp')
             getNewCrsConcept(crsKey, urls[0]).then(function (crsConcept) {
               currentTaskConcepts.push(crsConcept);
 
-              // TODO Again, multiple attachments
+              // TODO Again, support multiple attachments
               // TODO Figure out why $q.all wasn't working with promise array
               console.debug('Length check', currentTaskConcepts.length, Object.keys(currentTask.issueLinkAttachments).length)
               if (currentTaskConcepts.length === Object.keys(currentTask.issueLinkAttachments).length) {
@@ -932,28 +931,28 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
+
       //
       // Gets the CRS concepts for task, initializing UI states on first attempt
       //
-      function getCrsConceptsForTask(task) {
+      function setTask(task) {
         var deferred = $q.defer();
 
-        // Time delay for DEV to prevent header-access errors
+        // set the local task variable for use by other functions
+        currentTask = task;
+
+        // clear the concepts list
+        currentTaskConcepts = null;
+
+        // PREREQUISITE: Task must have CRS label
+        if (task.labels.indexOf('CRS') === -1) {
+          deferred.reject('Not a CRS task');
+        }
+
+        // TODO Remove later -- Time delay for DEV to prevent header-access errors
         console.debug('IS DEV', $rootScope.development);
-        var timeDelay = $rootScope.development === null || $rootScope.development === undefined ? 1000 : 0;
+        var timeDelay = $rootScope.development === null || $rootScope.development === undefined ? 2000 : 0;
         $timeout(function () {
-
-          console.debug('get crs concepts for task', task);
-
-          // PREREQUISITE: Task must have CRS label
-          if (task.labels.indexOf('CRS') === -1) {
-            currentTask = null;
-            currentTaskConcepts = null;
-            deferred.reject('Not a CRS task');
-          }
-
-          // set the local task variable for use by other functions
-          currentTask = task;
 
           // check if this task has previously been initialized
           scaService.getUiStateForTask(task.projectKey, task.key, 'crs-concepts').then(function (concepts) {
@@ -967,7 +966,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(concepts);
             } else {
               console.debug('--> Not initialized, initializing');
-              initialize().then(function (crsConcepts) {
+              initializeCrsTask().then(function (crsConcepts) {
                 console.debug('--> Initialization complete, returning', currentTaskConcepts)
                 deferred.resolve(currentTaskConcepts);
               }, function (error) {
@@ -980,8 +979,10 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function isCrsConcept(id) {
+        console.debug('  checking crs concept for ', id, currentTaskConcepts);
         for (var i = 0; i < currentTaskConcepts.length; i++) {
-          if (currentTaskConcepts[i].conceptId === id || currentTaskConcepts[i].crsGuid === id) {
+          if (currentTaskConcepts[i].conceptId === id) {
+            console.debug('    -> is crs concept');
             return true;
           }
         }
@@ -990,22 +991,32 @@ angular.module('singleConceptAuthoringApp')
 
       function getCrsConcept(id) {
         for (var i = 0; i < currentTaskConcepts.length; i++) {
-          if (currentTaskConcepts[i].conceptId === id || currentTaskConcepts[i].crsGuid === id) {
+          if (currentTaskConcepts[i].conceptId === id) {
             return currentTaskConcepts[i];
           }
         }
         return null;
       }
 
-      //
-      // Function exposure
-      //
+      function getCrsConcepts(taskKey) {
+        return currentTaskConcepts;
+      }
+
+
+      function saveCrsConcept(id) {
+      }
+
+//
+// Function exposure
+//
       return {
-        getCrsConceptsForTask: getCrsConceptsForTask,
-        clearCrsConceptsForTask: clearCrsConceptsForTask,
-        saveCrsConceptsForTask: saveCrsConcepts,
+        setTask: setTask,
+        getCrsConcepts: getCrsConcepts,
+        clearCrsConceptsForTaskKey: clearCrsConceptsForTask,
+
         isCrsConcept: isCrsConcept,
-        getCrsConcept: getCrsConcept
+        getCrsConcept: getCrsConcept,
+        saveCrsConcept: saveCrsConcept
       };
     }
   )
