@@ -35,15 +35,15 @@
             <i class="icon-circle theme-border"></i>
           </div>
           <div class="timeline-panel">
-            <label class="control-label">Linked Issues ({{task.issueLinks.length}})</label>
-            <div class="row no-gutter no-padding" ng-repeat="issueLink in task.issueLinks">
+            <label class="control-label">Linked Issues</label>
+            <div class="row no-gutter no-padding" ng-repeat="issueLink in task.issueLinks | filter: issueLinkFilter">
               <div class="col-md-3" ng-click="gotoLinkedIssue(issueLink)">
 
                 <img ng-src="{{issueLink.outwardIssue.issueType.iconUrl}}"
                      alt="{{issueLink.outwardIssue.issueType.summary}}"/>
                 {{issueLink.outwardIssue.key}}
               </div>
-              <div class="col-md-4" ng-click="gotoLinkedIssue(issueLink)">
+              <div class="col-md-5" ng-click="gotoLinkedIssue(issueLink)">
                 {{issueLink.outwardIssue.summary}}
               </div>
               <div class="col-md-4">
@@ -125,7 +125,7 @@
 
       </div>
 
-      <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="unsavedConcepts == null">
+      <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="unsavedConcepts === null">
         <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'" class="btn btn-default pink1 review"
                 style="text-transform: none" ng-click="submitForReview()">
           <span class="md md-forum pink darken-2 iconbase"></span>
@@ -136,7 +136,7 @@
       </div>
 
 
-      <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="unsavedConcepts != null">
+      <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="unsavedConcepts !== null">
         <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'" class="btn btn-default pink1 review"
                 style="text-transform: none" ng-click="submitForReview()">
           <span class="md md-forum pink darken-2 iconbase"></span>
@@ -162,4 +162,5 @@
       </button>
     </div>
   </div>
+
 </div>
