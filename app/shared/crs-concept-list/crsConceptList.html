@@ -1,4 +1,4 @@
-<div>
+<div ng-show="getCrsConcepts().length > 0">
   <div class="row">
     <div class="p-l-5 m-t-10 m-b-10">
       <label class="control-label">CRS Concept List</label>
@@ -9,7 +9,7 @@
   <div class="row saved-list no-padding  " ng-repeat="item in getCrsConcepts()" style="margin-bottom: 15px;">
 
     <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
-      <button ng-if="item.conceptJson.definitionStatus === 'PRIMITIVE'"
+      <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
               class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
@@ -22,31 +22,29 @@
         <span>Fully Defined</span>
       </button>
     </div>
+
     <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
          style="word-wrap: break-word" ui-draggable="true"
          drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
-      <!-- Use the preferred synonym if present, otherwise use fsn -->
+      
       {{item.concept.fsn}}
+
+
     </div>
+    <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs" style="text-align:center">
 
-    <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
-      <button type="button"
-              ng-click="viewConceptInTaxonomy(item)"
-              ng-disabled="!item.concept.active"
-              class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
-              ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
-        <span ng-if="item.concept.active">View in Taxonomy</span>
-        <span ng-if="!item.concept.active">Inactive Concept</span>
-      </button>
+      <a ng-href="{{item.requestUrl}}" target="_blank">
+        <button
+          class="p-t-5 p-l-3 tooltips-left small-size-tooltip offset-tooltip-left  pull-left">
+          <div class="glyphicon glyphicon-modal-window"></div>
+          <span>View Content Request</span>
+        </button>
+      </a>
 
-      <button type="button"
-              class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
-              title="Remove"
-              ng-show="item.saved">
-        <i
-          class="md md-check"></i>
-        <span>CRS Concept saved </span>
+      <button ng-show="item.saved"
+              class="p-t-5 p-l-3 tooltips-left small-size-tooltip offset-tooltip-left  pull-left ">
+        <div class="glyphicon glyphicon-ok"></div>
+        <span>Concept Saved</span>
       </button>
     </div>
   </div>
-</div>

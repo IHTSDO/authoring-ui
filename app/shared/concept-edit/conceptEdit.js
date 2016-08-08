@@ -335,6 +335,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // clean the concept for snowowl-ready save
             snowowlService.cleanConcept(scope.concept);
 
+            // store the concept id (may be blank or UUID/GUID)
+            var originalConceptId = scope.concept.conceptId;
+
 
             var saveFn = null;
 
@@ -361,6 +364,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
+
+                  // if a CRS concept, alert the serve
+                  if (crsService.isCrsConcept(originalConceptId)) {
+                    console.debug('Saving CRS concept');
+                    crsService.saveCrsConcept(originalConceptId, scope.concept);
+                  }
 
                   // clear the saved modified state
                   scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
