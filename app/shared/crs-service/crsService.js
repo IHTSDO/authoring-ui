@@ -837,16 +837,28 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      //
+      // TODO Move this into endpoint config
+      //
+      function getRequestUrl(issueId) {
+        if ($rootScope.development) {
+          return 'https://dev-request.ihtsdotools.org/#/requests/view/' + issueId;
+        } else if ($rootScope.uat) {
+          return 'https://uat-request.ihtsdotools.org/#/requests/view/' + issueId;
+        } else {
+          return '';
+        }
+      }
+
 
       //
       // Create a new CRS Concept Container from a JSON object url
       //
-      function getNewCrsConcept(crsKey, url) {
+      function getNewCrsConcept(issueId, url) {
 
         var deferred = $q.defer();
 
         console.debug('getting new crs concept', url);
-
 
         getJsonAttachment(url).then(function (conceptJson) {
 
@@ -856,10 +868,12 @@ angular.module('singleConceptAuthoringApp')
 
           deferred.resolve({
             // the id fields
-            crsKey: crsKey,
             conceptId: conceptJson.conceptId ? conceptJson.conceptId : snowowlService.createGuid(),
             fsn: conceptJson.fsn,
             preferredSynonym: conceptJson.preferredSynonym,
+
+            // the request url
+            requestUrl : getRequestUrl(issueId),
 
             // the concept, with definition changes
             concept: angular.copy(conceptJson),
@@ -880,10 +894,17 @@ angular.module('singleConceptAuthoringApp')
       }
 
       //
+      // Clear the CRS Concept list for a task
+      //
+      function clearCrsConceptsUiState(task) {
+        scaService.deleteUiStateForTask(task.projectKey, task.key, 'crs-concepts');
+      }
+
+
+      //
       // Stores the CRS Concept list in UI State
       //
-      function saveCrsConcepts(concepts) {
-        currentTaskConcepts = concepts;
+      function saveCrsConceptsUiState() {
         scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', currentTaskConcepts);
       }
 
@@ -895,15 +916,15 @@ angular.module('singleConceptAuthoringApp')
 
         currentTaskConcepts = [];
         // cycle over each linked CRS issue
-        for (var crsKey in currentTask.issueLinkAttachments) {
+        for (var issueId in currentTask.issueLinkAttachments) {
 
-          var urls = currentTask.issueLinkAttachments[crsKey];
+          var urls = currentTask.issueLinkAttachments[issueId];
 
           // TODO Handle multiple attachments per link
           // expect only one url per issue link
           if (urls && urls[0]) {
             console.debug('adding attachment for', urls[0]);
-            getNewCrsConcept(crsKey, urls[0]).then(function (crsConcept) {
+            getNewCrsConcept(issueId, urls[0]).then(function (crsConcept) {
               currentTaskConcepts.push(crsConcept);
 
               // TODO Again, support multiple attachments
@@ -916,19 +937,6 @@ angular.module('singleConceptAuthoringApp')
           }
         }
         return deferred.promise;
-      }
-
-      //
-      // Clear the CRS Concept list for a task
-      //
-      function clearCrsConceptsForTask(task) {
-        var deferred = $q.defer();
-        scaService.deleteUiStateForTask(task.projectKey, task.key, 'crs-concepts').then(function () {
-          currentTaskConcepts = null;
-          deferred.resolve();
-        }, function (error) {
-          deferred.reject('Error deleting crs-concepts ui state');
-        });
       }
 
 
@@ -1003,7 +1011,23 @@ angular.module('singleConceptAuthoringApp')
       }
 
 
-      function saveCrsConcept(id) {
+      //
+      // Save a concept against the stored id
+      // NOTE: crsId required because snowowl may assign a new id
+      //
+      function saveCrsConcept(crsId, concept) {
+        console.debug('saveCrsConcept', crsId, concept);
+        for (var i = 0; i < currentTaskConcepts.length; i++) {
+          if (currentTaskConcepts[i].conceptId === crsId) {
+
+            // overwrite the concept id, concept, and set to saved
+            currentTaskConcepts[i].conceptId = concept.conceptId
+            currentTaskConcepts[i].concept = concept;
+            currentTaskConcepts[i].saved = true;
+            saveCrsConceptsUiState();
+            break;
+          }
+        }
       }
 
 //
@@ -1011,12 +1035,11 @@ angular.module('singleConceptAuthoringApp')
 //
       return {
         setTask: setTask,
-        getCrsConcepts: getCrsConcepts,
-        clearCrsConceptsForTaskKey: clearCrsConceptsForTask,
-
         isCrsConcept: isCrsConcept,
         getCrsConcept: getCrsConcept,
+        getCrsConcepts: getCrsConcepts,
         saveCrsConcept: saveCrsConcept
+
       };
     }
   )
