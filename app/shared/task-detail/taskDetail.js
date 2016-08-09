@@ -15,7 +15,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       // set the parent concept for initial taxonomy load (null -> SNOMEDCT
       // root)
       $scope.taxonomyConcept = null;
-      $scope.reviewClicked = false;
 
       $scope.classify = function () {
 
@@ -118,86 +117,105 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
 
+      //
+      // Helper function to mark the task for review
+      //
+      function markTaskForReview() {
+        // create the request body
+        var updateObj = {
+          'reviewer': {
+            'username': ''
+          },
+          'status': 'IN_REVIEW'
+        };
+
+        // update the task
+        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function (response) {
+          notificationService.sendMessage('Task submitted for review', 5000);
+          scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
+          $rootScope.$broadcast('reloadTask');
+          $scope.task = response;
+        }, function (error) {
+          notificationService.sendError('Error submitting task for review');
+        });
+      }
+
       $scope.unsavedConcepts = null;
       $scope.submitForReview = function () {
         notificationService.sendMessage('Submitting task for review...');
 
+        // if unsaved concepts already calculated, clear and "submit anyway"
+        if ($scope.unsavedConcepts) {
+          $scope.unsavedConcepts = null;
+          markTaskForReview();
+        } else {
 
-        // check if unsaved content exists
-        scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (conceptIds) {
+          // retrieve the modified concepts for this task
+          scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (conceptIds) {
 
-          // if unsaved concepts previously found, override warning and continue
-          if ((conceptIds && conceptIds.length === 0) || $scope.unsavedConcepts) {
+            // if no modified concepts stored, submit directly
+            if ((conceptIds && conceptIds.length === 0) || $scope.unsavedConcepts) {
 
-            // clear array of unsaved content
-            $scope.unsavedConcepts = null;
+              // clear array of unsaved content
+              $scope.unsavedConcepts = null;
+              markTaskForReview();
 
-            // create the request body
-            var updateObj = {
-              'reviewer': {
-                'username': ''
-              },
-              'status': 'IN_REVIEW'
-            };
-
-            // update the task
-            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function (response) {
-              notificationService.sendMessage('Task submitted for review', 5000);
-              scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
-              $rootScope.$broadcast('reloadTask');
-              $scope.reviewClicked = true;
-              $scope.task = response;
-            }, function (error) {
-              notificationService.sendError('Error submitting task for review');
-            });
-
-          }
-
-          // if unsaved changes
-          else {
-
-            // initialize the unsaved concept array
-            $scope.unsavedConcepts = [];
-
-            // if bad result, throw user error
-            if (!conceptIds) {
-              notificationService.sendError('Unexpected error checking for unsaved changes');
             }
 
-            // otherwise get the unsaved content for display
+            // otherwise, prepare the unsaved concepts array
             else {
-              notificationService.sendWarning('Save your changes before submitting for review');
 
-              angular.forEach(conceptIds, function (conceptId) {
-                scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
+              // initialize the unsaved concept array
+              var unsavedConcepts = [];
 
-                  if (!concept.conceptId) {
-                    concept.conceptId = '(New concept)';
-                  }
-                  // find the FSN for display
-                  if (!concept.fsn) {
-                    angular.forEach(concept.descriptions, function (d) {
-                      if (d.type === 'FSN') {
-                        concept.fsn = d.term;
+
+              // if bad result, throw user error
+              if (!conceptIds) {
+                notificationService.sendError('Unexpected error checking for unsaved changes');
+              }
+
+              // otherwise get the unsaved content for display
+              else {
+
+                angular.forEach(conceptIds, function (conceptId) {
+                  scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
+
+                    // Account for case where new concepts are marked 'current' in UI State
+                    if (concept && !concept.current) {
+
+                      if (!concept.conceptId) {
+                        concept.conceptId = '(New concept)';
                       }
-                    })
-                  }
-                  if (!concept.fsn) {
-                    concept.fsn = 'Could not determine FSN';
-                  }
+                      // find the FSN for display
+                      if (!concept.fsn) {
+                        angular.forEach(concept.descriptions, function (d) {
+                          if (d.type === 'FSN') {
+                            concept.fsn = d.term;
+                          }
+                        })
+                      }
+                      if (!concept.fsn) {
+                        concept.fsn = 'Could not determine FSN';
+                      }
+                      unsavedConcepts.push(concept);
+                    }
 
-                  $scope.unsavedConcepts.push(concept);
-                  console.debug('unsaved concepts', $scope.unsavedConcepts);
-                }, function (error) {
-                  notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
+                    // if no concepts survive processing, proceed with submission
+                    if (unsavedConcepts.length === 0) {
+                      markTaskForReview();
+                    } else {
+                      $scope.unsavedConcepts = unsavedConcepts;
+                      notificationService.sendWarning('Save your changes before submitting for review');
+
+                    }
+                  }, function (error) {
+                    notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
+                  });
                 });
-              });
+              }
             }
-          }
-
-        });
-
-
+          });
+        }
       };
 
       // cancel review
@@ -287,6 +305,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       function initialize() {
 
         console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
+
+        // clear the unsaved concepts list
+        $scope.unsavedConcepts = null;
 
         // clear the branch variables (but not the task to avoid display re-initialization)
         $scope.taskBranch = null;
