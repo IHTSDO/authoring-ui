@@ -175,15 +175,16 @@ angular.module('singleConceptAuthoringApp')
           // Helper functions
           /////////////////////////////////////////////////////
 
-          function switchToEditView() {
+          function exitConflictsView() {
             if ($routeParams.taskKey) {
               $timeout(function () {
                 $location.path('/tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
               }, 5000)
             }
-            // TODO Decide how to handle projects
             else {
-
+              $timeout(function() {
+                $location.path('/project/' + $routeParams.projectKey);
+              }, 5000);
             }
           }
 
@@ -521,14 +522,8 @@ angular.module('singleConceptAuthoringApp')
                   scope.warning = false;
                   scope.fiveOFour = false;
 
-
-                  // broadcast reload task to any current listeners, to pull in
-                  // new branch state
-                  // TODO This does not actually hit any listeners
-                  // $rootScope.$broadcast('reloadTask');
-
                   // switch to edit view on success
-                  switchToEditView();
+                  exitConflictsView();
                 }
                 else if (response === 1) {
                   console.log('1');
@@ -560,6 +555,9 @@ angular.module('singleConceptAuthoringApp')
                   scope.rebaseComplete = true;
                   scope.warning = false;
                   scope.fiveOFour = false;
+
+                  // switch to edit view on success
+                  exitConflictsView();
 
                 }
                 else if (response === 1) {
@@ -682,7 +680,7 @@ angular.module('singleConceptAuthoringApp')
               // TODO This is currently non-functional -- there are no listeners in conflict mode
               // Instead, re-routing to edit view after slight delay to force task reload
               $rootScope.$broadcast('reloadTask');
-              switchToEditView();
+              exitConflictsView();
             }, function (error) {
               if (error !== null && error !== 1) {
                 scope.rebaseRunning = false;
