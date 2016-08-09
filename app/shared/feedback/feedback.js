@@ -494,6 +494,12 @@ angular.module('singleConceptAuthoringApp')
 
           }
 
+          function highlightComponent(conceptId, componentId) {
+           // TODO Revisit traceability and styling in general
+            // scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
+          }
+
+
           function addToEditHelper(conceptId) {
 
             // used for status update of addMultipleToEdit
@@ -1227,6 +1233,22 @@ angular.module('singleConceptAuthoringApp')
                     if (change.activityType === 'CONTENT_CHANGE') {
 
                       angular.forEach(change.conceptChanges, function (concept) {
+
+                        // cycle over component changes and apply highlighting
+                        angular.forEach(concept.componentChanges, function (componentChange) {
+                          switch (componentChange.componentType) {
+                            case 'DESCRIPTION':
+                              highlightComponent(concept.conceptId, componentChange.componentId);
+                              break;
+                            case 'STATED_RELATIONSHIP':
+                              highlightComponent(concept.conceptId, componentChange.componentId);
+                              break;
+                            default:
+                            // do nothing
+                          }
+                        });
+
+
                         if (review.concepts.filter(function (obj) {
                             return obj.conceptId === concept.conceptId.toString();
                           }).length === 0 && concept.componentChanges.filter(function (obj) {
