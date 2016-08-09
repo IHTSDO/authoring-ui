@@ -130,6 +130,8 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('Please resolve convention errors prior to accepting concept merge.');
             } else {
 
+              snowowlService.cleanConcept(data.concept);
+
               notificationService.sendMessage('Accepting merged version for concept ' + data.concept.conceptId);
               scope.conceptUpdateFunction($routeParams.projectKey, $routeParams.taskKey, data.concept).then(function (response) {
                 notificationService.sendMessage('Merge accepted for concept ' + data.concept.conceptId, 5000);
