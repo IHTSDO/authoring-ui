@@ -27,6 +27,7 @@
     margin: 0 auto;
     list-style: none;
   }
+ 
 </style>
 
 <div class="row no-gutter sca-container ">
@@ -171,7 +172,7 @@
                   </button>
 
                 </a>
-                <span ng-show="task.feedbackMessagesStatus === 'unread'">
+                <span class="feedback-message-date" ng-show="task.feedbackMessagesStatus === 'unread'">
                     &nbsp;{{task.feedbackMessageDate | date : 'short'}}
                   </span>
 
