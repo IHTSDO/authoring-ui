@@ -150,7 +150,7 @@
                  style="margin-right:0px;">
 
               <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()">
+                   branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()">
               </div>
             </div>
 
@@ -205,7 +205,7 @@
             <div class="no-gutter grey darken-3 panel-height col-md-5"
                  style="margin-right:0px;">
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
+                   branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
               >
               </div>
             </div>
@@ -271,7 +271,7 @@
           <div class="no-gutter grey darken-3 panel-height col-md-12"
                style="margin-right:0px;">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                 branch="targetBranch" static="branchLocked" ui-state-update-fn="updateEditListUiState()"
+                 branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
             >
             </div>
           </div>
