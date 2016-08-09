@@ -873,7 +873,7 @@ angular.module('singleConceptAuthoringApp')
             preferredSynonym: conceptJson.preferredSynonym,
 
             // the request url
-            requestUrl : getRequestUrl(issueId),
+            requestUrl: getRequestUrl(issueId),
 
             // the concept, with definition changes
             concept: angular.copy(conceptJson),
@@ -954,39 +954,45 @@ angular.module('singleConceptAuthoringApp')
 
         // PREREQUISITE: Task must have CRS label
         if (task.labels.indexOf('CRS') === -1) {
-          deferred.reject('Not a CRS task');
+          deferred.resolve('Not a CRS task');
+        } else {
+
+          // TODO Remove later -- Time delay for DEV to prevent header-access errors
+          console.debug('IS DEV', $rootScope.development);
+          var timeDelay = $rootScope.development === null || $rootScope.development === undefined ? 2000 : 0;
+          $timeout(function () {
+
+            // check if this task has previously been initialized
+            scaService.getUiStateForTask(task.projectKey, task.key, 'crs-concepts').then(function (concepts) {
+
+              console.debug('crs ui-state', concepts);
+
+              // if already initialized, simply return
+              if (concepts) {
+                console.debug('--> Already initialized, resolving');
+                currentTaskConcepts = concepts;
+                deferred.resolve(concepts);
+              } else {
+                console.debug('--> Not initialized, initializing');
+                initializeCrsTask().then(function (crsConcepts) {
+                  console.debug('--> Initialization complete, returning', currentTaskConcepts)
+                  deferred.resolve(currentTaskConcepts);
+                }, function (error) {
+                  deferred.reject('Error initializing CRS content');
+                });
+              }
+            });
+          }, timeDelay);
         }
-
-        // TODO Remove later -- Time delay for DEV to prevent header-access errors
-        console.debug('IS DEV', $rootScope.development);
-        var timeDelay = $rootScope.development === null || $rootScope.development === undefined ? 2000 : 0;
-        $timeout(function () {
-
-          // check if this task has previously been initialized
-          scaService.getUiStateForTask(task.projectKey, task.key, 'crs-concepts').then(function (concepts) {
-
-            console.debug('crs ui-state', concepts);
-
-            // if already initialized, simply return
-            if (concepts) {
-              console.debug('--> Already initialized, resolving');
-              currentTaskConcepts = concepts;
-              deferred.resolve(concepts);
-            } else {
-              console.debug('--> Not initialized, initializing');
-              initializeCrsTask().then(function (crsConcepts) {
-                console.debug('--> Initialization complete, returning', currentTaskConcepts)
-                deferred.resolve(currentTaskConcepts);
-              }, function (error) {
-                deferred.reject('Error initializing CRS content');
-              });
-            }
-          });
-        }, timeDelay);
         return deferred.promise;
       }
 
       function isCrsConcept(id) {
+
+        if (!currentTaskConcepts) {
+          return false;
+        }
+
         console.debug('  checking crs concept for ', id, currentTaskConcepts);
         for (var i = 0; i < currentTaskConcepts.length; i++) {
           if (currentTaskConcepts[i].conceptId === id) {
