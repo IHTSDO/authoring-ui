@@ -20,19 +20,12 @@
     </div>
   </div>
 
+
   <!-- end validation error -->
   <!-- The concept itself -->
   <div class="row grey darken-4 concept-headers" style="margin-right:0px;">
     <div class="pull-left col-md-1 no-padding">
 
-      <!--   <button ng-click="setDescriptionProperties(description, $event)"
-            class="btn-default grey darken-3 md morebuttons fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light normal-case"
-            popover-template="'shared/component-more/descriptionMore.html'"
-            popover-placement="{{popoverDirection}}"
-            ng-click="populateDescriptionMore(description)" popover-append-to-body="true">
-      <span>More details</span></button>
-
-      -->
 
       <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
               class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
@@ -129,16 +122,7 @@
                               ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
                     </textarea>
         </div>
-        <!--
-    <select name="select-primitive-choice" id="select-primitive-choice"
-            ng-disabled="isStatic"
-            ng-model="concept.definitionStatus"
-            ng-change="toggleConceptDefinitionStatus()"
-            class="form-control grey darken-4 primitive pull-left"
-            style="width:30px;"
-            ng-options="definitionStatus.id as definitionStatus.name for definitionStatus in definitionStatuses">
-    </select>
--->
+
         <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
                 ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
@@ -181,29 +165,42 @@
   <!-- Toggle-able collapsed concept elements -->
   <div ng-show="!isCollapsed" class="editHeightSelector darken-3 grey ">
 
-    <div ng-show="concept.definitionOfChanges" class="darken-3 grey">
+    <div ng-show="concept.definitionOfChanges" class="">
+
       <div class="row">
-        <div class="col-md-12">
-          CRS Change Notes:
-        </div>
-
-      </div>
-      <div class="row" ng-repeat="(key, value) in concept.definitionOfChanges">
         <div class="col-md-1"></div>
-        <div class="col-md-3">
-          {{toCapitalizedWords(key)}}
-        </div>
-        <div class="col-md-8">
-          {{value}}
-
-        </div>
-
+        <div class="col-md-11">Change Request: {{concept.definitionOfChanges.changeType}}</div>
       </div>
+      <div class="row">
+        <div class="col-md-1">
+          <!--   <i class="glyphicon pull-right" ng-class="[{'glyphicon-chevron-right' : concept.hideCrsDetails}, {'glyphicon-chevron-down' : !concept.hideCrsDetails}]"
+                ng-click="concept.hideCrsDetails = !concept.hideCrsDetails"></i>&nbsp;CRS:{{concept.definitionOfChanges.changeType}}
+
+        -->   </div>
+        <div class="col-md-11">
+
+          <div class="row"
+               ng-repeat="(key, val) in crsFilter(concept.definitionOfChanges)"
+               ng-show="!concept.hideCrsDetails">
+            <div class="col-md-3">
+              {{key}}
+            </div>
+            <div class="col-md-9">
+              {{val}}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
     </div>
 
 
+
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in getDescriptions()" ng-class="getComponentStyle(description.descriptionId, null, '')"
+    <div ng-repeat="description in getDescriptions()"
+         ng-class="getComponentStyle(description.descriptionId, null, '', description)"
          class="">
 
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
@@ -345,30 +342,44 @@
         </div>
       </div>
 
-      <div ng-show="description.definitionOfChanges" class="darken-3 grey">
-        <div ng-repeat="(key, value) in description.definitionOfChanges">
-          <div class="row" ng-show="value !== null && value !== undefined">
-            <div class="col-md-1"></div>
-            <div class="col-md-3">
-              {{toCapitalizedWords(key)}}
-            </div>
-            <div class="col-md-8">
-              {{value}}
+      <div ng-show="description.definitionOfChanges" class="">
 
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-11">Change Request: {{description.definitionOfChanges.changeType}}</div>
+        </div>
+        <div class="row"></div>
+        <div class="col-md-1">
+          <!--   <i class="glyphicon pull-right" ng-class="[{'glyphicon-chevron-right' : description.hideCrsDetails}, {'glyphicon-chevron-down' : !description.hideCrsDetails}]"
+                ng-click="description.hideCrsDetails = !description.hideCrsDetails"></i>&nbsp;CRS:{{description.definitionOfChanges.changeType}}
+
+        -->   </div>
+        <div class="col-md-11">
+
+          <div class="row"
+               ng-repeat="(key, val) in crsFilter(description.definitionOfChanges)"
+               ng-show="!description.hideCrsDetails">
+            <div class="col-md-3">
+              {{key}}
+            </div>
+            <div class="col-md-9">
+              {{val}}
             </div>
 
           </div>
         </div>
-      </div>
 
+
+      </div>
     </div>
+
 
     <!-- rows: Relationships -->
     <div ng-repeat="(groupId, relationshipGroup) in relationshipGroups">
       <div ng-if="showRelationshipGroup(relationshipGroup)">
         <div class="role_group_divider_top_{{groupId}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
-             ng-class="getComponentStyle(relationship.relationshipId, null, '')"
+             ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
              class="{{relationship.target.definitionStatus}}">
 
 
@@ -540,20 +551,34 @@
             </div>
           </div>
 
-          <div ng-show="relationship.definitionOfChanges" class="darken-3 grey">
-            <div ng-repeat="(key, value) in relationship.definitionOfChanges">
-              <div class="row" ng-show="value !== null && value !== undefined">
-                <div class="col-md-1"></div>
-                <div class="col-md-3">
-                  {{toCapitalizedWords(key)}}
-                </div>
-                <div class="col-md-8">
-                  {{value}}
+          <div ng-show="relationship.definitionOfChanges" class="">
 
+            <div class="row">
+              <div class="col-md-1"></div>
+              <div class="col-md-11">Change Request: {{relationship.definitionOfChanges.changeType}}</div>
+            </div>
+            <div class="row"></div>
+            <div class="col-md-1">
+              <!--   <i class="glyphicon pull-right" ng-class="[{'glyphicon-chevron-right' : relationship.hideCrsDetails}, {'glyphicon-chevron-down' : !relationship.hideCrsDetails}]"
+                    ng-click="relationship.hideCrsDetails = !relationship.hideCrsDetails"></i>&nbsp;CRS:{{relationship.definitionOfChanges.changeType}}
+
+            -->   </div>
+            <div class="col-md-11">
+
+              <div class="row"
+                   ng-repeat="(key, val) in crsFilter(relationship.definitionOfChanges)"
+                   ng-show="!relationship.hideCrsDetails">
+                <div class="col-md-3">
+                  {{key}}
+                </div>
+                <div class="col-md-9">
+                  {{val}}
                 </div>
 
               </div>
             </div>
+
+
           </div>
         </div>
         <div class="role_group_divider_bottom_{{groupId}}"></div>

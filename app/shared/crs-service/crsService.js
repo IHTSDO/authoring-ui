@@ -850,6 +850,93 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      //
+      // Helper retrieval functions
+      //
+
+      function getRelationshipForId(concept, id) {
+        if (!id) {
+          return null;
+        }
+        for (var i = 0; i < concept.relationships.length; i++) {
+          if (concept.relationships[i].relationshipId === id) {
+            return concept.relationships[i];
+          }
+        }
+        return null;
+      }
+
+      function getDescriptionForId(concept, id) {
+        if (!id) {
+          return null;
+        }
+        for (var i = 0; i < concept.descriptions.length; i++) {
+          if (concept.descriptions[i].descriptionId === id) {
+            return concept.descriptions[i];
+          }
+        }
+        return null;
+      }
+
+      function updateConceptFromCrsRequest(concept, crsConcept) {
+
+        // apply the definition of changes to the concept itself
+        concept.definitionOfChanges = crsConcept.definitionOfChanges;
+
+        // apply definition of changes to descriptions
+        angular.forEach(crsConcept.descriptions, function (crsDescription) {
+          var desc = getDescriptionForId(concept, crsDescription.descriptionId);
+
+          // if new (no id), add to the concept
+          if (desc === null) {
+            concept.descriptions.push(angular.copy(crsDescription));
+          }
+
+          // otherwise, append the definition of changes to the retrieved concept
+          else {
+            desc.definitionOfChanges = crsDescription.definitionOfChanges;
+          }
+
+        });
+
+        // apply definition of changes to relationships
+        angular.forEach(crsConcept.relationships, function (crsRelationship) {
+          var desc = getRelationshipForId(concept, crsRelationship.relationshipId);
+
+          // if new (no id), add to the concept
+          if (desc === null) {
+            concept.relationships.push(angular.copy(crsRelationship));
+          }
+
+          // otherwise, append the definition of changes to the retrieved concept
+          else {
+            desc.definitionOfChanges = crsRelationship.definitionOfChanges;
+          }
+        });
+      }
+
+      //
+      // Retrieve the full concept representation of a CRS concept from branch
+      //
+      function prepareCrsConcept(crsRequest) {
+        var deferred = $q.defer();
+
+        // if no concept id specified, new concept, simply return json itself
+        if (!crsRequest.conceptId) {
+          deferred.resolve(angular.copy(crsRequest));
+        } else {
+          // otherwise, get the concept as it exists on this branch
+          snowowlService.getFullConcept(crsRequest.conceptId, currentTask.branchPath).then(function (concept) {
+
+            // apply the CRS request to the latest version of the concept
+            updateConceptFromCrsRequest(concept, crsRequest);
+            deferred.resolve(concept);
+          }, function (error) {
+            deferred.reject('Failed to retrieve concept ' + crsRequest.conceptId);
+          })
+        }
+        return deferred.promise;
+      }
 
       //
       // Create a new CRS Concept Container from a JSON object url
@@ -858,33 +945,32 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
 
-        console.debug('getting new crs concept', url);
-
         getJsonAttachment(url).then(function (conceptJson) {
 
-          // create a crsGuid for this concept
-          // Motivation: new concepts do not have an SCTID, and there may be multiple
-          var crsGuid = snowowlService.createGuid();
+          prepareCrsConcept(conceptJson).then(function (preparedConcept) {
 
-          deferred.resolve({
-            // the id fields
-            conceptId: conceptJson.conceptId ? conceptJson.conceptId : snowowlService.createGuid(),
-            fsn: conceptJson.fsn,
-            preferredSynonym: conceptJson.preferredSynonym,
+            deferred.resolve({
+              // the id fields
+              conceptId: conceptJson.conceptId ? conceptJson.conceptId : snowowlService.createGuid(),
+              fsn: conceptJson.fsn,
+              preferredSynonym: conceptJson.preferredSynonym,
 
-            // the request url
-            requestUrl: getRequestUrl(issueId),
+              // the request url
+              requestUrl: getRequestUrl(issueId),
 
-            // the concept, with definition changes
-            concept: angular.copy(conceptJson),
+              // the freshly retrieved concept with definition changes appended
+              concept: preparedConcept,
 
-            // the original JSON
-            conceptJson: conceptJson,
+              // the original JSON
+              conceptJson: conceptJson,
 
-            // flags
-            saved: false
+              // flags
+              saved: false
 
-          });
+            });
+          }, function (error) {
+            deferred.reject(error);
+          })
         }, function (error) {
           console.debug('Failed to construct CRS concept container from url: ' + url);
           deferred.reject(error);
@@ -923,14 +1009,16 @@ angular.module('singleConceptAuthoringApp')
           // TODO Handle multiple attachments per link
           // expect only one url per issue link
           if (urls && urls[0]) {
-            console.debug('adding attachment for', urls[0]);
             getNewCrsConcept(issueId, urls[0]).then(function (crsConcept) {
               currentTaskConcepts.push(crsConcept);
 
-              // TODO Again, support multiple attachments
-              // TODO Figure out why $q.all wasn't working with promise array
-              console.debug('Length check', currentTaskConcepts.length, Object.keys(currentTask.issueLinkAttachments).length)
+
               if (currentTaskConcepts.length === Object.keys(currentTask.issueLinkAttachments).length) {
+
+                // save the initialized state into the UI State
+                saveCrsConceptsUiState();
+
+                // resolve
                 deferred.resolve(currentTaskConcepts);
               }
             });
@@ -958,7 +1046,7 @@ angular.module('singleConceptAuthoringApp')
         } else {
 
           // TODO Remove later -- Time delay for DEV to prevent header-access errors
-          console.debug('IS DEV', $rootScope.development);
+          //console.debug('IS DEV', $rootScope.development);
           var timeDelay = $rootScope.development === null || $rootScope.development === undefined ? 2000 : 0;
           $timeout(function () {
 
@@ -993,10 +1081,10 @@ angular.module('singleConceptAuthoringApp')
           return false;
         }
 
-        console.debug('  checking crs concept for ', id, currentTaskConcepts);
+      //  console.debug('  checking crs concept for ', id, currentTaskConcepts);
         for (var i = 0; i < currentTaskConcepts.length; i++) {
           if (currentTaskConcepts[i].conceptId === id) {
-            console.debug('    -> is crs concept');
+     //       console.debug('    -> is crs concept');
             return true;
           }
         }
@@ -1036,6 +1124,18 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      var hiddenCrsKeys = ['changeId', 'changeType', 'changed', 'topic', 'summary', 'notes', 'reference', 'reasonForChange', 'namespace', 'currentFsn'];
+
+      function crsFilter(definitionOfChanges) {
+        var result = {};
+        angular.forEach(definitionOfChanges, function (v, k) {
+          if (hiddenCrsKeys.indexOf(k) === -1) {
+            result[k] = v;
+          }
+        });
+        return result;
+      }
+
 //
 // Function exposure
 //
@@ -1044,7 +1144,9 @@ angular.module('singleConceptAuthoringApp')
         isCrsConcept: isCrsConcept,
         getCrsConcept: getCrsConcept,
         getCrsConcepts: getCrsConcepts,
-        saveCrsConcept: saveCrsConcept
+        saveCrsConcept: saveCrsConcept,
+
+        crsFilter: crsFilter
 
       };
     }

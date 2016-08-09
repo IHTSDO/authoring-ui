@@ -2634,8 +2634,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         var nStyles = 0;
 
-        scope.getComponentStyle = function (id, field, defaultStyle) {
+        scope.getCrsStyle = function(component) {
+          if (component.definitionOfChanges) {
+            return 'tealhl'
+          }
+        };
 
+        scope.getComponentStyle = function (id, field, defaultStyle, component) {
 
           // if no styless supplied, use defaults
           if (!scope.componentStyles) {
@@ -2647,12 +2652,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // key is SCTID or SCTID-field pair e.g. 1234567 or 1234567-term
             var key = id + (field ? '-' + field : '');
-
-            if (nStyles === 0) {
-            }
-
-            if (nStyles++ < 10) {
-            }
 
             if (scope.componentStyles.hasOwnProperty(key)) {
               return scope.componentStyles[key].style;
@@ -2700,16 +2699,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         });
 
+        //
+        // CRS Key Filtering and Display
+        //
 
-        function capitalize(word) {
-          return word.charAt(0).toUpperCase() + word.substring(1);
-        }
-
-        scope.toCapitalizedWords = function (name) {
-          var words = name.match(/[A-Za-z][a-z]*/g);
-
-          return words.map(capitalize).join(" ");
-        }
+        scope.crsFilter = crsService.crsFilter;
 
       }
     };
