@@ -1519,6 +1519,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
 
           });
+        }, function(error) {
+          console.error('Unexpected error checking CRS status');
         })
 
 
