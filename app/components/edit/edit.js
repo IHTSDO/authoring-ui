@@ -1376,7 +1376,11 @@ angular.module('singleConceptAuthoringApp.edit', [
           console.debug('retrieved task', response);
 
           console.debug('Linked issues');
-          console.debug(response.issueLinks);
+          if(angular.isUndefined(response.linkedIssues))
+          {
+             response.linkedIssues = [];
+          }
+          
           $scope.task = response;
           $rootScope.currentTask = response;
 
