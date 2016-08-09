@@ -39,9 +39,7 @@
         <label for="layoutGrid">Page Layout</label>
        
         <div id="layoutGrid" class="row no-gutter no-padding">
-         <div ng-if="thisView === 'edit-no-model'">
-         no model
-         </div>
+     
           <div ng-repeat="col1 in layout.children" class="sca-layout-elem" ng-class="getLayoutWidths(col1.name)">
            
 
