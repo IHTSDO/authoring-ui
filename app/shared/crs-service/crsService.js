@@ -953,7 +953,7 @@ angular.module('singleConceptAuthoringApp')
         currentTaskConcepts = null;
 
         // PREREQUISITE: Task must have CRS label
-        if (task.labels.indexOf('CRS') === -1) {
+        if (!task.labels || task.labels.indexOf('CRS') === -1) {
           deferred.resolve('Not a CRS task');
         } else {
 
