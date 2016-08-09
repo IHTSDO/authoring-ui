@@ -143,7 +143,7 @@
       </div>
       <h3> Success! <span
         ng-if="rebaseWithMerges">Resolved merges applied</span></h3>
-      <h3>Switching to edit view in five seconds...</h3>
+      <h3>Switching to {{taskKey ? 'task' : 'project'}} view in five seconds...</h3>
     </div>
 
     <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
