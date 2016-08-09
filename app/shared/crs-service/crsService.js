@@ -819,7 +819,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
 
         // TODO For testing only -- local host can't access dev jira
-        if ($rootScope.development) {
+        if (false && $rootScope.development) {
 
           console.debug('*** Using development JSON concept object');
           if (devConceptIndex === devConcepts.length) {
