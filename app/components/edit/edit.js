@@ -1380,7 +1380,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           {
              response.linkedIssues = [];
           }
-          
+
           $scope.task = response;
           $rootScope.currentTask = response;
 
