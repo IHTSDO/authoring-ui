@@ -1167,8 +1167,8 @@ angular.module('singleConceptAuthoringApp')
 
         getTaskAttachments: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/attachments', {}).then(function (response) {
-            deferred.resolve(response);
+          $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/attachments').then(function (response) {
+            deferred.resolve(response.data);
           }, function (error) {
             console.log(error);
             deferred.reject('Could not retrieve attachments')
