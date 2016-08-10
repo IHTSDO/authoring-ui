@@ -177,18 +177,24 @@ angular.module('singleConceptAuthoringApp')
           // Helper functions
           /////////////////////////////////////////////////////
 
+          var exitTimer = null;
           function exitConflictsView() {
             if ($routeParams.taskKey) {
-              $timeout(function () {
+              exitTimer = $timeout(function () {
                 $location.path('/tasks/task/' + $routeParams.projectKey + '/' + $routeParams.taskKey + '/edit');
               }, 5000)
             }
             else {
-              $timeout(function() {
+              exitTimer = $timeout(function() {
                 $location.path('/project/' + $routeParams.projectKey);
               }, 5000);
             }
           }
+          scope.$on('routeChangeStart', function(event, data) {
+            if(exitTimer) {
+              $timeout.cancel(exitTimer);
+            }
+          });
 
           /**
            * Saves a concept to the update merge endpoint, params are passed
