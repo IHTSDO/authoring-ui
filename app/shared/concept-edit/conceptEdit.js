@@ -2705,6 +2705,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.crsFilter = crsService.crsFilter;
 
+
+        //
+        // camelCaseText -> Camel Case Text conversion
+        //
+        function capitalize(word) {
+          return word.charAt(0).toUpperCase() + word.substring(1);
+        }
+        scope.toCapitalizedWords = function(name) {
+          var words = name.match(/[A-Za-z][a-z]*/g);
+
+          return words.map(capitalize).join(" ");
+        }
+
       }
     };
 

@@ -815,15 +815,26 @@ angular.module('singleConceptAuthoringApp')
       var attachments = null;
 
       function getJsonAttachmentsForTask() {
-
+        var deferred = $q.defer();
+        if (attachments) {
+          return attachments;
+        } else {
+          scaService.getTaskAttachments(currentTask.projectKey, currentTask.key).then(function (response) {
+            attachments = response;
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error);
+          })
+        }
+        return deferred.promise;
       }
 
       //
       // Retrieves the JSON attachment given a url
       //
-      function getJsonAttachmentForConceptId(url) {
+      function getJsonAttachment(issueId) {
         var deferred = $q.defer();
-
+        deferred.resolve({});
 
         /*
          // TODO For testing only -- local host can't access dev jira
@@ -955,7 +966,7 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
 
-        getJsonAttachment(url).then(function (conceptJson) {
+        getJsonAttachment(issueId).then(function (conceptJson) {
 
           prepareCrsConcept(conceptJson).then(function (preparedConcept) {
 
@@ -1008,32 +1019,40 @@ angular.module('singleConceptAuthoringApp')
       function initializeCrsTask() {
         var deferred = $q.defer();
 
+
         console.debug('initializing from task', currentTask);
 
-        currentTaskConcepts = [];
-        // cycle over each linked CRS issue
-        for (var issueId in currentTask.issueLinkAttachments) {
+        // retrieve attachments (if any)
+        getJsonAttachmentsForTask().then(function () {
 
-          var urls = currentTask.issueLinkAttachments[issueId];
+          console.debug('retrieved attachments', attachments);
 
-          // TODO Handle multiple attachments per link
-          // expect only one url per issue link
-          if (urls && urls[0]) {
-            getNewCrsConcept(issueId, urls[0]).then(function (crsConcept) {
-              currentTaskConcepts.push(crsConcept);
+          currentTaskConcepts = [];
+          // cycle over each linked CRS issue
+          for (var issueId in currentTask.issueLinkAttachments) {
+
+            var urls = currentTask.issueLinkAttachments[issueId];
+
+            // TODO Handle multiple attachments per link
+            // expect only one url per issue link
+            if (urls && urls[0]) {
+              getNewCrsConcept(issueId, urls[0]).then(function (crsConcept) {
+                console.debug('New CRS Concept Container', crsConcept);
+                currentTaskConcepts.push(crsConcept);
 
 
-              if (currentTaskConcepts.length === Object.keys(currentTask.issueLinkAttachments).length) {
+                if (currentTaskConcepts.length === Object.keys(currentTask.issueLinkAttachments).length) {
 
-                // save the initialized state into the UI State
-                saveCrsConceptsUiState();
+                  // save the initialized state into the UI State
+                  //saveCrsConceptsUiState();
 
-                // resolve
-                deferred.resolve(currentTaskConcepts);
-              }
-            });
+                  // resolve
+                  deferred.resolve(currentTaskConcepts);
+                }
+              });
+            }
           }
-        }
+        });
         return deferred.promise;
       }
 
