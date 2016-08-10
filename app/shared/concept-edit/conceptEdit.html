@@ -168,26 +168,22 @@
     <div ng-show="concept.definitionOfChanges" class="">
 
       <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-11">Change Request: {{concept.definitionOfChanges.changeType}}</div>
+   <style>
+
+   </style>
+        <div class="change_request_container {{concept.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{concept.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{concept.definitionOfChanges.changeType}}"></span></div>
       </div>
       <div class="row">
-        <div class="col-md-1">
-          <!--   <i class="glyphicon pull-right" ng-class="[{'glyphicon-chevron-right' : concept.hideCrsDetails}, {'glyphicon-chevron-down' : !concept.hideCrsDetails}]"
-                ng-click="concept.hideCrsDetails = !concept.hideCrsDetails"></i>&nbsp;CRS:{{concept.definitionOfChanges.changeType}}
-
-        -->   </div>
+       
         <div class="col-md-11">
 
           <div class="row"
                ng-repeat="(key, val) in crsFilter(concept.definitionOfChanges)"
                ng-show="!concept.hideCrsDetails">
-            <div class="col-md-3">
-              {{key}}
+            <div class="col-md-12">
+              {{key}}:  {{val}}
             </div>
-            <div class="col-md-9">
-              {{val}}
-            </div>
+           
 
           </div>
         </div>
@@ -345,25 +341,17 @@
       <div ng-show="description.definitionOfChanges" class="">
 
         <div class="row">
-          <div class="col-md-1"></div>
-          <div class="col-md-11">Change Request: {{description.definitionOfChanges.changeType}}</div>
+        <div class="change_request_container {{description.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{description.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{description.definitionOfChanges.changeType}}"></span></div>
         </div>
         <div class="row"></div>
-        <div class="col-md-1">
-          <!--   <i class="glyphicon pull-right" ng-class="[{'glyphicon-chevron-right' : description.hideCrsDetails}, {'glyphicon-chevron-down' : !description.hideCrsDetails}]"
-                ng-click="description.hideCrsDetails = !description.hideCrsDetails"></i>&nbsp;CRS:{{description.definitionOfChanges.changeType}}
-
-        -->   </div>
-        <div class="col-md-11">
+     
+        <div class="col-md-12">
 
           <div class="row"
                ng-repeat="(key, val) in crsFilter(description.definitionOfChanges)"
                ng-show="!description.hideCrsDetails">
-            <div class="col-md-3">
-              {{key}}
-            </div>
-            <div class="col-md-9">
-              {{val}}
+            <div class="col-md-12">
+              {{key}}:  {{val}}
             </div>
 
           </div>
@@ -554,29 +542,21 @@
           <div ng-show="relationship.definitionOfChanges" class="">
 
             <div class="row">
-              <div class="col-md-1"></div>
-              <div class="col-md-11">Change Request: {{relationship.definitionOfChanges.changeType}}</div>
+             <div class="change_request_container {{relationship.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{relationship.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{relationship.definitionOfChanges.changeType}}"></span></div>
             </div>
-            <div class="row"></div>
-            <div class="col-md-1">
-              <!--   <i class="glyphicon pull-right" ng-class="[{'glyphicon-chevron-right' : relationship.hideCrsDetails}, {'glyphicon-chevron-down' : !relationship.hideCrsDetails}]"
-                    ng-click="relationship.hideCrsDetails = !relationship.hideCrsDetails"></i>&nbsp;CRS:{{relationship.definitionOfChanges.changeType}}
-
-            -->   </div>
-            <div class="col-md-11">
+          
+          
+           
 
               <div class="row"
                    ng-repeat="(key, val) in crsFilter(relationship.definitionOfChanges)"
                    ng-show="!relationship.hideCrsDetails">
-                <div class="col-md-3">
-                  {{key}}
-                </div>
-                <div class="col-md-9">
-                  {{val}}
-                </div>
+                 <div class="col-md-12">
+{{key}}:{{val}}
+            </div>
 
               </div>
-            </div>
+          
 
 
           </div>

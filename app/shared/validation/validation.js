@@ -559,7 +559,13 @@ angular.module('singleConceptAuthoringApp')
               });
 
 
-            });
+            }, function (error) {
+                notificationService.sendMessage('Initializing validation failures...');
+              initFailures().then(function () {
+                notificationService.sendMessage('Initialization complete', 3000);
+                scope.initializing = false;
+              });
+        });
 
 
           }, true); // make sure to check object inequality, not reference!

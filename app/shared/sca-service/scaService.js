@@ -1008,7 +1008,7 @@ angular.module('singleConceptAuthoringApp')
                      task: "WRPAS-98" (omitted for project)
                      */
                     case 'Classification':
-                      msg = newNotification.event + 'for ' + (newNotification.task ? 'task ' + newNotification.task : 'project ' + newNotification.project);
+                      msg = newNotification.event + ' for ' + (newNotification.task ? 'task ' + newNotification.task : 'project ' + newNotification.project);
 
 
                       // retrieve the latest classification
@@ -1041,6 +1041,7 @@ angular.module('singleConceptAuthoringApp')
                         });
 
                         $rootScope.$broadcast('reloadTask');
+                        $rootScope.$broadcast('reloadClassification'); 
                       } else if (newNotification.project) {
                         snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
                           console.debug('Retrieved classifications from notification', classifications);
