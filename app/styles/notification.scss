@@ -159,3 +159,81 @@
 .text-center, .text-center p {text-align:center; margin-bottom:0px; }
 .alert.alert-danger .alert-text {font-size:13px; font-weight:400; margin-top:10px;}
 .alert-danger .md-warning{background-color:transparent!important; font-size:32px;}
+
+/* CRS Translations */
+.fa.CHANGE_RETIRE_CONCEPT:before,
+.fa.CHANGE_RETIRE_DESCRIPTION:before,
+.fa.CHANGE_RETIRE_RELATIONSHIP:before,
+.fa.RETIRE_CONCEPT:before,
+.fa.RETIRE_DESCRIPTION:before,
+.fa.RETIRE_RELATIONSHIP:before,
+.fa.CHANGE_DESCRIPTION:before,
+.fa.CHANGE_RELATIONSHIP{
+    content: "\f040";
+color:#009cd7;
+} 
+
+.fa.CHANGE_NEW_DESCRIPTION:before,
+.fa.CHANGE_NEW_RELATIONSHIP:before,
+.fa.CHANGE_NEW_CONCEPT:before,
+.fa.NEW_DESCRIPTION:before,
+.fa.NEW_RELATIONSHIP:before,
+.fa.NEW_CONCEPT:before {
+content: "\f055";
+color:#009cd7;
+}
+
+.change_type_NEW_CONCEPT:before {
+content:"Requested Change(s): Add new Concept";
+}
+
+.change_type_NEW_DESCRIPTION:before {
+content:"Requested Change(s): Add new Description";
+}
+
+.change_type_NEW_RELATIONSHIP:before, .change_type_CHANGE_RELATIONSHIP:before {
+content:"Requested Change(s): Add new Relationship";
+}
+.change_type_RETIRE_CONCEPT:before {
+content:"Requested Change(s):Retire this Concept";
+}
+.change_type_CHANGE_RETIRE_CONCEPT:before {
+content:"Requested Change(s):Change or retire this Concept";
+}
+
+.change_type_RETIRE_DESCRIPTION:before, .change_type_CHANGE_DESCRIPTION:before {
+content:"Requested Change(s): Change or retire this Description";
+}
+
+.change_type_RETIRE_RELATIONSHIP:before, .change_type_CHANGE_RELATIONSHIP:before  {
+content:"Requested Change(s): Change or retire this Relationship";
+}
+
+.change_type_OTHER:before {
+content:"Other Request:";
+}
+
+.change_request_container {
+background:rgba(0,0,0,0.3);
+border-top-left-radius:4px;
+border-top-right-radius:4px;
+border-bottom-right-radius:4px;
+border-bottom-left-radius:0;
+width:98%;
+margin-left:1%;
+margin-right:1%;
+margin-top:3px;
+}
+
+.change_request_container:after {
+content:'';
+position:absolute;
+left:5%;
+margin-left:-21px;
+margin-top:23px;
+width:0;
+height:0;
+border-top:8px solid rgba(0,0,0,0.3);
+border-right:8px solid transparent;
+border-left:0 solid transparent;
+}
