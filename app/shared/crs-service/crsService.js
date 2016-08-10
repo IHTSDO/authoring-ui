@@ -812,28 +812,38 @@ angular.module('singleConceptAuthoringApp')
 
       var devConceptIndex = 0;
 
+      var attachments = null;
+
+      function getJsonAttachmentsForTask() {
+
+      }
+
       //
       // Retrieves the JSON attachment given a url
       //
-      function getJsonAttachment(url) {
+      function getJsonAttachmentForConceptId(url) {
         var deferred = $q.defer();
 
-        // TODO For testing only -- local host can't access dev jira
-        if (false && $rootScope.development) {
 
-          console.debug('*** Using development JSON concept object');
-          if (devConceptIndex === devConcepts.length) {
-            devConceptIndex = 0;
-          }
-          deferred.resolve(devConcepts[devConceptIndex++]);
-        } else {
+        /*
+         // TODO For testing only -- local host can't access dev jira
+         if (false && $rootScope.development) {
 
-          $http.get(url).then(function (response) {
-            deferred.resolve(response.data);
-          }, function (error) {
-            deferred.reject(error.message);
-          });
-        }
+         console.debug('*** Using development JSON concept object');
+         if (devConceptIndex === devConcepts.length) {
+         devConceptIndex = 0;
+         }
+         deferred.resolve(devConcepts[devConceptIndex++]);
+         } else {*/
+        /*
+
+         $http.get(url).then(function (response) {
+         deferred.resolve(response.data);
+         }, function (error) {
+         deferred.reject(error.message);
+         });
+         */
+
         return deferred.promise;
       }
 
@@ -1081,10 +1091,10 @@ angular.module('singleConceptAuthoringApp')
           return false;
         }
 
-      //  console.debug('  checking crs concept for ', id, currentTaskConcepts);
+        //  console.debug('  checking crs concept for ', id, currentTaskConcepts);
         for (var i = 0; i < currentTaskConcepts.length; i++) {
           if (currentTaskConcepts[i].conceptId === id) {
-     //       console.debug('    -> is crs concept');
+            //       console.debug('    -> is crs concept');
             return true;
           }
         }
