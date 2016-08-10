@@ -498,8 +498,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       } else if ($routeParams.mode === 'feedback') {
         snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
+          console.debug('Retrieved traceability (edit)', traceability);
           var review = {};
 
+          review.traceability = traceability;
           review.concepts = [];
           review.conceptsClassified = [];
           var idList = [];
