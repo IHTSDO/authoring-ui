@@ -77,32 +77,37 @@ angular.module('singleConceptAuthoringApp')
 
           function parseAssocs(list) {
             var deferred = $q.defer();
+            var conceptList = [];
             for (var i = list.length -1; i >= 0; i--) {
-              for (var j = 0; j < scope.associationTargets.length; j++) {
-                if (list[i].referenceSetId === scope.associationTargets[j].conceptId) {
-                    console.log(scope.histAssocTargets);
-                    if(scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0){
-                        angular.forEach(scope.histAssocTargets.concepts, function (concept){
-                            var item = angular.copy(list[i]);
-                            item.refsetName = scope.associationTargets[j].text;
-                            item.refsetSaveable = scope.associationTargets[j].id;
-                            item.newTargetId = concept.conceptId;
-                            item.newTargetFsn = concept.fsn;
-                            list.push(item);
-                        });
-                    }
-                    else{
-                        var item = angular.copy(list[i])
-                        list[i].refsetName = scope.associationTargets[j].text;
-                        list[i].refsetSaveable = scope.associationTargets[j].id;
-                        list.push(item);
-                    }
-                }
-              }
-              list.splice(i, 1);
+              snowowlService.getFullConcept(list[i].referencedComponent.id, scope.branch).then(function (concept) {
+                    for (var j = 0; j < scope.associationTargets.length; j++) {
+                        if (Object.keys(concept.associationTargets).indexOf(scope.associationTargets[j].id) !== -1) {
+                            if(scope.histAssocTargets && scope.histAssocTargets.concepts.length > 0){
+                                angular.forEach(scope.histAssocTargets.concepts, function (innerConcept){
+                                    var item = concept;
+                                    item.refsetName = innerConcept.assocName;
+                                    item.inactivationIndicator = scope.reasonId;
+                                    item.newTargetId = innerConcept.conceptId;
+                                    item.newTargetFsn = innerConcept.fsn;
+                                    conceptList.push(item);
+                                });
+                            }
+                            else{
+                                var item = concept;
+                                item.inactivationIndicator = scope.reasonId;
+                                item.refsetName = scope.associationTargets[j].id;
+                                conceptList.push(item);
+                            }
+                        }
+                  }
+                  if(conceptList.length === list.length)
+                  {
+                      console.log(conceptList);
+                      deferred.resolve(conceptList);   
+                  }
+                  
+                });
             }
-            
-            deferred.resolve(list);
             return deferred.promise;
           }
 
@@ -377,6 +382,9 @@ angular.module('singleConceptAuthoringApp')
                 var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
                   return [value];
                 });
+                angular.forEach(scope.affectedAssocs, function(item){
+                    conceptArray.push(item);
+                });
                 angular.forEach(conceptArray, function (concept) {
                   if(concept && concept.relationships){
                       angular.forEach(concept.relationships, function (rel) {
@@ -514,6 +522,7 @@ angular.module('singleConceptAuthoringApp')
 
               if(response.items && response.items.length > 0){
                   parseAssocs(scope.affectedAssocs).then(function (list) {
+                      console.log(list);
                     scope.affectedAssocs = list;
                     deferred.resolve();
                   });

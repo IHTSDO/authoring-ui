@@ -188,18 +188,18 @@
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
 
-            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.referencedComponent.fsn.term}}
+            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.fsn}}
             </td>
             <td data-title="'Reason'" sortable="''">
 
-              <select ng-model="rel.referencedComponent.inactivationIndicator" class="form-control"
+              <select ng-model="rel.inactivationIndicator" class="form-control"
                       ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
 
             </td>
             <td data-title="'Association'" sortable="'refsetName'">
 
               <select ng-model="rel.refsetName" class="form-control" 
-                      ng-options="target.text as target.text for target in getAssociationsForReason(rel.referencedComponent.inactivationIndicator)" ng-change="updateRefTarget(rel)"></select>
+                      ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)" ng-change="updateRefTarget(rel)"></select>
             </td>
             <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
@@ -217,7 +217,7 @@
             <td>
               <button type="button"
                       class="btn btn-round btn-default blue"
-                      ng-click="viewAssociationConcept(rel.referencedComponent.id)"
+                      ng-click="viewAssociationConcept(rel.conceptId)"
                       title="View/Edit Concept">
                 <div class="md md-edit"></div>
               </button>
