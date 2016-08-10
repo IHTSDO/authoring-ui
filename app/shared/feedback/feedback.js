@@ -479,7 +479,7 @@ angular.module('singleConceptAuthoringApp')
           scope.styles = {};
 
           function addConceptStyles(concept) {
-            var styledElements = {};
+        /*    var styledElements = {};
             angular.forEach(concept.descriptions, function (description) {
               if (!description.effectiveTime) {
                 styledElements[description.descriptionId] = {message: null, style: 'tealhl'};
@@ -491,12 +491,55 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             scope.styles[concept.conceptId] = styledElements;
-
+*/
           }
 
+
           function highlightComponent(conceptId, componentId) {
-           // TODO Revisit traceability and styling in general
-            // scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
+            console.debug('highlighting ', conceptId, componentId);
+            if (!scope.styles) {
+              scope.styles = {};
+            }
+            if (!scope.styles[conceptId]) {
+              scope.styles[conceptId] = {};
+            }
+            scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
+            console.debug('new styles ', scope.styles);
+          }
+
+          function highlightFromTraceability(traceability) {
+
+            console.debug('highlighting from traceability', traceability);
+
+
+            angular.forEach(traceability.content, function (change) {
+              if (change.activityType === 'CONTENT_CHANGE') {
+
+                console.debug('content change', change);
+
+                angular.forEach(change.conceptChanges, function (concept) {
+
+                  // cycle over component changes and apply highlighting
+                  angular.forEach(concept.componentChanges, function (componentChange) {
+
+                    console.debug('component change', componentChange);
+
+                    switch (componentChange.componentType) {
+                      case 'DESCRIPTION':
+                        highlightComponent(concept.conceptId, componentChange.componentId);
+                        break;
+                      case 'STATED_RELATIONSHIP':
+                        highlightComponent(concept.conceptId, componentChange.componentId);
+                        break;
+                      default:
+                      // do nothing
+                    }
+                  });
+                })
+              }
+            });
+
+
           }
 
 
@@ -860,6 +903,9 @@ angular.module('singleConceptAuthoringApp')
               var reviewedListIds = null;
               scaService.getUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list').then(function (response) {
                 reviewedListIds = response;
+
+                // apply highlighting from traceability
+                highlightFromTraceability(scope.  feedbackContainer.review.traceability);
 
                 // ensure response is in form of array for indexOf checking
                 // later
@@ -1226,27 +1272,17 @@ angular.module('singleConceptAuthoringApp')
                 var review = {};
                 if (traceability) {
                   console.log(traceability);
+                  review.traceability = traceability;
                   review.concepts = [];
                   review.conceptsClassified = [];
+
+                  highlightFromTraceability();
+
                   var idList = [];
                   angular.forEach(traceability.content, function (change) {
                     if (change.activityType === 'CONTENT_CHANGE') {
 
                       angular.forEach(change.conceptChanges, function (concept) {
-
-                        // cycle over component changes and apply highlighting
-                        angular.forEach(concept.componentChanges, function (componentChange) {
-                          switch (componentChange.componentType) {
-                            case 'DESCRIPTION':
-                              highlightComponent(concept.conceptId, componentChange.componentId);
-                              break;
-                            case 'STATED_RELATIONSHIP':
-                              highlightComponent(concept.conceptId, componentChange.componentId);
-                              break;
-                            default:
-                            // do nothing
-                          }
-                        });
 
 
                         if (review.concepts.filter(function (obj) {
