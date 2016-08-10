@@ -31,7 +31,7 @@ angular.module('singleConceptAuthoringApp')
 
         console.debug('saving modified concept id', projectKey, taskKey, conceptId);
 
-        getModifiedList(projectKey, taskKey).then(function(modifiedList) {
+        getModifiedList(projectKey, taskKey).then(function (modifiedList) {
           console.debug('existing modified list', modifiedList);
           var index = modifiedList.indexOf(conceptId);
 
@@ -44,7 +44,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject('Unexpected error updating the list of modified concepts for this task');
             })
           }
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
         });
         return deferred.promise;
@@ -53,7 +53,7 @@ angular.module('singleConceptAuthoringApp')
       function removeModifiedConceptId(projectKey, taskKey, conceptId) {
         var deferred = $q.defer();
 
-        getModifiedList(projectKey, taskKey).then(function(modifiedList) {
+        getModifiedList(projectKey, taskKey).then(function (modifiedList) {
           var index = modifiedList.indexOf(conceptId);
 
           // if not in list, update the list
@@ -65,7 +65,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject('Unexpected error updating the list of modified concepts for this task');
             })
           }
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
         });
         return deferred.promise;
@@ -1163,6 +1163,19 @@ angular.module('singleConceptAuthoringApp')
             });
           }, intervalInMs);
         },
+
+
+        getTaskAttachments: function (projectKey, taskKey) {
+          var deferred = $q.defer();
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/attachments', {}).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            console.log(error);
+            deferred.reject('Could not retrieve attachments')
+          });
+          return deferred.promise;
+        }
+
 
       };
 
