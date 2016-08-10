@@ -1081,6 +1081,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
         var review = {};
 
+        review.traceability = traceability;
         review.concepts = [];
         review.conceptsClassified = [];
         var idList = [];
