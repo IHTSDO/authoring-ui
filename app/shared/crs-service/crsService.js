@@ -133,10 +133,10 @@ angular.module('singleConceptAuthoringApp')
         prepareCrsConcept(attachment.content).then(function (preparedConcept) {
 
           deferred.resolve({
-            // the id fields
-            conceptId: conceptJson.conceptId ? conceptJson.conceptId : snowowlService.createGuid(),
-            fsn: conceptJson.fsn,
-            preferredSynonym: conceptJson.preferredSynonym,
+            // the id fields (for convenience)
+            conceptId: attachment.conceptId ? conceptJson.conceptId : snowowlService.createGuid(),
+            fsn: attachment.fsn,
+            preferredSynonym: attachment.preferredSynonym,
 
             // the request url
             requestUrl: getRequestUrl(attachment.issueKey),
@@ -197,7 +197,7 @@ angular.module('singleConceptAuthoringApp')
               if (currentTaskConcepts.length === Object.keys(currentTask.issueLinkAttachments).length) {
 
                 // save the initialized state into the UI State
-                //saveCrsConceptsUiState();
+                saveCrsConceptsUiState();
 
                 // resolve
                 deferred.resolve(currentTaskConcepts);
