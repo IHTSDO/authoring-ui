@@ -337,6 +337,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
 
             // store the concept id (may be blank or UUID/GUID)
+            // NOTE: Needed for CRS integration
             var originalConceptId = scope.concept.conceptId;
 
             // clean the concept for snowowl-ready save
@@ -349,7 +350,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             var saveFn = null;
 
-            if (scope.concept.fsn) {
+            if (!scope.concept.conceptId) {
               saveFn = snowowlService.createConcept;
             } else {
               saveFn = snowowlService.updateConcept;
