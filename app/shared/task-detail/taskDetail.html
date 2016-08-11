@@ -3,6 +3,7 @@
   <!-- Timeline formatter and concept ids.extension input -->
   <div class="row no-padding clearfix">
 
+
     <div class="col col-md-12">
 
       <ul class="timeline">
@@ -26,6 +27,17 @@
             <div class="timeline-heading">
               <label class="control-label">Task Details:</label>
               <h4 compile-html="task.description" class=" width-fix timeline-title task-detail"></h4>
+            </div>
+          </div>
+        </li>
+
+        <li ng-show="isCrsTask">
+          <div class="timeline-badge">
+            <i class="icon-circle theme-border"></i>
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <label class="control-label">CRS Task</label>
             </div>
           </div>
         </li>
@@ -60,6 +72,9 @@
     </div>
 
 
+  </div>
+  <div ng-show="isCrsTask">
+    <div class="row">CRS Task Detected</div>
   </div>
   <div class="task-details">
     <div style="width: 100%" class="classification-btn p-l-15 p-r-15">

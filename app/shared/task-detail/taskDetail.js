@@ -325,6 +325,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if ($scope.task.branchState === 'DIVERGED') {
             $rootScope.$broadcast('branchDiverged');
           }
+
+          console.debug('labels', $scope.task.labels, $scope.task.labels.indexOf('CRS'));
+          if ($scope.task.labels && $scope.task.labels.indexOf('CRS') !== -1) {
+            $scope.isCrsTask = true;
+          }
         });
       }
 
@@ -348,6 +353,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         if ($scope.task.status === 'Review Completed') {
           scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, {'status': 'IN_PROGRESS'}).then(function (response) {
             $scope.task = response;
+
           });
         }
       });
