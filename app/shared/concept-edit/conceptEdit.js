@@ -492,6 +492,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // clean concept of any locally added information
+          // store original concept id for CRS integration
+          var originalConceptId = scope.concept.conceptId;
           snowowlService.cleanConcept(scope.concept);
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
@@ -541,6 +543,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // component ids may change on return from term server
             else if (scope.validation && scope.validation.hasWarnings) {
 
+              if (originalConceptId) {
+                scope.concept.conceptId = originalConceptId;
+              }
+
               // save concept
               saveHelper().then(function () {
                 // recompute validation warnings
@@ -566,6 +572,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // otherwise, just save
             else {
+
+
+              if (originalConceptId) {
+                scope.concept.conceptId = originalConceptId;
+              }
+
               saveHelper(scope.concept).then(function () {
                 //scope.validateConcept();
                 notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
