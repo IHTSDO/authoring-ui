@@ -31,20 +31,21 @@
 
 
     </div>
-    <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs" style="text-align:center">
+    <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs">
 
       <a ng-href="{{item.requestUrl}}" target="_blank">
         <button
-          class="p-t-5 p-l-3 tooltips-left small-size-tooltip offset-tooltip-left  pull-left">
-          <div class="glyphicon glyphicon-modal-window"></div>
+          class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right">
+          <div class="fa fa-folder-open-o"></div>
           <span>View Content Request</span>
         </button>
       </a>
 
       <button ng-show="item.saved"
-              class="p-t-5 p-l-3 tooltips-left small-size-tooltip offset-tooltip-left  pull-left ">
-        <div class="glyphicon glyphicon-ok"></div>
+              class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right ">
+        <div class="fa fa-check"></div>
         <span>Concept Saved</span>
       </button>
     </div>
   </div>
+</div>
