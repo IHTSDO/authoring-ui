@@ -1124,6 +1124,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // persist the inactivation reason
                   snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
                     description.active = false;
+                    description.inactivationIndicator = results.reason.id;
+                    console.log(description.inactivationIndicator);
+                    console.log(description);
                     scope.saveConcept();
                   }, function (error) {
                     notificationService.sendError('Error inactivating description');

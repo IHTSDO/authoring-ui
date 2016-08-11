@@ -98,7 +98,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         var allowableDescriptionProperties = [
-          'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap'
+          'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap', 'inactivationIndicator'
         ];
 
         angular.forEach(concept.descriptions, function (description) {
