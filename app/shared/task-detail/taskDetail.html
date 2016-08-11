@@ -138,6 +138,7 @@
 
       </div>
 
+
       <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="unsavedConcepts === null">
         <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'" class="btn btn-default pink1 review"
                 style="text-transform: none" ng-click="submitForReview()">

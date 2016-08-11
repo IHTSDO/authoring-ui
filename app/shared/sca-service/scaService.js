@@ -441,9 +441,11 @@ angular.module('singleConceptAuthoringApp')
             url: apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/concept-' + conceptId,
           }).then(
             function (response) {
-              // if content has current flag of true', return null, indicates
-              // concept previously changed, then saved
-              return response.data.current === true ? null : response.data;
+              if (response.data.hasOwnProperty('current')) {
+                return response.data.current === true ? null : response.data;
+              } else {
+                return response.data;
+              }
             }, function (error) {
               // NOTE: if doesn't exist, 404s, return null
               return null;
