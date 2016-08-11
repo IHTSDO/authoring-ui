@@ -1041,7 +1041,7 @@ angular.module('singleConceptAuthoringApp')
                         });
 
                         $rootScope.$broadcast('reloadTask');
-                        $rootScope.$broadcast('reloadClassification'); 
+                        $rootScope.$broadcast('reloadClassification');
                       } else if (newNotification.project) {
                         snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
                           console.debug('Retrieved classifications from notification', classifications);
@@ -1169,7 +1169,16 @@ angular.module('singleConceptAuthoringApp')
         getTaskAttachments: function (projectKey, taskKey) {
           var deferred = $q.defer();
           $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/attachments').then(function (response) {
-            deferred.resolve(response.data);
+
+            var attachments = [];
+
+            // content is returned from the server as raw string, convert
+            angular.forEach(response.data, function(attachment) {
+              var obj = { issueKey : attachment.content, content : JSON.parse(attachment.issueKey)};
+              attachments.push(obj);
+            });
+            console.debug(attachments);
+            deferred.resolve(attachments);
           }, function (error) {
             console.log(error);
             deferred.reject('Could not retrieve attachments')

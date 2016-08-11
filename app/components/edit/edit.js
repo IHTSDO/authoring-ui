@@ -653,6 +653,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         var crsConcept = crsService.getCrsConcept(conceptId);
         $scope.concepts.push(crsConcept.concept);
 
+        console.debug($scope.concepts);
         notificationService.sendMessage('All concepts loaded', 5000, null);
 
       }

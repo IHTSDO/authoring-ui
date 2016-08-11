@@ -151,9 +151,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
         if (crsService.isCrsConcept(scope.concept.conceptId)) {
 
+
           scope.hideInactive = false;
 
           var crsContainer = crsService.getCrsConcept(scope.concept.conceptId);
+          console.debug('conceptEdit -- crs concept detected', crsContainer);
+
           scope.isModified = !crsContainer.saved;
         }
 
