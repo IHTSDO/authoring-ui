@@ -156,6 +156,8 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             // if no modified concepts stored, submit directly
             if ((conceptIds && conceptIds.length === 0) || $scope.unsavedConcepts) {
 
+              console.debug('submitting anyway');
+
               // clear array of unsaved content
               $scope.unsavedConcepts = null;
               markTaskForReview();
@@ -177,11 +179,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               // otherwise get the unsaved content for display
               else {
 
+                var conceptCt = 0;
+
                 angular.forEach(conceptIds, function (conceptId) {
                   scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
 
+                    console.debug('checking modified concept', concept);
                     // Account for case where new concepts are marked 'current' in UI State
-                    if (concept && !concept.current) {
+                    if (concept) {
 
                       if (!concept.conceptId) {
                         concept.conceptId = '(New concept)';
@@ -199,15 +204,23 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       }
                       unsavedConcepts.push(concept);
                     }
-
                     // if no concepts survive processing, proceed with submission
-                    if (unsavedConcepts.length === 0) {
-                      markTaskForReview();
-                    } else {
-                      $scope.unsavedConcepts = unsavedConcepts;
-                      notificationService.sendWarning('Save your changes before submitting for review');
+                    if (++conceptCt === conceptIds.length) {
+                      console.debug('checking for unsaved concepts');
+                      if (unsavedConcepts.length === 0) {
+                        console.debug('no unsaved concepts, submitting');
+                        markTaskForReview();
+                      } else {
 
+                        console.debug('unsaved concepts found, sending warning');
+                        $scope.unsavedConcepts = unsavedConcepts;
+                        notificationService.sendWarning('Save your changes before submitting for review');
+
+                      }
                     }
+                    console.debug(unsavedConcepts, unsavedConcepts.length, conceptCt, conceptIds.length);
+
+
                   }, function (error) {
                     notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
                   });
