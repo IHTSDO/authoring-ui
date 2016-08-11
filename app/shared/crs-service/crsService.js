@@ -115,7 +115,7 @@ angular.module('singleConceptAuthoringApp')
         if (!crsRequest.conceptId) {
 
           var copy = angular.copy(crsRequest);
-          copy.conceptId = snowowlService.createGuid()
+          copy.conceptId = snowowlService.createGuid();
           deferred.resolve(copy);
         } else {
           // otherwise, get the concept as it exists on this branch
@@ -144,9 +144,9 @@ angular.module('singleConceptAuthoringApp')
 
           deferred.resolve({
             // the id fields (for convenience)
-            conceptId:
-            fsn: attachment.content.fsn,
-            preferredSynonym: attachment.content.preferredSynonym,
+            conceptId: preparedConcept.conceptId,
+            fsn: preparedConcept.fsn,
+            preferredSynonym: preparedConcept.preferredSynonym,
 
             // the request url
             requestUrl: getRequestUrl(attachment.issueKey),

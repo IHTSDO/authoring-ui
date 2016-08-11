@@ -335,16 +335,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           else {
-            // clean the concept for snowowl-ready save
-            snowowlService.cleanConcept(scope.concept);
 
             // store the concept id (may be blank or UUID/GUID)
             var originalConceptId = scope.concept.conceptId;
 
+            // clean the concept for snowowl-ready save
+            snowowlService.cleanConcept(scope.concept);
+
+            console.debug('cleaned concept', originalConceptId, scope.concept)
+
+
+
 
             var saveFn = null;
 
-            if (scope.concept.fsn === null) {
+            if (scope.concept.fsn) {
               saveFn = snowowlService.createConcept;
             } else {
               saveFn = snowowlService.updateConcept;
