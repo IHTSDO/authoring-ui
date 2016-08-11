@@ -479,19 +479,19 @@ angular.module('singleConceptAuthoringApp')
           scope.styles = {};
 
           function addConceptStyles(concept) {
-        /*    var styledElements = {};
-            angular.forEach(concept.descriptions, function (description) {
-              if (!description.effectiveTime) {
-                styledElements[description.descriptionId] = {message: null, style: 'tealhl'};
-              }
-            });
-            angular.forEach(concept.relationships, function (relationship) {
-              if (!relationship.effectiveTime) {
-                styledElements[relationship.relationshipId] = {message: null, style: 'tealhl'};
-              }
-            });
-            scope.styles[concept.conceptId] = styledElements;
-*/
+            /*    var styledElements = {};
+             angular.forEach(concept.descriptions, function (description) {
+             if (!description.effectiveTime) {
+             styledElements[description.descriptionId] = {message: null, style: 'tealhl'};
+             }
+             });
+             angular.forEach(concept.relationships, function (relationship) {
+             if (!relationship.effectiveTime) {
+             styledElements[relationship.relationshipId] = {message: null, style: 'tealhl'};
+             }
+             });
+             scope.styles[concept.conceptId] = styledElements;
+             */
           }
 
 
@@ -503,7 +503,21 @@ angular.module('singleConceptAuthoringApp')
             if (!scope.styles[conceptId]) {
               scope.styles[conceptId] = {};
             }
-            scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
+
+            // if a new concept, don't highlight
+            if (scope.styles[conceptId].isNew) {
+              return;
+            }
+
+            // if component id specified, add style field
+            if (componentId) {
+              scope.styles[conceptId][componentId] = {message: null, style: 'tealhl'};
+            }
+
+            // otherwise, add to concept style directly
+            else {
+              scope.styles[conceptId].conceptStyle = {message: null, style: 'tealhl'};
+            }
             console.debug('new styles ', scope.styles);
           }
 
@@ -515,21 +529,31 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(traceability.content, function (change) {
               if (change.activityType === 'CONTENT_CHANGE') {
 
-                console.debug('content change', change);
-
                 angular.forEach(change.conceptChanges, function (concept) {
 
                   // cycle over component changes and apply highlighting
                   angular.forEach(concept.componentChanges, function (componentChange) {
 
-                    console.debug('component change', componentChange);
 
                     switch (componentChange.componentType) {
                       case 'DESCRIPTION':
                         highlightComponent(concept.conceptId, componentChange.componentId);
                         break;
-                      case 'STATED_RELATIONSHIP':
-                        highlightComponent(concept.conceptId, componentChange.componentId);
+                      case 'RELATIONSHIP':
+                        if (componentChange.componentSubType === 'STATED_RELATIONSHIP') {
+                          highlightComponent(concept.conceptId, componentChange.componentId);
+                        }
+                        break;
+                      case 'CONCEPT':
+                        console.debug('Concept', concept.conceptId, componentChange.componentType, componentChange.changeType)
+                        if (componentChange.changeType === 'CREATE') {
+                          console.debug('*** marking concept NEW');
+                          scope.styles[concept.conceptId] = {isNew: true};
+                        } else {
+                          if (scope.styles[concept.conceptId] && !scope.styles[concept.conceptId].isNew) {
+                            highlightComponent(concept.conceptId, null);
+                          }
+                        }
                         break;
                       default:
                       // do nothing
@@ -905,7 +929,7 @@ angular.module('singleConceptAuthoringApp')
                 reviewedListIds = response;
 
                 // apply highlighting from traceability
-                highlightFromTraceability(scope.  feedbackContainer.review.traceability);
+                highlightFromTraceability(scope.feedbackContainer.review.traceability);
 
                 // ensure response is in form of array for indexOf checking
                 // later
