@@ -378,7 +378,10 @@ angular.module('singleConceptAuthoringApp')
             scope.finalizing = true;
             notificationService.sendMessage('Saving Modified Relationships...');
             console.log(scope.affectedConcepts);
-            if(scope.affectedConcepts && scope.affectedConcepts.length > 0 && scope.affectedConcepts !== null){
+            angular.forEach(scope.affectedAssocs, function(item){
+                    item.associationTargets = {};
+                });
+            updateHistoricalAssociations(scope.affectedAssocs).then(function(){
                 var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
                   return [value];
                 });
@@ -386,7 +389,21 @@ angular.module('singleConceptAuthoringApp')
                     conceptArray.push(item);
                 });
                 angular.forEach(conceptArray, function (concept) {
+                  console.log(concept);
+                  if (concept.newTargetFsn) {
+                      delete concept.newTargetFsn;
+                    }
+                    if (concept.newTargetId) {
+                      delete concept.newTargetId;
+                    }
+                    if (concept.refsetName) {
+                      delete concept.refsetName;
+                    }
+                    if (concept.accepted) {
+                      delete concept.accepted;
+                    }
                   if(concept && concept.relationships){
+                      
                       angular.forEach(concept.relationships, function (rel) {
                         if (rel.sourceFsn) {
                           delete rel.sourceFsn;
@@ -401,31 +418,21 @@ angular.module('singleConceptAuthoringApp')
                               rel.relationshipId = null;
                           }
                         }
-                        
+
                       });
                   }
                 });
+                scope.inactivationConcept.inactivationIndicator = scope.reasonId;
+                scope.inactivationConcept.associationTargets = scope.assocs;
+                scope.inactivationConcept.active = false;
+                conceptArray.push(scope.inactivationConcept);
+                console.log(conceptArray);
                 snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                     notificationService.sendMessage('Updating Historical Associations...');
-                    updateHistoricalAssociations(scope.affectedAssocs).then(function(){
-                        notificationService.sendMessage('Inactivating Concept...');
-                        inactivationService.inactivateConcept().then(function(){
-                            notificationService.sendMessage('Inactivation Complete');
-                            $route.reload();                         
-                         });
-                    });
+                        notificationService.sendMessage('Inactivation Complete');
+                        $route.reload();
                 });
-            }
-            else{
-                notificationService.sendMessage('Updating Historical Associations...');
-                    updateHistoricalAssociations(scope.affectedAssocs).then(function(){
-                        notificationService.sendMessage('Inactivating Concept...');
-                        inactivationService.inactivateConcept().then(function(){
-                            notificationService.sendMessage('Inactivation Complete');
-                            $route.reload();                         
-                         });
-                    });
-            }
+            });
           };
             
           scope.dropAssociationTarget = function (relationship, data) {
@@ -436,16 +443,14 @@ angular.module('singleConceptAuthoringApp')
         
           function updateHistoricalAssociations(list){
               var deferred = $q.defer();
+              console.log(list);
               if(list && list.length > 0){
                   var cntr = 0;
                   function next() {
                     if (cntr < list.length) {
-                        var assoc = {};
-                        assoc[list[cntr].refsetSaveable] = [list[cntr].newTargetId];
-                        snowowlService.inactivateConcept(scope.branch, list[cntr].referencedComponent.id,  list[cntr].referencedComponent.inactivationIndicator, assoc).then(function () {
-                                cntr++;
-                                next();
-                              });
+                        list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
+                        cntr++;
+                        next();
                         }
                       else{deferred.resolve();};
                     }
