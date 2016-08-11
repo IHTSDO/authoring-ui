@@ -346,8 +346,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             console.debug('cleaned concept', originalConceptId, scope.concept)
 
 
-
-
             var saveFn = null;
 
             if (!scope.concept.conceptId) {
@@ -380,8 +378,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
                   }
 
-                  // clear the saved modified state
-                  scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+                  // clear the modified state if no id was specified
+                  console.debug('checking for unsaved modified state', originalConceptId);
+                  if (!originalConceptId || originalConceptId.indexOf('-') !== -1) {
+                    console.debug('deleting unsaved modified concept');
+                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
+                  } else {
+
+                    // clear the saved modified state
+                    scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+                  }
 
                   // ensure descriptions & relationships are sorted
                   sortDescriptions();
@@ -2658,13 +2664,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         var nStyles = 0;
 
-        scope.getCrsStyle = function(component) {
-          if (component.definitionOfChanges) {
-            return 'tealhl'
+
+        scope.getConceptStyle = function () {
+
+          if (!scope.componentStyles) {
+            return null;
+          } else {
+            if (scope.componentStyles.hasOwnProperty('conceptStyle')) {
+              console.debug(scope.componentStyles.conceptStyle.style);
+              return scope.componentStyles.conceptStyle.style;
+            }
           }
         };
 
-        scope.getComponentStyle = function (id, field, defaultStyle, component) {
+        scope.getComponentStyle = function (id, field, defaultStyle) {
 
           // if no styless supplied, use defaults
           if (!scope.componentStyles) {
@@ -2736,7 +2749,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function capitalize(word) {
           return word.charAt(0).toUpperCase() + word.substring(1);
         }
-        scope.toCapitalizedWords = function(name) {
+
+        scope.toCapitalizedWords = function (name) {
           var words = name.match(/[A-Za-z][a-z]*/g);
 
           return words.map(capitalize).join(" ");
