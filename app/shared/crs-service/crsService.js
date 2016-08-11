@@ -202,17 +202,19 @@ angular.module('singleConceptAuthoringApp')
                 // resolve
                 deferred.resolve(currentTaskConcepts);
               }
+            }, function(error) {
+              deferred.reject('Error creating CRS concept container');
             });
 
           });
-        });
+        }, deferred.reject('Could not load attachments'));
         return deferred.promise;
       }
 
 
 //
 // Gets the CRS concepts for task, initializing UI states on first attempt
-//
+// NOTE: This function MUST resolve to avoid blocking edit-view initialization
       function setTask(task) {
         var deferred = $q.defer();
 
@@ -248,7 +250,8 @@ angular.module('singleConceptAuthoringApp')
                   console.debug('--> Initialization complete, returning', currentTaskConcepts)
                   deferred.resolve(currentTaskConcepts);
                 }, function (error) {
-                  deferred.reject('Error initializing CRS content');
+                  // NOTE: Must resolve to prevent blocking in edit.js
+                  deferred.resolve([]);
                 });
               }
             });
