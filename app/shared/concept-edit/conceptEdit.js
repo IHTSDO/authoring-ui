@@ -1200,7 +1200,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // if reason is selected, deactivate all descriptions and
               // relationships
               if (results.reason) {
-
+                scope.concept.inactivationIndicator = results.reason.id;
+                scope.concept.associationTargets = results.associationTarget;
                 // save concept but bypass validation checks
                 saveHelper().then(function () {
                   notificationService.sendMessage('Concept inactivated');
