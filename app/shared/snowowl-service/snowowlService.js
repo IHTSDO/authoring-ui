@@ -84,7 +84,7 @@ angular.module('singleConceptAuthoringApp')
         var allowableProperties = [
           'fsn', 'released', 'conceptId', 'definitionStatus', 'active', 'moduleId',
           'isLeafInferred', 'effectiveTime', 'descriptions',
-          'preferredSynonym', 'relationships'];
+          'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets'];
 
         // if a locally assigned UUID, strip
         if (concept.conceptId && concept.conceptId.indexOf('-') !== -1) {
