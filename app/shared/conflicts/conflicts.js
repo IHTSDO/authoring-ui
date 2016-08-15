@@ -30,6 +30,9 @@ angular.module('singleConceptAuthoringApp')
             scope.sourceBranch = metadataService.getBranchRoot();
           }
 
+          // pass task key to scope for display trigger
+          $scope.taskKey = $routeParams.taskKey;
+
           scope.toggleSidebar = function () {
             scope.hideSidebar = !scope.hideSidebar;
           };
