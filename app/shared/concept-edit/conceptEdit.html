@@ -23,7 +23,14 @@
 
   <!-- end validation error -->
   <!-- The concept itself -->
+  <style>
+  
+  .new-concept .grey.darken-4{background-color: #ffcadc!important; color:#212121!important}
+  .new-concept .concept-headers:first-child{padding-top:3px!important}
+  </style>
+    <div  ng-class="[{'new-concept' : componentStyles.isNew}]">
   <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
+
     <div class="pull-left col-md-1 no-padding">
 
 
@@ -40,9 +47,9 @@
 
     <!-- concept name -->
     <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
-      <button type="button" class="btn-default pink lighten-2" ng-show="componentStyles.isNew ">NEW</button>
+   
       <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
-        <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}</span>
+        <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
         <span ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey" class="fsn">Unsaved Concept</span>
       </button>
@@ -148,7 +155,7 @@
       </div>
     </div>
   </div>
-
+</div>
   <div class="row">
     <div class="validation red" ng-repeat="error in validation.errors[concept.conceptId]"><strong>Convention
       Error:</strong>
