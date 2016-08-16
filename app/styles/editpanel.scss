@@ -1087,26 +1087,43 @@ button.fsn-title-button {
 }
 button-link .bluehl .grey.darken-3 {
     background-color: #0091d7!important;
-    border-top: 2px solid #0091d7;
-    border-bottom: 2px solid #0091d7;
+    border-top: 2px solid #0091d7!important;
+    border-bottom: 2px solid #0091d7!important;
 }
 .merges-button .button-link {
     font-size: 12px;
 }
 .tealhl .grey.darken-3 {
-    background-color: #00a39b
+    background-color: #00a39b!important
 }
-.tealhl {
+
+.ng-scope.tealhl{
     background-color: #00a39b!important;
-    border-top: 2px solid #00a39b;
-    border-bottom: 2px solid #00a39b
+    border-top: 2px solid #00a39b!important;
+    border-bottom: 2px solid #00a39b!important;
+	margin-top:3px;
 }
-.redhl .grey.darken-3 {
-    background-color: #ff6755
+.row.tealhl
+{
+    background-color: #00a39b!important;
+    border-top: 1px solid #00a39b!important;
+    border-bottom: 0px solid #00a39b!important;
+	margin-top:3px;
 }
+.tealhl .p-t-5{
+  padding-top:0px!important
+	
+}
+.tealhl .grey.darken-4{background-color:transparent!important;}
+
+.redhl .grey.darken-3,
+.redhl .grey.darken-3 .redhlrow, {
+    background-color: #ff6755!important
+}
+.tealh1 .redhlrow,
 .redlhl {
-    border-top: 2px solid #ff6755;
-    border-bottom: 2px solid #ff6755;
+    border-top: 2px solid #ff6755!important;
+    border-bottom: 2px solid #ff6755!important;
 }
 .p-4 {
     padding: 4px;
