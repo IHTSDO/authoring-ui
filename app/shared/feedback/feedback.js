@@ -550,9 +550,9 @@ angular.module('singleConceptAuthoringApp')
                           console.debug('*** marking concept NEW');
                           scope.styles[concept.conceptId] = {isNew: true};
                         } else {
-                          if (scope.styles[concept.conceptId] && !scope.styles[concept.conceptId].isNew) {
+
                             highlightComponent(concept.conceptId, null);
-                          }
+                          
                         }
                         break;
                       default:
