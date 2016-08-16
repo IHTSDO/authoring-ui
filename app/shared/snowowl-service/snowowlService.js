@@ -107,6 +107,10 @@ angular.module('singleConceptAuthoringApp')
           if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
             delete description.descriptionId;
           }
+          if(description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated')
+          {
+              delete description.inactivationIndicator;
+          }
           for (var key in description) {
             if (allowableDescriptionProperties.indexOf(key) === -1) {
               delete description[key];
