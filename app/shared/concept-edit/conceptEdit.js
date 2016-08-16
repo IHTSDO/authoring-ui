@@ -1149,15 +1149,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (results.reason.id) {
 
                   // persist the inactivation reason
-                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
+//                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
                     description.active = false;
                     description.inactivationIndicator = results.reason.id;
                     console.log(description.inactivationIndicator);
                     console.log(description);
                     scope.saveConcept();
-                  }, function (error) {
-                    notificationService.sendError('Error inactivating description');
-                  });
+//                  }, function (error) {
+//                    notificationService.sendError('Error inactivating description');
+//                  });
 
                 }
 
@@ -1178,14 +1178,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if a reason supplied
             //if (results.reason.id) {
 
-            // persist the inactivation reason
-            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
+//            // persist the inactivation reason
+//            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
               item.active = false;
               item.inactivationIndicator = results.reason.id;
               scope.saveConcept();
-            }, function (error) {
-              notificationService.sendError('Error inactivating description');
-            });
+//            }, function (error) {
+//              notificationService.sendError('Error inactivating description');
+//            });
 
             //}
           });
