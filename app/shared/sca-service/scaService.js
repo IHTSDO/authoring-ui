@@ -1176,7 +1176,8 @@ angular.module('singleConceptAuthoringApp')
 
             // content is returned from the server as raw string, convert
             angular.forEach(response.data, function(attachment) {
-              var obj = { content : attachment.content, issueKey : JSON.parse(attachment.issueKey)};
+              var obj = { content : JSON.parse(attachment.content), issueKey : attachment.issueKey};
+              console.debug('parsed attachment object', obj);
               attachments.push(obj);
             });
             console.debug(attachments);
