@@ -9,15 +9,13 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     // function to select an item from the saved list
     // broadcasts selected conceptId
     $scope.selectItem = function (item) {
-      if (!item || item.editing) {
+      if (!item) {
         return;
       }
-
       console.log(item.concept.conceptId);
       $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
-      item.editing = true;
-    };
 
+    };
     $scope.clone = function (item) {
       if (item) {
         $rootScope.$broadcast('cloneConcept', {conceptId: item.concept.conceptId});
