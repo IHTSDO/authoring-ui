@@ -101,26 +101,7 @@ angular.module('singleConceptAuthoringApp.home', [
             if (!task || !task.branchPath) {
                 notificationService.sendError('Unexpected error, cannot access task');
             }
-            var projectBranch = task.branchPath.substring(0, task.branchPath.lastIndexOf('/'));
-
-            // check for project lock before continuing
-            snowowlService.getBranch(projectBranch).then(function (response) {
-                if (!response.metadata || response.metadata && !response.metadata.lock) {
-
-                    // check for branch lock before continuing
-                    snowowlService.getBranch(task.branchPath).then(function (response) {
-                        if (!response.metadata || response.metadata && !response.metadata.lock) {
-                            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
-                        }
-                        else {
-                            notificationService.sendWarning('Unable to open editing view on task ' + task.key + ' as the task branch is locked due to ongoing changes.', 7000);
-                        }
-                    });
-                }
-                else {
-                    notificationService.sendWarning('Unable to open editing view on task ' + task.key + ' as the project branch is locked due to ongoing changes.', 7000);
-                }
-            });
+            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/edit');
         };
 
         $scope.goToConflicts = function (task) {
