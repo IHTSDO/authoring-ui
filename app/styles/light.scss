@@ -54,39 +54,7 @@
 .sca-light .edits-row.color_7 {
     background-color: #eee;
 }
-.sca-light .bluehl {
-    background-color: #e1f5fe !important;
-    border-top: 2px solid #e1f5fe;
-    border-bottom: 5px solid #e1f5fe;
-}
-.sca-light .bluehl .grey.darken-3 {
-    background-color: #e1f5fe
-}
-.sca-light .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #e1f5fe
-}
-.sca-light .bluehl .grey.darken-3 {
-    background-color: #e1f5fe
-}
-.sca-light .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #e1f5fe
-}
-.sca-light .tealhl .grey.darken-3 {
-    background-color: #e0f2f1
-}
-.sca-light .tealhl {
-    background-color: #e0f2f1 !important;
-    border-top: 2px solid #e0f2f1;
-    border-bottom: 5px solid #e0f2f1;
-}
-.sca-light .redhl .grey.darken-3 {
-    background-color: #FFEBEE
-}
-.sca-light .redlhl {
-    background-color: #FFEBEE !important;
-    border-top: 2px solid #FFEBEE;
-    border-bottom: 2px solid #FFEBEE;
-}
+
 .sca-light .grey.darken-4,
 .sca-light .model-header-sca {
     background-color: #f0f0f0!important;
@@ -705,3 +673,50 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
     color: #fff !important;
 }
 /* bottom */
+.sca-light .tealhl .grey.darken-4.title-text,
+.sca-light .tealhl .grey.darken-4.btn-default{
+	  background-color: transparent !important;
+}
+.sca-light .bluehl {
+    background-color: #e1f5fe !important;
+    border-top: 2px solid #e1f5fe!important;
+    border-bottom: 5px solid #e1f5fe!important;
+}
+.sca-light .bluehl .grey.darken-3 {
+    background-color: #e1f5fe!important;
+}
+.sca-light .bluehl .grey.darken-3 {
+    border-bottom: 5px solid #e1f5fe!important;
+}
+.sca-light .bluehl .grey.darken-3 {
+    background-color: #e1f5fe!important;
+}
+.sca-light .bluehl .grey.darken-3 {
+    border-bottom: 5px solid #e1f5fe!important
+}
+.sca-light .tealhl .grey.darken-3 {
+    background-color: #b2e3e1!important
+}
+.sca-light .ng-scope.tealhl{
+    background-color: #b2e3e1!important;
+    border-top: 2px solid #b2e3e1!important;
+    border-bottom: 2px solid #b2e3e1!important;
+	margin-top:3px;
+}
+.sca-light .grey.darken-4.tealhl {
+    background-color: #b2e3e1!important;
+    border-top: 2px solid #b2e3e1!important;
+    border-bottom: 2px solid #b2e3e1!important;
+	padding-top:2px!important;
+}
+
+.sca-light .tealhl .grey.darken-3:before{border-top: 1px solid #b2e3e1!important;}
+.sca-light .redhl .grey.darken-3 {
+    background-color: #FFEBEE!important
+}
+.sca-light .redlhl {
+    border-top: 2px solid #FFEBEE!important;
+    border-bottom: 2px solid #FFEBEE!important;
+}
+
+
