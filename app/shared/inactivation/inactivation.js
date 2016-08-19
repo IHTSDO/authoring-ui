@@ -422,16 +422,35 @@ angular.module('singleConceptAuthoringApp')
                       });
                   }
                 });
-                scope.inactivationConcept.inactivationIndicator = scope.reasonId;
-                scope.inactivationConcept.associationTargets = scope.assocs;
-                scope.inactivationConcept.active = false;
-                conceptArray.push(scope.inactivationConcept);
-                console.log(conceptArray);
-                snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-                    notificationService.sendMessage('Updating Historical Associations...');
-                        notificationService.sendMessage('Inactivation Complete');
-                        $route.reload();
-                });
+                if(!scope.deletion){
+                    scope.inactivationConcept.inactivationIndicator = scope.reasonId;
+                    scope.inactivationConcept.associationTargets = scope.assocs;
+                    scope.inactivationConcept.active = false;
+                    conceptArray.push(scope.inactivationConcept);
+                    console.log(conceptArray);
+                    snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
+                        notificationService.sendMessage('Updating Historical Associations...');
+                            notificationService.sendMessage('Inactivation Complete');
+                            $route.reload();
+                    });
+                }
+                else{
+                    snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
+                        notificationService.sendMessage('Updating Historical Associations...');
+                            snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+                                if (response.status === 409) {
+                                  notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
+                                  $route.reload();
+                                }
+                                else {
+                                  $rootScope.$broadcast('removeItem', {concept: scope.concept});
+                                  notificationService.sendMessage('Concept Deleted', 5000);
+                                  $route.reload();
+                                  
+                                }
+                            });
+                    });
+                }
             });
           };
             
@@ -699,6 +718,7 @@ angular.module('singleConceptAuthoringApp')
             scope.assocName = null;
             scope.histAssocTargets = {};
             scope.histAssocTargets.concepts = [];
+            scope.deletion = inactivationService.getDeletion();
 
             for (var key in scope.assocs) {
               
