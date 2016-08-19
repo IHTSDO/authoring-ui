@@ -398,7 +398,8 @@ angular.module('singleConceptAuthoringApp')
       isConceptsEqual: isConceptsEqual,
       isDescriptionsEqual: isDescriptionsEqual,
       isRelationshipsEqual: isRelationshipsEqual,
-      ptFromFsnAutomation: ptFromFsnAutomation
+      ptFromFsnAutomation: ptFromFsnAutomation,
+      getNewAcceptabilityMap: getNewAcceptabilityMap
 
     };
 

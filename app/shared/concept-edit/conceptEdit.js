@@ -1100,6 +1100,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.active) {
             description.active = true;
             description.effectiveTime = null;
+            if(description.type === 'FSN'){
+                description.acceptabilityMap = componentAuthoringUtil.getNewAcceptabilityMap(description.moduleId, 'PREFERRED');
+            }
             autoSave();
           }
 
