@@ -196,6 +196,24 @@ angular.module('singleConceptAuthoringApp')
         var results = {};
         results.reason = $scope.inactivationReason;
         results.associationTarget = associationTarget;
+          if($scope.deletion)
+          {
+              results.deletion = true;
+          }
+
+        $modalInstance.close(results);
+      }
+    };
+    
+    $scope.selectDeletion = function (reason) {
+
+      // NOTE: associationTarget is optional
+      if (reason.concept) {
+        window.alert('You must specify a replacement concept');
+      } else {
+        var results = {};
+        results.deletion = true;
+        results.concept = reason.concept;
 
         $modalInstance.close(results);
       }
