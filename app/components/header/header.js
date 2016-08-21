@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', 'snowowlService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, snowowlService, templateService) {
     return {
       restrict: '',
       transclude: false,
@@ -13,6 +13,7 @@ angular.module('singleConceptAuthoringApp')
 
         // timeout variable for current notification
         var timeout = null;
+        scope.rebaseRunning = false;
 
         // template selection
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
@@ -114,6 +115,18 @@ angular.module('singleConceptAuthoringApp')
             }
           }
         };
+          
+        scope.$on('pollForRebase', function (event, data) {
+         console.log(data);
+          scope.rebaseRunning = true;
+          snowowlService.getMerge(data.url.substr(data.url.lastIndexOf('/') + 1)).then(function(response){
+              scope.rebaseTarget = response.target;
+              snowowlService.pollForRebaseStatus(data.url, 10000).then(function(response){
+              scope.rebaseRunning = false;
+          });
+          });
+          
+        });
 
         scope.$on('clearNotifications', function (event, data) {
           scope.clearNotification();

@@ -78,6 +78,34 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
+        
+      function pollForRebaseStatus(url, intervalTime) {
+
+        var deferred = $q.defer();
+        if (!intervalTime) {
+          intervalTime = 1000;
+        }
+
+        $timeout(function () {
+          $http.get(url).then(function (response) {
+
+            // if review is ready, get the details
+            if (response && response.data && response.data.status === 'COMPLETED') {
+              deferred.resolve(response.data);
+            } else {
+              pollForRebaseStatus(url, intervalTime).then(function (pollResults) {
+                deferred.resolve(pollResults);
+              }, function (error) {
+                deferred.reject(error);
+              });
+            }
+          }, function (error) {
+            deferred.reject();
+          });
+        }, intervalTime);
+
+        return deferred.promise;
+      }
 
       function isSctid(id) {
         if (!id) {
@@ -1272,6 +1300,16 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
+        
+      function getMerge(mergeId) {
+        return $http.get(apiEndpoint + 'merges/' + mergeId).then(function (response) {
+          var merge = response.data;
+          merge.id = mergeId; // re-append id for convenience
+          return merge;
+        }, function (error) {
+          return null;
+        });
+      }
 
       function getMerge(mergeId) {
         return $http.get(apiEndpoint + 'merges/' + mergeId).then(function (response) {
@@ -1293,6 +1331,20 @@ angular.module('singleConceptAuthoringApp')
           var mergeReviewId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
 
           return getMergeReview(mergeReviewId);
+        });
+      }
+        
+      function rebaseBranches(parentBranch, childBranch, id) {
+        return $http.post(apiEndpoint + 'merges', {
+          source: parentBranch,
+          target: childBranch,
+          reviewId: id
+        }).then(function (response) {
+          // extract the merge-review id from the location header
+          var locHeader = response.headers('Location');
+          var mergeId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
+
+          return { locHeader: locHeader};
         });
       }
 
@@ -1523,6 +1575,9 @@ angular.module('singleConceptAuthoringApp')
         getTraceabilityForBranch: getTraceabilityForBranch,
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
+        rebaseBranches: rebaseBranches,
+        getMerge: getMerge,
+        pollForRebaseStatus: pollForRebaseStatus,
 
         // merge-review functionality
         getMergeReview: getMergeReview,
