@@ -45,6 +45,13 @@
           <span> Validation Running</span>
         </button>
       </li>
+      <li ng-if="rebaseRunning">
+        <button type="button"
+                class="btn btn-round-sm header-nav-button btn-default pull-left tooltips-right normalcase amber lighten-1  ">
+          <div class="md md-sync"></div>
+          <span> Rebase Running on {{rebaseTarget}}</span>
+        </button>
+      </li>
       <li ng-if="classificationRunning">
         <button type="button"
                 class="btn btn-round-sm btn-default pull-left tooltips-right normalcase indicator_green header-nav-button">
