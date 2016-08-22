@@ -210,14 +210,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.searchStatus = null;
       };
-      $scope.selectItem = function (item) {
-        if (!item) {
-          return;
-        }
-        console.log(item.concept.conceptId);
-        $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
+    $scope.selectItem = function (item) {
+      if (!item) {
+        return;
+      }
+      console.log(item.concept.conceptId);
+      $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
 
-      };
+    };
       $scope.isEdited = function (item) {
         return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
       };
