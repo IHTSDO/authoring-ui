@@ -25,7 +25,7 @@
                 <label class="control-label">Inactivation Reason
 <!--ng-if="isLockedModule(concept.moduleId)"-->
                     <button
-                      
+                      ng-if="!isStatic && !isLockedModule(concept.moduleId)"
                       type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editConceptInactivationReason(concept)" aria-disabled="false">
                         <i class="md fa-sca fa-pencil"></i>
                         <span>Edit</span>
