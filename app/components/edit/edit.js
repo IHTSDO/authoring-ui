@@ -638,6 +638,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if (concept.conceptId === conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
+          $scope.conceptLoading = false;
           return;
         }
       });
@@ -655,6 +656,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         console.debug($scope.concepts);
         notificationService.sendMessage('All concepts loaded', 5000, null);
+        $scope.conceptLoading = false;
 
       }
 
@@ -664,6 +666,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
+          $scope.conceptLoading = false;
           notificationService.sendMessage('All concepts loaded', 10000, null);
           $scope.updateEditListUiState();
         } else {
@@ -674,7 +677,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // get the concept and add it to the stack
         snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
-
+          $scope.conceptLoading = false;
           if (!response) {
             return;
           }
@@ -695,6 +698,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           }
 
         }, function (error) {
+          $scope.conceptLoading = false;
           console.log('Error retrieving concept', error);
           if (error.status === 404) {
             notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
@@ -791,16 +795,28 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Editing Notifications
     //
 
+    $scope.conceptLoading = false;
+
     // watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
+
+
+      console.debug('editConcept', data.conceptId, $scope.conceptLoading);
+
+      // if load already in progress from editConcept or cloneConcept notification, stop
+      if ($scope.conceptLoading) {
+        return;
+      }
+
       var conceptId = data.conceptId;
+      $scope.conceptLoading = true;
 
       // verify that this SCTID does not exist in the edit list
       for (var i = 0; i < $scope.concepts.length; i++) {
         if ($scope.concepts[i].conceptId === conceptId) {
 
           notificationService.sendWarning('Concept already added', 5000);
-
+          $scope.conceptLoading = false;
           return;
         }
       }
@@ -818,6 +834,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         return;
       }
 
+      $scope.conceptLoading = true;
+
       var concept = {'id': null, 'branch': $scope.targetBranch};
 
       notificationService.sendMessage('Cloning concept...');
@@ -834,6 +852,9 @@ angular.module('singleConceptAuthoringApp.edit', [
           // cancel if unsaved work exists (track-by id problems)
           if (!$scope.concepts[i].conceptId) {
             notificationService.sendWarning('A new, unsaved concept exists; please save before cloning', 10000);
+
+            $scope.conceptLoading = false;
+
             return;
           }
 
@@ -901,10 +922,11 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // push the cloned clonedConcept
         $scope.concepts.push(clonedConcept);
-
+        $scope.conceptLoading = false;
         notificationService.sendMessage(successMsg, 5000);
 
       }, function (error) {
+        $scope.conceptLoading = false;
         notificationService.sendError('Cloning failed; could not retrieve concept');
       });
     });
