@@ -669,7 +669,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             if (deletion) {
               selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, deletion).then(function (results) {
-                if (results.deletion) {
+                if (results.deletion && !results.reason) {
                   notificationService.sendMessage('Deleting Concept...');
                   snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
                     if (response.status === 409) {
@@ -682,6 +682,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       notificationService.sendMessage('Concept Deleted', 5000);
                     }
                   });
+                }
+                else{
+                   inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget, results.deletion);
+                  $rootScope.$broadcast('conceptEdit.inactivateConcept');
                 }
               });
             }
@@ -1096,6 +1100,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.active) {
             description.active = true;
             description.effectiveTime = null;
+            if(description.type === 'FSN'){
+                description.acceptabilityMap = componentAuthoringUtil.getNewAcceptabilityMap(description.moduleId, 'PREFERRED');
+            }
             autoSave();
           }
 
@@ -1149,15 +1156,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (results.reason.id) {
 
                   // persist the inactivation reason
-                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
+//                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
                     description.active = false;
                     description.inactivationIndicator = results.reason.id;
                     console.log(description.inactivationIndicator);
                     console.log(description);
                     scope.saveConcept();
-                  }, function (error) {
-                    notificationService.sendError('Error inactivating description');
-                  });
+//                  }, function (error) {
+//                    notificationService.sendError('Error inactivating description');
+//                  });
 
                 }
 
@@ -1178,13 +1185,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // if a reason supplied
             //if (results.reason.id) {
 
-            // persist the inactivation reason
-            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
+//            // persist the inactivation reason
+//            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
               item.active = false;
+              item.inactivationIndicator = results.reason.id;
               scope.saveConcept();
-            }, function (error) {
-              notificationService.sendError('Error inactivating description');
-            });
+//            }, function (error) {
+//              notificationService.sendError('Error inactivating description');
+//            });
 
             //}
           });

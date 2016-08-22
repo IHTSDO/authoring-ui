@@ -526,30 +526,32 @@ angular.module('singleConceptAuthoringApp')
             scope.rebaseRunning = true;
 
             if ($routeParams.taskKey) {
-              scaService.rebaseTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                if (response !== null && response !== 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
-
-                  // switch to edit view on success
+              snowowlService.rebaseBranches(scope.sourceBranch, scope.targetBranch, scope.id).then(function (response) {
+                  $rootScope.$broadcast('pollForRebase', {url: response.locHeader});
                   exitConflictsView();
-                }
-                else if (response === 1) {
-                  console.log('1');
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = false;
-                  scope.fiveOFour = true;
-                }
-                else {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = true;
-                  $rootScope.canConflict = true;
-                  scope.fiveOFour = false;
-                }
+//                if (response !== null && response !== 1) {
+//                  scope.rebaseRunning = false;
+//                  scope.rebaseComplete = true;
+//                  scope.warning = false;
+//                  scope.fiveOFour = false;
+//
+//                  // switch to edit view on success
+//                  exitConflictsView();
+//                }
+//                else if (response === 1) {
+//                  console.log('1');
+//                  scope.rebaseRunning = false;
+//                  scope.rebaseComplete = false;
+//                  scope.warning = false;
+//                  scope.fiveOFour = true;
+//                }
+//                else {
+//                  scope.rebaseRunning = false;
+//                  scope.rebaseComplete = false;
+//                  scope.warning = true;
+//                  $rootScope.canConflict = true;
+//                  scope.fiveOFour = false;
+//                }
 
               }, function (error) {
                 scope.rebaseRunning = false;
@@ -560,35 +562,37 @@ angular.module('singleConceptAuthoringApp')
               });
             } else {
 
-              scaService.rebaseProject($routeParams.projectKey).then(function (response) {
-                if (response !== null && response !== 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = true;
-                  scope.warning = false;
-                  scope.fiveOFour = false;
-
-                  // switch to edit view on success
+              snowowlService.rebaseBranches(scope.sourceBranch, scope.targetBranch, scope.id).then(function (response) {
+                $rootScope.$broadcast('pollForRebase', {url: response.locHeader});
                   exitConflictsView();
-
-                }
-                else if (response === 1) {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = false;
-                  scope.fiveOFour = true;
-
-                  // NOTE: Do not switch to edit view on error
-
-                }
-                else {
-                  scope.rebaseRunning = false;
-                  scope.rebaseComplete = false;
-                  scope.warning = true;
-                  scope.fiveOFour = false;
-
-                  // NOTE: Do not switch to edit view on warning
-                  // TODO Need to revisit this
-                }
+//                if (response !== null && response !== 1) {
+//                  scope.rebaseRunning = false;
+//                  scope.rebaseComplete = true;
+//                  scope.warning = false;
+//                  scope.fiveOFour = false;
+//
+//                  // switch to edit view on success
+//                  exitConflictsView();
+//
+//                }
+//                else if (response === 1) {
+//                  scope.rebaseRunning = false;
+//                  scope.rebaseComplete = false;
+//                  scope.warning = false;
+//                  scope.fiveOFour = true;
+//
+//                  // NOTE: Do not switch to edit view on error
+//
+//                }
+//                else {
+//                  scope.rebaseRunning = false;
+//                  scope.rebaseComplete = false;
+//                  scope.warning = true;
+//                  scope.fiveOFour = false;
+//
+//                  // NOTE: Do not switch to edit view on warning
+//                  // TODO Need to revisit this
+//                }
               }, function (error) {
                 scope.rebaseRunning = false;
                 scope.rebaseComplete = false;
