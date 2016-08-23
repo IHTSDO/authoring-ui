@@ -1482,6 +1482,9 @@ angular.module('singleConceptAuthoringApp.edit', [
         // set the metadata for use by other elements
         metadataService.setBranchMetadata($scope.task);
 
+        // set any project-level metadata flags
+        metadataService.setMrcmEnabled(!$scope.project.projectPromotionDisabled);
+
         // initialize the CRS service
         // NOTE: Must be done before loading initial view
         crsService.setTask($scope.task).then(function (response) {
