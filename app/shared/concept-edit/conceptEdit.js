@@ -1613,7 +1613,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (relationship.type.conceptId !== null) {
             // check if allowable relationship target using concept id
             scope.getConceptForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
-              if (response && response.length > 0) {
+              if ((response && response.length > 0) || !metadataService.isMrcmEnabled()) {
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
                 scope.warnings = null;
@@ -1662,7 +1662,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // check that attribute is acceptable for MRCM rules
           var attributes = scope.getConceptForFullAttribute(data.id);
-          if (attributes && attributes.length > 0) {
+          if ((attributes && attributes.length > 0)  || !metadataService.isMrcmEnabled()) {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
             scope.warnings = null;

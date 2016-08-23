@@ -9,6 +9,9 @@ angular.module('singleConceptAuthoringApp')
     // project cache (still used?)
     var projects = [];
 
+    // whether mrcm is currently enabled (default true)
+    var mrcmEnabled = true;
+
     // relationship metadata
     var isaRelationshipId = '116680003';
 
@@ -410,6 +413,15 @@ angular.module('singleConceptAuthoringApp')
       projects = projectsList;
     }
 
+    function setMrcmEnabled(value) {
+      console.log('MRCM validation enforced', value);
+      mrcmEnabled = value;
+    }
+
+    function isMrcmEnabled() {
+      return mrcmEnabled;
+    }
+
     return {
 
       // relationship functions
@@ -429,6 +441,7 @@ angular.module('singleConceptAuthoringApp')
       // boolean checks exposed for use
       isLockedModule: isLockedModule,
       isExtensionDialect: isExtensionDialect,
+      isMrcmEnabled: isMrcmEnabled,
 
       // extension module-dependent retrieval functions
 
@@ -448,6 +461,7 @@ angular.module('singleConceptAuthoringApp')
       setExtensionMetadata: setExtensionMetadata,
       setBranchMetadata: setBranchMetadata,
       clearBranchMetadata: clearBranchMetadata,
+      setMrcmEnabled: setMrcmEnabled,
 
       // branch/task fupath retrieval functions
       getBranch: getBranch,
