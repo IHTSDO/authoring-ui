@@ -37,6 +37,8 @@ angular.module('singleConceptAuthoringApp.project', [
 
           $scope.project = response;
 
+          // set the extension metadata for use by other elements
+          metadataService.setExtensionMetadata($scope.project.metadata);
 
           $rootScope.classificationRunning = $scope.project.latestClassificationJson && ($scope.project.latestClassificationJson.status === 'RUNNING' || $scope.project.latestClassificationJson.status === 'BUILDING');
           $rootScope.validationRunning =
@@ -83,12 +85,6 @@ angular.module('singleConceptAuthoringApp.project', [
         }, function () {
         });
       };
-
-      function reloadProject() {
-        scaService.getProjectForKey($scope.project.key).then(function (response) {
-          $scope.project = response;
-        });
-      }
 
       // classify the project
       $scope.classify = function () {
@@ -344,13 +340,10 @@ angular.module('singleConceptAuthoringApp.project', [
       });
 
       //
-      // Pre-initialization: Set branch information
+      // Initialize on load
       //
+      initialize();
 
-      scaService.getProjectForKey($routeParams.projectKey).then(function (project) {
-        metadataService.setBranchMetadata(project);
-        initialize();
-      });
 
 
     }]);
