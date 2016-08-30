@@ -89,16 +89,16 @@ angular.module('singleConceptAuthoringApp')
 
         // apply definition of changes to relationships
         angular.forEach(crsConcept.relationships, function (crsRelationship) {
-          var desc = getRelationshipForId(concept, crsRelationship.relationshipId);
+          var rel = getRelationshipForId(concept, crsRelationship.relationshipId);
 
           // if new (no id), add to the concept
-          if (desc === null) {
+          if (rel === null) {
             concept.relationships.push(angular.copy(crsRelationship));
           }
 
           // otherwise, append the definition of changes to the retrieved concept
           else {
-            desc.definitionOfChanges = crsRelationship.definitionOfChanges;
+            rel.definitionOfChanges = crsRelationship.definitionOfChanges;
           }
         });
       }
@@ -108,17 +108,24 @@ angular.module('singleConceptAuthoringApp')
       //
       function prepareCrsConcept(crsRequest) {
 
-        // console.debug('prepareCrsConcept', crsRequest);
+         console.debug('prepareCrsConcept', crsRequest, crsRequest.conceptId, crsRequest.definitionOfChanges.changeType);
         var deferred = $q.defer();
 
-        // if no concept id specified, new concept, generate GUID and return
+        // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
         if (!crsRequest.conceptId) {
-
           var copy = angular.copy(crsRequest);
           copy.conceptId = snowowlService.createGuid();
           deferred.resolve(copy);
-        } else {
-          // otherwise, get the concept as it exists on this branch
+        }
+
+        // otherwise, if NEW_CONCEPT specified, simply return the request
+        else if (crsRequest.definitionOfChanges && crsRequest.definitionOfChanges.changeType === 'NEW_CONCEPT') {
+          var copy = angular.copy(crsRequest);
+          deferred.resolve(copy);
+        }
+
+        // otherwise, get the concept as it exists on this branch
+        else {
           snowowlService.getFullConcept(crsRequest.conceptId, currentTask.branchPath).then(function (concept) {
 
               // apply the CRS request to the latest version of the concept
@@ -126,18 +133,16 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(concept);
             },
             // If rejected, assume external id has been assigned for a new concept
-            function () {
-              var copy = angular.copy(crsRequest);
-              copy.conceptId = snowowlService.createGuid();
-              deferred.resolve(copy);
+            function (error) {
+              deferred.reject(error);
             })
         }
         return deferred.promise;
       }
 
-      //
-      // Create a new CRS Concept Container from a JSON object url
-      //
+//
+// Create a new CRS Concept Container from a JSON object url
+//
       function getNewCrsConcept(attachment) {
 
         // console.debug('getNewCrsConcept', attachment);
@@ -162,7 +167,8 @@ angular.module('singleConceptAuthoringApp')
             conceptJson: attachment,
 
             // flags
-            saved: false
+            saved: false,
+            requiresCreation: preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
 
           });
         }, function (error) {
@@ -176,7 +182,7 @@ angular.module('singleConceptAuthoringApp')
 //
 // Clear the CRS Concept list for a task
 //
-      // TODO Wire this to "reset" button if desired later
+// TODO Wire this to "reset" button if desired later
       function clearCrsConceptsUiState(task) {
         scaService.deleteUiStateForTask(task.projectKey, task.key, 'crs-concepts');
       }
@@ -280,6 +286,23 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function requiresCreation(id) {
+        console.debug('isNewCrsConcept?', id);
+
+        if (!currentTaskConcepts) {
+          return false;
+        }
+
+        for (var i = 0; i < currentTaskConcepts.length; i++) {
+          if (currentTaskConcepts[i].requiresCreation) {
+            console.debug('-> is new unsaved crs concept');
+            return true;
+          }
+        }
+        console.debug('-> not new and unsaved');
+        return false;
+      }
+
       function isCrsConcept(id) {
 
         console.debug('isCrsConcept?', id);
@@ -326,6 +349,7 @@ angular.module('singleConceptAuthoringApp')
             currentTaskConcepts[i].conceptId = concept.conceptId;
             currentTaskConcepts[i].concept = concept;
             currentTaskConcepts[i].saved = true;
+            currentTaskConcepts[i].isNewConcept = false;
             saveCrsConceptsUiState();
             break;
           }
@@ -350,6 +374,7 @@ angular.module('singleConceptAuthoringApp')
       return {
         setTask: setTask,
         isCrsConcept: isCrsConcept,
+        requiresCreation: requiresCreation,
         getCrsConcept: getCrsConcept,
         getCrsConcepts: getCrsConcepts,
         saveCrsConcept: saveCrsConcept,
