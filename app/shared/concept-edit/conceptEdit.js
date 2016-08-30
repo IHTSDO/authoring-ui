@@ -663,6 +663,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.getDomainAttributes();
             scope.concept.active = true;
             scope.hideInactive = false;
+
+            scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
+
           }
 
           // otherwise, proceed with checks and inactivation reason persistence
@@ -678,6 +681,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     else {
                       $rootScope.$broadcast('removeItem', {concept: scope.concept});
                       scope.removeConcept(scope.concept);
+                      
+                      // remove from the modified list
+                      scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
 
                       notificationService.sendMessage('Concept Deleted', 5000);
                     }
