@@ -13,14 +13,14 @@ angular.module('singleConceptAuthoringApp')
       function getJsonAttachmentsForTask() {
         var deferred = $q.defer();
 
-          scaService.getTaskAttachments(currentTask.projectKey, currentTask.key).then(function (response) {
+        scaService.getTaskAttachments(currentTask.projectKey, currentTask.key).then(function (response) {
 
-            // parse JSON
+          // parse JSON
 
-            deferred.resolve(response);
-          }, function (error) {
-            deferred.reject(error);
-          });
+          deferred.resolve(response);
+        }, function (error) {
+          deferred.reject(error);
+        });
         return deferred.promise;
       }
 
@@ -108,7 +108,7 @@ angular.module('singleConceptAuthoringApp')
       //
       function prepareCrsConcept(crsRequest) {
 
-       // console.debug('prepareCrsConcept', crsRequest);
+        // console.debug('prepareCrsConcept', crsRequest);
         var deferred = $q.defer();
 
         // if no concept id specified, new concept, generate GUID and return
@@ -121,12 +121,16 @@ angular.module('singleConceptAuthoringApp')
           // otherwise, get the concept as it exists on this branch
           snowowlService.getFullConcept(crsRequest.conceptId, currentTask.branchPath).then(function (concept) {
 
-            // apply the CRS request to the latest version of the concept
-            updateConceptFromCrsRequest(concept, crsRequest);
-            deferred.resolve(concept);
-          }, function () {
-            deferred.reject('Failed to retrieve concept ' + crsRequest.conceptId);
-          })
+              // apply the CRS request to the latest version of the concept
+              updateConceptFromCrsRequest(concept, crsRequest);
+              deferred.resolve(concept);
+            },
+            // If rejected, assume external id has been assigned for a new concept
+            function () {
+              var copy = angular.copy(crsRequest);
+              copy.conceptId = snowowlService.createGuid();
+              deferred.resolve(copy);
+            })
         }
         return deferred.promise;
       }
@@ -172,7 +176,7 @@ angular.module('singleConceptAuthoringApp')
 //
 // Clear the CRS Concept list for a task
 //
-    // TODO Wire this to "reset" button if desired later
+      // TODO Wire this to "reset" button if desired later
       function clearCrsConceptsUiState(task) {
         scaService.deleteUiStateForTask(task.projectKey, task.key, 'crs-concepts');
       }
@@ -182,6 +186,7 @@ angular.module('singleConceptAuthoringApp')
 // Stores the CRS Concept list in UI State
 //
       function saveCrsConceptsUiState() {
+        console.debug('CRS service: saving ui state');
         scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'crs-concepts', currentTaskConcepts);
       }
 
@@ -195,25 +200,28 @@ angular.module('singleConceptAuthoringApp')
         // retrieve attachments (if any) -- must be done first
         getJsonAttachmentsForTask().then(function (attachments) {
 
-          // console.debug('retrieved attachments', attachments);
+          console.debug('retrieved attachments', attachments);
 
           currentTaskConcepts = [];
 
-          angular.forEach(attachments, function(attachment) {
+          angular.forEach(attachments, function (attachment) {
+
+            console.debug('processing attachment', attachment);
 
             getNewCrsConcept(attachment).then(function (crsConcept) {
-              // console.debug('New CRS Concept Container', crsConcept);
+              console.debug('New CRS Concept Container', crsConcept);
               currentTaskConcepts.push(crsConcept);
 
               if (currentTaskConcepts.length === attachments.length) {
 
                 // save the initialized state into the UI State
-               //saveCrsConceptsUiState();
+                saveCrsConceptsUiState();
 
                 // resolve
                 deferred.resolve(currentTaskConcepts);
               }
-            }, function() {
+            }, function (error) {
+              console.error('Error creating CRS concept container: ' + error);
               deferred.reject('Error creating CRS concept container');
             });
 
@@ -227,6 +235,7 @@ angular.module('singleConceptAuthoringApp')
 // Gets the CRS concepts for task, initializing UI states on first attempt
 // NOTE: This function MUST resolve to avoid blocking edit-view initialization
       function setTask(task) {
+        console.debug('CRS service: setting task', task);
         var deferred = $q.defer();
 
         // set the local task variable for use by other functions
@@ -248,7 +257,7 @@ angular.module('singleConceptAuthoringApp')
             // check if this task has previously been initialized
             scaService.getUiStateForTask(task.projectKey, task.key, 'crs-concepts').then(function (concepts) {
 
-              // console.debug('crs ui-state', concepts);
+              console.debug('crs ui-state', concepts);
 
               // if already initialized, simply return
               if (concepts) {
@@ -282,7 +291,7 @@ angular.module('singleConceptAuthoringApp')
         //  console.debug('  checking crs concept for ', id, currentTaskConcepts);
         for (var i = 0; i < currentTaskConcepts.length; i++) {
           if (currentTaskConcepts[i].conceptId === id) {
-                 console.debug('-> is crs concept');
+            console.debug('-> is crs concept');
             return true;
           }
         }
