@@ -348,7 +348,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             var saveFn = null;
 
-            if (!scope.concept.conceptId) {
+            if (!scope.concept.conceptId || crsService.requiresCreation(scope.concept.conceptId)) {
               saveFn = snowowlService.createConcept;
             } else {
               saveFn = snowowlService.updateConcept;
