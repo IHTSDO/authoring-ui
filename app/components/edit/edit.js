@@ -1401,7 +1401,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           console.debug('retrieved task', response);
 
-          console.debug('Linked issues');
+          if (!response) {
+            deferred.reject('Task could not be retrieved');
+          }
+          
           if(angular.isUndefined(response.linkedIssues))
           {
              response.linkedIssues = [];
