@@ -1144,6 +1144,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.markFeedbackUnread = function(concept) {
+            console.debug('marking task feedback unread', concept);
             scaService.markTaskFeedbackUnread($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function(response) {
               concept.read = false;
             }, function(error) {
