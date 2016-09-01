@@ -147,7 +147,7 @@
         <strong>{{viewedFeedback.length}}</strong> Total Comments for <span
         ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}
         &nbsp;&nbsp;
-        <button class="m-5" ng-click="markFeedbackUnread(subjectConcept)">Mark Feedback Unread</button></span>
+        <button class="m-5" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button></span>
       </div>
 
       <div class="col-md-12 feedback-area">
