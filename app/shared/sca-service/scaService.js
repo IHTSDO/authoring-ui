@@ -105,7 +105,7 @@ angular.module('singleConceptAuthoringApp')
 
         getConceptsWithUnreadFeedback(projectKey, taskKey).then(function (feedbackUnread) {
           console.debug('existing unread feedback concepts', feedbackUnread);
-          var index = modifiedList.indexOf(conceptId);
+          var index = feedbackUnread.indexOf(conceptId);
 
           // if not in list, update the list
           if (index === -1) {
@@ -802,11 +802,11 @@ angular.module('singleConceptAuthoringApp')
 
           // mark the feedback read server-side
           $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/view', {}).then(function (response) {
-            defer.resolve(response);
+            deferred.resolve(response);
           }, function (error) {
             console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
             notificationService.sendError('Error marking feedback read', 10000);
-            defer.reject(error);
+            deferred.reject(error);
           });
           return deferred.promise;
         },
