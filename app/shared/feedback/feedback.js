@@ -1129,6 +1129,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.selectConceptForFeedback = function (concept) {
             scope.subjectConcepts = [concept];
+            concept.read = true;
             getViewedFeedback();
           };
 
