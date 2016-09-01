@@ -35,7 +35,12 @@ angular.module('singleConceptAuthoringApp.project', [
       $scope.getProject = function () {
         scaService.getProjectForKey($routeParams.projectKey).then(function (response) {
 
+          // set the local project and branch for use by containers (classification/validation)
           $scope.project = response;
+          $scope.branch = response.branchPath;
+
+          // set the branch metadata for use by other elements
+          metadataService.setBranchMetadata($scope.project);
 
           // set the extension metadata for use by other elements
           metadataService.setExtensionMetadata($scope.project.metadata);
@@ -45,8 +50,9 @@ angular.module('singleConceptAuthoringApp.project', [
             $scope.project.validationStatus && ($scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED');
 
           // get the latest classification for this project (if exists)
+
           if ($scope.project.latestClassificationJson) {
-            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, metadataService.getBranchRoot()).then(function (response) {
+            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, $scope.project.branchPath).then(function (response) {
               console.log(response);
               $scope.classificationContainer = response;
             });
@@ -316,9 +322,6 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on load, retrieve tasks for project
       function initialize() {
-
-        // set the branch
-        $scope.branch = metadataService.getBranch();
 
         // initialize the project
         $scope.getProject();

@@ -551,7 +551,7 @@ angular.module('singleConceptAuthoringApp')
                           scope.styles[concept.conceptId] = {isNew: true};
                         } else {
 
-                            highlightComponent(concept.conceptId, null);
+                          highlightComponent(concept.conceptId, null);
 
                         }
                         break;
@@ -908,14 +908,14 @@ angular.module('singleConceptAuthoringApp')
             return new Date(feedback.creationDate);
           };
 
-          function checkMessageUnreadstatus() {
-            scaService.getConceptsWithUnreadFeedback($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
-              angular.forEach(scope.feedbackContainer.review.conceptsToReview, function(concept) {
+          function checkMessageUnreadStatus() {
+            scaService.getConceptsWithUnreadFeedback($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+              angular.forEach(scope.feedbackContainer.review.conceptsToReview, function (concept) {
                 if (response.indexOf(concept.conceptId) !== -1) {
                   concept.read = false;
                 }
               });
-              angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function(concept) {
+              angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function (concept) {
                 if (response.indexOf(concept.conceptId) !== -1) {
                   concept.read = false;
                 }
@@ -999,6 +999,8 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                   }
+
+                  checkMessageUnreadStatus();
 
                   // check if id is in reviewed list
                   if (reviewedListIds.indexOf(item.conceptId) === -1) {
@@ -1128,8 +1130,10 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.selectConceptForFeedback = function (concept) {
-            scope.subjectConcepts = [concept];
+
             concept.read = true;
+            //console.debug('selecting concept for feedback', concept.conceptId, concept.read);
+            scope.subjectConcepts = [concept];
             getViewedFeedback();
           };
 
@@ -1137,20 +1141,30 @@ angular.module('singleConceptAuthoringApp')
             scope.subjectConcepts = [];
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
               if (item.selected) {
+                concept.read = true;
                 scope.subjectConcepts.push(item);
               }
             });
             getViewedFeedback();
           };
 
-          scope.markFeedbackUnread = function(concept) {
-            console.debug('marking task feedback unread', concept);
-            scaService.markTaskFeedbackUnread($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function(response) {
-              concept.read = false;
-            }, function(error) {
-              notificationService.sendError('Unexpected error marking feedback unread');
-            })
-          }
+          scope.toggleFeedbackUnreadStatus = function (concept) {
+           // console.debug('toggling task feedback status', concept.conceptId, concept.read);
+            if (concept.read) {
+              scaService.markTaskFeedbackUnread($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
+                concept.read = false;
+              }, function (error) {
+                notificationService.sendError('Unexpected error marking feedback unread');
+              })
+            } else {
+              scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
+                // do nothing
+              }, function (error) {
+                notificationService.sendError('Unexpected error marking feedback read');
+              })
+            }
+            concept.read = !concept.read;
+          };
 
           scope.getConceptsForTypeahead = function (searchStr) {
             return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
