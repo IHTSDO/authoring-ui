@@ -552,7 +552,7 @@ angular.module('singleConceptAuthoringApp')
                         } else {
 
                             highlightComponent(concept.conceptId, null);
-                          
+
                         }
                         break;
                       default:
@@ -908,6 +908,21 @@ angular.module('singleConceptAuthoringApp')
             return new Date(feedback.creationDate);
           };
 
+          function checkMessageUnreadstatus() {
+            scaService.getConceptsWithUnreadFeedback($routeParams.projectKey, $routeParams.taskKey).then(function(response) {
+              angular.forEach(scope.feedbackContainer.review.conceptsToReview, function(concept) {
+                if (response.indexOf(concept.conceptId) !== -1) {
+                  concept.read = false;
+                }
+              });
+              angular.forEach(scope.feedbackContainer.review.conceptsReviewed, function(concept) {
+                if (response.indexOf(concept.conceptId) !== -1) {
+                  concept.read = false;
+                }
+              });
+            })
+          }
+
           ////////////////////////////////////////////////////////////////////
           // Watch freedback container -- used as Initialization Block
           ////////////////////////////////////////////////////////////////////
@@ -1127,6 +1142,14 @@ angular.module('singleConceptAuthoringApp')
             getViewedFeedback();
           };
 
+          scope.markFeedbackUnread = function(concept) {
+            scaService.markTaskFeedbackUnread($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function(response) {
+              concept.read = false;
+            }, function(error) {
+              notificationService.sendError('Unexpected error marking feedback unread');
+            })
+          }
+
           scope.getConceptsForTypeahead = function (searchStr) {
             return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
 
@@ -1300,7 +1323,7 @@ angular.module('singleConceptAuthoringApp')
                   review.concepts = [];
                   review.conceptsClassified = [];
 
-                  highlightFromTraceability();
+                  highlightFromTraceability(traceability);
 
                   var idList = [];
                   angular.forEach(traceability.content, function (change) {

@@ -7,6 +7,10 @@ angular.module('singleConceptAuthoringApp')
       // TODO Wire this to endpoint service, endpoint config
       var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
+      //
+      // Modified concept list utility functions
+      //
+
       function getModifiedList(projectKey, taskKey) {
 
         var deferred = $q.defer();
@@ -63,6 +67,74 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(revisedList);
             }, function (error) {
               deferred.reject('Unexpected error updating the list of modified concepts for this task');
+            })
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
+      //
+      // Unread feedback utility functions
+      //
+
+      function getConceptsWithUnreadFeedback(projectKey, taskKey) {
+
+        var deferred = $q.defer();
+
+        // get the list
+        $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/feedback-unread').then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          console.debug(error);
+          if (error.status === 404) {
+            deferred.resolve([]);
+          } else {
+            deferred.reject('Error retrieving modified concept id list');
+          }
+        });
+        return deferred.promise;
+      }
+
+      // Modified list functions
+      function saveUnreadFeedbackConceptId(projectKey, taskKey, conceptId) {
+        var deferred = $q.defer();
+
+        console.debug('saving unread feedback concept id', projectKey, taskKey, conceptId);
+
+        getConceptsWithUnreadFeedback(projectKey, taskKey).then(function (feedbackUnread) {
+          console.debug('existing unread feedback concepts', feedbackUnread);
+          var index = modifiedList.indexOf(conceptId);
+
+          // if not in list, update the list
+          if (index === -1) {
+            feedbackUnread.push(conceptId);
+            $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/feedback-unread', feedbackUnread).then(function (revisedList) {
+              deferred.resolve(revisedList);
+            }, function (error) {
+              deferred.reject('Unexpected error updating the list of modified concepts for this task');
+            })
+          }
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
+
+      function removeUnreadFeedbackConceptId(projectKey, taskKey, conceptId) {
+        var deferred = $q.defer();
+
+        getConceptsWithUnreadFeedback(projectKey, taskKey).then(function (feedbackUnread) {
+          var index = feedbackUnread.indexOf(conceptId);
+
+          // if not in list, update the list
+          if (index !== -1) {
+            feedbackUnread.splice(index, 1);
+            $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/feedback-unread', feedbackUnread).then(function (revisedList) {
+              deferred.resolve(revisedList);
+            }, function (error) {
+              deferred.reject('Unexpected error updating the list of concepts with unread feedback for this task');
             })
           }
         }, function (error) {
@@ -723,15 +795,34 @@ angular.module('singleConceptAuthoringApp')
 //POST
 // /projects/{projectKey}/tasks/{taskKey}/review/concepts/{conceptId}/read
         markTaskFeedbackRead: function (projectKey, taskKey, conceptId) {
+          var deferred = $q.defer();
 
-          return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/view', {}).then(function (response) {
-            return response;
+          // delete any unread UI state status
+          removeUnreadFeedbackConceptId(projectKey, taskKey, conceptId);
+
+          // mark the feedback read server-side
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review/concepts/' + conceptId + '/view', {}).then(function (response) {
+            defer.resolve(response);
           }, function (error) {
             console.error('Error marking feedback read ' + taskKey + ' in project ' + projectKey + ' for concept ' + conceptId);
             notificationService.sendError('Error marking feedback read', 10000);
-            return null;
+            defer.reject(error);
           });
+          return deferred.promise;
         },
+
+        markTaskFeedbackUnread: function (projectKey, taskKey, conceptId) {
+          var deferred = $q.defer();
+          saveUnreadFeedbackConceptId(projectKey, taskKey, conceptId).then(function(response) {
+            deferred.resolve();
+          }, function(error) {
+            deferred.reject('Could not mark feedback unread');
+          });
+          return deferred.promise;
+        },
+
+        getConceptsWithUnreadFeedback : getConceptsWithUnreadFeedback,
+
 
 // mark as ready for review -- no return value
         markProjectForReview: function (projectKey) {
