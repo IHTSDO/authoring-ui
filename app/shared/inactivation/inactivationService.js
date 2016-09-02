@@ -33,6 +33,7 @@ angular.module('singleConceptAuthoringApp')
         parameters.branch = branch;
         parameters.reasonId = reasonId;
         parameters.assocMembers = assocRefsetMembers;
+        parameters.deletion = false;
         if(deletion)
         {
             parameters.deletion = deletion;
@@ -93,6 +94,7 @@ angular.module('singleConceptAuthoringApp')
       setParameters: setParameters,
       getConcept: getConcept,
       getReasonId: getReasonId,
+      getDeletion: getDeletion,
       getAssocs: getAssocs,
       inactivateConcept: inactivateConcept,
       cancelInactivation: cancelInactivation
