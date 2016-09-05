@@ -672,7 +672,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             if (deletion) {
               selectInactivationReason('Concept', inactivateConceptReasons, inactivateAssociationReasons, scope.concept.conceptId, scope.concept, scope.branch, deletion).then(function (results) {
-                if (results.deletion && !results.reason) {
+                if (results.deletion && !results.associationTarget) {
                   notificationService.sendMessage('Deleting Concept...');
                   snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
                     if (response.status === 409) {
@@ -690,7 +690,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   });
                 }
                 else{
-                   inactivationService.setParameters(scope.branch, scope.concept, results.reason.id, results.associationTarget, results.deletion);
+                   inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget, results.deletion);
                   $rootScope.$broadcast('conceptEdit.inactivateConcept');
                 }
               });

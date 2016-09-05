@@ -437,7 +437,7 @@ angular.module('singleConceptAuthoringApp')
                 else{
                     snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                         notificationService.sendMessage('Updating Historical Associations...');
-                            snowowlService.deleteConcept(scope.concept.conceptId, scope.branch).then(function (response) {
+                            snowowlService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
                                 if (response.status === 409) {
                                   notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
                                   $route.reload();

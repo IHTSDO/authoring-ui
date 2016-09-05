@@ -271,17 +271,17 @@ Continue with {{componentType}} Inactivation
 Cancel Deletion
           </button>
 </div>
-          <div class=" col-md-6 right-button">
+          <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0">
           <button type="button"
-                  ng-disabled="inboundRelationshipsTotal !== 0"
+                  
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
                   ng-click="delete()">
 Confirm Deletion
           </button>
 </div>
-        <div class=" col-md-6 right-button">
+        <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
           <button type="button"
-                  ng-if="inboundRelationshipsTotal !== 0"
+                  
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
                   ng-click="selectReason(inactivationReason)">
 Continue with Deletion
