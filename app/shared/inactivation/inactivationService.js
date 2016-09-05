@@ -26,7 +26,7 @@ angular.module('singleConceptAuthoringApp')
       return parameters.concept !== null &&  parameters.concept !== undefined;
     }
 
-    function setParameters(branch, concept, reasonId, assocRefsetMembers, deletionConcept, deletion) {
+    function setParameters(branch, concept, reasonId, assocRefsetMembers, deletion) {
       console.debug('inactivationService setParameters', branch, concept, reasonId, assocRefsetMembers);
         parameters = {};
         parameters.concept = concept;
