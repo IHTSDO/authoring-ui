@@ -573,7 +573,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           });
 
         }, function (error) {
-          $scope.feedbackContainer.review = {errorMsg: error}
+          $scope.feedbackContainer.review = {errorMsg: error};
         });
         $scope.setView('feedback');
       } else if ($routeParams.mode === 'conflicts') {
@@ -1404,7 +1404,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           if (!response) {
             deferred.reject('Task could not be retrieved');
           }
-          
+
           if(angular.isUndefined(response.linkedIssues))
           {
              response.linkedIssues = [];
@@ -1557,7 +1557,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           });
         }, function(error) {
           console.error('Unexpected error checking CRS status');
-        })
+        });
 
 
       }, function (error) {

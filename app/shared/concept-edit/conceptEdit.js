@@ -343,7 +343,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // clean the concept for snowowl-ready save
             snowowlService.cleanConcept(scope.concept);
 
-            console.debug('cleaned concept', originalConceptId, scope.concept)
+            console.debug('cleaned concept', originalConceptId, scope.concept);
 
 
             var saveFn = null;
@@ -681,7 +681,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     else {
                       $rootScope.$broadcast('removeItem', {concept: scope.concept});
                       scope.removeConcept(scope.concept);
-                      
+
                       // remove from the modified list
                       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
 
@@ -1970,23 +1970,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
           scope.setPopoverDirection($event);
-
-          // retrieve inactivation reason if inactive
-          if (!concept.active) {
-            snowowlService.getConceptProperties(concept.conceptId, scope.branch).then(function (response) {
-
-              if (!response.inactivationIndicator) {
-                concept.inactivationIndicator = 'Reason not stated';
-              } else {
-                concept.inactivationIndicator = response.inactivationIndicator;
-              }
-
-              if (response.associationTargets) {
-                concept.associationTargets = response.associationTargets;
-                scope.hasAssociationTargets = Object.keys(concept.associationTargets).length > 0;
-              }
-            });
-          }
         };
 
         /**
@@ -1994,24 +1977,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param description
          */
         scope.setDescriptionProperties = function (description, $event) {
-
           if (!description) {
             return;
           }
-
           scope.setPopoverDirection($event);
-
-          // retrieve inactivation reason if inactive
-          if (!description.active) {
-            snowowlService.getDescriptionProperties(description.descriptionId, scope.branch).then(function (response) {
-              if (!response.inactivationIndicator) {
-                description.inactivationIndicator = 'Reason not stated';
-              } else {
-                description.inactivationIndicator = response.inactivationIndicator;
-                description.released = response.released;
-              }
-            });
-          }
         };
 
         /**
@@ -2019,11 +1988,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param relationship
          */
         scope.setRelationshipProperties = function (relationship, $event) {
-
           if (!relationship) {
             return;
           }
-
           scope.setPopoverDirection($event);
         };
 
@@ -2768,8 +2735,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.toCapitalizedWords = function (name) {
           var words = name.match(/[A-Za-z][a-z]*/g);
 
-          return words.map(capitalize).join(" ");
-        }
+          return words.map(capitalize).join(' ');
+        };
 
       }
     };
