@@ -545,7 +545,7 @@ angular.module('singleConceptAuthoringApp')
                         }
                         break;
                       case 'CONCEPT':
-                        console.debug('Concept', concept.conceptId, componentChange.componentType, componentChange.changeType)
+                        //console.debug('Concept', concept.conceptId, componentChange.componentType, componentChange.changeType)
                         if (componentChange.changeType === 'CREATE') {
                           console.debug('*** marking concept NEW');
                           scope.styles[concept.conceptId] = {isNew: true};
@@ -559,7 +559,7 @@ angular.module('singleConceptAuthoringApp')
                       // do nothing
                     }
                   });
-                })
+                });
               }
             });
 
@@ -920,7 +920,7 @@ angular.module('singleConceptAuthoringApp')
                   concept.read = false;
                 }
               });
-            })
+            });
           }
 
           ////////////////////////////////////////////////////////////////////
@@ -1141,7 +1141,7 @@ angular.module('singleConceptAuthoringApp')
             scope.subjectConcepts = [];
             angular.forEach(scope.conceptsToReviewViewed, function (item) {
               if (item.selected) {
-                concept.read = true;
+                item.read = true;
                 scope.subjectConcepts.push(item);
               }
             });
@@ -1155,13 +1155,13 @@ angular.module('singleConceptAuthoringApp')
                 concept.read = false;
               }, function (error) {
                 notificationService.sendError('Unexpected error marking feedback unread');
-              })
+              });
             } else {
               scaService.markTaskFeedbackRead($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
                 // do nothing
               }, function (error) {
                 notificationService.sendError('Unexpected error marking feedback read');
-              })
+              });
             }
             concept.read = !concept.read;
           };

@@ -120,8 +120,7 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, if NEW_CONCEPT specified, simply return the request
         else if (crsRequest.definitionOfChanges && crsRequest.definitionOfChanges.changeType === 'NEW_CONCEPT') {
-          var copy = angular.copy(crsRequest);
-          deferred.resolve(copy);
+          deferred.resolve(angular.copy(crsRequest));
         }
 
         // otherwise, get the concept as it exists on this branch
@@ -135,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
             // If rejected, assume external id has been assigned for a new concept
             function (error) {
               deferred.reject(error);
-            })
+            });
         }
         return deferred.promise;
       }
