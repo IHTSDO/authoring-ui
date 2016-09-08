@@ -106,17 +106,17 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       });
     };
 
-    function updateConceptDetails(item) {
+    function updateConceptDetails(concept) {
       if ($scope.savedList) {
         // sample structure for favorites
         //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
         angular.forEach($scope.savedList.items, function (item) {
 
           // if concept on list, update the relevant display fields
-          if (item.concept.conceptId === data.concept.conceptId) {
-            item.active = data.concept.active;
-            item.concept.definitionStatus = data.concept.definitionStatus;
-            item.concept.fsn = data.concept.fsn;
+          if (item.concept.conceptId === concept.conceptId) {
+            item.active = concept.active;
+            item.concept.definitionStatus = concept.definitionStatus;
+            item.concept.fsn = concept.fsn;
             item.editing = true;
             scaService.saveUiStateForTask(
               $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
@@ -131,10 +131,10 @@ angular.module('singleConceptAuthoringApp.savedList', [])
         angular.forEach($scope.favorites.items, function (item) {
 
           // if concept on list, update the relevant display fields
-          if (item.concept.conceptId === data.concept.conceptId) {
-            item.active = data.concept.active;
-            item.concept.definitionStatus = data.concept.definitionStatus;
-            item.concept.fsn = data.concept.fsn;
+          if (item.concept.conceptId === concept.conceptId) {
+            item.active = concept.active;
+            item.concept.definitionStatus = concept.definitionStatus;
+            item.concept.fsn = concept.fsn;
             scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
           }
         });
@@ -176,7 +176,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       angular.forEach($scope.savedList, function (item) {
         if (item.conceptId === data.crsConceptId) {
           console.debug('replacing on saved list ', data.crsConceptId, data.concept.conceptId);
-          item.conceptId = data.conceptId;
+          item.concept.conceptId = data.conceptId;
           updateConceptDetails(data.concept);
         }
       });
@@ -187,7 +187,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
 
         if (item.conceptId === data.crsConceptId) {
           console.debug('replacing on project list', data.crsConceptId, data.concept.conceptId);
-          item.conceptId = data.conceptId;
+          item.concept.conceptId = data.concept.conceptId;
           updateConceptDetails(data.concept);
         }
       });
