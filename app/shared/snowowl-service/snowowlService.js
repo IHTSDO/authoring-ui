@@ -87,7 +87,7 @@ angular.module('singleConceptAuthoringApp')
           'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets'];
 
         // if a locally assigned UUID, strip
-        if (concept.conceptId && concept.conceptId.indexOf('-') !== -1) {
+        if (concept.conceptId && !concept.conceptId.match("[0-9]+")) {
           concept.conceptId = null;
         }
 
