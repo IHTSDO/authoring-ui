@@ -825,6 +825,11 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       console.debug('editConcept', data.conceptId, $scope.conceptLoading);
 
+      // do not modify if in view with own managed list
+      if ($scope.thisView === 'classification' || $scope.thisView === 'validation' || $scope.thisView === 'feedback') {
+        return;
+      }
+
       // if load already in progress from editConcept or cloneConcept notification, stop
       if ($scope.conceptLoading) {
         return;
