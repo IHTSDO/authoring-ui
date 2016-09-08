@@ -79,7 +79,10 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     };
 
     $scope.getConceptPropertiesObj = function (item) {
-      return {id: item.concept.conceptId, name: item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn};
+      return {
+        id: item.concept.conceptId,
+        name: item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn
+      };
     };
 
     $scope.openConceptInformationModal = function (result) {
@@ -103,38 +106,46 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       });
     };
 
+    function updateConceptDetails(item) {
+      if ($scope.savedList) {
+        // sample structure for favorites
+        //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
+        angular.forEach($scope.savedList.items, function (item) {
+
+          // if concept on list, update the relevant display fields
+          if (item.concept.conceptId === data.concept.conceptId) {
+            item.active = data.concept.active;
+            item.concept.definitionStatus = data.concept.definitionStatus;
+            item.concept.fsn = data.concept.fsn;
+            item.editing = true;
+            scaService.saveUiStateForTask(
+              $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
+            );
+          }
+        });
+      }
+
+      if ($scope.favorites) {
+
+
+        angular.forEach($scope.favorites.items, function (item) {
+
+          // if concept on list, update the relevant display fields
+          if (item.concept.conceptId === data.concept.conceptId) {
+            item.active = data.concept.active;
+            item.concept.definitionStatus = data.concept.definitionStatus;
+            item.concept.fsn = data.concept.fsn;
+            scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
+          }
+        });
+      }
+    }
+
     $scope.$on('conceptEdit.conceptChange', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot handle concept modification event: concept must be supplied');
       } else {
-        if ($scope.savedList) {
-          // sample structure for favorites
-          //{ active, concept : {active, conceptId, definitionStatus, fsn, moduleId}, editing, term}
-          angular.forEach($scope.savedList.items, function (item) {
-
-            // if concept on list, update the relevant display fields
-            if (item.concept.conceptId === data.concept.conceptId) {
-              item.active = data.concept.active;
-              item.concept.definitionStatus = data.concept.definitionStatus;
-              item.concept.fsn = data.concept.fsn;
-              item.editing = true;
-              scaService.saveUiStateForTask(
-                $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
-              );
-            }
-          });
-
-          angular.forEach($scope.favorites.items, function (item) {
-
-            // if concept on list, update the relevant display fields
-            if (item.concept.conceptId === data.concept.conceptId) {
-              item.active = data.concept.active;
-              item.concept.definitionStatus = data.concept.definitionStatus;
-              item.concept.fsn = data.concept.fsn;
-              scaService.saveUiStateForUser('my-favorites-' + $routeParams.projectKey, $scope.favorites);
-            }
-          });
-        }
+        updateConceptDetails(data.concept);
       }
     });
 
@@ -153,28 +164,35 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       }
     });
 
-    $scope.$on('crsTaskInitialized', function(event, data) {
+    $scope.$on('crsTaskInitialized', function (event, data) {
       console.debug('savedList -- received crs service initialization notification');
       $scope.crsServiceInitialized = true;
     });
 
-    $scope.$on('removeItem', function (event, data) {
-      if (!data || !data.concept) {
-        console.error('Cannot handle stop editing event: concept must be supplied');
-      } else {
-        if ($scope.savedList) {
-          angular.forEach($scope.savedList.items, function (item) {
-            if (item.concept.conceptId === data.concept.conceptId) {
-              var index = $scope.savedList.items.indexOf(item);
-              $scope.savedList.items.splice(index, 1);
-              item.editing = false;
-              scaService.saveUiStateForTask(
-                $routeParams.projectKey, $routeParams.taskKey, 'saved-list', $scope.savedList
-              );
-            }
-          });
+    $scope.$on('saveCrsConcept', function (event, data) {
+      console.debug('savedList -- received crs save notification', data.concept, data.crsConceptId);
+
+      // replace the original concept id if it exists and update
+      angular.forEach($scope.savedList, function (item) {
+        if (item.conceptId === data.crsConceptId) {
+          console.debug('replacing on saved list ', data.crsConceptId, data.concept.conceptId);
+          item.conceptId = data.conceptId;
+          updateConceptDetails(data.concept);
         }
-      }
-    });
+      });
+
+      // remove the crs concept from the project favorites list if it exists
+      // replace the original concept id if it exists and update
+      angular.forEach($scope.favorites, function (item) {
+
+        if (item.conceptId === data.crsConceptId) {
+          console.debug('replacing on project list', data.crsConceptId, data.concept.conceptId);
+          item.conceptId = data.conceptId;
+          updateConceptDetails(data.concept);
+        }
+      });
+
+    })
+
 
   }]);
