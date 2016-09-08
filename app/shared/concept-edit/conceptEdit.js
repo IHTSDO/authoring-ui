@@ -372,9 +372,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
 
-                  // if a CRS concept, alert the serve
+                  // if a crs concept
                   if (crsService.isCrsConcept(originalConceptId)) {
+                    var crsConcept = crsService.getCrsConcept(originalConceptId);
+
+                    // if unsaved, update possible GUID and concept property changes in saved and favorite lists
+                    if (!crsConcept.saved) {
+                      $rootScope.$broadcast('saveCrsConcept', {concept : crsConcept, crsConceptId : originalConceptId});
+                    }
                     console.debug('Saving CRS concept');
+
+                    // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
                   }
 

@@ -620,6 +620,49 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
       return deferred.promise;
     };
+
+    /**
+     * Function to load concept from termserver, manage edit list & user notifications
+     * @param conceptId
+     * @returns {Function}
+       */
+    function loadConceptFromTermServerHelper(conceptId) {
+      var deferred = $q.defer();
+      $scope.conceptLoading = true;
+      // get the concept and add it to the stack
+      snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
+        $scope.conceptLoading = false;
+        if (!response) {
+          return;
+        }
+
+        $scope.concepts.push(response);
+
+        if ($scope.editList.indexOf(conceptId) === -1) {
+          $scope.updateEditListUiState();
+        }
+
+        if ($scope.concepts.length === $scope.editList.length) {
+          notificationService.sendMessage('All concepts loaded', 10000, null);
+          $scope.updateEditListUiState();
+        } else {
+          // send loading notification for user display
+          notificationService.sendMessage('Loading concepts...', 10000, null);
+        }
+
+      }, function (error) {
+        $scope.conceptLoading = false;
+        console.log('Error retrieving concept', error);
+        if (error.status === 404) {
+          notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
+        } else {
+          notificationService.sendError('Unexpected error retrieving concept');
+        }
+      });
+      return deferred.promise;
+    }
+
+
     /**
      * Adds concept from this branch to the concepts array
      * @param conceptId the SCTID of the concept
@@ -652,12 +695,22 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // get the CRS Concept
         var crsConcept = crsService.getCrsConcept(conceptId);
-        $scope.concepts.push(crsConcept.concept);
 
-        console.debug($scope.concepts);
-        notificationService.sendMessage('All concepts loaded', 5000, null);
-        $scope.conceptLoading = false;
+        // if concept exists and is unsaved, use JSON representation
+        if (crsConcept && !crsConcept.saved) {
 
+          // if the concept has been saved, retrieve from
+          $scope.concepts.push(crsConcept.concept);
+
+          console.debug($scope.concepts);
+          notificationService.sendMessage('All concepts loaded', 5000, null);
+          $scope.conceptLoading = false;
+        }
+
+        // otherwise, load from terserver
+        else {
+          loadConceptFromTermServerHelper(conceptId);
+        }
       }
 
       // if unsaved concept, push
@@ -674,38 +727,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendMessage('Loading concepts...', 10000, null);
         }
       } else {
-
-        // get the concept and add it to the stack
-        snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
-          $scope.conceptLoading = false;
-          if (!response) {
-            return;
-          }
-
-          $scope.concepts.push(response);
-
-          if ($scope.editList.indexOf(conceptId) === -1) {
-            $scope.updateEditListUiState();
-            // update edited item flagging
-          }
-
-          if ($scope.concepts.length === $scope.editList.length) {
-            notificationService.sendMessage('All concepts loaded', 10000, null);
-            $scope.updateEditListUiState();
-          } else {
-            // send loading notification for user display
-            notificationService.sendMessage('Loading concepts...', 10000, null);
-          }
-
-        }, function (error) {
-          $scope.conceptLoading = false;
-          console.log('Error retrieving concept', error);
-          if (error.status === 404) {
-            notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
-          } else {
-            notificationService.sendError('Unexpected error retrieving concept');
-          }
-        });
+        loadConceptFromTermServerHelper(conceptId);
 
       }
 
@@ -740,7 +762,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     };
 
-    // helper function to save current edit list (task view only)
+// helper function to save current edit list (task view only)
     $scope.updateEditListUiState = function () {
       if ($scope.taskKey) {
 
@@ -760,7 +782,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-    // helper function to save current edit list (classification view only)
+// helper function to save current edit list (classification view only)
     $scope.updateClassificationEditListUiState = function () {
       if ($scope.taskKey) {
 
@@ -775,7 +797,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-    // helper function to save current edit list (validation view only)
+// helper function to save current edit list (validation view only)
     $scope.updateValidationEditListUiState = function () {
       if ($scope.taskKey) {
 
@@ -791,13 +813,13 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 
-    //
-    // Editing Notifications
-    //
+//
+// Editing Notifications
+//
 
     $scope.conceptLoading = false;
 
-    // watch for concept selection from the edit sidebar
+// watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
 
 
@@ -827,7 +849,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     });
 
-    // watch for concept cloning from the edit sidebar
+// watch for concept cloning from the edit sidebar
     $scope.$on('cloneConcept', function (event, data) {
       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       if (!data || !data.conceptId) {
@@ -931,7 +953,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-    // watch for removal request from concept-edit
+// watch for removal request from concept-edit
     $scope.$on('stopEditing', function (event, data) {
       if (!data || !data.concept) {
         console.error('Cannot remove concept: concept must be supplied');
@@ -969,7 +991,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     });
 
-    // creates a blank (unsaved) concept in the editing list
+// creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       // check if an unsaved concept already exists
@@ -988,7 +1010,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.updateEditListUiState();
     };
 
-    // removes concept from editing list (unused currently)
+// removes concept from editing list (unused currently)
     $scope.closeConcept = function (index) {
       if ($scope.concepts) {
         $scope.concepts.splice(index, 1);
@@ -996,11 +1018,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 ////////////////////////////////////////
-    // Classification functions           //
+// Classification functions           //
 ////////////////////////////////////////
 
-    // get the various elements of a classification once it has been
-    // retrieved
+// get the various elements of a classification once it has been
+// retrieved
     $scope.setClassificationComponents = function () {
 
       if (!$scope.classificationContainer || !$scope.classificationContainer.id) {
@@ -1043,7 +1065,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-    // function to get the latest classification result
+// function to get the latest classification result
     $scope.getLatestClassification = function () {
 
       snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
@@ -1059,7 +1081,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     };
 
-    // on classification reload notification, reload latest classification
+// on classification reload notification, reload latest classification
     $scope.$on('reloadClassification', function (event, data) {
       $scope.classificationContainer = null;
 
@@ -1070,10 +1092,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
 //////////////////////////////////////////
-    // Latest Validation
+// Latest Validation
 //////////////////////////////////////////
 
-    // function to get the latest validation result
+// function to get the latest validation result
     $scope.getLatestValidation = function () {
 
       // if no task specified, retrieve for project
@@ -1098,10 +1120,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
 //////////////////////////////////////////
-    // Review and Feedback
+// Review and Feedback
 //////////////////////////////////////////
 
-    // get latest review
+// get latest review
     $scope.getLatestReview = function () {
       snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
         var review = {};
@@ -1227,11 +1249,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       return deferred.promise;
     };
 
-    //////////////////////////////////////////
-    // Conflict Report & Controls
-    //////////////////////////////////////////
+//////////////////////////////////////////
+// Conflict Report & Controls
+//////////////////////////////////////////
 
-    // Get latest conflict report
+// Get latest conflict report
     $scope.mergeReviewCurrent = null;
     $scope.getLatestConflictsReport = function () {
 
@@ -1241,10 +1263,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-    // Listen for Branch Divergence in order to trigger a conflicts rpoert
-    // refresh,  triggered from taskDetail.js on either (a) initialization
-    // where a task is in DIVERGED state, or (b) notification of task state
-    // change to DIVERGED
+// Listen for Branch Divergence in order to trigger a conflicts rpoert
+// refresh,  triggered from taskDetail.js on either (a) initialization
+// where a task is in DIVERGED state, or (b) notification of task state
+// change to DIVERGED
 //
     $rootScope.$on('branchDiverged', function (event) {
 
@@ -1304,11 +1326,11 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     }
 
-    // watch for task updates
-    // NOTE This is duplicated in taskDetail.js, propagate any changes
-    // TODO: Chris Swires -- no changes should be needed here, but this is
-    // the trigger for branch state changes, data is the entirely of the
-    // notification object processed in scaService.js
+// watch for task updates
+// NOTE This is duplicated in taskDetail.js, propagate any changes
+// TODO: Chris Swires -- no changes should be needed here, but this is
+// the trigger for branch state changes, data is the entirely of the
+// notification object processed in scaService.js
     $scope.$on('notification.branchState', function (event, data) {
 
       // check if notification matches this branch
@@ -1317,9 +1339,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     });
 
-    ////////////////////////////////////
-    // Project Promotion
-    /////////////////////////////////////
+////////////////////////////////////
+// Project Promotion
+/////////////////////////////////////
 
     $scope.promoteProject = function () {
       notificationService.sendMessage('Promoting project....', 0);
@@ -1332,7 +1354,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     };
 
-    // infinite scroll function -- TODO Relocate
+// infinite scroll function -- TODO Relocate
     $scope.isLast = function (check) {
       var cssClass = check ? 'last' : null;
       return cssClass;
@@ -1346,7 +1368,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     }, true);
 
 
-    // initialize the container objects
+// initialize the container objects
     $scope.classificationContainer = {
       id: null,
       status: 'Loading...',       // NOTE: Overwritten by validation field
@@ -1363,8 +1385,8 @@ angular.module('singleConceptAuthoringApp.edit', [
       feedback: null
     };
 
-    // initialize with empty concepts list
-    // but do not initialize conflictsToResolve, conflictsResolved
+// initialize with empty concepts list
+// but do not initialize conflictsToResolve, conflictsResolved
     $scope.conflictsContainer = {
       conflicts: null
     };
@@ -1405,9 +1427,8 @@ angular.module('singleConceptAuthoringApp.edit', [
             deferred.reject('Task could not be retrieved');
           }
 
-          if(angular.isUndefined(response.linkedIssues))
-          {
-             response.linkedIssues = [];
+          if (angular.isUndefined(response.linkedIssues)) {
+            response.linkedIssues = [];
           }
 
           $scope.task = response;
@@ -1555,7 +1576,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             }
 
           });
-        }, function(error) {
+        }, function (error) {
           console.error('Unexpected error checking CRS status');
         });
 
@@ -1566,4 +1587,5 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     initialize();
-  });
+  })
+;
