@@ -226,7 +226,7 @@ angular.module('singleConceptAuthoringApp')
                 deferred.resolve(currentTaskConcepts);
               }
             }, function (error) {
-              console.error('Error creating CRS concept container: ' + error);
+              console.error('Error creating CRS concept container: ', error);
               deferred.reject('Error creating CRS concept container');
             });
 
