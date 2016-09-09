@@ -293,7 +293,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         for (var i = 0; i < currentTaskConcepts.length; i++) {
-          if (currentTaskConcepts[i].requiresCreation) {
+          if (currentTaskConcepts[i].conceptId === currentTaskConcepts[i].requiresCreation) {
             console.debug('-> is new unsaved crs concept');
             return true;
           }
