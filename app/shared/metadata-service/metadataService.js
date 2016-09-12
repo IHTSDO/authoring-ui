@@ -129,30 +129,9 @@ angular.module('singleConceptAuthoringApp')
 
     //
     // Extension metadata
-    // TODO Chris Swires: this is the format expected by setting extensionMetadata
-    // in home.js, project.js, and review-tasks.js
-    // TODO Hard-coded Swedish language module for dev/demo purposes
+    //
     var extensionMetadata = null;
 
-    /**
-
-     // modules as id/name object array
-     modules: [{
-        id: '45991000052106',
-        name: 'SNOMED CT Sweden NRC maintained module (core metadata concept)'
-      }],
-
-     // languages as string array
-     languages: ['sv', 'en'],
-
-     // dialects as id->name map
-     dialects: {
-        '900000000000509007': 'en-us',
-        '46011000052107': 'sv'
-
-      }
-     };
-     */
 
       // Branch/Task-level metadata
       // Task level information
@@ -166,8 +145,6 @@ angular.module('singleConceptAuthoringApp')
     //
 
     // Extension metadata
-    // TODO Chris Swires, this is the setter for use
-    // by home.js, review-tasks.js, and project.js
     function setExtensionMetadata(metadata) {
 
       console.debug('Setting extension metadata', metadata);
@@ -177,13 +154,13 @@ angular.module('singleConceptAuthoringApp')
         extensionMetadata = null;
       } else {
 
-        // default dialect and language always includes en-us
+        // temporary variables used in parsing metadata
         var dialects = {'900000000000509007': 'en-us'};
         var languages = ['en'];
-        var defaultLanguage = '';
+        var defaultLanguage = null;
+        var defaultLanguageRefsetId = null;
 
-        // extract the default language and dialect
-        var language, dialect = null;
+        // extract the available language refset ids, dialect ids, language codes
         for (var key in metadata) {
           if (metadata.hasOwnProperty(key)) {
             var match = key.match(/requiredLanguageRefset\.(.+)/);
@@ -191,6 +168,10 @@ angular.module('singleConceptAuthoringApp')
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
 
+              // set the default refset id if not already set
+              if (!defaultLanguageRefsetId) {
+                defaultLanguageRefsetId = metadata[key];
+              }
 
               // set the default language if not already set
               if (!defaultLanguage) {
@@ -200,11 +181,21 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
+        //
+        // Validate extracted values
+        //
+        if (!metadata.shortname) {
+          console.warn('No country code (shortname) supplied for extension metadata');
+        }
         if (languages.length === 1) {
           console.error('Error setting extension metadata: module was specified but no languages/dialects found');
         }
+        if (!defaultLanguageRefsetId) {
+          console.error('Could not determine language refset for extension metadata');
+        }
 
 
+        // populate the cached extension metadata from passed metadata and temporary variables
         extensionMetadata = {
           modules: [
             {
@@ -213,8 +204,7 @@ angular.module('singleConceptAuthoringApp')
             }
           ],
 
-          // TODO This needs to be taken from project metadata
-          acceptLanguageMap : 'da-DK-x-554461000005103;q=0.8,en-US;q=0.5',
+          acceptLanguageMap: defaultLanguage + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguage: defaultLanguage,
           languages: languages,
           dialects: dialects
@@ -225,10 +215,7 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
-    // Branch metadata
-    // TODO Chris Swires, this is the setter for use
-    // by views like edit.js, and should already be
-    // fully functional. Shouldn't need to worry about this.
+    // Set the branch metadata from project or task
     function setBranchMetadata(branchMetadataObj) {
       console.debug('Setting branch metadata', branchMetadataObj);
       branchMetadata = branchMetadataObj;
@@ -301,6 +288,10 @@ angular.module('singleConceptAuthoringApp')
     //
 
     function getBranch() {
+      if (!branchMetadata) {
+        console.error('Branch metadata not set, could not determine branch');
+        return null;
+      }
       return branchMetadata.branchPath;
     }
 
@@ -329,12 +320,9 @@ angular.module('singleConceptAuthoringApp')
       return dialects;
     }
 
+    // get available dialects from extension metadata
+    // NOTE: Return international dialects for FSNs
     function getDialectsForModuleId(moduleId, FSN) {
-      // TODO Confirm this behavior (WRP-2808)
-      // Always return the extension dialects if available
-      // even for non-extension content, in order to allow
-      // authors to add acceptabilities for existing descriptions
-      // if (isExtensionModule(moduleId)) {
       if (extensionMetadata && !FSN) {
         return extensionMetadata.dialects;
       } else {
@@ -343,7 +331,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getLanguagesForModuleId(moduleId) {
-
       if (isExtensionModule(moduleId)) {
         return extensionMetadata.languages;
       } else {
