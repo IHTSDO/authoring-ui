@@ -151,9 +151,11 @@ angular.module('singleConceptAuthoringApp')
 
               node.collapsed = false;
               var newArray = $filter('orderBy')(scope.array, 'fsn', false);
-              newArray[newArray.length - 1].children = [];
-              newArray[newArray.length - 1].children.push(node);
-              newArray[newArray.length - 1].collapsed = false;
+              if (newArray && newArray.length > 0) {
+                newArray[newArray.length - 1].children = [];
+                newArray[newArray.length - 1].children.push(node);
+                newArray[newArray.length - 1].collapsed = false;
+              }
               console.log(newArray);
 
               deferred.resolve(newArray);
@@ -362,10 +364,12 @@ angular.module('singleConceptAuthoringApp')
               }
             }
             else {
+              console.debug('!view');
               if (scope.concept.hasOwnProperty('isLeafInferred')) {
                 scope.getAndSetChildren(scope.concept);
                 scope.getAndSetParents(scope.concept, false).then(function (array) {
                   scope.terminologyTree = array;
+                  scope.loadComplete = true;
                 });
               }
 
@@ -375,6 +379,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.getAndSetChildren(response);
                   scope.getAndSetParents(response, false).then(function (array) {
                     scope.terminologyTree = array;
+                    scope.loadComplete = true;
                   });
                 });
               }
