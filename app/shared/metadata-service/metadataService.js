@@ -147,8 +147,6 @@ angular.module('singleConceptAuthoringApp')
     // Extension metadata
     function setExtensionMetadata(metadata) {
 
-      console.debug('Setting extension metadata', metadata);
-
       // only set extension metadata if defaultModuleId is present
       if (!metadata || !metadata.hasOwnProperty('defaultModuleId')) {
         extensionMetadata = null;
@@ -209,7 +207,6 @@ angular.module('singleConceptAuthoringApp')
           languages: languages,
           dialects: dialects
         };
-        console.debug('Set extension metadata', extensionMetadata, metadata);
         $rootScope.$broadcast('setExtensionMetadata');
 
       }
@@ -217,7 +214,6 @@ angular.module('singleConceptAuthoringApp')
 
     // Set the branch metadata from project or task
     function setBranchMetadata(branchMetadataObj) {
-      console.debug('Setting branch metadata', branchMetadataObj);
       branchMetadata = branchMetadataObj;
     }
 
@@ -229,7 +225,6 @@ angular.module('singleConceptAuthoringApp')
     // returns the first international module id if not
     // used by componentAuthoringUtil to set module on new components
     function getCurrentModuleId() {
-      console.debug(extensionMetadata, internationalMetadata);
       return extensionMetadata ?
         extensionMetadata.modules[0].id : internationalMetadata.modules[0].id;
     }
@@ -476,8 +471,7 @@ angular.module('singleConceptAuthoringApp')
       },
 
       getExtensionMetadata: function () {
-        console.debug('extension metadata', extensionMetadata);
-        return extensionMetadata;
+       return extensionMetadata;
       },
       getBranchMetadata: function () {
         return branchMetadata;
