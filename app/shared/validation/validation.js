@@ -219,12 +219,9 @@ angular.module('singleConceptAuthoringApp')
               promises.push(getConceptIdForFailure(failure));
             });
 
-            console.debug('all promises pushed');
-            $q.all(promises).then(function () {
+             $q.all(promises).then(function () {
 
-              console.debug('all promises resolved');
-
-              // skip if no concept ids
+               // skip if no concept ids
               if (conceptIds.length > 0) {
 
                 // bulk call for concept ids
@@ -253,17 +250,12 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
             var failuresPrepared = 0;
 
-            console.debug('checking failures for referenced components')
-
             angular.forEach(scope.failures, function (failure) {
 
               // try to detect referenced descriptions/relationships
               var matchInfo = failure.detail.match(/[id[=:]+]*(\d+[12]\d)[^\d]/i);
 
               if (matchInfo) {
-
-                console.debug('match info', matchInfo);
-
 
                 // different behavior depending on description vs. relationship
                 switch (matchInfo[1].substring(matchInfo[1].length - 2, matchInfo[1].length - 1)) {
@@ -378,7 +370,6 @@ angular.module('singleConceptAuthoringApp')
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  console.debug('failure data', orderedData);
                   $defer.resolve(orderedData);
                 }
               }
@@ -399,7 +390,6 @@ angular.module('singleConceptAuthoringApp')
 
                 var orderedData = [];
                 validationService.getValidationFailureExclusions().then(function (exclusions) {
-                  console.debug('exclusions table: exclusions', exclusions);
 
                   for (var key in exclusions) {
                     angular.forEach(exclusions[key], function (failure) {
@@ -411,7 +401,6 @@ angular.module('singleConceptAuthoringApp')
                   params.total(orderedData.length);
                   orderedData = params.sorting() ? $filter('orderBy')(orderedData, params.orderBy()) : orderedData;
                   orderedData = orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count());
-                  console.debug('exclusions data', orderedData);
                   $defer.resolve(orderedData);
                 });
 
@@ -489,8 +478,6 @@ angular.module('singleConceptAuthoringApp')
                 });
               });
 
-              console.debug('assertionsFailed after init', scope.assertionsFailed);
-
               // load the tables
               scope.reloadTables();
               deferred.resolve();
@@ -529,7 +516,6 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Retrieving traceability information ...');
             snowowlService.getTraceabilityForBranch(scope.branch).then(function (traceability) {
-              console.debug('traceability', traceability);
 
 
               // if traceability found, extract the user modified concept ids
@@ -544,8 +530,6 @@ angular.module('singleConceptAuthoringApp')
                     });
                   }
                 });
-
-                console.debug(' modified concept ids ', scope.userModifiedConceptIds);
 
               } else {
                 notificationService.sendWarning('Could not retrieve traceability for task');
@@ -573,8 +557,6 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewFailures = function (assertionFailure) {
 
-            console.debug('assertionFailure', assertionFailure);
-
             scope.assertionFailureViewed = assertionFailure;
             scope.viewTop = false;
             scope.failuresLoading = true;
@@ -582,7 +564,6 @@ angular.module('singleConceptAuthoringApp')
             var objArray = [];
 
             // check if this failure is whitelistable
-            console.debug(scope.whitelistEligibleRuleIds, assertionFailure.assertionUuid);
             scope.whitelistEnabled = scope.whitelistEligibleRuleIds &&
               scope.whitelistEligibleRuleIds.indexOf(assertionFailure.assertionUuid) !== -1;
 
@@ -643,7 +624,6 @@ angular.module('singleConceptAuthoringApp')
 
 // exclude a single failure, with optional commit
           scope.excludeFailure = function (failure, skipCommitFlag) {
-            console.debug('Excluding failure exclusion', failure.userExcluded, failure, skipCommitFlag);
 
             accountService.getAccount().then(function (accountDetails) {
               // get the user name
@@ -705,8 +685,6 @@ angular.module('singleConceptAuthoringApp')
           }
 
           scope.editConcept = function (failure) {
-
-            console.debug('Edit concept from failure', failure);
 
             notificationService.sendMessage('Loading concept...');
             editConceptHelper(failure).then(function (response) {
