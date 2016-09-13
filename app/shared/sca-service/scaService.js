@@ -19,7 +19,6 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/modified-list').then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          console.debug(error);
           if (error.status === 404) {
             deferred.resolve([]);
           } else {
@@ -33,10 +32,7 @@ angular.module('singleConceptAuthoringApp')
       function saveModifiedConceptId(projectKey, taskKey, conceptId) {
         var deferred = $q.defer();
 
-        console.debug('saving modified concept id', projectKey, taskKey, conceptId);
-
         getModifiedList(projectKey, taskKey).then(function (modifiedList) {
-          console.debug('existing modified list', modifiedList);
           var index = modifiedList.indexOf(conceptId);
 
           // if not in list, update the list
@@ -87,7 +83,6 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/feedback-unread').then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-          console.debug(error);
           if (error.status === 404) {
             deferred.resolve([]);
           } else {
@@ -101,10 +96,7 @@ angular.module('singleConceptAuthoringApp')
       function saveUnreadFeedbackConceptId(projectKey, taskKey, conceptId) {
         var deferred = $q.defer();
 
-        console.debug('saving unread feedback concept id', projectKey, taskKey, conceptId);
-
         getConceptsWithUnreadFeedback(projectKey, taskKey).then(function (feedbackUnread) {
-          console.debug('existing unread feedback concepts', feedbackUnread);
           var index = feedbackUnread.indexOf(conceptId);
 
           // if not in list, update the list
@@ -813,15 +805,15 @@ angular.module('singleConceptAuthoringApp')
 
         markTaskFeedbackUnread: function (projectKey, taskKey, conceptId) {
           var deferred = $q.defer();
-          saveUnreadFeedbackConceptId(projectKey, taskKey, conceptId).then(function(response) {
+          saveUnreadFeedbackConceptId(projectKey, taskKey, conceptId).then(function (response) {
             deferred.resolve();
-          }, function(error) {
+          }, function (error) {
             deferred.reject('Could not mark feedback unread');
           });
           return deferred.promise;
         },
 
-        getConceptsWithUnreadFeedback : getConceptsWithUnreadFeedback,
+        getConceptsWithUnreadFeedback: getConceptsWithUnreadFeedback,
 
 
 // mark as ready for review -- no return value
@@ -1109,7 +1101,6 @@ angular.module('singleConceptAuthoringApp')
                       // set url and broadcast classification complete to taskDetail.js or project.js
                       if (newNotification.task) {
                         snowowlService.getClassificationsForTask(newNotification.project, newNotification.task).then(function (classifications) {
-                          console.debug('Retrieved classifications from notification', classifications);
                           if (!classifications || classifications.length === 0) {
                             msg += ' but no classifications could be retrieved';
                             notificationService.sendError(msg);
@@ -1118,7 +1109,6 @@ angular.module('singleConceptAuthoringApp')
                             // assign results to the classification container (note,
                             // chronological order, use last value)
                             var classification = classifications[classifications.length - 1];
-                            console.debug('  Classification: ', classification);
                             if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
                               msg += ' - Changes found';
                               url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/classify';
@@ -1127,7 +1117,6 @@ angular.module('singleConceptAuthoringApp')
                               url = '#/tasks/task/' + newNotification.project + '/' + newNotification.task + '/edit';
                             }
 
-                            console.debug('  ', msg, url);
                             notificationService.sendMessage(msg, 0, url);
 
                           }
@@ -1137,7 +1126,6 @@ angular.module('singleConceptAuthoringApp')
                         $rootScope.$broadcast('reloadClassification');
                       } else if (newNotification.project) {
                         snowowlService.getClassificationsForProject(newNotification.project).then(function (classifications) {
-                          console.debug('Retrieved classifications from notification', classifications);
                           if (!classifications || classifications.length === 0) {
                             msg += ' but no classifications could be retrieved';
                             notificationService.sendError(msg);
@@ -1146,7 +1134,6 @@ angular.module('singleConceptAuthoringApp')
                             // assign results to the classification container (note,
                             // chronological order, use last value)
                             var classification = classifications[classifications.length - 1];
-                            console.debug('  Classification: ', classification);
                             if (classification.status === 'COMPLETED' && (classification.equivalentConceptsFound || classification.inferredRelationshipChangesFound || classification.redundantStatedRelationshipsFound)) {
                               msg += ': Changes found';
                               url = '#/project/' + newNotification.project;
@@ -1155,7 +1142,6 @@ angular.module('singleConceptAuthoringApp')
                               url = '#/project/' + newNotification.project;
                             }
 
-                            console.debug('  ', msg, url);
                             notificationService.sendMessage(msg, 0, url);
 
                           }
@@ -1266,15 +1252,12 @@ angular.module('singleConceptAuthoringApp')
             var attachments = [];
 
             // content is returned from the server as raw string, convert
-            angular.forEach(response.data, function(attachment) {
-              var obj = { content : JSON.parse(attachment.content), issueKey : attachment.issueKey};
-              console.debug('parsed attachment object', obj);
+            angular.forEach(response.data, function (attachment) {
+              var obj = {content: JSON.parse(attachment.content), issueKey: attachment.issueKey};
               attachments.push(obj);
             });
-            console.debug(attachments);
             deferred.resolve(attachments);
           }, function (error) {
-            console.log(error);
             deferred.reject('Could not retrieve attachments')
           });
           return deferred.promise;

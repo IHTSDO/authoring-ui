@@ -12,7 +12,6 @@ angular.module('singleConceptAuthoringApp')
       // Create New Concept
       // POST /browser/{path}/concepts
       function createConcept(project, task, concept) {
-        console.debug('create concept', concept);
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + project + '/' + task + '/concepts/', concept).then(function (response) {
           deferred.resolve(response.data);
@@ -39,7 +38,6 @@ angular.module('singleConceptAuthoringApp')
       function bulkUpdateConcept(branch, conceptArray) {
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
-          console.log(response);
           pollForBulkUpdate(response.headers('Location'), 1000).then(function (result) {
             deferred.resolve(response.data);
           });
@@ -297,7 +295,6 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve parents of a concept
       // GET /{path}/concepts/{conceptId}/parents
       function getConceptParents(conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag) {
-        console.debug('get concept parents', conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag);
         var config = {};
         var queryParams = '';
 
@@ -342,7 +339,6 @@ angular.module('singleConceptAuthoringApp')
       // Retrieve children of a concept
       // GET /{path}/concepts/{conceptId}/children
       function getConceptChildren(conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag) {
-        console.debug('get concept children', conceptId, branch, acceptLanguageValue, synonymFlag, statedFlag);
 
         var config = {};
         var queryParams = '';
@@ -741,8 +737,6 @@ angular.module('singleConceptAuthoringApp')
        * @returns {*|promise} a single result or list of results
        */
       function findConceptsForQuery(projectKey, taskKey, searchStr, offset, maxResults, acceptLanguageValue, synonymFlag) {
-
-        console.debug('findConcepts', acceptLanguageValue, synonymFlag);
 
         var deferred = $q.defer();
 
@@ -1251,7 +1245,6 @@ angular.module('singleConceptAuthoringApp')
                 items[i].severity === items[j].severity &&
                 items[i].conceptId === items[j].conceptId &&
                 items[i].message === items[j].message) {
-                console.debug('removed duplicate validation item: ', items[i]);
                 items.splice(j, 1);
               }
             }
