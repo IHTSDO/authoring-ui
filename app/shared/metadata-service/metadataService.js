@@ -278,6 +278,20 @@ angular.module('singleConceptAuthoringApp')
       }
     }
 
+    // setter for display name by module id
+    function setModuleName(moduleId, moduleName) {
+      angular.forEach(extensionMetadata.modules, function(module) {
+        if (module.id === moduleId) {
+          module.name = moduleName;
+        }
+      });
+      angular.forEach(internationalMetadata.modules, function(module) {
+        if (module.id === moduleId) {
+          module.name = moduleName;
+        }
+      });
+    }
+
     function clearBranchMetadata() {
       extensionMetadata = null;
       branchMetadata = null;
@@ -449,6 +463,7 @@ angular.module('singleConceptAuthoringApp')
       setBranchMetadata: setBranchMetadata,
       clearBranchMetadata: clearBranchMetadata,
       setMrcmEnabled: setMrcmEnabled,
+      setModuleName: setModuleName,
 
       // branch/task fupath retrieval functions
       getBranch: getBranch,
