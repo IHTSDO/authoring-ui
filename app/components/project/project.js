@@ -116,7 +116,6 @@ angular.module('singleConceptAuthoringApp.project', [
 
       // on load, retrieve latest validation
       scaService.getValidationForProject($routeParams.projectKey).then(function (response) {
-        console.debug('latest project validation', response);
         $scope.validationContainer = response;
 
       });
