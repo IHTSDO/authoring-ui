@@ -60,10 +60,8 @@ angular.module('singleConceptAuthoringApp')
 
               // execute only if no further clicks detected
               if (node.clickCt === 1) {
-                console.debug('Single-click event, broadcasting');
                 $rootScope.$broadcast('editConcept', {conceptId: node.conceptId});
               } else {
-                console.debug('Double-click event, timeout canceled');
               }
               node.clickCt = 0;
             }, 500);
@@ -99,7 +97,6 @@ angular.module('singleConceptAuthoringApp')
 
           snowowlService.getConceptChildren(node.conceptId, scope.branch, scope.acceptLanguageValue, scope.synonymFlag, scope.statedFlag).then(function (children) {
 
-              console.debug('get concept children');
               if (!children) {
                 console.error('Could not retrieve children for node', node);
                 return;
@@ -134,7 +131,6 @@ angular.module('singleConceptAuthoringApp')
                 deferred.resolve([]);
               }
 
-              console.debug('parents returned', parents)
 
               angular.forEach(parents, function (parent) {
                 parent.isCollapsed = true;
@@ -155,7 +151,6 @@ angular.module('singleConceptAuthoringApp')
 
               node.collapsed = false;
               var newArray = $filter('orderBy')(scope.array, 'fsn', false);
-            console.debug('filter', scope.array, newArray);
               newArray[newArray.length - 1].children = [];
               newArray[newArray.length - 1].children.push(node);
               newArray[newArray.length - 1].collapsed = false;
@@ -391,7 +386,6 @@ angular.module('singleConceptAuthoringApp')
           else {
 
             snowowlService.getFullConcept(metadataService.getSnomedCtRootId(), scope.branch, scope.acceptLanguageValue).then(function (parent) {
-              console.debug('Root concept retrieved', parent);
 
               // get the children
               scope.getAndSetChildren(parent);
@@ -418,7 +412,6 @@ angular.module('singleConceptAuthoringApp')
 
         // on extension metadata set, update the search parameters
         scope.$on('setExtensionMetadata', function (event, data) {
-          console.debug('taxonomy received setExtensionMetadata event');
           initialize();
         });
 
