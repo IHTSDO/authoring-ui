@@ -42,10 +42,14 @@
   </script>
 
   <!-- Loading progress bar -->
-  <div ng-if="terminologyTree.length === 0" class="m-10">
+  <div ng-if="terminologyTree.length === 0 && !loadComplete" class="m-10">
     Loading hierarchy...
     <div progressbar value="getProgress()" type="success" >
     </div>
+  </div>
+
+  <div ng-if="terminologyTree.length === 0 && loadComplete" class="m-10">
+    No hierarchy to display.
   </div>
 
 
