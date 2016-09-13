@@ -155,7 +155,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.hideInactive = false;
 
           var crsContainer = crsService.getCrsConcept(scope.concept.conceptId);
-          console.debug('conceptEdit -- crs concept detected', crsContainer);
 
           scope.isModified = !crsContainer.saved;
         }
@@ -316,7 +315,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveHelper() {
 
-          console.debug('savehelper', scope.concept);
 
 
           // simple promise with resolve/reject on success/failure
@@ -342,8 +340,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // clean the concept for snowowl-ready save
             snowowlService.cleanConcept(scope.concept);
-
-            console.debug('cleaned concept', originalConceptId, scope.concept);
 
 
             var saveFn = null;
@@ -380,17 +376,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     if (!crsConcept.saved) {
                       $rootScope.$broadcast('saveCrsConcept', {concept : crsConcept, crsConceptId : originalConceptId});
                     }
-                    console.debug('Saving CRS concept');
 
                     // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
                   }
 
                   // clear the modified state if no id was specified
-                  console.debug('checking for unsaved modified state', originalConceptId);
                   if (!originalConceptId || originalConceptId.indexOf('-') !== -1) {
-                    console.debug('deleting unsaved modified concept');
-                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
+                   scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
                   } else {
 
                     // clear the saved modified state
@@ -480,11 +473,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
-        console.debug('concept edit', scope.concept, scope.componentStyles);
-
         scope.saveConcept = function () {
 
-          console.debug('saveConcept', scope.concept);
 
           // clear the top level errors and warnings
           scope.errors = null;
@@ -625,12 +615,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // between inactivation reason persistence and concept state
         scope.toggleConceptActive = function (concept, deletion) {
 
-          console.debug('toggling concept active');
-
-//          if (!scope.concept.released) {
-//            notificationService.sendWarning('Removal of unreleased content is not yet supported');
-//            return;
-//          }
           if (scope.isStatic) {
             return;
           }
@@ -1064,8 +1048,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var description = componentAuthoringUtil.getNewDescription(null);
 
-          console.debug('New description', description);
-
 
           // if not specified, simply push the new description
           if (afterIndex === null || afterIndex === undefined) {
@@ -1077,7 +1059,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.concept.descriptions.splice(afterIndex + 1, 0, description);
             autoSave();
           }
-          console.debug('Concept', scope.concept);
 
         };
 
@@ -1307,8 +1288,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 break;
             }
           }
-
-          console.debug(description.acceptabilityMap);
 
           autoSave();
         };
@@ -2291,7 +2270,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
 
-          console.debug('setting modified to true');
           scope.isModified = true;
           if (scope.isInactivation) {
             if (scope.validation && scope.validation.hasErrors) {
@@ -2397,7 +2375,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           });
           idList = idList.substring(0, idList.length - 1);
-          console.debug(idList);
 
           snowowlService.getDomainAttributes(scope.branch, idList).then(function (response) {
             scope.allowedAttributes = response.items;
@@ -2661,7 +2638,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return null;
           } else {
             if (scope.componentStyles.hasOwnProperty('conceptStyle')) {
-              console.debug(scope.componentStyles.conceptStyle.style);
               return scope.componentStyles.conceptStyle.style;
             }
           }
