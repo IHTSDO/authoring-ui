@@ -168,8 +168,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               // if no modified concepts stored, submit directly
               if ((conceptIds && conceptIds.length === 0) || $scope.unsavedConcepts) {
 
-                console.debug('submitting anyway');
-
                 // clear array of unsaved content
                 $scope.unsavedConcepts = null;
                 markTaskForReview();
@@ -196,7 +194,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   angular.forEach(conceptIds, function (conceptId) {
                     scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
 
-                      console.debug('checking modified concept', concept);
                       // Account for case where new concepts are marked 'current' in UI State
                       if (concept) {
 
@@ -218,20 +215,14 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                       }
                       // if no concepts survive processing, proceed with submission
                       if (++conceptCt === conceptIds.length) {
-                        console.debug('checking for unsaved concepts');
                         if (unsavedConcepts.length === 0) {
-                          console.debug('no unsaved concepts, submitting');
                           markTaskForReview();
                         } else {
-
-                          console.debug('unsaved concepts found, sending warning');
                           $scope.unsavedConcepts = unsavedConcepts;
                           notificationService.sendWarning('Save your changes before submitting for review');
 
                         }
                       }
-                      console.debug(unsavedConcepts, unsavedConcepts.length, conceptCt, conceptIds.length);
-
 
                     }, function (error) {
                       notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
@@ -299,7 +290,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       $scope.checkForLock = function () {
 
-        console.debug('checking lock status');
         snowowlService.getBranch($scope.branch).then(function (response) {
 
           // if lock found, set rootscope variable and continue polling
@@ -333,13 +323,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         var issueKey = issue.outwardIssue.key;
         var rootUrl = /^(https:\/\/[^\/]*).*$/.exec(issue.outwardIssue.self);
 
-        console.debug(issueKey, rootUrl[1]);
         window.open(rootUrl[1] + '/browse/' + issueKey, issueKey);
       };
 
       function initialize() {
-
-        console.debug('task detail initialization, lock = ' + $rootScope.branchLocked);
 
         // clear the unsaved concepts list
         $scope.unsavedConcepts = null;
@@ -372,7 +359,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       }
 
       $scope.$on('reloadTask', function (event, data) {
-        console.debug('task detail detected reloadTask event', event, data);
         initialize();
       });
 
