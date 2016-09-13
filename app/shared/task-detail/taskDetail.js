@@ -365,7 +365,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $rootScope.$broadcast('branchDiverged');
           }
 
-          console.debug('labels', $scope.task.labels, $scope.task.labels.indexOf('CRS'));
           if ($scope.task.labels && $scope.task.labels.indexOf('CRS') !== -1) {
             $scope.isCrsTask = true;
           }
