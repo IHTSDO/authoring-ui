@@ -27,7 +27,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function setParameters(branch, concept, reasonId, assocRefsetMembers, deletion) {
-      console.debug('inactivationService setParameters', branch, concept, reasonId, assocRefsetMembers);
         parameters = {};
         parameters.concept = concept;
         parameters.branch = branch;
@@ -38,13 +37,13 @@ angular.module('singleConceptAuthoringApp')
         {
             parameters.deletion = deletion;
         }
-      
+
     }
 
     function getConcept() {
       return parameters.concept;
     }
-      
+
     function getDeletion() {
       return parameters.deletion;
     }

@@ -496,7 +496,6 @@ angular.module('singleConceptAuthoringApp')
 
 
           function highlightComponent(conceptId, componentId) {
-            console.debug('highlighting ', conceptId, componentId);
             if (!scope.styles) {
               scope.styles = {};
             }
@@ -518,13 +517,9 @@ angular.module('singleConceptAuthoringApp')
             else {
               scope.styles[conceptId].conceptStyle = {message: null, style: 'tealhl'};
             }
-            console.debug('new styles ', scope.styles);
           }
 
           function highlightFromTraceability(traceability) {
-
-            console.debug('highlighting from traceability', traceability);
-
 
             angular.forEach(traceability.content, function (change) {
               if (change.activityType === 'CONTENT_CHANGE') {
@@ -547,7 +542,6 @@ angular.module('singleConceptAuthoringApp')
                       case 'CONCEPT':
                         //console.debug('Concept', concept.conceptId, componentChange.componentType, componentChange.changeType)
                         if (componentChange.changeType === 'CREATE') {
-                          console.debug('*** marking concept NEW');
                           scope.styles[concept.conceptId] = {isNew: true};
                         } else {
 
@@ -935,8 +929,6 @@ angular.module('singleConceptAuthoringApp')
             // pre-processing on initial load (conceptsToReview and
             // conceptsReviewed do not yet exist)
             if (scope.feedbackContainer.review && !scope.feedbackContainer.errorMsg && !scope.feedbackContainer.review.conceptsToReview && !scope.feedbackContainer.review.conceptsReviewed) {
-
-              console.debug('feedback container', scope.feedbackContainer);
 
               // get the ui state
               var reviewedListIds = null;

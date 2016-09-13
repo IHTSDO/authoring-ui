@@ -151,8 +151,6 @@ angular.module('singleConceptAuthoringApp')
 
     $scope.selectReason = function (reason) {
 
-      console.debug('reason' , $scope.inactivationReason, reason);
-
       // NOTE: associationTarget is optional
       if (!$scope.inactivationReason && !$scope.deletion) {
         window.alert('You must specify a reason for inactivation');
@@ -204,7 +202,7 @@ angular.module('singleConceptAuthoringApp')
         $modalInstance.close(results);
       }
     };
-    
+
     $scope.selectDeletion = function (reason) {
 
       // NOTE: associationTarget is optional
