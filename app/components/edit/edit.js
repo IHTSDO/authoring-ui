@@ -80,9 +80,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.projectKey = $routeParams.projectKey;
     $scope.taskKey = $routeParams.taskKey;
 
-    console.debug($scope.projectKey, $scope.taskKey);
-
-
     // clear task-related information
     $rootScope.validationRunning = false;
     $rootScope.classificationRunning = false;
@@ -447,9 +444,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.getConceptsForReview = function (idList, review, feedbackList) {
 
-      // set the last viewed date from the feedback list
-      console.debug('edit.js getConcepts', idList, review, feedbackList);
-
       snowowlService.bulkGetConcept(idList, $scope.branch).then(function (response) {
         angular.forEach(response.items, function (concept) {
           angular.forEach(review.concepts, function (reviewConcept) {
@@ -498,7 +492,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       } else if ($routeParams.mode === 'feedback') {
         snowowlService.getTraceabilityForBranch($scope.branch).then(function (traceability) {
-          console.debug('Retrieved traceability (edit)', traceability);
           var review = {};
 
           review.traceability = traceability;
@@ -625,7 +618,7 @@ angular.module('singleConceptAuthoringApp.edit', [
      * Function to load concept from termserver, manage edit list & user notifications
      * @param conceptId
      * @returns {Function}
-       */
+     */
     function loadConceptFromTermServerHelper(conceptId) {
       var deferred = $q.defer();
       $scope.conceptLoading = true;
@@ -669,8 +662,6 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     $scope.addConceptToListFromId = function (conceptId) {
 
-      console.debug('EDIT: add concept to list from id', conceptId);
-
       if (!conceptId) {
         console.error('Could not add concept to edit list, id required');
         return;
@@ -701,8 +692,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           // if the concept has been saved, retrieve from
           $scope.concepts.push(crsConcept.concept);
-
-          console.debug($scope.concepts);
           notificationService.sendMessage('All concepts loaded', 5000, null);
           $scope.conceptLoading = false;
         }
@@ -821,9 +810,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // watch for concept selection from the edit sidebar
     $scope.$on('editConcept', function (event, data) {
-
-
-      console.debug('editConcept', data.conceptId, $scope.conceptLoading);
 
       // do not modify if in view with own managed list
       if ($scope.thisView === 'classification' || $scope.thisView === 'validation' || $scope.thisView === 'feedback') {
@@ -1008,8 +994,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       var concept = componentAuthoringUtil.getNewConcept();
-
-      console.debug('New concept', concept);
 
       $scope.concepts.unshift(concept);
       $scope.updateEditListUiState();
@@ -1426,7 +1410,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       // get the task if appropriate
       if ($routeParams.taskKey) {
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-          console.debug('retrieved task', response);
 
           if (!response) {
             deferred.reject('Task could not be retrieved');
@@ -1438,8 +1421,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           $scope.task = response;
           $rootScope.currentTask = response;
-
-          console.debug($scope.task);
 
           // set the classification and validation flags
           $rootScope.classificationRunning = $scope.task.latestClassificationJson && ($scope.task.latestClassificationJson.status === 'RUNNING' || $scope.task.latestClassificationJson.status === 'BUILDING');
@@ -1465,8 +1446,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 
     function loadBranch(branchPath) {
-
-      console.debug('loading branch', branchPath);
 
       var deferred = $q.defer();
 
