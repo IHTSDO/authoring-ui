@@ -1274,8 +1274,7 @@ angular.module('singleConceptAuthoringApp')
             console.debug(attachments);
             deferred.resolve(attachments);
           }, function (error) {
-            console.log(error);
-            deferred.reject('Could not retrieve attachments')
+            deferred.reject('Could not retrieve attachments: ' + error.message + ' -- ' + error.developerMessage);
           });
           return deferred.promise;
         }
