@@ -165,17 +165,14 @@ angular.module('singleConceptAuthoringApp.savedList', [])
     });
 
     $scope.$on('crsTaskInitialized', function (event, data) {
-      console.debug('savedList -- received crs service initialization notification');
       $scope.crsServiceInitialized = true;
     });
 
     $scope.$on('saveCrsConcept', function (event, data) {
-      console.debug('savedList -- received crs save notification', data.concept, data.crsConceptId);
 
       // replace the original concept id if it exists and update
       angular.forEach($scope.savedList, function (item) {
         if (item.conceptId === data.crsConceptId) {
-          console.debug('replacing on saved list ', data.crsConceptId, data.concept.conceptId);
           item.concept.conceptId = data.conceptId;
           updateConceptDetails(data.concept);
         }
@@ -186,7 +183,6 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       angular.forEach($scope.favorites, function (item) {
 
         if (item.conceptId === data.crsConceptId) {
-          console.debug('replacing on project list', data.crsConceptId, data.concept.conceptId);
           item.concept.conceptId = data.concept.conceptId;
           updateConceptDetails(data.concept);
         }
