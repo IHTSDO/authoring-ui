@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles all functionality surrounding CRS tickets
  */
-  .factory('crsService', function ($http, $rootScope, $q, scaService, snowowlService, $timeout) {
+  .factory('crsService', function ($http, $rootScope, $q, scaService, snowowlService, $timeout, notificationService) {
 
       var currentTask;
 
@@ -19,6 +19,7 @@ angular.module('singleConceptAuthoringApp')
 
           deferred.resolve(response);
         }, function (error) {
+          notificationService.sendError(error);
           deferred.reject(error);
         });
         return deferred.promise;
