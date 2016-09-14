@@ -48,7 +48,7 @@
           </button>
           <button class="btn btn-border tooltips-bottom xlarge-size-tooltip "
                   ng-click="promote()"
-                  ng-disabled="project.branchState !== 'FORWARD' || project.projectPromotionDisabled">
+                  ng-disabled="project.branchState !== 'FORWARD' || project.projectPromotionDisabled || project.projectMrcmDisabled">
             <div
               class="project-icon blue darken-1 pull-left ">
               <div class="md md-call-merge"></div>
