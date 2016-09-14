@@ -1,132 +1,46 @@
-
 <div class="row no-gutter sca-container ">
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
   <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right">
     <div class="row">
-      <h3 class="table-title p-20">Test Management
+      <h3 class="table-title p-20">Test Notification Generation
       </h3>
     </div>
 
-    <div class="row p-l-20" ng-repeat="testPackage in testPackages">
-      <div class="col-md-12">
-        <h4>{{testPackage.name}} -
-          <button class="" ng-disabled="!taskKey" ng-click="runTest(testPackage)">Run Test Package</button>
-        </h4>
-
+    <div class="row p-5">
+      <div class="col-md-1">Type</div>
+      <div class="col-md-11">
+        <select ng-model="notificationType" style="width:150px;">
+          <option selected>Message</option>
+          <option>Warning</option>
+          <option>Error</option>
+        </select>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="col-md-2">
-            <h4>Result</h4>
-          </div>
-          <div class="col-md-3">
-            <h4>Test</h4>
-          </div>
-          <div class="col-md-1"></div>
-          <div class="col-md-6" style="word-break:break-all">
-            <h4>Expected Error</h4>
-          </div>
-        </div>
+    </div>
+    <div class="row p-5">
+      <div class="col-md-1">Text</div>
+      <div class="col-md-11">
+        <textarea ng-model="notificationText" style="width:350px; height:200px;"></textarea>
       </div>
-      <div ng-repeat="(key, value) in testPackage.results" class="m-t-10" style="border-top: thick double grey;">
-        <!--{{key}}
-        <hr>
-        {{value}}-->
-        <div class="row p-l-10">
-          <div class="col-md-2"></div>
-          <div class="col-md-11 p-t-10 p-b-10"><strong>Test Group: {{key}} </strong> - {{value.tests.length}} Tests
-
-          </div>
-
-          <div ng-repeat="test in value.tests" ng-init="showDetails = false">
-            <div class="row p-t-5">
-              <div class="col-md-2" style=""
-                   ng-class="[
-                   {'red' : test.status === 'FAILED' && !test.notes },
-                   {'green' : test.status === 'PASSED'},
-                   {'orange': test.status && test.status !== 'Pending' && test.status !== 'Running' && test.notes}]">
-
-                <div ng-show="!test.status">
-                  <i class="md md-play-arrow m-r-10" ng-click="runSingleTest(testPackage, key, test)"></i>
-                  Not Run
-                </div>
-
-                <div ng-show="test.status && test.status !== 'Pending' && test.status !== 'Running' && !test.notes">
-                  <i
-                    class="md md-replay m-r-10" ng-click="runSingleTest(testPackage, key, test)"></i>
-                  {{test.status}}
-                </div>
-
-                <div ng-show="test.status === 'Pending' || test.status === 'Running'">
-                  {{test.status}}
-                </div>
-
-                <div ng-show="test.status && test.status !== 'Pending' && test.status !== 'Running' && test.notes">
-                  <i class="md md-block m-r-10"></i>
-                  DEFER
-                </div>
-
-
-              </div>
-              <div class="col-md-3">
-                {{test.name}}
-              </div>
-              <div class="col-md-1">
-                <div class="md md-add blue p-l-5 p-r-5" ng-show="test.results"
-                     ng-click="showDetails = !showDetails">Details
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="row">
-                  {{test.expectedError}}
-                </div>
-
-              </div>
-
-
-            </div>
-
-            <div class="row p-l-10 m-b-15" ng-if="test.notes.length > 0 && showDetails">
-              <div class="col-md-1"></div>
-              <div class="col-md-11 no-padding">
-                <h4>Test Deferred</h4>
-
-                <div ng-repeat="note in test.notes">
-                  {{note}}
-                </div>
-              </div>
-            </div>
-
-            <div class="row p-l-10 m-b-15" ng-if="showDetails">
-
-              <div class="col-md-1">
-                <!-- blank -->
-              </div>
-              <div class="col-md-11 no-padding">
-                <div class="col-md-6 no-padding">
-                  <h4>Test Data Sent</h4>
-
-                  <div concept-edit concept="test.results.data" static="true" branch="branch" autosave="false"></div>
-                </div>
-                <div class="col-md-6">
-                  <h4>Errors/Warnings Received</h4>
-
-                  <div ng-repeat="error in test.results.errorsReceived">
-                    {{error.severity}} : {{error.message}}
-                  </div>
-                </div>
-                <hr>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
+    </div>
+    <div class="row p-5">
+      <div class="col-md-1">URL</div>
+      <div class="col-md-11">
+        <textarea ng-model="notificationUrl" style="width:350px;"></textarea>
       </div>
+    </div>
+    <div class="row p-5">
+      <div class="col-md-1">Duration (ms)</div>
+      <div class="col-md-11"><input ng-model="notificationDuration">
+      </div>
+    </div>
+    <div class="row p-5">
+      <div class="col-md-1"></div>
+      <div class="col-md-11">
+        <button class="btn btn-default btn-primary" ng-click="sendNotification()">Send Notification</button>
+      </div>
+
     </div>
 
 
