@@ -333,6 +333,7 @@ angular.module('singleConceptAuthoringApp')
 
         function initialize() {
 
+          scope.loadComplete = false;
           scope.searchExtensionFlag = metadataService.isExtensionSet();
           scope.synonymFlag = metadataService.isExtensionSet();
           scope.acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
