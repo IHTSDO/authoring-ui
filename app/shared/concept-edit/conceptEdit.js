@@ -374,7 +374,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                     // if unsaved, update possible GUID and concept property changes in saved and favorite lists
                     if (!crsConcept.saved) {
-                      $rootScope.$broadcast('saveCrsConcept', {concept : crsConcept, crsConceptId : originalConceptId});
+                      $rootScope.$broadcast('saveCrsConcept', {concept: crsConcept, crsConceptId: originalConceptId});
                     }
 
                     // update the crs concept
@@ -383,7 +383,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // clear the modified state if no id was specified
                   if (!originalConceptId || originalConceptId.indexOf('-') !== -1) {
-                   scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
+                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
                   } else {
 
                     // clear the saved modified state
@@ -681,8 +681,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     }
                   });
                 }
-                else{
-                   inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget, results.deletion);
+                else {
+                  inactivationService.setParameters(scope.branch, scope.concept, null, results.associationTarget, results.deletion);
                   $rootScope.$broadcast('conceptEdit.inactivateConcept');
                 }
               });
@@ -1095,8 +1095,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!description.active) {
             description.active = true;
             description.effectiveTime = null;
-            if(description.type === 'FSN'){
-                description.acceptabilityMap = componentAuthoringUtil.getNewAcceptabilityMap(description.moduleId, 'PREFERRED');
+            if (description.type === 'FSN') {
+              description.acceptabilityMap = componentAuthoringUtil.getNewAcceptabilityMap(description.moduleId, 'PREFERRED');
             }
             autoSave();
           }
@@ -1152,11 +1152,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // persist the inactivation reason
 //                  snowowlService.inactivateDescription(scope.branch, description.descriptionId, results.reason.id).then(function (response) {
-                    description.active = false;
-                    description.inactivationIndicator = results.reason.id;
-                    console.log(description.inactivationIndicator);
-                    console.log(description);
-                    scope.saveConcept();
+                  description.active = false;
+                  description.inactivationIndicator = results.reason.id;
+                  console.log(description.inactivationIndicator);
+                  console.log(description);
+                  scope.saveConcept();
 //                  }, function (error) {
 //                    notificationService.sendError('Error inactivating description');
 //                  });
@@ -1182,9 +1182,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 //            // persist the inactivation reason
 //            snowowlService.inactivateDescription(scope.branch, item.descriptionId, results.reason.id).then(function (response) {
-              item.active = false;
-              item.inactivationIndicator = results.reason.id;
-              scope.saveConcept();
+            item.active = false;
+            item.inactivationIndicator = results.reason.id;
+            scope.saveConcept();
 //            }, function (error) {
 //              notificationService.sendError('Error inactivating description');
 //            });
@@ -1655,7 +1655,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // check that attribute is acceptable for MRCM rules
           var attributes = scope.getConceptForFullAttribute(data.id);
-          if ((attributes && attributes.length > 0)  || !metadataService.isMrcmEnabled()) {
+          if ((attributes && attributes.length > 0) || !metadataService.isMrcmEnabled()) {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
             scope.warnings = null;
@@ -2168,7 +2168,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }
-            componentAuthoringUtil.ptFromFsnAutomation(scope.concept, description);
+            //  TODO Removed temporarily during dialect automation testing - may be replaced
+            // componentAuthoringUtil.ptFromFsnAutomation(scope.concept, description);
           }
 
           // In order to ensure proper term-server behavior
@@ -2179,7 +2180,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
-          autoSave();
+          var matchInfo = description.term.match(/([a-zA-Z]+)/g);
+          console.debug('MATCH INFO', matchInfo);
+          var tokenizedWords = [];
+          for (var i = 0; i < matchInfo.length; i++) {
+            tokenizedWords.push(matchInfo[i]);
+          }
+          snowowlService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
+            console.debug('Matching words', matchingWords);
+            componentAuthoringUtil.runDialectAutomation(scope.concept, description, matchingWords);
+
+            angular.forEach(scope.concept.descriptions, function (description) {
+              if (description.dialectAutomationFlag) {
+                console.debug('Detected automation description');
+                scope.applyComponentStyle(description.id, null, 'redhl');
+              }
+            });
+
+            autoSave();
+          }, function (error) {
+
+            notificationService.sendWarning('Error running automations: ' + error);
+            autoSave();
+          })
+
+
         };
 
 // function to update relationship and autoSave if indicated
@@ -2631,7 +2656,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         var nStyles = 0;
 
-
         scope.getConceptStyle = function () {
 
           if (!scope.componentStyles) {
@@ -2643,7 +2667,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.getComponentStyle = function (id, field, defaultStyle) {
+        scope.getComponentStyle = function (id, field, defaultStyle, component) {
 
           // if no styless supplied, use defaults
           if (!scope.componentStyles) {
@@ -2656,7 +2680,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // key is SCTID or SCTID-field pair e.g. 1234567 or 1234567-term
             var key = id + (field ? '-' + field : '');
 
-            if (scope.componentStyles.hasOwnProperty(key)) {
+            if (component.dialectAutomationFlag) {
+              return 'redhl';
+            } else if (scope.componentStyles.hasOwnProperty(key)) {
               return scope.componentStyles[key].style;
             } else {
               return defaultStyle;
