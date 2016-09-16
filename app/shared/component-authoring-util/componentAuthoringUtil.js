@@ -468,13 +468,16 @@ angular.module('singleConceptAuthoringApp')
            // temporary variables
             var termUs, termGb, newPt;
 
-            // extract the base term
+            // extract the base term (no semantic tag)
             if (description.type === 'FSN') {
               var matchInfo = description.term.match(/^(.*)\s\(.*\)$/i);
               if (matchInfo && matchInfo[1]) {
                 termUs = matchInfo[1];
-              } else {
-                termUs = description.term;
+              }
+
+              // if semantic tag not present, skip automation
+              else {
+                deferred.resolve(concept);
               }
             } else {
               termUs = description.term;
