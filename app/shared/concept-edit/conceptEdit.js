@@ -2178,29 +2178,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
-          // if term set, run automations
-          if (description.term) {
-
-
-            var matchInfo = description.term.match(/([a-zA-Z]+)/g);
-            var tokenizedWords = [];
-            if (matchInfo) {
-              for (var i = 0; i < matchInfo.length; i++) {
-                tokenizedWords.push(matchInfo[i]);
-              }
-            }
-
-            snowowlService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
-              componentAuthoringUtil.runDialectAutomation(scope.concept, description, matchingWords);
-              autoSave();
-            }, function (error) {
-
-              notificationService.sendWarning('Error running automations: ' + error);
-              autoSave();
-            })
-          } else {
+          // run automations
+          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function(updatedConcept) {
+            scope.concept = updatedConcept;
+          }, function(error) {
+            notificationService.sendWarning('Automations failed: ' + error);
+          }, function() {
             autoSave();
-          }
+          })
+
+
 
 
         };
