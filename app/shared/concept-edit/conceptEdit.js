@@ -2179,7 +2179,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // run automations
-          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function(updatedConcept) {
+          var conceptCopy = angular.copy(scope.concept);
+          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function(conceptCopy) {
             scope.concept = updatedConcept;
           }, function(error) {
             notificationService.sendWarning('Automations failed: ' + error);
