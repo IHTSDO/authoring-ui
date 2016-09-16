@@ -2168,8 +2168,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }
-            //  TODO Removed temporarily during dialect automation testing - may be replaced
-            // componentAuthoringUtil.ptFromFsnAutomation(scope.concept, description);
           }
 
           // In order to ensure proper term-server behavior
@@ -2180,11 +2178,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
+          // if term set, run automations
           if (description.term) {
 
 
             var matchInfo = description.term.match(/([a-zA-Z]+)/g);
-            console.debug('MATCH INFO', matchInfo);
             var tokenizedWords = [];
             if (matchInfo) {
               for (var i = 0; i < matchInfo.length; i++) {
@@ -2193,15 +2191,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             snowowlService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
-              console.debug('Matching words', matchingWords);
               componentAuthoringUtil.runDialectAutomation(scope.concept, description, matchingWords);
-
-              angular.forEach(scope.concept.descriptions, function (description) {
-                if (description.dialectAutomationFlag) {
-                  console.debug('Detected automation description', description);
-                }
-              });
-
               autoSave();
             }, function (error) {
 

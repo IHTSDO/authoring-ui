@@ -411,17 +411,21 @@ angular.module('singleConceptAuthoringApp')
       }
 
 
-    /**
-     * Automates adding descriptions where dialect differences may exist.
-     * NOTE: Relies on new descriptions
-     * @param concept
-     * @param description
-     * @param matchingWords
-     * @returns {*}
+      /**
+       * Automates adding descriptions where dialect differences may exist.
+       * NOTE: Relies on new descriptions
+       * @param concept
+       * @param description
+       * @param matchingWords
+       * @returns {*}
        */
       function runDialectAutomation(concept, description, matchingWords) {
 
-        console.debug('runDialectAutomation', Object.keys(matchingWords).length, matchingWords, description);
+        // do not run any automation for MS content
+        if (metadataService.isExtensionSet()) {
+          return;
+        }
+
         // check for null arguments
         if (!concept || !description || !matchingWords || matchingWords.length == 0) {
           return concept;
@@ -433,7 +437,6 @@ angular.module('singleConceptAuthoringApp')
         var termUs, termGb;
         if (description.type === 'FSN') {
           var matchInfo = description.term.match(/^(.*)\s\(.*\)$/i);
-          console.debug('FSN MATCH INFO', matchInfo);
           if (matchInfo && matchInfo[1]) {
             termUs = matchInfo[1];
           } else {
@@ -443,14 +446,11 @@ angular.module('singleConceptAuthoringApp')
           termUs = description.term;
         }
 
-        console.debug('  termUs', termUs);
-
         // replace original words with the suggested dialect spellings
         termGb = termUs;
         for (var match in matchingWords) {
           termGb = termGb.replace(match, matchingWords[match]);
         }
-        console.debug('  termGb', termGb);
 
         // when existing concept
         if (concept.released) {
@@ -460,7 +460,6 @@ angular.module('singleConceptAuthoringApp')
             console.debug('  Case: FSN');
             // when spelling variant present, result is
             if (hasMatchingWords) {
-              console.debug('    Case: Matching words found');
               // FSN, en-US preferred
               description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
               delete description.acceptabilityMap['900000000000508004'];
@@ -470,7 +469,6 @@ angular.module('singleConceptAuthoringApp')
             }
             // else, FSN en-US preferred, add matching PT
             else {
-              console.debug('    Case: No matching words found');
               description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
               description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
               var newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
@@ -480,11 +478,8 @@ angular.module('singleConceptAuthoringApp')
           }
           // when new SYN
           else if (description.type === 'SYNONYM') {
-            console.debug('  Case: SYNONYN');
             // when spelling variant present, result is
             if (hasMatchingWords) {
-              console.debug('    Case: Matching words found');
-
               // SYN, en-US acceptable
               description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
               delete description.acceptabilityMap['900000000000508004'];
@@ -495,8 +490,6 @@ angular.module('singleConceptAuthoringApp')
 
             // else, SYN en-US, acceptable
             else {
-              console.debug('    Case: No matching words found');
-
               description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
             }
           }
@@ -504,15 +497,10 @@ angular.module('singleConceptAuthoringApp')
 
         // when new concept
         else {
-          console.debug('Case: New concept');
           // when FSN
           if (description.type === 'FSN') {
-            console.debug('  Case: FSN');
             // when spelling variant is present, result is
             if (hasMatchingWords) {
-              console.debug('    Case: Matching words found');
-
-
               // FSN en-US preferred
               description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
               delete description.acceptabilityMap['900000000000508004'];
@@ -525,7 +513,6 @@ angular.module('singleConceptAuthoringApp')
             }
             // else, add matching PT
             else {
-              console.debug('    Case: No matching words found');
               description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
               description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
               var newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
@@ -535,10 +522,7 @@ angular.module('singleConceptAuthoringApp')
           }
           // when SYN
           else if (description.type === 'SYNONYM') {
-            console.debug('  Case: SYNONYM');
             if (hasMatchingWords) {
-              console.debug('    Case: Matching words found');
-
               // SYN, en-US acceptable
               description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
               delete description.acceptabilityMap['900000000000508004'];
@@ -548,14 +532,13 @@ angular.module('singleConceptAuthoringApp')
             }
             // else, do nothing.
             else {
-              console.debug('    Case: No matching words found');
+              // do nothing
             }
           }
         }
 
         // remove empty descriptions after automation
         for (var i = concept.descriptions.length - 1; i--; i >= 0) {
-          console.debug('Checking for empty description', concept.descriptions[i].term);
           if (!concept.descriptions[i].term) {
             concept.descriptions.splice(i, 1);
           }
