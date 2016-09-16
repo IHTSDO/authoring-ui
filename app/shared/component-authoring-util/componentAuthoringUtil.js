@@ -591,6 +591,9 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
         var promises = [];
+
+        // structure here probably won't work -- don't want concurrent modifications
+        // move to chained structure if new automations are required
         promises.push(runDialectAutomation(concept, description));
 
         $q.all(promises, function() {
