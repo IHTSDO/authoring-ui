@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('componentAuthoringUtil', function (metadataService) {
+  .service('componentAuthoringUtil', function (metadataService, snowowlService, $q) {
 
       /////////////////////////////////////
       // calls to return JSON objects
@@ -419,134 +419,186 @@ angular.module('singleConceptAuthoringApp')
        * @param matchingWords
        * @returns {*}
        */
-      function runDialectAutomation(concept, description, matchingWords) {
+      function runDialectAutomation(concept, description) {
 
-        // do not run any automation for MS content
-        if (metadataService.isExtensionSet()) {
-          return;
+        var deferred = $q.defer();
+
+        // reject if arguments null
+        if (!concept || !description) {
+          deferred.reject('Error running dialect automation: concept or description not supplied');
         }
 
-        // check for null arguments
-        if (!concept || !description || !matchingWords || matchingWords.length == 0) {
-          return concept;
+        // resolve with no action if no description term
+        else if (!description.term) {
+          deferred.resolve(concept);
         }
 
-        var hasMatchingWords = Object.keys(matchingWords).length > 0;
-
-        // extract the base term
-        var termUs, termGb;
-        if (description.type === 'FSN') {
-          var matchInfo = description.term.match(/^(.*)\s\(.*\)$/i);
-          if (matchInfo && matchInfo[1]) {
-            termUs = matchInfo[1];
-          } else {
-            termUs = description.term;
-          }
-        } else {
-          termUs = description.term;
+        // resolve with no action if extension set
+        else if (metadataService.isExtensionSet()) {
+          deferred.resolve(concept);
         }
 
-        // replace original words with the suggested dialect spellings
-        termGb = termUs;
-        for (var match in matchingWords) {
-          termGb = termGb.replace(match, matchingWords[match]);
-        }
+        // otherwise, continue
+        else{
 
-        // when existing concept
-        if (concept.released) {
-          console.debug('Case: Released concept');
-          //  when new FSN
-          if (description.type === 'FSN') {
-            console.debug('  Case: FSN');
-            // when spelling variant present, result is
-            if (hasMatchingWords) {
-              // FSN, en-US preferred
-              description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-              delete description.acceptabilityMap['900000000000508004'];
-
-              // SYN, en-GB acceptable
-              addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+          var matchInfo = description.term.match(/([a-zA-Z]+)/g);
+          var tokenizedWords = [];
+          if (matchInfo) {
+            for (var i = 0; i < matchInfo.length; i++) {
+              tokenizedWords.push(matchInfo[i]);
             }
-            // else, FSN en-US preferred, add matching PT
+          }
+
+          // retrieve the matches
+          snowowlService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
+
+            // do not run any automation for MS content
+            if (metadataService.isExtensionSet()) {
+              return;
+            }
+
+            // check for null arguments
+            if (!concept || !description || !matchingWords || matchingWords.length == 0) {
+              return concept;
+            }
+
+            // flag of convenience for whether dialect matches found
+            var hasMatchingWords = Object.keys(matchingWords).length > 0;
+
+           // temporary variables
+            var termUs, termGb, newPt;
+
+            // extract the base term
+            if (description.type === 'FSN') {
+              var matchInfo = description.term.match(/^(.*)\s\(.*\)$/i);
+              if (matchInfo && matchInfo[1]) {
+                termUs = matchInfo[1];
+              } else {
+                termUs = description.term;
+              }
+            } else {
+              termUs = description.term;
+            }
+
+            // replace original words with the suggested dialect spellings
+            termGb = termUs;
+            for (var match in matchingWords) {
+              termGb = termGb.replace(match, matchingWords[match]);
+            }
+
+            // when existing concept
+            if (concept.released) {
+              console.debug('Case: Released concept');
+              //  when new FSN
+              if (description.type === 'FSN') {
+                console.debug('  Case: FSN');
+                // when spelling variant present, result is
+                if (hasMatchingWords) {
+                  // FSN, en-US preferred
+                  description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
+                  delete description.acceptabilityMap['900000000000508004'];
+
+                  // SYN, en-GB acceptable
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                }
+                // else, FSN en-US preferred, add matching PT
+                else {
+                  description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
+                  description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+                  newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+                  newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+                  newPt.dialectAutomationFlag = false;
+                }
+              }
+              // when new SYN
+              else if (description.type === 'SYNONYM') {
+                // when spelling variant present, result is
+                if (hasMatchingWords) {
+                  // SYN, en-US acceptable
+                  description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  delete description.acceptabilityMap['900000000000508004'];
+
+                  // SYN en-GB acceptable
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                }
+
+                // else, SYN en-US, acceptable
+                else {
+                  description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                }
+              }
+            }
+
+            // when new concept
             else {
-              description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-              description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-              var newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
-              newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-              newPt.dialectAutomationFlag = false;
-            }
-          }
-          // when new SYN
-          else if (description.type === 'SYNONYM') {
-            // when spelling variant present, result is
-            if (hasMatchingWords) {
-              // SYN, en-US acceptable
-              description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
-              delete description.acceptabilityMap['900000000000508004'];
+              // when FSN
+              if (description.type === 'FSN') {
+                // when spelling variant is present, result is
+                if (hasMatchingWords) {
+                  // FSN en-US preferred
+                  description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
+                  delete description.acceptabilityMap['900000000000508004'];
 
-              // SYN en-GB acceptable
-              addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                  // SYN en-US preferred
+                  addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+
+                  // SYN en-GB acceptable
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                }
+                // else, add matching PT
+                else {
+                  description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
+                  description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+                  newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+                  newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+                  newPt.dialectAutomationFlag = false;
+                }
+              }
+              // when SYN
+              else if (description.type === 'SYNONYM') {
+                if (hasMatchingWords) {
+                  // SYN, en-US acceptable
+                  description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  delete description.acceptabilityMap['900000000000508004'];
+
+                  // SYN en-GB acceptable
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                }
+                // else, do nothing.
+                else {
+                  // do nothing
+                }
+              }
             }
 
-            // else, SYN en-US, acceptable
-            else {
-              description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+            // remove empty descriptions after automation
+            for (var i = concept.descriptions.length - 1; i--; i >= 0) {
+              if (!concept.descriptions[i].term) {
+                concept.descriptions.splice(i, 1);
+              }
             }
-          }
-        }
-
-        // when new concept
-        else {
-          // when FSN
-          if (description.type === 'FSN') {
-            // when spelling variant is present, result is
-            if (hasMatchingWords) {
-              // FSN en-US preferred
-              description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-              delete description.acceptabilityMap['900000000000508004'];
-
-              // SYN en-US preferred
-              addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
-
-              // SYN en-GB acceptable
-              addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
-            }
-            // else, add matching PT
-            else {
-              description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-              description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-              var newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
-              newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-              newPt.dialectAutomationFlag = false;
-            }
-          }
-          // when SYN
-          else if (description.type === 'SYNONYM') {
-            if (hasMatchingWords) {
-              // SYN, en-US acceptable
-              description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
-              delete description.acceptabilityMap['900000000000508004'];
-
-              // SYN en-GB acceptable
-              addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
-            }
-            // else, do nothing.
-            else {
-              // do nothing
-            }
-          }
-        }
-
-        // remove empty descriptions after automation
-        for (var i = concept.descriptions.length - 1; i--; i >= 0) {
-          if (!concept.descriptions[i].term) {
-            concept.descriptions.splice(i, 1);
-          }
+          }, function (error) {
+            deferred.reject('Error matching dialect words: ' + error);
+          });
         }
 
 
-        return concept;
+        return deferred.promise;
 
+      }
+
+      function runDescriptionAutomations(concept, description) {
+
+        var deferred = $q.defer();
+        var promises = [];
+        promises.push(runDialectAutomation(concept, description));
+
+        $q.all(promises, function() {
+          deferred.resolve();
+        }, function(error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
       }
 
       return {
@@ -563,9 +615,15 @@ angular.module('singleConceptAuthoringApp')
         isConceptsEqual: isConceptsEqual,
         isDescriptionsEqual: isDescriptionsEqual,
         isRelationshipsEqual: isRelationshipsEqual,
-        ptFromFsnAutomation: ptFromFsnAutomation,
+
         getNewAcceptabilityMap: getNewAcceptabilityMap,
-        runDialectAutomation: runDialectAutomation
+
+        // individual automations
+        ptFromFsnAutomation: ptFromFsnAutomation,
+        runDialectAutomation: runDialectAutomation,
+
+        // grouped automations
+        runDescriptionAutomations: runDescriptionAutomations
 
       };
 
