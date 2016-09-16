@@ -2180,29 +2180,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
-          var matchInfo = description.term.match(/([a-zA-Z]+)/g);
-          console.debug('MATCH INFO', matchInfo);
-          var tokenizedWords = [];
-          for (var i = 0; i < matchInfo.length; i++) {
-            tokenizedWords.push(matchInfo[i]);
-          }
-          snowowlService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
-            console.debug('Matching words', matchingWords);
-            componentAuthoringUtil.runDialectAutomation(scope.concept, description, matchingWords);
+          if (description.term) {
 
-            angular.forEach(scope.concept.descriptions, function (description) {
-              if (description.dialectAutomationFlag) {
-                console.debug('Detected automation description');
-                scope.applyComponentStyle(description.id, null, 'redhl');
+
+            var matchInfo = description.term.match(/([a-zA-Z]+)/g);
+            console.debug('MATCH INFO', matchInfo);
+            var tokenizedWords = [];
+            if (matchInfo) {
+              for (var i = 0; i < matchInfo.length; i++) {
+                tokenizedWords.push(matchInfo[i]);
               }
-            });
+            }
 
-            autoSave();
-          }, function (error) {
+            snowowlService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
+              console.debug('Matching words', matchingWords);
+              componentAuthoringUtil.runDialectAutomation(scope.concept, description, matchingWords);
 
-            notificationService.sendWarning('Error running automations: ' + error);
+              angular.forEach(scope.concept.descriptions, function (description) {
+                if (description.dialectAutomationFlag) {
+                  console.debug('Detected automation description', description);
+                }
+              });
+
+              autoSave();
+            }, function (error) {
+
+              notificationService.sendWarning('Error running automations: ' + error);
+              autoSave();
+            })
+          } else {
             autoSave();
-          })
+          }
 
 
         };
@@ -2669,6 +2677,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.getComponentStyle = function (id, field, defaultStyle, component) {
 
+          // if dialect automation flag detected
+          if (component && component.dialectAutomationFlag) {
+            return 'redhl';
+          }
+
           // if no styless supplied, use defaults
           if (!scope.componentStyles) {
             return defaultStyle;
@@ -2680,9 +2693,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // key is SCTID or SCTID-field pair e.g. 1234567 or 1234567-term
             var key = id + (field ? '-' + field : '');
 
-            if (component.dialectAutomationFlag) {
-              return 'redhl';
-            } else if (scope.componentStyles.hasOwnProperty(key)) {
+            if (scope.componentStyles.hasOwnProperty(key)) {
               return scope.componentStyles[key].style;
             } else {
               return defaultStyle;

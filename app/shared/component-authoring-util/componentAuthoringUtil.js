@@ -421,7 +421,7 @@ angular.module('singleConceptAuthoringApp')
        */
       function runDialectAutomation(concept, description, matchingWords) {
 
-        console.debug('runDialectAutomation', Object.keys(matchingWords).length, matchingWords);
+        console.debug('runDialectAutomation', Object.keys(matchingWords).length, matchingWords, description);
         // check for null arguments
         if (!concept || !description || !matchingWords || matchingWords.length == 0) {
           return concept;
@@ -432,9 +432,9 @@ angular.module('singleConceptAuthoringApp')
         // extract the base term
         var termUs, termGb;
         if (description.type === 'FSN') {
-          var matchInfo = description.term.match(/(.*)\s\(.*\)/g);
+          var matchInfo = description.term.match(/^(.*)\s\(.*\)$/i);
           console.debug('FSN MATCH INFO', matchInfo);
-          if (matchInfo) {
+          if (matchInfo && matchInfo[1]) {
             termUs = matchInfo[1];
           } else {
             termUs = description.term;
@@ -468,10 +468,14 @@ angular.module('singleConceptAuthoringApp')
               // SYN, en-GB acceptable
               addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
             }
-            // else, FSN en-US preferred
+            // else, FSN en-US preferred, add matching PT
             else {
               console.debug('    Case: No matching words found');
               description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
+              description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+              var newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+              newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+              newPt.dialectAutomationFlag = false;
             }
           }
           // when new SYN
@@ -519,18 +523,14 @@ angular.module('singleConceptAuthoringApp')
               // SYN en-GB acceptable
               addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
             }
-            // else, result is
+            // else, add matching PT
             else {
               console.debug('    Case: No matching words found');
-
-              // FSN en-US preferred
               description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-              delete description.acceptabilityMap['900000000000508004'];
-
-              // SYN en-US preferred
-              // TODO Let existing automation take care of this? This will highlight
-              var dialectDescription = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'ACCEPTABLE');
-              dialectDescription.acceptabilitymap['900000000000508004'] = 'PREFERRED';
+              description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+              var newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+              newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+              newPt.dialectAutomationFlag = false;
             }
           }
           // when SYN
