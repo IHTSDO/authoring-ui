@@ -439,7 +439,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         // otherwise, continue
-        else{
+        else {
 
           var matchInfo = description.term.match(/([a-zA-Z]+)/g);
           var tokenizedWords = [];
@@ -465,7 +465,7 @@ angular.module('singleConceptAuthoringApp')
             // flag of convenience for whether dialect matches found
             var hasMatchingWords = Object.keys(matchingWords).length > 0;
 
-           // temporary variables
+            // temporary variables
             var termUs, termGb, newPt;
 
             // extract the base term (no semantic tag)
@@ -497,14 +497,14 @@ angular.module('singleConceptAuthoringApp')
                 console.debug('  Case: FSN');
                 // when spelling variant present, result is
                 if (hasMatchingWords) {
-                  // FSN, en-US preferred
+                  // ensure FSN en-US preferred
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN, en-GB acceptable
                   addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                 }
-                // else, FSN en-US preferred, add matching PT
+                // else, ensure FSN en-US and en-GB preferred, add matching PT
                 else {
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
@@ -517,17 +517,19 @@ angular.module('singleConceptAuthoringApp')
               else if (description.type === 'SYNONYM') {
                 // when spelling variant present, result is
                 if (hasMatchingWords) {
-                  // SYN, en-US acceptable
-                  description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  // SYN, ensure en-US acceptability is set and delete en-GB acceptability
+                  if (!description.acceptabilityMap['900000000000509007']) {
+                    description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  }
                   delete description.acceptabilityMap['900000000000508004'];
 
-                  // SYN en-GB acceptable
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                  // SYN en-GB matching acceptability of original description
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                 }
 
-                // else, SYN en-US, acceptable
+                // else, leave unchanged
                 else {
-                  description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  // do nothing
                 }
               }
             }
@@ -538,15 +540,15 @@ angular.module('singleConceptAuthoringApp')
               if (description.type === 'FSN') {
                 // when spelling variant is present, result is
                 if (hasMatchingWords) {
-                  // FSN en-US preferred
+                  // ensure FSN en-US preferred
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN en-US preferred
                   addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
 
-                  // SYN en-GB acceptable
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                  // SYN en-GB preferred
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                 }
                 // else, add matching PT
                 else {
@@ -560,13 +562,16 @@ angular.module('singleConceptAuthoringApp')
               // when SYN
               else if (description.type === 'SYNONYM') {
                 if (hasMatchingWords) {
-                  // SYN, en-US acceptable
-                  description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  // SYN, ensure en-us acceptability is set and delete en-gb acceptability
+                  if (!description.acceptabilityMap['900000000000509007']) {
+                    description.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                  }
                   delete description.acceptabilityMap['900000000000508004'];
 
-                  // SYN en-GB acceptable
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                  // SYN en-GB matching acceptability of original description
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', description.acceptabilityMap['900000000000509007']);
                 }
+
                 // else, do nothing.
                 else {
                   // do nothing
@@ -599,9 +604,9 @@ angular.module('singleConceptAuthoringApp')
         // move to chained structure if new automations are required
         promises.push(runDialectAutomation(concept, description));
 
-        $q.all(promises, function() {
+        $q.all(promises, function () {
           deferred.resolve();
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
         });
         return deferred.promise;
