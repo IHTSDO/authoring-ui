@@ -502,7 +502,7 @@ angular.module('singleConceptAuthoringApp')
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN, en-GB acceptable
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'ACCEPTABLE');
+                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                 }
                 // else, FSN en-US preferred, add matching PT
                 else {
