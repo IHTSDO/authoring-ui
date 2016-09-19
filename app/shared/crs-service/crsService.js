@@ -277,7 +277,9 @@ angular.module('singleConceptAuthoringApp')
         }
 
         for (var i = 0; i < currentTaskConcepts.length; i++) {
-          if (currentTaskConcepts[i].conceptId === currentTaskConcepts[i].requiresCreation) {
+          console.debug('checking ', id, currentTaskConcepts[i].conceptId, currentTaskConcepts[i].requiresCreation)
+          if (id === currentTaskConcepts[i].conceptId && currentTaskConcepts[i].requiresCreation) {
+            console.debug('match found');
             return true;
           }
         }
