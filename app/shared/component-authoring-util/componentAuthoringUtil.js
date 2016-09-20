@@ -454,12 +454,17 @@ angular.module('singleConceptAuthoringApp')
 
             // do not run any automation for MS content
             if (metadataService.isExtensionSet()) {
-              return;
+              deferred.resolve(concept);
             }
 
             // check for null arguments
-            if (!concept || !description || !matchingWords || matchingWords.length == 0) {
-              return concept;
+            if (!concept || !description) {
+              deferred.reject('Dialect automation failed: bad arguments');
+            }
+
+            // if no matching words, skip automation
+            if (!matchingWords || matchingWords.length == 0) {
+              deferred.resolve(concept);
             }
 
             // flag of convenience for whether dialect matches found
@@ -585,11 +590,12 @@ angular.module('singleConceptAuthoringApp')
                 concept.descriptions.splice(i, 1);
               }
             }
+
+            deferred.resolve(concept);
           }, function (error) {
             deferred.reject('Error matching dialect words: ' + error);
           });
         }
-
 
         return deferred.promise;
 
@@ -598,14 +604,9 @@ angular.module('singleConceptAuthoringApp')
       function runDescriptionAutomations(concept, description) {
 
         var deferred = $q.defer();
-        var promises = [];
 
-        // structure here probably won't work -- don't want concurrent modifications
-        // move to chained structure if new automations are required
-        promises.push(runDialectAutomation(concept, description));
-
-        $q.all(promises, function () {
-          deferred.resolve();
+        runDialectAutomation(concept, description).then(function (updatedConcept) {
+          deferred.resolve(updatedConcept);
         }, function (error) {
           deferred.reject(error);
         });
