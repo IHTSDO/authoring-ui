@@ -111,8 +111,13 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
 
+        // if no crsRequest present, treat as Other Request (no attachment content)
+        if (!crsRequest) {
+          deferred.resolve({emptyRequest : true});
+        }
+
         // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
-        if (!crsRequest.conceptId) {
+        else if (!crsRequest.conceptId) {
           var copy = angular.copy(crsRequest);
           copy.conceptId = snowowlService.createGuid();
           deferred.resolve(copy);
