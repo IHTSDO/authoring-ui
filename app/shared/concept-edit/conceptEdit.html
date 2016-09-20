@@ -205,7 +205,8 @@
 
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in getDescriptions()"
+    <div ng-repeat="description in concept.descriptions"
+         ng-show="isDescriptionViewable(description)"
          ng-class="getComponentStyle(description.descriptionId, null, '', description)"
          class="">
 
