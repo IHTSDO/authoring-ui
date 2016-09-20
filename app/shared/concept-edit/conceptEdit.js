@@ -885,6 +885,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
               var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
 
+              console.debug(aVal, bVal, descA.term, descB.term);
+
 
               if (aVal !== bVal) {
                 if (aVal && !bVal) {
@@ -939,8 +941,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             }
 
-            // all else being equal, sort on term
-            return a.term < b.term ? -1 : 1;
+            console.debug('sorting by term');
+
+            if (a.term && !b.term) {
+              return -1;
+            }
+            if (!a.term && b.term) {
+              return 1;
+            }
+            if (!a.term && !b.term) {
+              return 0;
+            }
+            // all else being equal, sort on term (case insensitive)
+            return a.term.toLowerCase() < b.term.toLowerCase() ? -1 : 1;
           });
 
           // cycle over original descriptions (backward) to reinsert non-typed
@@ -1063,7 +1076,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             for (var dialect in description.acceptabilityMap) {
 
               if (metadataService.isUsDialect(dialect)) {
-                console.debug('is us');
                 return true;
               }
               if (metadataService.isExtensionDialect(dialect)) {
