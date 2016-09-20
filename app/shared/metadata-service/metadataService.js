@@ -16,6 +16,7 @@ angular.module('singleConceptAuthoringApp')
     var isaRelationshipId = '116680003';
 
     var snomedCtRootId = '138875005';
+
     function getSnomedCtRootId() {
       return snomedCtRootId;
     }
@@ -133,10 +134,10 @@ angular.module('singleConceptAuthoringApp')
     var extensionMetadata = null;
 
 
-      // Branch/Task-level metadata
-      // Task level information
-      // and should be automatically set by edit.js
-      // and similar views
+    // Branch/Task-level metadata
+    // Task level information
+    // and should be automatically set by edit.js
+    // and similar views
     var branchMetadata = {};
 
 
@@ -244,6 +245,10 @@ angular.module('singleConceptAuthoringApp')
         }).length > 0;
     }
 
+    function isUsDialect(dialectId) {
+      return dialectId === '900000000000509007';
+    }
+
     // checks if specified dialect belongs to extension
     function isExtensionDialect(dialectId) {
       if (!extensionMetadata || !extensionMetadata.dialects) {
@@ -275,12 +280,12 @@ angular.module('singleConceptAuthoringApp')
 
     // setter for display name by module id
     function setModuleName(moduleId, moduleName) {
-      angular.forEach(extensionMetadata.modules, function(module) {
+      angular.forEach(extensionMetadata.modules, function (module) {
         if (module.id === moduleId) {
           module.name = moduleName;
         }
       });
-      angular.forEach(internationalMetadata.modules, function(module) {
+      angular.forEach(internationalMetadata.modules, function (module) {
         if (module.id === moduleId) {
           module.name = moduleName;
         }
@@ -422,7 +427,7 @@ angular.module('singleConceptAuthoringApp')
 
       // relationship functions
       isIsaRelationship: isIsaRelationship,
-      getSnomedCtRootId : getSnomedCtRootId,
+      getSnomedCtRootId: getSnomedCtRootId,
 
       // project cache getters/setters
       setProjects: setProjects,
@@ -436,13 +441,14 @@ angular.module('singleConceptAuthoringApp')
 
       // boolean checks exposed for use
       isLockedModule: isLockedModule,
+      isUsDialect: isUsDialect,
       isExtensionDialect: isExtensionDialect,
       isMrcmEnabled: isMrcmEnabled,
 
       // extension module-dependent retrieval functions
 
       getCurrentModuleId: getCurrentModuleId,
-      getInternationalModuleId : getInternationalModuleId,
+      getInternationalModuleId: getInternationalModuleId,
       getModulesForModuleId: getModulesForModuleId,
       getDefaultLanguageForModuleId: getDefaultLanguageForModuleId,
       getLanguagesForModuleId: getLanguagesForModuleId,
@@ -471,7 +477,7 @@ angular.module('singleConceptAuthoringApp')
       },
 
       getExtensionMetadata: function () {
-       return extensionMetadata;
+        return extensionMetadata;
       },
       getBranchMetadata: function () {
         return branchMetadata;
