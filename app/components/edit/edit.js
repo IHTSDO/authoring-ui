@@ -1461,7 +1461,12 @@ angular.module('singleConceptAuthoringApp.edit', [
             notificationService.sendWarning('Task initialization complete', 3000);
             $rootScope.$broadcast('reloadTaxonomy');
             $scope.branch = response.path;
-            deferred.resolve(response);
+
+            // add slight timeout to allow propagation of branch information
+            // TODO Added because crsService was receiving 404 on branch initially, but succeeding on reload
+            $timeout(function () {
+              deferred.resolve(response);
+            }, 1000);
           }, function (error) {
             deferred.reject('Could not create branch');
           });
@@ -1491,7 +1496,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         metadataService.setBranchMetadata($scope.task);
 
         // set any project-level metadata flags
-        metadataService.setMrcmEnabled(!$scope.project.projectPromotionDisabled);
+        metadataService.setMrcmEnabled(!$scope.project.projectMrcmDisabled);
 
         // initialize the CRS service
         // NOTE: Must be done before loading initial view

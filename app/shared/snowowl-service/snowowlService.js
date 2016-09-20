@@ -1257,8 +1257,18 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function validateConceptForProject(projectKey, concept) {
-        // TODO
+      function getDialectMatches(words) {
+        var deferred = $q.defer();
+        var wordsStr = '';
+        for (var i = 0; i < words.length; i++) {
+          wordsStr += words[i] + (i == words.length - 1 ? '' : '%2C');
+        }
+        $http.get(apiEndpoint + 'browser/dialect/matches?tokenizedWords=' + wordsStr).then(function (response) {
+          deferred.resolve(response.data);
+        }, function(error) {
+          deferred.reject(error.message);
+        });
+        return deferred.promise;
       }
 
       ////////////////////////////////////////////
@@ -1332,6 +1342,7 @@ angular.module('singleConceptAuthoringApp')
 
         // validation
         validateConcept: validateConcept,
+        getDialectMatches: getDialectMatches,
 
         // utility
         createGuid : createGuid
