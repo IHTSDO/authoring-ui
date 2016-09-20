@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if no crsRequest present, treat as Other Request (no attachment content)
         if (!crsRequest) {
-          deferred.resolve({emptyRequest : true});
+          deferred.resolve({fsn : 'Request without proposed concept'});
         }
 
         // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
