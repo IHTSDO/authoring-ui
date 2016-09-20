@@ -763,3 +763,11 @@ sca-dark .pull-left.follow-up {
     background: transparent;
 }
 .sca-dark .task-detail div{color:#fff!important}
+
+/* header alert fix */
+.sca-dark .header-alerts a, 
+.sca-dark .header-alerts div a,
+.sca-dark .btn,
+.sca-dark .header-alerts .blue{
+    color:#fff;
+}

@@ -1,3 +1,4 @@
+
 <div class="edits editing-form darken-3 grey">
 
   <!-- begin validation error -->
@@ -21,10 +22,11 @@
   </div>
 
 
+
   <!-- end validation error -->
   <!-- The concept itself -->
   <style>
-  
+
   .new-concept .grey.darken-4{background-color: #ffcadc!important; color:#212121!important}
   .new-concept .concept-headers:first-child{padding-top:3px!important}
   </style>
@@ -47,7 +49,7 @@
 
     <!-- concept name -->
     <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
-   
+
       <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
         <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
@@ -212,7 +214,7 @@
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"
              drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
-          <button ng-click="setDescriptionProperties(description, $event)"
+          <button id="myTextArea" name="myTextArea" ng-click="setDescriptionProperties(description, $event)"
                   class="btn-default grey darken-3 md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
