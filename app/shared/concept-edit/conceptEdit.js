@@ -825,6 +825,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // Must preserve position of untyped/new descriptions
         function sortDescriptions() {
 
+
           if (!scope.concept.descriptions) {
             return;
           }
@@ -880,8 +881,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // sort by values for ordered keys in dialects
             var acceptabilityComparator = function (descA, descB, dialect) {
 
+
               var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
               var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
+
 
               if (aVal !== bVal) {
                 if (aVal && !bVal) {
@@ -890,11 +893,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 if (!aVal && bVal) {
                   return 1;
                 }
-                // if both defined, one must be PREFERRED
+                // check for preferred first
                 if (aVal === 'PREFERRED') {
                   return -1;
                 }
                 if (bVal === 'PREFERRED') {
+                  return 1;
+                }
+
+                // check for acceptable next
+                if (aVal === 'ACCEPTABLE') {
+                  return -1;
+                }
+                if (bVal === 'ACCEPTABLE') {
                   return 1;
                 }
               }
@@ -907,9 +918,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return comp;
             }
 
+
             // sort by non en-us values second
-            for (var dialect in Object.keys(scope.dialects)) {
-              if (dialect !== '900000000000509007') {
+            for (var dialect in scope.dialects) {
+              // sort by extension value if present
+              if (metadataService.isExtensionSet() && metadataService.isExtensionDialect(dialect)) {
+                comp = acceptabilityComparator(a, b, dialect);
+                if (comp !== 0) {
+                  return comp;
+                }
+              }
+
+              // otherwise, sort by whatever other non-en-US dialects are present in turn
+              else if (dialect !== '900000000000509007') {
+
                 comp = acceptabilityComparator(a, b, dialect);
                 if (comp !== 0) {
                   return comp;
@@ -1021,24 +1043,41 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //
 //        ];
 
-// get viewed descriptions
-        scope.getDescriptions = function () {
-          var descs = [];
-
-          if (!scope.concept.descriptions) {
-            return descs;
+        scope.isDescriptionViewable = function(description) {
+          if (!description) {
+            return false;
+          }
+          if (scope.hideInactive && description.active !== true) {
+            return false;
           }
 
-          for (var i = 0; i < scope.concept.descriptions.length; i++) {
+          if (metadataService.isExtensionSet()) {
 
-            // check hideInactive
-            if (!scope.hideInactive || (scope.hideInactive && scope.concept.descriptions[i].active === true)) {
-              descs.push(scope.concept.descriptions[i]);
+
+            // if no acceptability map, display to allow setting values
+            if (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length == 0) {
+              return true;
             }
 
+            // only display if en-us or extension dialect present
+            for (var dialect in description.acceptabilityMap) {
+
+              if (metadataService.isUsDialect(dialect)) {
+                console.debug('is us');
+                return true;
+              }
+              if (metadataService.isExtensionDialect(dialect)) {
+
+                return true;
+              }
+            }
+            return false;
           }
-          return descs;
+          return true;
+
+
         };
+
 
 // Adds a description to the concept
 // arg: afterIndex, integer, the index at which to add description
@@ -1289,7 +1328,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
 
-          autoSave();
+          scope.updateDescription(description);
         };
 
         // returns the name of a dialect given its refset id
@@ -2180,15 +2219,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // run automations
           var conceptCopy = angular.copy(scope.concept);
-          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function(conceptCopy) {
+          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function (updatedConcept) {
             scope.concept = updatedConcept;
-          }, function(error) {
-            notificationService.sendWarning('Automations failed: ' + error);
-          }, function() {
+            sortDescriptions();
             autoSave();
-          })
-
-
+          }, function (error) {
+            notificationService.sendWarning('Automations failed: ' + error);
+            sortDescriptions();
+            autoSave();
+          });
 
 
         };
