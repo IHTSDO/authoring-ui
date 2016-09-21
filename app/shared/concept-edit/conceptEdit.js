@@ -1340,7 +1340,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
 
-          scope.updateDescription(description);
         };
 
         // returns the name of a dialect given its refset id
@@ -2233,11 +2232,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var conceptCopy = angular.copy(scope.concept);
           componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function (updatedConcept) {
             scope.concept = updatedConcept;
-            sortDescriptions();
             autoSave();
           }, function (error) {
             notificationService.sendWarning('Automations failed: ' + error);
-            sortDescriptions();
             autoSave();
           });
 
