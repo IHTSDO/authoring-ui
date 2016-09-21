@@ -410,7 +410,6 @@ angular.module('singleConceptAuthoringApp')
         return dialectDesription;
       }
 
-
       /**
        * Automates adding descriptions where dialect differences may exist.
        * NOTE: Relies on new descriptions
