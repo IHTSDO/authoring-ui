@@ -15,15 +15,14 @@
 
       <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
 
-      <li ng-if="!deletion" role="presentation" ng-class="{active : actionTab === 1}" class=""><a style="margin: 0px"
+      <li role="presentation" ng-class="{active : actionTab === 1}" class="">
+      <a style="margin: 0px"
                                                                                 ng-click="actionTab=1"
                                                                                 aria-controls="home" role="tab"
                                                                                 data-toggle="tab"> Inactivation
-                                                                                                   Reason</a></li>
-      <li ng-if="deletion" role="presentation" ng-class="{active : actionTab === 1}" class=""><a style="margin: 0px"
-                                                                                ng-click="actionTab=1"
-                                                                                aria-controls="home" role="tab"
-                                                                                data-toggle="tab"> Deletion</a></li>
+                                                                                                   Reason</a>
+                                                                                                   </li>
+
       <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 2}" class=""><a
         ng-click="actionTab=2" aria-controls="home"
         role="tab"
@@ -57,9 +56,9 @@
     <!-- Tab panes -->
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
 
-
+        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 1}">
       <!-- reasons select -->
-      <div ng-show="!deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
+      <div ng-show="!deletion" >
 
         <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
 
@@ -125,7 +124,7 @@
 
       </div>
 
-      <div ng-show="deletion" role="tabpanel" class="tab-pane " ng-class="{active: actionTab==1}">
+      <div ng-show="deletion">
         <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading">
             Checking inbound relationships...
         </div>
@@ -175,9 +174,9 @@
           </div>
       </div>
 
-
+</div>
       <!-- children -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 2}">
         <table ng-table="tableParamsChildren" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
@@ -193,7 +192,7 @@
       </div>
 
       <!-- descendants -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==3}">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 3}">
         <div ng-show="descendants.total > 200" class="alert alert-info">Limiting displayed results to {{tableLimit}}
                                                                         items
         </div>
@@ -208,7 +207,7 @@
       </div>
 
       <!-- all inbound relationships -->
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==4}">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 4}">
         <div ng-show="inboundRelationshipsTotal > 200" class="alert alert-info">Limiting displayed results to
                                                                                 {{tableLimit}} items
         </div>
