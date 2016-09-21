@@ -384,30 +384,84 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      /**
+       * Checks for and revises according to special exceptions
+       * @param concept (currently unused, but may be needed later)
+       * @param description - the dialect description added
+       * @param tokenizedWords - the original tokenized words of the generating description
+       * @param matchingWords - the matching dialect variants for the tokenized words
+       *
+       */
+      function applyDialectAutomationExceptions(concept, tokenizedWords, matchingWords) {
+
+        //
+        // Exception: Fetal/fetus are valid words in PT for en-GB, but generate Acceptable synonym
+        // Does not apply if any other words match
+        //
+        var exceptionWords = ['fetus', 'fetal'];
+
+        // extract the case-insensitive words triggering this exception
+        var exceptionWordsFound = Object.keys(matchingWords).filter(function (word) {
+          return exceptionWords.indexOf(word.toLowerCase()) !== -1;
+        });
+
+        // run only if the exception matching words are the only words present
+        if (exceptionWordsFound.length === Object.keys(matchingWords).length) {
+
+          // check if the fsn contains fetal or fetus
+          var fsnException = null;
+          angular.forEach(concept.descriptions, function (description) {
+            if (description.type === 'FSN' &&
+              (description.term.toLowerCase().indexOf('fetus') !== -1 || description.term.toLowerCase().indexOf('fetal') !== -1)) {
+              fsnException = description;
+            }
+          });
+
+          // if an fsn triggering exception is found
+          if (fsnException) {
+
+            // fsn only preferred in en-us
+            fsnException.acceptabilityMap = {'900000000000509007': 'PREFERRED'};
+
+            angular.forEach(concept.descriptions, function (description) {
+              // find en-us PT containing fetal/fetus and set en-gb to PREFERRED
+              if (description.type === 'SYNONYM' && description.acceptabilityMap['900000000000509007'] === 'PREFERRED'
+                && (description.term.toLowerCase().indexOf('fetus') !== -1 || description.term.toLowerCase().indexOf('fetal') !== -1)) {
+                description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+              }
+
+              // find en-gb SYN containing foetal/foetus and set to ACCEPTABLE
+              else if (description.type === 'SYNONYM' && description.term.toLowerCase().indexOf('foetus') !== -1 || description.term.toLowerCase().indexOf('foetal') !== -1) {
+                description.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
+              }
+            });
+          }
+        }
+      }
+
       function addDialectDescription(concept, description, type, term, dialectId, acceptability) {
 
         // check if description already exists
-        var dialectDesription = null;
+        var dialectDescription = null;
         angular.forEach(concept.descriptions, function (d) {
           if (d.type === type && d.term === term && d.acceptabilityMap[dialectId] == acceptability) {
-            dialectDesription = d;
+            dialectDescription = d;
           }
         });
 
-        if (!dialectDesription) {
-          dialectDesription = getNewDescription(description.moduleId);
-          dialectDesription.type = type;
-          dialectDesription.term = term;
-          dialectDesription.caseSignifiance = description.caseSignificance;
-          dialectDesription.acceptabilityMap = {};
-          dialectDesription.acceptabilityMap[dialectId] = acceptability;
+        if (!dialectDescription) {
+          dialectDescription = getNewDescription(description.moduleId);
+          dialectDescription.type = type;
+          dialectDescription.term = term;
+          dialectDescription.caseSignifiance = description.caseSignificance;
+          dialectDescription.acceptabilityMap = {};
+          dialectDescription.acceptabilityMap[dialectId] = acceptability;
 
-          concept.descriptions.push(dialectDesription);
+          concept.descriptions.push(dialectDescription);
         }
 
-
-        dialectDesription.dialectAutomationFlag = true;
-        return dialectDesription;
+        dialectDescription.dialectAutomationFlag = true;
+        return dialectDescription;
       }
 
 
@@ -496,26 +550,22 @@ angular.module('singleConceptAuthoringApp')
 
             // when existing concept
             if (concept.released) {
-              console.debug('Case: Released concept');
+
               //  when new FSN
               if (description.type === 'FSN') {
-                console.debug('  Case: FSN');
-                // when spelling variant present, result is
+               // when spelling variant present, result is
                 if (hasMatchingWords) {
-                  // ensure FSN en-US preferred
+                  // ensure FSN en-US preferred, do not add matching PT
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN, en-GB acceptable
                   addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
                 }
-                // else, ensure FSN en-US and en-GB preferred, add matching PT
+                // else, ensure FSN en-US and en-GB preferred, do not add matching PT
                 else {
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-                  newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
-                  newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-                  newPt.dialectAutomationFlag = false;
                 }
               }
               // when new SYN
@@ -543,11 +593,12 @@ angular.module('singleConceptAuthoringApp')
             else {
               // when FSN
               if (description.type === 'FSN') {
+                console.debug('new FSN found', hasMatchingWords);
                 // when spelling variant is present, result is
                 if (hasMatchingWords) {
                   // ensure FSN en-US preferred
-                  description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-                  delete description.acceptabilityMap['900000000000508004'];
+                  description.acceptabilityMap = {'900000000000509007' :'PREFERRED'};
+                  console.debug('fsn after deletion', description);
 
                   // SYN en-US preferred
                   addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
@@ -591,6 +642,10 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
+            // apply exceptions to the dialect description
+            applyDialectAutomationExceptions(concept, tokenizedWords, matchingWords);
+
+
             deferred.resolve(concept);
           }, function (error) {
             deferred.reject('Error matching dialect words: ' + error);
@@ -605,6 +660,7 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
 
+        // run dialect automation (includes PT automation for international)
         runDialectAutomation(concept, description).then(function (updatedConcept) {
           deferred.resolve(updatedConcept);
         }, function (error) {
