@@ -170,9 +170,11 @@ angular.module('singleConceptAuthoringApp')
             // the original JSON
             conceptJson: attachment,
 
-            // flags
+            // flags & error
+            emptyContent: attachment.emptyContent,
+            error: attachment.error,
             saved: false,
-            requiresCreation: preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
+            requiresCreation: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
 
           });
         }, function (error) {
@@ -316,7 +318,21 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getCrsConcepts() {
-        return currentTaskConcepts;
+        if (!currentTaskConcepts) {
+          return [];
+        }
+        return currentTaskConcepts.filter(function(concept) {
+          return !concept.emptyContent;
+        });
+      }
+
+      function getCrsEmptyRequests() {
+        if (!currentTaskConcepts) {
+          return [];
+        }
+        return currentTaskConcepts.filter(function(concept) {
+          return concept.emptyContent;
+        });
       }
 
 
@@ -360,6 +376,7 @@ angular.module('singleConceptAuthoringApp')
         requiresCreation: requiresCreation,
         getCrsConcept: getCrsConcept,
         getCrsConcepts: getCrsConcepts,
+        getCrsEmptyRequests: getCrsEmptyRequests,
         saveCrsConcept: saveCrsConcept,
 
         crsFilter: crsFilter
