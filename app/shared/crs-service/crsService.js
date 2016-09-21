@@ -218,6 +218,7 @@ angular.module('singleConceptAuthoringApp')
                 // save the initialized state into the UI State
                 saveCrsConceptsUiState();
 
+                console.debug('crs result', currentTaskConcepts);
                 // resolve
                 deferred.resolve(currentTaskConcepts);
               }
@@ -260,9 +261,13 @@ angular.module('singleConceptAuthoringApp')
               // if already initialized, simply return
               if (concepts) {
                 currentTaskConcepts = concepts;
+
+                console.debug('crs result', currentTaskConcepts);
                 deferred.resolve(concepts);
               } else {
                 initializeCrsTask().then(function () {
+
+                  console.debug('crs result', currentTaskConcepts);
                   deferred.resolve(currentTaskConcepts);
                 }, function () {
                   // NOTE: Must resolve to prevent blocking in edit.js
