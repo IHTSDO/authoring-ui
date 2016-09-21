@@ -14,6 +14,7 @@ angular.module('singleConceptAuthoringApp')
       link: function (scope) {
 
         scope.getCrsConcepts = crsService.getCrsConcepts;
+        scope.getCrsEmptyRequests = crsService.getCrsEmptyRequests;
 
         // get a concept properties object for dragging
         // TODO Handle MS?
