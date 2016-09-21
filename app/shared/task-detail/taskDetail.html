@@ -37,36 +37,37 @@
           </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
-              <label class="control-label">CRS Task Concepts:</label>
-               <h4 class=" width-fix timeline-title task-detail">To view linked Concepts please navigate to the Saved List.</h4>
+              <label class="control-label">CRS Requests:</label>
+              <h4 class=" width-fix timeline-title task-detail">To view content requests please navigate to the Saved
+                List.</h4>
             </div>
           </div>
         </li>
-<!--
-        <li ng-show="task.issueLinks.length > 0">
-          <div class="timeline-badge">
-            <i class="icon-circle theme-border"></i>
-          </div>
-          <div class="timeline-panel">
-            <label class="control-label">Linked Issues</label>
-            <div class="row no-gutter no-padding" ng-repeat="issueLink in task.issueLinks | filter: issueLinkFilter">
-              <div class="col-md-3" ng-click="gotoLinkedIssue(issueLink)">
+        <!--
+                <li ng-show="task.issueLinks.length > 0">
+                  <div class="timeline-badge">
+                    <i class="icon-circle theme-border"></i>
+                  </div>
+                  <div class="timeline-panel">
+                    <label class="control-label">Linked Issues</label>
+                    <div class="row no-gutter no-padding" ng-repeat="issueLink in task.issueLinks | filter: issueLinkFilter">
+                      <div class="col-md-3" ng-click="gotoLinkedIssue(issueLink)">
 
-                <img ng-src="{{issueLink.outwardIssue.issueType.iconUrl}}"
-                     alt="{{issueLink.outwardIssue.issueType.summary}}"/>
-                {{issueLink.outwardIssue.key}}
-              </div>
-              <div class="col-md-5" ng-click="gotoLinkedIssue(issueLink)">
-                {{issueLink.outwardIssue.summary}}
-              </div>
-              <div class="col-md-4">
-                <img ng-src="{{issueLink.outwardIssue.priority.iconUrl}}"/>
-                {{issueLink.outwardIssue.status.name}}
-              </div>
-            </div>
+                        <img ng-src="{{issueLink.outwardIssue.issueType.iconUrl}}"
+                             alt="{{issueLink.outwardIssue.issueType.summary}}"/>
+                        {{issueLink.outwardIssue.key}}
+                      </div>
+                      <div class="col-md-5" ng-click="gotoLinkedIssue(issueLink)">
+                        {{issueLink.outwardIssue.summary}}
+                      </div>
+                      <div class="col-md-4">
+                        <img ng-src="{{issueLink.outwardIssue.priority.iconUrl}}"/>
+                        {{issueLink.outwardIssue.status.name}}
+                      </div>
+                    </div>
 
-          </div>
-        </li>-->
+                  </div>
+                </li>-->
 
 
       </ul>
@@ -121,10 +122,11 @@
         <div class="row">
           <div class="col-md-10">
             <h4>Warning: Unsaved Changes
-             </h4>
+            </h4>
           </div>
           <div class="col-md-2">
-            <button class="btn btn-default md md-close pull-right" ng-click="unsavedConcepts = null" style="background: transparent" aria-hidden="false"></button>
+            <button class="btn btn-default md md-close pull-right" ng-click="unsavedConcepts = null"
+                    style="background: transparent" aria-hidden="false"></button>
           </div>
         </div>
         <div class="row" ng-repeat="unsavedConcept in unsavedConcepts | orderBy:'fsn'">
@@ -145,7 +147,8 @@
             </h4>
           </div>
           <div class="col-md-2">
-            <button class="btn btn-default md md-close pull-right" ng-click="unsavedConcepts = null" style="background: transparent" aria-hidden="false"></button>
+            <button class="btn btn-default md md-close pull-right" ng-click="unsavedConcepts = null"
+                    style="background: transparent" aria-hidden="false"></button>
           </div>
         </div>
       </div>
@@ -167,7 +170,7 @@
                 style="text-transform: none" ng-click="submitForReview()">
           <span class="md md-forum pink darken-2 iconbase"></span>
 
-          <span class="button-link" >Submit Anyway</span>
+          <span class="button-link">Submit Anyway</span>
 
         </button>
       </div>
@@ -177,7 +180,6 @@
         class="md md-forum pink darken-2 iconbase"></span>
         <span class="button-link">Cancel This Review</span>
       </button>
-
 
 
       <button ng-if="editable !== 'false'"

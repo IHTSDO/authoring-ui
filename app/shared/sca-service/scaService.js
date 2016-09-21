@@ -1266,9 +1266,23 @@ angular.module('singleConceptAuthoringApp')
             var attachments = [];
 
             // content is returned from the server as raw string, convert
-            angular.forEach(response.data, function(attachment) {
-              var obj = { content : JSON.parse(attachment.content), issueKey : attachment.issueKey};
-              console.debug('parsed attachment object', obj);
+            angular.forEach(response.data, function (attachment) {
+              var obj = {
+                content: null,
+                issueKey: attachment.issueKey,
+                emptyContent: false,
+                error: null
+              };
+              // attempt to parse content if it exists
+              if (attachment.content) {
+                try {
+                  obj.content = JSON.parse(attachment.content);
+                } catch (err) {
+                  obj.error = err;
+                }
+              } else {
+                obj.emptyContent = true;
+              }
               attachments.push(obj);
             });
             console.debug(attachments);
