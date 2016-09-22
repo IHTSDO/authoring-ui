@@ -576,10 +576,10 @@ angular.module('singleConceptAuthoringApp')
             deferred.resolve(response.data);
           }, function (error) {
             // 404 indicates no ui state persisted, return empty array
-            if (error.status === '404') {
+            if (error.status === 404 || error.status === '404') {
               deferred.resolve([]);
             } else {
-              deferred.reject('Unexpected error retrieving modified concept ids for task');
+              deferred.reject('Unexpected error retrieving modified concept ids for task: ' + error.message);
             }
           });
           return deferred.promise;
