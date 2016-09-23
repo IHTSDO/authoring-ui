@@ -74,7 +74,7 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
-        
+
       function pollForRebaseStatus(url, intervalTime) {
 
         var deferred = $q.defer();
@@ -142,6 +142,17 @@ angular.module('singleConceptAuthoringApp')
               delete description[key];
             }
           }
+
+          // TODO
+          // strip invalid characters from term
+          //description.term = description.replace(/[@|$|#|\\]/, ' ');
+
+          // replace any non-space whitespace characters (tab, newline, etc.)
+          //description.term = description.replace(/[^\S ]/, ' ');
+
+          // replace any 2+ sequences of space with single space
+          //description.term = description.replace(/[ ]{2,}/, ' ');
+
         });
 
         var allowableRelationshipProperties = [
@@ -241,7 +252,7 @@ angular.module('singleConceptAuthoringApp')
       // get relationship changes reported for a classifier id
       function getRelationshipChanges(classifierId, branch) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=1000').then(function (response) {
+        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn').then(function (response) {
           deferred.resolve(response.data.items);
         }, function(error) {
           deferred.reject('Classification details could not be retrieved');
@@ -1179,7 +1190,7 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
-        
+
       function getMerge(mergeId) {
         return $http.get(apiEndpoint + 'merges/' + mergeId).then(function (response) {
           var merge = response.data;
@@ -1202,7 +1213,7 @@ angular.module('singleConceptAuthoringApp')
           return getMergeReview(mergeReviewId);
         });
       }
-        
+
       function rebaseBranches(parentBranch, childBranch, id) {
         return $http.post(apiEndpoint + 'merges', {
           source: parentBranch,
