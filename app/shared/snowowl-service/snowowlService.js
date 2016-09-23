@@ -253,7 +253,8 @@ angular.module('singleConceptAuthoringApp')
       function getRelationshipChanges(classifierId, branch, limit) {
         var deferred = $q.defer();
         $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=' + (limit ? limit : '1000')).then(function (response) {
-          deferred.resolve(response.data.items);
+          // NOTE: Return the full object to get the total count
+          deferred.resolve(response.data);
         }, function(error) {
           deferred.reject('Classification details could not be retrieved');
         });
