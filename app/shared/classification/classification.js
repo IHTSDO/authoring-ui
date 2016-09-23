@@ -357,7 +357,8 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.downloadClassification = function () {
 
-            snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
+            // set limit to 1 million to ensure all results downloaded
+            snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch, 1000000).then(function (data) {
               var fileName = 'classifier_' + $routeParams.taskKey;
               scope.dlcDialog(data.data, fileName);
             });
@@ -382,7 +383,7 @@ angular.module('singleConceptAuthoringApp')
 
               // apply sourceName, typeName, and destinationName to allow for
               // ng-table sorting (ng-table cannot sort by item.property
-              angular.forEach(scope.relationshipChanges, function (rel) {
+              angular.forEach(scope.relationshipChanges.items, function (rel) {
                 if (rel.source) {
                   rel.sourceName = rel.source.fsn;
                 }
@@ -403,8 +404,6 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
               }
-
-              console.debug(scope.relationshipChanges);
 
               scope.setStatusText();
             }, function(error) {
