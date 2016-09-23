@@ -250,9 +250,9 @@ angular.module('singleConceptAuthoringApp')
 
       // GET /{path}/classifications/{classificationId}/relationship-changes
       // get relationship changes reported for a classifier id
-      function getRelationshipChanges(classifierId, branch) {
+      function getRelationshipChanges(classifierId, branch, limit) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn').then(function (response) {
+        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn?limit=' + (limit ? limit : '1000')).then(function (response) {
           deferred.resolve(response.data.items);
         }, function(error) {
           deferred.reject('Classification details could not be retrieved');
@@ -261,10 +261,10 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // get relationship changes as csv results
-      function downloadClassification(classifierId, branch) {
+      function downloadClassification(classifierId, branch, limit) {
         return $http({
           'method': 'GET',
-          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
+          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=' + (limit ? limit : '1000'),
           'headers': {
             'Accept': 'text/csv'
           }
