@@ -11,7 +11,8 @@
           <span>Download Classification Results</span>
         </button>
 
-        <button ng-if="resultsNotEmpty && !errorState" ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+        <button ng-if="resultsNotEmpty && !errorState" ng-init="isCollapsed = false"
+                ng-click="isCollapsed = !isCollapsed" type="button"
                 class="btn btn-default green pull-right"
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
@@ -22,9 +23,9 @@
         </button>
 
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'SAVING_IN_PROGRESS'"
-                         disabled
-                         class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                         ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
+                disabled
+                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
         </button>
 
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'SAVED'"
@@ -37,6 +38,7 @@
       </div>
     </div>
 
+    Results not empty: {{resultsNotEmpty}}, {{errorState}}, {{isCollapsed}}, {{classificationContainer.status}}
     <!-- Empty classification report display. TODO Needs style attention -->
     <div ng-show="resultsNotEmpty === false && !errorState" class="row classification-report">
       <div class="classification-btn">
@@ -44,6 +46,15 @@
                 disabled><span class="md md-notifications green darken-1 iconbase"></span>
           <span class="button-link">Classification Report Empty, No Action Required</span>
         </button>
+      </div>
+    </div>
+
+
+    <!-- Result truncation notification and control -->
+    <div ng-show="classificationContainer.relationshipChanges.total > itemLimit" class="row">
+      <div class="col-md-4">First {{itemLimit}} relationship changes shown</div>
+      <div class="col-md-8">
+        <button ng-click="loadRelationshipChanges(1000000)">Load All</button>
       </div>
     </div>
 
@@ -118,7 +129,8 @@
         <div ng-repeat="conceptPair in viewedConcepts">
 
           <div class="row no-padding  grey darken-3 no-gutter">
-            <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true" autosave="false"></div>
+            <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true"
+                 autosave="false"></div>
           </div>
 
           <div class="row grey darken-3">
