@@ -1313,17 +1313,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // if preferred, switch to acceptable
               case 'PREFERRED':
                 description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
+                autoSave()
                 break;
 
               // if acceptable, switch to not acceptable (i.e. clear the dialect
               // key)
               case 'ACCEPTABLE':
                 delete description.acceptabilityMap[dialectId];
+                autoSave()
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
+                autoSave()
                 break;
             }
           }
@@ -1331,11 +1334,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             switch (description.acceptabilityMap[dialectId]) {
               case 'PREFERRED':
                 delete description.acceptabilityMap[dialectId];
+                autoSave()
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
+                autoSave()
                 break;
             }
           }
