@@ -30,6 +30,8 @@ angular.module('singleConceptAuthoringApp')
 
           scope.errorState = false;
 
+          scope.itemLimit = 1000;
+
           // function to get formatted summary tex
           scope.setStatusText = function () {
 
@@ -355,7 +357,8 @@ angular.module('singleConceptAuthoringApp')
            */
           scope.downloadClassification = function () {
 
-            snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch).then(function (data) {
+            // set limit to 1 million to ensure all results downloaded
+            snowowlService.downloadClassification(scope.classificationContainer.id, scope.branch, 1000000).then(function (data) {
               var fileName = 'classifier_' + $routeParams.taskKey;
               scope.dlcDialog(data.data, fileName);
             });
@@ -369,6 +372,45 @@ angular.module('singleConceptAuthoringApp')
           scope.isClassificationLoaded = function () {
             return scope.relationshipChanges && scope.redundantStatedRelationships && scope.inferredNotPreviouslyStated && scope.equivalentConcepts;
           };
+
+          scope.loadRelationshipChanges = function(limit) {
+            scope.statusText = 'Loading...';
+            scope.relationshipChanges = null;
+            // get relationship changes
+            snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch, limit).then(function (relationshipChanges) {
+
+              scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
+
+              // apply sourceName, typeName, and destinationName to allow for
+              // ng-table sorting (ng-table cannot sort by item.property
+              angular.forEach(scope.relationshipChanges.items, function (rel) {
+                if (rel.source) {
+                  rel.sourceName = rel.source.fsn;
+                }
+                if (rel.destination) {
+                  rel.destinationName = rel.destination.fsn;
+                }
+                if (rel.type) {
+                  rel.typeName = rel.type.fsn;
+                }
+              });
+
+              // copy the redundant stated relationships into their own array
+              scope.redundantStatedRelationships = [];
+              if (scope.classificationContainer.redundantStatedRelationshipsFound) {
+                angular.forEach(scope.relationshipChanges, function (item) {
+                  if (item.changeNature === 'REDUNDANT') {
+                    scope.redundantStatedRelationships.push(item);
+                  }
+                });
+              }
+
+              scope.setStatusText();
+            }, function(error) {
+              notificationService.sendError('Unexpected error: ' + error);
+              scope.errorState = true;
+            });
+          }
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
@@ -397,38 +439,8 @@ angular.module('singleConceptAuthoringApp')
               scope.startSavingClassificationPolling();
             }
 
-            // get relationship changes
-            snowowlService.getRelationshipChanges(scope.classificationContainer.id, scope.branch).then(function (relationshipChanges) {
-
-              scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
-
-              // apply sourceName, typeName, and destinationName to allow for
-              // ng-table sorting (ng-table cannot sort by item.property
-              angular.forEach(scope.relationshipChanges, function (rel) {
-                if (rel.source) {
-                  rel.sourceName = rel.source.fsn;
-                }
-                if (rel.destination) {
-                  rel.destinationName = rel.destination.fsn;
-                }
-                if (rel.type) {
-                  rel.typeName = rel.type.fsn;
-                }
-              });
-
-              // copy the redundant stated relationships into their own array
-              scope.redundantStatedRelationships = [];
-              if (scope.classificationContainer.redundantStatedRelationshipsFound) {
-                angular.forEach(scope.relationshipChanges, function (item) {
-                  if (item.changeNature === 'REDUNDANT') {
-                    scope.redundantStatedRelationships.push(item);
-                  }
-                });
-              }
-            }, function(error) {
-              notificationService.sendError('Unexpected error: ' + error);
-              scope.errorState = true;
-            });
+            // on initial load, limit relationship changes to 1000
+            scope.loadRelationshipChanges(1000);
 
             // get inferred previously not stated relationships
             // TODO Not yet implemented, provide empty array
