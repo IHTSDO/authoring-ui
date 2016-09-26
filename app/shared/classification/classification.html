@@ -11,7 +11,8 @@
           <span>Download Classification Results</span>
         </button>
 
-        <button ng-if="resultsNotEmpty && !errorState" ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+        <button ng-if="resultsNotEmpty && !errorState" ng-init="isCollapsed = false"
+                ng-click="isCollapsed = !isCollapsed" type="button"
                 class="btn btn-default green pull-right"
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
@@ -22,9 +23,9 @@
         </button>
 
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'SAVING_IN_PROGRESS'"
-                         disabled
-                         class="btn btn-default green darken-4 pull-right" style="text-transform: none"
-                         ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
+                disabled
+                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
         </button>
 
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'SAVED'"
@@ -36,102 +37,118 @@
 
       </div>
     </div>
-
-    <!-- Empty classification report display. TODO Needs style attention -->
-    <div ng-show="resultsNotEmpty === false && !errorState" class="row classification-report">
-      <div class="classification-btn">
-        <button class="btn btn-default green classify" ng-click="classify()"
-                disabled><span class="md md-notifications green darken-1 iconbase"></span>
-          <span class="button-link">Classification Report Empty, No Action Required</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Classification Report Contents -->
-    <div
-      ng-show="resultsNotEmpty && !errorState && !isCollapsed && (classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED')">
-
-      <!-- Nav tabs -->
-      <div class="row classification-report">
-        <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
-
-          <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
-                                                                   aria-controls="home" role="tab"
-                                                                   data-toggle="tab"> Classification Results
-            ({{isClassificationLoaded() ? relationshipChanges.length : '-'}})</a></li>
-          <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
-                                                       data-toggle="tab">Redundant Relationships
-            ({{isClassificationLoaded() ? redundantStatedRelationships.length : '-'}})</a>
-          </li>
-          <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
-                                                  data-toggle="tab">Inferred
-            Not
-            Previously
-            Stated ({{isClassificationLoaded() ? inferredNotPreviouslyStated.length : '-'}})</a>
-          </li>
-          <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
-                                                         data-toggle="tab">Equivalency Errors
-            ({{isClassificationLoaded() ? equivalentConcepts.length : '-'}})</a></li>
-        </ul>
-      </div>
-
-      <!-- Tab panes -->
-      <div class="tab-content row m-t-10 col-sm-12 no-padding">
-
-        <!-- changed relationships -->
-        <div role="tabpanel" ng-if="actionTab===1">
-          <div classification-report items="relationshipChanges" type="'changes'" editable="editable"></div>
-        </div>
-
-        <!-- redundant stated relationships -->
-        <div role="tabpanel" ng-if="actionTab===2">
-          <div classification-report items="redundantStatedRelationships" type="'redundant'"
-               editable="editable"></div>
-        </div>
-
-        <!-- inferred not previously stated -->
-        <div role="tabpanel" ng-if="actionTab===3">
-          <div classification-report items="inferredNotPreviouslyStated" type="'inferred'" editable="editable"></div>
-        </div>
-
-        <!-- equivalent concept errors -->
-        <div role="tabpanel" ng-if="actionTab===4">
-          <div classification-report items="equivalentConcepts" type="'equivalence'" editable="editable"></div>
-        </div>
-
-      </div>
-    </div>
-
-
-    <!-- Taxonomy, models, and concepts -->
-    <div class="row classification-report no-padding no-gutter m-t-15" ng-if="viewedConcepts.length > 0">
-
-      <!-- Taxonomy -->
-      <div class="col-md-3 grey lighten-2">
-        <div>
-          <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
-        </div>
-      </div>
-
-      <div class="col-md-9">
-
-        <div ng-repeat="conceptPair in viewedConcepts">
-
-          <div class="row no-padding  grey darken-3 no-gutter">
-            <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true" autosave="false"></div>
-          </div>
-
-          <div class="row grey darken-3">
-            <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"
-                 classification-saved="{{classificationContainer.status === 'SAVED'}}"></div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-    <div class="m-b-50">&nbsp</div>
   </div>
+  <!-- Empty classification report display. TODO Needs style attention -->
+  <div ng-show="resultsNotEmpty === false && !errorState" class="row classification-report">
+    <div class="classification-btn">
+      <button class="btn btn-default green classify" ng-click="classify()"
+              disabled><span class="md md-notifications green darken-1 iconbase"></span>
+        <span class="button-link">Classification Report Empty, No Action Required</span>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- Result truncation notification and control -->
+  <div class="row orange classification-header" style="vertical-align: middle"
+       ng-show="statusText !== 'Loading...' && relationshipChanges.items.length < relationshipChanges.total">
+
+    <div class="p-5">First {{relationshipChanges.items.length}} of
+      {{relationshipChanges.total}} classification results shown
+
+      &nbsp;
+      <button class="btn btn-default orange darken-2 classify" ng-click="loadRelationshipChanges(1000000)">Load All</button>
+    </div>
+  </div>
+
+
+  <!-- Classification Report Contents -->
+  <div
+    ng-show="resultsNotEmpty && !errorState && !isCollapsed && (classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED')">
+
+    <!-- Nav tabs -->
+    <div class="row classification-report">
+      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+
+        <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
+                                                                 aria-controls="home" role="tab"
+                                                                 data-toggle="tab"> Classification Results
+          ({{isClassificationLoaded() ? relationshipChanges.items.length : '-'}})</a></li>
+        <li role="presentation" class="redundant"><a ng-click="actionTab=2" aria-controls="home" role="tab"
+                                                     data-toggle="tab">Redundant Relationships
+          ({{isClassificationLoaded() ? redundantStatedRelationships.length : '-'}})</a>
+        </li>
+        <li role="presentation" class="ienp"><a ng-click="actionTab=3" aria-controls="home" role="tab"
+                                                data-toggle="tab">Inferred
+          Not
+          Previously
+          Stated ({{isClassificationLoaded() ? inferredNotPreviouslyStated.length : '-'}})</a>
+        </li>
+        <li role="presentation" class="equivalency"><a ng-click="actionTab=4" aria-controls="home" role="tab"
+                                                       data-toggle="tab">Equivalency Errors
+          ({{isClassificationLoaded() ? equivalentConcepts.length : '-'}})</a></li>
+      </ul>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content row m-t-10 col-sm-12 no-padding">
+
+      <!-- changed relationships -->
+      <div role="tabpanel" ng-if="actionTab===1">
+        <!-- Note: structure of relationship changes differs to ensure access to total count -->
+        <div classification-report items="relationshipChanges.items" type="'changes'" editable="editable"></div>
+      </div>
+
+      <!-- redundant stated relationships -->
+      <div role="tabpanel" ng-if="actionTab===2">
+        <div classification-report items="redundantStatedRelationships" type="'redundant'"
+             editable="editable"></div>
+      </div>
+
+      <!-- inferred not previously stated -->
+      <div role="tabpanel" ng-if="actionTab===3">
+        <div classification-report items="inferredNotPreviouslyStated" type="'inferred'" editable="editable"></div>
+      </div>
+
+      <!-- equivalent concept errors -->
+      <div role="tabpanel" ng-if="actionTab===4">
+        <div classification-report items="equivalentConcepts" type="'equivalence'" editable="editable"></div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Taxonomy, models, and concepts -->
+  <div class="row classification-report no-padding no-gutter m-t-15" ng-if="viewedConcepts.length > 0">
+
+    <!-- Taxonomy -->
+    <div class="col-md-3 grey lighten-2">
+      <div>
+        <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+
+      <div ng-repeat="conceptPair in viewedConcepts">
+
+        <div class="row no-padding  grey darken-3 no-gutter">
+          <div concept-edit concept="conceptPair.conceptBefore" branch="branch" static="true"
+               autosave="false"></div>
+        </div>
+
+        <div class="row grey darken-3">
+          <div draw-model-sca concept="conceptPair.conceptBefore" concept-after="conceptPair.conceptAfter"
+               classification-saved="{{classificationContainer.status === 'SAVED'}}"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="m-b-50">&nbsp</div>
+</div>
 
 
 

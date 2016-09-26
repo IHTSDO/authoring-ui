@@ -74,34 +74,6 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
-        
-      function pollForRebaseStatus(url, intervalTime) {
-
-        var deferred = $q.defer();
-        if (!intervalTime) {
-          intervalTime = 1000;
-        }
-
-        $timeout(function () {
-          $http.get(url).then(function (response) {
-
-            // if review is ready, get the details
-            if (response && response.data && response.data.status === 'COMPLETED') {
-              deferred.resolve(response.data);
-            } else {
-              pollForRebaseStatus(url, intervalTime).then(function (pollResults) {
-                deferred.resolve(pollResults);
-              }, function (error) {
-                deferred.reject(error);
-              });
-            }
-          }, function (error) {
-            deferred.reject();
-          });
-        }, intervalTime);
-
-        return deferred.promise;
-      }
 
       // function to remove disallowed elements from a concept
       function cleanConcept(concept) {
@@ -142,6 +114,17 @@ angular.module('singleConceptAuthoringApp')
               delete description[key];
             }
           }
+
+          // TODO
+          // strip invalid characters from term
+          //description.term = description.replace(/[@|$|#|\\]/, ' ');
+
+          // replace any non-space whitespace characters (tab, newline, etc.)
+          //description.term = description.replace(/[^\S ]/, ' ');
+
+          // replace any 2+ sequences of space with single space
+          //description.term = description.replace(/[ ]{2,}/, ' ');
+
         });
 
         var allowableRelationshipProperties = [
@@ -239,10 +222,11 @@ angular.module('singleConceptAuthoringApp')
 
       // GET /{path}/classifications/{classificationId}/relationship-changes
       // get relationship changes reported for a classifier id
-      function getRelationshipChanges(classifierId, branch) {
+      function getRelationshipChanges(classifierId, branch, limit) {
         var deferred = $q.defer();
-        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=1000').then(function (response) {
-          deferred.resolve(response.data.items);
+        $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=' + (limit ? limit : '1000')).then(function (response) {
+          // NOTE: Return the full object to get the total count
+          deferred.resolve(response.data);
         }, function(error) {
           deferred.reject('Classification details could not be retrieved');
         });
@@ -250,10 +234,10 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // get relationship changes as csv results
-      function downloadClassification(classifierId, branch) {
+      function downloadClassification(classifierId, branch, limit) {
         return $http({
           'method': 'GET',
-          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=1000',
+          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=' + (limit ? limit : '1000'),
           'headers': {
             'Accept': 'text/csv'
           }
@@ -1179,7 +1163,8 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
-        
+<<<<<<< HEAD
+
       function getMerge(mergeId) {
         return $http.get(apiEndpoint + 'merges/' + mergeId).then(function (response) {
           var merge = response.data;
@@ -1189,6 +1174,8 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
+=======
+>>>>>>> parent of 3ed4038... WRP-2376
 
       function getMergeReviewForBranches(parentBranch, childBranch) {
         return $http.post(apiEndpoint + 'merge-reviews', {
@@ -1202,7 +1189,8 @@ angular.module('singleConceptAuthoringApp')
           return getMergeReview(mergeReviewId);
         });
       }
-        
+<<<<<<< HEAD
+
       function rebaseBranches(parentBranch, childBranch, id) {
         return $http.post(apiEndpoint + 'merges', {
           source: parentBranch,
@@ -1216,6 +1204,8 @@ angular.module('singleConceptAuthoringApp')
           return { locHeader: locHeader};
         });
       }
+=======
+>>>>>>> parent of 3ed4038... WRP-2376
 
       /**
        * Save a concept against its merge review for later playback
@@ -1383,9 +1373,6 @@ angular.module('singleConceptAuthoringApp')
         getTraceabilityForBranch: getTraceabilityForBranch,
         isBranchPromotable: isBranchPromotable,
         setBranchPreventPromotion: setBranchPreventPromotion,
-        rebaseBranches: rebaseBranches,
-        getMerge: getMerge,
-        pollForRebaseStatus: pollForRebaseStatus,
 
         // merge-review functionality
         getMergeReview: getMergeReview,
