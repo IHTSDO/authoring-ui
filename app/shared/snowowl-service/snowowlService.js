@@ -74,37 +74,6 @@ angular.module('singleConceptAuthoringApp')
 
         return deferred.promise;
       }
-<<<<<<< HEAD
-
-      function pollForRebaseStatus(url, intervalTime) {
-
-        var deferred = $q.defer();
-        if (!intervalTime) {
-          intervalTime = 1000;
-        }
-
-        $timeout(function () {
-          $http.get(url).then(function (response) {
-
-            // if review is ready, get the details
-            if (response && response.data && response.data.status === 'COMPLETED') {
-              deferred.resolve(response.data);
-            } else {
-              pollForRebaseStatus(url, intervalTime).then(function (pollResults) {
-                deferred.resolve(pollResults);
-              }, function (error) {
-                deferred.reject(error);
-              });
-            }
-          }, function (error) {
-            deferred.reject();
-          });
-        }, intervalTime);
-
-        return deferred.promise;
-      }
-=======
->>>>>>> parent of 3ed4038... WRP-2376
 
       // function to remove disallowed elements from a concept
       function cleanConcept(concept) {
