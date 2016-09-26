@@ -545,8 +545,6 @@ angular.module('singleConceptAuthoringApp')
                 // when spelling variant is present, result is
                 if (hasMatchingWords) {
                   // ensure FSN en-US preferred
-                  description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-                  delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN en-US preferred
                   addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
