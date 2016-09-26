@@ -222,7 +222,7 @@
           <div class="row"
                ng-repeat="(key, val) in crsFilter(description.definitionOfChanges)"
                ng-show="!description.hideCrsDetails">
-            <div class="col-md-12">
+            <div class="col-md-12" ng-show="val">
               {{key}}:  {{val}}
             </div>
 
@@ -395,7 +395,7 @@
             <div class="row"
                  ng-repeat="(key, val) in crsFilter(relationship.definitionOfChanges)"
                  ng-show="!relationship.hideCrsDetails">
-              <div class="col-md-12">
+              <div class="col-md-12" ng-show="val">
                 {{key}}:{{val}}
               </div>
 
