@@ -2704,7 +2704,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getComponentStyle = function (id, field, defaultStyle, component) {
 
           // if dialect automation flag detected
-          if (component && component.dialectAutomationFlag) {
+          if (component && component.automationFlag) {
             return 'redhl';
           }
 
