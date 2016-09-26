@@ -210,6 +210,28 @@
          ng-class="getComponentStyle(description.descriptionId, null, '', description)"
          class="">
 
+      <div ng-show="description.definitionOfChanges" class="">
+
+        <div class="row">
+          <div class="change_request_container {{description.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{description.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{description.definitionOfChanges.changeType}}"></span></div>
+        </div>
+        <div class="row"></div>
+
+        <div class="col-md-12">
+
+          <div class="row"
+               ng-repeat="(key, val) in crsFilter(description.definitionOfChanges)"
+               ng-show="!description.hideCrsDetails">
+            <div class="col-md-12">
+              {{key}}:  {{val}}
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+
       <div class="row darken-3 p-t-5 grey dividercolor_{{relationship.groupId}} ">
         <div class="col-md-12 no-padding color_{{relationship.groupId}} def_{{concept.definitionStatus}} "
              drop-channel="descriptionObj" ui-on-drop="dropDescription(description, $data)"
@@ -349,27 +371,7 @@
         </div>
       </div>
 
-      <div ng-show="description.definitionOfChanges" class="">
 
-        <div class="row">
-        <div class="change_request_container {{description.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{description.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{description.definitionOfChanges.changeType}}"></span></div>
-        </div>
-        <div class="row"></div>
-
-        <div class="col-md-12">
-
-          <div class="row"
-               ng-repeat="(key, val) in crsFilter(description.definitionOfChanges)"
-               ng-show="!description.hideCrsDetails">
-            <div class="col-md-12">
-              {{key}}:  {{val}}
-            </div>
-
-          </div>
-        </div>
-
-
-      </div>
     </div>
 
 
@@ -380,6 +382,28 @@
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
              class="{{relationship.target.definitionStatus}}">
+
+          <div ng-show="relationship.definitionOfChanges" class="">
+
+            <div class="row">
+              <div class="change_request_container {{relationship.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{relationship.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{relationship.definitionOfChanges.changeType}}"></span></div>
+            </div>
+
+
+
+
+            <div class="row"
+                 ng-repeat="(key, val) in crsFilter(relationship.definitionOfChanges)"
+                 ng-show="!relationship.hideCrsDetails">
+              <div class="col-md-12">
+                {{key}}:{{val}}
+              </div>
+
+            </div>
+
+
+
+          </div>
 
 
           <div class="row darken-3 edits-row color_{{relationship.groupId}} "
@@ -550,27 +574,7 @@
             </div>
           </div>
 
-          <div ng-show="relationship.definitionOfChanges" class="">
 
-            <div class="row">
-             <div class="change_request_container {{relationship.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{relationship.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{relationship.definitionOfChanges.changeType}}"></span></div>
-            </div>
-
-
-
-
-              <div class="row"
-                   ng-repeat="(key, val) in crsFilter(relationship.definitionOfChanges)"
-                   ng-show="!relationship.hideCrsDetails">
-                 <div class="col-md-12">
-{{key}}:{{val}}
-            </div>
-
-              </div>
-
-
-
-          </div>
         </div>
         <div class="role_group_divider_bottom_{{groupId}}"></div>
       </div>
