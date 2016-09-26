@@ -1163,7 +1163,6 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
-<<<<<<< HEAD
 
       function getMerge(mergeId) {
         return $http.get(apiEndpoint + 'merges/' + mergeId).then(function (response) {
@@ -1174,8 +1173,6 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
-=======
->>>>>>> parent of 3ed4038... WRP-2376
 
       function getMergeReviewForBranches(parentBranch, childBranch) {
         return $http.post(apiEndpoint + 'merge-reviews', {
@@ -1189,7 +1186,6 @@ angular.module('singleConceptAuthoringApp')
           return getMergeReview(mergeReviewId);
         });
       }
-<<<<<<< HEAD
 
       function rebaseBranches(parentBranch, childBranch, id) {
         return $http.post(apiEndpoint + 'merges', {
@@ -1204,8 +1200,6 @@ angular.module('singleConceptAuthoringApp')
           return { locHeader: locHeader};
         });
       }
-=======
->>>>>>> parent of 3ed4038... WRP-2376
 
       /**
        * Save a concept against its merge review for later playback
