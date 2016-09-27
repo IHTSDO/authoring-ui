@@ -36,7 +36,13 @@
 <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
   <input type="checkbox" ng-model="checkedToReview" ng-change="toggleSelectAllUnclaimedTasks(checkedToReview)"
          id="select_all_to_review"
-         name="filter-checkbox" value=""/>
+         name="filter-checkbox-unclaimed" value=""/>
+</script>
+
+<script type="text/ng-template" id="ng-table/headers/checkboxToReturn.html">
+  <input type="checkbox" ng-model="checkedToReturn" ng-change="toggleSelectAllClaimedTasks(checkedToReturn)"
+         id="select_all_to_return"
+         name="filter-checkbox-claimed" value=""/>
 </script>
 
 <div class="row no-gutter sca-container ">
@@ -53,15 +59,15 @@
           <div class="col-md-3 no-padding">
             <h3 class="table-title p-20">Review Tasks
               &nbsp;&nbsp;
-              <button ng-show="hasSelectedTasks()"
-                      ng-click="claimSelectedTasks()"
-                      class="badge Available "><i class="md md-check-box"></i>&nbsp;Claim
+              <button ng-show="hasSelectedUnclaimedTasks()"
+                      ng-click="assignSelectedUnclaimedTasks()"
+                      class="badge In Review"><i class="md md-email"></i>&nbsp;Claim
                 Selected
               </button>
             </h3>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-5">
             <div class="table-search">
               <input type="text" ng-model="reviewTableParams.filter()['search']" class="form-control"
                      placeholder="Search Available Review Tasks" autofocus/>
@@ -73,6 +79,13 @@
                     ng-click="toggleShowPromotedReviews()" style="background: transparent">
               <span class="promoted-check-box">Show Promoted</span></button>
           </div>
+          <Ldiv class="col-md-1">
+            &nbsp;&nbsp;
+            <button ng-show="hasSelectedClaimedTasks()"
+                    ng-click="unassignSelectedClaimedTasks()"
+                    class="badge In Review"><i class="fa fa-close"></i>&nbsp;Unclaim Selected
+            </button>
+          </Ldiv>
           <div class="col-md-1">
               <span class="pull-right p-t-20">
                   <button type="button"
@@ -93,7 +106,7 @@
 
               <td class="review-checkbox no-padding " ng-show="hasUnclaimedTasks()"
                   header="'ng-table/headers/checkboxToReview.html'">
-                <input type="checkbox" ng-model="task.selected" ui-on-drop="" ng-show="isUnclaimedTask(task)">
+                <input type="checkbox" ng-model="task.selectedUnclaimed" ui-on-drop="" ng-show="isUnclaimedTask(task)">
               </td>
 
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'"
@@ -196,6 +209,12 @@
                 <div ng-if="task.reviewer" class="badge Claimed">Claimed</div>
                 <div ng-if="!task.reviewer" class="badge Available">Available</div>
 
+
+              </td>
+
+              <td class="review-checkbox no-padding " ng-show="hasClaimedTasks()"
+                  header="'ng-table/headers/checkboxToReturn.html'">
+                <input type="checkbox" ng-model="task.selectedClaimed" ui-on-drop="" ng-show="isClaimedTask(task)">
 
               </td>
 

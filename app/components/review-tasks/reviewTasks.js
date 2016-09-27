@@ -21,7 +21,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       $rootScope.classificationRunning = false;
 
       // TODO Placeholder, as we only have the one tab at the moment
-      $rootScope.pageTitle = "Review Tasks";
+      $rootScope.pageTitle = 'Review Tasks';
       $scope.reviewTasks = null;
       $scope.projects = [];
       $scope.browserLink = '..';
@@ -172,11 +172,11 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
               // TODO Think we only need username here, doublecheck required fields (BE supplies others)
               var updateObj = {
-                "reviewer": {
-                  "email": $rootScope.accountDetails.email,
-                  "avatarUrl": "",
-                  "username": $rootScope.accountDetails.login,
-                  "displayName": $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
+                'reviewer': {
+                  'email': $rootScope.accountDetails.email,
+                  'avatarUrl': '',
+                  'username': $rootScope.accountDetails.login,
+                  'displayName': $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
                 }
               };
 
@@ -198,16 +198,63 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       // Multi-task selection/action functions
       //
 
-      $scope.toggleSelectAllUnclaimedTasks = function (val) {
+      // Claimed tasks (right hand column)
+      $scope.isClaimedTask = function (task) {
+        return task.status === 'In Review' && task.reviewer && $rootScope.accountDetails && task.reviewer.username === $rootScope.accountDetails.login;
+      };
+
+      $scope.hasClaimedTasks = function () {
+        return $scope.reviewTasks && $scope.reviewTasks.filter($scope.isClaimedTask).length > 0;
+      };
+
+      $scope.getSelectedClaimedTasks = function () {
+        return $scope.reviewTasks ? $scope.reviewTasks.filter(function (task) {
+          return $scope.isClaimedTask(task) && task.selectedClaimed;
+        }) : [];
+      };
+
+      $scope.hasSelectedClaimedTasks = function () {
+        return $scope.getSelectedClaimedTasks().length > 0;
+      };
+
+      $scope.toggleSelectAllClaimedTasks = function (val) {
         angular.forEach($scope.reviewTasks, function (task) {
-          console.debug('checking task', task.selected, task);
-          if ($scope.isUnclaimedTask(task)) {
-            task.selected = val;
-            console.debug('task marked', task);
+          if ($scope.isClaimedTask(task)) {
+            task.selectedClaimed = val;
           }
         });
       };
 
+      $scope.unassignSelectedClaimedTasks = function () {
+        var promises = [];
+        var updateObj = {
+          'reviewer': {
+            'username': ''
+          }
+        };
+
+        // update all tasks and push promises into array
+        angular.forEach($scope.getSelectedClaimedTasks(), function (task) {
+          promises.push(scaService.updateTask(task.projectKey, task.key, updateObj));
+        });
+
+        // on resolution of all promises
+        $q.all(promises).then(function () {
+           loadTasks();
+        }, function (error) {
+           loadTasks();
+          notificationService.sendError('Unexpected error unclaiming reviews: ' + error);
+        })
+      };
+
+
+
+      //
+      // Bulk claim of available (unclaimed) review tasks
+      //
+
+
+      // Unclaimed tasks (left hand column)
       $scope.isUnclaimedTask = function (task) {
         return task.status === 'In Review' && !task.reviewer;
       };
@@ -216,41 +263,47 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
         return $scope.reviewTasks && $scope.reviewTasks.filter($scope.isUnclaimedTask).length > 0;
       };
 
-      $scope.getSelectedTasks = function () {
+      $scope.getSelectedUnclaimedTasks = function () {
         return $scope.reviewTasks ? $scope.reviewTasks.filter(function (task) {
-          return task.selected;
+          return task.selectedUnclaimed;
         }) : [];
       };
 
-      $scope.claimSelectedTasks = function () {
-        console.debug('claiming selected tasks');
+      $scope.hasSelectedUnclaimedTasks = function () {
+        return $scope.getSelectedUnclaimedTasks().length > 0;
+      };
+
+      $scope.toggleSelectAllUnclaimedTasks = function (val) {
+        angular.forEach($scope.reviewTasks, function (task) {
+          if ($scope.isUnclaimedTask(task)) {
+            task.selectedUnclaimed = val;
+          }
+        });
+      };
+
+
+      $scope.assignSelectedUnclaimedTasks = function () {
         var promises = [];
         var updateObj = {
-          "reviewer": {
-            "username": $rootScope.accountDetails.login
+          'reviewer': {
+            'username': $rootScope.accountDetails.login
           }
         };
 
         // update all tasks and push promises into array
-        angular.forEach($scope.getSelectedTasks(), function (task) {
+        angular.forEach($scope.getSelectedUnclaimedTasks(), function (task) {
           promises.push(scaService.updateTask(task.projectKey, task.key, updateObj));
         });
 
         // on resolution of all promises
-        $q.all(promises).then(function() {
-          console.debug('all promises resolved');
-          $scope.reviewTableParams.reload();
-        }, function(error) {
-          console.debug('failure');
-          $scope.reviewTableParams.reload();
+        $q.all(promises).then(function () {
+          loadTasks();
+        }, function (error) {
+           loadTasks();
           notificationService.sendError('Unexpected error claiming reviews: ' + error);
         })
-      }
-      ;
-
-      $scope.hasSelectedTasks = function () {
-        return $scope.getSelectedTasks().length > 0;
       };
+
 
 // Initialization:  get tasks and classifications
       function initialize() {
