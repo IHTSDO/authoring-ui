@@ -365,7 +365,7 @@ angular.module('singleConceptAuthoringApp')
               else {
                 d.term = ptText;
                 pt = d;
-                pt.dialectAutomationFlag = true;
+                pt.automationFlag = true;
                 delete pt.descriptionId;
                 return concept;
               }
@@ -377,7 +377,7 @@ angular.module('singleConceptAuthoringApp')
           if (!pt) {
             pt = getNewPt();
             pt.term = ptText;
-            pt.dialectAutomationFlag = true;
+            pt.automationFlag = true;
             concept.descriptions.push(pt);
             return concept;
           }
@@ -462,7 +462,7 @@ angular.module('singleConceptAuthoringApp')
           concept.descriptions.push(dialectDescription);
         }
 
-        dialectDescription.dialectAutomationFlag = true;
+        dialectDescription.automationFlag = true;
         return dialectDescription;
       }
 
@@ -613,7 +613,7 @@ angular.module('singleConceptAuthoringApp')
                   description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
                   newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
                   newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-                  newPt.dialectAutomationFlag = true;
+                  newPt.automationFlag = true;
                 }
               }
               // when SYN
