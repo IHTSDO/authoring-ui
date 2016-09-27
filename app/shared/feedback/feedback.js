@@ -1233,7 +1233,7 @@ angular.module('singleConceptAuthoringApp')
             };
 
             scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
-              $location.url('home');
+              $location.url('review-tasks');
             });
           };
 
