@@ -230,18 +230,20 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
           }
         };
 
+        // update all tasks and push promises into array
         angular.forEach($scope.getSelectedTasks(), function (task) {
-
-
           promises.push(scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
             $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
           }));
         });
 
+        // on resolution of all promises
         $q.all(promises).then(function() {
           console.debug('all promises resolved');
+          $scope.reviewTableParams.reload();
         }, function(error) {
           console.debug('failure');
+          $scope.reviewTableParams.reload();
           notificationService.sendError('Unexpected error claiming reviews: ' + error);
         })
       }
