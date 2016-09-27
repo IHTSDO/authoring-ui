@@ -878,9 +878,31 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
 
-            // sort by values for ordered keys in dialects
-            var acceptabilityComparator = function (descA, descB, dialect) {
+            // ensure preferred terms are always on top, with us first
+            var aHasUsP = a.acceptabilityMap['900000000000509007'] === 'PREFERRED';
+            var bHasUsP = b.acceptabilityMap['900000000000509007'] === 'PREFERRED';
+            var aHasOtherP = Object.keys(a.acceptabilityMap).filter(function(dialect) {
+                if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
+                  return true;
+                }
+              }).length > 0;
+            var bHasOtherP = Object.keys(b.acceptabilityMap).filter(function(dialect) {
+                if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
+                  return true;
+                }
+              }).length > 0;
 
+            console.debug('preferred check', aHasUsP, bHasUsP, aHasOtherP, bHasOtherP, a, b);
+
+            if ((aHasUsP && !bHasUsP) || (aHasOtherP && !bHasOtherP)) {
+              return -1;
+            }
+            if ((!aHasUsP && bHasUsP) || (!aHasOtherP && bHasOtherP)) {
+              return 1;
+            }
+
+            // comparator function for sorting by acceptabilities within a specified dialect
+            var acceptabilityComparator = function (descA, descB, dialect) {
 
               var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
               var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
@@ -914,14 +936,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 0;
             };
 
-            // sort by en-us value first
+            // sort within en-us value first
             var comp = acceptabilityComparator(a, b, '900000000000509007');
             if (comp !== 0) {
               return comp;
             }
 
 
-            // sort by non en-us values second
+            // sort within non en-us values second
             for (var dialect in scope.dialects) {
               // sort by extension value if present
               if (metadataService.isExtensionSet() && metadataService.isExtensionDialect(dialect)) {
@@ -931,7 +953,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
               }
 
-              // otherwise, sort by whatever other non-en-US dialects are present in turn
+              // otherwise, sort within whatever other non-en-US dialects are present in turn
               else if (dialect !== '900000000000509007') {
 
                 comp = acceptabilityComparator(a, b, dialect);
