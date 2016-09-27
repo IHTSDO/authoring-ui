@@ -733,12 +733,15 @@ angular.module('singleConceptAuthoringApp')
 
 // mark as ready for review -- no return value
         markTaskForReview: function (projectKey, taskKey) {
+          var deferred = $q.defer();
           $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
             notificationService.sendMessage('Task ' + taskKey + ' marked for review');
+            deferred.resolve();
           }, function (error) {
-            console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
+            deferred.reject(error.data.message);
             notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
           });
+          return deferred.promise;
         },
 
         markTaskReviewComplete: function (projectKey, taskKey, status, object) {
@@ -1203,11 +1206,11 @@ angular.module('singleConceptAuthoringApp')
                       var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                       });
-                      if(newNotification.task){
-                          msg = 'Validation ' + event + ' for ' + 'task ' + newNotification.task;
+                      if (newNotification.task) {
+                        msg = 'Validation ' + event + ' for ' + 'task ' + newNotification.task;
                       }
-                      else if(newNotification.project){
-                          msg = 'Validation ' + event + ' for ' + 'project ' + newNotification.project;
+                      else if (newNotification.project) {
+                        msg = 'Validation ' + event + ' for ' + 'project ' + newNotification.project;
                       }
 
                       // do not supply a url (button link) for FAILED status
