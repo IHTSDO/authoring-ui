@@ -879,14 +879,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             // ensure preferred terms are always on top, with us first
-            var aHasUsP = a.acceptabilityMap['900000000000509007'] === 'PREFERRED';
-            var bHasUsP = b.acceptabilityMap['900000000000509007'] === 'PREFERRED';
-            var aHasOtherP = Object.keys(a.acceptabilityMap).filter(function(dialect) {
+            var aHasUsP = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
+            var bHasUsP = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
+            var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function(dialect) {
                 if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
                   return true;
                 }
               }).length > 0;
-            var bHasOtherP = Object.keys(b.acceptabilityMap).filter(function(dialect) {
+            var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function(dialect) {
                 if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
                   return true;
                 }
