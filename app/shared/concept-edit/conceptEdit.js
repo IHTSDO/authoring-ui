@@ -2077,6 +2077,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return false;
           }
 
+          if (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length == 0) {
+            console.error('Description acceptability map cannot be empty');
+            return false;
+          }
+
           // pass all checks -> return true
           return true;
         };
@@ -2709,7 +2714,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getComponentStyle = function (id, field, defaultStyle, component) {
 
           // if dialect automation flag detected
-          if (component && component.dialectAutomationFlag) {
+          if (component && component.automationFlag) {
             return 'redhl';
           }
 
