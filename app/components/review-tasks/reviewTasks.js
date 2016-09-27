@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       });
   })
 
-  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
+  .controller('ReviewTasksCtrl', function MyReviewsCtrl($scope, $rootScope, $q, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
 
       // clear task-related i nformation
       $rootScope.validationRunning = false;
@@ -223,6 +223,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
       };
 
       $scope.claimSelectedTasks = function () {
+        console.debug('claiming selected tasks');
         var promises = [];
         var updateObj = {
           "reviewer": {
@@ -232,9 +233,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
         // update all tasks and push promises into array
         angular.forEach($scope.getSelectedTasks(), function (task) {
-          promises.push(scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
-            $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
-          }));
+          promises.push(scaService.updateTask(task.projectKey, task.key, updateObj));
         });
 
         // on resolution of all promises
