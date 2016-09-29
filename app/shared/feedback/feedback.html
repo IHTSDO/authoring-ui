@@ -94,7 +94,7 @@
              class="switch pull-right">
           <label class="switch">
             Review in Progress
-            <input type="checkbox" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
+            <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
                    ng-change="toggleReviewStatus()">
             <span class="lever"></span>
             Review Complete

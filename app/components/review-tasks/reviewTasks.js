@@ -154,7 +154,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       $scope.viewReviewTask = function (task) {
 
-        // if no reviewer, attempt to assign
+        // if no reviewer or task in progress, attempt to assign
         if (task && !task.reviewer) {
 
           // re-retrieve task to doublecheck availability for assignment
@@ -170,19 +170,13 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
             // otherwise assign the current user
             else {
 
-              // TODO Think we only need username here, doublecheck required fields (BE supplies others)
-              var updateObj = {
-                'reviewer': {
-                  'email': $rootScope.accountDetails.email,
-                  'avatarUrl': '',
-                  'username': $rootScope.accountDetails.login,
-                  'displayName': $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
-                }
-              };
-
-              scaService.updateTask(task.projectKey, task.key, updateObj).then(function () {
-                $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
-              });
+              if ($rootScope.accountDetails && $rootScope.accountDetails.login) {
+                scaService.assignReview(task.projectKey, task.key, $rootScope.accountDetails.login).then(function () {
+                  $location.url('tasks/task/' + task.projectKey + '/' + task.key + '/feedback');
+                });
+              } else {
+                notificationService.sendError('Cannot claim review: could not get account details');
+              }
             }
           });
           // otherwise, simply go to feedback view
