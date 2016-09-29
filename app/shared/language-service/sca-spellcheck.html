@@ -7,13 +7,15 @@
       min-height: 20px;
     }
 
-    .ng-invalid {
-      border: 1px solid red;
+    .redwiggle {
+      background-image: url('../../images/wiggle.png');
+      background-repeat: repeat-x;
+      background-position: bottom;
+      cursor: default;
     }
   </style>
 
-  <div name="editContent"
-       spellcheck="false"
+  <div spellcheck="false"
        contenteditable="plaintext-only"
        ng-model="textHtml"></div>
 </div>
