@@ -38,12 +38,6 @@ angular.module('singleConceptAuthoringApp')
     var associationInactivationReasons =
       [
         {
-          id: 'ALTERNATIVE',
-          conceptId: '900000000000530003',
-          text: 'ALTERNATIVE association reference set',
-          display: 1
-        },
-        {
           id: 'MOVED_FROM',
           conceptId: '900000000000525002',
           text: 'MOVED FROM association reference set',
