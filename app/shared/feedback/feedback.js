@@ -521,6 +521,10 @@ angular.module('singleConceptAuthoringApp')
 
           function highlightFromTraceability(traceability) {
 
+            if (!traceability) {
+              return;
+            }
+
             angular.forEach(traceability.content, function (change) {
               if (change.activityType === 'CONTENT_CHANGE') {
 
@@ -869,7 +873,7 @@ angular.module('singleConceptAuthoringApp')
           scope.toggleReviewStatus = function () {
             if (scope.task.status === 'In Review') {
               if (scope.conceptsToReviewViewed.length === 0) {
-                scaService.markTaskForReview($routeParams.projectKey, $routeParams.taskKey).then(function () {
+                scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   scope.task.status = response.data.status;
                   notificationService.sendMessage('Review marked completed for task ' + $routeParams.taskKey, 5000);
                 }, function (error) {
@@ -878,8 +882,8 @@ angular.module('singleConceptAuthoringApp')
               } else {
                 notificationService.sendWarning('Cannot complete review: concepts still need review');
               }
-            } else if (scope.task.status === 'Review Complete') {
-              scaService.markTaskForReview($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+            } else if (scope.task.status === 'Review Completed') {
+              scaService.markTaskReviewInProgress($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                 scope.task.status = response.data.status;
                 notificationService.sendMessage('Task ' + $routeParams.taskKey + ' marked for review');
               }, function (error) {
@@ -887,7 +891,6 @@ angular.module('singleConceptAuthoringApp')
               });
             } else {
               notificationService.sendError('Cannot toggle review completion status: task has unexpected status ' + scope.task.status);
-
             }
           };
 
@@ -1204,13 +1207,9 @@ angular.module('singleConceptAuthoringApp')
            * @param concept the concept object
            */
           scope.addConceptToFeedback = function (concept) {
-
             var temp = scope.htmlVariable;
-
             var img = createConceptImg(concept.concept.conceptId, concept.concept.fsn);
-
             temp = temp + img + '&nbsp';
-
             scope.htmlVariable = temp;
           };
 
@@ -1219,14 +1218,11 @@ angular.module('singleConceptAuthoringApp')
            * returning the user to the home page
            */
           scope.unclaimReview = function () {
-            var updateObj = {
-              'reviewer': {
-                'username': ''
-              }
-            };
-
-            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
+            scaService.unassignReview($routeParams.projectKey, $routeParams.taskKey).then(function () {
+              notificationService.sendMessage('Review unclaimed for task ' + $routeParams.taskKey, 5000);
               $location.url('review-tasks');
+            }, function (error) {
+              notificationService.sendError('Unexpected error unclaiming review: ' + error);
             });
           };
 

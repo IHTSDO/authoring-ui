@@ -246,15 +246,11 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       // cancel review
       $scope.cancelReview = function () {
-        var taskObj = {
-          'status': 'IN_PROGRESS',
-          'reviewer': {
-            'username': ''
-          }
-        };
-        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
-          notificationService.sendMessage('Review Cancelled', 2000);
+        scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey).then(function() {
+          notificationService.sendMessage('Review cancelled', 2000);
           $rootScope.$broadcast('reloadTask');
+        }, function(error) {
+          notificationService.sendError('Unexpected error cancelling review: ' + error);
         });
 
       };

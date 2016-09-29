@@ -731,21 +731,59 @@ angular.module('singleConceptAuthoringApp')
 // Review & Feedback
 //////////////////////////////////////////
 
-// mark as ready for review -- no return value
-        markTaskForReview: function (projectKey, taskKey) {
+        // mark as ready for review -- no return value
+        assignReview: function (projectKey, taskKey, username) {
           var deferred = $q.defer();
-          var updateObj = { 'status' : 'IN_REVIEW'};
-          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review', object).then(function (response) {
+          var updateObj = { 'status' : 'IN_REVIEW', 'reviewer': {'username': username}};
+
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
             deferred.reject(error.data.message);
-           });
+          });
+          return deferred.promise;
+        },
+
+        unassignReview: function(projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'IN_REVIEW', 'reviewer': {}};
+
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.data.message);
+          });
+          return deferred.promise;
+        },
+
+
+        markTaskInProgress: function (projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'IN_PROGRESS', 'reviewer' : {}};
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.data.message);
+          });
+          return deferred.promise;
+        },
+
+
+        markTaskReviewInProgress: function(projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'IN_REVIEW'};
+
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.data.message);
+          });
           return deferred.promise;
         },
 
         markTaskReviewComplete: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          var updateObj = { 'status' : 'REVIEW_COMPLETE'};
+          var updateObj = { 'status' : 'REVIEW_COMPLETED'};
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             notificationService.sendMessage('Task ' + taskKey + ' marked as: ' + status, 3000);
             deferred.resolve(response);
