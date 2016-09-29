@@ -13,9 +13,11 @@ angular.module('singleConceptAuthoringApp.test', [
       });
   })
 
-  .controller('TestCtrl', function TestCtrl($scope, $rootScope, $interval, notificationService) {
+  .controller('TestCtrl', function TestCtrl($scope, $rootScope, $interval, notificationService, languageService) {
 
     $rootScope.pageTitle = 'Test Management';
+
+    $scope.getTestSpellingWords = languageService.getTestSpellings;
 
     console.log('Entered TestCtrl');
 
