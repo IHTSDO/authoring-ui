@@ -2,25 +2,39 @@
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
-  <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right">
+  <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right no-gutter">
 
     <div class="row">
       <h3 class="table-title p-20">Test Spellchecker</h3>
     </div>
 
     <div class="row p-5">
-      <div class="col-md-2">Enter Text</div>
+      <div class="col-md-1">CSS Class</div>
+      <div class="col-md-4"><input ng-model="errClass"><br>e.g. red, blue, alert-warning, or any sca class applicable to text</div>
+    </div>
+
+    <div class="row p-5">
+      <div class="col-md-1">Enter Text</div>
 
 
-      <div class="row" ng-init="textText = 'Fourty words'">
+
         <div class="col-md-4">
           <textarea sca-spellcheck ng-model="testText" class="form-control msd-elastic: \n;" type="text"></textarea>
-        </div>
+
+        Test words: <span ng-repeat="word in getTestSpellingWords() | orderBy:'+'">{{word}}, </span>
       </div>
 
-      <div class="col-md-2">Test words</div>
-      <div class="col-md-3">
-        <span ng-repeat="word in getTestSpellingWords() | orderBy:'+'">{{word}}, </span>
+    </div>
+
+    <div class="row p-5">
+      <div class="col-md-1">Notes</div>
+
+
+
+      <div class="col-md-8">
+        <li>Demonstrates in-line highlighting of words (will be supplied by back-end in future).</li>
+        <li>Spell-checking currently only trigger on blur; other events added shortly.</li>
+        <li>Tester not so awesome as to dynamically update the style/class if changed. Edit the text after change.</li>
       </div>
 
     </div>

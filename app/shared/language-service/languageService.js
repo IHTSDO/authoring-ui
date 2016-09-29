@@ -14,11 +14,10 @@ angular.module('singleConceptAuthoringApp')
     }
     function testspellcheck(text, language) {
       var deferred = $q.defer();
-      var words = text.split(/\s+/);
+      var words = text ? text.split(/\W+/) : [];
       var misspelledWords = [];
-      console.debug('tokenized words', words);
+
       angular.forEach(words, function(word) {
-        console.debug('checking word', word, word.toLowerCase());
         if (testSpellings.indexOf(word.toLowerCase()) !== -1) {
           misspelledWords.push(word);
         }

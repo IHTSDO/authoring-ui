@@ -9,51 +9,52 @@ angular.module('singleConceptAuthoringApp').directive('scaSpellcheck', function 
       }
 
       // watch for updates from render or contenteditable
-      scope.$watch('textHtml', function(newValue,oldValue){
+      scope.$watch('textHtml', function (newValue, oldValue) {
         if (!newValue) return;
         // strip html and re-render
         var rex = /(<([^>]+)>)/ig;
-        ngModel.$setViewValue(newValue.replace(rex , ""));
+        ngModel.$setViewValue(newValue.replace(rex, ""));
         ngModel.$render();
       }, true);
 
 
       ngModel.$render = function () {
-        var text = ngModel.$viewValue;
-        if (text && text.length > 0) {
-          // TODO Use regular spellcheck function once BE in place
-          languageService.testspellcheck(text).then(function (words) {
-            angular.forEach(words, function (word) {
-              text = text.replace(word, '<span style="color:red">' + word + '</span>')
-            });
-            scope.textHtml = text;
+        var textHtml = ngModel.$viewValue;
+
+        // TODO Use regular spellcheck function once BE in place
+        languageService.testspellcheck(textHtml).then(function (words) {
+          angular.forEach(words, function (word) {
+            textHtml = textHtml.replace(word, '<span class="' + scope.errClass + '">' + word + '</span>')
           });
-        } else {
-          scope.textHtml = text;
-        }
+          scope.textHtml = textHtml;
+        });
+
       };
     },
     templateUrl: 'shared/language-service/sca-spellcheck.html'
   }
 });
 
-angular.module('singleConceptAuthoringApp').directive('contenteditable', ['$sce', function($sce) {
+//
+// Directive to create an editable div
+//
+angular.module('singleConceptAuthoringApp').directive('contenteditable', ['$sce', function ($sce) {
   return {
     restrict: 'A', // attribute only
     require: '?ngModel', // ngModel of element
-    link: function(scope, element, attrs, ngModel) {
+    link: function (scope, element, attrs, ngModel) {
       if (!ngModel) return;
 
       // render function -- required for ngModel
-      ngModel.$render = function() {
+      ngModel.$render = function () {
         element.html($sce.getTrustedHtml(ngModel.$viewValue || ''));
       };
 
       // on change events, update
-      element.on('blur change', function() {
+      // TODO add events here -- keyup? change? etc.
+      element.on('blur', function () {
         scope.$evalAsync(update);
       });
-
 
       // Write data back to the model without tags
       function update() {

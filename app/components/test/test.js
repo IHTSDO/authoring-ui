@@ -18,6 +18,8 @@ angular.module('singleConceptAuthoringApp.test', [
     $rootScope.pageTitle = 'Test Management';
 
     $scope.getTestSpellingWords = languageService.getTestSpellings;
+    $scope.errClass = 'redwiggle';
+    $scope.testText = 'Fourty mispelled blackbirds baked in a whiskie pie.'
 
     console.log('Entered TestCtrl');
 
