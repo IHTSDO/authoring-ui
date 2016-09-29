@@ -875,6 +875,8 @@ angular.module('singleConceptAuthoringApp')
                   scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function (response) {
                     scope.task.status = response.data.status;
                   });
+                } else {
+                  notificationService.sendWarning('Cannot complete review: concepts still need review');
                 }
               }
               else {
