@@ -866,36 +866,27 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
-          scope.changeReviewStatus = function (reviewComplete) {
-            if (reviewComplete !== null && reviewComplete !== undefined) {
-              var status = '';
-              if (scope.task.status === 'In Review') {
-                status = 'Complete.';
-                if (scope.conceptsToReviewViewed.length === 0) {
-                  scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function (response) {
-                    scope.task.status = response.data.status;
-                  });
-                } else {
-                  notificationService.sendWarning('Cannot complete review: concepts still need review');
-                }
-              }
-              else {
-                status = 'In Review.';
-                scaService.markTaskReviewComplete($routeParams.projectKey, $routeParams.taskKey, status, {'status': reviewComplete ? 'REVIEW_COMPLETED' : 'IN_REVIEW'}).then(function (response) {
+          scope.toggleReviewStatus = function () {
+            if (scope.task.status === 'In Review') {
+              if (scope.conceptsToReviewViewed.length === 0) {
+                scaService.markTaskForReview($routeParams.projectKey, $routeParams.taskKey).then(function () {
                   scope.task.status = response.data.status;
-                  var updateObj = {
-                    'reviewer': {
-                      'email': $rootScope.accountDetails.email,
-                      'avatarUrl': '',
-                      'username': $rootScope.accountDetails.login,
-                      'displayName': $rootScope.accountDetails.firstName + ' ' + $rootScope.accountDetails.lastName
-                    }
-                  };
-
-                  scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function () {
-                  });
+                  notificationService.sendMessage('Review marked completed for task ' + $routeParams.taskKey, 5000);
+                }, function (error) {
+                  notificationService.sendError('Error marking review complete: ' + error);
                 });
+              } else {
+                notificationService.sendWarning('Cannot complete review: concepts still need review');
               }
+            } else if (scope.task.status === 'Review Complete') {
+              scaService.markTaskForReview($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+                scope.task.status = response.data.status;
+                notificationService.sendMessage('Task ' + $routeParams.taskKey + ' marked for review');
+              }, function (error) {
+                notificationService.sendMessage('Review returned to In Progress', 5000);
+              });
+            } else {
+              notificationService.sendError('Cannot toggle review completion status: task has unexpected status ' + scope.task.status);
 
             }
           };
@@ -1143,7 +1134,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.toggleFeedbackUnreadStatus = function (concept) {
-           // console.debug('toggling task feedback status', concept.conceptId, concept.read);
+            // console.debug('toggling task feedback status', concept.conceptId, concept.read);
             if (concept.read) {
               scaService.markTaskFeedbackUnread($routeParams.projectKey, $routeParams.taskKey, concept.conceptId).then(function (response) {
                 concept.read = false;

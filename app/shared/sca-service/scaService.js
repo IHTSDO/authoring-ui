@@ -719,7 +719,7 @@ angular.module('singleConceptAuthoringApp')
 
         updateTask: function (projectKey, taskKey, object) {
           var deferred = $q.defer();
-          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          $http.put(apiEndpoint   + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
             deferred.reject(error.statusText);
@@ -734,24 +734,25 @@ angular.module('singleConceptAuthoringApp')
 // mark as ready for review -- no return value
         markTaskForReview: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
-            notificationService.sendMessage('Task ' + taskKey + ' marked for review');
-            deferred.resolve();
+          var updateObj = { 'status' : 'IN_REVIEW'};
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review', object).then(function (response) {
+            deferred.resolve(response);
           }, function (error) {
             deferred.reject(error.data.message);
-            notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
-          });
+           });
           return deferred.promise;
         },
 
-        markTaskReviewComplete: function (projectKey, taskKey, status, object) {
-          return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+        markTaskReviewComplete: function (projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'REVIEW_COMPLETE'};
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             notificationService.sendMessage('Task ' + taskKey + ' marked as: ' + status, 3000);
-            return response;
+            deferred.resolve(response);
           }, function (error) {
-            notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 3000);
-            return null;
+            deferred.reject(error.data.status);
           });
+          return deferred.promise;
         },
 
 // get latest review
