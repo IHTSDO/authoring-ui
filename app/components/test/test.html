@@ -3,6 +3,28 @@
        src="'shared/sidebar/sidebar.html'"></div>
 
   <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right">
+
+    <div class="row">
+      <h3 class="table-title p-20">Test Spellchecker</h3>
+    </div>
+
+    <div class="row p-5">
+      <div class="col-md-2">Enter Text</div>
+
+
+      <div class="row" ng-init="textText = 'Fourty words'">
+        <div class="col-md-4">
+          <textarea sca-spellcheck ng-model="testText" class="form-control msd-elastic: \n;" type="text"></textarea>
+        </div>
+      </div>
+
+      <div class="col-md-2">Test words</div>
+      <div class="col-md-3">
+        <span ng-repeat="word in getTestSpellingWords() | orderBy:'+'">{{word}}, </span>
+      </div>
+
+    </div>
+
     <div class="row">
       <h3 class="table-title p-20">Test Notification Generation
       </h3>
