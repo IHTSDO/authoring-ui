@@ -419,7 +419,7 @@ angular.module('singleConceptAuthoringApp')
        * @param matchingWords
        * @returns {*}
        */
-      function runDialectAutomation(concept, description) {
+      function runInternationalDialectAutomation(concept, description) {
 
         var deferred = $q.defer();
 
@@ -602,12 +602,21 @@ angular.module('singleConceptAuthoringApp')
       function runDescriptionAutomations(concept, description) {
 
         var deferred = $q.defer();
+        // if metadata set, run pt from fsn automation
+        if (metadataService.isExtensionSet()) {
+          ptFromFsnAutomation(concept, description);
+          deferred.resolve(concept);
+        }
 
-        runDialectAutomation(concept, description).then(function (updatedConcept) {
-          deferred.resolve(updatedConcept);
-        }, function (error) {
-          deferred.reject(error);
-        });
+
+        // run international dialect automation (includes PT automation for international)
+        else {
+          runInternationalDialectAutomation(concept, description).then(function (updatedConcept) {
+            deferred.resolve(updatedConcept);
+          }, function (error) {
+            deferred.reject(error);
+          });
+        }
         return deferred.promise;
       }
 
@@ -630,7 +639,7 @@ angular.module('singleConceptAuthoringApp')
 
         // individual automations
         ptFromFsnAutomation: ptFromFsnAutomation,
-        runDialectAutomation: runDialectAutomation,
+        runInternationalDialectAutomation: runInternationalDialectAutomation,
 
         // grouped automations
         runDescriptionAutomations: runDescriptionAutomations
