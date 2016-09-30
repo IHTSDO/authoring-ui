@@ -29,6 +29,7 @@ angular
     'monospaced.elastic',
     'textAngular',
     'ui.tree',
+    'ui.tinymce',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
@@ -233,6 +234,8 @@ angular
     scaService.getProjects().then(function (response) {
       metadataService.setProjects(response);
     });
+
+
 
 
     ///////////////////////////////////////////

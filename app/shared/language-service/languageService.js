@@ -7,22 +7,26 @@ angular.module('singleConceptAuthoringApp')
     var apiEndpoint = 'SOME PATH HERE';
 
     // test array and function for returning misspelled words
-    var testSpellings = ['mispelled', 'fourty', 'beleive', 'firey', 'whiskie', 'fulfil', 'steeve', 'ashlee', 'kris', 'sonjia', 'phoung', 'patrik'];
+    var testSpellings = {
+      'mispelled': ['misspelled'],
+      'whiskee': ['whisky', 'whiskey', 'Is it 5 o\'clock yet' ]
+    };
 
     function getTestSpellings() {
       return testSpellings;
     }
+
     function testspellcheck(text, language) {
       var deferred = $q.defer();
       var words = text ? text.split(/\W+/) : [];
-      var misspelledWords = [];
+      var suggestions = {};
 
-      angular.forEach(words, function(word) {
-        if (testSpellings.indexOf(word.toLowerCase()) !== -1) {
-          misspelledWords.push(word);
+      angular.forEach(words, function (word) {
+        if (testSpellings.hasOwnProperty(word.toLowerCase()) !== -1) {
+          suggestions[word] = testSpellings[word];
         }
       });
-      deferred.resolve(misspelledWords);
+      deferred.resolve(suggestions);
       return deferred.promise;
     }
 
@@ -34,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
 
     return {
       testspellcheck: testspellcheck,
-      getTestSpellings : getTestSpellings
+      getTestSpellings: getTestSpellings
     }
   }])
 ;
