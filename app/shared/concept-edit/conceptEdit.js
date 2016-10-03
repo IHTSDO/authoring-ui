@@ -92,8 +92,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
       link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
       {
 
-        console.debug('rendering concept edit');
-
         scope.$watch(function () {
           return $rootScope.branchLocked;
         }, function () {
@@ -358,14 +356,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
-        scope.$watch('validation', function (newValue, oldValue) {
-          console.debug('validation changed', newValue, oldValue);
-        }, true);
-
-
         // on load, check for the requiresValidation flag applied in saveHelper
         if (scope.concept.requiresValidation) {
-          console.debug('requires validation');
           delete scope.concept.requiresValidation;
           scope.validateConcept();
         }
@@ -377,8 +369,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveHelper() {
 
-
-          console.debug('saveHelper');
 
           // simple promise with resolve/reject on success/failure
           var deferred = $q.defer();
@@ -426,7 +416,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // NOTE: Still unsure exactly why create is triggering a full re-render
                   // does not appear to be trackBy or similar issue in ng-repeat....
                   if (saveFn == snowowlService.createConcept) {
-                    console.debug('applying requiresValidation flag');
                     response.requiresValidation = true;
                   }
 
@@ -930,7 +919,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
               }).length > 0;
 
-            console.debug('preferred check', aHasUsP, bHasUsP, aHasOtherP, bHasOtherP, a, b);
 
             if ((aHasUsP && !bHasUsP) || (aHasOtherP && !bHasOtherP)) {
               return -1;
@@ -1000,8 +988,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
               }
             }
-
-            console.debug('sorting by term');
 
             if (a.term && !b.term) {
               return -1;
@@ -2277,10 +2263,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // matching PT should be generated
           else if (description.type === 'FSN') {
 
-            // if a new FSN (determined by blank term)
+            // if a new FSN (determined by no effective time)
             if (!description.effectiveTime && !metadataService.isLockedModule(description.moduleId)) {
+
+              // strip any non-international dialects
+              angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
+                console.debug('checking2', dialectId);
+                if (!metadataService.isUsDialect(dialectId) && !metadataService.isGbDialect(dialectId)) {
+                  delete description.acceptabilityMap[dialectId];
+                }
+              });
+
+              // ensure all dialects returned from metadata are preferred
               angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
+                console.debug('checking', dialectId);
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
+
               });
               description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
             }

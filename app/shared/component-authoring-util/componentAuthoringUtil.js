@@ -354,6 +354,9 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function ptFromFsnAutomation(concept, description) {
+        if (!description || !description.term) {
+          return concept;
+        }
         if (description.term.match(/.*\(.*\)/g)) {
           var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
           var pt = null;
