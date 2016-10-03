@@ -91,6 +91,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
       link: function (scope, element, attrs, linkCtrl) //noinspection UnreachableCodeJS
       {
+
+        console.debug('rendering concept edit');
+
         scope.$watch(function () {
           return $rootScope.branchLocked;
         }, function () {
@@ -145,6 +148,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         } else {
           scope.hideInactive = true;
         }
+
 
         //
         // CRS concept initialization
@@ -309,6 +313,64 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Validation and saving
         ///////////////////////////////////////////////
 
+
+        // function to validate concept and display any errors or warnings
+        scope.validateConcept = function () {
+          var deferred = $q.defer();
+
+          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
+
+            var results = {
+              hasWarnings: false,
+              hasErrors: false,
+              warnings: {},
+              errors: {}
+            };
+
+            angular.forEach(validationResults, function (validationResult) {
+              if (validationResult.severity === 'WARNING') {
+                if (!scope.merge) {
+                  results.hasWarnings = true;
+                  if (!results.warnings[validationResult.componentId]) {
+                    results.warnings[validationResult.componentId] = [];
+                  }
+                  results.warnings[validationResult.componentId].push(validationResult.message);
+                }
+              }
+              else if (validationResult.severity === 'ERROR') {
+                results.hasErrors = true;
+                if (!results.errors[validationResult.componentId]) {
+                  results.errors[validationResult.componentId] = [];
+                }
+                results.errors[validationResult.componentId].push(validationResult.message);
+              }
+            });
+
+            scope.validation = results;
+            console.debug('in validate concept', scope.validation);
+            deferred.resolve(results);
+          }, function (error) {
+            notificationService.sendError('Unexpected error validating concept prior to save');
+            scope.validation = {};
+            deferred.reject();
+          });
+
+          return deferred.promise;
+        };
+
+        scope.$watch('validation', function (newValue, oldValue) {
+          console.debug('validation changed', newValue, oldValue);
+        }, true);
+
+
+        // on load, check for the requiresValidation flag applied in saveHelper
+        if (scope.concept.requiresValidation) {
+          console.debug('requires validation');
+          delete scope.concept.requiresValidation;
+          scope.validateConcept();
+        }
+
+
         /**
          * Helper function to save or update concept after validation
          * @param concept
@@ -316,6 +378,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         function saveHelper() {
 
 
+          console.debug('saveHelper');
 
           // simple promise with resolve/reject on success/failure
           var deferred = $q.defer();
@@ -359,11 +422,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 // successful response will have conceptId
                 if (response && response.conceptId) {
 
+                  // if was created, add a requiresValidation flag for re-render triggering
+                  // NOTE: Still unsure exactly why create is triggering a full re-render
+                  // does not appear to be trackBy or similar issue in ng-repeat....
+                  if (saveFn == snowowlService.createConcept) {
+                    console.debug('applying requiresValidation flag');
+                    response.requiresValidation = true;
+                  }
+
                   // set concept and unmodified state
                   scope.concept = response;
                   scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
+
+                  // add isCreated
 
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
@@ -431,49 +504,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         }
 
-        // function to validate concept and display any errors or warnings
-        scope.validateConcept = function () {
-          var deferred = $q.defer();
-          snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
-
-            var results = {
-              hasWarnings: false,
-              hasErrors: false,
-              warnings: {},
-              errors: {}
-            };
-
-            angular.forEach(validationResults, function (validationResult) {
-              if (validationResult.severity === 'WARNING') {
-                if (!scope.merge) {
-                  results.hasWarnings = true;
-                  if (!results.warnings[validationResult.componentId]) {
-                    results.warnings[validationResult.componentId] = [];
-                  }
-                  results.warnings[validationResult.componentId].push(validationResult.message);
-                }
-              }
-              else if (validationResult.severity === 'ERROR') {
-                results.hasErrors = true;
-                if (!results.errors[validationResult.componentId]) {
-                  results.errors[validationResult.componentId] = [];
-                }
-                results.errors[validationResult.componentId].push(validationResult.message);
-              }
-            });
-
-            scope.validation = results;
-            deferred.resolve(results);
-          }, function (error) {
-            notificationService.sendError('Unexpected error validating concept prior to save');
-            scope.validation = {};
-            deferred.reject();
-          });
-
-          return deferred.promise;
-        };
 
         scope.saveConcept = function () {
+
+          console.debug('saveConcept');
 
 
           // clear the top level errors and warnings
@@ -554,24 +588,28 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // save concept
               saveHelper().then(function () {
-                // recompute validation warnings
-                scope.validateConcept().then(function () {
-                  notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
-                  scope.saving = false;
+
+                $timeout(function () {
+                  // recompute validation warnings
+                  scope.validateConcept().then(function (results) {
+                    console.debug('validation after save helper', results);
+                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                    scope.saving = false;
+                  }, function (error) {
+                    notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
+                    scope.saving = false;
+                  });
+
                 }, function (error) {
-                  notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
+                  if (error.status === 504) {
+                    notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
+                  }
+                  else {
+                    notificationService.sendError('Error saving concept: ' + error.statusText);
+                  }
                   scope.saving = false;
                 });
-
-              }, function (error) {
-                if (error.status === 504) {
-                  notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
-                }
-                else {
-                  notificationService.sendError('Error saving concept: ' + error.statusText);
-                }
-                scope.saving = false;
-              });
+              }, 1000);
             }
 
 
@@ -881,12 +919,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // ensure preferred terms are always on top, with us first
             var aHasUsP = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
             var bHasUsP = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
-            var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function(dialect) {
+            var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
                 if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
                   return true;
                 }
               }).length > 0;
-            var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function(dialect) {
+            var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
                 if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
                   return true;
                 }
@@ -1078,7 +1116,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //
 //        ];
 
-        scope.isDescriptionViewable = function(description) {
+        scope.isDescriptionViewable = function (description) {
           if (!description) {
             return false;
           }
