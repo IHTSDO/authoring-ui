@@ -1947,6 +1947,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   delete copy.sourceId;
                   delete copy.effectiveTime;
                   delete copy.relationshipId;
+                  delete copy.released;
 
                   // push to relationships
                   scope.concept.relationships.push(copy);
