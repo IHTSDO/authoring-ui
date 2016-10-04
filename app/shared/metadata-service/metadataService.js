@@ -243,6 +243,10 @@ angular.module('singleConceptAuthoringApp')
       return dialectId === '900000000000509007';
     }
 
+    function isGbDialect(dialectId) {
+      return dialectId === '900000000000508004';
+    }
+
     // checks if specified dialect belongs to extension
     function isExtensionDialect(dialectId) {
       if (!extensionMetadata || !extensionMetadata.dialects) {
@@ -436,6 +440,7 @@ angular.module('singleConceptAuthoringApp')
       // boolean checks exposed for use
       isLockedModule: isLockedModule,
       isUsDialect: isUsDialect,
+      isGbDialect: isGbDialect,
       isExtensionDialect: isExtensionDialect,
       isMrcmEnabled: isMrcmEnabled,
 

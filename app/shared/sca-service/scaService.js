@@ -719,7 +719,7 @@ angular.module('singleConceptAuthoringApp')
 
         updateTask: function (projectKey, taskKey, object) {
           var deferred = $q.defer();
-          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          $http.put(apiEndpoint   + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
             deferred.reject(error.statusText);
@@ -731,24 +731,66 @@ angular.module('singleConceptAuthoringApp')
 // Review & Feedback
 //////////////////////////////////////////
 
-// mark as ready for review -- no return value
-        markTaskForReview: function (projectKey, taskKey) {
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/review').then(function (response) {
-            notificationService.sendMessage('Task ' + taskKey + ' marked for review');
+        // mark as ready for review -- no return value
+        assignReview: function (projectKey, taskKey, username) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'IN_REVIEW', 'reviewer': {'username': username}};
+
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            deferred.resolve(response);
           }, function (error) {
-            console.error('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey);
-            notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 10000);
+            deferred.reject(error.data.message);
           });
+          return deferred.promise;
         },
 
-        markTaskReviewComplete: function (projectKey, taskKey, status, object) {
-          return $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
-            notificationService.sendMessage('Task ' + taskKey + ' marked as: ' + status, 3000);
-            return response;
+        unassignReview: function(projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'IN_REVIEW', 'reviewer': {}};
+
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            deferred.resolve(response);
           }, function (error) {
-            notificationService.sendError('Error marking task ready for review: ' + taskKey + ' in project ' + projectKey, 3000);
-            return null;
+            deferred.reject(error.data.message);
           });
+          return deferred.promise;
+        },
+
+
+        markTaskInProgress: function (projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'IN_PROGRESS', 'reviewer' : {}};
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.data.message);
+          });
+          return deferred.promise;
+        },
+
+
+        markTaskReviewInProgress: function(projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'IN_REVIEW'};
+
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.data.message);
+          });
+          return deferred.promise;
+        },
+
+        markTaskReviewComplete: function (projectKey, taskKey) {
+          var deferred = $q.defer();
+          var updateObj = { 'status' : 'REVIEW_COMPLETED'};
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
+            notificationService.sendMessage('Task ' + taskKey + ' marked as: ' + status, 3000);
+            deferred.resolve(response);
+          }, function (error) {
+            deferred.reject(error.data.status);
+          });
+          return deferred.promise;
         },
 
 // get latest review
@@ -1203,11 +1245,11 @@ angular.module('singleConceptAuthoringApp')
                       var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                       });
-                      if(newNotification.task){
-                          msg = 'Validation ' + event + ' for ' + 'task ' + newNotification.task;
+                      if (newNotification.task) {
+                        msg = 'Validation ' + event + ' for ' + 'task ' + newNotification.task;
                       }
-                      else if(newNotification.project){
-                          msg = 'Validation ' + event + ' for ' + 'project ' + newNotification.project;
+                      else if (newNotification.project) {
+                        msg = 'Validation ' + event + ' for ' + 'project ' + newNotification.project;
                       }
 
                       // do not supply a url (button link) for FAILED status

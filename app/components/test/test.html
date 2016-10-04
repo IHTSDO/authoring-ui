@@ -2,7 +2,84 @@
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
-  <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right">
+  <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right no-gutter">
+
+    <div class="row">
+      <h3 class="table-title p-20">Test Spellchecker</h3>
+    </div>
+
+
+    <div class="row p-5 ">
+      <div class="col-md-1">Notes</div>
+      <div class="col-md-11">
+        Spellcheck triggers on editor focus.<br>
+        Spellcheck disables on editor blur (exit).<br>
+        "Model" section shows the raw value of the editor text (i.e. text to save)<br>
+        Dev testing uses a short library of words for testing, see below
+      </div>
+    </div>
+
+    <div class="row p-5 ">
+      <div class="col-md-1">Text
+
+
+      </div>
+      <div class="col-md-8">
+
+        <script type="text/javascript" src="tinymce/js/tinymce/tinymce.min.js"></script>
+        <script type="text/javascript">
+
+        </script>
+        <textarea ui-tinymce="tinymceOptions" ng-model="testText" ng-change="spellcheck()" ng-model-options="{ debounce: 3000 }"></textarea>
+        <div class="row">
+          <div class="col-md-3"><u>Misspelling</u></div>
+          <div class="col-md-6"><u>Suggestions</u></div>
+        </div>
+        <div class="row" ng-repeat="(key, val) in getTestSpellingWords()">
+          <div class="col-md-3">"{{key}}"</div>
+          <div class="col-md-6"><span ng-repeat="word in val">"{{word}}" </span></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="row p-5">
+      <div class="col-md-1">Model</div>
+      <div class="col-md-4">
+        <div class="well">{{testText}}</div>
+      </div>
+    </div>
+    <!--
+          <div class="col-md-4">
+            <textarea sca-spellcheck ng-model="testText" class="form-control msd-elastic: \n;" type="text"></textarea>
+
+
+          </div>
+
+        </div>
+        <div class="row p-5">
+          <div class="col-md-1">Model</div>
+          <div class="col-md-4">
+            <div class="well">{{testText}}</div>
+          </div>
+        </div>
+        <div class="row p-5">
+          <div class="col-md-1"></div>
+          <div class="col-md-4">Test words: <span ng-repeat="word in getTestSpellingWords() | orderBy:'+'">{{word}}, </span>
+          </div>
+        </div>
+
+        <div class="row p-5">
+          <div class="col-md-1">Notes</div>
+
+
+          <div class="col-md-8">
+            <li>Demonstrates in-line highlighting of words (will be supplied by back-end in future).</li>
+            <li>Spell-checking currently only trigger on blur; other events added shortly.</li>
+            <li>Tester not so awesome as to dynamically update the style/class if changed. Edit the text after change.</li>
+          </div>
+
+        </div>&ndash;&gt;-->
+
     <div class="row">
       <h3 class="table-title p-20">Test Notification Generation
       </h3>
