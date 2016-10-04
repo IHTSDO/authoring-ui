@@ -354,6 +354,9 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function ptFromFsnAutomation(concept, description) {
+        if (!description || !description.term) {
+          return concept;
+        }
         if (description.term.match(/.*\(.*\)/g)) {
           var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
           var pt = null;
@@ -474,7 +477,7 @@ angular.module('singleConceptAuthoringApp')
        * @param matchingWords
        * @returns {*}
        */
-      function runDialectAutomation(concept, description) {
+      function runInternationalDialectAutomation(concept, description) {
 
         var deferred = $q.defer();
 
@@ -661,12 +664,21 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
 
-        // run dialect automation (includes PT automation for international)
-        runDialectAutomation(concept, description).then(function (updatedConcept) {
-          deferred.resolve(updatedConcept);
-        }, function (error) {
-          deferred.reject(error);
-        });
+        // if metadata set, run pt from fsn automation
+        if (metadataService.isExtensionSet()) {
+          ptFromFsnAutomation(concept, description);
+          deferred.resolve(concept);
+        }
+
+
+        // run international dialect automation (includes PT automation for international)
+        else {
+          runInternationalDialectAutomation(concept, description).then(function (updatedConcept) {
+            deferred.resolve(updatedConcept);
+          }, function (error) {
+            deferred.reject(error);
+          });
+        }
         return deferred.promise;
       }
 
@@ -689,7 +701,7 @@ angular.module('singleConceptAuthoringApp')
 
         // individual automations
         ptFromFsnAutomation: ptFromFsnAutomation,
-        runDialectAutomation: runDialectAutomation,
+        runInternationalDialectAutomation: runInternationalDialectAutomation,
 
         // grouped automations
         runDescriptionAutomations: runDescriptionAutomations

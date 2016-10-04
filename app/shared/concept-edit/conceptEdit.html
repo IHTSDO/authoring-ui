@@ -31,6 +31,9 @@
   .new-concept .concept-headers:first-child{padding-top:3px!important}
   </style>
     <div  ng-class="[{'new-concept' : componentStyles.isNew}]">
+      <div class="row">
+        {{scope.validation}}
+      </div>
   <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
 
     <div class="pull-left col-md-1 no-padding">

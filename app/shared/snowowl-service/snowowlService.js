@@ -86,7 +86,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if a locally assigned UUID, strip
         if (concept.conceptId && !concept.conceptId.match(/^[0-9]+$/)) {
-         concept.conceptId = null;
+          concept.conceptId = null;
         }
 
         for (var key in concept) {
@@ -105,9 +105,8 @@ angular.module('singleConceptAuthoringApp')
           if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
             delete description.descriptionId;
           }
-          if(description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated')
-          {
-              delete description.inactivationIndicator;
+          if (description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated') {
+            delete description.inactivationIndicator;
           }
           for (var key in description) {
             if (allowableDescriptionProperties.indexOf(key) === -1) {
@@ -115,16 +114,16 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          // TODO
-          // strip invalid characters from term
-          //description.term = description.replace(/[@|$|#|\\]/, ' ');
+          if (description.term) {
+            // strip invalid characters from term
+            description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
 
-          // replace any non-space whitespace characters (tab, newline, etc.)
-          //description.term = description.replace(/[^\S ]/, ' ');
+            //replace any non-space whitespace characters (tab, newline, etc.)
+            description.term = description.term.replace(/[^\S ]/g, ' ');
 
-          // replace any 2+ sequences of space with single space
-          //description.term = description.replace(/[ ]{2,}/, ' ');
-
+            // replace any 2+ sequences of space with single space
+            description.term = description.term.replace(/[ ]{2,}/g, ' ');
+          }
         });
 
         var allowableRelationshipProperties = [
@@ -214,7 +213,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/equivalent-concepts').then(function (response) {
           deferred.resolve(response.data.items);
-        }, function(error) {
+        }, function (error) {
           deferred.reject('Classification details could not be retrieved');
         });
         return deferred.promise;
@@ -227,7 +226,7 @@ angular.module('singleConceptAuthoringApp')
         $http.get(apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=' + (limit ? limit : '1000')).then(function (response) {
           // NOTE: Return the full object to get the total count
           deferred.resolve(response.data);
-        }, function(error) {
+        }, function (error) {
           deferred.reject('Classification details could not be retrieved');
         });
         return deferred.promise;
@@ -642,7 +641,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var config = {};
         if (acceptLanguageValue) {
-          config.headers = { 'Accept-Language' : acceptLanguageValue};
+          config.headers = {'Accept-Language': acceptLanguageValue};
         }
 
         $http.get(apiEndpoint + 'browser/' + branch + '/concepts/' + conceptId, config).then(function (response) {
@@ -760,7 +759,7 @@ angular.module('singleConceptAuthoringApp')
         if (acceptLanguageValue) {
           // declare headers if not specified
           if (!config.headers) {
-          config.headers = {};
+            config.headers = {};
           }
           // set the accept language header
           config.headers['Accept-Language'] = acceptLanguageValue;
@@ -797,7 +796,7 @@ angular.module('singleConceptAuthoringApp')
                   conceptId: response.data.conceptId,
                   definitionStatus: response.data.definitionStatus,
                   fsn: response.data.fsn,
-                  preferredSynonym : response.data.preferredSynonym,
+                  preferredSynonym: response.data.preferredSynonym,
                   moduleId: response.data.moduleId
                 }
               };
@@ -958,7 +957,7 @@ angular.module('singleConceptAuthoringApp')
         $http.get('/traceability-service/activities?onBranch=' + branch + '&size=50000').then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
-           if (error.status === 404) {
+          if (error.status === 404) {
             deferred.reject('Traceability does not exist for branch');
           }
           else {
@@ -1197,7 +1196,7 @@ angular.module('singleConceptAuthoringApp')
           var locHeader = response.headers('Location');
           var mergeId = locHeader.substr(locHeader.lastIndexOf('/') + 1);
 
-          return { locHeader: locHeader};
+          return {locHeader: locHeader};
         });
       }
 
@@ -1301,7 +1300,7 @@ angular.module('singleConceptAuthoringApp')
         }
         $http.get(apiEndpoint + 'browser/dialect/matches?tokenizedWords=' + wordsStr).then(function (response) {
           deferred.resolve(response.data);
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error.message);
         });
         return deferred.promise;
@@ -1381,7 +1380,7 @@ angular.module('singleConceptAuthoringApp')
         getDialectMatches: getDialectMatches,
 
         // utility
-        createGuid : createGuid
+        createGuid: createGuid
 
       };
     }

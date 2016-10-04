@@ -90,12 +90,12 @@
 
 
         <!-- Review In Progress / Review Complete toggle -->
-        <div ng-if="role === 'REVIEWER' && task.status === 'In Review' || task.status === 'Review Complete'"
+        <div ng-if="role === 'REVIEWER'"
              class="switch pull-right">
           <label class="switch">
             Review in Progress
-            <input type="checkbox" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
-                   ng-change="changeReviewStatus(reviewComplete)">
+            <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
+                   ng-change="toggleReviewStatus()">
             <span class="lever"></span>
             Review Complete
           </label>
