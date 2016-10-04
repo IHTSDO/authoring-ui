@@ -348,7 +348,7 @@ angular.module('singleConceptAuthoringApp')
             currentTaskConcepts[i].conceptId = concept.conceptId;
             currentTaskConcepts[i].concept = concept;
             currentTaskConcepts[i].saved = true;
-            currentTaskConcepts[i].isNewConcept = false;
+            currentTaskConcepts[i].requiresCreation = false;
             saveCrsConceptsUiState();
             break;
           }
