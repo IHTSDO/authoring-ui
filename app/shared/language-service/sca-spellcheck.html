@@ -1,22 +1,11 @@
 <div >
 
-  <style>
-    [contenteditable] {
-      border: 1px solid black;
-      background-color: white;
-      min-height: 20px;
-    }
+  <script type="text/javascript" src="tinymce/js/tinymce/tinymce.min.js"></script>
+  <script type="text/javascript">
 
-    .redwiggle {
-      background-image: url('../../images/wiggle.png');
-      background-repeat: repeat-x;
-      background-position: bottom;
-      cursor: default;
-    }
-  </style>
-
-
-  <div class="well" style="max-height:125px; overflow:auto">{{textHtml}}</div>
-
+  </script>
+  <div ng-if="tinymceOptions">
+    <textarea ui-tinymce="tinymceOptions" ng-model="spellcheckText" ng-model-options="{ debounce: 500 }" ></textarea>
+  </div>
 
 </div>

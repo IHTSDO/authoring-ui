@@ -26,11 +26,8 @@
       </div>
       <div class="col-md-8">
 
-        <script type="text/javascript" src="tinymce/js/tinymce/tinymce.min.js"></script>
-        <script type="text/javascript">
-
-        </script>
-        <textarea ui-tinymce="tinymceOptions" ng-model="testText" ng-change="spellcheck()" ng-model-options="{ debounce: 3000 }"></textarea>
+        <textarea sca-spellcheck ng-model="term"></textarea>
+        <textarea sca-spellcheck ng-model="term2"></textarea>
         <div class="row">
           <div class="col-md-3"><u>Misspelling</u></div>
           <div class="col-md-6"><u>Suggestions</u></div>
@@ -45,7 +42,7 @@
     <div class="row p-5">
       <div class="col-md-1">Model</div>
       <div class="col-md-4">
-        <div class="well">{{testText}}</div>
+        <div class="well">{{term}}</div>
       </div>
     </div>
     <!--

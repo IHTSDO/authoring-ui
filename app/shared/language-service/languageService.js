@@ -36,9 +36,13 @@ angular.module('singleConceptAuthoringApp')
       return [];
     }
 
+
     return {
       testspellcheck: testspellcheck,
-      getTestSpellings: getTestSpellings
+      getTestSpellings: getTestSpellings,
+
+      spellcheck: spellcheck
+
     }
   }])
 ;
