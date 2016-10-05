@@ -589,16 +589,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     scope.saving = false;
                   });
 
-                }, function (error) {
-                  if (error.status === 504) {
-                    notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
-                  }
-                  else {
-                    notificationService.sendError('Error saving concept: ' + error.statusText);
-                  }
-                  scope.saving = false;
-                });
-              }, 1000);
+                }, 1000)
+              }, function (error) {
+                if (error.status === 504) {
+                  notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
+                }
+                else {
+                  notificationService.sendError('Error saving concept: ' + error.statusText);
+                }
+                scope.saving = false;
+              });
+
             }
 
 
@@ -915,27 +916,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             if (!aHasUsP && bHasUsP) {
               return 1;
             }
-            
-/*
-            // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
-            var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
-                if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
-                  return true;
-                }
-              }).length > 0;
-            var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
-                if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
-                  return true;
-                }
-              }).length > 0;
+
+            /*
+             // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
+             var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
+             if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
+             return true;
+             }
+             }).length > 0;
+             var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
+             if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
+             return true;
+             }
+             }).length > 0;
 
 
-            if (aHasOtherP && !bHasOtherP) {
-              return -1;
-            }
-            if (!aHasOtherP && bHasOtherP) {
-              return 1;
-            }*/
+             if (aHasOtherP && !bHasOtherP) {
+             return -1;
+             }
+             if (!aHasOtherP && bHasOtherP) {
+             return 1;
+             }*/
 
             // comparator function for sorting by acceptabilities within a specified dialect
             var acceptabilityComparator = function (descA, descB, dialect) {
