@@ -385,6 +385,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             deferred.resolve(); // do want validation run
           }
 
+
           else {
 
             // store the concept id (may be blank or UUID/GUID)
@@ -475,7 +476,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     }
                   }, 3000);
 
-                  deferred.resolve();
+
+                    deferred.resolve();
                 }
 
                 // handle error
@@ -596,6 +598,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // on timeouts, must save crs concept to ensure termserver retrieval
                   if (crsService.isCrsConcept(originalConceptId)) {
                     crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
+                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConceptId);
                   }
                   notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
 
@@ -627,6 +630,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // on timeouts, must save crs concept to ensure termserver retrieval
                   if (crsService.isCrsConcept(originalConceptId)) {
                     crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
+                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConceptId);
                   }
                   notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
                 }
