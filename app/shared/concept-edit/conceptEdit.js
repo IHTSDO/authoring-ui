@@ -905,9 +905,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
 
-            // ensure preferred terms are always on top, with us first
+            // ensure en-us PREFERRED terms always on top
             var aHasUsP = a.acceptabilityMap ? a.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
             var bHasUsP = b.acceptabilityMap ? b.acceptabilityMap['900000000000509007'] === 'PREFERRED' : false;
+
+            if (aHasUsP && !bHasUsP) {
+              return -1;
+            }
+            if (!aHasUsP && bHasUsP) {
+              return 1;
+            }
+            
+/*
+            // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
             var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
                 if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
                   return true;
@@ -920,12 +930,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }).length > 0;
 
 
-            if ((aHasUsP && !bHasUsP) || (aHasOtherP && !bHasOtherP)) {
+            if (aHasOtherP && !bHasOtherP) {
               return -1;
             }
-            if ((!aHasUsP && bHasUsP) || (!aHasOtherP && bHasOtherP)) {
+            if (!aHasOtherP && bHasOtherP) {
               return 1;
-            }
+            }*/
 
             // comparator function for sorting by acceptabilities within a specified dialect
             var acceptabilityComparator = function (descA, descB, dialect) {
