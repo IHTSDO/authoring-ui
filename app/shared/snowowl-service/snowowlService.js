@@ -1257,6 +1257,8 @@ angular.module('singleConceptAuthoringApp')
 
       function validateConcept(projectKey, taskKey, concept) {
 
+        cleanConcept(concept);
+
         // assign UUIDs to elements without an SCTID
         if (!concept.conceptId) {
           concept.conceptId = createGuid();
