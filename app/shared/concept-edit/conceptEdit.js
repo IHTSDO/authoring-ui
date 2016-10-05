@@ -439,8 +439,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       $rootScope.$broadcast('saveCrsConcept', {concept: crsConcept, crsConceptId: originalConceptId});
                     }
 
-                    // update the crs concept
-                    crsService.saveCrsConcept(originalConceptId, scope.concept);
+                    // update the crs concept (no warning)
+                    crsService.saveCrsConcept(originalConceptId, scope.concept, null);
                   }
 
                   // clear the modified state if no id was specified
@@ -592,7 +592,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }, 1000)
               }, function (error) {
                 if (error.status === 504) {
+
+                  // on timeouts, must save crs concept to ensure termserver retrieval
+                  if (crsService.isCrsConcept(originalConceptId)) {
+                    crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
+                  }
                   notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
+
                 }
                 else {
                   notificationService.sendError('Error saving concept: ' + error.statusText);
@@ -618,6 +624,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }, function (error) {
                 console.log(error);
                 if (error.status === 504) {
+                  // on timeouts, must save crs concept to ensure termserver retrieval
+                  if (crsService.isCrsConcept(originalConceptId)) {
+                    crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
+                  }
                   notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
                 }
                 else {

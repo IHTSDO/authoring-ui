@@ -345,7 +345,7 @@ angular.module('singleConceptAuthoringApp')
 // Save a concept against the stored id
 // NOTE: crsId required because snowowl may assign a new id
 //
-      function saveCrsConcept(crsId, concept) {
+      function saveCrsConcept(crsId, concept, warning) {
         for (var i = 0; i < currentTaskConcepts.length; i++) {
           if (currentTaskConcepts[i].conceptId === crsId) {
 
@@ -353,6 +353,7 @@ angular.module('singleConceptAuthoringApp')
             currentTaskConcepts[i].conceptId = concept.conceptId;
             currentTaskConcepts[i].concept = concept;
             currentTaskConcepts[i].saved = true;
+            currentTaskConcepts[i].warning = warning;
             currentTaskConcepts[i].isNewConcept = false;
             saveCrsConceptsUiState();
             break;

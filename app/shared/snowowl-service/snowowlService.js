@@ -75,6 +75,10 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function isSctid(id) {
+        return id && id.match(/^[0-9]+$/);
+      }
+
       // function to remove disallowed elements from a concept
       function cleanConcept(concept) {
 
@@ -85,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
           'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets'];
 
         // if a locally assigned UUID, strip
-        if (concept.conceptId && !concept.conceptId.match(/^[0-9]+$/)) {
+        if (!isSctid(concept.conceptId)) {
           concept.conceptId = null;
         }
 
@@ -1380,7 +1384,8 @@ angular.module('singleConceptAuthoringApp')
         getDialectMatches: getDialectMatches,
 
         // utility
-        createGuid: createGuid
+        createGuid: createGuid,
+        isSctid: isSctid
 
       };
     }
