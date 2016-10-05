@@ -1,131 +1,157 @@
-angular.module('singleConceptAuthoringApp').directive('scaSpellcheck', function ($sce, languageService) {
+angular.module('singleConceptAuthoringApp').directive('scaSpellcheck', function ($sce, languageService, $timeout) {
   return {
     replace: true,
     restrict: 'A',
     require: '?ngModel',
+    scope: {},
     link: function (scope, element, attrs, ngModel) {
       if (!ngModel) {
         return;
       }
 
-      // watch for updates from render or contenteditable
-      scope.$watch('textHtml', function (newValue, oldValue) {
-        if (!newValue) return;
-        // strip html and re-render
-        var rex = /(<([^>]+)>)/ig;
-        ngModel.$setViewValue(newValue.replace(rex, ""));
-        ngModel.$render();
-      }, true);
+      /**
+       * Notes:
+       * - tinymce does not play well wrapped inside directives
+       * - can attempt to jigger with $eval/init per issues 158 & 218
+       * - also works fine with scope inheritance of options from parent
+       */
 
+      console.debug('sca-spellcheck');
+
+      //
+      // TinyMCE editor and options
+      //
+
+      var editor;
+
+      scope.tinymceOptions = {
+        setup: function (ed) {
+
+          editor = ed;
+          ed.on('focus', function () {
+            console.debug('focus event', ed);
+            spellcheck();
+          });
+          ed.on('blur', function () {
+            console.debug('blur event', ed);
+            disableSpellcheck();
+          });
+          ed.on('change', function (e) {
+            try {
+              var text = tinymce.get(editor.id).getContent();
+              // update model
+              read(text);
+
+              // apply live spellchecking
+              debouncedSpellcheck(text);
+              console.debug('change', text);
+            } catch (err) {
+              // do nothing, throws errors on initialization
+            }
+          })
+          console.debug('editor', editor);
+
+        },
+
+        // required to not add &nbsp; on paste events
+        entity_encoding: 'raw',
+
+        // strip all p and br elements added automatically
+        invalid_elements: 'p,br',
+
+        // do not wrap blocks
+        forced_root_block: false,
+
+        // add debounce internally instead of via ng-model-options
+        debouncetime: 5000,
+
+        selector: "textarea",  // change this value according to your HTML
+        auto_focus: false,
+        plugins: "spellchecker",
+        menubar: false,
+        toolbar: ['spellchecker'],
+        statusbar: false,
+        paste_auto_cleanup_on_paste: true,
+        spellchecker_callback: function (method, text, success, failure) {
+          console.debug('spellchecker_callback', text);
+          languageService.testspellcheck(text).then(function (suggestions) {
+            success(suggestions);
+          });
+        }
+      };
+
+      //
+      // Live spellchecking (double toggle on debounced change)
+      //
+
+      var prevText;
+      var debounceTimer;
+      var debounceTimerInterval = 500;
+
+      function debouncedSpellcheck(text) {
+
+        console.debug('debounce', prevText === text, text, prevText);
+
+        // debounced spellchecking
+        if (debounceTimer) {
+          console.debug('cancelling timer');
+          $timeout.cancel(debounceTimer);
+        }
+
+        if (prevText && prevText !== text) {
+
+          console.debug('starting timer');
+
+          debounceTimer = $timeout(function () {
+            disableSpellcheck();
+            $timeout(function() {
+              spellcheck();
+
+            }, 250);
+
+          }, debounceTimerInterval)
+        }
+
+        prevText = text;
+      }
+
+
+      //
+      // Enable/disable spellcheck on focus and blur events
+      //
+      var spellcheckActive = false;
+
+      function spellcheck() {
+        if (!spellcheckActive) {
+          editor.execCommand('mceSpellcheck');
+        }
+        spellcheckActive = true;
+      }
+
+      function disableSpellcheck() {
+        if (spellcheckActive) {
+          editor.execCommand('mceSpellcheck');
+        }
+        spellcheckActive = false;
+      }
+
+      function read(newValue) {
+        console.debug('change', newValue);
+        ngModel.$setViewValue(newValue);
+      }
 
       ngModel.$render = function () {
-        var textHtml = ngModel.$viewValue;
-
-        // TODO Use regular spellcheck function once BE in place
-        languageService.testspellcheck(textHtml).then(function (words) {
-          angular.forEach(words, function (word) {
-            var regex = new RegExp(word, 'g');
-            textHtml = textHtml.replace(regex, '<span class="' + scope.errClass + '">' + word + '</span>')
-          });
-          console.debug('new text html', scope.textHtml);
-          scope.textHtml = textHtml;
-        });
-
+        console.debug('render event', ngModel.$viewValue);
+        scope.spellcheckText = ngModel.$viewValue;
       };
+
+      scope.$watch('spellcheckText', function (newValue, oldValue) {
+
+      })
+
+
     },
     templateUrl: 'shared/language-service/sca-spellcheck.html'
   }
 });
-
-//
-// Directive to create an editable div
-//
-angular.module('singleConceptAuthoringApp').directive('contenteditable', ['$sce', function ($sce) {
-  return {
-    restrict: 'A', // attribute only
-    require: '?ngModel', // ngModel of element
-    link: function (scope, element, attrs, ngModel) {
-      if (!ngModel) return;
-
-      console.debug('new contenteditable');
-
-      var nodeIndex;
-
-      // get the node position if present
-      function storeNodeInfo() {
-        try {
-          if (window.getSelection) {
-            var selection = window.getSelection();
-            console.debug('full selection', selection);
-            console.debug('selection', selection.focusNode.textContent);
-            for (var i = 0; i < selection.focusNode.parentNode.childNodes.length; i++) {
-              console.debug('  ', i, selection.focusNode.parentNode.childNodes[i].textContent);
-              if (selection.focusNode.textContent === selection.focusNode.parentNode.childNodes[i].textContent) {
-                nodeIndex = i;
-                console.debug('    nodeIndex', nodeIndex);
-                break;
-              }
-            }
-          }
-        }
-
-        catch
-          (error) {
-        }
-      }
-
-
-      function setCursorPosition(n, o) {
-        console.debug('set cursor', n, o);
-        var range = document.createRange();
-        var sel = window.getSelection();
-        range.setStart(element.context.childNodes[n], o);
-        range.collapse(true);
-        sel.removeAllRanges();
-        sel.addRange(range);
-      }
-
-      // render function -- required for ngModel
-      ngModel.$render = function () {
-        console.debug('render event', nodeIndex);
-
-        // set the html
-        element.html($sce.getTrustedHtml(ngModel.$viewValue || ''));
-
-        // determine cursor position (if changed)
-        if (nodeIndex) {
-          var node = element.context.childNodes[nodeIndex];
-          console.debug('new node', node);
-
-          // if node type has changed, need to reset cursor
-          // to account for add/remove of <span> tag
-          if (node.type != node.type) {
-            var rex = /(<([^>]+)>)/;
-            var offset = node.textContent.matches(rex)
-              // if node starts with html, increment offset by length of tag
-              ? node.textContent.indexOf('>') + selection.focusOffset
-              // otherwise, decrement offset by length of old taqg
-              : selection.focusOffset - selection.focusNode.textContent.indexOf();
-            setCursorPosition(nodeIndex, offset);
-          }
-        }
-      }
-
-      // on change events, update
-      // TODO add events here -- keyup? change? etc.
-      element.on('blur keyup change', function () {
-        storeNodeInfo();
-        scope.$evalAsync(read);
-      });
-
-      // Write raw html data back to the model
-      function read() {
-        ngModel.$setViewValue(element.html());
-      }
-
-      // initialize
-      read();
-    }
-  };
-}]);
 
