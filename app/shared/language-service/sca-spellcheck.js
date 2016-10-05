@@ -44,12 +44,12 @@ angular.module('singleConceptAuthoringApp').directive('scaSpellcheck', function 
 
               // apply live spellchecking
               debouncedSpellcheck(text);
-              console.debug('change', text);
+        //      console.debug('change', text);
             } catch (err) {
               // do nothing, throws errors on initialization
             }
-          })
-          console.debug('editor', editor);
+          });
+      //    console.debug('editor', editor);
 
         },
 
@@ -69,7 +69,7 @@ angular.module('singleConceptAuthoringApp').directive('scaSpellcheck', function 
         auto_focus: false,
         plugins: "spellchecker",
         menubar: false,
-        toolbar: ['spellchecker'],
+        toolbar: false,
         statusbar: false,
         paste_auto_cleanup_on_paste: true,
         spellchecker_callback: function (method, text, success, failure) {
@@ -94,13 +94,13 @@ angular.module('singleConceptAuthoringApp').directive('scaSpellcheck', function 
 
         // debounced spellchecking
         if (debounceTimer) {
-          console.debug('cancelling timer');
+      //    console.debug('cancelling timer');
           $timeout.cancel(debounceTimer);
         }
 
         if (prevText && prevText !== text) {
 
-          console.debug('starting timer');
+     //     console.debug('starting timer');
 
           debounceTimer = $timeout(function () {
             disableSpellcheck();
@@ -136,18 +136,14 @@ angular.module('singleConceptAuthoringApp').directive('scaSpellcheck', function 
       }
 
       function read(newValue) {
-        console.debug('change', newValue);
+       // console.debug('change', newValue);
         ngModel.$setViewValue(newValue);
       }
 
       ngModel.$render = function () {
-        console.debug('render event', ngModel.$viewValue);
+       // console.debug('render event', ngModel.$viewValue);
         scope.spellcheckText = ngModel.$viewValue;
       };
-
-      scope.$watch('spellcheckText', function (newValue, oldValue) {
-
-      })
 
 
     },
