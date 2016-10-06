@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
       //
 
       function getBatchConcepts() {
-        return batchConcepts;
+        return batchConcepts ? batchConcepts : [];
       }
 
       function addBatchConcepts(concept) {
