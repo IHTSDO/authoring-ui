@@ -13,13 +13,24 @@ angular.module('singleConceptAuthoringApp')
       //
       // Utility functions
       //
+      function getBatchConceptsUiState() {
+        var deferred = $q.defer();
+        scaService.getSharedUiStateForTask(currentTask.projectKey, currentTask.key, uiStateName).then(function (concepts) {
+          deferred.resolve(concepts);
+        }, function (error) {
+          deferred.reject('Could not retrieve batch concepts');
+        });
+        return deferred.promise;
+      }
+
       function updateBatchConceptsUiState() {
         var deferred = $q.defer();
         scaService.saveSharedUiStateForTask(currentTask.projectKey, currentTask.key, uiStateName, batchConcepts).then(function (response) {
           deferred.resolve(response);
         }, function (error) {
           deferred.reject(error.message);
-        })
+        });
+        return deferred.promise;
       }
 
       //
@@ -57,14 +68,14 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function setTask(task) {
-        var deferred = $q.defer;
-
-        scaService.getSharedUiStateForTask(currentTask.projectKey, currentTask.key, uiStateName).then(function (concepts) {
-          deferred.resolve(concepts);
-        }, function (error) {
-          deferred.reject('Could not retrieve batch concepts');
+        var deferred = $q.defer();
+        currentTask = task;
+        getBatchConceptsUiState().then(function(response) {
+          batchConcepts = response;
+          deferred.resolve();
+        }, function(error) {
+          deferred.reject('Failed to set task: ' + error);
         });
-        deferred.resolve();
         return deferred.promise;
       }
 
