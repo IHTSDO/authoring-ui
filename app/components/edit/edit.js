@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, batchEditService) {
 
 
 
@@ -189,6 +189,12 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
     }
+
+    //
+    // Batch editing
+    //
+
+    $scope.getBatchConcepts = batchService.getBatchConcepts;
 
     $scope.loadEditPanelConcepts = function () {
 
@@ -373,6 +379,14 @@ angular.module('singleConceptAuthoringApp.edit', [
           // if a task, load edit panel concepts
           if ($scope.taskKey) {
             $scope.loadEditPanelConcepts();
+          }
+          break;
+        case 'batch':
+          $rootScope.pageTitle = 'Batch Editing/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $routeParams.mode = 'batch';
+          $scope.canCreateConcept = true;
+          if ($scope.taskKey) {
+            $scope.loadEditBatchConcepts();
           }
           break;
         default:
@@ -638,7 +652,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if ($scope.concepts.length === $scope.editList.length) {
           notificationService.sendMessage('All concepts loaded', 10000, null);
           // ensure loaded concepts match order of edit list
-          $scope.concepts.sort(function(a, b) {
+          $scope.concepts.sort(function (a, b) {
             return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
           });
           $scope.updateEditListUiState();
@@ -1501,6 +1515,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // set any project-level metadata flags
         metadataService.setMrcmEnabled(!$scope.project.projectMrcmDisabled);
+
+        // initialize batch editing service
+        batchEditService.setTask($scope.task);
 
         // initialize the CRS service
         // NOTE: Must be done before loading initial view
