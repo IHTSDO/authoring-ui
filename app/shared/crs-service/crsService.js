@@ -35,7 +35,7 @@ angular.module('singleConceptAuthoringApp')
         } else if ($rootScope.uat) {
           return 'https://uat-request.ihtsdotools.org/#/requests/view/' + issueId;
         } else {
-          return '';
+          return 'https://request.ihtsdotools.org/#/requests/view/' + issueId;
         }
       }
 
