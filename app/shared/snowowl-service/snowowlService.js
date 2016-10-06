@@ -690,7 +690,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       //Function to bulk get concepts
-      function bulkGetConcept(conceptIdList, branch) {
+      function bulkGetConcept(conceptIdList, branch, expandPt) {
         var deferred = $q.defer();
         var queryString = '';
         angular.forEach(conceptIdList, function (concept, key) {
@@ -701,7 +701,7 @@ angular.module('singleConceptAuthoringApp')
             queryString += concept;
           }
         });
-        $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()&escg=' + queryString).then(function (response) {
+        $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&escg=' + queryString).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);

@@ -557,7 +557,7 @@ angular.module('singleConceptAuthoringApp')
 
               //  when new FSN
               if (description.type === 'FSN') {
-               // when spelling variant present, result is
+                // when spelling variant present, result is
                 if (hasMatchingWords) {
                   // ensure FSN en-US preferred, do not add matching PT
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
@@ -682,6 +682,32 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function getFsnForConcept(concept) {
+        console.debug('getting fsn for concept', concept);
+        var fsns = concept && concept.descriptions ?
+          concept.descriptions.filter(function (d) {
+            return d.type === 'FSN';
+          }) : null;
+        console.debug('fsns', fsns);
+        return fsns ? fsns[0].term : null
+      }
+
+      function getPtForConcept(concept, dialectId) {
+        console.debug('getting pt for concept', concept);
+        var pts =
+          concept && concept.descriptions ?
+            concept.descriptions.filter(function (d) {
+              return d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap[dialectId] === 'PREFERRED'
+            }) : null;
+        console.debug('pts', pts);
+        return pts ? pts[0].term : null;
+      }
+
+      var CONSTANTS = {
+        'EN-US': '900000000000509007',
+        'EN-GB': '900000000000508004'
+      };
+
       return {
         getNewConcept: getNewConcept,
         getNewDescription: getNewDescription,
@@ -704,7 +730,14 @@ angular.module('singleConceptAuthoringApp')
         runInternationalDialectAutomation: runInternationalDialectAutomation,
 
         // grouped automations
-        runDescriptionAutomations: runDescriptionAutomations
+        runDescriptionAutomations: runDescriptionAutomations,
+
+        // utility functions
+        getFsnForConcept: getFsnForConcept,
+        getPtForConcept: getPtForConcept,
+
+        // constants
+        CONSTANTS: CONSTANTS
 
       };
 

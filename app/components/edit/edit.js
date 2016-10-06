@@ -1530,9 +1530,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         // set any project-level metadata flags
         metadataService.setMrcmEnabled(!$scope.project.projectMrcmDisabled);
 
-        // initialize batch editing service
-        batchEditService.setTask($scope.task);
-
         // initialize the CRS service
         // NOTE: Must be done before loading initial view
         crsService.setTask($scope.task).then(function (response) {
@@ -1611,5 +1608,74 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     initialize();
+
+    //
+    // TBBA testing stuffs
+    //
+    // the summary objects from batchEditService
+    var batchConcepts;
+
+    // the full concepts initialized from summary objects
+    $scope.fullConcepts = [];
+
+    $scope.hotSettings = {
+      manualColumnResize: true,
+      columnSorting: {
+        column: 1
+      }
+    };
+
+
+    // the grid columns
+    $scope.columns = [
+      {
+        title: 'SCTID',
+        data: 'conceptId'
+      },
+      {
+        title: 'FSN',
+        data: 'fsn'
+      },
+      {
+        title: 'PT',
+        data: 'pt'
+      }
+
+    ];
+
+
+    function getFullConcepts() {
+      var conceptIds = batchConcepts.map(function (item) {
+        return item.concept.conceptId
+      });
+      console.debug('getting full concepts', conceptIds);
+      snowowlService.bulkGetConcept(conceptIds, $scope.task.branchPath, true).then(function (response) {
+        $scope.fullConcepts = response.items;
+        console.debug('full concepts', $scope.fullConcepts);
+        angular.forEach($scope.fullConcepts, function (concept) {
+
+        })
+      })
+
+    }
+
+
+    function initializeHot() {
+      console.log('Initializing batch view');
+      batchEditService.setTask($scope.task).then(function () {
+        batchConcepts = batchEditService.getBatchConcepts();
+        getFullConcepts();
+
+      }, function (error) {
+        notificationService.sendError('Failed to initialize batch edit view from task: ' + error);
+      })
+    }
+
+
+    $scope.$watch('task', function () {
+      if ($scope.task) {
+        initializeHot();
+      }
+    })
   })
 ;

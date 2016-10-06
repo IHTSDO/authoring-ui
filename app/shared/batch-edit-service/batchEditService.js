@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles IMS authentication, user roles, and user settings
  */
-  .factory('batchEditService', function ($http, $rootScope, $q, scaService) {
+  .service('batchEditService', function ($http, $rootScope, $q, scaService) {
 
       var currentTask;
       var batchConcepts;
@@ -38,7 +38,6 @@ angular.module('singleConceptAuthoringApp')
       //
 
       function getBatchConcepts() {
-        console.debug('batch concepts', batchConcepts);
         return batchConcepts ? batchConcepts : [];
       }
 
