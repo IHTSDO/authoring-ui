@@ -292,6 +292,27 @@
 
     </div>
 
+
+    <!-- Batch editing view -->
+    <div ng-if="thisView === 'batch-default'">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <!-- sidebar -->
+        <div class="editpanel sca-column no-padding "
+
+             ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
+
+        <!-- models & concepts-->
+        <div
+             class="no-padding hide-scroll pull-right">
+
+          Batch stuff here
+
+
+
+        </div>
+      </div>
+    </div>
+
     <!-- Validation view -->
     <div ng-if="thisView === 'validation'">
 

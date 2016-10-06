@@ -194,8 +194,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     // Batch editing
     //
 
-    $scope.getBatchConcepts = batchService.getBatchConcepts;
-
     $scope.loadEditPanelConcepts = function () {
 
       // function only relevant for tasks
@@ -254,6 +252,18 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           }
         );
+    };
+
+    $scope.batchConcepts = [];
+    $scope.loadEditBatchConcepts = function() {
+
+      var batchConcepts = batchEditService.getBatchConcepts();
+      var ids = batchConcepts.map(function(concept) {
+        return concept.conceptId;
+      });
+      snowowlService.bulkGetConcept(ids, $scope.branch).then(function(response) {
+        $scope.batchConcepts = response;
+      });
     };
 
     $scope.getClassificationEditPanel = function () {
@@ -587,6 +597,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.setView('conflicts');
       } else if ($routeParams.mode === 'edit') {
         $scope.setView('edit-default');
+      } else if ($routeParams.mode === 'batch') {
+        $scope.setView('batch');
       }
 
       // if improper route, send error and halt
