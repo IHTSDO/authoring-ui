@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'batchEditService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, batchEditService) {
 
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
@@ -81,11 +81,21 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         // temp array for tracking duplicate ids
         var tempIds = [];
 
+        // get current batch concepts
+        var batchConcepts = batchEditService.getBatchConcepts();
+        var batchConceptIds = batchConcepts.map(function(item) {
+          return item.conceptId;
+        });
+
         // cycle over all results
         for (var i = 0; i < $scope.storedResults.length; i++) {
 
           // if item already added skip
           if (tempIds.indexOf($scope.storedResults[i].concept.conceptId) === -1) {
+
+            // check if in batch
+            $scope.storedResults[i].isBatchConcept = (batchConceptIds.indexOf($scope.storedResults[i].concept.conceptId) !== -1);
+
 
             // push the item
             displayedResults.push($scope.storedResults[i]);
@@ -328,6 +338,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         }, function () {
           // do nothing
         });
+      };
+
+      $scope.addBatchConcept = function(item) {
+        item.isBatchConcept = true;
+        batchEditService.addBatchConcept(item).then(function() {
+
+        })
       };
 
       /**

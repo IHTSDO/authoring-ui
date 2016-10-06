@@ -1,136 +1,186 @@
 <div class="col-md-12 scroll-if-height  no-padding" ng-controller="savedListCtrl">
 
-    <div crs-concept-list task="task"></div>
+  <div crs-concept-list task="task"></div>
 
-    <div ng-show="savedList.items.length > 0">
-        <div class="row">
-            <div class="p-l-5 m-t-10 m-b-10">
-                <label class="control-label">Task Saved List</label>
-            </div>
-        </div>
-        <!--
-
-        <div class="col-md-12 no-padding saved-list" style="margin-top: 10px;margin-bottom: 10px;"><div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div><div class="no-padding col-lg-9 col-md-7 col-sm-8 col-xs-8"><strong>FSN</strong></div><div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4"></div></div>
-    -->
-        <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items" style="margin-bottom: 15px;">
-            <!--  <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>-->
-            <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
-                <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
-              ng-disabled="isStatic"
-              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
-                    <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
-                    <span>Primitive</span>
-                </button>
-                <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
-              ng-disabled="isStatic"
-              class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
-                    <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
-                    <span>Fully Defined</span>
-                </button>
-            </div>
-            <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
-              <!-- Use the preferred synonym if present, otherwise use fsn -->
-              {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}}
+  <div ng-show="savedList.items.length > 0">
+    <div class="row">
+      <div class="p-l-5 m-t-10 m-b-10">
+        <label class="control-label">Task Saved List</label>
       </div>
-            <!--   <div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
-                  class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
-                  ng-show="!item.concept.active"
-            ><div class="fa-sca fa-power-off"></div><span>Inactive Concept</span></button></div>-->
-            <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
-                <button type="button"
-                  ng-click="viewConceptInTaxonomy(item)"
-                  ng-disabled="!item.concept.active"
-                  class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
-                  ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
-                    <span ng-if="item.concept.active">View in Taxonomy</span>
-                    <span ng-if="!item.concept.active">Inactive Concept</span>
-                </button>
-                <button type="button"
+    </div>
+    <!--
+
+    <div class="col-md-12 no-padding saved-list" style="margin-top: 10px;margin-bottom: 10px;"><div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div><div class="no-padding col-lg-9 col-md-7 col-sm-8 col-xs-8"><strong>FSN</strong></div><div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4"></div></div>
+-->
+    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items" style="margin-bottom: 15px;">
+      <!--  <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>-->
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
+        <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
+                ng-disabled="isStatic"
+                class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
+          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
+          <span>Primitive</span>
+        </button>
+        <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
+                ng-disabled="isStatic"
+                class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
+          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
+          <span>Fully Defined</span>
+        </button>
+      </div>
+      <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
+           style="word-wrap: break-word" ui-draggable="true"
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
+        <!-- Use the preferred synonym if present, otherwise use fsn -->
+        {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}}
+      </div>
+      <!--   <div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
+            class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
+            ng-show="!item.concept.active"
+      ><div class="fa-sca fa-power-off"></div><span>Inactive Concept</span></button></div>-->
+      <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
+        <button type="button"
+                ng-click="viewConceptInTaxonomy(item)"
+                ng-disabled="!item.concept.active"
+                class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
+                ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
+          <span ng-if="item.concept.active">View in Taxonomy</span>
+          <span ng-if="!item.concept.active">Inactive Concept</span>
+        </button>
+        <button type="button"
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                 title="Edit"
                 ng-click="addToFavorites(item)"
                 ng-disabled="isInFavorites(item)">
-                    <i class="md md-favorite"></i>
-                    <span>Add to Project Favorites</span>
-                </button>
+          <i class="md md-favorite"></i>
+          <span>Add to Project Favorites</span>
+        </button>
 
-                <button type="button"
+        <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
 
                 ng-click="clone(item)">
-                    <i class="md md-content-copy"></i>
-                    <span> Clone this concept </span>
-                </button>
-                <button type="button"
+          <i class="md md-content-copy"></i>
+          <span> Clone this concept </span>
+        </button>
+        <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
                 title="Remove"
                 ng-click="removeItemFromSavedList(item)">
-                    <i
-          class="md fa-sca fa-remove"></i>
-                    <span> Remove from saved list </span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <div ng-show="favorites.items.length > 0">
-        <div class="row">
-            <div class="p-l-5 m-t-10 m-b-10">
-                <label class="control-label">Project Favorites</label>
-            </div>
-        </div>
-        <!--
-        <div class="col-md-12 no-padding saved-list" style="margin-top: 10px;margin-bottom: 10px;"><div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div><div class="no-padding col-lg-9 col-md-7 col-sm-8 col-xs-8"><strong>FSN</strong></div><div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4"></div></div>-->
-        <div class="col-md-12 saved-list no-padding  " ng-repeat="item in favorites.items" style="margin-bottom: 15px;">
-            <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
-                <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
-              ng-disabled="isStatic"
-              class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left ">
-                    <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
-                    <span>Primitive</span>
-                </button>
-                <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
-              ng-disabled="isStatic"
-              class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip offset-tooltip-left">
-                    <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
-                    <span>Fully Defined</span>
-                </button>
-            </div>
-            <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
-              <!-- Use the preferred synonym if present, otherwise use fsn -->
-              {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}}
+          <i
+            class="md fa-sca fa-remove"></i>
+          <span> Remove from saved list </span>
+        </button>
       </div>
-            <!--<div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
-                class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
-                ng-show="!item.concept.active"
-          ><div class="fa-sca fa-power-off"></div><span>Inactive Concept</span></button></div>-->
-            <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
-                <button type="button"
-                  ng-click="viewConceptInTaxonomy(item)"
-                  ng-disabled="!item.concept.active"
-                  class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right"
-                  ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
-                    <span ng-if="item.concept.active">View in Taxonomy</span>
-                    <span ng-if="!item.concept.active">Inactive Concept</span>
-                </button>
+    </div>
+  </div>
+  <div ng-show="favorites.items.length > 0">
+    <div class="row">
+      <div class="p-l-5 m-t-10 m-b-10">
+        <label class="control-label">Project Favorites</label>
+      </div>
+    </div>
+    <!--
+    <div class="col-md-12 no-padding saved-list" style="margin-top: 10px;margin-bottom: 10px;"><div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div><div class="no-padding col-lg-9 col-md-7 col-sm-8 col-xs-8"><strong>FSN</strong></div><div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4"></div></div>-->
+    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in favorites.items" style="margin-bottom: 15px;">
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
+        <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
+                ng-disabled="isStatic"
+                class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left ">
+          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
+          <span>Primitive</span>
+        </button>
+        <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
+                ng-disabled="isStatic"
+                class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip offset-tooltip-left">
+          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
+          <span>Fully Defined</span>
+        </button>
+      </div>
+      <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
+           style="word-wrap: break-word" ui-draggable="true"
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
+        <!-- Use the preferred synonym if present, otherwise use fsn -->
+        {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}}
+      </div>
+      <!--<div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
+          class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
+          ng-show="!item.concept.active"
+    ><div class="fa-sca fa-power-off"></div><span>Inactive Concept</span></button></div>-->
+      <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
+        <button type="button"
+                ng-click="viewConceptInTaxonomy(item)"
+                ng-disabled="!item.concept.active"
+                class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right"
+                ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
+          <span ng-if="item.concept.active">View in Taxonomy</span>
+          <span ng-if="!item.concept.active">Inactive Concept</span>
+        </button>
 
-                <button type="button"
+        <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
 
                 ng-click="clone(item)">
-                    <i class="md md-content-copy"></i>
-                    <span> Clone this concept </span>
-                </button>
-                <button type="button"
+          <i class="md md-content-copy"></i>
+          <span> Clone this concept </span>
+        </button>
+        <button type="button"
                 class="btn btn-default btn-default saved-list-buttons pull-left tooltips-bottom large-size-tooltip offset-tooltip-right "
                 title="Remove"
                 ng-click="removeItemFromFavorites(item)">
-                    <i
-          class="md fa-sca fa-remove"></i>
-                    <span> Remove from Project favorites </span>
-                </button>
-            </div>
-        </div>
+          <i
+            class="md fa-sca fa-remove"></i>
+          <span> Remove from Project favorites </span>
+        </button>
+      </div>
     </div>
+  </div>
+
+  <div>
+    <div class="row">
+      <div class="p-l-5 m-t-10 m-b-10">
+        <label class="control-label">Batch Concepts</label>
+      </div>
+    </div>
+
+
+    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in getBatchConcepts()" style="margin-bottom: 15px;">
+      <!--  <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>-->
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
+        <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
+                ng-disabled="isStatic"
+                class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
+          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
+          <span>Primitive</span>
+        </button>
+        <button ng-if="item.concept.definitionStatus !== 'PRIMITIVE'"
+                ng-disabled="isStatic"
+                class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
+          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
+          <span>Fully Defined</span>
+        </button>
+      </div>
+      <div ng-click="" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word"
+           ui-draggable="true"
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
+        <!-- Use the preferred synonym if present, otherwise use fsn -->
+        {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}}
+      </div>
+      <!--   <div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
+            class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
+            ng-show="!item.concept.active"
+      ><div class="fa-sca fa-power-off"></div><span>Inactive Concept</span></button></div>-->
+      <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
+        <button type="button"
+                ng-click="viewConceptInTaxonomy(item)"
+                ng-disabled="!item.concept.active"
+                class="tn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right "
+                ng-class="[{'md md-my-library-books purple' : item.concept.active}, {'fa-sca fa-power-off red' : !item.concept.active }]">
+          <span ng-if="item.concept.active">View in Taxonomy</span>
+          <span ng-if="!item.concept.active">Inactive Concept</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
 </div>
