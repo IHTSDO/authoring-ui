@@ -192,27 +192,45 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                   var conceptCt = 0;
 
                   angular.forEach(conceptIds, function (conceptId) {
-                    scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
+                    console.debug('checking ', conceptId);
+                    if (snowowlService.isSctid(conceptId)) {
+                      console.debug('  is sctid');
+                      scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
 
-                      // Account for case where new concepts are marked 'current' in UI State
-                      if (concept) {
+                        // Account for case where new concepts are marked 'current' in UI State
+                        if (concept) {
 
-                        if (!concept.conceptId) {
-                          concept.conceptId = '(New concept)';
+                          if (!concept.conceptId) {
+                            concept.conceptId = '(New concept)';
+                          }
+                          // find the FSN for display
+                          if (!concept.fsn) {
+                            angular.forEach(concept.descriptions, function (d) {
+                              if (d.type === 'FSN') {
+                                concept.fsn = d.term;
+                              }
+                            })
+                          }
+                          if (!concept.fsn) {
+                            concept.fsn = 'Could not determine FSN';
+                          }
+                          unsavedConcepts.push(concept);
                         }
-                        // find the FSN for display
-                        if (!concept.fsn) {
-                          angular.forEach(concept.descriptions, function (d) {
-                            if (d.type === 'FSN') {
-                              concept.fsn = d.term;
-                            }
-                          })
+                        // if no concepts survive processing, proceed with submission
+                        if (++conceptCt === conceptIds.length) {
+                          if (unsavedConcepts.length === 0) {
+                            markTaskForReview();
+                          } else {
+                            $scope.unsavedConcepts = unsavedConcepts;
+                            notificationService.sendWarning('Save your changes before submitting for review');
+
+                          }
                         }
-                        if (!concept.fsn) {
-                          concept.fsn = 'Could not determine FSN';
-                        }
-                        unsavedConcepts.push(concept);
-                      }
+
+                      }, function (error) {
+                        notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
+                      });
+                    } else {
                       // if no concepts survive processing, proceed with submission
                       if (++conceptCt === conceptIds.length) {
                         if (unsavedConcepts.length === 0) {
@@ -223,10 +241,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
                         }
                       }
-
-                    }, function (error) {
-                      notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
-                    });
+                    }
                   });
                 }
               }
