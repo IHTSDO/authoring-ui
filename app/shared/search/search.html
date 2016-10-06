@@ -112,6 +112,11 @@
                             class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
                         <span>Add to Project Favorites</span>
                     </button>
+                  <button type="button" ng-click="addBatchConcept(result)"
+                          ng-if="!result.isBatchConcept"
+                          class="addButton btn btn-round widget-button md md-web medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
+                    <span>Add to Batch List</span>
+                  </button>
 
                 </div>
             </div>

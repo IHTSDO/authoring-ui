@@ -1,10 +1,13 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.savedList', [])
 
-  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', '$modal', 'scaService', 'snowowlService', '$routeParams', function savedListCtrl($scope, $rootScope, $location, $modal, scaService, snowowlService, $routeParams) {
+  .controller('savedListCtrl', ['$scope', '$rootScope', '$location', '$modal', 'scaService', 'snowowlService', '$routeParams', 'batchEditService',
+    function savedListCtrl($scope, $rootScope, $location, $modal, scaService, snowowlService, $routeParams, batchEditService) {
 
     // name of the panel for the Saved List
     var panelId = 'saved-list';
+
+    $scope.getBatchConcepts = batchEditService.getBatchConcepts;
 
     // function to select an item from the saved list
     // broadcasts selected conceptId
