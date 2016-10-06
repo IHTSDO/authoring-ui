@@ -302,11 +302,11 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-     concat: {
-       options: {
-           sourceMap : true
-       }
-     },
+    // concat: {
+    //   options: {
+    //       sourceMap : true
+    //   }
+    // },
 
     imagemin: {
       dist: {

@@ -30,6 +30,7 @@ angular
     'textAngular',
     'ui.tree',
     'ui.tinymce',
+    'ngHandsontable',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
