@@ -391,12 +391,14 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.loadEditPanelConcepts();
           }
           break;
-        case 'batch':
+        case 'batch-sidebar':
           $rootScope.pageTitle = 'Batch Editing/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'batch';
+
+          $scope.batchConcepts = [];
           $scope.canCreateConcept = true;
           if ($scope.taskKey) {
-            $scope.loadEditBatchConcepts();
+            $scope.loadEditPanelConcepts();
           }
           break;
         default:
@@ -598,7 +600,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       } else if ($routeParams.mode === 'edit') {
         $scope.setView('edit-default');
       } else if ($routeParams.mode === 'batch') {
-        $scope.setView('batch');
+        $scope.setView('batch-sidebar');
       }
 
       // if improper route, send error and halt
