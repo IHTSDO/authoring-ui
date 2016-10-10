@@ -471,7 +471,7 @@
                                               typeahead-focus-first="false"
                                               typeahead-loading="typeTypeaheadLoading"
                                               typeahead-wait-ms="700"
-                                              typeahead-on-select="setRelationshipTypeConceptFromMrcm(relationship, $item)"
+                                              typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
                                               typeahead-editable="false"
                                               typeahead-min-length="0">
 
@@ -498,7 +498,7 @@
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
-                            typeahead-on-select="setRelationshipTargetConceptFromMrcm(relationship, $item)"
+                            typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
                             typeahead-editable="false" typeahead-min-length="3"></textarea>
                   <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
