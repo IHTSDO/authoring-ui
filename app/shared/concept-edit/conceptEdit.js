@@ -1764,7 +1764,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // check that attribute is acceptable for MRCM rules
-          var attributes = scope.getConceptForFullAttribute(data.id);
+          var attributes = mrcmService.isAttributeAllowed(scope.allowedAttributes, data.id);
           if ((attributes && attributes.length > 0) || !metadataService.isMrcmEnabled()) {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
@@ -2482,21 +2482,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeRelationshipGroups();
         }, true);
 
-        scope.getConceptForFullAttribute = function (searchStr) {
-          var response = scope.allowedAttributes;
-          for (var i = 0; i < response.length; i++) {
-            for (var j = response.length - 1; j > i; j--) {
-              if (response[j].id === response[i].id) {
-                response.splice(j, 1);
-                j--;
-              }
-            }
-          }
-          response = response.filter(function (item) {
-            return item.fsn.term.toLowerCase() === searchStr.toLowerCase() || item.id === searchStr;
-          });
-          return response;
-        };
 
         // pass mrcm service function to scope
         scope.getConceptsForValueTypeahead = mrcmService.getConceptsForValueTypeahead;

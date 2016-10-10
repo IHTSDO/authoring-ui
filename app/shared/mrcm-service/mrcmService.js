@@ -5,6 +5,15 @@ angular.module('singleConceptAuthoringApp')
     function ($http, $rootScope, $q, snowowlService) {
 
 
+     // Helper function to parse allowable attributes
+      function isAttributeAllowed(attributesAllowed, searchStr) {
+        if (!attributesAllowed || !searchStr) return false;
+        var matches = attributesAllowed.filter(function (item) {
+          return item.fsn.term.toLowerCase() === searchStr.toLowerCase() || item.id === searchStr;
+        });
+        return matches.length > 0;
+      }
+
       /**
        * Get the allowable domain attributes for concept and branch
        * @param concept the concept (full JSON
@@ -55,7 +64,7 @@ angular.module('singleConceptAuthoringApp')
             }
           }
           deferred.resolve(response);
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error.message);
         });
         return deferred.promise;
@@ -66,35 +75,46 @@ angular.module('singleConceptAuthoringApp')
        * Function taking names of concepts and determining if they are valid
        * as type/value
        * @param type the relationship type
-       * @param typeName the name of the relationship type (used for user display)
+       * @param typeName the name of the relationship type
        * @param value the target concept name
        * @returns {*|promise}
        */
-      function validateMrcmRulesForTypeAndValue(type, typeName, value, branch) {
+      function validateMrcmRulesForRelationship(relationship, allowableAttributes, branch) {
         var deferred = $q.defer();
 
         var errors = [];
-        // check type (if not blank)
-        if (type) {
 
-          if (getConceptForFullAttribute(typeName).length === 0) {
-            errors.push('Attribute type ' + typeName + ' is disallowed.');
-            deferred.resolve(errors);
-          } else {
-            // check target (if not blank)
-            if (value) {
-              getConceptsForValueTypeahead(type, value).then(function (response) {
-                if (response.length === 0) {
-                  errors.push('Attribute value ' + value + ' is disallowed for attribute type ' + type + '.');
-                }
-                deferred.resolve(errors);
-              });
-            } else {
-              deferred.resolve(errors);
-            }
-          }
-        } else {
+        // first, check allowable attributes
+        if (!allowableAttributes) {
           deferred.resolve(errors);
+        } else {
+
+          var allowed = allowableAttributes.filter(function (item) {
+            return item.fsn.term.toLowerCase() === searchStr.toLowerCase() || item.id === searchStr;
+          });
+
+          // check type (if not blank)
+          if (relationship && relationship.type && relationship.type.id) {
+
+            if (getConceptForFullAttribute(relationship.type.id).length === 0) {
+              errors.push('Attribute type ' + relationship.type.fsn + ' is disallowed.');
+              deferred.resolve(errors);
+            } else {
+              // check target (if not blank)
+              if (value) {
+                getConceptsForValueTypeahead(type, relationship.target.fsn).then(function (response) {
+                  if (response.length === 0) {
+                    errors.push('Attribute value ' + relationship.target.fsn + ' is disallowed for attribute type ' + type + '.');
+                  }
+                  deferred.resolve(errors);
+                });
+              } else {
+                deferred.resolve(errors);
+              }
+            }
+          } else {
+            deferred.resolve(errors);
+          }
         }
 
         return deferred.promise;
@@ -103,8 +123,10 @@ angular.module('singleConceptAuthoringApp')
       // expose functions
       return {
         getDomainAttributes: getDomainAttributes,
-        getConceptsForValueTypeahead : getConceptsForValueTypeahead,
-        validateMrcmRulesForTypeAndValue: validateMrcmRulesForTypeAndValue
+        getConceptsForValueTypeahead: getConceptsForValueTypeahead,
+        validateMrcmRulesForRelationship: validateMrcmRulesForRelationship,
+
+        isAttributeAllowed : isAttributeAllowed
       }
     }])
 ;
