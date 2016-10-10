@@ -2497,9 +2497,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return response;
         };
 
+        // pass mrcm service function to scope
+        scope.getConceptsForValueTypeahead = mrcmService.getConceptsForValueTypeahead;
 
 
-        scope.setRelationshipTypeConceptFromMrcm = function (relationship, item) {
+        scope.setRelationshipTypeConcept = function (relationship, item) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
@@ -2510,7 +2512,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.updateRelationship(relationship, false);
         };
 
-        scope.setRelationshipTargetConceptFromMrcm = function (relationship, item) {
+        scope.setRelationshipTargetConcept = function (relationship, item) {
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
