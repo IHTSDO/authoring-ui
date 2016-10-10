@@ -384,6 +384,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                     // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
+                    scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
                   }
 
                   // clear the modified state if no id was specified
