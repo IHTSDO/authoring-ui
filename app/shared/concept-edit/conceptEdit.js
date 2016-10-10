@@ -694,7 +694,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.computeRelationshipGroups();
               }
             }
-            scope.getDomainAttributes();
+
             scope.concept.active = true;
             scope.hideInactive = false;
 
@@ -1558,7 +1558,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.active = !relationship.active;
             relationship.effectiveTime = null;
             componentAuthoringUtil.applyMinimumFields(scope.concept);
-            scope.getDomainAttributes();
             autoSave();
           }
           else {
@@ -1687,96 +1686,73 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
+          scope.warnings = null;
+
           // cancel if static
-          if (scope.isStatic) {
+          if (scope.isStatic || relationship.effectiveTime) {
             return;
-          }
-
-          // check if modifications can be made (via effectiveTime)
-          if (relationship.effectiveTime) {
-            console.error('Cannot update released relationship');
-            return;
-          }
-
-          if (!relationship) {
-            console.error('Attempted to set target on null relationship');
-          }
-          if (!data || !data.id) {
-            console.error('Attempted to set target on relationship from null data');
-          }
-
-          if (!data.name) {
-            console.error('Attempted to set target on relationship without specifying name');
           }
 
           var tempFsn = relationship.target.fsn;
 
           relationship.target.fsn = 'Validating...';
 
-          if (relationship.type.conceptId !== null) {
-            // check if allowable relationship target using concept id
-            scope.getConceptForValueTypeahead(relationship.type.conceptId, data.id).then(function (response) {
-              if ((response && response.length > 0) || !metadataService.isMrcmEnabled()) {
-                relationship.target.conceptId = data.id;
-                relationship.target.fsn = data.name;
-                scope.warnings = null;
-                scope.updateRelationship(relationship, false);
-              }
+          // if type specified, validate against type
+          if (relationship.type.conceptId !== null && metadataService.isMrcmEnabled()) {
 
-              // notify user of inappropriate relationship target by MRCM
-              // rules
-              else {
-                scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target concept.'];
-                relationship.target.fsn = tempFsn;
-              }
-
+            mrcmService.isValueAllowedForType(relationship.type.conceptId, data.name, scope.branch).then(function () {
+              relationship.target.conceptId = data.id;
+              relationship.target.fsn = data.name;
+              scope.updateRelationship(relationship, false);
+            }, function (error) {
+              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.']
+              relationship.target.fsn = tempFsn;
             });
-          }
-          else {
+          } else {
             relationship.target.conceptId = data.id;
             relationship.target.fsn = data.name;
-            scope.warnings = null;
             scope.updateRelationship(relationship, false);
           }
         };
+
 
         scope.dropRelationshipType = function (relationship, data) {
 
-          // cancel if static
-          if (scope.isStatic) {
-            return;
-          }
+          scope.warnings = null;
 
-          // check if modifications can be made (via effectiveTime)
-          if (relationship.effectiveTime) {
-            console.error('Cannot update released relationship');
+          // cancel if static or released relationship
+          if (scope.isStatic || relationship.effectiveTime) {
             return;
-          }
-
-          if (!relationship) {
-            console.error('Attempted to set type on null attribute');
-          }
-          if (!data || !data.id) {
-            console.error('Attempted to set type on attribute from null data');
-          }
-          if (!data.name) {
-            console.error('Attempted to set type on attribute without name specified');
           }
 
           // check that attribute is acceptable for MRCM rules
-          var attributes = mrcmService.isAttributeAllowed(scope.allowedAttributes, data.id);
-          if ((attributes && attributes.length > 0) || !metadataService.isMrcmEnabled()) {
+          if (metadataService.isMrcmEnabled()) {
+
+            // check attribute allowed against stored array
+            if (mrcmService.isAttributeAllowedForArray(data.id, scope.allowedAttributes)) {
+
+              // if target already specified, validate it
+              if (relationship.target.conceptId) {
+                mrcmService.isValueAllowedForType(data.id, relationship.target.fsn, scope.branch).then(function () {
+                  // do nothing
+                }, function (error) {
+                  scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + data.name + '.'];
+                });
+              }
+
+              relationship.type.conceptId = data.id;
+              relationship.type.fsn = data.name;
+
+              scope.updateRelationship(relationship, false);
+            } else {
+              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid attribute.'];
+            }
+          } else {
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
-            scope.warnings = null;
-            scope.updateRelationship(relationship, false);
           }
+        }
 
-          // notify user of rules violation
-          else {
-            scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid attribute.'];
-          }
-        };
 
         /**
          * Function called when dropping a description on another
@@ -1843,7 +1819,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          mrcmService.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn, scope.branch).then(function (response) {
+          mrcmService.validateRelationship(relationship, scope.allowedAttributes, scope.branch).then(function (response) {
             if (response.length === 0) {
               // copy relationship object and replace target relationship
               var copy = angular.copy(source);
@@ -1869,7 +1845,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               else {
                 scope.concept.relationships[targetIndex] = copy;
               }
-              scope.getDomainAttributes();
+
               autoSave();
 
               scope.computeRelationshipGroups();
@@ -1911,7 +1887,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          scope.validateMrcmRulesForRelationshipGroup(relGroup).then(function (response) {
+          mrcmService.validateRelationships(relGroup, scope.allowedAttributes, scope.branch).then(function (response) {
 
             // if no validation errors, continue
             if (response.length === 0) {
@@ -1961,26 +1937,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }, function (error) {
             scope.warnings = ['Could not drop relationship group:  unexpected error validating type/value pairs'];
           });
-        };
-
-        scope.validateMrcmRulesForRelationshipGroup = function (relGroup) {
-          var deferred = $q.defer();
-
-          var errors = [];
-          var relsChecked = 0;
-
-          angular.forEach(relGroup, function (rel) {
-            mrcmService.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.type.fsn, rel.target.fsn, scope.branch).then(function (response) {
-              errors = errors.concat(response);
-              if (++relsChecked === relGroup.length) {
-                deferred.resolve(errors);
-              }
-            }, function (error) {
-              deferred.reject('Could not validate type and value pairs');
-            });
-          });
-
-          return deferred.promise;
         };
 
 
@@ -2287,7 +2243,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship, roleGroupOnly) {
-          scope.getDomainAttributes();
+
           if (!relationship) {
             return;
           }
@@ -2297,9 +2253,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // Otherwise, changes 'revert' to previously saved values
           if (!relationship.effectiveTime && !roleGroupOnly) {
             delete relationship.relationshipId;
-          }
-          if (relationship.type.conceptId === '116680003' && !roleGroupOnly) {
-            scope.getDomainAttributes();
           }
 
           scope.computeRelationshipGroups();
@@ -2472,9 +2425,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
 
           // recompute the domain attributes from MRCM service
-          mrcmService.getDomainAttributes(scope.concept, scope.branch).then(function(attributes) {
+          mrcmService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
+            console.debug('Retrieved new domain attributes')
             scope.allowedAttributes = attributes;
-          }, function(error) {
+          }, function (error) {
             notificationService.sendError('Error getting allowable domain attributes: ' + error);
           });
 
@@ -2483,9 +2437,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }, true);
 
 
-        // pass mrcm service function to scope
+// pass mrcm service function to scope
         scope.getConceptsForValueTypeahead = mrcmService.getConceptsForValueTypeahead;
 
+//
+// Relationship setter functions
+//
 
         scope.setRelationshipTypeConcept = function (relationship, item) {
           if (!relationship || !item) {
@@ -2510,7 +2467,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 //////////////////////////////////////////////
-// Attribute Removal functions
+// Component Removal functions
 //////////////////////////////////////////////
 
         /**
@@ -2532,7 +2489,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.deleteRelationship = function (relationship) {
           var index = scope.concept.relationships.indexOf(relationship);
           scope.concept.relationships.splice(index, 1);
-          scope.getDomainAttributes();
           autoSave();
         };
 
@@ -2662,11 +2618,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        // on load, check task status
+// on load, check task status
         scope.checkPromotedStatus();
 
-        // watch for classification completion request to reload concepts
-        // will not affect modified concept data
+// watch for classification completion request to reload concepts
+// will not affect modified concept data
         scope.$on('reloadConcepts', function () {
 
           // if modified, do nothing
@@ -2682,16 +2638,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         });
 
-        //
-        // CRS Key Filtering and Display
-        //
+//
+// CRS Key Filtering and Display
+//
 
         scope.crsFilter = crsService.crsFilter;
 
 
-        //
-        // camelCaseText -> Camel Case Text conversion
-        //
+//
+// camelCaseText -> Camel Case Text conversion
+//
         function capitalize(word) {
           return word.charAt(0).toUpperCase() + word.substring(1);
         }
@@ -2703,7 +2659,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
       }
-    };
+    }
+      ;
 
   }
 )
