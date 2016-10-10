@@ -1566,22 +1566,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        scope.getConceptsForTypeahead = function (searchStr) {
-          return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
-
-            // remove duplicates
-            for (var i = 0; i < response.length; i++) {
-              for (var j = response.length - 1; j > i; j--) {
-                if (response[j].concept.conceptId === response[i].concept.conceptId) {
-                  response.splice(j, 1);
-                  j--;
-                }
-              }
-            }
-
-            return response;
-          });
-        };
 
         /**
          * Sets relationship type concept based on typeahead selection
@@ -2497,22 +2481,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.computeRelationshipGroups();
         }, true);
 
-        scope.getConceptsForAttributeTypeahead = function (searchStr) {
-          var response = scope.allowedAttributes;
-          for (var i = 0; i < response.length; i++) {
-            for (var j = response.length - 1; j > i; j--) {
-              if (response[j].id === response[i].id) {
-                response.splice(j, 1);
-                j--;
-              }
-            }
-          }
-          response = response.filter(function (item) {
-            return item.fsn.term.toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;
-          });
-          return response;
-        };
-
         scope.getConceptForFullAttribute = function (searchStr) {
           var response = scope.allowedAttributes;
           for (var i = 0; i < response.length; i++) {
@@ -2530,59 +2498,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 
-        scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
-          return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
-
-            if (!response) {
-              return [];
-            }
-
-            // remove duplicates
-            for (var i = 0; i < response.length; i++) {
-              var status = 'FD';
-              if (response[i].definitionStatus === 'PRIMITIVE') {
-                status = 'P';
-              }
-              if (response[i].fsn) {
-                response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-                for (var j = response.length - 1; j > i; j--) {
-                  if (response[j].id === response[i].id) {
-                    response.splice(j, 1);
-                    j--;
-                  }
-                }
-              }
-            }
-            return response;
-          });
-        };
-
-        scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
-          return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
-
-            if (!response) {
-              return [];
-            }
-
-            // remove duplicates
-            for (var i = 0; i < response.length; i++) {
-              var status = 'FD';
-              if (response[i].definitionStatus === 'PRIMITIVE') {
-                status = 'P';
-              }
-              if (response[i].fsn) {
-                response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-                for (var j = response.length - 1; j > i; j--) {
-                  if (response[j].id === response[i].id) {
-                    response.splice(j, 1);
-                    j--;
-                  }
-                }
-              }
-            }
-            return response;
-          });
-        };
 
         scope.setRelationshipTypeConceptFromMrcm = function (relationship, item) {
           if (!relationship || !item) {
