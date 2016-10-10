@@ -1838,6 +1838,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               delete copy.sourceId;
               delete copy.effectiveTime;
               delete copy.relationshipId;
+              delete copy.released;
 
               // set the group based on target
               copy.groupId = target.groupId;
