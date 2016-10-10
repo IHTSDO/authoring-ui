@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService, mrcmService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -477,7 +477,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   }, 3000);
 
 
-                    deferred.resolve();
+                  deferred.resolve();
                 }
 
                 // handle error
@@ -1859,7 +1859,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          scope.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn).then(function (response) {
+          mrcmService.validateMrcmRulesForTypeAndValue(source.type.conceptId, source.type.fsn, source.target.fsn, scope.branch).then(function (response) {
             if (response.length === 0) {
               // copy relationship object and replace target relationship
               var copy = angular.copy(source);
@@ -1985,7 +1985,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           var relsChecked = 0;
 
           angular.forEach(relGroup, function (rel) {
-            scope.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.type.fsn, rel.target.fsn).then(function (response) {
+            mrcmService.validateMrcmRulesForTypeAndValue(rel.type.conceptId, rel.type.fsn, rel.target.fsn, scope.branch).then(function (response) {
               errors = errors.concat(response);
               if (++relsChecked === relGroup.length) {
                 deferred.resolve(errors);
@@ -1998,41 +1998,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
-        /**
-         * Function taking names of concepts and determining if they are valid
-         * as type/value
-         * @param type
-         * @param value
-         */
-        scope.validateMrcmRulesForTypeAndValue = function (type, typeName, value) {
-          var deferred = $q.defer();
-
-          var errors = [];
-          // check type (if not blank)
-          if (type) {
-
-            if (scope.getConceptForFullAttribute(typeName).length === 0) {
-              errors.push('Attribute type ' + typeName + ' is disallowed.');
-              deferred.resolve(errors);
-            } else {
-              // check target (if not blank)
-              if (value) {
-                scope.getConceptsForValueTypeahead(type, value).then(function (response) {
-                  if (response.length === 0) {
-                    errors.push('Attribute value ' + value + ' is disallowed for attribute type ' + type + '.');
-                  }
-                  deferred.resolve(errors);
-                });
-              } else {
-                deferred.resolve(errors);
-              }
-            }
-          } else {
-            deferred.resolve(errors);
-          }
-
-          return deferred.promise;
-        };
 
         scope.getDragImageForConcept = function (fsn) {
           return fsn;
@@ -2517,36 +2482,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //////////////////////////////////////////////
 // MRCM functions
 //////////////////////////////////////////////
-        scope.getDomainAttributes = function () {
-          var idList = '';
-          angular.forEach(scope.concept.relationships, function (relationship) {
-            // add to id list if: active, Is A relationship, target
-            // specified, and not inferred
-            if (relationship.active === true && relationship.type.conceptId === '116680003' && relationship.target.conceptId && relationship.characteristicType !== 'INFERRED_RELATIONSHIP') {
 
-              idList += relationship.target.conceptId + ',';
-            }
-          });
-          idList = idList.substring(0, idList.length - 1);
-
-          snowowlService.getDomainAttributes(scope.branch, idList).then(function (response) {
-            scope.allowedAttributes = response.items;
-          });
-        };
 
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
 
-          var changed = false;
-          angular.forEach(scope.concept.relationships, function (relationship) {
-            if (relationship.type.conceptId === '116680003' && relationship.active === true) {
-              changed = true;
-            }
+          // recompute the domain attributes from MRCM service
+          mrcmService.getDomainAttributes(scope.concept, scope.branch).then(function(attributes) {
+            scope.allowedAttributes = attributes;
+          }, function(error) {
+            notificationService.sendError('Error getting allowable domain attributes: ' + error);
           });
-
-          // get the permissible domain attributes
-          if (changed === true) {
-            scope.getDomainAttributes();
-          }
 
           // compute the role groups
           scope.computeRelationshipGroups();
@@ -2583,32 +2528,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
           return response;
         };
-        scope.getConceptsForValueTypeahead = function (attributeId, searchStr) {
-          return snowowlService.getAttributeValues(scope.branch, attributeId, searchStr).then(function (response) {
 
-            if (!response) {
-              return [];
-            }
-
-            // remove duplicates
-            for (var i = 0; i < response.length; i++) {
-              var status = 'FD';
-              if (response[i].definitionStatus === 'PRIMITIVE') {
-                status = 'P';
-              }
-              if (response[i].fsn) {
-                response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-                for (var j = response.length - 1; j > i; j--) {
-                  if (response[j].id === response[i].id) {
-                    response.splice(j, 1);
-                    j--;
-                  }
-                }
-              }
-            }
-            return response;
-          });
-        };
 
         scope.getConceptForValueTypeahead = function (attributeId, searchStr) {
           return snowowlService.getAttributeValuesByConcept(scope.branch, attributeId, searchStr).then(function (response) {
