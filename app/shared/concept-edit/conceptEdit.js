@@ -314,6 +314,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // function to validate concept and display any errors or warnings
         scope.validateConcept = function () {
+          if (scope.concept.requiresValidation) {
+              delete scope.concept.requiresValidation;
+            }
           var deferred = $q.defer();
 
           snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
