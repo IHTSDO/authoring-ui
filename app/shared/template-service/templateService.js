@@ -4,67 +4,57 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles Authoring Template retrieval and functionality
  */
-  .factory('templateService', function ($http, $rootScope, $q, scaService, componentAuthoringUtil) {
+  .factory('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil) {
 
     var templateCache = [];
 
-    // Hard-coded template for development purposes
-    // NOTE: Developed for initial display use only, NOT meant to be descriptive
-    // of eventual BE templates
-    var templateCt = {
-      name: 'CT of X',
-      type: 'CREATE',
-      updateFns: {
-        replaceTargetName: function (concept) {
-          try {
-            var targetName = concept.descriptions.filter(function (desc) {
-              return desc.active && desc.type === 'FSN';
-            })[0].term.match(/(.*)\s\(.*\)]/i)[1];
-            angular.forEach(this.concept.descriptions, function (desc) {
-              desc.term.replace('%TARGETNAME%', targetName);
-            })
-          } catch (err) {
-            // do nothing
-          }
-        }
-      },
-
-      conceptModel: componentAuthoringUtil.getNewConcept()
-    };
-
-    // setup the descriptions
-    angular.forEach(templateCt.concept.descriptions, function (desc) {
-      if (desc.type === 'FSN') {
-        desc.term = 'Computerized tomography of %TARGETNAME% (procedure)';
-      } else if (desc.type === 'SYNONYM') {
-        desc.term = 'Computerized tomography of %TARGETNAME%';
-      }
+    // TODO Wire this to BE, using JSON temporary file for dev purposes
+    $http.get('shared/template-service/templates.json').then(function (response) {
+      console.debug('http templates', response);
+      templateCache = response.data;
     });
-    var def = componentAuthoringUtil.getNewTextDefinition();
-    def.term = 'CT Definition or something';
-    templateCt.concept.descriptions.add(def);
 
-    // setup the relationships
-    templateCt.conceptModel.relationships[0].target = {
-      'conceptId': '',
-      'fsn': ''
+    var templateFns = {
+      replaceTargetName: function (templateConcept, fromConcept) {
+        console.debug('replaceTargetName function invoked', templateConcept, fromConcept);
+        try {
+          var fsn = fromConcept.descriptions.filter(function (desc) {
+            return desc.active && desc.type === 'FSN';
+          });
+          if (!fsn) {
+            return 'Could not determine fsn';
+          }
+
+          var match = fsn[0].term.match(/(.*)\s\(.*\)/i);
+          if (!match || !match[1] || match[1].length == 0) {
+            return 'Could not determine target name from fsn ' + fsn[0].term;
+          }
+          var targetName = match[1].substring(0, 1).toLowerCase() + match[1].substring(1);
+
+          angular.forEach(templateConcept.descriptions, function (tcDesc) {
+            tcDesc.term = tcDesc.term.replace(/%TARGETNAME%/g, targetName);
+            return tcDesc;
+          });
+          return templateConcept
+        } catch (err) {
+          return err;
+        }
+      }
     };
-    var attr = componentAuthoringUtil.getNewAttributeRelationship();
-    attr.type = {
-      'conceptId': '',
-      'fsn': ''
-    };
-    attr.target = {
-      'conceptId': '',
-      'fsn': ''
-    };
-    templates.push(templateCt);
+
+
+    //
+    // END HARDCODED TEMPLATE FOR CT
+    //
 
     function getTemplates(refreshCache) {
       var deferred = $q.defer();
-      if (!templateCache|| refreshCache) {
+      console.debug('get templates');
+      if (!templateCache || refreshCache) {
+        console.debug('returning retrieved templates', []);
         // TODO Wire to BE
       } else {
+        console.debug('returning cached templates', templateCache);
         deferred.resolve(templateCache);
       }
       return deferred.promise;
@@ -82,7 +72,7 @@ angular.module('singleConceptAuthoringApp')
         } else {
           deferred.reject('No template for name: ' + name);
         }
-      }, function(error) {
+      }, function (error) {
         deferred.reject('Could not get templates: ' + error);
       });
       return deferred.promise;
@@ -94,20 +84,21 @@ angular.module('singleConceptAuthoringApp')
 
       console.debug('Applying template', template, existingConcepts, params);
 
-      angular.forEach(existingConcepts, function (existingConcept) {
-        console.debug(' Existing concept ' + existingConcept.conceptId + ' | ' + existingConcept.fsn);
-        var tc = angular.copy(template.type === 'CREATE' ? template.conceptModel : existingConcept);
-
-        for (var fnName in template.updateFns) {
-          if (template.updateFns.hasOwnProperty(fnName)) {
-            template.updateFns[fnName](tc);
-          }
+      angular.forEach(existingConcepts, function (ec) {
+        console.debug(' Existing concept ' + ec.conceptId + ' | ' + ec.fsn);
+        var tc = angular.copy(template.type === 'CREATE' ? template.conceptJson : ec);
+        tc.templateVersion = template.version;
+        if (!tc.conceptId) {
+          tc.conceptId = snowowlService.createGuid();
         }
 
-        // debug content
-        var tcFsn = componentAuthoringUtil.getFsnForConcept(tc);
-
-        console.debug(' Template concept ' + (tc.conceptId ? tc.conceptId : 'New Concept') + ' | ' + (tcFsn ? tcFsn.term : 'Cannot determine FSN'));
+        for (var fnName in templateFns) {
+          console.debug('executing template update function', fnName);
+          if (templateFns.hasOwnProperty(fnName)) {
+            var response = templateFns[fnName](tc, ec);
+            console.debug(' response', response);
+          }
+        }
         templateConcepts.push(tc);
       });
 
