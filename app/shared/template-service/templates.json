@@ -3,6 +3,7 @@
     "name": "CT of X",
     "version": "0.0.1",
     "type": "CREATE",
+    "functions" : ["replaceTargetNameFromFsn"],
     "conceptJson": {
       "conceptId": null,
       "descriptions": [
