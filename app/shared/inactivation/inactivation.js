@@ -131,7 +131,7 @@ angular.module('singleConceptAuthoringApp')
                   if(scope.affectedConcepts[conceptId]){
                       angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
                         // add all relationships with no effective time
-                        if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                        if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
                           rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
                           rel.typeFsn = rel.type.fsn;
                           data.push(rel);
@@ -161,7 +161,7 @@ angular.module('singleConceptAuthoringApp')
                           if(scope.affectedConcepts[conceptId]){
                               angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
                                 // add all relationships with no effective time
-                                if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
                                   if(rel.accepted !== true){
                                       rel.accepted = true;
                                       rowsAccepted++;
@@ -176,7 +176,7 @@ angular.module('singleConceptAuthoringApp')
                               if(scope.affectedConcepts[conceptId]){
                                   angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
                                     // add all relationships with no effective time
-                                    if (!rel.effectiveTime && metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                    if (!rel.relationshipId && metadataService.isIsaRelationship(rel.type.conceptId)) {
                                   if(rel.accepted !== false){
                                       rel.accepted = false;
                                       rowsAccepted++;
@@ -195,7 +195,7 @@ angular.module('singleConceptAuthoringApp')
                               angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
 
                                 // add all relationships with no effective time
-                                if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
                                   if(rel.accepted !== true){
                                       rel.accepted = true;
                                       rowsAccepted++;
@@ -211,7 +211,7 @@ angular.module('singleConceptAuthoringApp')
                               angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
 
                                 // add all relationships with no effective time
-                                if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                                if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
                                   if(rel.accepted !== false){
                                       rel.accepted = false;
                                       rowsAccepted++;
@@ -261,7 +261,7 @@ angular.module('singleConceptAuthoringApp')
                       angular.forEach(scope.affectedConcepts[conceptId].relationships, function (rel) {
 
                         // add all relationships with no effective time
-                        if (!rel.effectiveTime && !metadataService.isIsaRelationship(rel.type.conceptId)) {
+                        if (!rel.relationshipId && !metadataService.isIsaRelationship(rel.type.conceptId)) {
                           rel.sourceFsn = scope.affectedConcepts[rel.sourceId].fsn;
                           rel.typeFsn = rel.type.fsn;
                           data.push(rel);
@@ -746,6 +746,7 @@ angular.module('singleConceptAuthoringApp')
 
             // ensure that children have been retrieved
             snowowlService.getStatedConceptChildren(scope.inactivationConcept.conceptId, scope.branch).then(function (children) {
+                console.log(children);
               scope.inactivationConceptChildren = children;
               notificationService.sendMessage('Retrieving inbound relationships...');
               getAffectedObjectIds().then(function () {
