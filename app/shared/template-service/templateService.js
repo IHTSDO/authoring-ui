@@ -63,16 +63,28 @@ angular.module('singleConceptAuthoringApp')
           tc.conceptId = snowowlService.createGuid();
         }
 
-        angular.forEach(template.functions, function(functionName) {
+        var errors = [];
+
+        angular.forEach(template.functions, function (fnName) {
           console.debug('executing template update function', fnName);
-          var response = templateUtility.getTemplateFunction[fnName](template, tc, ec);
-          console.debug(' response', response);
+          templateUtility.getTemplateFunction[fnName](template, tc, ec).then(function () {
+
+          }, function (error) {
+            errors.push('ERROR in ' + functionName + ' for ' + ec.conceptId + ' | ' + ec.fsn + ':' + error);
+          })
+
 
         });
-        templateConcepts.push(tc);
+        if (errors.length == 0) {
+          templateConcepts.push(tc);
+        }
       });
 
-      deferred.resolve(templateConcepts);
+      if (errors.length > 0) {
+        deferred.reject(errors);
+      } else {
+        deferred.resolve(templateConcepts);
+      }
       return deferred.promise;
     }
 
