@@ -1703,8 +1703,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipTarget = function (relationship, data) {
 
-          // cancel if static
-          if (scope.isStatic) {
+          // cancel if static or template concept
+          if (scope.isStatic || scope.concept.templateVersion) {
             return;
           }
 
@@ -1759,7 +1759,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.dropRelationshipType = function (relationship, data) {
 
           // cancel if static
-          if (scope.isStatic) {
+          if (scope.isStatic || scope.concept.templateVersion) {
             return;
           }
 
@@ -1854,8 +1854,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // check if target is static
-          if (scope.isStatic) {
-            console.error('Scope is static, cannot drop');
+          if (scope.isStatic || scope.concept.templateVersion) {
             return;
           }
 
@@ -1922,7 +1921,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          if (scope.isStatic) {
+          if (scope.isStatic || scope.concept.templateVersion) {
             return;
           }
 
