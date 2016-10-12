@@ -64,8 +64,10 @@ angular.module('singleConceptAuthoringApp')
           var tc = angular.copy(template.type === 'CREATE' ? template.conceptJson : ec);
 
           // append template fields to concept
-          tc.templateVersion = template.version;
-          tc.templateName = template.name;
+          tc.template = {
+            version: template.version,
+            templateName: template.name
+          };
 
           // assign a temporary id for new concepts
           if (!tc.conceptId) {
