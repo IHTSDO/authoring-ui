@@ -970,7 +970,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendError('Error applying template: ' + error);
         })
       }, function(error) {
-        notificationService.sendError('Error retrieving concepts when attempting to apply template: ' + error);
+        notificationService.sendError('Error retrieving concept ' + data.conceptId + ' | ' + data.fsn + ': ' + error);
       })
     });
 
