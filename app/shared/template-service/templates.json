@@ -1,0 +1,105 @@
+[
+  {
+    "name": "CT of X",
+    "version": "0.0.1",
+    "type": "CREATE",
+    "conceptJson": {
+      "conceptId": null,
+      "descriptions": [
+        {
+          "active": true,
+          "moduleId": "900000000000207008",
+          "type": "FSN",
+          "term": "Computed tomography of %TARGETNAME% (procedure)",
+          "lang": "en",
+          "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+          "conceptId": null,
+          "acceptabilityMap": {
+            "900000000000509007": "PREFERRED",
+            "900000000000508004": "PREFERRED"
+          }
+        },
+        {
+          "active": true,
+          "moduleId": "900000000000207008",
+          "type": "SYNONYM",
+          "term": "Computed tomography of %TARGETNAME%",
+          "lang": "en",
+          "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+          "conceptId": null,
+          "acceptabilityMap": {
+            "900000000000509007": "PREFERRED",
+            "900000000000508004": "PREFERRED"
+          }
+        },
+        {
+          "active": true,
+          "moduleId": "900000000000207008",
+          "type": "SYNONYM",
+          "term": "CT of %TARGETNAME%",
+          "lang": "en",
+          "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+          "conceptId": null,
+          "acceptabilityMap": {
+            "900000000000509007": "ACCEPTABLE",
+            "900000000000508004": "ACCEPTABLE"
+          }
+        }
+      ],
+      "relationships": [
+        {
+          "active": true,
+          "characteristicType": "STATED_RELATIONSHIP",
+          "effectiveTime": null,
+          "groupId": 0,
+          "modifier": "EXISTENTIAL",
+          "moduleId": "900000000000207008",
+          "target": {
+            "conceptId": "71388002",
+            "fsn": "Procedure (procedure)"
+          },
+          "type": {
+            "conceptId": "116680003",
+            "fsn": "Is a (attribute)"
+          }
+        },
+        {
+          "active": true,
+          "characteristicType": "STATED_RELATIONSHIP",
+          "effectiveTime": null,
+          "groupId": 0,
+          "modifier": "EXISTENTIAL",
+          "moduleId": "900000000000207008",
+          "target": {
+            "conceptId": "312251004",
+            "fsn": "Computed tomography imaging - action (qualifier value)"
+          },
+          "type": {
+            "conceptId": "260686004",
+            "fsn": "Method (attribute)"
+          }
+        },{
+          "active": true,
+          "characteristicType": "STATED_RELATIONSHIP",
+          "effectiveTime": null,
+          "groupId": 0,
+          "modifier": "EXISTENTIAL",
+          "moduleId": "900000000000207008",
+          "target": {
+            "conceptId": "",
+            "fsn": ""
+          },
+          "type": {
+            "conceptId": "405813007",
+            "fsn": "Procedure site - Direct (attribute)"
+          }
+        }
+      ],
+      "fsn": null,
+      "definitionStatus": "PRIMITIVE",
+      "active": true,
+      "released": false,
+      "moduleId": "900000000000207008"
+    }
+  }
+]
