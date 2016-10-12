@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles Authoring Template retrieval and functionality
  */
-  .factory('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil) {
+  .service('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil, templateUtility) {
 
     var templateCache = [];
 
@@ -13,39 +13,6 @@ angular.module('singleConceptAuthoringApp')
       console.debug('http templates', response);
       templateCache = response.data;
     });
-
-    var templateFns = {
-      replaceTargetName: function (templateConcept, fromConcept) {
-        console.debug('replaceTargetName function invoked', templateConcept, fromConcept);
-        try {
-          var fsn = fromConcept.descriptions.filter(function (desc) {
-            return desc.active && desc.type === 'FSN';
-          });
-          if (!fsn) {
-            return 'Could not determine fsn';
-          }
-
-          var match = fsn[0].term.match(/(.*)\s\(.*\)/i);
-          if (!match || !match[1] || match[1].length == 0) {
-            return 'Could not determine target name from fsn ' + fsn[0].term;
-          }
-          var targetName = match[1].substring(0, 1).toLowerCase() + match[1].substring(1);
-
-          angular.forEach(templateConcept.descriptions, function (tcDesc) {
-            tcDesc.term = tcDesc.term.replace(/%TARGETNAME%/g, targetName);
-            return tcDesc;
-          });
-          return templateConcept
-        } catch (err) {
-          return err;
-        }
-      }
-    };
-
-
-    //
-    // END HARDCODED TEMPLATE FOR CT
-    //
 
     function getTemplates(refreshCache) {
       var deferred = $q.defer();
@@ -87,18 +54,21 @@ angular.module('singleConceptAuthoringApp')
       angular.forEach(existingConcepts, function (ec) {
         console.debug(' Existing concept ' + ec.conceptId + ' | ' + ec.fsn);
         var tc = angular.copy(template.type === 'CREATE' ? template.conceptJson : ec);
+
+        // append template fields to concept
         tc.templateVersion = template.version;
+        tc.templateName = template.name;
+
         if (!tc.conceptId) {
           tc.conceptId = snowowlService.createGuid();
         }
 
-        for (var fnName in templateFns) {
+        angular.forEach(template.functions, function(functionName) {
           console.debug('executing template update function', fnName);
-          if (templateFns.hasOwnProperty(fnName)) {
-            var response = templateFns[fnName](tc, ec);
-            console.debug(' response', response);
-          }
-        }
+          var response = templateUtility.getTemplateFunction[fnName](template, tc, ec);
+          console.debug(' response', response);
+
+        });
         templateConcepts.push(tc);
       });
 
