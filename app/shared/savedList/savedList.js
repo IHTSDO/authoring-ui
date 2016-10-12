@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       templateService.getTemplates().then(function(templates) {
         $scope.templates = templates;
         console.debug('saved list templates', $scope.templates);
-      })
+      });
 
 
 
