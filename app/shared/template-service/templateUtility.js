@@ -4,7 +4,7 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles Authoring Template retrieval and functionality
  */
-  .service('templateUtility', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil, templateUtility) {
+  .service('templateUtility', function ($q) {
 
     // declare the various template functions
     var templateFns = {
@@ -51,8 +51,7 @@ angular.module('singleConceptAuthoringApp')
         if (templateFns.hasOwnProperty(name)) {
           return templateFns[name];
         } else {
-          return function () {
-          };
+          return null;
         }
       }
     };

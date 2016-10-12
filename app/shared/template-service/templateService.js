@@ -51,39 +51,52 @@ angular.module('singleConceptAuthoringApp')
 
       console.debug('Applying template', template, existingConcepts, params);
 
-      angular.forEach(existingConcepts, function (ec) {
-        console.debug(' Existing concept ' + ec.conceptId + ' | ' + ec.fsn);
-        var tc = angular.copy(template.type === 'CREATE' ? template.conceptJson : ec);
+      // check required arguments
+      if (!template || !existingConcepts) {
+        deferred.reject('Template error: invalid arguments');
+      } else {
 
-        // append template fields to concept
-        tc.templateVersion = template.version;
-        tc.templateName = template.name;
+        // log all errors encountered during application of template
+        var errors = '';
 
-        if (!tc.conceptId) {
-          tc.conceptId = snowowlService.createGuid();
-        }
+        angular.forEach(existingConcepts, function (ec) {
+          console.debug(' Existing concept ' + ec.conceptId + ' | ' + ec.fsn);
+          var tc = angular.copy(template.type === 'CREATE' ? template.conceptJson : ec);
 
-        var errors = [];
+          // append template fields to concept
+          tc.templateVersion = template.version;
+          tc.templateName = template.name;
 
-        angular.forEach(template.functions, function (fnName) {
-          console.debug('executing template update function', fnName);
-          templateUtility.getTemplateFunction[fnName](template, tc, ec).then(function () {
+          // assign a temporary id for new concepts
+          if (!tc.conceptId) {
+            tc.conceptId = snowowlService.createGuid();
+          }
 
-          }, function (error) {
-            errors.push('ERROR in ' + functionName + ' for ' + ec.conceptId + ' | ' + ec.fsn + ':' + error);
-          })
+          // execute each function requested by the template
+          angular.forEach(template.functions, function (fnName) {
+            console.debug('executing template update function', fnName);
+            var fn = templateUtility.getTemplateFunction(fnName);
 
+            if (!fn) {
+              errors += 'Template error for concept' + ec.conceptId + ' | ' + ec.fsn + ': Requested template function ' + fnName + ' not found\n';
+            } else {
+              fn(template, tc, ec).then(function () {
+                // on success, do nothing
+              }, function (error) {
+                errors += 'Template function error in ' + functionName + ' for concept ' + ec.conceptId + ' | ' + ec.fsn + ':' + error + '\n';
+              })
+            }
+          });
+
+          templateConcepts.push(tc);
 
         });
-        if (errors.length == 0) {
-          templateConcepts.push(tc);
-        }
-      });
 
-      if (errors.length > 0) {
-        deferred.reject(errors);
-      } else {
-        deferred.resolve(templateConcepts);
+        if (errors.length > 0) {
+          deferred.reject(errors);
+        } else {
+          deferred.resolve(templateConcepts);
+        }
       }
       return deferred.promise;
     }

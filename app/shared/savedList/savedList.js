@@ -34,7 +34,7 @@ angular.module('singleConceptAuthoringApp.savedList', [])
       $scope.applyTemplate = function (template, item) {
         console.debug('savedList, applyTemplate', template, item);
         if (item) {
-          $rootScope.$broadcast('applyTemplate', {template: template, conceptId: item.concept.conceptId});
+          $rootScope.$broadcast('applyTemplate', {template: template, conceptId: item.concept.conceptId, fsn: item.concept.fsn});
         }
       };
 
