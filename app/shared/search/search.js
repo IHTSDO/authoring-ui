@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService) {
 
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
@@ -339,21 +339,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.getConceptPropertiesObj = function (concept) {
         return {id: concept.conceptId, name: concept.preferredSynonym ? concept.preferredSynonym : concept.fsn};
       };
-
-      //
-      // Template support
-      //
-      templateService.getTemplates().then(function(templates) {
-        $scope.templates = templates;
-        console.debug('saved list templates', $scope.templates);
-      });
-
-      $scope.applyTemplate = function(template, item) {
-        console.debug('savedList, applyTemplate', template, item);
-        if (template && item) {
-          $rootScope.$broadcast('applyTemplate', {template: template, conceptId: item.concept.conceptId, fsn: item.concept.fsn});
-        }
-      }
 
     }
   ])

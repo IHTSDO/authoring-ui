@@ -682,26 +682,6 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      // utility retrieval functions
-      function getFsnForConcept(concept) {
-        angular.forEach(concept.descriptions, function(desc) {
-          if (desc.active && desc.type === 'FSN') {
-            return desc;
-          }
-        });
-        return null;
-      }
-
-      function getPtForConcept(concept, dialectId) {
-        var d = dialectId ? dialectId : '900000000000509007';
-        angular.forEach(concept.descriptions, function(desc) {
-          if (desc.active && desc.type === 'SYNONYM' && desc.acceptabilityMap && desc.acceptabilityMap[d] === 'PREFERRED') {
-            return desc;
-          }
-        });
-        return null;
-      }
-
       return {
         getNewConcept: getNewConcept,
         getNewDescription: getNewDescription,
@@ -724,11 +704,7 @@ angular.module('singleConceptAuthoringApp')
         runInternationalDialectAutomation: runInternationalDialectAutomation,
 
         // grouped automations
-        runDescriptionAutomations: runDescriptionAutomations,
-
-        // utility functions
-        getFsnForConcept : getFsnForConcept,
-        getPtForConcept : getPtForConcept
+        runDescriptionAutomations: runDescriptionAutomations
 
       };
 

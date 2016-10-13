@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, templateService, $routeParams, $timeout, $interval, $q, crsService) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService) {
 
 
 
@@ -622,10 +622,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     function loadConceptFromTermServerHelper(conceptId) {
       var deferred = $q.defer();
       $scope.conceptLoading = true;
-
-      // TODO Template Based Authoring / TBBA -- add call to traceability or other endpoint here
-      // to determine whether this concept is template-based
-
       // get the concept and add it to the stack
       snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
         $scope.conceptLoading = false;
@@ -642,7 +638,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if ($scope.concepts.length === $scope.editList.length) {
           notificationService.sendMessage('All concepts loaded', 10000, null);
           // ensure loaded concepts match order of edit list
-          $scope.concepts.sort(function (a, b) {
+          $scope.concepts.sort(function(a, b) {
             return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
           });
           $scope.updateEditListUiState();
@@ -704,7 +700,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.conceptLoading = false;
         }
 
-        // otherwise, load from termserver
+        // otherwise, load from terserver
         else {
           loadConceptFromTermServerHelper(conceptId);
         }
@@ -951,33 +947,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         notificationService.sendError('Cloning failed; could not retrieve concept');
       });
     });
-
-    // watch for template concept requests from saved-list
-    $scope.$on('applyTemplate', function (event, data) {
-      console.debug('applyTemplate: request', data);
-
-      notificationService.sendMessage('Preparing concepts from template...');
-      // check for existing concepts in edit list (override with template)
-      // TODO when have update requirement
-
-      snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (ec) {
-        console.debug('applyTemplate: existing concept', ec);
-
-        // Note -- applyTemplate takes array of concepts and currently unused parameters object
-        templateService.applyTemplate(data.template, [ec], {}).then(function (tcs) {
-          console.debug('applyTemplate: template concepts', tcs);
-          angular.forEach(tcs, function(tc) {
-            $scope.concepts.push(tc);
-          });
-          notificationService.sendMessage('Template successfully applied', 5000);
-        }, function(error) {
-          notificationService.sendError('Error applying template: ' + error);
-        })
-      }, function(error) {
-        notificationService.sendError('Error retrieving concept ' + data.conceptId + ' | ' + data.fsn + ': ' + error);
-      })
-    });
-
 
 // watch for removal request from concept-edit
     $scope.$on('stopEditing', function (event, data) {
