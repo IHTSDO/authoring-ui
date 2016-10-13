@@ -24,7 +24,7 @@
           "active": true,
           "moduleId": "900000000000207008",
           "type": "SYNONYM",
-          "term": "Computed tomography of %TARGETNAME%",
+          "term": "Computed tomography of %TARGET_NAME%",
           "lang": "en",
           "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
           "acceptabilityMap": {

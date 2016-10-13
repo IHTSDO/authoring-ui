@@ -33,17 +33,17 @@ angular.module('singleConceptAuthoringApp')
           var fsn = fromConcept.descriptions.filter(function (desc) {
             return desc.active && desc.type === 'FSN';
           });
-          if (!fsn || fsn.length == 0) {
-            deferred.reject('FSN description not found');
-          } else {
+          var fsnFound = fsn && fsn.length > 0;
+          console.debug('fsn', fsn);
 
-            angular.forEach(templateConcept.relationships, function (tcRel) {
-              tcRel.target.id = fromConcept.conceptId;
-              tcRel.target.fsn = fsn[0].term;
-            });
-            deferred.resolve();
+          angular.forEach(templateConcept.relationships, function (tcRel) {
+            console.debug('checking ', tcRel);
+            tcRel.target.conceptId = tcRel.target.conceptId.replace(/%TARGET_ID%/g, fromConcept.conceptId);
+            tcRel.target.fsn = tcRel.target.fsn.replace(/%TARGET_FSN%/g, fsnFound ? fsn[0].term : fromConcept.conceptId);
+          });
+          deferred.resolve();
 
-          }
+
         } catch (err) {
           deferred.reject('Unexpected error -- ' + err);
         }
@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
 
         // surround in try/catch for unexpected error reporting
         try {
-          var fsn = sourceConcept.descriptions.filter(function (desc) {
+          var fsn = fromConcept.descriptions.filter(function (desc) {
             return desc.active && desc.type === 'FSN';
           });
           if (!fsn) {
