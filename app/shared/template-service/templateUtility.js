@@ -9,8 +9,18 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_PT_FROM_FSN = /(.+)\s\(.*\)/i;
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
 
-    // declare the various template functions
+    /**
+     * Declare the various template functions
+     * Method signature:
+     * - template:  the template to be applied
+     * - templateConcept: the concept to which the template is applied
+     * - fromConcept: the concept from which the template derives content
+     * - params (currently unused): optional parameters
+     */
+
     var templateFns = {
+
+      // sets template concept %TARGET_ID% and %TARGET_NAME% from concept
       setRelationshipTargetFromConcept: function (template, templateConcept, fromConcept, params) {
         var deferred = $q.defer();
 
@@ -40,7 +50,9 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
 
       },
-      setTargetNameFromConceptFsn: function (template, templateConcept, sourceConcept, params) {
+
+      // sets template concept %TARGET_NAME% on all descriptions from term without semantic tags derived from concept's FSN
+      setTargetNameFromConceptFsn: function (template, templateConcept, fromConcept, params) {
         var deferred = $q.defer();
 
         if (!template || !templateConcept || !fromConcept) {
