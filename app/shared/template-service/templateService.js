@@ -45,6 +45,19 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function createTemplate(template) {
+      // TODO Wire to BE
+    }
+
+    function updateTemplate(template) {
+      // TODO Wire to BE
+    }
+
+    function removeTemplate(templateName) {
+      // TODO Wire to BE
+    }
+
+
     function applyTemplate(template, existingConcepts, params) {
       var deferred = $q.defer();
       var templateConcepts = [];
@@ -107,6 +120,9 @@ angular.module('singleConceptAuthoringApp')
     return {
       getTemplates: getTemplates,
       getTemplateForName: getTemplateForName,
+      createTemplate : createTemplate,
+      updateTemplate : updateTemplate,
+      removeTemplate : removeTemplate,
       applyTemplate: applyTemplate
     };
 
