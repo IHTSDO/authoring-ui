@@ -2,6 +2,7 @@
   {
     "name": "CT of X",
     "version": "0.0.1",
+    "parents": [],
     "type": "CREATE",
     "functions" : ["setRelationshipTargetFromConcept","setTargetNameFromConceptFsn"],
     "conceptJson": {
