@@ -622,6 +622,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     function loadConceptFromTermServerHelper(conceptId) {
       var deferred = $q.defer();
       $scope.conceptLoading = true;
+
+      // TODO Template Based Authoring / TBBA -- add call to traceability or other endpoint here
+      // to determine whether this concept is template-based
+
       // get the concept and add it to the stack
       snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
         $scope.conceptLoading = false;
@@ -700,7 +704,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.conceptLoading = false;
         }
 
-        // otherwise, load from terserver
+        // otherwise, load from termserver
         else {
           loadConceptFromTermServerHelper(conceptId);
         }

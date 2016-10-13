@@ -3,7 +3,7 @@
     "name": "CT of X",
     "version": "0.0.1",
     "type": "CREATE",
-    "functions" : ["replaceTargetNameFromFsn"],
+    "functions" : ["setRelationshipTargetFromConcept","setTargetNameFromConceptFsn"],
     "conceptJson": {
       "conceptId": null,
       "descriptions": [
@@ -11,10 +11,9 @@
           "active": true,
           "moduleId": "900000000000207008",
           "type": "FSN",
-          "term": "Computed tomography of %TARGETNAME% (procedure)",
+          "term": "Computed tomography of %TARGET_NAME% (procedure)",
           "lang": "en",
           "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
-          "conceptId": null,
           "acceptabilityMap": {
             "900000000000509007": "PREFERRED",
             "900000000000508004": "PREFERRED"
@@ -27,7 +26,6 @@
           "term": "Computed tomography of %TARGETNAME%",
           "lang": "en",
           "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
-          "conceptId": null,
           "acceptabilityMap": {
             "900000000000509007": "PREFERRED",
             "900000000000508004": "PREFERRED"
@@ -37,10 +35,9 @@
           "active": true,
           "moduleId": "900000000000207008",
           "type": "SYNONYM",
-          "term": "CT of %TARGETNAME%",
+          "term": "CT of %TARGET_NAME%",
           "lang": "en",
           "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
-          "conceptId": null,
           "acceptabilityMap": {
             "900000000000509007": "ACCEPTABLE",
             "900000000000508004": "ACCEPTABLE"
@@ -87,8 +84,8 @@
           "modifier": "EXISTENTIAL",
           "moduleId": "900000000000207008",
           "target": {
-            "conceptId": "",
-            "fsn": ""
+            "conceptId": "%TARGET_ID%",
+            "fsn": "%TARGET_FSN%"
           },
           "type": {
             "conceptId": "405813007",
@@ -96,7 +93,6 @@
           }
         }
       ],
-      "fsn": null,
       "definitionStatus": "PRIMITIVE",
       "active": true,
       "released": false,
