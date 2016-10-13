@@ -137,7 +137,7 @@
         </div>
 
         <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
-                ng-disabled="isStatic || isLockedModule(concept.moduleId) || concept.template"
+                ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
                 ng-click="toggleConceptDefinitionStatus(isStatic)">
 
@@ -145,7 +145,7 @@
           <span>Fully Defined</span>
         </button>
         <button ng-if="concept.definitionStatus === 'PRIMITIVE'"
-                ng-disabled="isStatic || isLockedModule(concept.moduleId  || concept.template)"
+                ng-disabled="isStatic || isLockedModule(concept.moduleId)"
                 class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
                 ng-click="toggleConceptDefinitionStatus(isStatic)">
           <div class="badge alert-warning ng-binding">&nbsp; </div>
@@ -521,7 +521,7 @@
                 </div>
 
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId)">
 
                   <button type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
@@ -555,7 +555,7 @@
                 <span>Drag Relationship Group</span>
               </button>
 
-              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !concept.template"
+              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId)"
                       class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span>
               </button>

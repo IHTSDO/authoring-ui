@@ -1,146 +1,132 @@
 <div class=" col-md-12 no-padding  search-scroll " ng-controller="searchPanelCtrl">
-  <div class="row no-padding">
-    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
-      <input type="search" class="form-control m-5" placeholder="Enter at least three characters"
-             ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
-    </div>
-    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button ng-show="searchStr" class="btn btn-default md md-close" ng-click="clearSearch()"
-              style="background: transparent"></button>
-    </div>
-    <!--  Removed pending design and reuqirements discussion
-      <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 no-padding">
-          <select ng-options="id as name for (id, name) in dialects" ng-model="selectedDialect"></select>
-      </div>-->
-    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right "
-              ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0"
-              style="background: transparent">
-        <span>View Matching Terms</span>
-      </button>
-      <button
-        class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right"
-        ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0"
-        style="background: transparent">
-        <span>Group by Concept</span>
-      </button>
-
-    </div>
-  </div>
-
-
-  <div class="row no-padding">
-    <div class="col-md-4">
-      <button type="button" class="blue accent-2 custom-button ng-click-active" title="Search Type"
-              ng-click="toggleSearchType()">
-        <div class="md col-md-12 no-padding text-center ng-binding">
-          {{searchType}}
-        </div>
-      </button>
-    </div>
-    <div class="col-md-8">
-      <label class="control-label">Select template</label>
-      <select style="min-width: 100px;" ng-model="selectedTemplate" ng-options="template as template.name for template in templates"></select>
-    </div>
-  </div>
-  <div class="col-md-12 no-padding" ng-if="searchStatus">{{searchStatus}}</div>
-  <div ng-show="results.length > 0" class="m-l-10 scroll-if-height ">
-    <!-- headers -->
     <div class="row no-padding">
-      <div class="col-md-4 no-padding" ng-if="!userOptions.groupByConcept">
-        <div class="p-5">
-          <strong>Term</strong>
+        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
+            <input type="search" class="form-control m-5" placeholder="Enter at least three characters"
+                   ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
         </div>
-      </div>
-      <div class="col-md-1 no-padding">
-        <!-- No content -->
-      </div>
-      <div class="no-padding"
-           ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
-        <div class="p-5">
-          <strong>{{searchExtensionFlag ? 'Preferred Term' : 'FSN'}}</strong>
+        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
+            <button ng-show="searchStr" class="btn btn-default md md-close" ng-click="clearSearch()"
+                    style="background: transparent"></button>
         </div>
-      </div>
-      <div class="col-md-1 no-padding">
-        <!-- No content -->
-      </div>
-      <div class="col-md-1 no-padding">
-        <!-- No content -->
-      </div>
-    </div>
-    <!-- results -->
-    <div ng-repeat="result in results">
-      <div class="row">
-        <div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">
-          <div class="p-5 wordbreak">{{result.term}}</div>
-        </div>
-        <div class=" col-md-1 no-padding">
-          <div class="p-t-5">
-            <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
-                    class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
-              <object class="badge alert-warning ng-binding"
-                      ng-click="openConceptInformationModal(result)">&nbsp; </object>
-              <span>Primitive</span>
+      <!--  Removed pending design and reuqirements discussion
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 no-padding">
+            <select ng-options="id as name for (id, name) in dialects" ng-model="selectedDialect"></select>
+        </div>-->
+        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
+            <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right "
+                    ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0"
+                    style="background: transparent">
+                <span>View Matching Terms</span>
             </button>
-            <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"
-                    class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
-              <object class="badge alert-warning ng-binding"
-                      ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
-              <span>Fully Defined</span>
+            <button class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right"
+                    ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0"
+                    style="background: transparent">
+                <span>Group by Concept</span>
             </button>
-          </div>
         </div>
-        <div class="no-padding"
-             ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
-          <div class="p-5 wordbreak" ui-draggable="true" style="display:inline"
-               drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"
-               drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a
-            class=" wordbreak  " title="Edit"
-            ng-click=" selectItem(result)"
-            ng-disabled="isEdited(result)">
-
-
-            {{searchExtensionFlag ? result.concept.preferredSynonym : result.concept.fsn }} </a>
-          </div>
-        </div>
-        <div class="col-md-3 no-padding">
-          <button ng-show="selectedTemplate" type="button"
-                  class="addButton btn btn-round widget-button md md-transform medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2"
-            ng-click="applyTemplate(selectedTemplate, result)">
-
-            <span> Apply template </span>
-          </button>
-          <button type="button" ng-click="viewConceptInTaxonomy(result)" ng-disabled="!result.concept.active"
-                  class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1"
-                  ng-class="[{'md md-my-library-books purple' : result.concept.active}, {'fa-sca fa-power-off red' : !result.concept.active }]">
-            <span ng-if="result.concept.active">View in Taxonomy</span>
-            <span ng-if="!result.concept.active">Inactive Concept</span>
-          </button>
-          <button type="button" ng-click="addItemToSavedList(result)"
-                  ng-disabled="findItemInSavedList(result.concept.conceptId)"
-                  class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1">
-            <span>Add to Task List</span>
-          </button>
-          <button type="button" ng-click="addItemToFavorites(result)"
-                  ng-disabled="findItemInFavorites(result.concept.conceptId)"
-                  class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
-            <span>Add to Project Favorites</span>
-          </button>
-
-        </div>
-      </div>
     </div>
-  </div>
-  <!-- load more button -->
-  <div class="col-md-12 m-t-10">
-    <button ng-show="loadPerformed" class="btn btn-default classify col-md-12" ng-click="loadMore()"
-            ng-disabled="!loadMoreEnabled">
-      <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
-      <span ng-if="!loadMoreEnabled ">End of Results</span>
-    </button>
-  </div>
-  <!-- Spacing to temporarily fix margin problems -->
-  <div class="m-t-50">
-    &nbsp;
-  </div>
+
+    <div class="row no-padding">
+        <div class="col-md-8">
+            <button type="button" class="blue accent-2 custom-button ng-click-active" title="Search Type"
+                    ng-click="toggleSearchType()">
+                <div class="md col-md-12 no-padding text-center ng-binding">
+                    {{searchType}}
+                </div>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-12 no-padding" ng-if="searchStatus">{{searchStatus}}</div>
+    <div ng-show="results.length > 0" class="m-l-10 scroll-if-height ">
+        <!-- headers -->
+        <div class="row no-padding">
+            <div class="col-md-4 no-padding" ng-if="!userOptions.groupByConcept">
+                <div class="p-5">
+                    <strong>Term</strong>
+                </div>
+            </div>
+            <div class="col-md-1 no-padding">
+                <!-- No content -->
+            </div>
+            <div class="no-padding"
+                 ng-class="[{'col-md-5' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
+                <div class="p-5">
+                    <strong>{{searchExtensionFlag ? 'Preferred Term' : 'FSN'}}</strong>
+                </div>
+            </div>
+            <div class="col-md-1 no-padding">
+                <!-- No content -->
+            </div>
+            <div class="col-md-1 no-padding">
+                <!-- No content -->
+            </div>
+        </div>
+        <!-- results -->
+        <div ng-repeat="result in results">
+            <div class="row">
+                <div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">
+                    <div class="p-5 wordbreak">{{result.term}}</div>
+                </div>
+                <div class=" col-md-1 no-padding">
+                    <div class="p-t-5">
+                        <button ng-if="result.concept.definitionStatus === 'PRIMITIVE'" ng-disabled="isStatic"
+                                class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
+                            <object class="badge alert-warning ng-binding"
+                                    ng-click="openConceptInformationModal(result)">&nbsp; </object>
+                            <span>Primitive</span>
+                        </button>
+                        <button ng-if="result.concept.definitionStatus !== 'PRIMITIVE'" ng-disabled="isStatic"
+                                class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
+                            <object class="badge alert-warning ng-binding"
+                                    ng-click="openConceptInformationModal(result)">≡ &nbsp; </object>
+                            <span>Fully Defined</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="no-padding"
+                     ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
+                    <div class="p-5 wordbreak" ui-draggable="true" style="display:inline"
+                         drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"
+                         drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a class=" wordbreak  " title="Edit"
+                                                            ng-click=" selectItem(result)"
+                                                            ng-disabled="isEdited(result)">
+
+
+                        {{searchExtensionFlag ? result.concept.preferredSynonym : result.concept.fsn }} </a>
+                    </div>
+                </div>
+                <div class="col-md-3 no-padding">
+                    <button type="button" ng-click="viewConceptInTaxonomy(result)" ng-disabled="!result.concept.active"
+                            class="addButton btn btn-round  widget-button tooltips-bottom tooltips-light normal-case lighten-1"
+                            ng-class="[{'md md-my-library-books purple' : result.concept.active}, {'fa-sca fa-power-off red' : !result.concept.active }]">
+                        <span ng-if="result.concept.active">View in Taxonomy</span>
+                        <span ng-if="!result.concept.active">Inactive Concept</span>
+                    </button>
+                    <button type="button" ng-click="addItemToSavedList(result)"
+                            ng-disabled="findItemInSavedList(result.concept.conceptId)"
+                            class="addButton btn btn-round  widget-button md md-playlist-add small-size-tooltip tooltips-bottom tooltips-light normal-case green lighten-1">
+                        <span>Add to Task List</span>
+                    </button>
+                    <button type="button" ng-click="addItemToFavorites(result)"
+                            ng-disabled="findItemInFavorites(result.concept.conceptId)"
+                            class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
+                        <span>Add to Project Favorites</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- load more button -->
+    <div class="col-md-12 m-t-10">
+        <button ng-show="loadPerformed" class="btn btn-default classify col-md-12" ng-click="loadMore()"
+                ng-disabled="!loadMoreEnabled">
+            <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
+            <span ng-if="!loadMoreEnabled ">End of Results</span>
+        </button>
+    </div>
+    <!-- Spacing to temporarily fix margin problems -->
+    <div class="m-t-50">
+        &nbsp;
+    </div>
 </div>
