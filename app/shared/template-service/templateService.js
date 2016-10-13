@@ -82,10 +82,11 @@ angular.module('singleConceptAuthoringApp')
             if (!fn) {
               errors += 'Template error for concept' + ec.conceptId + ' | ' + ec.fsn + ': Requested template function ' + fnName + ' not found\n';
             } else {
-              fn(template, tc, ec).then(function () {
+              // params currently unused
+              fn(template, tc, ec, {}).then(function () {
                 // on success, do nothing
               }, function (error) {
-                errors += 'Template function error in ' + functionName + ' for concept ' + ec.conceptId + ' | ' + ec.fsn + ':' + error + '\n';
+                errors += 'Template function error in ' + fnName + ' for concept ' + ec.conceptId + ' | ' + ec.fsn + ':' + error + '\n';
               })
             }
           });
