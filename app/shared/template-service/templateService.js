@@ -6,20 +6,22 @@ angular.module('singleConceptAuthoringApp')
  */
   .service('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil, templateUtility) {
 
-    var templateCache = [];
+    var templateCache = null;
 
-    // TODO Wire this to BE, using JSON temporary file for dev purposes
-    $http.get('shared/template-service/templates.json').then(function (response) {
-      console.debug('http templates', response);
-      templateCache = response.data;
-    });
+    var selectedTemplate = null;
+
 
     function getTemplates(refreshCache) {
+      console.debug('getTemplates', templateCache);
       var deferred = $q.defer();
-      console.debug('get templates');
       if (!templateCache || refreshCache) {
-        console.debug('returning retrieved templates', []);
-        // TODO Wire to BE
+      // TODO Wire this to BE, using JSON temporary file for dev purposes
+        $http.get('shared/template-service/templates.json').then(function (response) {
+          console.debug('http templates', response);
+          templateCache = response.data;
+          deferred.resolve(templateCache);
+        });
+
       } else {
         console.debug('returning cached templates', templateCache);
         deferred.resolve(templateCache);
@@ -72,11 +74,17 @@ angular.module('singleConceptAuthoringApp')
         // create concept from the concept template
         var tc = angular.copy(template.conceptTemplate);
 
+        // apply a UUID
+        tc.conceptId = snowowlService.createGuid();
+
         // append the template for this concept
         tc.template = template;
 
-        // ensure all minimum fields are set
-        componentAuthoringUtil.applyMinimumFields(tc);
+        componentAuthoringUtil.setDefaultFields(tc);
+
+        console.debug('template concept', tc);
+
+
 
         // error checking left in for possible later use
         if (errors.length > 0) {
@@ -104,7 +112,7 @@ angular.module('singleConceptAuthoringApp')
       } else {
 
         // cycle over lexical templates
-        angular.forEach(template.lexicalTemplates, function (lt) {
+        angular.forEach(concept.template.lexicalTemplates, function (lt) {
 
           // find the slot
           var slots = concept.relationships.filter(function (r) {
@@ -125,7 +133,7 @@ angular.module('singleConceptAuthoringApp')
           else {
             var slot = slots[0];
             // check if slot has value
-            if (slot.hasOwnProperty('target') && slow.target.conceptId) {
+            if (slot.hasOwnProperty('target') && slot.target.conceptId) {
               // abstract these functions out once template use-cases arise
               var match = slot.target.fsn.match(PATTERN_PT_FROM_FSN);
               if (!match || !match[1] || match[1].length == 0) {
@@ -160,6 +168,14 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function selectTemplate(template) {
+      selectedTemplate = template;
+    };
+
+    function getSelectedTemplate() {
+      return selectedTemplate;
+    }
+
     return {
 
       // Template CRUD functions
@@ -169,9 +185,13 @@ angular.module('singleConceptAuthoringApp')
       updateTemplate: updateTemplate,
       removeTemplate: removeTemplate,
 
+      // Utility functions
+      selectTemplate: selectTemplate,
+      getSelectedTemplate: getSelectedTemplate,
+
       // Template application functions
       getNewConceptFromTemplate: getNewConceptFromTemplate,
-      updateConceptFromTemplate: updateConceptFrompTemplate
+      updateTemplateConcept: updateTemplateConcept
     };
 
   })

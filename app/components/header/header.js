@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', function ($rootScope, $timeout, $modal, $location, $route, metadataService) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService) {
     return {
       restrict: '',
       transclude: false,
@@ -13,6 +13,9 @@ angular.module('singleConceptAuthoringApp')
 
         // timeout variable for current notification
         var timeout = null;
+
+        // template selection
+        scope.getSelectedTemplate = templateService.getSelectedTemplate;
 
         // function to format date to required form
         scope.formatDate = function (date) {

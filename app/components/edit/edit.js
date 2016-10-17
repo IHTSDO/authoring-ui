@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, templateService, $routeParams, $timeout, $interval, $q, crsService) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, templateService, $routeParams, $timeout, $interval, $q, crsService, ngTableParams) {
 
 
 
@@ -1509,6 +1509,33 @@ angular.module('singleConceptAuthoringApp.edit', [
       return deferred.promise;
     }
 
+    // template ng-table
+    // declare table parameters
+    $scope.templateTableParams = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {name: 'asc'}
+      },
+      {
+        filterDelay: 50,
+        total: $scope.templates ? $scope.templates.length : 0, // length of data
+        getData: function ($defer, params) {
+          // TODO support paging and filtering
+          console.debug('getData', $scope.templates);
+          $defer.resolve($scope.templates);
+        }
+      }
+    );
+
+    $scope.getSelectedTemplate = templateService.getSelectedTemplate;
+    $scope.selectTemplate = function(template) {
+      templateService.selectTemplate(template);
+    };
+    $scope.clearTemplate = function() {
+
+      templateService.selectTemplate(null);
+    };
+
 //////////////////////////////////////////
 // Initialization
 //////////////////////////////////////////
@@ -1516,6 +1543,17 @@ angular.module('singleConceptAuthoringApp.edit', [
     function initialize() {
 
       notificationService.sendMessage('Loading task details...');
+
+      // retrieve available templates
+      templateService.getTemplates().then(function(templates) {
+        console.debug('edit templates', templates);
+        $scope.templates = templates;
+        angular.forEach($scope.templates, function(template) {
+          template.name = template.metadata.name;
+          template.version = template.metadata.version;
+        })
+        $scope.templateTableParams.reload();
+      });
 
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);

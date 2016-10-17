@@ -14,13 +14,25 @@
           <span>Inactivation</span></button>
     -->
 
-    <!-- Create new concept -->
-    <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+    <!-- Create new concept (non-template) -->
+    <button ng-if="!selectedTemplate"
+            ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             type="button" ng-click="createConcept()"
             ng-disabled="task.status === 'Promoted' || !canCreateConcept"
             class="btn btn-default create-new-concept widget-toolbar tooltips-right tooltips-light normal-case">
       <div class="md fa-sca fa-edit"></div>
+
       <span>Create New Concept</span></button>
+
+    <!-- Create new concept (template) -->
+    <button ng-if="selectedTemplate"
+            ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+            type="button" ng-click="createConcept()"
+            ng-disabled="task.status === 'Promoted' || !canCreateConcept"
+            class="btn btn-default create-new-concept widget-toolbar tooltips-right tooltips-light normal-case">
+
+      <div class="md md-playlist-add"></div>
+      <span>Create New Template Concept</span></button>
 
 
     <!-- Create new template concept -->
@@ -29,7 +41,7 @@
             popover-placement="right"
             popover-trigger="click: click"
             popover-append-to-body="true"
-            type="button" ng-click="createTemplateConcept()"
+            type="button"
             ng-disabled="task.status === 'Promoted' || !canCreateConcept"
             class="btn btn-default create-new-concept widget-toolbar tooltips-right tooltips-light normal-case">
       <img src="images/snodragon.png" style="width:25px;">
@@ -128,7 +140,6 @@
   </style>
   <!-- Main page content -->
   <div class="row no-gutter main-view-offset">
-
 
 
     <!-- Default edit view -->
