@@ -52,6 +52,12 @@
           <span>Classification Running </span>
         </button>
       </li>
+
+      <li ng-if="getSelectedTemplate() != null">
+        Template selected: {{getSelectedTemplate().name}} <button type="button" class="btn-default small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case" ng-click="clearTemplate()"><span>Clear</span>
+      </button>
+      </li>
+
     </ul>
 
     <div ng-show="notification" class="pull-left header-alerts col-md-3 pull-left">
@@ -68,7 +74,7 @@
                   ng-click="clearNotification()"></button>
 
           <!-- if a link is provided, show it -->
-        
+
 
           <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}} </strong>  <a ng-if="notification.url" ng-click="gotoNotificationLink()">
             <span ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]">
