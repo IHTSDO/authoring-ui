@@ -984,26 +984,14 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.$on('applyTemplate', function (event, data) {
       console.debug('applyTemplate: request', data);
 
-      notificationService.sendMessage('Preparing concepts from template...');
-      // check for existing concepts in edit list (override with template)
-      // TODO when have update requirement
+      notificationService.sendMessage('Preparing concept from template...');
 
-      snowowlService.getFullConcept(data.conceptId, $scope.branch).then(function (ec) {
-        console.debug('applyTemplate: existing concept', ec);
-
-        // Note -- applyTemplate takes array of concepts and currently unused parameters object
-        templateService.applyTemplate(data.template, [ec], {}).then(function (tcs) {
-          console.debug('applyTemplate: template concepts', tcs);
-          angular.forEach(tcs, function(tc) {
-            $scope.concepts.push(tc);
-          });
-          notificationService.sendMessage('Template successfully applied', 5000);
-        }, function(error) {
-          notificationService.sendError('Error applying template: ' + error);
-        })
+      templateService.getNewConceptFromTemplate(data.template).then(function(concept) {
+        $scope.concepts.push(concept);
+        notificationService.sendMessage('Template concept successfully created');
       }, function(error) {
-        notificationService.sendError('Error retrieving concept ' + data.conceptId + ' | ' + data.fsn + ': ' + error);
-      })
+        notificationService.sendError('Template concept error: ' + error);
+      });
     });
 
 
