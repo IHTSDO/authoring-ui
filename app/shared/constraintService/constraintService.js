@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('mrcmService', ['$http', '$rootScope', '$q', 'snowowlService', 'metadataService',
-    function ($http, $rootScope, $q, snowowlService, metadataService) {
+  .service('constraintService', ['$http', '$rootScope', '$q', 'snowowlService', 'metadataService','templateService',
+    function ($http, $rootScope, $q, snowowlService, metadataService, templateService) {
 
 
       // Search str matches fsn or id of provided attributes
@@ -26,9 +26,9 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function isValueAllowedForType(typeId, valueName, branch) {
+      function isValueAllowedForType(typeId, valueName, concept, branch) {
         var deferred = $q.defer();
-        console.debug('isValueAllowedForType', typeId, valueName, branch);
+        console.debug('isValueAllowedForType', typeId, valueName, concept, branch);
         getConceptsForValueTypeahead(typeId, valueName, branch).then(function (response) {
           if (response.length === 0) {
             deferred.reject();
@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function getConceptsForValueTypeahead(attributeId, searchStr, branch) {
+      function getConceptsForValueTypeahead(attributeId, searchStr, concept, branch) {
         var deferred = $q.defer();
         snowowlService.getAttributeValues(branch, attributeId, searchStr).then(function (response) {
 

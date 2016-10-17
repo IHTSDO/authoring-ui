@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService, mrcmService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService, constraintService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -1698,7 +1698,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if type specified, validate against type
           if (relationship.type.conceptId !== null && metadataService.isMrcmEnabled()) {
 
-            mrcmService.isValueAllowedForType(relationship.type.conceptId, data.name, scope.branch).then(function () {
+            constraintService.isValueAllowedForType(relationship.type.conceptId, data.name, scope.concept, scope.branch).then(function () {
               relationship.target.conceptId = data.id;
               relationship.target.fsn = data.name;
               scope.updateRelationship(relationship, false);
@@ -1730,11 +1730,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (metadataService.isMrcmEnabled()) {
 
             // check attribute allowed against stored array
-            if (mrcmService.isAttributeAllowedForArray(data.id, scope.allowedAttributes)) {
+            if (constraintService.isAttributeAllowedForArray(data.id, scope.allowedAttributes)) {
 
               // if target already specified, validate it
               if (relationship.target.conceptId) {
-                mrcmService.isValueAllowedForType(data.id, relationship.target.fsn, scope.branch).then(function () {
+                constraintService.isValueAllowedForType(data.id, relationship.target.fsn, scope.concept, scope.branch).then(function () {
                   // do nothing
                 }, function (error) {
                   scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + data.name + '.'];
@@ -1819,7 +1819,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          mrcmService.validateRelationship(relationship, scope.allowedAttributes, scope.branch).then(function (response) {
+          constraintService.validateRelationship(relationship, scope.allowedAttributes, scope.branch).then(function (response) {
             if (response.length === 0) {
               // copy relationship object and replace target relationship
               var copy = angular.copy(source);
@@ -1887,7 +1887,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          mrcmService.validateRelationships(relGroup, scope.allowedAttributes, scope.branch).then(function (response) {
+          constraintService.validateRelationships(relGroup, scope.allowedAttributes, scope.branch).then(function (response) {
 
             // if no validation errors, continue
             if (response.length === 0) {
@@ -2425,7 +2425,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.$watch(scope.concept.relationships, function (newValue, oldValue) {
 
           // recompute the domain attributes from MRCM service
-          mrcmService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
+          constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
             console.debug('Retrieved new domain attributes')
             scope.allowedAttributes = attributes;
           }, function (error) {
@@ -2438,7 +2438,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
 // pass mrcm service function to scope
-        scope.getConceptsForValueTypeahead = mrcmService.getConceptsForValueTypeahead;
+        scope.getConceptsForValueTypeahead = constraintService.getConceptsForValueTypeahead;
 
 //
 // Relationship setter functions
