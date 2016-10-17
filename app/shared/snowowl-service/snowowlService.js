@@ -79,7 +79,7 @@ angular.module('singleConceptAuthoringApp')
         return id && id.match(/^[0-9]+$/);
       }
 
-      function removeInvalidCharactersFromTerm(term) {
+      function removeInvalidCharacters(term) {
         if (term) {
           // strip invalid characters from term
           term = term.replace(/[@|$|#|\\]/g, ' ');
@@ -133,7 +133,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // remove invalid characters
-          removeInvalidCharactersFromTerm(description.term);
+          removeInvalidCharacters(description.term);
         });
 
         var allowableRelationshipProperties = [
@@ -1394,7 +1394,7 @@ angular.module('singleConceptAuthoringApp')
         // utility
         createGuid: createGuid,
         isSctid: isSctid,
-        removeInvalidCharactersFromTerm: removeInvalidCharactersFromTerm
+        removeInvalidCharacters: removeInvalidCharacters
 
       };
     }
