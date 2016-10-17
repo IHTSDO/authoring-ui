@@ -72,6 +72,9 @@ angular.module('singleConceptAuthoringApp')
         // create concept from the concept template
         var tc = angular.copy(template.conceptTemplate);
 
+        // append the template for this concept
+        tc.template = template;
+
         // ensure all minimum fields are set
         componentAuthoringUtil.applyMinimumFields(tc);
 
@@ -92,61 +95,67 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_PT_FROM_FSN = /(.+)\s\(.*\)/i;
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
 
-    function updateConceptFromTemplate(template, concept) {
+    function updateTemplateConcept(concept) {
       var deferred = $q.defer();
 
-      // cycle over lexical templates
-      angular.forEach(template.lexicalTemplates, function (lt) {
+      // if concept not supplied or not emplate, resolve with no action
+      if (!concept || !concept.template) {
+        deferred.resolve(concept);
+      } else {
 
-        // find the slot
-        var slots = concept.relationships.filter(function (r) {
-          return r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot;
-        });
+        // cycle over lexical templates
+        angular.forEach(template.lexicalTemplates, function (lt) {
 
-        // // either slot not present or already filled, resolve
-        if (slots && slots.length == 0) {
-          deferred.resolve(concept);
-        }
+          // find the slot
+          var slots = concept.relationships.filter(function (r) {
+            return r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot;
+          });
 
-        // more than one slot -- invalid template
-        else if (slots && slots.length > 1) {
-          deferred.reject('Invalid template: two slots with same name');
-        }
+          // // either slot not present or already filled, resolve
+          if (slots && slots.length == 0) {
+            deferred.resolve(concept);
+          }
 
-        // otherwise, continue
-        else {
-          var slot = slots[0];
-          // check if slot has value
-          if (slot.hasOwnProperty('target') && slow.target.conceptId) {
-            // abstract these functions out once template use-cases arise
-            var match = slot.target.fsn.match(PATTERN_PT_FROM_FSN);
-            if (!match || !match[1] || match[1].length == 0) {
-              deferred.reject('Could not determine target FSN');
-            } else {
-              var slotTerm = match[1];
+          // more than one slot -- invalid template
+          else if (slots && slots.length > 1) {
+            deferred.reject('Invalid template: two slots with same name');
+          }
 
-              // apply removal terms
-              angular.forEach(lt.removeParts, function (rp) {
-                if (slotTerm.indexOf(rp) != -1) {
-                  slotTerm = slotTerm.replace(rp, '');
-                }
-              });
+          // otherwise, continue
+          else {
+            var slot = slots[0];
+            // check if slot has value
+            if (slot.hasOwnProperty('target') && slow.target.conceptId) {
+              // abstract these functions out once template use-cases arise
+              var match = slot.target.fsn.match(PATTERN_PT_FROM_FSN);
+              if (!match || !match[1] || match[1].length == 0) {
+                deferred.reject('Could not determine target FSN');
+              } else {
+                var slotTerm = match[1];
 
-              // invoke remove invalid characters to clean up whitespace
-              snowowlService.removeInvalidCharacters(slotTerm);
+                // apply removal terms
+                angular.forEach(lt.removeParts, function (rp) {
+                  if (slotTerm.indexOf(rp) != -1) {
+                    slotTerm = slotTerm.replace(rp, '');
+                  }
+                });
 
-              // replace any occurrences of {{name}} in description terms
-              angular.forEach(concept.descriptions, function (description) {
-                if (description.term.indexOf('{{' + lt.name + '}}') != -1) {
-                  description.term = description.replace('{{' + lt.name + '}}', slotTerm);
-                }
-              });
-              deferred.resolve(concept);
+                // invoke remove invalid characters to clean up whitespace
+                snowowlService.removeInvalidCharacters(slotTerm);
+
+                // replace any occurrences of {{name}} in description terms
+                angular.forEach(concept.descriptions, function (description) {
+                  if (description.term.indexOf('{{' + lt.name + '}}') != -1) {
+                    description.term = description.replace('{{' + lt.name + '}}', slotTerm);
+                  }
+                });
+                deferred.resolve(concept);
+              }
             }
           }
-        }
 
-      });
+        });
+      }
 
       return deferred.promise;
     }
