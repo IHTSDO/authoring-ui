@@ -29,7 +29,7 @@ angular.module('singleConceptAuthoringApp')
       function isValueAllowedForType(typeId, valueName, concept, branch) {
         var deferred = $q.defer();
         console.debug('isValueAllowedForType', typeId, valueName, concept, branch);
-        getConceptsForValueTypeahead(typeId, valueName, branch).then(function (response) {
+        getConceptsForValueTypeahead(typeId, valueName, concept, branch).then(function (response) {
           if (response.length === 0) {
             deferred.reject();
           } else {
@@ -63,6 +63,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getConceptsForValueTypeahead(attributeId, searchStr, concept, branch) {
+        console.debug('gcfvta', attributeId, searchStr, concept, branch);
         var deferred = $q.defer();
         snowowlService.getAttributeValues(branch, attributeId, searchStr).then(function (response) {
 
