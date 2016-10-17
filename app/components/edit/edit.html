@@ -15,7 +15,7 @@
     -->
 
     <!-- Create new concept (non-template) -->
-    <button ng-if="!selectedTemplate"
+    <button ng-if="getSelectedTemplate() == null"
             ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             type="button" ng-click="createConcept()"
             ng-disabled="task.status === 'Promoted' || !canCreateConcept"
@@ -25,7 +25,7 @@
       <span>Create New Concept</span></button>
 
     <!-- Create new concept (template) -->
-    <button ng-if="selectedTemplate"
+    <button ng-if="templates.length > 0 && getSelectedTemplate() != null"
             ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             type="button" ng-click="createConcept()"
             ng-disabled="task.status === 'Promoted' || !canCreateConcept"
