@@ -702,6 +702,36 @@ angular.module('singleConceptAuthoringApp')
         return null;
       }
 
+      function setDefaultFields(concept) {
+        console.debug('set default fields', concept);
+
+        if (!concept.hasOwnProperty('active')) {
+          concept.active = true;
+        }
+        if (!concept.hasOwnProperty('definitionStatus')) {
+          concept.definitionStatus = 'PRIMITIVE';
+        }
+        if (!concept.hasOwnProperty('moduleId')) {
+          concept.moduleId = metadataService.getCurrentModuleId();
+        }
+        if (!concept.hasOwnProperty('released')) {
+          concept.released = false;
+        }
+
+        angular.forEach(concept.descriptions, function(description) {
+          if (!description.hasOwnProperty('moduleId')) {
+            description.moduleId = metadataService.getCurrentModuleId();
+          }
+        });
+
+        angular.forEach(concept.relationships, function(relationship) {
+          if (!relationship.hasOwnProperty('moduleId')) {
+            relationship.moduleId = metadataService.getCurrentModuleId();
+          }
+        });
+        console.debug('after default fields', concept);
+      }
+
       return {
         getNewConcept: getNewConcept,
         getNewDescription: getNewDescription,
@@ -728,7 +758,8 @@ angular.module('singleConceptAuthoringApp')
 
         // utility functions
         getFsnForConcept : getFsnForConcept,
-        getPtForConcept : getPtForConcept
+        getPtForConcept : getPtForConcept,
+        setDefaultFields : setDefaultFields
 
       };
 
