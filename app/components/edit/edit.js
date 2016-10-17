@@ -995,6 +995,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
+
       scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       // check if an unsaved concept already exists
       for (var i = 0; i < $scope.concepts.length; i++) {
@@ -1004,31 +1005,17 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
-      var concept = componentAuthoringUtil.getNewConcept();
-
+      var selectedTemplate = templateService.getSelectedTemplate();
+      var concept;
+      if (!selectedTemplate) {
+      concept = componentAuthoringUtil.getNewConcept();
+      } else {
+        concept = templateService.getNewConcept(selectedTemplate);
+      }
       $scope.concepts.unshift(concept);
       $scope.updateEditListUiState();
     };
 
-    // watch for template concept requests from saved-list
-    $scope.createTemplateConcept = function () {
-
-      templateService.getTemplates().then(function (templates) {
-        var template = templates[0];
-        console.debug(templates, template);
-
-        notificationService.sendMessage('Preparing concept from template ' + template.metadata.name);
-
-        templateService.getNewConceptFromTemplate(template).then(function (concept) {
-          $scope.concepts.push(concept);
-          notificationService.sendMessage('Template concept successfully created', 3000);
-        }, function (error) {
-          notificationService.sendError('Template concept error: ' + error);
-        });
-      })
-    }, function (error) {
-      notificationService.sendError('Error getting templates: ' + error);
-    }
 
 // removes concept from editing list (unused currently)
     $scope.closeConcept = function (index) {

@@ -60,7 +60,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function getNewConceptFromTemplate(template, params) {
+    function getNewConcept(template, params) {
       var deferred = $q.defer();
 
       // check required arguments
@@ -176,6 +176,10 @@ angular.module('singleConceptAuthoringApp')
       return selectedTemplate;
     }
 
+    function clearSelectedTemplate() {
+      selectedTemplate = null;
+    }
+
     return {
 
       // Template CRUD functions
@@ -188,9 +192,10 @@ angular.module('singleConceptAuthoringApp')
       // Utility functions
       selectTemplate: selectTemplate,
       getSelectedTemplate: getSelectedTemplate,
+      clearSelectedTemplate: clearSelectedTemplate,
 
       // Template application functions
-      getNewConceptFromTemplate: getNewConceptFromTemplate,
+      getNewConcept: getNewConcept,
       updateTemplateConcept: updateTemplateConcept
     };
 

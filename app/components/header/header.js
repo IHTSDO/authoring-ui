@@ -16,6 +16,9 @@ angular.module('singleConceptAuthoringApp')
 
         // template selection
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
+        scope.clearTemplate = function() {
+          templateService.clearSelectedTemplate();
+        };
 
         // function to format date to required form
         scope.formatDate = function (date) {
