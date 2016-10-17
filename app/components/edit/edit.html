@@ -5,14 +5,14 @@
   <div class="button-nav">
 
     <!-- Inactivation button (shown only if service has concept set) -->
-<!--
-    <button
-      type="button" ng-click="setView('inactivation')"
-      ng-show="isInactivation"
-      class="btn btn-default red widget-toolbar tooltips-right tooltips-light normal-case">
-      <div class="md fa-sca fa-power-off"></div>
-      <span>Inactivation</span></button>
--->
+    <!--
+        <button
+          type="button" ng-click="setView('inactivation')"
+          ng-show="isInactivation"
+          class="btn btn-default red widget-toolbar tooltips-right tooltips-light normal-case">
+          <div class="md fa-sca fa-power-off"></div>
+          <span>Inactivation</span></button>
+    -->
 
     <!-- Create new concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
@@ -125,6 +125,50 @@
   <!-- Main page content -->
   <div class="row no-gutter main-view-offset">
 
+
+    <!-- Batch editing view-->
+    <div ng-if="thisView === 'batch-sidebar'">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <!-- sidebar -->
+        <div class="editpanel sca-column no-padding "
+
+             ng-include src="'shared/sidebar-edit/sidebarEdit.html'"></div>
+
+        <!-- models & concepts-->
+        <div ng-class="getLayoutWidths('modelsAndConcepts')"
+             class="no-padding hide-scroll pull-right" sca-infinite-scroll="addMoreItems()"
+             sca-infinite-scroll-disabled="conceptsRendering"
+             sca-infinite-scroll-distance="1" sca-infinite-scroll-immediate-check="true">
+
+          <h3>Directly inline</h3>
+          <hot-table
+            settings="hotSettings"
+            row-headers="false"
+            datarows="fullConcepts">
+            <!--<hot-column ng-repeat="column in columns" data="column.data" title="column.title"></hot-column>-->
+            <hot-column data="id" title="'ID'"></hot-column>
+            <hot-column data="fsn.term" title="'FSN'"></hot-column>
+            <hot-column data="pt.term" title="'PT'"></hot-column>
+            <!--<hot-column data="address" title="'Address'" width="150"></hot-column>
+            <hot-column data="product.description" title="'Favorite food'" type="'autocomplete'">
+              <hot-autocomplete datarows="description in product.options"></hot-autocomplete>
+            </hot-column>
+            <hot-column data="price" title="'Price'" type="'numeric'" width="80" format="'$ 0,0.00'"></hot-column>
+            <hot-column data="isActive" title="'Is active'" type="'checkbox'" width="65" checked-template="'Yes'"
+                        unchecked-template="'No'"></hot-column>
+          </hot-table>-->
+          </hot-table>
+
+          <h3>In directive</h3>
+          <div batch-edit-grid task="task" settings="hotSettings">
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+
     <!-- Default edit view -->
     <div ng-if="thisView === 'edit-default'">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -159,7 +203,8 @@
                  style="margin-right:0px;">
 
               <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()">
+                   branch="targetBranch" static="branchLocked || !isOwnTask"
+                   ui-state-update-fn="updateEditListUiState()">
               </div>
             </div>
 
@@ -214,7 +259,8 @@
             <div class="no-gutter grey darken-3 panel-height col-md-5"
                  style="margin-right:0px;">
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
+                   branch="targetBranch" static="branchLocked || !isOwnTask"
+                   ui-state-update-fn="updateEditListUiState()"
               >
               </div>
             </div>
@@ -300,6 +346,7 @@
       </div>
 
     </div>
+
 
     <!-- Validation view -->
     <div ng-if="thisView === 'validation'">
