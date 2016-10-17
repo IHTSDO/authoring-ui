@@ -503,7 +503,7 @@
                   <textarea type="text" ng-model="relationship.target.fsn"
                             ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId)"
                             class="resizable-text relationship msd-elastic: \n;"
-                            typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch)"
+                            typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, concept, branch)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
                             typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
