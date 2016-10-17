@@ -79,6 +79,20 @@ angular.module('singleConceptAuthoringApp')
         return id && id.match(/^[0-9]+$/);
       }
 
+      function removeInvalidCharactersFromTerm(term) {
+        if (term) {
+          // strip invalid characters from term
+          term = term.replace(/[@|$|#|\\]/g, ' ');
+
+          //replace any non-space whitespace characters (tab, newline, etc.)
+          term = term.replace(/[^\S ]/g, ' ');
+
+          // replace any 2+ sequences of space with single space
+          term = term.replace(/[ ]{2,}/g, ' ');
+        }
+        return term;
+      }
+
       // function to remove disallowed elements from a concept
       function cleanConcept(concept) {
 
@@ -118,16 +132,8 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
-          if (description.term) {
-            // strip invalid characters from term
-            description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
-
-            //replace any non-space whitespace characters (tab, newline, etc.)
-            description.term = description.term.replace(/[^\S ]/g, ' ');
-
-            // replace any 2+ sequences of space with single space
-            description.term = description.term.replace(/[ ]{2,}/g, ' ');
-          }
+          // remove invalid characters
+          removeInvalidCharactersFromTerm(description.term);
         });
 
         var allowableRelationshipProperties = [
@@ -1387,7 +1393,8 @@ angular.module('singleConceptAuthoringApp')
 
         // utility
         createGuid: createGuid,
-        isSctid: isSctid
+        isSctid: isSctid,
+        removeInvalidCharactersFromTerm: removeInvalidCharactersFromTerm
 
       };
     }
