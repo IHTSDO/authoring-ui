@@ -190,10 +190,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     }
 
-    //
-    // Batch editing
-    //
-
     $scope.loadEditPanelConcepts = function () {
 
       // function only relevant for tasks
@@ -254,17 +250,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         );
     };
 
-    $scope.batchConcepts = [];
-    $scope.loadEditBatchConcepts = function() {
-
-      var batchConcepts = batchEditService.getBatchConcepts();
-      var ids = batchConcepts.map(function(concept) {
-        return concept.conceptId;
-      });
-      snowowlService.bulkGetConcept(ids, $scope.branch).then(function(response) {
-        $scope.batchConcepts = response;
-      });
-    };
 
     $scope.getClassificationEditPanel = function () {
       scaService.getUiStateForTask(
@@ -391,16 +376,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.loadEditPanelConcepts();
           }
           break;
-        case 'batch-sidebar':
-          $rootScope.pageTitle = 'Batch Editing/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
-          $routeParams.mode = 'batch';
 
-          $scope.batchConcepts = [];
-          $scope.canCreateConcept = true;
-          if ($scope.taskKey) {
-            $scope.loadEditPanelConcepts();
-          }
-          break;
         default:
           $rootScope.pageTitle = 'Invalid View Requested';
           $scope.canCreateConcept = false;
@@ -599,8 +575,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.setView('conflicts');
       } else if ($routeParams.mode === 'edit') {
         $scope.setView('edit-default');
-      } else if ($routeParams.mode === 'batch') {
-        $scope.setView('batch-sidebar');
       }
 
       // if improper route, send error and halt
@@ -980,20 +954,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     });
 
-    // watch for template concept requests from saved-list
-    $scope.$on('applyTemplate', function (event, data) {
-      console.debug('applyTemplate: request', data);
-
-      notificationService.sendMessage('Preparing concept from template...');
-
-      templateService.getNewConceptFromTemplate(data.template).then(function(concept) {
-        $scope.concepts.push(concept);
-        notificationService.sendMessage('Template concept successfully created');
-      }, function(error) {
-        notificationService.sendError('Template concept error: ' + error);
-      });
-    });
-
 
 // watch for removal request from concept-edit
     $scope.$on('stopEditing', function (event, data) {
@@ -1049,6 +1009,26 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.concepts.unshift(concept);
       $scope.updateEditListUiState();
     };
+
+    // watch for template concept requests from saved-list
+    $scope.createTemplateConcept = function () {
+
+      templateService.getTemplates().then(function (templates) {
+        var template = templates[0];
+        console.debug(templates, template);
+
+        notificationService.sendMessage('Preparing concept from template ' + template.metadata.name);
+
+        templateService.getNewConceptFromTemplate(template).then(function (concept) {
+          $scope.concepts.push(concept);
+          notificationService.sendMessage('Template concept successfully created', 3000);
+        }, function (error) {
+          notificationService.sendError('Template concept error: ' + error);
+        });
+      })
+    }, function (error) {
+      notificationService.sendError('Error getting templates: ' + error);
+    }
 
 // removes concept from editing list (unused currently)
     $scope.closeConcept = function (index) {
@@ -1628,73 +1608,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     initialize();
 
-    //
-    // TBBA testing stuffs
-    //
-    // the summary objects from batchEditService
-    var batchConcepts;
 
-    // the full concepts initialized from summary objects
-    $scope.fullConcepts = [];
-
-    $scope.hotSettings = {
-      manualColumnResize: true,
-      columnSorting: {
-        column: 1
-      }
-    };
-
-
-    // the grid columns
-    $scope.columns = [
-      {
-        title: 'SCTID',
-        data: 'conceptId'
-      },
-      {
-        title: 'FSN',
-        data: 'fsn'
-      },
-      {
-        title: 'PT',
-        data: 'pt'
-      }
-
-    ];
-
-
-    function getFullConcepts() {
-      var conceptIds = batchConcepts.map(function (item) {
-        return item.concept.conceptId
-      });
-      console.debug('getting full concepts', conceptIds);
-      snowowlService.bulkGetConcept(conceptIds, $scope.task.branchPath, true).then(function (response) {
-        $scope.fullConcepts = response.items;
-        console.debug('full concepts', $scope.fullConcepts);
-        angular.forEach($scope.fullConcepts, function (concept) {
-
-        })
-      })
-
-    }
-
-
-    function initializeHot() {
-      console.log('Initializing batch view');
-      batchEditService.setTask($scope.task).then(function () {
-        batchConcepts = batchEditService.getBatchConcepts();
-        getFullConcepts();
-
-      }, function (error) {
-        notificationService.sendError('Failed to initialize batch edit view from task: ' + error);
-      })
-    }
-
-
-    $scope.$watch('task', function () {
-      if ($scope.task) {
-        initializeHot();
-      }
-    })
   })
 ;
