@@ -557,7 +557,7 @@ angular.module('singleConceptAuthoringApp')
 
               //  when new FSN
               if (description.type === 'FSN') {
-               // when spelling variant present, result is
+                // when spelling variant present, result is
                 if (hasMatchingWords) {
                   // ensure FSN en-US preferred, do not add matching PT
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
