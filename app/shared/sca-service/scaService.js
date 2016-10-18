@@ -1330,7 +1330,7 @@ angular.module('singleConceptAuthoringApp')
 
         leaveCommentForTask: function (projectKey, taskKey, comment) {
           var deferred = $q.defer();
-          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/attachments', comment).then(function (response) {
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/comment', comment).then(function (response) {
             deferred.resolve();
           }, function (error) {
             deferred.reject('Error leaving task comment: ' + error.data.message);

@@ -433,7 +433,10 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(lines, function (line) {
               comment += line + '\n';
             });
-            deferred.resolve(lines);
+            if (comment.length > 0) {
+              comment = 'Automated Comment - CRS request concepts promoted to project level:\n' + comment
+            }
+            deferred.resolve(comment);
 
           }, function (error) {
             deferred.reject('Could not retrieve traceability for branch ' + currentTask.branchPath);
