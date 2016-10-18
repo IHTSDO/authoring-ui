@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'notificationService', '$q',
-    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, notificationService, $q) {
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q',
+    function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q) {
 
       $scope.task = null;
       $scope.branch = metadataService.getBranch();
@@ -61,9 +61,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
           if (!warningsFound) {
             notificationService.sendMessage('Promoting task...');
 
-            scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-              notificationService.sendMessage('Task successfully promoted', 5000);
+            promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
               $rootScope.$broadcast('reloadTask');
+            }, function (error) {
             });
           } else {
 
@@ -86,9 +86,9 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
               if (proceed) {
                 notificationService.sendMessage('Promoting task...');
 
-                scaService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-                  notificationService.sendMessage('Task successfully promoted', 5000);
+                promotionService.promoteTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
                   $rootScope.$broadcast('reloadTask');
+                }, function (error) {
                 });
               } else {
                 notificationService.clear();
@@ -261,10 +261,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
       // cancel review
       $scope.cancelReview = function () {
-        scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey).then(function() {
+        scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey).then(function () {
           notificationService.sendMessage('Review cancelled', 2000);
           $rootScope.$broadcast('reloadTask');
-        }, function(error) {
+        }, function (error) {
           notificationService.sendError('Unexpected error cancelling review: ' + error);
         });
 
@@ -394,6 +394,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       });
 
       initialize();
+
 
     }
 

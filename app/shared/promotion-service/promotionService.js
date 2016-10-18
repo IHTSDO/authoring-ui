@@ -5,7 +5,7 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('promotionService', ['scaService', 'snowowlService', '$q', function (scaService, snowowlService, $q) {
+  .service('promotionService', ['scaService', 'snowowlService', '$q', function (scaService, snowowlService, $q, crsService) {
 
     /**
      * Checks if a branch is eligible for promotion
@@ -332,10 +332,44 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function promoteTask(projectKey, taskKey) {
+      var deferred = $q.defer();
+
+      scaService.promoteTask(projectKey, taskKey).then(function (response) {
+        // invoke crs service to leave comment if appropriate
+        crsService.getCrsTaskComment().then(function(comment) {
+          scaService.leaveCommentForTask(projectKey, taskKey, comment).then(function(response) {
+            // do nothing
+          }, function(error) {
+            notificationService.sendMessage('Unexpected error leaving CRS content comment on task: ' + error);
+          })
+        })
+      }, function(error) {
+        defer.reject('Error promoting task: ' + error);
+      });
+      return deferred.promise;
+    }
+
+    function promoteProject(projectKey) {
+      var deferred = $q.defer();
+
+      // NOTE: No extra steps, simply promote via scaService
+
+      scaService.promoteProject(projectKey).then(function (response) {
+        defer.resolve();
+      }, function(error) {
+        defer.reject('Error promoting project: ' + error);
+      });
+      return deferred.promise;
+    }
+
     return {
 
       checkPrerequisitesForTask: checkPrerequisitesForTask,
-      checkPrerequisitesForProject: checkPrerequisitesForProject
+      checkPrerequisitesForProject: checkPrerequisitesForProject,
+
+      promoteTask : promoteTask,
+      promoteProject : promoteProject
 
     };
   }]);

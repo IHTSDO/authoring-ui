@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if no crsRequest present, treat as Other Request (no attachment content)
         if (!crsRequest) {
-          deferred.resolve({fsn : 'Request without proposed concept'});
+          deferred.resolve({fsn: 'Request without proposed concept'});
         }
 
         // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
@@ -155,6 +155,7 @@ angular.module('singleConceptAuthoringApp')
 
         prepareCrsConcept(attachment.content).then(function (preparedConcept) {
 
+          console.debug('attachment', attachment.issueKey, attachment.ticketKey);
           deferred.resolve({
             // the id fields (for convenience)
             conceptId: preparedConcept.conceptId,
@@ -163,6 +164,10 @@ angular.module('singleConceptAuthoringApp')
 
             // the request url
             requestUrl: getRequestUrl(attachment.issueKey),
+
+            // the ticket ids
+            crsId: attachment.issueKey,
+            scaId: attachment.ticketKey,
 
             // the freshly retrieved concept with definition changes appended
             concept: preparedConcept,
@@ -174,6 +179,9 @@ angular.module('singleConceptAuthoringApp')
             emptyContent: attachment.emptyContent,
             error: attachment.error,
             saved: false,
+
+            // duplicate flags -- isNewConcept is static, requiresCreation changes
+            isNewConcept: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT',
             requiresCreation: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
 
           });
@@ -207,6 +215,8 @@ angular.module('singleConceptAuthoringApp')
 
         // retrieve attachments (if any) -- must be done first
         getJsonAttachmentsForTask().then(function (attachments) {
+
+          console.debug('attachments', attachments);
 
           currentTaskConcepts = [];
 
@@ -326,7 +336,7 @@ angular.module('singleConceptAuthoringApp')
         if (!currentTaskConcepts) {
           return [];
         }
-        return currentTaskConcepts.filter(function(concept) {
+        return currentTaskConcepts.filter(function (concept) {
           return !concept.emptyContent;
         });
       }
@@ -335,7 +345,7 @@ angular.module('singleConceptAuthoringApp')
         if (!currentTaskConcepts) {
           return [];
         }
-        return currentTaskConcepts.filter(function(concept) {
+        return currentTaskConcepts.filter(function (concept) {
           return concept.emptyContent;
         });
       }
@@ -375,6 +385,69 @@ angular.module('singleConceptAuthoringApp')
         return result;
       }
 
+      function getCrsTaskComment() {
+        var deferred = $q.defer();
+        if (!currentTask) {
+          deferred.reject('No CRS task set');
+        } else {
+          var lines = [];
+
+          // retrieve traceability to determine concept changes
+          var changedConceptIds = [];
+
+          snowowlService.getTraceabilityForBranch(currentTask.branchPath).then(function (traceability) {
+
+            console.debug('traceability', traceability);
+            if (traceability) {
+              angular.forEach(traceability.content, function (change) {
+                if (change.activityType === 'CONTENT_CHANGE') {
+                  angular.forEach(change.conceptChanges, function (conceptChange) {
+                    changedConceptIds.push(conceptChange.conceptId);
+                  });
+                }
+              })
+            } else {
+              deferred.reject('Empty traceability for branch ' + currentTask.branchPath);
+            }
+
+            console.debug('changedConceptIds', changedConceptIds);
+
+            angular.forEach(currentTaskConcepts, function (crsConcept) {
+
+              console.debug('  checking against ', crsConcept)
+              // link to request of matching concept id; empty requests match all changed concepts
+              if (crsConcept.saved && crsConcept.concept && changedConceptIds.indexOf(crsConcept.concept.conceptId != -1)) {
+                console.debug('   -> match found');
+                lines.push('CRS Request ' + crsConcept.crsId + ' (' + crsConcept.scaId + '): ' + crsConcept.concept.conceptId + ' | ' + crsConcept.concept.fsn);
+              }
+            });
+
+
+            console.debug(lines);
+
+            // sort lines
+            lines.sort();
+
+            // convert to new-line delimited comment
+            var comment = '';
+            angular.forEach(lines, function (line) {
+              comment += line + '\n';
+            });
+            deferred.resolve(lines);
+
+          }, function (error) {
+            deferred.reject('Could not retrieve traceability for branch ' + currentTask.branchPath);
+          });
+          /*
+           scaService.leaveCommentForTask(task.projectKey, task.key, comment).then(function () {
+           deferred.resolve();
+           }, function (error) {
+           deferred.reject('Error leaving comment: ' + error);
+           })*/
+        }
+        return deferred.promise;
+      }
+
 //
 // Function exposure
 //
@@ -386,6 +459,7 @@ angular.module('singleConceptAuthoringApp')
         getCrsConcepts: getCrsConcepts,
         getCrsEmptyRequests: getCrsEmptyRequests,
         saveCrsConcept: saveCrsConcept,
+        getCrsTaskComment: getCrsTaskComment,
 
         crsFilter: crsFilter
 
