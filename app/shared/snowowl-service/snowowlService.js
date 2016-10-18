@@ -81,6 +81,7 @@ angular.module('singleConceptAuthoringApp')
 
       function removeInvalidCharacters(term) {
         if (term) {
+          console.debug('stripping characters');
           // strip invalid characters from term
           term = term.replace(/[@|$|#|\\]/g, ' ');
 
@@ -133,7 +134,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // remove invalid characters
-          removeInvalidCharacters(description.term);
+          description.term = removeInvalidCharacters(description.term);
         });
 
         var allowableRelationshipProperties = [

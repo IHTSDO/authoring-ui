@@ -61,7 +61,9 @@
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
-          <span ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey" class="fsn">Unsaved Concept</span>
+          <span ng-show="!concept.fsn && !concept.effectiveTime && !concept.template" style="color:grey" class="fsn">Unsaved Concept</span>
+          <span ng-show="!concept.fsn && !concept.effectiveTime && concept.template" style="color:grey" class="fsn">Template Concept</span>
+
         </button>
       </div>
 
@@ -69,9 +71,11 @@
         <div class=" p-t-3  ">
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                  ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic" ng-disabled="saving">
+                  ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic && !concept.template"
+                  ng-disabled="saving">
             <span> Save Concept </span>
           </button>
+
           <button type="button"
                   class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
                   ng-click="saveConcept()" ng-if="isMerge" style="margin-bottom: -2px;">
@@ -216,7 +220,7 @@
 
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in concept.descriptions"
-         ng-show="isDescriptionViewable(description)"
+
          ng-class="getComponentStyle(description.descriptionId, null, '', description)"
          class="">
 
@@ -393,7 +397,7 @@
         <div class="role_group_divider_top_{{groupId}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
-             class="{{relationship.target.definitionStatus}}">
+               class="{{relationship.target.definitionStatus}}">
 
           <div ng-show="relationship.definitionOfChanges" class="">
 
@@ -498,11 +502,13 @@
                 <!-- linked concept -->
                 <div class="pull-left sourcename" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
-                     drop-validate="!relationship.effectiveTime && !isStatic">
+                     drop-validate="!relationship.effectiveTime && !isStatic"
+                     ng-class="getTargetSlotStyle(relationship)">
 
                   <textarea type="text" ng-model="relationship.target.fsn"
                             ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId)"
                             class="resizable-text relationship msd-elastic: \n;"
+
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, concept, branch)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"

@@ -719,12 +719,18 @@ angular.module('singleConceptAuthoringApp')
         }
 
         angular.forEach(concept.descriptions, function(description) {
+          if (!description.hasOwnProperty('active')) {
+            description.active = true;
+          }
           if (!description.hasOwnProperty('moduleId')) {
             description.moduleId = metadataService.getCurrentModuleId();
           }
         });
 
         angular.forEach(concept.relationships, function(relationship) {
+          if (!relationship.hasOwnProperty('active')) {
+            relationship.active = true;
+          }
           if (!relationship.hasOwnProperty('moduleId')) {
             relationship.moduleId = metadataService.getCurrentModuleId();
           }

@@ -106,6 +106,7 @@ angular.module('singleConceptAuthoringApp')
     function updateTemplateConcept(concept) {
       var deferred = $q.defer();
 
+      console.debug('update tc', concept);
       // if concept not supplied or not emplate, resolve with no action
       if (!concept || !concept.template) {
         deferred.resolve(concept);
@@ -114,10 +115,13 @@ angular.module('singleConceptAuthoringApp')
         // cycle over lexical templates
         angular.forEach(concept.template.lexicalTemplates, function (lt) {
 
+          console.debug(' checking lexical template', lt);
           // find the slot
           var slots = concept.relationships.filter(function (r) {
             return r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot;
           });
+
+          console.debug('  eligible slots', slots);
 
           // // either slot not present or already filled, resolve
           if (slots && slots.length == 0) {
@@ -131,6 +135,7 @@ angular.module('singleConceptAuthoringApp')
 
           // otherwise, continue
           else {
+
             var slot = slots[0];
             // check if slot has value
             if (slot.hasOwnProperty('target') && slot.target.conceptId) {
@@ -139,7 +144,9 @@ angular.module('singleConceptAuthoringApp')
               if (!match || !match[1] || match[1].length == 0) {
                 deferred.reject('Could not determine target FSN');
               } else {
-                var slotTerm = match[1];
+                var slotTerm = match[1].toLowerCase();
+
+                console.debug('    slotTerm', slotTerm);
 
                 // apply removal terms
                 angular.forEach(lt.removeParts, function (rp) {
@@ -148,15 +155,22 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
 
-                // invoke remove invalid characters to clean up whitespace
-                snowowlService.removeInvalidCharacters(slotTerm);
+                console.debug('    slotTerm after removal', slotTerm);
+
 
                 // replace any occurrences of {{name}} in description terms
                 angular.forEach(concept.descriptions, function (description) {
                   if (description.term.indexOf('{{' + lt.name + '}}') != -1) {
-                    description.term = description.replace('{{' + lt.name + '}}', slotTerm);
+                    description.term = description.term.replace('{{' + lt.name + '}}', slotTerm);
+
+                    // invoke remove invalid characters to clean up whitespace
+                    description.term = snowowlService.removeInvalidCharacters(description.term);
+
                   }
                 });
+
+                // remove the target slot appelation
+                delete slot.targetSlot;
                 deferred.resolve(concept);
               }
             }
@@ -180,6 +194,15 @@ angular.module('singleConceptAuthoringApp')
       selectedTemplate = null;
     }
 
+    function isTemplateComplete(concept) {
+      angular.forEach(concept.relationships, function(relationship) {
+        if (relationship.targetSlot) {
+          return false;
+        }
+      });
+      return true;
+    }
+
     return {
 
       // Template CRUD functions
@@ -196,7 +219,8 @@ angular.module('singleConceptAuthoringApp')
 
       // Template application functions
       getNewConcept: getNewConcept,
-      updateTemplateConcept: updateTemplateConcept
+      updateTemplateConcept: updateTemplateConcept,
+      isTemplateComplete : isTemplateComplete
     };
 
   })

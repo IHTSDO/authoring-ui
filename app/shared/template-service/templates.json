@@ -16,6 +16,7 @@
       "name": "term-x",
       "takeFSNFromSlot": "slot-x",
       "removeParts": [
+        "structure of",
         "structure",
         "entire"
       ]

@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService, constraintService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService, constraintService, templateService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -2255,9 +2255,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete relationship.relationshipId;
           }
 
-          scope.computeRelationshipGroups();
+          // if a template target slot, update via template service
+          if (relationship.targetSlot) {
+            templateService.updateTemplateConcept(scope.concept).then(function() {
+              if (templateService.isTemplateComplete(scope.concept)) {
+                delete scope.concept.template;
+              }
+              scope.computeRelationshipGroups();
+              autoSave()
+            })
+          }
 
-          autoSave(relationship);
+          // otherwise save normally
+          else {
+
+            scope.computeRelationshipGroups();
+            autoSave();
+          }
 
         };
 
@@ -2572,6 +2586,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return scope.componentStyles.conceptStyle.style;
             }
           }
+        };
+
+        // TODO Make functional, styling overrides blocking -- template-field not currently defined
+        scope.getTargetSlotStyle = function (relationship) {
+          return relationship && relationship.targetSlot ? 'template-field' : '';
         };
 
         scope.getComponentStyle = function (id, field, defaultStyle, component) {
