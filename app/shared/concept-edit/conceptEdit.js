@@ -2023,100 +2023,84 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // method to check single description for validity
         scope.isDescriptionValid = function (description) {
 
+          var errors = [];
           // if not published and inactive, consider valid (removed by
           // saveConcept)
           if (!description.active && !description.effectiveTime) {
-            return true;
+            return errors;
           }
 
           if (!description.moduleId) {
-            console.error('description must have moduleId', description);
+            errors.push('Description moduleId must be set');
             // specified';
             return false;
           }
           if (!description.term) {
-            console.error('Description must have term specified', description);
-            return false;
+            errors.push('Description term must be set');
           }
           if (description.active === null) {
-            console.error('Description active flag must be set', description);
-            return false;
+            errors.push('Description active flag must be set');
           }
           if (!description.lang) {
-            console.error('Description lang must be set', description);
-            return false;
+            errors.push('Description lang must be set');
           }
           if (!description.caseSignificance) {
-            console.error('Description case significance must be set', description);
-            return false;
+            errors.push('Description case significance must be set');
           }
           if (!description.type) {
-            console.error('Description type must be set', description);
-            return false;
+            errors.push('Description type must be set');
           }
 
           if (description.active && (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length == 0)) {
-            console.error('Description acceptability map cannot be empty');
-            return false;
+            errors.push('Description acceptability map cannot be empty');
           }
 
           // pass all checks -> return true
-          return true;
+          return errors;
         };
 
 // method to check single relationship for validity
         scope.isRelationshipValid = function (relationship) {
 
+          var errors = [];
+
           // if not active and no effective time, consider valid (removed by
           // saveConcept)
           if (!relationship.active && !relationship.effectiveTime) {
-            return true;
+            return errors;
           }
 
           // check relationship fields
           if (!relationship.modifier) {
-            //relationship.error = 'Relationship modifier must be set';
-            return false;
+            errors.push('Relationship modifier must be set');
           }
           if (relationship.groupId === null) {
-            //relationship.error = 'Relationship groupId must be set';
-            return false;
+            errors.push('Relationship groupId must be set');
+
           }
           if (!relationship.moduleId) {
-            //relationship.error = 'Relationship moduleId must be set';
-            return false;
+            errors.push('Relationship moduleId must be set');
           }
           if (relationship.active === null) {
-            // relationship.error = 'Relationship active flag must be set';
-            return false;
+            errors.push(relationship.error = 'Relationship active flag must be set');
           }
           if (!relationship.characteristicType) {
-            //relationship.error = 'Relationship characteristic type must be
-            // set';
-            return false;
+            errors.push('Relationship characteristic type must be specified');
           }
           if (!relationship.type || !relationship.type.conceptId) {
-            console.error('Relationship type must be set');
-            return false;
+            errors.push('Relationship typeId must be set');
           }
           if (!relationship.target || !relationship.target.conceptId) {
-            console.error('Relationship target must be set');
-            return false;
+            errors.push('Relationship targetId must be set');
           }
 
-          // verify that source id exists
-          if (scope.concept.conceptId && !relationship.sourceId) {
-            relationship.sourceId = scope.concept.conceptId;
-          }
-
-          delete relationship.error;
-          // pass all checks -> return true
-          return true;
+          return errors;
         };
 
 // function to check the full concept for validity before saving
         scope.isConceptValid = function (concept) {
 
+          var errors = [];
           //  console.debug('Checking concept valid', concept);
 
           /*// check the basic concept fields
@@ -2125,24 +2109,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
            return false;
            }*/
           if (!concept.descriptions || concept.descriptions.length === 0) {
-            console.error('Concept must have at least one description');
-            return false;
+            errors.push('Concept must have at least one description');
+
           }
           if (!concept.relationships || concept.relationships.length === 0) {
-            console.error('Concept must have at lalst one relationship');
-            return false;
+            errors.push('Concept must have at lalst one relationship');
+
           }
           if (!concept.definitionStatus) {
-            console.error('Concept definitionStatus must be set');
-            return false;
+            errors.push('Concept definitionStatus must be set');
+
           }
           if (concept.active === null) {
-            console.error('Concept active flag must be set');
-            return false;
+            errors.push('Concept active flag must be set');
+
           }
           if (!concept.moduleId) {
-            console.error('Concept moduleId must be set');
-            return false;
+            errors.push('Concept moduleId must be set');
+
           }
           var activeFsn = [];
           for (var i = 0; i < concept.descriptions.length; i++) {
@@ -2151,26 +2135,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
           if (activeFsn.length !== 1) {
-            scope.errors = ['Concept with id: ' + concept.conceptId + ' Must have exactly one active FSN. Concept not saved.'];
-            return false;
+            errors.push('Concept must have exactly one active FSN');
           }
 
           // check descriptions
           for (var k = 0; k < concept.descriptions.length; k++) {
-            if (!scope.isDescriptionValid(concept.descriptions[k])) {
-              return false;
-            }
+            errors.concat(scope.isDescriptionValid(concept.descriptions[k]));
           }
 
           // check relationships
           for (var j = 0; j < concept.relationships.length; j++) {
-            if (!scope.isRelationshipValid(concept.relationships[j])) {
-              return false;
-            }
+            errors.concat(scope.isRelationshipValid(concept.relationships[j]));
           }
 
-          // pass all checks -> return true
-          return true;
+          // return any errors
+          return errors;
 
         };
 
@@ -2257,7 +2236,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if a template target slot, update via template service
           if (relationship.targetSlot) {
-            templateService.updateTemplateConcept(scope.concept).then(function() {
+            templateService.updateTemplateConcept(scope.concept).then(function () {
               if (templateService.isTemplateComplete(scope.concept)) {
                 delete scope.concept.template;
               }

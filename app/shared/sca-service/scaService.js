@@ -719,7 +719,7 @@ angular.module('singleConceptAuthoringApp')
 
         updateTask: function (projectKey, taskKey, object) {
           var deferred = $q.defer();
-          $http.put(apiEndpoint   + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
+          $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, object).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
             deferred.reject(error.statusText);
@@ -734,7 +734,7 @@ angular.module('singleConceptAuthoringApp')
         // mark as ready for review -- no return value
         assignReview: function (projectKey, taskKey, username) {
           var deferred = $q.defer();
-          var updateObj = { 'status' : 'IN_REVIEW', 'reviewer': {'username': username}};
+          var updateObj = {'status': 'IN_REVIEW', 'reviewer': {'username': username}};
 
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
@@ -744,9 +744,9 @@ angular.module('singleConceptAuthoringApp')
           return deferred.promise;
         },
 
-        unassignReview: function(projectKey, taskKey) {
+        unassignReview: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          var updateObj = { 'status' : 'IN_REVIEW', 'reviewer': {}};
+          var updateObj = {'status': 'IN_REVIEW', 'reviewer': {}};
 
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
@@ -759,7 +759,7 @@ angular.module('singleConceptAuthoringApp')
 
         markTaskInProgress: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          var updateObj = { 'status' : 'IN_PROGRESS', 'reviewer' : {}};
+          var updateObj = {'status': 'IN_PROGRESS', 'reviewer': {}};
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
           }, function (error) {
@@ -769,9 +769,9 @@ angular.module('singleConceptAuthoringApp')
         },
 
 
-        markTaskReviewInProgress: function(projectKey, taskKey) {
+        markTaskReviewInProgress: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          var updateObj = { 'status' : 'IN_REVIEW'};
+          var updateObj = {'status': 'IN_REVIEW'};
 
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             deferred.resolve(response);
@@ -783,7 +783,7 @@ angular.module('singleConceptAuthoringApp')
 
         markTaskReviewComplete: function (projectKey, taskKey) {
           var deferred = $q.defer();
-          var updateObj = { 'status' : 'REVIEW_COMPLETED'};
+          var updateObj = {'status': 'REVIEW_COMPLETED'};
           $http.put(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey, updateObj).then(function (response) {
             notificationService.sendMessage('Task ' + taskKey + ' marked as: ' + status, 3000);
             deferred.resolve(response);
@@ -981,20 +981,21 @@ angular.module('singleConceptAuthoringApp')
         promoteTask: function (projectKey, taskKey) {
           var deferred = $q.defer();
           $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/promote', {}).then(function (response) {
+            notificationService.sendMessage('Task successfully promoted', 5000);
             deferred.resolve(response.data);
           }, function (error) {
             if (error.status === 504) {
               notificationService.sendWarning('Your promotion is taking longer than expected, and is still running. You may work on other tasks while this runs and return to the dashboard to check the status in a few minutes. If you view the task it will show as promoted when the promotion completes.');
-              return error.message;
+              deferred.reject(error.message);
             }
             else if (error.status === 409) {
               notificationService.sendWarning('Another operation is in progress on this Project. Please try again in a few minutes.');
-              return error.message;
+              deferred.reject(error.message);
             }
             else {
               console.error('Error promoting project ' + projectKey);
               notificationService.sendError('Error promoting project', 10000);
-              return error.message;
+              deferred.reject(error.message);
             }
           });
           return deferred.promise;
@@ -1303,6 +1304,7 @@ angular.module('singleConceptAuthoringApp')
               var obj = {
                 content: null,
                 issueKey: attachment.issueKey,
+                ticketKey: attachment.ticketKey,
                 emptyContent: false,
                 error: null
               };
@@ -1322,6 +1324,16 @@ angular.module('singleConceptAuthoringApp')
           }, function (error) {
             console.debug(error);
             deferred.reject('Could not retrieve attachments: ' + error.data.message + ' -- ' + error.data.developerMessage);
+          });
+          return deferred.promise;
+        },
+
+        leaveCommentForTask: function (projectKey, taskKey, comment) {
+          var deferred = $q.defer();
+          $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/attachments', comment).then(function (response) {
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject('Error leaving task comment: ' + error.data.message);
           });
           return deferred.promise;
         }
