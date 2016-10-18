@@ -5,7 +5,7 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('promotionService', ['scaService', 'snowowlService', '$q', function (scaService, snowowlService, $q, crsService) {
+  .service('promotionService', ['scaService', 'snowowlService', '$q', 'crsService', function (scaService, snowowlService, $q, crsService) {
 
     /**
      * Checks if a branch is eligible for promotion
@@ -338,11 +338,13 @@ angular.module('singleConceptAuthoringApp')
       scaService.promoteTask(projectKey, taskKey).then(function (response) {
         // invoke crs service to leave comment if appropriate
         crsService.getCrsTaskComment().then(function(comment) {
-          scaService.leaveCommentForTask(projectKey, taskKey, comment).then(function(response) {
+          scaService.leaveCommentForTask( projectKey, taskKey, comment).then(function(response) {
             // do nothing
           }, function(error) {
-            notificationService.sendMessage('Unexpected error leaving CRS content comment on task: ' + error);
+            // do nothing
           })
+        }, function(error) {
+          // do nothing
         })
       }, function(error) {
         defer.reject('Error promoting task: ' + error);
