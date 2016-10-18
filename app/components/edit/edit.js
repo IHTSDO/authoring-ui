@@ -996,7 +996,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
 
-      scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
       // check if an unsaved concept already exists
       for (var i = 0; i < $scope.concepts.length; i++) {
         if (!$scope.concepts[i].conceptId) {
@@ -1005,15 +1004,23 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
       }
 
+      scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
+
       var selectedTemplate = templateService.getSelectedTemplate();
-      var concept;
+
       if (!selectedTemplate) {
-      concept = componentAuthoringUtil.getNewConcept();
+        var concept = componentAuthoringUtil.getNewConcept();
+        console.debug('new concept', concept);
+        $scope.concepts.unshift(concept);
+        $scope.updateEditListUiState();
       } else {
-        concept = templateService.getNewConcept(selectedTemplate);
+        templateService.getNewConcept(selectedTemplate).then(function (concept) {
+          console.debug('template concept', concept);
+          $scope.concepts.unshift(concept);
+          $scope.updateEditListUiState();
+        });
       }
-      $scope.concepts.unshift(concept);
-      $scope.updateEditListUiState();
+
     };
 
 
@@ -1515,10 +1522,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     );
 
     $scope.getSelectedTemplate = templateService.getSelectedTemplate;
-    $scope.selectTemplate = function(template) {
+    $scope.selectTemplate = function (template) {
       templateService.selectTemplate(template);
     };
-    $scope.clearTemplate = function() {
+    $scope.clearTemplate = function () {
 
       templateService.selectTemplate(null);
     };
@@ -1532,10 +1539,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       notificationService.sendMessage('Loading task details...');
 
       // retrieve available templates
-      templateService.getTemplates().then(function(templates) {
+      templateService.getTemplates().then(function (templates) {
         console.debug('edit templates', templates);
         $scope.templates = templates;
-        angular.forEach($scope.templates, function(template) {
+        angular.forEach($scope.templates, function (template) {
           template.name = template.metadata.name;
           template.version = template.metadata.version;
         })
