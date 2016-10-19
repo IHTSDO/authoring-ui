@@ -8,14 +8,4 @@ angular.module('singleConceptAuthoringApp')
 
 
 
-
-    /**
-     * NEW FE FUNCTIONALITY BASED ON BE TEMPLATE
-     */
-
-
-    return {
-    };
-
-  })
-;
+  });

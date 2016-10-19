@@ -734,6 +734,9 @@ angular.module('singleConceptAuthoringApp')
           if (!relationship.hasOwnProperty('moduleId')) {
             relationship.moduleId = metadataService.getCurrentModuleId();
           }
+          if (!relationship.hasOwnProperty('modifier')) {
+            relationship.modifier = 'EXISTENTIAL';
+          }
         });
         console.debug('after default fields', concept);
       }

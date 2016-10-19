@@ -1,4 +1,9 @@
+
+
 <div class="edits editing-form darken-3 grey">
+
+
+
 
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
@@ -65,13 +70,21 @@
           <span ng-show="!concept.fsn && !concept.effectiveTime && concept.template" style="color:grey" class="fsn">Template Concept</span>
 
         </button>
+
+
       </div>
 
       <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
         <div class=" p-t-3  ">
           <button type="button"
+                  class="blue lighten-2 btn-default md md-playlist-add tooltips-bottom editbuttons small-size-tooltip small-buttons"
+                  ng-click="toggleApplyTemplate()" ng-if="getTemplateName()">
+            <span> {{templateApplied ? 'Remove' : 'Apply'}} Template {{getTemplateName()}} </span>
+          </button>
+
+          <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                  ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic && !concept.template"
+                  ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic && (!concept.template || concept.templateComplete)"
                   ng-disabled="saving">
             <span> Save Concept </span>
           </button>
