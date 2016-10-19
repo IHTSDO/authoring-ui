@@ -147,6 +147,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.hideInactive = true;
         }
 
+        //
+        // Template service functions
+        //
+        scope.getTemplateName = function() {
+          return templateService.getSelectedTemplate() ? templateService.getSelectedTemplate().name : null;
+        }
+
+        scope.templateApplied = false;
+        scope.toggleApplyTemplate = function() {
+          scope.templateApplied = !scope.templateApplied;
+          if (scope.templateApplied) {
+            templateService.applyTemplateToConcept(scope.concept);
+          } else {
+            templateService.removeTemplateFromConcept(scope.concept);
+          }
+        }
+
 
         //
         // CRS concept initialization
@@ -2235,11 +2252,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // if a template target slot, update via template service
+          console.debug('checking for target slot', relationship.targetSlot);
           if (relationship.targetSlot) {
+            console.debug('calling update template concept');
             templateService.updateTemplateConcept(scope.concept).then(function () {
-              if (templateService.isTemplateComplete(scope.concept)) {
-                delete scope.concept.template;
-              }
               scope.computeRelationshipGroups();
               autoSave()
             })
@@ -2247,7 +2263,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise save normally
           else {
-
+            console.debug('normal save');
             scope.computeRelationshipGroups();
             autoSave();
           }
@@ -2577,6 +2593,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if dialect automation flag detected
           if (component && component.automationFlag) {
             return 'redhl';
+          }
+
+          if (component && component.templateStyle) {
+            return component.templateStyle;
           }
 
           // if no styless supplied, use defaults

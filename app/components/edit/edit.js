@@ -1014,7 +1014,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.concepts.unshift(concept);
         $scope.updateEditListUiState();
       } else {
-        templateService.getNewConcept(selectedTemplate).then(function (concept) {
+        templateService.createTemplateConcept(selectedTemplate).then(function (concept) {
           console.debug('template concept', concept);
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
