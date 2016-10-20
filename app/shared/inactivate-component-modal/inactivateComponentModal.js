@@ -240,7 +240,6 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach($scope.descendants.items, function (descendant) {
           descendant.sortableName = descendant.fsn.term;
         });
-        console.debug('descendants', $scope.descendants);
       });
     }
 
