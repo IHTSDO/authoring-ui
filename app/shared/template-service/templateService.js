@@ -22,11 +22,11 @@ angular.module('singleConceptAuthoringApp')
     // Internal functions
     //
 
-    function getLexicalShortName(lexicalTemplate) {
+    function getLexicalFunctionName(lexicalTemplate) {
       return lexicalTemplate.name.substring(0, lexicalTemplate.name.lastIndexOf('-'));
     }
 
-    function getLexicalFunctionName(lexicalTemplate) {
+    function getLexicalShortName(lexicalTemplate) {
       return lexicalTemplate.name.substring(lexicalTemplate.name.lastIndexOf('-') + 1);
     }
 
@@ -40,11 +40,11 @@ angular.module('singleConceptAuthoringApp')
         if (d.template) {
           //    console.debug(' template found');
           for (var name in nameValueMap) {
-            console.debug('  checking name/value', name, nameValueMap[name]);
-            d.term = d.template.term.replace('{{' + name + '}}', nameValueMap[name]);
+            if (nameValueMap.hasOwnProperty(name)) {
+              d.term = d.template.term.replace('{{' + name + '}}', nameValueMap[name]);
 
-            d.term = d.term.replace(/[ ]{2,}/g, ' ');
-            console.debug('  new term', d.term);
+              d.term = d.term.replace(/[ ]{2,}/g, ' ');
+            }
           }
         }
       });
@@ -64,11 +64,9 @@ angular.module('singleConceptAuthoringApp')
       var nameValueMap = {};
 
       angular.forEach(template.lexicalTemplates, function (lt) {
-        //   console.debug('  computing value from lexical template', lt);
-        var value;
-        // get fn and shortname from name, format 'fn-shortName', e.g. 'term-x'
-        var fnName = getLexicalShortName(lt);
-        var shortName = getLexicalFunctionName(lt);
+        var value = null;
+        var fnName = getLexicalFunctionName(lt);
+        var shortName = getLexicalShortName(lt);
 
         // find the matching relationship target slot by takeFSNFromSlot
         angular.forEach(concept.relationships, function (r) {
@@ -99,24 +97,18 @@ angular.module('singleConceptAuthoringApp')
                 value = '???';
               } else {
                 value = match[1].toLowerCase();
-
-                // apply removal terms and remove extra whitespace
                 angular.forEach(lt.removeParts, function (rp) {
                   if (value.indexOf(rp) != -1) {
                     value = value.replace(rp, '');
                   }
                 });
                 value = value.replace(/[ ]{2,}/g, ' ');
-
               }
             }
           }
         });
         nameValueMap[lt.name] = value;
       });
-
-      console.debug('  nameValueMap', nameValueMap);
-
       return nameValueMap;
     }
 
@@ -200,7 +192,7 @@ angular.module('singleConceptAuthoringApp')
         tc.templateComplete = false;
 
         // replace template values (i.e. to replace display {{term-x}} with x
-        var nameValueMap = getTemplateValues(selectedTemplate, tc)
+        var nameValueMap = getTemplateValues(selectedTemplate, tc);
         replaceTemplateValues(tc, nameValueMap);
 
         console.debug('template concept', tc);
@@ -216,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
 
     function updateTemplateConcept(concept) {
       var deferred = $q.defer();
-      var nameValueMap = getTemplateValues(selectedTemplate, concept)
+      var nameValueMap = getTemplateValues(selectedTemplate, concept);
       replaceTemplateValues(concept, nameValueMap);
 
       concept.templateComplete = isTemplateComplete(concept);
@@ -240,66 +232,71 @@ angular.module('singleConceptAuthoringApp')
     function termMatchesTemplate(term, templateTerm, nameValueMap) {
       var modTerm = templateTerm;
       for (var name in nameValueMap) {
-        //console.debug('  checking name/value', name, nameValueMap[name]);
-        modTerm = modTerm.replace('{{' + name + '}}', nameValueMap[name]);
-        modTerm = modTerm.replace(/[ ]{2,}/g, ' ');
-        // console.debug('  new term', modTerm);
+        if (nameValueMap.hasOwnProperty(name)) {
+          modTerm = modTerm.replace('{{' + name + '}}', nameValueMap[name]);
+          modTerm = modTerm.replace(/[ ]{2,}/g, ' ');
+        }
       }
       return term === modTerm;
     }
 
 
-    function applyTemplateToConcept(concept) {
+    function applyTemplateToConcept(concept, stylesFlag) {
       var deferred = $q.defer();
 
       console.debug('apply template to concept', selectedTemplate, concept);
 
       // match relationships
       angular.forEach(selectedTemplate.conceptTemplate.relationships, function (rt) {
-        //console.debug(' checking template relationship', rt);
+
         var matchFound = false;
         angular.forEach(concept.relationships, function (r) {
-          //  console.debug('  checking against relationship', r);
+
 
           // check by active/group/type
           if (r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
-            // console.debug('  preliminary match found');
+
 
             // if a target slot, assign template and target slot
             if (rt.targetSlot) {
-              //   console.debug('   target slot');
+
               matchFound = true;
               r.template = rt;
-              r.templateStyle = 'bluehl darken-2';
+              if (stylesFlag) {
+                r.templateStyle = 'bluehl darken-2';
+              }
               r.targetSlot = rt.targetSlot;
             }
 
             // otherwise, check specified target concept id
             else if (r.target.conceptId === rt.target.conceptId) {
-              //  console.debug('    exact match');
+
               matchFound = true;
               r.template = rt;
-              r.templateStyle = 'tealhl';
+              if (stylesFlag) {
+                r.templateStyle = 'tealhl';
+              }
             }
           }
-        })
+        });
         if (!matchFound) {
-           console.debug('match not found');
+
           var newRel = angular.copy(rt);
-          newRel.templateStyle = 'tealhl';
+          if (stylesFlag) {
+            newRel.templateStyle = 'tealhl';
+          }
           newRel.template = rt;
           concept.relationships.push(newRel);
 
         }
       });
 
-      console.debug('rels', concept.relationships);
 
-      angular.forEach(concept.relationships, function(r) {
-        if (!r.templateStyle) {
+      angular.forEach(concept.relationships, function (r) {
+        if (!r.templateStyle && stylesFlag) {
           r.templateStyle = 'redhl';
         }
-      })
+      });
 
       // get values from target slots
       var nameValueMap = getTemplateValues(selectedTemplate, concept);
@@ -307,8 +304,6 @@ angular.module('singleConceptAuthoringApp')
       // match descriptions
       for (var i = 0; i < selectedTemplate.conceptTemplate.descriptions.length; i++) {
         var dt = selectedTemplate.conceptTemplate.descriptions[i];
-        console.debug('---------------');
-        console.debug('Checking for template description', dt.term);
 
         var matchFound = false;
         for (var j = 0; j < concept.descriptions.length; j++) {
@@ -320,46 +315,37 @@ angular.module('singleConceptAuthoringApp')
           if (d.active && d.type === dt.type) {
             // check exact term match first
             if (d.term === dt.term) {
-              //  console.debug('  exact match!');
               matchFound = true;
               d.template = dt;
-              d.templateStyle = 'tealhl';
+              if (stylesFlag) {
+                d.templateStyle = 'tealhl';
+              }
             }
 
             // otherwise, check by pattern matching
             else {
-
-              var exp = dt.term.replace(/\{\{.*\}\}/, '.*');
+              var exp = dt.term.replace(/\{\{.*}}/, '.*');
               exp = exp.replace(/([()[{$^\\|?])/g, '\\$1');
               exp = '^' + exp + '$';
-              // console.debug('  pattern match?', exp);
 
               // if match found
               if (d.term.match(exp)) {
                 matchFound = true;
-                console.debug('  Pattern match found');
                 d.template = dt;
-                console.debug('    Computed term matches?', termMatchesTemplate(d.term, dt.term, nameValueMap), d.term, dt.term, nameValueMap);
-                d.templateStyle = termMatchesTemplate(d.term, dt.term, nameValueMap) ? 'tealhl' : 'bluehl';
-                console.debug('    YES - applied style', d.templateStyle);
+                if (stylesFlag) {
+                  d.templateStyle = termMatchesTemplate(d.term, dt.term, nameValueMap) ? 'tealhl' : 'bluehl';
+                }
               }
-
             }
           }
-
         }
 
         if (!matchFound) {
-          // console.debug('Adding new description');
           var newDesc = angular.copy(dt);
           newDesc.templateStyle = 'bluehl lighten-2';
           newDesc.template = dt;
           concept.descriptions.push(newDesc);
-        } else {
-          //console.debug('Match found');
         }
-
-
       }
 
       // cycle over all descriptions -- no style flag means not in template
