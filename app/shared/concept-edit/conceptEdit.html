@@ -43,6 +43,14 @@
     .new-concept .concept-headers:first-child {
       padding-top: 3px !important
     }
+
+    .template-term {
+      background-color: red !important;
+    }
+
+    .template-slot {
+      background-color: red !important;
+    }
   </style>
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
@@ -319,7 +327,9 @@
                                   ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
                                   maxlength="255"
                                   ng-model="description.term"
-                                  class="color_{{relationship.groupId}} form-control msd-elastic: \n;" type="text"
+                                  class="form-control msd-elastic: \n;"
+                                  ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
+                                  type="text"
                                   placeholder="Description">
                         </textarea>
 
@@ -328,7 +338,8 @@
                       ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
                       maxlength="255"
                       ng-model="description.term"
-                      class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
+                      ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
+                      class="form-control  msd-elastic: \n;" type="text"
                       placeholder="Description">
                         </textarea>
             <textarea ng-if="description.type === 'TEXT_DEFINITION'"
@@ -337,7 +348,8 @@
                       ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
-                      class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
+                      ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
+                      class="form-control msd-elastic: \n;" autofocus>
                         </textarea>
           </div>
 
@@ -504,6 +516,7 @@
                                     <textarea type="text" ng-model="relationship.type.fsn"
                                               ng-disabled="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || concept.template"
                                               class="resizable-text form-control msd-elastic: \n;"
+
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
                                               typeahead-loading="typeTypeaheadLoading"
@@ -533,7 +546,7 @@
                   <textarea type="text" ng-model="relationship.target.fsn"
                             ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (concept.template && !relationship.targetSlot)"
                             class="resizable-text relationship msd-elastic: \n;"
-
+                            ng-class="[{'template-slot' : relationship.targetSlot}]"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
