@@ -797,8 +797,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * Function to toggle the definition status of the displayed concept,
          * with autosave
          */
-        scope.toggleConceptDefinitionStatus = function (isStatic) {
-          if (!isStatic) {
+        scope.toggleConceptDefinitionStatus = function () {
+          if (!scope.isStatic && !scope.concept.template) {
             if (scope.concept.definitionStatus === 'FULLY_DEFINED') {
               scope.concept.definitionStatus = 'PRIMITIVE';
             }
