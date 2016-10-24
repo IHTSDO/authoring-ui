@@ -31,6 +31,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function replaceTemplateValues(concept, nameValueMap) {
+      console.debug('replacing values', nameValueMap);
 
       // TODO Check top-level concept properties
 
@@ -38,11 +39,10 @@ angular.module('singleConceptAuthoringApp')
       // replace in descriptions
       angular.forEach(concept.descriptions, function (d) {
         if (d.template) {
-          //    console.debug(' template found');
+          console.debug('checking description', d.term);
           for (var name in nameValueMap) {
             if (nameValueMap.hasOwnProperty(name)) {
               d.term = d.template.term.replace('{{' + name + '}}', nameValueMap[name]);
-
               d.term = d.term.replace(/[ ]{2,}/g, ' ');
             }
           }
@@ -186,10 +186,17 @@ angular.module('singleConceptAuthoringApp')
         // ensure all required fields are set
         componentAuthoringUtil.setDefaultFields(tc);
 
-        // apply a temporary UUID and template variables/flags
+        // apply temporary UUIDs and template variables/flags
         tc.conceptId = snowowlService.createGuid();
         tc.template = template;
         tc.templateComplete = false;
+
+        angular.forEach(tc.descriptions, function(d) {
+          d.descriptionId = snowowlService.createGuid();
+        });
+        angular.forEach(tc.relationships, function(r) {
+          r.relationshipId = snowowlService.createGuid();
+        });
 
         // replace template values (i.e. to replace display {{term-x}} with x
         var nameValueMap = getTemplateValues(selectedTemplate, tc);
@@ -208,6 +215,7 @@ angular.module('singleConceptAuthoringApp')
 
     function updateTemplateConcept(concept) {
       var deferred = $q.defer();
+      clearTemplateStylesAndMessages(concept);
       var nameValueMap = getTemplateValues(selectedTemplate, concept);
       replaceTemplateValues(concept, nameValueMap);
 
@@ -217,19 +225,19 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function removeTemplateFromConcept(concept) {
-      delete concept.template;
+    function clearTemplateStylesAndMessages(concept) {
+      delete concept.templateMessages;
       angular.forEach(concept.descriptions, function (d) {
-        delete d.template;
         delete d.templateStyle;
+        delete d.templateMessages;
       });
       angular.forEach(concept.relationships, function (r) {
-        delete r.template;
         delete r.templateStyle;
+        delete r.templateMessages;
       })
     }
 
-    function getTermForTemplateTerm(term, templateTerm, nameValueMap) {
+    function getTermForTemplateTerm(templateTerm, nameValueMap) {
       var modTerm = templateTerm;
       for (var name in nameValueMap) {
         if (nameValueMap.hasOwnProperty(name)) {
@@ -246,14 +254,29 @@ angular.module('singleConceptAuthoringApp')
 
       console.debug('apply template to concept', selectedTemplate, concept, applyValues, applyStyles);
 
+      // reset template messages and GUIDs for descriptions, relationships, and top-level concept
+      concept.templateMessages = [];
+      if (!concept.conceptId) {
+        c.conceptId = snowowlService.createGuid();
+      }
+      angular.forEach(concept.descriptions, function(d) {
+        d.templateMessages = [];
+        if (!d.descriptionId) {
+          d.descriptionId = snowowlService.createGuid();
+        }
+      });
+      angular.forEach(concept.relationships, function(r) {
+        r.templateMessages = [];
+        if (!r.relationshipId) {
+          r.relationshipId = snowowlService.createGuid();
+        }
+      });
+
       // match relationships
       angular.forEach(selectedTemplate.conceptTemplate.relationships, function (rt) {
 
         var matchFound = false;
         angular.forEach(concept.relationships, function (r) {
-
-          r.templateMessages = [];
-
 
           // check by active/group/type
           if (r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
@@ -290,7 +313,7 @@ angular.module('singleConceptAuthoringApp')
           }
           newRel.template = rt;
           newRel.templateMessages = [];
-          newRel.templateMessages.push({'WARNING': 'Relationship automatically added by template'});
+          newRel.templateMessages.push({type : 'WARNING', message : 'Relationship automatically added by template'});
           concept.relationships.push(newRel);
 
         }
@@ -302,7 +325,7 @@ angular.module('singleConceptAuthoringApp')
           if (applyStyles) {
             r.templateStyle = 'redhl';
           }
-          r.templateMessages.push({'ERROR': 'Relationship not valid for template; please remove'});
+          r.templateMessages.push({type : 'ERROR', message : 'Relationship not valid for template; please remove'});
         }
       });
 
@@ -318,9 +341,7 @@ angular.module('singleConceptAuthoringApp')
         var matchFound = false;
         angular.forEach(concept.descriptions, function (d) {
 
-          d.templateMessages = [];
 
-          //    console.debug('  against existing description', d.term);
           // check by active/type/acceptability
           // TODO Add acceptability
           if (d.active && d.type === dt.type) {
@@ -343,33 +364,45 @@ angular.module('singleConceptAuthoringApp')
               if (d.term && d.term.match(exp)) {
                 matchFound = true;
                 d.template = dt;
-                var templateTerm = getTermForTemplateTerm(d.term, dt.term, nameValueMap);
+                var templateTerm = getTermForTemplateTerm(dt.term, nameValueMap);
                 if (d.term !== templateTerm) {
                   // if apply values set, value will be replaced below, append warning
                   if (applyValues) {
-                    d.templateMessages({'WARNING': 'Description term updated to conform to template, previous term: ' + d.term});
+                    console.debug('Warning: description term does not conform to template', d.term, templateTerm);
+                    d.templateMessages.push({type : 'WARNING', message : 'Description term updated to conform to template, previous term: ' + d.term});
                   }
 
                   // otherwise, append error
                   else {
-                    d.templateMessages.push({'ERROR': 'Description term does not conform to template, expected: ' + templateTerm});
+                    console.debug('Error: description term does not conform to template', d.term, templateTerm);
+                    d.templateMessages.push({type : 'ERROR', message : 'Description term does not conform to template, expected: ' + templateTerm});
                   }
                 }
 
               }
             }
           }
+          console.debug('updated description messages', d.descriptionId, d.templateMessages);
         });
+
+        console.debug('after')
 
         if (!matchFound) {
           var newDesc = angular.copy(dt);
-          newDesc.templateStyle = 'bluehl lighten-2';
+          newDesc.descriptionId = snowowlService.createGuid();
+          newDesc.term = getTermForTemplateTerm(dt.term, nameValueMap);
+          if (applyStyles) {
+            newDesc.templateStyle = 'bluehl lighten-2';
+          }
           newDesc.template = dt;
+          console.debug('clearing messages for ' + newDesc.descriptionId);
           newDesc.templateMessages = [];
-          newDesc.templateMessages.push({'WARNING': 'Description automatically added by template'});
+          newDesc.templateMessages.push({type : 'WARNING', message :'Description automatically added by template'});
           concept.descriptions.push(newDesc);
         }
       }
+
+      console.debug('before checking all', concept.descriptions);
 
       // cycle over all descriptions -- no style flag means not in template
 
@@ -380,12 +413,17 @@ angular.module('singleConceptAuthoringApp')
           if (applyStyles) {
             d.templateStyle = 'redhl';
           }
+          console.debug('clearing messages for ' + d.descriptionId);
           d.templateMessages = [];
-          d.templateMessages.push({'ERROR': 'Description not valid for template; please remove'});
+          d.templateMessages.push({type : 'ERROR', message : 'Description not valid for template; please remove'});
         }
       });
 
+      console.debug('descriptions', concept.descriptions);
+
       componentAuthoringUtil.setDefaultFields(concept);
+
+      console.debug('after defaults', concept.descriptions);
 
       if (applyValues) {
         concept = replaceTemplateValues(concept, nameValueMap);
@@ -436,7 +474,7 @@ angular.module('singleConceptAuthoringApp')
       createTemplateConcept: createTemplateConcept,
       updateTemplateConcept: updateTemplateConcept,
       applyTemplateToConcept: applyTemplateToConcept,
-      removeTemplateFromConcept: removeTemplateFromConcept,
+      clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
       isTemplateComplete: isTemplateComplete
     };
 
