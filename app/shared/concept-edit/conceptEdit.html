@@ -490,7 +490,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
                                     <textarea type="text" ng-model="relationship.type.fsn"
-                                              ng-disabled="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId)"
+                                              ng-disabled="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || concept.template"
                                               class="resizable-text form-control msd-elastic: \n;"
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
@@ -519,7 +519,7 @@
                      ng-class="getTargetSlotStyle(relationship)">
 
                   <textarea type="text" ng-model="relationship.target.fsn"
-                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId)"
+                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (concept.template && !relationship.targetSlot)"
                             class="resizable-text relationship msd-elastic: \n;"
 
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template)"
