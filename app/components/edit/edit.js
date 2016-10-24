@@ -1543,8 +1543,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         console.debug('edit templates', templates);
         $scope.templates = templates;
         angular.forEach($scope.templates, function (template) {
-          template.name = template.metadata.name;
-          template.version = template.metadata.version;
+          template.name = template.name;
+          template.version = template.version;
         })
         $scope.templateTableParams.reload();
       });

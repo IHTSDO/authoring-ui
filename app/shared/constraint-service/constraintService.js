@@ -20,9 +20,10 @@ angular.module('singleConceptAuthoringApp')
           if (isAttributeAllowedForArray(searchStr, attrs)) {
             deferred.resolve();
           } else {
-            deferred.reject(error);
+            deferred.reject('Attribute not allowed');
           }
-          ;
+        }, function(error) {
+          deferred.reject(error.message);
         });
         return deferred.promise;
       }

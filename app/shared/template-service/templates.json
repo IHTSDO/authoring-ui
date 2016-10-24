@@ -1,103 +1,64 @@
 [
   {
-    "metadata": {
-      "name": "CT of X",
-      "focusConcept": "71388002",
-      "version": "1"
-    },
-    "logicalTemplate": [
-      "71388002 |Procedure| :",
-      "   [[~1..1]] {",
-      "      260686004 |Method| = 312251004 |Computed tomography imaging action|,",
-      "      [[~1..1]] 405813007 |Procedure site - Direct| = [[+id @slot-x (<< 442083009 |Anatomical or acquired body structure|)]]",
-      "   }"
-    ],
-    "lexicalTemplates": [
-      {
-        "name": "term-x",
-        "takeFSNFromSlot": "slot-x",
-        "removeParts": [
-          "structure of",
-          "part",
-          "entire"
-        ]
-      }
-    ],
-    "conceptTemplate": {
+    "name": "ct-of-x",
+    "focusConcept": "71388002",
+    "version": 1,
+    "logicalTemplate": "71388002 |Procedure|:\n\t[[~1..1]] {\n\t\t260686004 |Method| = 312251004 |Computed tomography imaging action|,\n\t\t[[~1..1]] 405813007 |Procedure site - Direct| = [[+id(<< 442083009 |Anatomical or acquired body structure|) @procSite]]\n\t}\n",
+    "conceptOutline": {
       "relationships": [
         {
           "characteristicType": "STATED_RELATIONSHIP",
           "groupId": 0,
           "type": {
-            "conceptId": "116680003",
-            "fsn": "Is a (attribute)"
+            "conceptId": "116680003"
           },
           "target": {
-            "conceptId": "71388002",
-            "fsn": "Procedure (procedure)"
+            "conceptId": "71388002"
           }
         },
         {
           "characteristicType": "STATED_RELATIONSHIP",
           "groupId": 1,
           "type": {
-            "conceptId": "260686004",
-            "fsn": "Method (attribute)"
+            "conceptId": "260686004"
           },
           "target": {
-            "conceptId": "312251004",
-            "fsn": "Computed tomography imaging - action (qualifier value)"
+            "conceptId": "312251004"
           }
         },
         {
           "characteristicType": "STATED_RELATIONSHIP",
           "groupId": 1,
           "type": {
-            "conceptId": "405813007",
-            "fsn": "Procedure site - Direct (attribute)"
-          },
-          "target": {
-            "conceptId": "",
-            "fsn": ""
+            "conceptId": "405813007"
           },
           "targetSlot": {
-            "slotName": "slot-x",
-            "allowableRangeECL": "<< 442083009"
-          }
+            "slotName": "procSite",
+            "allowableRangeECL": "<< 442083009 |Anatomical or acquired body structure|"
+          },
+          "cardinalityMin": "1",
+          "cardinalityMax": "1"
         }
       ],
       "descriptions": [
         {
           "type": "FSN",
           "lang": "en",
-          "term": "Computed tomography of {{term-x}} (procedure)",
-          "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
-          "acceptabilityMap": {
-            "900000000000508004": "PREFERRED",
-            "900000000000509007": "PREFERRED"
-          }
-        },
-        {
-          "type": "SYNONYM",
-          "lang": "en",
-          "term": "CT of {{term-x}}",
+          "term": "CT of $procSite",
           "caseSignificance": "ENTIRE_TERM_CASE_SENSITIVE",
-          "acceptabilityMap": {
-            "900000000000508004": "PREFERRED",
-            "900000000000509007": "PREFERRED"
-          }
-        },
-        {
-          "type": "SYNONYM",
-          "lang": "en",
-          "term": "Computed tomography of {{term-x}}",
-          "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
-          "acceptabilityMap": {
-            "900000000000508004": "ACCEPTABLE",
-            "900000000000509007": "ACCEPTABLE"
-          }
+          "acceptabilityMap": {}
         }
       ]
-    }
+    },
+    "lexicalTemplates": [
+      {
+        "name": "procSite",
+        "takeFSNFromSlot": "procSite",
+        "removeParts": [
+          "entire",
+          "part of"
+        ]
+      }
+    ]
   }
 ]

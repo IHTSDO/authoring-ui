@@ -4,7 +4,9 @@ angular.module('singleConceptAuthoringApp')
 /**
  * Handles Authoring Template retrieval and functionality
  */
-  .service('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil, templateUtility) {
+  .service('templateService', function ($http, $rootScope, $q, scaService, snowowlService, componentAuthoringUtil) {
+
+    var apiEndpoint = '../template-service/';
 
     //
     // Internal variables
@@ -42,7 +44,7 @@ angular.module('singleConceptAuthoringApp')
           console.debug('checking description', d.term);
           for (var name in nameValueMap) {
             if (nameValueMap.hasOwnProperty(name)) {
-              d.term = d.template.term.replace('{{' + name + '}}', nameValueMap[name]);
+              d.term = d.template.term.replace('$' + name, nameValueMap[name]);
               d.term = d.term.replace(/[ ]{2,}/g, ' ');
             }
           }
@@ -120,13 +122,21 @@ angular.module('singleConceptAuthoringApp')
       console.debug('getTemplates', templateCache);
       var deferred = $q.defer();
       if (!templateCache || refreshCache) {
+
+        $http.get(apiEndpoint + 'templates').then(function(response) {
+          templateCache = response.data;
+          deferred.resolve(templateCache);
+        }, function(error) {
+          deferred.reject('Failed to retrieve templates: ' + error.developerMessage);
+        });
+
         // TODO Wire this to BE, using JSON temporary file for dev purposes
-        $http.get('shared/template-service/templates.json').then(function (response) {
+       /* $http.get('shared/template-service/templates.json').then(function (response) {
           console.debug('http templates', response);
           templateCache = response.data;
           deferred.resolve(templateCache);
         });
-
+*/
       } else {
         console.debug('returning cached templates', templateCache);
         deferred.resolve(templateCache);
@@ -173,7 +183,7 @@ angular.module('singleConceptAuthoringApp')
       } else {
 
         // create concept from the concept template
-        var tc = angular.copy(template.conceptTemplate);
+        var tc = angular.copy(template.conceptOutline);
 
         // store template details against each component
         angular.forEach(tc.descriptions, function (d) {
@@ -198,7 +208,7 @@ angular.module('singleConceptAuthoringApp')
           r.relationshipId = snowowlService.createGuid();
         });
 
-        // replace template values (i.e. to replace display {{term-x}} with x
+        // replace template values (i.e. to replace display $term-x with x
         var nameValueMap = getTemplateValues(selectedTemplate, tc);
         replaceTemplateValues(tc, nameValueMap);
 
@@ -241,7 +251,7 @@ angular.module('singleConceptAuthoringApp')
       var modTerm = templateTerm;
       for (var name in nameValueMap) {
         if (nameValueMap.hasOwnProperty(name)) {
-          modTerm = modTerm.replace('{{' + name + '}}', nameValueMap[name]);
+          modTerm = modTerm.replace('$' + name, nameValueMap[name]);
           modTerm = modTerm.replace(/[ ]{2,}/g, ' ');
         }
       }
@@ -260,7 +270,7 @@ angular.module('singleConceptAuthoringApp')
       // reset template messages and GUIDs for descriptions, relationships, and top-level concept
       concept.templateMessages = [];
       if (!concept.conceptId) {
-        c.conceptId = snowowlService.createGuid();
+        concept.conceptId = snowowlService.createGuid();
       }
       angular.forEach(concept.descriptions, function(d) {
         d.templateMessages = [];
@@ -281,7 +291,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       // match relationships
-      angular.forEach(selectedTemplate.conceptTemplate.relationships, function (rt) {
+      angular.forEach(selectedTemplate.conceptOutline.relationships, function (rt) {
 
         var matchFound = false;
         angular.forEach(concept.relationships, function (r) {
@@ -343,8 +353,8 @@ angular.module('singleConceptAuthoringApp')
       var nameValueMap = getTemplateValues(selectedTemplate, concept);
 
       // match descriptions
-      for (var i = 0; i < selectedTemplate.conceptTemplate.descriptions.length; i++) {
-        var dt = selectedTemplate.conceptTemplate.descriptions[i];
+      for (var i = 0; i < selectedTemplate.conceptOutline.descriptions.length; i++) {
+        var dt = selectedTemplate.conceptOutline.descriptions[i];
 
         var matchFound = false;
         angular.forEach(concept.descriptions, function (d) {
