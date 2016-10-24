@@ -44,7 +44,7 @@
         {
           "type": "FSN",
           "lang": "en",
-          "term": "Computed tomography of $procSite",
+          "term": "Computed tomography of {{procSite}}",
           "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
           "acceptabilityMap": {
             "900000000000509007" : "PREFERRED",
@@ -54,7 +54,7 @@
         {
           "type": "SYNONYM",
           "lang": "en",
-          "term": "CT of $procSite",
+          "term": "CT of {{procSite}}",
           "caseSignificance": "ENTIRE_TERM_CASE_SENSITIVE",
           "acceptabilityMap": {
             "900000000000509007" : "PREFERRED",
@@ -64,7 +64,7 @@
         {
           "type": "SYNONYM",
           "lang": "en",
-          "term": "Computed tomography of $procSite",
+          "term": "Computed tomography of {{procSite}}",
           "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
           "acceptabilityMap": {
             "900000000000509007" : "ACCEPTABLE",
