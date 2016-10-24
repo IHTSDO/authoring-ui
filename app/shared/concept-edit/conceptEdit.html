@@ -1,8 +1,4 @@
-
-
 <div class="edits editing-form darken-3 grey">
-
-
 
 
   <!-- begin validation error -->
@@ -25,6 +21,15 @@
     </div>
   </div>
 
+  <div class="alert alert-dismissible validation" ng-show="concept.templateMessages.length > 0" ng-repeat="message in concept.templateMessages"
+       ng-class="[{ 'alert-warning' : message.type === 'Warning'}, { 'alert-danger' : message.type === 'Error' }, { 'alert-info' : message.type === 'Message'}]">
+    <button class="btn btn-default md md-close pull-right white" ng-click="concept.templateMessages = []"
+            style="background: transparent"
+            tabindex="0"></button>
+    <h4 ng-bind="message.message"></h4>
+
+  </div>
+
 
   <!-- end validation error -->
   <!-- The concept itself -->
@@ -40,9 +45,7 @@
     }
   </style>
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
-    <div class="row">
-      {{scope.validation}}
-    </div>
+
     <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
 
       <div class="pull-left col-md-1 no-padding">
@@ -78,13 +81,14 @@
         <div class=" p-t-3  ">
           <button type="button"
                   class="blue lighten-2 btn-default md md-playlist-add tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                  ng-click="toggleApplyTemplate()" ng-if="getTemplateName()">
-            <span> {{templateApplied ? 'Remove' : 'Apply'}} Template {{getTemplateName()}} </span>
+                  ng-click="validateAgainstTemplate()" ng-if="getTemplateName()">
+            <span>Validate Against Template </span>
           </button>
 
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                  ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic && (!concept.template || concept.templateComplete)"
+                  ng-click="saveConcept()"
+                  ng-if="!isMerge && isModified && !isStatic && (!concept.template || concept.templateComplete)"
                   ng-disabled="saving">
             <span> Save Concept </span>
           </button>
@@ -158,21 +162,21 @@
                     </textarea>
           </div>
 
-        <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
-                ng-disabled="isStatic || isLockedModule(concept.moduleId) || concept.template"
-                class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
-                ng-click="toggleConceptDefinitionStatus(isStatic)">
+          <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
+                  ng-disabled="isStatic || isLockedModule(concept.moduleId) || concept.template"
+                  class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
+                  ng-click="toggleConceptDefinitionStatus(isStatic)">
 
-          <div class="badge alert-warning ng-binding">≡&nbsp; </div>
-          <span>Fully Defined</span>
-        </button>
-        <button ng-if="concept.definitionStatus === 'PRIMITIVE'"
-                ng-disabled="isStatic || isLockedModule(concept.moduleId  || concept.template)"
-                class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
-                ng-click="toggleConceptDefinitionStatus(isStatic)">
-          <div class="badge alert-warning ng-binding">&nbsp; </div>
-          <span>Primitive</span>
-        </button>
+            <div class="badge alert-warning ng-binding">≡&nbsp; </div>
+            <span>Fully Defined</span>
+          </button>
+          <button ng-if="concept.definitionStatus === 'PRIMITIVE'"
+                  ng-disabled="isStatic || isLockedModule(concept.moduleId  || concept.template)"
+                  class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
+                  ng-click="toggleConceptDefinitionStatus(isStatic)">
+            <div class="badge alert-warning ng-binding">&nbsp; </div>
+            <span>Primitive</span>
+          </button>
 
 
           <button ng-init="isCollapsed = false" class="btn-default editbuttons small-buttons"
@@ -399,6 +403,14 @@
           <div ng-bind="warning"></div>
         </div>
       </div>
+      <div class="row">
+        <div class="validation darken-1 p-5"
+             ng-class="[{ 'orange' : message.type === 'Warning'}, { 'red' : message.type === 'Error' }, { 'blue' : message.type === 'Message'}]"
+             ng-repeat="message in description.templateMessages">
+          <strong>Template {{message.type}}:</strong>
+          <div ng-bind="message.message"></div>
+        </div>
+      </div>
 
 
     </div>
@@ -410,7 +422,7 @@
         <div class="role_group_divider_top_{{groupId}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
-               class="{{relationship.target.definitionStatus}}">
+             class="{{relationship.target.definitionStatus}}">
 
           <div ng-show="relationship.definitionOfChanges" class="">
 
@@ -601,6 +613,16 @@
                  ng-repeat="warning in validation.warnings[relationship.relationshipId]">
               <strong>Convention Warning:</strong>
               <div ng-bind="warning"></div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="validation darken-1 p-5"
+                 ng-class="[{ 'orange' : message.type === 'Warning'}, { 'red' : message.type === 'Error' }, { 'blue' : message.type === 'Message'}]"
+                 ng-repeat="message in relationship.templateMessages">
+              <strong>Template {{message.type}}:</strong>
+              <div ng-bind="message.message">
+              </div>
             </div>
           </div>
 
