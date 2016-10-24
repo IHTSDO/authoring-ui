@@ -154,36 +154,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return templateService.getSelectedTemplate() ? templateService.getSelectedTemplate().name : null;
         };
 
-        scope.templateApplied = false;
-        scope.toggleApplyTemplate = function () {
-
-          // clear validation on toggle
-          scope.validation = {warnings: {}, errors: {}};
-
-          scope.templateApplied = !scope.templateApplied;
-          if (scope.templateApplied) {
-            templateService.applyTemplateToConcept(scope.concept, false, false).then(function () {
-
-              console.debug('after applying template', scope.concept);
-              angular.forEach(scope.concept.descriptions, function (d) {
-                angular.forEach(d.templateMessages, function (tm) {
-                  if (tm.type === 'WARNING') {
-                    var warnings = scope.validation.warnings[d.descriptionId] ? scope.validation.warnings[d.descriptionId] : [];
-                    warnings.push(tm.message);
-                    scope.validation.warnings[d.descriptionId] = warnings;
-                  } else if (tm.type === 'ERROR') {
-                    var errors = scope.validation.errors[d.descriptionId] ? scope.validation.errors[d.descriptionId] : [];
-                    errors.push(tm.message);
-                    scope.validation.errors[d.descriptionId] = errors;
-                  }
-                });
-
-              });
-              console.debug('validation after apply template', scope.validation);
-            });
-          } else {
-            templateService.clearTemplateStylesAndMessages(scope.concept);
-          }
+        scope.validateAgainstTemplate = function () {
+          templateService.applyTemplateToConcept(scope.concept, false, false).then(function () {
+            console.debug('template validation result', scope.concept);
+          }, function (error) {
+            notificationService.sendError('Error applying template: ' + error);
+          });
         };
 
 

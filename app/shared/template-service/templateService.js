@@ -254,6 +254,9 @@ angular.module('singleConceptAuthoringApp')
 
       console.debug('apply template to concept', selectedTemplate, concept, applyValues, applyStyles);
 
+      // completion flag
+      var templateComplete = true;
+
       // reset template messages and GUIDs for descriptions, relationships, and top-level concept
       concept.templateMessages = [];
       if (!concept.conceptId) {
@@ -270,6 +273,11 @@ angular.module('singleConceptAuthoringApp')
         if (!r.relationshipId) {
           r.relationshipId = snowowlService.createGuid();
         }
+
+        // if target slot not filled, mark false
+        if (r.targetSlot && !r.target.conceptId) {
+          r.templateMessages.push({type : 'Error', message : 'Template target slot cannot be empty'});
+        }
       });
 
       // match relationships
@@ -277,6 +285,8 @@ angular.module('singleConceptAuthoringApp')
 
         var matchFound = false;
         angular.forEach(concept.relationships, function (r) {
+
+
 
           // check by active/group/type
           if (r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
@@ -313,7 +323,7 @@ angular.module('singleConceptAuthoringApp')
           }
           newRel.template = rt;
           newRel.templateMessages = [];
-          newRel.templateMessages.push({type : 'WARNING', message : 'Relationship automatically added by template'});
+          newRel.templateMessages.push({type : 'Message', message : 'Relationship automatically added by template'});
           concept.relationships.push(newRel);
 
         }
@@ -325,14 +335,12 @@ angular.module('singleConceptAuthoringApp')
           if (applyStyles) {
             r.templateStyle = 'redhl';
           }
-          r.templateMessages.push({type : 'ERROR', message : 'Relationship not valid for template; please remove'});
+          r.templateMessages.push({type : 'Error', message : 'Relationship not valid for template; please remove'});
         }
       });
 
       // get values from target slots
       var nameValueMap = getTemplateValues(selectedTemplate, concept);
-
-      console.debug('nameValueMap', nameValueMap);
 
       // match descriptions
       for (var i = 0; i < selectedTemplate.conceptTemplate.descriptions.length; i++) {
@@ -368,24 +376,19 @@ angular.module('singleConceptAuthoringApp')
                 if (d.term !== templateTerm) {
                   // if apply values set, value will be replaced below, append warning
                   if (applyValues) {
-                    console.debug('Warning: description term does not conform to template', d.term, templateTerm);
-                    d.templateMessages.push({type : 'WARNING', message : 'Description term updated to conform to template, previous term: ' + d.term});
+                    d.templateMessages.push({type : 'Warning', message : 'Description term updated to conform to template, previous term: ' + d.term});
                   }
 
                   // otherwise, append error
                   else {
-                    console.debug('Error: description term does not conform to template', d.term, templateTerm);
-                    d.templateMessages.push({type : 'ERROR', message : 'Description term does not conform to template, expected: ' + templateTerm});
+                    d.templateMessages.push({type : 'Warning', message : 'Description term does not conform to template, expected: ' + templateTerm});
                   }
                 }
 
               }
             }
           }
-          console.debug('updated description messages', d.descriptionId, d.templateMessages);
         });
-
-        console.debug('after')
 
         if (!matchFound) {
           var newDesc = angular.copy(dt);
@@ -395,9 +398,8 @@ angular.module('singleConceptAuthoringApp')
             newDesc.templateStyle = 'bluehl lighten-2';
           }
           newDesc.template = dt;
-          console.debug('clearing messages for ' + newDesc.descriptionId);
           newDesc.templateMessages = [];
-          newDesc.templateMessages.push({type : 'WARNING', message :'Description automatically added by template'});
+          newDesc.templateMessages.push({type : 'Message', message :'Description automatically added by template'});
           concept.descriptions.push(newDesc);
         }
       }
@@ -409,26 +411,38 @@ angular.module('singleConceptAuthoringApp')
       // otherwise, flag as outside template
       angular.forEach(concept.descriptions, function (d) {
         if (!d.template) {
-          console.debug('  Description not tagged, marking as erroneous');
           if (applyStyles) {
             d.templateStyle = 'redhl';
           }
-          console.debug('clearing messages for ' + d.descriptionId);
+
           d.templateMessages = [];
-          d.templateMessages.push({type : 'ERROR', message : 'Description not valid for template; please remove'});
+          d.templateMessages.push({type : 'Error', message : 'Description not valid for template; please remove'});
         }
       });
 
-      console.debug('descriptions', concept.descriptions);
-
       componentAuthoringUtil.setDefaultFields(concept);
 
-      console.debug('after defaults', concept.descriptions);
 
       if (applyValues) {
         concept = replaceTemplateValues(concept, nameValueMap);
-        console.debug('applied template to concept', concept);
+        console.debug('replaced values in concept', concept);
       }
+
+      // apply top-level messages
+      var msg = { type: 'Message', message: 'Template Concept Valid'};
+      angular.forEach(concept.descriptions.concat(concept.relationships), function(component) {
+        angular.forEach(component.templateMessages, function(tm) {
+          // overwrite with highest severity
+          if (tm.type === 'Error') {
+            msg = { type: 'Error', message: 'Template Errors Found'};
+          } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
+            msg = { type: 'Warning', message: 'Template Warnings Found'};
+          }
+        });
+      });
+      concept.templateMessages.push(msg);
+      console.debug('concept messages', msg, concept.templateMessages);
+
 
       deferred.resolve(concept);
 
