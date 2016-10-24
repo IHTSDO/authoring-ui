@@ -375,7 +375,7 @@ angular.module('singleConceptAuthoringApp')
 
     function selectTemplate(template) {
       selectedTemplate = template;
-    };
+    }
 
     function getSelectedTemplate() {
       return selectedTemplate;

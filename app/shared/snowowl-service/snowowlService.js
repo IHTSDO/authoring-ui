@@ -1319,6 +1319,32 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      // search concepts by branch, filter, and escgExpr
+      function searchConcepts(branch, termFilter, escgExpr, offset, limit) {
+        var deferred = $q.defer();
+
+        // paging/filtering/sorting with defaults applied
+        var params = {
+          offset : offset ? offset : '0',
+          limit : limit ? limit : '50',
+          expand : 'fsn()'
+        };
+        if (termFilter) {
+          params.termFilter = termFilter;
+        }
+        if (escgExpr) {
+          params.escgFilter = escgExpr;
+        }
+
+        $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+          deferred.resolve(response.data.items ? response.data.items : []);
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -1365,6 +1391,7 @@ angular.module('singleConceptAuthoringApp')
         getDialects: getDialects,
         downloadClassification: downloadClassification,
         findConceptsForQuery: findConceptsForQuery,
+        searchConcepts : searchConcepts,
         getReview: getReview,
         getMembersByTargetComponent: getMembersByTargetComponent,
 
