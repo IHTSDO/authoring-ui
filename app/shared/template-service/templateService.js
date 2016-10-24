@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp')
           console.debug('checking description', d.term);
           for (var name in nameValueMap) {
             if (nameValueMap.hasOwnProperty(name)) {
-              d.term = d.template.term.replace('$' + name, nameValueMap[name]);
+              d.term = d.template.term.replace('{{' + name + '}}', nameValueMap[name]);
               d.term = d.term.replace(/[ ]{2,}/g, ' ');
             }
           }
@@ -307,7 +307,7 @@ angular.module('singleConceptAuthoringApp')
       var modTerm = templateTerm;
       for (var name in nameValueMap) {
         if (nameValueMap.hasOwnProperty(name)) {
-          modTerm = modTerm.replace('$' + name, nameValueMap[name]);
+          modTerm = modTerm.replace('{{' + name + '}}', nameValueMap[name]);
           modTerm = modTerm.replace(/[ ]{2,}/g, ' ');
         }
       }
@@ -409,9 +409,7 @@ angular.module('singleConceptAuthoringApp')
       var nameValueMap = getTemplateValues(selectedTemplate, concept);
 
       // match descriptions
-      for (var i = 0; i < selectedTemplate.conceptOutline.descriptions.length; i++) {
-        var dt = selectedTemplate.conceptOutline.descriptions[i];
-
+      angular.forEach(selectedTemplate.conceptOutline.descriptions, function (dt) {
         var matchFound = false;
         angular.forEach(concept.descriptions, function (d) {
 
@@ -430,7 +428,7 @@ angular.module('singleConceptAuthoringApp')
 
             // otherwise, check by pattern matching
             else {
-              var exp = dt.term.replace(/\{\{.*}}/, '.*');
+              var exp = dt.term.replace(/\{\{.*\}\}/, '.*');
               exp = exp.replace(/([()[{$^\\|?])/g, '\\$1');
               exp = '^' + exp + '$';
 
@@ -474,7 +472,7 @@ angular.module('singleConceptAuthoringApp')
           newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
           concept.descriptions.push(newDesc);
         }
-      }
+      });
 
       console.debug('before checking all', concept.descriptions);
 
@@ -482,6 +480,7 @@ angular.module('singleConceptAuthoringApp')
 
       // otherwise, flag as outside template
       angular.forEach(concept.descriptions, function (d) {
+        console.debug('checking description ', d.active, d.term, d.template)
         if (d.active && !d.template) {
           if (applyStyles) {
             d.templateStyle = 'redhl';
