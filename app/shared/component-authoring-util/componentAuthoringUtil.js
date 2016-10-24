@@ -736,6 +736,12 @@ angular.module('singleConceptAuthoringApp')
           if (!relationship.hasOwnProperty('modifier')) {
             relationship.modifier = 'EXISTENTIAL';
           }
+          if (!relationship.hasOwnProperty('type')) {
+            relationship.type = { conceptId : null};
+          }
+          if (!relationship.hasOwnProperty('target')) {
+            relationship.target = { conceptId : null };
+          }
         });
       }
 

@@ -44,9 +44,32 @@
         {
           "type": "FSN",
           "lang": "en",
+          "term": "Computed tomography of $procSite",
+          "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+          "acceptabilityMap": {
+            "900000000000509007" : "PREFERRED",
+            "900000000000508004" : "PREFERRED"
+          }
+        },
+        {
+          "type": "SYNONYM",
+          "lang": "en",
           "term": "CT of $procSite",
           "caseSignificance": "ENTIRE_TERM_CASE_SENSITIVE",
-          "acceptabilityMap": {}
+          "acceptabilityMap": {
+            "900000000000509007" : "PREFERRED",
+            "900000000000508004" : "PREFERRED"
+          }
+        },
+        {
+          "type": "SYNONYM",
+          "lang": "en",
+          "term": "Computed tomography of $procSite",
+          "caseSignificance": "INITIAL_CHARACTER_CASE_INSENSITIVE",
+          "acceptabilityMap": {
+            "900000000000509007" : "ACCEPTABLE",
+            "900000000000508004" : "ACCEPTABLE"
+          }
         }
       ]
     },
