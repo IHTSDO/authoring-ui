@@ -150,19 +150,39 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
         // Template service functions
         //
-        scope.getTemplateName = function() {
+        scope.getTemplateName = function () {
           return templateService.getSelectedTemplate() ? templateService.getSelectedTemplate().name : null;
         };
 
         scope.templateApplied = false;
-        scope.toggleApplyTemplate = function() {
+        scope.toggleApplyTemplate = function () {
+
+          // clear validation on toggle
+          scope.validation = {warnings: {}, errors: {}};
+
           scope.templateApplied = !scope.templateApplied;
           if (scope.templateApplied) {
-            templateService.applyTemplateToConcept(scope.concept, false, false).then(function() {
+            templateService.applyTemplateToConcept(scope.concept, false, false).then(function () {
+
               console.debug('after applying template', scope.concept);
+              angular.forEach(scope.concept.descriptions, function (d) {
+                angular.forEach(d.templateMessages, function (tm) {
+                  if (tm.type === 'WARNING') {
+                    var warnings = scope.validation.warnings[d.descriptionId] ? scope.validation.warnings[d.descriptionId] : [];
+                    warnings.push(tm.message);
+                    scope.validation.warnings[d.descriptionId] = warnings;
+                  } else if (tm.type === 'ERROR') {
+                    var errors = scope.validation.errors[d.descriptionId] ? scope.validation.errors[d.descriptionId] : [];
+                    errors.push(tm.message);
+                    scope.validation.errors[d.descriptionId] = errors;
+                  }
+                });
+
+              });
+              console.debug('validation after apply template', scope.validation);
             });
           } else {
-            templateService.removeTemplateFromConcept(scope.concept);
+            templateService.clearTemplateStylesAndMessages(scope.concept);
           }
         };
 
@@ -2222,7 +2242,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this description is unpublished, but has an SCTID
           // remove the id to allow proper deletion and update
           // Otherwise, changes 'revert' to previously saved values
-          if (!description.effectiveTime) {
+          if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
             delete description.descriptionId;
           }
 
@@ -2249,7 +2269,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if this relationship is unpublished, but has an SCTID
           // remove the id to allow proper deletion and update
           // Otherwise, changes 'revert' to previously saved values
-          if (!relationship.effectiveTime && !roleGroupOnly) {
+          if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !roleGroupOnly) {
             delete relationship.relationshipId;
           }
 
