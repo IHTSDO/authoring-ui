@@ -304,7 +304,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // otherwise, check specified target concept id
-            else if (r.target.conceptId === rt.target.conceptId) {
+            else if (r.active && r.target.conceptId === rt.target.conceptId) {
 
               matchFound = true;
               r.template = rt;
@@ -331,7 +331,7 @@ angular.module('singleConceptAuthoringApp')
 
 
       angular.forEach(concept.relationships, function (r) {
-        if (!r.template) {
+        if (r.active && !r.template) {
           if (applyStyles) {
             r.templateStyle = 'redhl';
           }
@@ -410,7 +410,7 @@ angular.module('singleConceptAuthoringApp')
 
       // otherwise, flag as outside template
       angular.forEach(concept.descriptions, function (d) {
-        if (!d.template) {
+        if (d.active && !d.template) {
           if (applyStyles) {
             d.templateStyle = 'redhl';
           }
