@@ -1018,6 +1018,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           console.debug('template concept', concept);
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
+
         });
       }
 
@@ -1523,7 +1524,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.getSelectedTemplate = templateService.getSelectedTemplate;
     $scope.selectTemplate = function (template) {
-      templateService.selectTemplate(template);
+      templateService.selectTemplate(template).then(function() {
+        document.getElementById('templateCreateBtn').click();
+        $scope.createConcept();
+      })
     };
     $scope.clearTemplate = function () {
 
