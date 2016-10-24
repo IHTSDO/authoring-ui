@@ -8,6 +8,7 @@ angular.module('singleConceptAuthoringApp')
 
     var apiEndpoint = '../template-service/';
 
+
     //
     // Internal variables
     //
@@ -85,14 +86,16 @@ angular.module('singleConceptAuthoringApp')
                 case 'fsn':
                   match = r.target.fsn;
                   break;
-                case 'term':
-                  match = r.target.fsn.match(PATTERN_PT_FROM_FSN);
-                  break;
+
                 case 'tag':
                   match = r.target.fsn.match(PATTERN_SEMANTIC_TAG);
                   break;
+
+                // TODO Default to term, discuss format with Kai
+                case 'term':
                 default:
-                // do nothing
+                  match = r.target.fsn.match(PATTERN_PT_FROM_FSN);
+                  break;
               }
 
               if (!match || !match[1] || match[1].length == 0) {
@@ -114,29 +117,76 @@ angular.module('singleConceptAuthoringApp')
       return nameValueMap;
     }
 
-    //
-    // Exposed functions
-    //
+    // function to populate concept FSNs from ids in templates
+    function initializeTemplate(template) {
 
+      var deferred = $q.defer();
+
+      console.debug('Initializing template', template.name);
+
+      if (template.initialized) {
+        deferred.resolve(template);
+      } else {
+
+        componentAuthoringUtil.setDefaultFields(template.conceptOutline);
+
+        var conceptIds = [];
+        var idNameMap = {};
+
+        angular.forEach(template.conceptOutline.relationships, function (r) {
+
+          if (r.type.conceptId && conceptIds.indexOf(r.type.conceptId) == -1) {
+            conceptIds.push(r.type.conceptId);
+          }
+          if (r.target.conceptId && conceptIds.indexOf(r.target.conceptId) == -1) {
+            conceptIds.push(r.target.conceptId);
+          }
+        });
+
+        snowowlService.bulkGetConcept(conceptIds, 'MAIN').then(function (concepts) {
+            angular.forEach(concepts.items, function (c) {
+
+              idNameMap[c.id] = c.fsn.term;
+              console.debug('setting ', c, idNameMap[c.id]);
+            });
+
+
+            console.debug('idNameMap', idNameMap);
+            angular.forEach(template.conceptOutline.relationships, function (r) {
+              console.debug('setting relationship fsn', r.type.conceptId, idNameMap[r.type.conceptId]);
+              r.type.fsn = idNameMap[r.type.conceptId];
+              r.target.fsn = idNameMap[r.target.conceptId];
+            });
+
+
+            template.initialized = true;
+            console.debug('template initialized', template);
+            deferred.resolve(template);
+          },
+          function (error) {
+            deferred.reject('Error retrieving FSNs for template concepts: ' + error.message);
+          });
+      }
+
+
+      return deferred.promise;
+    }
+
+//
+// Exposed functions
+//
     function getTemplates(refreshCache) {
       console.debug('getTemplates', templateCache);
       var deferred = $q.defer();
       if (!templateCache || refreshCache) {
 
-        $http.get(apiEndpoint + 'templates').then(function(response) {
+        $http.get(apiEndpoint + 'templates').then(function (response) {
           templateCache = response.data;
           deferred.resolve(templateCache);
-        }, function(error) {
+
+        }, function (error) {
           deferred.reject('Failed to retrieve templates: ' + error.developerMessage);
         });
-
-        // TODO Wire this to BE, using JSON temporary file for dev purposes
-       /* $http.get('shared/template-service/templates.json').then(function (response) {
-          console.debug('http templates', response);
-          templateCache = response.data;
-          deferred.resolve(templateCache);
-        });
-*/
       } else {
         console.debug('returning cached templates', templateCache);
         deferred.resolve(templateCache);
@@ -148,11 +198,15 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
 
       getTemplates(refreshCache).then(function (templates) {
+
+
         var tf = templates.filter(function (t) {
           return t.name === name;
         });
         if (tf.length == 1) {
           deferred.resolve(tf[0]);
+        } else if (tf.length > 1) {
+          deferred.reject('Multiple templates for name: ' + name);
         } else {
           deferred.reject('No template for name: ' + name);
         }
@@ -196,15 +250,17 @@ angular.module('singleConceptAuthoringApp')
         // ensure all required fields are set
         componentAuthoringUtil.setDefaultFields(tc);
 
+        console.debug('after default fields', tc);
+
         // apply temporary UUIDs and template variables/flags
         tc.conceptId = snowowlService.createGuid();
         tc.template = template;
         tc.templateComplete = false;
 
-        angular.forEach(tc.descriptions, function(d) {
+        angular.forEach(tc.descriptions, function (d) {
           d.descriptionId = snowowlService.createGuid();
         });
-        angular.forEach(tc.relationships, function(r) {
+        angular.forEach(tc.relationships, function (r) {
           r.relationshipId = snowowlService.createGuid();
         });
 
@@ -218,9 +274,9 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    //
-    // Template functionality -- consider moving to templateUtility
-    //
+//
+// Template functionality -- consider moving to templateUtility
+//
 
 
     function updateTemplateConcept(concept) {
@@ -272,13 +328,13 @@ angular.module('singleConceptAuthoringApp')
       if (!concept.conceptId) {
         concept.conceptId = snowowlService.createGuid();
       }
-      angular.forEach(concept.descriptions, function(d) {
+      angular.forEach(concept.descriptions, function (d) {
         d.templateMessages = [];
         if (!d.descriptionId) {
           d.descriptionId = snowowlService.createGuid();
         }
       });
-      angular.forEach(concept.relationships, function(r) {
+      angular.forEach(concept.relationships, function (r) {
         r.templateMessages = [];
         if (!r.relationshipId) {
           r.relationshipId = snowowlService.createGuid();
@@ -286,7 +342,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if target slot not filled, mark false
         if (r.targetSlot && !r.target.conceptId) {
-          r.templateMessages.push({type : 'Error', message : 'Template target slot cannot be empty'});
+          r.templateMessages.push({type: 'Error', message: 'Template target slot cannot be empty'});
         }
       });
 
@@ -333,7 +389,7 @@ angular.module('singleConceptAuthoringApp')
           }
           newRel.template = rt;
           newRel.templateMessages = [];
-          newRel.templateMessages.push({type : 'Message', message : 'Relationship automatically added by template'});
+          newRel.templateMessages.push({type: 'Message', message: 'Relationship automatically added by template'});
           concept.relationships.push(newRel);
 
         }
@@ -345,7 +401,7 @@ angular.module('singleConceptAuthoringApp')
           if (applyStyles) {
             r.templateStyle = 'redhl';
           }
-          r.templateMessages.push({type : 'Error', message : 'Relationship not valid for template; please remove'});
+          r.templateMessages.push({type: 'Error', message: 'Relationship not valid for template; please remove'});
         }
       });
 
@@ -386,12 +442,18 @@ angular.module('singleConceptAuthoringApp')
                 if (d.term !== templateTerm) {
                   // if apply values set, value will be replaced below, append warning
                   if (applyValues) {
-                    d.templateMessages.push({type : 'Warning', message : 'Description term updated to conform to template, previous term: ' + d.term});
+                    d.templateMessages.push({
+                      type: 'Warning',
+                      message: 'Description term updated to conform to template, previous term: ' + d.term
+                    });
                   }
 
                   // otherwise, append error
                   else {
-                    d.templateMessages.push({type : 'Warning', message : 'Description term does not conform to template, expected: ' + templateTerm});
+                    d.templateMessages.push({
+                      type: 'Warning',
+                      message: 'Description term does not conform to template, expected: ' + templateTerm
+                    });
                   }
                 }
 
@@ -409,7 +471,7 @@ angular.module('singleConceptAuthoringApp')
           }
           newDesc.template = dt;
           newDesc.templateMessages = [];
-          newDesc.templateMessages.push({type : 'Message', message :'Description automatically added by template'});
+          newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
           concept.descriptions.push(newDesc);
         }
       }
@@ -426,7 +488,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           d.templateMessages = [];
-          d.templateMessages.push({type : 'Error', message : 'Description not valid for template; please remove'});
+          d.templateMessages.push({type: 'Error', message: 'Description not valid for template; please remove'});
         }
       });
 
@@ -439,14 +501,14 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // apply top-level messages
-      var msg = { type: 'Message', message: 'Template Concept Valid'};
-      angular.forEach(concept.descriptions.concat(concept.relationships), function(component) {
-        angular.forEach(component.templateMessages, function(tm) {
+      var msg = {type: 'Message', message: 'Template Concept Valid'};
+      angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
+        angular.forEach(component.templateMessages, function (tm) {
           // overwrite with highest severity
           if (tm.type === 'Error') {
-            msg = { type: 'Error', message: 'Template Errors Found'};
+            msg = {type: 'Error', message: 'Template Errors Found'};
           } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
-            msg = { type: 'Warning', message: 'Template Warnings Found'};
+            msg = {type: 'Warning', message: 'Template Warnings Found'};
           }
         });
       });
@@ -460,7 +522,12 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function selectTemplate(template) {
-      selectedTemplate = template;
+      var deferred = $q.defer();
+      initializeTemplate(template).then(function (t) {
+        selectedTemplate = t;
+        deferred.resolve(selectedTemplate);
+      });
+      return deferred.promise;
     }
 
     function getSelectedTemplate() {
@@ -473,7 +540,7 @@ angular.module('singleConceptAuthoringApp')
 
     function isTemplateComplete(concept) {
       angular.forEach(concept.relationships, function (relationship) {
-        if (relationship.targetSlot) {
+        if (relationship.targetSlot && !relationship.target.conceptId) {
           return false;
         }
       });
