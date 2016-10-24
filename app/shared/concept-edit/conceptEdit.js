@@ -152,17 +152,19 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
         scope.getTemplateName = function() {
           return templateService.getSelectedTemplate() ? templateService.getSelectedTemplate().name : null;
-        }
+        };
 
         scope.templateApplied = false;
         scope.toggleApplyTemplate = function() {
           scope.templateApplied = !scope.templateApplied;
           if (scope.templateApplied) {
-            templateService.applyTemplateToConcept(scope.concept);
+            templateService.applyTemplateToConcept(scope.concept, false, false).then(function() {
+              console.debug('after applying template', scope.concept);
+            });
           } else {
             templateService.removeTemplateFromConcept(scope.concept);
           }
-        }
+        };
 
 
         //

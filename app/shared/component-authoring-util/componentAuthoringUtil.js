@@ -703,7 +703,6 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function setDefaultFields(concept) {
-        console.debug('set default fields', concept);
 
         if (!concept.hasOwnProperty('active')) {
           concept.active = true;
@@ -738,7 +737,6 @@ angular.module('singleConceptAuthoringApp')
             relationship.modifier = 'EXISTENTIAL';
           }
         });
-        console.debug('after default fields', concept);
       }
 
       return {

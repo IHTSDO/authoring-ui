@@ -229,7 +229,7 @@ angular.module('singleConceptAuthoringApp')
       })
     }
 
-    function termMatchesTemplate(term, templateTerm, nameValueMap) {
+    function getTermForTemplateTerm(term, templateTerm, nameValueMap) {
       var modTerm = templateTerm;
       for (var name in nameValueMap) {
         if (nameValueMap.hasOwnProperty(name)) {
@@ -237,20 +237,22 @@ angular.module('singleConceptAuthoringApp')
           modTerm = modTerm.replace(/[ ]{2,}/g, ' ');
         }
       }
-      return term === modTerm;
+      return modTerm;
     }
 
 
-    function applyTemplateToConcept(concept, stylesFlag) {
+    function applyTemplateToConcept(concept, applyValues, applyStyles) {
       var deferred = $q.defer();
 
-      console.debug('apply template to concept', selectedTemplate, concept);
+      console.debug('apply template to concept', selectedTemplate, concept, applyValues, applyStyles);
 
       // match relationships
       angular.forEach(selectedTemplate.conceptTemplate.relationships, function (rt) {
 
         var matchFound = false;
         angular.forEach(concept.relationships, function (r) {
+
+          r.templateMessages = [];
 
 
           // check by active/group/type
@@ -262,7 +264,7 @@ angular.module('singleConceptAuthoringApp')
 
               matchFound = true;
               r.template = rt;
-              if (stylesFlag) {
+              if (applyStyles) {
                 r.templateStyle = 'bluehl darken-2';
               }
               r.targetSlot = rt.targetSlot;
@@ -273,19 +275,22 @@ angular.module('singleConceptAuthoringApp')
 
               matchFound = true;
               r.template = rt;
-              if (stylesFlag) {
+              if (applyStyles) {
                 r.templateStyle = 'tealhl';
               }
+
             }
           }
         });
         if (!matchFound) {
 
           var newRel = angular.copy(rt);
-          if (stylesFlag) {
+          if (applyStyles) {
             newRel.templateStyle = 'tealhl';
           }
           newRel.template = rt;
+          newRel.templateMessages = [];
+          newRel.templateMessages.push({'WARNING': 'Relationship automatically added by template'});
           concept.relationships.push(newRel);
 
         }
@@ -293,21 +298,27 @@ angular.module('singleConceptAuthoringApp')
 
 
       angular.forEach(concept.relationships, function (r) {
-        if (!r.templateStyle && stylesFlag) {
-          r.templateStyle = 'redhl';
+        if (!r.template) {
+          if (applyStyles) {
+            r.templateStyle = 'redhl';
+          }
+          r.templateMessages.push({'ERROR': 'Relationship not valid for template; please remove'});
         }
       });
 
       // get values from target slots
       var nameValueMap = getTemplateValues(selectedTemplate, concept);
 
+      console.debug('nameValueMap', nameValueMap);
+
       // match descriptions
       for (var i = 0; i < selectedTemplate.conceptTemplate.descriptions.length; i++) {
         var dt = selectedTemplate.conceptTemplate.descriptions[i];
 
         var matchFound = false;
-        for (var j = 0; j < concept.descriptions.length; j++) {
-          var d = concept.descriptions[j];
+        angular.forEach(concept.descriptions, function (d) {
+
+          d.templateMessages = [];
 
           //    console.debug('  against existing description', d.term);
           // check by active/type/acceptability
@@ -317,7 +328,7 @@ angular.module('singleConceptAuthoringApp')
             if (d.term === dt.term) {
               matchFound = true;
               d.template = dt;
-              if (stylesFlag) {
+              if (applyStyles) {
                 d.templateStyle = 'tealhl';
               }
             }
@@ -329,21 +340,33 @@ angular.module('singleConceptAuthoringApp')
               exp = '^' + exp + '$';
 
               // if match found
-              if (d.term.match(exp)) {
+              if (d.term && d.term.match(exp)) {
                 matchFound = true;
                 d.template = dt;
-                if (stylesFlag) {
-                  d.templateStyle = termMatchesTemplate(d.term, dt.term, nameValueMap) ? 'tealhl' : 'bluehl';
+                var templateTerm = getTermForTemplateTerm(d.term, dt.term, nameValueMap);
+                if (d.term !== templateTerm) {
+                  // if apply values set, value will be replaced below, append warning
+                  if (applyValues) {
+                    d.templateMessages({'WARNING': 'Description term updated to conform to template, previous term: ' + d.term});
+                  }
+
+                  // otherwise, append error
+                  else {
+                    d.templateMessages.push({'ERROR': 'Description term does not conform to template, expected: ' + templateTerm});
+                  }
                 }
+
               }
             }
           }
-        }
+        });
 
         if (!matchFound) {
           var newDesc = angular.copy(dt);
           newDesc.templateStyle = 'bluehl lighten-2';
           newDesc.template = dt;
+          newDesc.templateMessages = [];
+          newDesc.templateMessages.push({'WARNING': 'Description automatically added by template'});
           concept.descriptions.push(newDesc);
         }
       }
@@ -352,22 +375,23 @@ angular.module('singleConceptAuthoringApp')
 
       // otherwise, flag as outside template
       angular.forEach(concept.descriptions, function (d) {
-        if (!d.templateStyle) {
+        if (!d.template) {
           console.debug('  Description not tagged, marking as erroneous');
-          d.templateStyle = 'redhl';
+          if (applyStyles) {
+            d.templateStyle = 'redhl';
+          }
+          d.templateMessages = [];
+          d.templateMessages.push({'ERROR': 'Description not valid for template; please remove'});
         }
       });
 
-      console.debug('*******************************');
-      console.debug('*******************************');
-      console.debug('*******************************');
       componentAuthoringUtil.setDefaultFields(concept);
 
-      console.debug('after default fields', concept);
+      if (applyValues) {
+        concept = replaceTemplateValues(concept, nameValueMap);
+        console.debug('applied template to concept', concept);
+      }
 
-      concept = replaceTemplateValues(concept, nameValueMap);
-
-      console.debug('applied template to concept', concept);
       deferred.resolve(concept);
 
       return deferred.promise;
