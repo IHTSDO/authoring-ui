@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('constraintService', ['$http', '$rootScope', '$q', 'snowowlService', 'metadataService','templateService',
+  .service('constraintService', ['$http', '$rootScope', '$q', 'snowowlService', 'metadataService', 'templateService',
     function ($http, $rootScope, $q, snowowlService, metadataService, templateService) {
 
 
@@ -21,15 +21,17 @@ angular.module('singleConceptAuthoringApp')
             deferred.resolve();
           } else {
             deferred.reject(error);
-          };
+          }
+          ;
         });
         return deferred.promise;
       }
 
-      function isValueAllowedForType(typeId, valueName, concept, branch) {
+      function isValueAllowedForType(typeId, valueName, branch, expr) {
         var deferred = $q.defer();
-        console.debug('isValueAllowedForType', typeId, valueName, concept, branch);
-        getConceptsForValueTypeahead(typeId, valueName, concept, branch).then(function (response) {
+        console.debug('isValueAllowedForType', typeId, valueName, branch, expr);
+
+        getConceptsForValueTypeahead(typeId, valueName, branch, expr).then(function (response) {
           if (response.length === 0) {
             deferred.reject();
           } else {
@@ -62,40 +64,60 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function getConceptsForValueTypeahead(attributeId, searchStr, concept, branch) {
-        console.debug('gcfvta', attributeId, searchStr, concept, branch);
-        var deferred = $q.defer();
-        snowowlService.getAttributeValues(branch, attributeId, searchStr).then(function (response) {
+      function getConceptsForValueTypeaheadHelper(values) {
+        var newValues = values ? values : [];
 
-          if (!response) {
-            deferred.resolve([]);
+        // remove duplicates and set FD/P status
+        for (var i = 0; i < newValues.length; i++) {
+          var status = 'FD';
+          if (newValues[i].definitionStatus === 'PRIMITIVE') {
+            status = 'P';
           }
-
-          // remove duplicates
-          for (var i = 0; i < response.length; i++) {
-            var status = 'FD';
-            if (response[i].definitionStatus === 'PRIMITIVE') {
-              status = 'P';
-            }
-            if (response[i].fsn) {
-              response[i].tempFsn = response[i].fsn.term + ' - ' + status;
-              for (var j = response.length - 1; j > i; j--) {
-                if (response[j].id === response[i].id) {
-                  response.splice(j, 1);
-                  j--;
-                }
+          if (newValues[i].fsn) {
+            newValues[i].tempFsn = newValues[i].fsn.term + ' - ' + status;
+            for (var j = newValues.length - 1; j > i; j--) {
+              if (newValues[j].id === newValues[i].id) {
+                newValues.splice(j, 1);
+                j--;
               }
             }
           }
-          deferred.resolve(response);
-        }, function (error) {
-          deferred.reject(error.message);
-        });
+        }
+        return newValues;
+      }
+
+      function getConceptsForValueTypeahead(attributeId, termFilter, branch, componentTemplate) {
+        console.debug('typeahead', attributeId, termFilter, branch, componentTemplate);
+        var deferred = $q.defer();
+
+        // if expression specified, perform direct retrieval
+        if (componentTemplate && componentTemplate.targetSlot) {
+          snowowlService.searchConcepts(branch, termFilter, componentTemplate.targetSlot.allowableRangeECL).then(function(response) {
+            var concepts = getConceptsForValueTypeaheadHelper(response);
+            console.debug('results', concepts);
+            deferred.resolve(concepts);
+          }, function(error) {
+            deferred.reject(error.message);
+          });
+        }
+
+        // otherwise, use default MRCM rules
+        else {
+          snowowlService.getAttributeValues(branch, attributeId, termFilter).then(function (response) {
+              var concepts = getConceptsForValueTypeaheadHelper(response);
+            console.debug('results', concepts);
+              deferred.resolve(concepts);
+            },
+            function (error) {
+              deferred.reject(error.message);
+            });
+        }
+
         return deferred.promise;
       }
 
 
-// expose functions
+      // expose functions
       return {
         // typeahead and value restrictions
         getDomainAttributes: getDomainAttributes,
@@ -106,5 +128,7 @@ angular.module('singleConceptAuthoringApp')
         isAttributeAllowedForConcept: isAttributeAllowedForConcept,
         isValueAllowedForType: isValueAllowedForType
       }
-    }])
+    }
+
+  ])
 ;

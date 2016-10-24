@@ -2446,7 +2446,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }, true);
 
 
-// pass mrcm service function to scope
+        // pass constraint typeahead concept search function directly
         scope.getConceptsForValueTypeahead = constraintService.getConceptsForValueTypeahead;
 
 //
