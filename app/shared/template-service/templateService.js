@@ -131,7 +131,7 @@ angular.module('singleConceptAuthoringApp')
         componentAuthoringUtil.setDefaultFields(template.conceptOutline);
 
         var conceptIds = [];
-        var idNameMap = {};
+        var idConceptMap = {};
 
         angular.forEach(template.conceptOutline.relationships, function (r) {
 
@@ -146,16 +146,16 @@ angular.module('singleConceptAuthoringApp')
         snowowlService.bulkGetConcept(conceptIds, 'MAIN').then(function (concepts) {
             angular.forEach(concepts.items, function (c) {
 
-              idNameMap[c.id] = c.fsn.term;
-              console.debug('setting ', c, idNameMap[c.id]);
+              idConceptMap[c.id] = c;
+              console.debug('setting ', c, idConceptMap[c.id]);
             });
 
 
-            console.debug('idNameMap', idNameMap);
+            console.debug('idConceptMap', idConceptMap);
             angular.forEach(template.conceptOutline.relationships, function (r) {
-              console.debug('setting relationship fsn', r.type.conceptId, idNameMap[r.type.conceptId]);
-              r.type.fsn = idNameMap[r.type.conceptId];
-              r.target.fsn = idNameMap[r.target.conceptId];
+              r.type.fsn = r.type && r.type.conceptId ? idConceptMap[r.type.conceptId].fsn.term : null;
+              r.target.fsn = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].fsn.term : null;
+              r.target.definitionStatus = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].definitionStatus : null;
             });
 
 
