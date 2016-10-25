@@ -1445,7 +1445,11 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.$on('reloadTask', function (event, data) {
-      loadTask();
+      loadTask().then(function(task) {
+        $scope.task = response;
+        getLatestClassification();
+        getLatestValidation();
+      })
     });
 
 
@@ -1488,6 +1492,33 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.viewClassificationFromSidebar = function() {
       $scope.setView('classification');
       document.getElementById('classificationMenuButton').click();
+    };
+
+    $scope.classify = function () {
+
+      notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
+
+      // start the classification
+      scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+
+        if (!response || !response.data || !response.data.id) {
+          notificationService.sendError('Error starting classification');
+          return;
+        }
+
+        if (response.data.status) {
+          notificationService.sendMessage('Classification is ' + response.data.status, 10000);
+        } else {
+          notificationService.sendMessage('Task submitted for classification', 10000);
+        }
+
+        $rootScope.$broadcast('reloadTask');
+        document.getElementById('classificationMenuButton').click();
+
+
+      }, function () {
+        // do nothing on error
+      });
     };
 
 //////////////////////////////////////////

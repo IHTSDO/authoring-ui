@@ -28,10 +28,10 @@
             popover-placement="right"
             popover-trigger="click: click"
             popover-append-to-body="true">
-      <div class="md"  ng-class="[{'md-notifications-none' : !classificationContainer.status},
-            {'md-notifications-off' : classificationContainer.status === 'FAILED'},
-            {'md-notifications' : classificationContainer.status === 'COMPLETED'},
-            {'md-notifications-paused' : classificationContainer.status === 'RUNNING'}]"
+      <div class="md"  ng-class="[{'md-notifications' : !task.latestClassificationJson.id},
+            {'md-notifications-off' : task.latestClassificationJson.status === 'FAILED'},
+            {'md-notifications' : task.latestClassificationJson.status === 'COMPLETED'},
+            {'md-notifications-paused' : task.latestClassificationJson.status === 'RUNNING'}]"
           ></div>
       <span>View/Run Classification</span>
     </button>

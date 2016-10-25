@@ -2,34 +2,40 @@
 
   <!-- Completed/Failed/Not Run indicator -->
   <button class="btn btn-default green classify"
-          ng-if="classificationContainer.status === 'COMPLETED'"
+          ng-if="task.latestClassificationJson.status === 'COMPLETED'"
           ng-click="viewClassificationFromSidebar()">
     <span class="md md-search green darken-1 iconbase"></span>
     <span class="button-link">View Classification (completed {{classificationContainer.creationDate | date : 'medium'}})
     </span>
   </button>
-  <br>
 
   <button class="btn btn-default green classify"
-          ng-if="classificationContainer.status === 'FAILED'">
+          ng-if="task.latestClassificationJson.status === 'FAILED'">
     <span class="md md-notifications-off green darken-1 iconbase"></span>
     <span class="button-link">Classification Failed</span>
   </button>
+
   <button class="btn btn-default green classify"
-          ng-if="!classificationContainer.status">
+          ng-if="!task.latestClassificationJson.status">
     <span class="md md-notifications-none green darken-1 iconbase"></span>
     <span class="button-link">No Classification Run</span>
   </button>
 
+  <!-- spacer for two buttons only -->
+  <br ng-if="classificationContainer.status !== 'RUNNING'">
+
   <!-- Start New/Running indicator -->
   <button class="btn btn-default green classify" ng-click="classify()"
+          ng-if="task.latestClassificationJson.status !== 'RUNNING'"
           ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
     <span class="md md-play-arrow green darken-1 iconbase"></span>
     <span class="button-link">Start New Classification</span>
   </button>
 
-  <button class="btn btn-default green classify" ng-if="classificationContainer.status === 'RUNNING'">
-    <div class="md md-spinner"></div>
+
+  <button class="btn btn-default green classify"
+          ng-if="task.latestClassificationJson.status === 'RUNNING'">
+    <div class="md md-refresh"></div>
     <span class="button-link">Classification Running</span>
   </button>
 </div>
