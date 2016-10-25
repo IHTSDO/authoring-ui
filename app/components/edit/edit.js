@@ -1534,6 +1534,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $rootScope.$broadcast('reloadTask');
+        document.getElementById('classificationMenuButton').click();
         notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
       }, function () {
         notificationService.sendMessage('Error submitting task for validation', 10000, null);

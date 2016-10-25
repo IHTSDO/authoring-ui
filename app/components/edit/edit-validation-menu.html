@@ -23,7 +23,7 @@
   </button>
 
   <!-- spacer for two buttons only -->
-  <br ng-if="task.latestValidationStatus !== 'NOT_TRIGGERED' && task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'">
+  <br ng-if="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED' && task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'">
 
   <button class="btn btn-default deep-purple validate ng-scope"
           ng-if="task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'"

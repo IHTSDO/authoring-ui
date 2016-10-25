@@ -23,7 +23,7 @@
       <span>Create New Concept</span></button>
 
     <button type="button" id="classificationMenuButton"
-            class="btn btn-default widget-toolbar  tooltips-right tooltips-light normal-case"
+            class="btn btn-default widget-toolbar tooltips-right classify tooltips-light normal-case"
             ng-class="[{'green darken-1' : task.latestClassificationJson}, {'grey' : !task.latestClassificationJson}]"
             popover-template="'components/edit/edit-classification-menu.html'"
             popover-placement="right"
@@ -50,17 +50,15 @@
     <!-- Switch to Feedback/Review View -- Task View Only -->
     <!-- Switch to Validate View -->
     <button type="button" id="feedbackMenuButton"
-            class="btn btn-default widget-toolbar pink1 validate tooltips-right tooltips-light normal-case"
-            ng-class="[{'pink1' : false}, {'grey' : false}]"
+            class="btn btn-default widget-toolbar tooltips-right review tooltips-light normal-case"
+            ng-class="[{'pink1' : task.status === 'IN_REVIEW' || task.status === 'REVIEW_COMPLETE'}, {'grey' : task.status !== 'IN_REVIEW' && task.status !== 'REVIEW_COMPLETE'}]"
             popover-template="'components/edit/edit-feedback-menu.html'"
             popover-placement="right"
             popover-trigger="click: click"
             popover-append-to-body="true">
-      <div class="md"  ng-class="[{'md-email' : task.latestValidationStatus === 'NOT_TRIGGERED'},
-            {'md-email' : task.latestValidationStatus === 'FAILED'},
-            {'md-email' : task.latestValidationStatus === 'COMPLETED'},
-            {'md-email' : task.latestValidationStatus === 'SCHEDULED' || task.latestValidationStatus === 'BUILDING' || task.latestValidationStatus === 'RUNNING'}]"
-      ></div>
+      <div class="md"  ng-class="[{'md-email' : task.task.feedbackMessagesStatus === 'unread'},
+            {'md-email-open' : task.feedbackMessagesStatus === 'read'},
+            {'md-email' : task.feedbackMessagesStatus === 'none'}]"></div>
       <span>Click for Review and Feedback Options</span>
     </button>
   <!--  <button ng-if="taskKey"
@@ -82,7 +80,7 @@
     <!-- Switch to Validate View -->
     <button type="button" id="validationMenuButton"
             class="btn btn-default widget-toolbar validate tooltips-right tooltips-light normal-case"
-            ng-class="[{'deep-purple lighten-1' : task.latestValidationStatus && task.validationStatus !== 'NOT_TRIGGERED'}, {'grey' : !task.latestValidationStatus || ask.latestValidationStatus === 'NOT_TRIGGERED'}]"
+            ng-class="[{'deep-purple lighten-1' : task.latestValidationStatus && task.validationStatus !== 'NOT_TRIGGERED'}, {'grey' : !task.latestValidationStatus || task.latestValidationStatus === 'NOT_TRIGGERED'}]"
             popover-template="'components/edit/edit-validation-menu.html'"
             popover-placement="right"
             popover-trigger="click: click"
