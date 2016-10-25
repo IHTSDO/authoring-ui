@@ -15,14 +15,8 @@
     <span class="button-link">Classification Failed</span>
   </button>
 
-  <button class="btn btn-default green classify"
-          ng-if="!task.latestClassificationJson.status">
-    <span class="md md-notifications-none green darken-1 iconbase"></span>
-    <span class="button-link">No Classification Run</span>
-  </button>
-
   <!-- spacer for two buttons only -->
-  <br ng-if="classificationContainer.status !== 'RUNNING'">
+  <br ng-if="task.latestClassificationJson && task.latestClassificationJson.status !== 'RUNNING'">
 
   <!-- Start New/Running indicator -->
   <button class="btn btn-default green classify" ng-click="classify()"

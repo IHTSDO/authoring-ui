@@ -28,7 +28,7 @@
             popover-placement="right"
             popover-trigger="click: click"
             popover-append-to-body="true">
-      <div class="md"  ng-class="[{'md-notifications' : !task.latestClassificationJson.id},
+      <div class="md"  ng-class="[{'md-notifications-none' : !task.latestClassificationJson},
             {'md-notifications-off' : task.latestClassificationJson.status === 'FAILED'},
             {'md-notifications' : task.latestClassificationJson.status === 'COMPLETED'},
             {'md-notifications-paused' : task.latestClassificationJson.status === 'RUNNING'}]"
