@@ -38,44 +38,18 @@
     </button>
 
 
-    <!--
-        &lt;!&ndash; Switch to Classify View &ndash;&gt;
-        <button type="button"
-                class="btn btn-default widget-toolbar green darken-1 tooltips-right tooltips-light normal-case"
-                ng-click="setView('classification')"
-                ng-disabled="!classificationContainer.id">
-          <div class="md md-notifications"></div>
-          <span>Switch to Classify View</span></button>-->
 
     <!-- Switch to Feedback/Review View -- Task View Only -->
-    <!-- Switch to Validate View -->
     <button type="button" id="feedbackMenuButton"
             class="btn btn-default widget-toolbar tooltips-right review tooltips-light normal-case"
-            ng-class="[{'pink1' : task.status === 'IN_REVIEW' || task.status === 'REVIEW_COMPLETE'}, {'grey' : task.status !== 'IN_REVIEW' && task.status !== 'REVIEW_COMPLETE'}]"
+            ng-class="[{'pink1' : task.status === 'In Review' || task.status === 'Review Completed'}, {'grey' : task.status !== 'In Review' && task.status !== 'Review Completed'}]"
             popover-template="'components/edit/edit-feedback-menu.html'"
             popover-placement="right"
             popover-trigger="click: click"
             popover-append-to-body="true">
-      <div class="md"  ng-class="[{'md-email' : task.task.feedbackMessagesStatus === 'unread'},
-            {'md-email-open' : task.feedbackMessagesStatus === 'read'},
-            {'md-email' : task.feedbackMessagesStatus === 'none'}]"></div>
+      <div class="md md-email"></div>
       <span>Click for Review and Feedback Options</span>
     </button>
-  <!--  <button ng-if="taskKey"
-            type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
-
-            ng-disabled="task.status === 'New'" ng-show="task.status === 'New'"
-            ng-click="viewReview()">
-      <div class="md md-email"></div>
-      <span>Review Not Available</span></button>
-
-    <button ng-if="taskKey"
-            type="button" class="btn btn-default widget-toolbar review pink1 tooltips-right tooltips-light normal-case"
-
-            ng-show="task.status !== 'New'"
-            ng-click="viewReview()">
-      <div class="md md-email"></div>
-      <span>Switch to Feedback View</span></button>-->
 
     <!-- Switch to Validate View -->
     <button type="button" id="validationMenuButton"
