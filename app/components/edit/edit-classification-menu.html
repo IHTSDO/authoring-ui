@@ -1,0 +1,52 @@
+<div class="green">
+
+  <!-- Completed/Failed/Not Run indicator -->
+  <button class="btn btn-default green classify"
+          ng-if="classificationContainer.status === 'COMPLETED'"
+          ng-click="viewClassificationFromSidebar()">
+    <span class="md md-search green darken-1 iconbase"></span>
+    <span class="button-link">View Classification (completed {{classificationContainer.creationDate | date : 'medium'}})
+    </span>
+  </button>
+  <br>
+
+  <button class="btn btn-default green classify"
+          ng-if="classificationContainer.status === 'FAILED'">
+    <span class="md md-notifications-off green darken-1 iconbase"></span>
+    <span class="button-link">Classification Failed</span>
+  </button>
+  <button class="btn btn-default green classify"
+          ng-if="!classificationContainer.status">
+    <span class="md md-notifications-none green darken-1 iconbase"></span>
+    <span class="button-link">No Classification Run</span>
+  </button>
+
+  <!-- Start New/Running indicator -->
+  <button class="btn btn-default green classify" ng-click="classify()"
+          ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
+    <span class="md md-play-arrow green darken-1 iconbase"></span>
+    <span class="button-link">Start New Classification</span>
+  </button>
+
+  <button class="btn btn-default green classify" ng-if="classificationContainer.status === 'RUNNING'">
+    <div class="md md-spinner"></div>
+    <span class="button-link">Classification Running</span>
+  </button>
+</div>
+<!--
+   creationDate
+:
+"2016-10-25T16:52:13Z"
+id
+:
+"c0c6d3c6-7bbd-494a-ae4d-0b655f1e1f70"
+reasonerId
+:
+"org.semanticweb.elk.elk.reasoner.factory"
+status
+:
+"RUNNING"
+userId
+:
+"snowowl"
+-->

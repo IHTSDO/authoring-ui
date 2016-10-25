@@ -1482,6 +1482,14 @@ angular.module('singleConceptAuthoringApp.edit', [
       return deferred.promise;
     }
 
+    /////////////////////////////
+    // Sidebar Menu Controls
+    /////////////////////////////
+    $scope.viewClassificationFromSidebar = function() {
+      $scope.setView('classification');
+      document.getElementById('classificationMenuButton').click();
+    };
+
 //////////////////////////////////////////
 // Initialization
 //////////////////////////////////////////
