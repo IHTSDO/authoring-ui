@@ -155,7 +155,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.validateAgainstTemplate = function () {
-          templateService.applyTemplateToConcept(scope.concept, false, false).then(function () {
+          templateService.applyTemplateToConcept(scope.concept, false, true, false).then(function () {
             console.debug('template validation result', scope.concept);
           }, function (error) {
             notificationService.sendError('Error applying template: ' + error);
