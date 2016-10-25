@@ -1445,11 +1445,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.$on('reloadTask', function (event, data) {
-      loadTask().then(function(task) {
-        $scope.task = response;
-        getLatestClassification();
-        getLatestValidation();
-      })
+      loadTask();
     });
 
 
@@ -1494,6 +1490,16 @@ angular.module('singleConceptAuthoringApp.edit', [
       document.getElementById('classificationMenuButton').click();
     };
 
+    $scope.viewValidationFromSidebar = function() {
+      $scope.setView('validation');
+      document.getElementById('validationMenuButton').click();
+    };
+
+    //
+    // Sidebar menu actions -- duplicative of taskDetail
+    // TODO Move this into respective services (classificationService, validationService, promotionService, etc.)
+    //
+
     $scope.classify = function () {
 
       notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
@@ -1518,6 +1524,20 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       }, function () {
         // do nothing on error
+      });
+    };
+
+    $scope.validate = function () {
+      notificationService.sendMessage('Submitting task for validation...');
+
+      // NOTE: Validation does not lock task
+
+      scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        $rootScope.$broadcast('reloadTask');
+        notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
+      }, function () {
+        notificationService.sendMessage('Error submitting task for validation', 10000, null);
+        $rootScope.$broadcast('reloadTask');
       });
     };
 
