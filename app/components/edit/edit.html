@@ -5,14 +5,14 @@
   <div class="button-nav">
 
     <!-- Inactivation button (shown only if service has concept set) -->
-<!--
-    <button
-      type="button" ng-click="setView('inactivation')"
-      ng-show="isInactivation"
-      class="btn btn-default red widget-toolbar tooltips-right tooltips-light normal-case">
-      <div class="md fa-sca fa-power-off"></div>
-      <span>Inactivation</span></button>
--->
+    <!--
+        <button
+          type="button" ng-click="setView('inactivation')"
+          ng-show="isInactivation"
+          class="btn btn-default red widget-toolbar tooltips-right tooltips-light normal-case">
+          <div class="md fa-sca fa-power-off"></div>
+          <span>Inactivation</span></button>
+    -->
 
     <!-- Create new concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
@@ -22,13 +22,29 @@
       <div class="md fa-sca fa-edit"></div>
       <span>Create New Concept</span></button>
 
-    <!-- Switch to Classify View -->
-    <button type="button"
+    <button type="button" id="classificationMenuButton"
             class="btn btn-default widget-toolbar green darken-1 tooltips-right tooltips-light normal-case"
-            ng-click="setView('classification')"
-            ng-disabled="!classificationContainer.id">
-      <div class="md md-notifications"></div>
-      <span>Switch to Classify View</span></button>
+            popover-template="'components/edit/edit-classification-menu.html'"
+            popover-placement="right"
+            popover-trigger="click: click"
+            popover-append-to-body="true">
+      <div class="md"  ng-class="[{'md-notifications-none' : !classificationContainer.status},
+            {'md-notifications-off' : classificationContainer.status === 'FAILED'},
+            {'md-notifications' : classificationContainer.status === 'COMPLETED'},
+            {'md-notifications-paused' : classificationContainer.status === 'RUNNING'}]"
+          ></div>
+      <span>View/Run Classification</span>
+    </button>
+
+
+    <!--
+        &lt;!&ndash; Switch to Classify View &ndash;&gt;
+        <button type="button"
+                class="btn btn-default widget-toolbar green darken-1 tooltips-right tooltips-light normal-case"
+                ng-click="setView('classification')"
+                ng-disabled="!classificationContainer.id">
+          <div class="md md-notifications"></div>
+          <span>Switch to Classify View</span></button>-->
 
     <!-- Switch to Feedback/Review View -- Task View Only -->
     <button ng-if="taskKey"
@@ -150,7 +166,8 @@
                  style="margin-right:0px;">
 
               <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()">
+                   branch="targetBranch" static="branchLocked || !isOwnTask"
+                   ui-state-update-fn="updateEditListUiState()">
               </div>
             </div>
 
@@ -205,7 +222,8 @@
             <div class="no-gutter grey darken-3 panel-height col-md-5"
                  style="margin-right:0px;">
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
-                   branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
+                   branch="targetBranch" static="branchLocked || !isOwnTask"
+                   ui-state-update-fn="updateEditListUiState()"
               >
               </div>
             </div>
