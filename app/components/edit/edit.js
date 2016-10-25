@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService) {
 
 
 
@@ -638,7 +638,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if ($scope.concepts.length === $scope.editList.length) {
           notificationService.sendMessage('All concepts loaded', 10000, null);
           // ensure loaded concepts match order of edit list
-          $scope.concepts.sort(function(a, b) {
+          $scope.concepts.sort(function (a, b) {
             return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
           });
           $scope.updateEditListUiState();
@@ -1485,14 +1485,19 @@ angular.module('singleConceptAuthoringApp.edit', [
     /////////////////////////////
     // Sidebar Menu Controls
     /////////////////////////////
-    $scope.viewClassificationFromSidebar = function() {
+    $scope.viewClassificationFromSidebar = function () {
       $scope.setView('classification');
       document.getElementById('classificationMenuButton').click();
     };
 
-    $scope.viewValidationFromSidebar = function() {
+    $scope.viewValidationFromSidebar = function () {
       $scope.setView('validation');
       document.getElementById('validationMenuButton').click();
+    };
+
+    $scope.viewReviewFromSidebar = function () {
+      $scope.setView('feedback');
+      document.getElementById('feedbackMenuButton').click();
     };
 
     //
@@ -1542,6 +1547,56 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     };
 
+    $scope.unsavedConcepts = null;
+    $scope.toggleReview = function () {
+      console.debug('toggleReview', $scope.task.status);
+      switch ($scope.task.status) {
+        case 'New':
+        case 'In Progress':
+
+          if ($scope.unsavedConcepts) {
+            reviewService.submitForReview($scope.task).then(function() {
+              loadTask();
+              notificationService.sendMessage('Submitted for review', 3000);
+            })
+          } else {
+            // check for unsaved content
+            reviewService.getUnsavedContent($scope.task).then(function (unsavedConcepts) {
+              if (unsavedConcepts.length > 0) {
+               $scope.unsavedConcepts = unsavedConcepts;
+              } else {
+                reviewService.submitForReview($scope.task).then(function() {
+                  loadTask();
+                  notificationService.sendMessage('Submitted for review', 3000);
+                })
+              }
+
+            }, function (error) {
+              $scope.unsavedConcepts = [{conceptId: 'ERROR', fsn: 'Could not check for unsaved content'}]
+            });
+          }
+          break;
+        case 'In Review':
+        case 'Review Complete':
+          accountService.getRoleForTask($scope.task).then(function (role) {
+            if (role === 'AUTHOR') {
+              reviewService.cancelReview($scope.task).then(function() {
+                loadTask();
+                notificationService.sendMessage('Review cancelled', 3000);
+              })
+            } else {
+              reviewService.unclaimReview($scope.task).then(function() {
+                $location.url('review-tasks');
+                notificationService.sendMessage('Review unclaimed', 3000);
+              });
+            }
+          });
+          break;
+        default:
+          notificationService.sendError('Unexpected task status: ' + $scope.task.status);
+      }
+    };
+
 //////////////////////////////////////////
 // Initialization
 //////////////////////////////////////////
@@ -1588,10 +1643,13 @@ angular.module('singleConceptAuthoringApp.edit', [
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
 
+              console.debug('role', role);
+
                 notificationService.sendMessage('Task details loaded', 3000);
 
                 // set role functionality and initial view
                 $scope.isOwnTask = role === 'AUTHOR';
+                $scope.role = role;
                 setBranchFunctionality($scope.task.branchState);
                 $scope.setInitialView();
               },
@@ -1606,8 +1664,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                 notificationService.sendMessage('Task details loaded', 3000);
 
                 // set role functionality and initial view
-                var role = 'AUTHOR';
-                $scope.isOwnTask = role === 'AUTHOR';
+                $scope.role = 'UNDEFINED';
+                $scope.isOwnTask = $scope.role === 'AUTHOR';
                 setBranchFunctionality($scope.task.branchState);
                 $scope.setInitialView();
               });

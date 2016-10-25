@@ -1,52 +1,46 @@
-<div class="deep-purple">
+<div class="pink1">
 
-  <!-- Completed/Failed/Not Run indicator -->
-  <button class="btn btn-default deep-purple validate"
-          ng-if="task.latestValidationStatus === 'COMPLETED'"
-          ng-click="viewValidationFromSidebar()">
-    <span class="md md-search deep-purple darken-2 iconbase"></span>
-    <span class="button-link">View Validation Report</span>
+  <!-- View Review & Feedback -->
+  <button class="btn btn-default pink1 review"
+          ng-click="viewReviewFromSidebar()">
+    <span class="md md-search pink1 darken-2 iconbase"></span>
+    <span class="button-link">View Review and Feedback</span>
     </span>
   </button>
 
+  <!-- Spacer always present -- authors can always access traceability from button above-->
+  <br>
 
-  <button class="btn btn-default deep-purple validate"
-          ng-if="task.latestValidationStatus === 'FAILED'">
-      <span class="glyphicon glyphicon-ban-circle deep-purple darken-2 iconbase"></span>
-    <span class="button-link">Validation Failed</span>
+
+  <button class="btn btn-default pink1 review"
+          ng-if="task.status === 'New' || task.status === 'In Progress'"
+          ng-click="toggleReview()">
+    <span class="md md-thumb-up pink1 darken-2 iconbase"></span>
+    <span ng-if="!unsavedConcepts || unsavedConcepts.length == 0" class="button-link">Submit for Review</span>
+    <span ng-if="unsavedConcepts && unsavedConcepts.length == 0" class="button-link">Submit Anyways</span>
   </button>
 
-  <button class="btn btn-default deep-purple validate"
-          ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || task.latestValidationStatus === 'SCHEDULED')">
-    <span class="md md-refresh deep-purple darken-2 iconbase"></span>
-    <span class="button-link">Validation Running</span>
+  <button class="btn btn-default pink1 review"
+          ng-if="role === 'AUTHOR'"
+          ng-click="toggleReview()">
+    <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
+    <span class="button-link">Cancel Review</span>
   </button>
 
-  <!-- spacer for two buttons only -->
-  <br ng-if="task.latestValidationStatus !== 'NOT_TRIGGERED' && task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'">
-
-  <button class="btn btn-default deep-purple validate ng-scope"
-          ng-if="task.latestValidationStatus && (task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED')"
-          ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked"
-          ng-click="validate()" style="text-transform: none">
-    <span class="md md-play-arrow deep-purple darken-2 iconbase"></span>
-    <span class="button-link">Run New Validation</span>
+  <button class="btn btn-default pink1 review ng-scope"
+          ng-if="role === 'REVIEWER'"
+          ng-click="toggleReview()">
+    <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
+    <span class="button-link">Unclaim Review</span>
   </button>
+
+  <div ng-show="unsavedConcepts.length > 0">
+    <h4>You have unsaved content on this task. Save changes first or click "Submit Anyways" to submit for review.</h4>
+    <table class="table">
+      <tr ng-repeat="uc in unsavedConcepts">
+        <td>{{uc.conceptId}}</td><td>{{uc.fsn}}</td>
+      </tr>
+    </table>
+    <h4>C</h4>
+  </div>
 </div>
-<!--
-   creationDate
-:
-"2016-10-25T16:52:13Z"
-id
-:
-"c0c6d3c6-7bbd-494a-ae4d-0b655f1e1f70"
-reasonerId
-:
-"org.semanticweb.elk.elk.reasoner.factory"
-status
-:
-"RUNNING"
-userId
-:
-"snowowl"
--->
