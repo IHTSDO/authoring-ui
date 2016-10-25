@@ -265,7 +265,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
         // replace template values (i.e. to replace display $term-x with x
-        var nameValueMap = getTemplateValues(selectedTemplate, tc);
+        var nameValueMap = getTemplateValues(template, tc);
         replaceTemplateValues(tc, nameValueMap);
 
         console.debug('template concept', tc);
@@ -282,7 +282,7 @@ angular.module('singleConceptAuthoringApp')
     function updateTemplateConcept(concept) {
       var deferred = $q.defer();
       clearTemplateStylesAndMessages(concept);
-      var nameValueMap = getTemplateValues(selectedTemplate, concept);
+      var nameValueMap = getTemplateValues(concept.template, concept);
       replaceTemplateValues(concept, nameValueMap);
 
       concept.templateComplete = isTemplateComplete(concept);
@@ -318,45 +318,46 @@ angular.module('singleConceptAuthoringApp')
     function applyTemplateToConcept(concept, applyValues, applyStyles) {
       var deferred = $q.defer();
 
-      console.debug('apply template to concept', selectedTemplate, concept, applyValues, applyStyles);
+      console.debug('apply template to concept', concept.template, concept, applyValues, applyStyles);
+
+      // use the selected template if no template already present
+      if (!concept.template) {
+        concept.template = selectedTemplate;
+      }
 
       // completion flag
       var templateComplete = true;
 
-      // reset template messages and GUIDs for descriptions, relationships, and top-level concept
+      // reset all template variables
       concept.templateMessages = [];
       if (!concept.conceptId) {
         concept.conceptId = snowowlService.createGuid();
       }
       angular.forEach(concept.descriptions, function (d) {
+        d.template = null;
+        d.templateStyle = null;
         d.templateMessages = [];
         if (!d.descriptionId) {
           d.descriptionId = snowowlService.createGuid();
         }
       });
       angular.forEach(concept.relationships, function (r) {
+        r.template = null;
+        r.templateStyle = null;
         r.templateMessages = [];
         if (!r.relationshipId) {
           r.relationshipId = snowowlService.createGuid();
         }
-
-        // if target slot not filled, mark false
-        if (r.targetSlot && !r.target.conceptId) {
-          r.templateMessages.push({type: 'Error', message: 'Template target slot cannot be empty'});
-        }
       });
 
       // match relationships
-      angular.forEach(selectedTemplate.conceptOutline.relationships, function (rt) {
+      angular.forEach(concept.template.conceptOutline.relationships, function (rt) {
 
         var matchFound = false;
         angular.forEach(concept.relationships, function (r) {
 
-
-
           // check by active/group/type
           if (r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
-
 
             // if a target slot, assign template and target slot
             if (rt.targetSlot) {
@@ -367,6 +368,12 @@ angular.module('singleConceptAuthoringApp')
                 r.templateStyle = 'bluehl darken-2';
               }
               r.targetSlot = rt.targetSlot;
+
+
+              // if target slot not filled, mark error
+              if (!r.target.conceptId) {
+                r.templateMessages.push({type: 'Error', message: 'Template target slot cannot be empty'});
+              }
             }
 
             // otherwise, check specified target concept id
@@ -406,10 +413,10 @@ angular.module('singleConceptAuthoringApp')
       });
 
       // get values from target slots
-      var nameValueMap = getTemplateValues(selectedTemplate, concept);
+      var nameValueMap = getTemplateValues(concept.template, concept);
 
       // match descriptions
-      angular.forEach(selectedTemplate.conceptOutline.descriptions, function (dt) {
+      angular.forEach(concept.template.conceptOutline.descriptions, function (dt) {
         var matchFound = false;
         angular.forEach(concept.descriptions, function (d) {
 
