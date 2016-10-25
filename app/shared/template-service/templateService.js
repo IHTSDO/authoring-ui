@@ -315,7 +315,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function applyTemplateToConcept(concept, applyValues, applyStyles) {
+    function applyTemplateToConcept(concept, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
 
       console.debug('apply template to concept', concept.template, concept, applyValues, applyStyles);
@@ -371,7 +371,7 @@ angular.module('singleConceptAuthoringApp')
 
 
               // if target slot not filled, mark error
-              if (!r.target.conceptId) {
+              if (applyMessages && !r.target.conceptId) {
                 r.templateMessages.push({type: 'Error', message: 'Template target slot cannot be empty'});
               }
             }
@@ -391,12 +391,14 @@ angular.module('singleConceptAuthoringApp')
         if (!matchFound) {
 
           var newRel = angular.copy(rt);
+          newRel.template = rt;
+          newRel.templateMessages = [];
           if (applyStyles) {
             newRel.templateStyle = 'tealhl';
           }
-          newRel.template = rt;
-          newRel.templateMessages = [];
-          newRel.templateMessages.push({type: 'Message', message: 'Relationship automatically added by template'});
+          if (applyMessages) {
+            newRel.templateMessages.push({type: 'Message', message: 'Relationship automatically added by template'});
+          }
           concept.relationships.push(newRel);
 
         }
@@ -408,7 +410,9 @@ angular.module('singleConceptAuthoringApp')
           if (applyStyles) {
             r.templateStyle = 'redhl';
           }
-          r.templateMessages.push({type: 'Error', message: 'Relationship not valid for template; please remove'});
+          if (applyMessages) {
+            r.templateMessages.push({type: 'Error', message: 'Relationship not valid for template; please remove'});
+          }
         }
       });
 
@@ -447,14 +451,17 @@ angular.module('singleConceptAuthoringApp')
                 if (d.term !== templateTerm) {
                   // if apply values set, value will be replaced below, append warning
                   if (applyValues) {
-                    d.templateMessages.push({
-                      type: 'Warning',
-                      message: 'Description term updated to conform to template, previous term: ' + d.term
-                    });
+                    d.term = templateTerm;
+                    if (applyMessages) {
+                      d.templateMessages.push({
+                        type: 'Warning',
+                        message: 'Description term updated to conform to template, previous term: ' + d.term
+                      });
+                    }
                   }
 
                   // otherwise, append error
-                  else {
+                  else if (applyMessages) {
                     d.templateMessages.push({
                       type: 'Warning',
                       message: 'Description term does not conform to template, expected: ' + templateTerm
@@ -476,7 +483,9 @@ angular.module('singleConceptAuthoringApp')
           }
           newDesc.template = dt;
           newDesc.templateMessages = [];
-          newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
+          if (applyMessages) {
+            newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
+          }
           concept.descriptions.push(newDesc);
         }
       });
@@ -494,7 +503,9 @@ angular.module('singleConceptAuthoringApp')
           }
 
           d.templateMessages = [];
-          d.templateMessages.push({type: 'Error', message: 'Description not valid for template; please remove'});
+          if (applyMessages) {
+            d.templateMessages.push({type: 'Error', message: 'Description not valid for template; please remove'});
+          }
         }
       });
 
@@ -507,19 +518,21 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // apply top-level messages
-      var msg = {type: 'Message', message: 'Template Concept Valid'};
-      angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
-        angular.forEach(component.templateMessages, function (tm) {
-          // overwrite with highest severity
-          if (tm.type === 'Error') {
-            msg = {type: 'Error', message: 'Template Errors Found'};
-          } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
-            msg = {type: 'Warning', message: 'Template Warnings Found'};
-          }
+      if (applyMessages) {
+        var msg = {type: 'Message', message: 'Template Concept Valid'};
+        angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
+          angular.forEach(component.templateMessages, function (tm) {
+            // overwrite with highest severity
+            if (tm.type === 'Error') {
+              msg = {type: 'Error', message: 'Template Errors Found'};
+            } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
+              msg = {type: 'Warning', message: 'Template Warnings Found'};
+            }
+          });
         });
-      });
-      concept.templateMessages.push(msg);
-      console.debug('concept messages', msg, concept.templateMessages);
+        concept.templateMessages.push(msg);
+        console.debug('concept messages', msg, concept.templateMessages);
+      }
 
 
       deferred.resolve(concept);
@@ -551,6 +564,14 @@ angular.module('singleConceptAuthoringApp')
         }
       });
       return true;
+    }
+
+    function isProjectTemplateConcept(projectKey, concept) {
+
+    }
+
+    function markProjectTemplateConceptComplete(projectKey, concept) {
+
     }
 
     return {
