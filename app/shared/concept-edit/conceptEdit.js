@@ -157,6 +157,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isSctid = snowowlService.isSctid;
 
         scope.removeTemplate = function () {
+
+          console.debug('remove template', scope.concept);
           // if SCTID, remove UI State
           if (snowowlService.isSctid(scope.concept.conceptId)) {
             templateService.removeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function () {
