@@ -55,7 +55,8 @@
   </style>
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
-    <div ng-show="template" class="row grey darken-4 concept-headers no-padding" ng-class="getConceptStyle()" style="margin-right:0px;">
+    <div ng-show="template" class="row grey darken-4 concept-headers no-padding" ng-class="getConceptStyle()"
+         style="margin-right:0px;">
 
       <div class="pull-left col-md-1 no-padding">
 
@@ -72,9 +73,12 @@
 
       </div>
       <div class="col-md-11" style="margin-left:-25px;">
-        <span style="margin-left:-18.5px;padding-top:25px;">Template: {{template.name}}, version {{template.version}}</span>
+        <span
+          style="margin-left:-18.5px;padding-top:25px;">Template: {{template.name}}, version {{template.version}}</span>
         &nbsp;&nbsp;
-        <button class="btn btn-default blue darken-2" ng-click="removeTemplate()" style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">&nbsp;Remove Template&nbsp;</button>
+        <button class="btn btn-default blue darken-2" ng-click="removeTemplate()"
+                style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">&nbsp;Remove
+          Template&nbsp;</button>
       </div>
     </div>
 
@@ -135,16 +139,14 @@
                   class="blue lighten-2 btn-default tooltips-bottom editbuttons small-buttons"
                   ng-if="template">
             <img src="images/snodragon_blue_on_black.png" style="width:15px; margin-bottom:3px;">
-            <span>SnoDragon Template<br><br> {{template.name}}<br> Version {{template.version}}</span>
-            <br>
-            <button class="btn btn-default blue darken-2" ng-click="removeTemplate()" style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">&nbsp;Remove Template&nbsp;</button>
+            <span>SnoDragon Template<br><br> {{template.name}}<br> Version {{template.version}}<br><br><a ng-click="removeTemplate()">Remove</a></span>
           </button>
-<!--
-          <button type="button"
-                  class="blue lighten-2 btn-default md md-playlist-add tooltips-bottom editbuttons small-buttons"
-                  ng-if="template">
-            <span>Template Concept<br><br> {{template.name}}<br> Version {{template.version}}</span>
-          </button>-->
+          <!--
+                    <button type="button"
+                            class="blue lighten-2 btn-default md md-playlist-add tooltips-bottom editbuttons small-buttons"
+                            ng-if="template">
+                      <span>Template Concept<br><br> {{template.name}}<br> Version {{template.version}}</span>
+                    </button>-->
 
           <!-- control buttons -->
           <button type="button" style="vertical-align: bottom"

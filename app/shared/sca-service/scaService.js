@@ -471,7 +471,7 @@ angular.module('singleConceptAuthoringApp')
             console.error('Must specify panelId to delete UI state');
             return {};
           }
-          return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/ui-state/' + panelId).then(
+          return $http.delete(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/shared-ui-state/' + panelId).then(
             function (response) {
               return response.data;
             }, function (error) {
