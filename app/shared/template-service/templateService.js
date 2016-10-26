@@ -566,13 +566,66 @@ angular.module('singleConceptAuthoringApp')
       return true;
     }
 
-    function isProjectTemplateConcept(projectKey, concept) {
+    //
+    // Template "flagging" functions to track active templates across sessions
+    // NOTE: In absence of traceability or similar service, "faking" this with shared UI State
+    //
 
+    // add concept to project master list (intended as reference for what concepts were created by what templates)
+    function addConceptIdToTemplateList(projectKey, conceptId, templateName, templateVersion) {
+      var deferred = $q.defer();
+      scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list').then(function (list) {
+        var item = {
+          conceptId : conceptId,
+          templateName : templateName,
+          templateVersion : templateVersion,
+          creationDate : new Date().getTime()
+        };
+        list.push(item);
+        scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list', list).then(function () {
+          deferred.resolve();
+        }, function (error) {
+          deferred.reject('UI State Error: ' + error.message);
+        })
+      });
+      return deferred.promise;
     }
 
-    function markProjectTemplateConceptComplete(projectKey, concept) {
 
+    function storeTemplateForConcept(projectKey, conceptId, template) {
+      var deferred = $q.defer();
+      scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId, template).then(function () {
+        addConceptIdToTemplateList(projectKey, conceptId).then(function () {
+          deferred.resolve();
+        }, function (error) {
+          deferred.reject('UI State Error: ' + error.message);
+        });
+      }, function (error) {
+        deferred.reject('Shared UI-State Error: ' + error.message);
+      });
+      return deferred.promise;
     }
+
+    function removeTemplateForConcept(projectKey, conceptId) {
+      var deferred = $q.defer();
+      scaService.deleteSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId).then(function () {
+        deferred.resolve();
+      }, function (error) {
+        deferred.reject('Shared UI-State Error: ' + error.message);
+      });
+      return deferred.promise;
+    }
+
+    function getTemplateForConcept(projectKey, conceptId) {
+      var deferred = $q.defer();
+      scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId).then(function (template) {
+        deferred.resolve(template);
+      }, function (error) {
+        deferred.reject('Shared UI-State Error: ' + error.message);
+      });
+      return deferred.promise;
+    }
+
 
     return {
 
@@ -593,7 +646,12 @@ angular.module('singleConceptAuthoringApp')
       updateTemplateConcept: updateTemplateConcept,
       applyTemplateToConcept: applyTemplateToConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
-      isTemplateComplete: isTemplateComplete
+      isTemplateComplete: isTemplateComplete,
+
+      // template-flagging
+      storeTemplateForConcept: storeTemplateForConcept,
+      removeTemplateForConcept: removeTemplateForConcept,
+      getTemplateForConcept: getTemplateForConcept
     };
 
   })
