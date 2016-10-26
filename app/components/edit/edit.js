@@ -672,9 +672,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // verify that this SCTID does not exist in the edit list
-      var conceptPresent = $scope.concepts.filter(function(c) {
-        return c.conceptId === conceptId;
-      }).length > 0;
+      var conceptPresent = $scope.concepts.filter(function (c) {
+          return c.conceptId === conceptId;
+        }).length > 0;
 
       if (conceptPresent) {
         notificationService.sendWarning('Concept already added', 5000);
@@ -1503,7 +1503,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     //
     // Sidebar menu actions -- duplicative of taskDetail
-    // TODO Move this into respective services (classificationService, validationService, promotionService, etc.)
     //
 
     $scope.classify = function () {
@@ -1540,7 +1539,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $rootScope.$broadcast('reloadTask');
-        document.getElementById('classificationMenuButton').click();
+        document.getElementById('validationMenuButton').click();
         notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
       }, function () {
         notificationService.sendMessage('Error submitting task for validation', 10000, null);
@@ -1558,8 +1557,8 @@ angular.module('singleConceptAuthoringApp.edit', [
     // watch for concept changes to update the unsaved content list (if present)
     $scope.$on('conceptEdit.conceptChange', function () {
       console.debug('conceptChange detected', $scope.reviewChecks.unsavedConcepts);
-      if (reviewChecks) {
-        reviewService.checkReviewPrerequisites($scope.task).then(function(response) {
+      if ($scope.reviewChecks) {
+        reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
           $scope.reviewChecks = response;
         })
       }
@@ -1578,9 +1577,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           if (ignoreWarnings) {
             reviewService.submitForReview($scope.task).then(function () {
-              $scope.unsavedConcepts = null;
               loadTask();
               notificationService.sendMessage('Submitted for review', 3000);
+              document.getElementById('feedbackMenuButton').click();
             }, function (error) {
               notificationService.sendError('Error submitting for review: ' + error);
             });
@@ -1588,18 +1587,22 @@ angular.module('singleConceptAuthoringApp.edit', [
             // check for unsaved content
             reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
 
-              if (!response.hasChangedContent && response.unsavedConcepts && response.unsavedConcepts.length == 0) {
+              console.debug('review prerequisites', response);
+
+              if (response.hasChangedContent && response.unsavedConcepts && response.unsavedConcepts.length == 0) {
                 reviewService.submitForReview($scope.task).then(function () {
                   loadTask();
+                  notificationService.sendMessage('Submitted for review', 3000);
+                  document.getElementById('feedbackMenuButton').click();
                 }, function (error) {
                   notificationService.sendError('Error submitting for review: ' + error);
                 });
               } else {
-                console.debug('review checks', response);
+                console.debug('review checks detected', response);
                 $scope.reviewChecks = response;
               }
             }, function (error) {
-              $scope.reviewChecks = { error : 'Could not check review prerequisites'}
+              $scope.reviewChecks = {error: 'Could not check review prerequisites'}
             });
           }
 
@@ -1611,6 +1614,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               reviewService.cancelReview($scope.task).then(function () {
                 loadTask();
                 notificationService.sendMessage('Review cancelled', 3000);
+                document.getElementById('feedbackMenuButton').click();
               }, function (error) {
                 notificationService.sendError('Error cancelling review: ' + error);
               });
