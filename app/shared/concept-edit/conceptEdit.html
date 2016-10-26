@@ -55,7 +55,7 @@
   </style>
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
-    <div ng-show="template && isSctid(concept.conceptId)" class="row grey darken-4 concept-headers no-padding" ng-class="getConceptStyle()"
+    <div ng-show="template" class="row grey darken-4 concept-headers no-padding" ng-class="getConceptStyle()"
          style="margin-right:0px;">
 
       <div class="pull-left col-md-1 no-padding">
@@ -139,7 +139,7 @@
                   class="blue lighten-2 btn-default tooltips-bottom editbuttons small-buttons"
                   ng-if="template">
             <img src="images/snodragon_blue_on_black.png" style="width:15px; margin-bottom:3px;">
-            <span>SnoDragon Template<br><br> {{template.name}}<br> Version {{template.version}}<br><br><a ng-show="template && isSctid(concept.conceptId)" ng-click="removeTemplate()">Remove</a></span>
+            <span>SnoDragon Template<br><br> {{template.name}}<br> Version {{template.version}}<br><br><a ng-show="template" ng-click="removeTemplate()">Remove</a></span>
           </button>
           <!--
                     <button type="button"
