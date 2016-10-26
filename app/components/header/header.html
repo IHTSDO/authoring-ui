@@ -53,30 +53,30 @@
         </button>
       </li>
 
-    
+
 
     </ul>
     <style>
-	
-	
+
+
 	</style>
     <div ng-if="getSelectedTemplate() != null"  class="pull-left header-alerts col-md-3 pull-left">
 
       <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
 
         <div class="alert saved tbba-notification"
-          
+
              style="padding-right: 8px;">
 
           <!-- NOTE: currently ::before 'x' icon is included on this button -->
           <button type="button" class=" fa-sca fa-close "
-                  
+
                   ng-click="clearTemplate()"></button>
 
           <!-- if a link is provided, show it -->
 
 
-          <p>Template selected: {{getSelectedTemplate().name}} 
+          <p>Template selected: {{getSelectedTemplate().name}}
           </p>
         </div>
       </div>
@@ -89,6 +89,8 @@
         <div class="alert saved"
              ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]"
              style="padding-right: 8px;">
+
+          {{notification.type}}
 
           <!-- NOTE: currently ::before 'x' icon is included on this button -->
           <button type="button" class=" fa-sca fa-close"

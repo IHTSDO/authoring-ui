@@ -161,10 +161,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           console.debug('remove template', scope.concept);
           // if SCTID, remove UI State
           if (snowowlService.isSctid(scope.concept.conceptId)) {
-            templateService.removeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function () {
+            templateService.removeStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function () {
               notificationService.sendMessage('Removed template from concept ' + scope.concept.conceptId + ' | ' + scope.concept.fsn);
               scope.template = null;
-              scope.concept.template = null;
+              templateService.removeTemplateFromConcept(scope.concept);
+              console.debug('after removal', scope.concept);
             }, function (error) {
               notificationService.sendError('Error removing template: ' + error);
             })
@@ -173,7 +174,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // otherwise, simply remove from unsaved concept
           else {
             scope.template = null;
-            scope.concept.template = null;
+            templateService.removeTemplateFromConcept(scope.concept);
+            console.debug('after removal', scope.concept);
           }
         };
 
