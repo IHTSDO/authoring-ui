@@ -60,12 +60,9 @@
 
       <div class="pull-left col-md-1 no-padding">
 
-        <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
-                class="btn btn-default morebuttons grey darken-4 tooltips-bottom tooltips-light small-size-tooltip normal-case"
-                popover-template="'shared/component-more/conceptMore.html'"
-                popover-placement="{{popoverDirection}}"
-                popover-trigger="click: click"
-                popover-append-to-body="true">
+        <button
+          class="btn btn-default morebuttons grey darken-4 tooltips-bottom tooltips-light small-size-tooltip normal-case"
+        >
           <img src="images/snodragon_black.png" style="width:15px;">
           <span>SnoDragon Template</span></button>
         </button>
@@ -105,8 +102,8 @@
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
-          <span ng-show="!concept.fsn && !concept.effectiveTime && !concept.template" style="color:grey" class="fsn">Unsaved Concept</span>
-          <span ng-show="!concept.fsn && !concept.effectiveTime && concept.template" style="color:grey" class="fsn">Template Concept: {{concept.template.name}}</span>
+          <span ng-show="!concept.fsn && !concept.effectiveTime && !template" style="color:grey" class="fsn">Unsaved Concept</span>
+          <span ng-show="!concept.fsn && !concept.effectiveTime && template" style="color:grey" class="fsn">Template Concept: {{concept.template.name}}</span>
 
         </button>
 
@@ -120,7 +117,7 @@
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
                   ng-click="saveConcept()"
-                  ng-if="!isMerge && isModified && !isStatic && (!concept.template || concept.templateComplete)"
+                  ng-if="!isMerge && isModified && !isStatic"
                   ng-disabled="saving">
             <span> Save Concept </span>
           </button>
@@ -139,7 +136,8 @@
                   class="blue lighten-2 btn-default tooltips-bottom editbuttons small-buttons"
                   ng-if="template">
             <img src="images/snodragon_blue_on_black.png" style="width:15px; margin-bottom:3px;">
-            <span>SnoDragon Template<br><br> {{template.name}}<br> Version {{template.version}}<br><br><a ng-show="template" ng-click="removeTemplate()">Remove</a></span>
+            <span>SnoDragon Template<br><br> {{template.name}}<br> Version {{template.version}}<br><br><a
+              ng-show="template" ng-click="removeTemplate()">Remove</a></span>
           </button>
           <!--
                     <button type="button"
