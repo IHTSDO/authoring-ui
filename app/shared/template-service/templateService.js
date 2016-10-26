@@ -572,17 +572,18 @@ angular.module('singleConceptAuthoringApp')
     //
 
     // add concept to project master list (intended as reference for what concepts were created by what templates)
-    function addConceptIdToTemplateList(projectKey, conceptId, templateName, templateVersion) {
+    function addConceptIdToTemplateList(projectKey, conceptId, template) {
       var deferred = $q.defer();
       scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list').then(function (list) {
+        var newList = list ? list : [];
         var item = {
           conceptId : conceptId,
-          templateName : templateName,
-          templateVersion : templateVersion,
-          creationDate : new Date().getTime()
+          templateName : template.name,
+          templateVersion : template.version,
+          saveDate : new Date().getTime()
         };
-        list.push(item);
-        scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list', list).then(function () {
+        newList.push(item);
+        scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list', newList).then(function () {
           deferred.resolve();
         }, function (error) {
           deferred.reject('UI State Error: ' + error.message);
@@ -597,7 +598,7 @@ angular.module('singleConceptAuthoringApp')
       console.debug('saving shared ui state', projectKey, conceptId, template);
       scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId, template).then(function () {
         console.debug('adding to template list');
-        addConceptIdToTemplateList(projectKey, conceptId).then(function () {
+        addConceptIdToTemplateList(projectKey, conceptId, template).then(function () {
           deferred.resolve();
         }, function (error) {
           deferred.reject('UI State Error: ' + error.message);

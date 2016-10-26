@@ -150,10 +150,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
         // Template service functions
         //
-        scope.getTemplateName = function () {
-          return templateService.getSelectedTemplate() ? templateService.getSelectedTemplate().name : null;
-        };
 
+        // initialize template variable with applied template
+        scope.template = scope.concept.template;
+
+        // NOTE: Currently unused
         scope.validateAgainstTemplate = function () {
           templateService.applyTemplateToConcept(scope.concept, false, true, false).then(function () {
             console.debug('template validation result', scope.concept);
@@ -162,14 +163,28 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        // Template initialization
-        templateService.getTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
+        // If existing concept, check for and apply template
+        if (snowowlService.isSctid(scope.concept.conceptId)) {
+          console.debug('SCTID found, checking for template');
+          templateService.getTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
 
-          // if template found in store, apply it to retrieved concept
-          if (template) {
-            templateService.applyTemplateToConcept(scope.concept, false, false, false);
-          }
-        });
+            // if template found in store, apply it to retrieved concept
+            if (template) {
+              console.debug('template for existing concept', template);
+
+              // store in scope variable and on concept (for UI State saving)
+              scope.template = template;
+              scope.concept.template = template;
+              templateService.applyTemplateToConcept(scope.concept, false, false, false);
+            }
+          });
+        }
+
+        // otherwise, assume that if template present it is newly created (no application required)
+        else{
+          console.debug('template for new concept', scope.template);
+          scope.template = scope.concept.template;
+        }
 
 
         //
@@ -340,16 +355,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.validateConcept = function () {
           var deferred = $q.defer();
 
-          // save template
-          var template = scope.concept.template;
-
           snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
 
-
-            // apply template
-            if (template) {
-              scope.concept.template = template;
-            }
             var results = {
               hasWarnings: false,
               hasErrors: false,
@@ -424,11 +431,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // NOTE: Needed for CRS integration
             var originalConceptId = scope.concept.conceptId;
 
-            // store the template (if any) for later re-application
-            var template = scope.concept.template;
-
-            console.debug('stored concept template', template);
-
             // clean the concept for snowowl-ready save
             snowowlService.cleanConcept(scope.concept);
 
@@ -466,14 +468,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
 
-                  // store and re-apply the template (if present)
-                  if (template) {
-                    scope.concept.template = template;
-                    templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, template);
+                  // if a template specified, store template/concept info
+                  // store and re-apply the template (if present), cleaned during save
+                  console.debug('after save -- is template?', scope.template)
+                  if (scope.template) {
+                    scope.concept.template = scope.template;
+                    templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
                     templateService.applyTemplateToConcept(scope.concept);
                   }
-
-                  console.debug('after template reapplication', scope.concept);
 
                   // if a crs concept
                   if (crsService.isCrsConcept(originalConceptId)) {
