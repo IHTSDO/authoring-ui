@@ -7,7 +7,6 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "notification.scss";
 @import "header.scss";
 @import "home.scss";
-@import "about.scss";
 @import "ihtsdo.scss";
 @import "fonts.scss";
 @import "edit.scss";
@@ -28,6 +27,7 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "classification.scss";
 @import "badge.scss";
 @import "button.scss";
+@import "tbba.scss";
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
