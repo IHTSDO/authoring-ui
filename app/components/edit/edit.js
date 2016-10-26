@@ -625,42 +625,45 @@ angular.module('singleConceptAuthoringApp.edit', [
       var deferred = $q.defer();
       $scope.conceptLoading = true;
 
-      // TODO Template Based Authoring / TBBA -- add call to traceability or other endpoint here
-      // to determine whether this concept is template-based
+      // first, check UI state for task
+      scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (response) {
 
-      // get the concept and add it to the stack
-      snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
-        $scope.conceptLoading = false;
-        if (!response) {
-          return;
-        }
 
-        $scope.concepts.push(response);
 
-        if ($scope.editList.indexOf(conceptId) === -1) {
-          $scope.updateEditListUiState();
-        }
+        // get the concept and add it to the stack
+        snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
+          $scope.conceptLoading = false;
+          if (!response) {
+            return;
+          }
 
-        if ($scope.concepts.length === $scope.editList.length) {
-          notificationService.sendMessage('All concepts loaded', 10000, null);
-          // ensure loaded concepts match order of edit list
-          $scope.concepts.sort(function (a, b) {
-            return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
-          });
-          $scope.updateEditListUiState();
-        } else {
-          // send loading notification for user display
-          notificationService.sendMessage('Loading concepts...', 10000, null);
-        }
+          $scope.concepts.push(response);
 
-      }, function (error) {
-        $scope.conceptLoading = false;
-        console.log('Error retrieving concept', error);
-        if (error.status === 404) {
-          notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
-        } else {
-          notificationService.sendError('Unexpected error retrieving concept');
-        }
+          if ($scope.editList.indexOf(conceptId) === -1) {
+            $scope.updateEditListUiState();
+          }
+
+          if ($scope.concepts.length === $scope.editList.length) {
+            notificationService.sendMessage('All concepts loaded', 10000, null);
+            // ensure loaded concepts match order of edit list
+            $scope.concepts.sort(function (a, b) {
+              return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
+            });
+            $scope.updateEditListUiState();
+          } else {
+            // send loading notification for user display
+            notificationService.sendMessage('Loading concepts...', 10000, null);
+          }
+
+        }, function (error) {
+          $scope.conceptLoading = false;
+          console.log('Error retrieving concept', error);
+          if (error.status === 404) {
+            notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
+          } else {
+            notificationService.sendError('Unexpected error retrieving concept');
+          }
+        });
       });
       return deferred.promise;
     }
@@ -671,6 +674,8 @@ angular.module('singleConceptAuthoringApp.edit', [
      * @param conceptId the SCTID of the concept
      */
     $scope.addConceptToListFromId = function (conceptId) {
+
+      console.debug('adding concept to list', conceptId);
 
       if (!conceptId) {
         console.error('Could not add concept to edit list, id required');
@@ -713,8 +718,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // if unsaved concept, push
-      else if (conceptId === 'unsaved') {
-        $scope.concepts.push({conceptId: 'unsaved'});
+      else if (conceptId === 'unsaved' || !snowowlService.isSctid(conceptId)) {
+        $scope.concepts.push({conceptId: conceptId});
+
+        console.debug('concepts', $scope.concepts);
 
         // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
@@ -1524,7 +1531,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.getSelectedTemplate = templateService.getSelectedTemplate;
     $scope.selectTemplate = function (template) {
-      templateService.selectTemplate(template).then(function() {
+      templateService.selectTemplate(template).then(function () {
         document.getElementById('templateCreateBtn').click();
         $scope.createConcept();
       })
