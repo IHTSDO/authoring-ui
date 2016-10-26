@@ -162,6 +162,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
+        // Template initialization
+        templateService.getTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
+
+          // if template found in store, apply it to retrieved concept
+          if (template) {
+            templateService.applyTemplateToConcept(concept, false, false, false);
+          }
+        });
+
 
         //
         // CRS concept initialization
@@ -407,6 +416,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // NOTE: Needed for CRS integration
             var originalConceptId = scope.concept.conceptId;
 
+            // store the template (if any) for later re-application
+            var template = scope.concept.template;
+
             // clean the concept for snowowl-ready save
             snowowlService.cleanConcept(scope.concept);
 
@@ -445,6 +457,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
+
+                  // re-apply the template (if present)
+                  if (template) {
+                    scope.concept.template = template;
+                    templateService.applyTemplateToConcept(concept);
+                  }
 
                   // if a crs concept
                   if (crsService.isCrsConcept(originalConceptId)) {
