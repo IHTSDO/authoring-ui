@@ -117,53 +117,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
 
-      //
-      // Helper function to mark the task for review
-      //
-      function markTaskForReview() {
-        // create the request body
-        var updateObj = {
-          'reviewer': {
-            'username': ''
-          },
-          'status': 'IN_REVIEW'
-        };
-
-        // update the task
-        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function (response) {
-          notificationService.sendMessage('Task submitted for review', 5000);
-          scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
-          $rootScope.$broadcast('reloadTask');
-          $scope.task = response;
-        }, function (error) {
-          notificationService.sendError('Error submitting task for review');
-        });
-      }
-
-      $scope.unsavedConcepts = null;
-      $scope.submitForReview = function () {
-        notificationService.sendMessage('Submitting task for review...');
-
-        // if unsaved concepts already calculated, clear and "submit anyway"
-        if ($scope.unsavedConcepts) {
-          $scope.unsavedConcepts = null;
-          markTaskForReview();
-        } else {
-
-
-        }
-      };
-
-      // cancel review
-      $scope.cancelReview = function () {
-        scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey).then(function() {
-          notificationService.sendMessage('Review cancelled', 2000);
-          $rootScope.$broadcast('reloadTask');
-        }, function(error) {
-          notificationService.sendError('Unexpected error cancelling review: ' + error);
-        });
-
-      };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
           templateUrl: 'shared/task/task.html',
@@ -233,9 +186,6 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
       function initialize() {
-
-        // clear the unsaved concepts list
-        $scope.unsavedConcepts = null;
 
         // clear the branch variables (but not the task to avoid display re-initialization)
         $scope.taskBranch = null;
