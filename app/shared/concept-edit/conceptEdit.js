@@ -196,9 +196,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         else {
           console.debug('template for new concept', scope.template);
           scope.template = scope.concept.template;
-
-          // save the modified concept (has GUID)
-          saveModifiedConcept();
         }
 
 
@@ -314,6 +311,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (!scope.concept.fsn) {
                 scope.isModified = true;
               }
+
+              // save the modified state
+              scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept);
             }
           });
         }
