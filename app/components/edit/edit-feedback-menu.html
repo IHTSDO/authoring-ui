@@ -13,34 +13,45 @@
 
 
   <button class="btn btn-default pink1 review"
-          ng-if="task.status === 'New' || task.status === 'In Progress'"
+          ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && (!unsavedConcepts || unsavedConcepts.length == 0)"
           ng-click="toggleReview()">
     <span class="md md-thumb-up pink1 darken-2 iconbase"></span>
     <span ng-if="!unsavedConcepts || unsavedConcepts.length == 0" class="button-link">Submit for Review</span>
-    <span ng-if="unsavedConcepts && unsavedConcepts.length == 0" class="button-link">Submit Anyways</span>
+  </button>
+  <button class="btn btn-default pink1 review ng-scope"
+          ng-if="unsavedConcepts && unsavedConcepts.length > 0"
+          ng-click="cancelSubmitForReview()">
+    <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
+    <span class="button-link">Cancel Submit For Review</span>
   </button>
 
+
   <button class="btn btn-default pink1 review"
-          ng-if="role === 'AUTHOR'"
+          ng-if="role === 'AUTHOR' && (task.status === 'In Review' || task.status === 'Review Completed')"
           ng-click="toggleReview()">
     <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
     <span class="button-link">Cancel Review</span>
   </button>
 
   <button class="btn btn-default pink1 review ng-scope"
-          ng-if="role === 'REVIEWER'"
+          ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
           ng-click="toggleReview()">
     <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
     <span class="button-link">Unclaim Review</span>
   </button>
 
   <div ng-show="unsavedConcepts.length > 0">
-    <h4>You have unsaved content on this task. Save changes first or click "Submit Anyways" to submit for review.</h4>
-    <table class="table">
+    <h4 style="color:white;" class="m-10">Warning: You have unsaved content on this task.<br>Save changes first or click "Submit Anyways" to continue.</h4>
+    <table class="table m-l-10 m-r-10">
       <tr ng-repeat="uc in unsavedConcepts">
-        <td>{{uc.conceptId}}</td><td>{{uc.fsn}}</td>
+        <td >{{uc.conceptId}}</td><td ng-click="addConceptToListFromId(uc.conceptId)">{{uc.fsn}}</td>
       </tr>
     </table>
-    <h4>C</h4>
+    <button class="btn btn-default pink1 review ng-scope"
+            ng-click="toggleReview(true)">
+      <span class="md md-thumb-up pink1 darken-2 iconbase"></span>
+      <span class="button-link">Submit Anyway</span>
+    </button>
+
   </div>
 </div>
