@@ -1524,7 +1524,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         getData: function ($defer, params) {
           // TODO support paging and filtering
           console.debug('getData', $scope.templates);
-          $defer.resolve($scope.templates);
+          var data = params.sorting() ? $filter('orderBy')($scope.templates, params.orderBy()) : $scope.templates;
+          $defer.resolve($scope.templates.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         }
       }
     );

@@ -303,6 +303,21 @@ angular.module('singleConceptAuthoringApp')
       })
     }
 
+
+    function removeTemplateFromConcept(concept) {
+      clearTemplateStylesAndMessages(concept);
+      delete concept.template;
+      angular.forEach(concept.descriptions, function(d) {
+        delete d.template;
+      });
+      angular.forEach(concept.relationships, function(r) {
+        delete r.template;
+        delete r.targetSlot;
+      });
+      return;
+    }
+
+
     function getTermForTemplateTerm(templateTerm, nameValueMap) {
       var modTerm = templateTerm;
       for (var name in nameValueMap) {
@@ -609,7 +624,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function removeTemplateForConcept(projectKey, conceptId) {
+    function removeStoredTemplateForConcept(projectKey, conceptId) {
       var deferred = $q.defer();
       scaService.deleteSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId).then(function () {
         deferred.resolve();
@@ -648,12 +663,13 @@ angular.module('singleConceptAuthoringApp')
       createTemplateConcept: createTemplateConcept,
       updateTemplateConcept: updateTemplateConcept,
       applyTemplateToConcept: applyTemplateToConcept,
+      removeTemplateFromConcept : removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
       isTemplateComplete: isTemplateComplete,
 
       // template-flagging
       storeTemplateForConcept: storeTemplateForConcept,
-      removeTemplateForConcept: removeTemplateForConcept,
+      removeStoredTemplateForConcept: removeStoredTemplateForConcept,
       getTemplateForConcept: getTemplateForConcept
     };
 
