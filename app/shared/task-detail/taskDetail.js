@@ -317,7 +317,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
             $timeout(function () {
               $scope.checkForLock()
             }, 10000);
-          }
+           }
+           else if($rootScope.classificationRunning){
+            $timeout(function () {
+              $scope.checkForLock()
+            }, 10000);
+           }
           else {
             $rootScope.branchLocked = false;
           }
