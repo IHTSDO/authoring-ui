@@ -310,7 +310,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         console.debug('checking lock status');
         snowowlService.getBranch($scope.branch).then(function (response) {
-
+            console.log($rootScope.classificationRunning)
           // if lock found, set rootscope variable and continue polling
           if (response.metadata && response.metadata.lock) {
             $rootScope.branchLocked = true;
@@ -321,7 +321,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
            else if($rootScope.classificationRunning){
             $timeout(function () {
               $scope.checkForLock()
-            }, 10000);
+            }, 5000);
            }
           else {
             $rootScope.branchLocked = false;
@@ -361,11 +361,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // clear the branch variables (but not the task to avoid display re-initialization)
         $scope.taskBranch = null;
 
-        $scope.checkForLock();
-
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+          $scope.checkForLock();
 
           snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
           });
