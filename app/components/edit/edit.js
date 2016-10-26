@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, templateService, $routeParams, $timeout, $interval, $q, crsService, ngTableParams) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $filter, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, templateService, $routeParams, $timeout, $interval, $q, crsService, ngTableParams) {
 
 
 
@@ -1525,7 +1525,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           // TODO support paging and filtering
           console.debug('getData', $scope.templates);
           var data = params.sorting() ? $filter('orderBy')($scope.templates, params.orderBy()) : $scope.templates;
-          $defer.resolve($scope.templates.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         }
       }
     );

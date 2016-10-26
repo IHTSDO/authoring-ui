@@ -1,5 +1,4 @@
 <div class="edits editing-form">
-  <div class="pop-edit concept-more description-popover row">
     <h3 class="p-5">Select Template</h3>
     <h4 class="p-5" ng-if="getSelectedTemplate() != null">
       Currently selected: {{getSelectedTemplate().name}} <button type="button" class="btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case" ng-click="clearTemplate()"><span>Clear</span>
@@ -15,10 +14,9 @@
           {{template.name}}<span> Click to select template</span></a>
         </td>
         <td data-title="'Version'" sortable="'version'" header-class="'header-tooltips'"
-            header-title="'Click to sort'" filter="{ 'version': 'text' }">
+            header-title="'Click to sort'" filter="{ 'version': 'number' }">
           {{template.version}}
         </td>
       </tr>
     </table>
-  </div>
 </div>
