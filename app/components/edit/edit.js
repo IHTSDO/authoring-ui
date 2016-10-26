@@ -1553,26 +1553,25 @@ angular.module('singleConceptAuthoringApp.edit', [
     //
 
     // list of tracked unsaved concepts
-    $scope.unsavedConcepts = null;
+    $scope.reviewChecks = null;
 
     // watch for concept changes to update the unsaved content list (if present)
     $scope.$on('conceptEdit.conceptChange', function () {
-      console.debug('conceptChange detected', $scope.unsavedConcepts);
-      if ($scope.unsavedConcepts && $scope.unsavedConcepts.length > 0) {
-        reviewService.getUnsavedContent($scope.task).then(function (unsavedConcepts) {
-          $scope.unsavedConcepts = unsavedConcepts;
-        }, function (error) {
-          $scope.unsavedConcepts = [{conceptId: 'ERROR', fsn: 'Could not check for unsaved content'}]
-        });
+      console.debug('conceptChange detected', $scope.reviewChecks.unsavedConcepts);
+      if (reviewChecks) {
+        reviewService.checkReviewPrerequisites($scope.task).then(function(response) {
+          $scope.reviewChecks = response;
+        })
       }
     });
 
     $scope.cancelSubmitForReview = function () {
-      $scope.unsavedConcepts = null;
+      $scope.reviewChecks = null;
     };
 
     $scope.toggleReview = function (ignoreWarnings) {
       console.debug('toggleReview', $scope.task.status);
+      $scope.reviewChecks = null;
       switch ($scope.task.status) {
         case 'New':
         case 'In Progress':
@@ -1587,18 +1586,20 @@ angular.module('singleConceptAuthoringApp.edit', [
             });
           } else {
             // check for unsaved content
-            reviewService.getUnsavedContent($scope.task).then(function (unsavedConcepts) {
-              if (unsavedConcepts.length > 0) {
-                $scope.unsavedConcepts = unsavedConcepts;
-              } else {
+            reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
+
+              if (!response.hasChangedContent && response.unsavedConcepts && response.unsavedConcepts.length == 0) {
                 reviewService.submitForReview($scope.task).then(function () {
                   loadTask();
                 }, function (error) {
                   notificationService.sendError('Error submitting for review: ' + error);
                 });
+              } else {
+                console.debug('review checks', response);
+                $scope.reviewChecks = response;
               }
             }, function (error) {
-              $scope.unsavedConcepts = [{conceptId: 'ERROR', fsn: 'Could not check for unsaved content'}]
+              $scope.reviewChecks = { error : 'Could not check review prerequisites'}
             });
           }
 
