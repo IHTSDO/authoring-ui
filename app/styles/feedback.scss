@@ -12,7 +12,7 @@
     transition: 240ms;
 }
 /* new concept */
-.new-concept .grey.darken-4{background-color: #ffcadc!important; color:#212121!important}
+.new-concept .grey.darken-4{background-color: #ffcadc!important; color:#201f23!important}
   .new-concept .concept-headers:first-child{padding-top:3px!important}
 /*feedback window filter */
 
@@ -648,8 +648,8 @@ input[type=checkbox]:checked:before {
     background-color: #fff
 }
 .feedback-lists .btn-round.btn[disabled]:hover {
-    color: #7c7c7c!important;
-    background-color: #494949!important;
+    color: #76747c!important;
+    background-color: #424249!important;
 }
 .feedback-table {
     width: 98%;

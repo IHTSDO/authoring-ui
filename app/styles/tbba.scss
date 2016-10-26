@@ -1,1 +1,32 @@
-.tbba-notification{background-color: #212121;}
+.editing-form input[disabled], 
+.editing-form textarea[disabled], 
+.editing-form select[disabled]{
+ background-color: #54535b!important;
+color:#b7dbff !important	
+}
+
+
+.def_PRIMITIVE textarea[disabled], 
+.def_PRIMITIVE select[disabled], 
+.def_PRIMITIVE .custom-button[disabled]
+{ 
+background-color: #54535b!important;
+color:#b7dbff !important
+}
+.tbba-notification{background-color: #201f23;}
+
+.is_a input[disabled], .is_a textarea[disabled], .is_a select[disabled], .is_a_bg[disabled] {
+    background-color: #54535b!important;
+	color: #ffffdb !important;
+	    border-bottom: none!important;
+}
+
+.PRIMITIVE textarea.relationship[disabled], 
+.PRIMITIVE textarea.rg[disabled], 
+.PRIMITIVE select[disabled], 
+.PRIMITIVE .custom-button[disabled], 
+.PRIMITIVE .sourcename[disabled] {
+    color: #b7dbff !important;
+    background-color: #54535b!important;
+}
+
