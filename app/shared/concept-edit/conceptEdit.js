@@ -154,12 +154,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // initialize template variable with applied template
         scope.template = scope.concept.template;
 
-        scope.removeTemplate = function() {
-          templateService.removeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function() {
+        scope.isSctid = snowowlService.isSctid;
+
+        scope.removeTemplate = function () {
+          templateService.removeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function () {
             notificationService.sendMessage('Removed template from concept ' + scope.concept.conceptId + ' | ' + scope.concept.fsn);
             scope.template = null;
             scope.concept.template = null;
-            autoSave();
+          }, function (error) {
+            notificationService.sendError('Error removing template: ' + error);
           })
         };
 
@@ -190,9 +193,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }
 
         // otherwise, assume that if template present it is newly created (no application required)
-        else{
+        else {
           console.debug('template for new concept', scope.template);
           scope.template = scope.concept.template;
+
+          // save the modified concept (has GUID)
+          saveModifiedConcept();
         }
 
 
@@ -2353,15 +2359,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             concept: scope.concept
           });
 
-          // if changed
-          if (scope.concept !== scope.unmodifiedConcept) {
 
-            // store the modified concept in ui-state if autosave on
-            if (scope.autosave === true) {
-              scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept);
-            }
-
+          // store the modified concept in ui-state if autosave on
+          if (scope.autosave === true) {
+            scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept);
           }
+
+
         }
 
         /**
