@@ -85,7 +85,7 @@ a {
 html::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
     border-radius: 10px;
-    background-color: #424242;
+    background-color: #3e3e42;
 }
 html::-webkit-scrollbar,
 ::-webkit-scrollbar {
@@ -202,8 +202,8 @@ td select {
     ping: 5px;
 }
 .md-playlist-[disabled] {
-    color: #7c7c7c !important;
-    background-color: #494949 !important;
+    color: #76747c !important;
+    background-color: #424249 !important;
 }
 /* drag targets */
 
@@ -264,10 +264,10 @@ td select {
     height: 30px !important
 }
 .md-playlist-add.btn-round[disabled] {
-    color: #7c7c7c !important;
+    color: #76747c !important;
     cursor: not-allowed !important;
     pointer-events: none !important;
-    background-color: #494949 !important;
+    background-color: #424249 !important;
 }
 /* temp for wrp-2269 */
 
