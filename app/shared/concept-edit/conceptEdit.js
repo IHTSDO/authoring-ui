@@ -2371,6 +2371,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             sortRelationships();
             notificationService.clear();
             resetConceptHistory();
+
+            // broadcast to edit.js to trigger unsaved list update
+            console.debug('broadcasting');
+            $rootScope.$broadcast('conceptEdit.conceptChange', {
+              branch: scope.branch,
+              conceptId: scope.concept.conceptId,
+              concept: scope.concept
+            });
             scope.isModified = false;
           }, function (error) {
             notificationService.sendError('Error reverting: Could not retrieve concept ' + scope.concept.conceptId + ' from parent branch ' + scope.parentBranch);
@@ -2503,6 +2511,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
               scope.isModified = false;
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
+
+              // broadcast change event to edit.js for unsaved list update
+              $rootScope.$broadcast('conceptEdit.conceptChange', {
+                branch: scope.branch,
+                conceptId: scope.concept.conceptId,
+                concept: scope.concept
+              });
 
               // sort components and calculate relationship gruops
               sortDescriptions();

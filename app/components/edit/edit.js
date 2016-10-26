@@ -672,14 +672,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // verify that this SCTID does not exist in the edit list
-      angular.forEach($scope.concepts, function (concept) {
-        if (concept.conceptId === conceptId) {
+      var conceptPresent = $scope.concepts.filter(function(c) {
+        return c.conceptId === conceptId;
+      }).length > 0;
 
-          notificationService.sendWarning('Concept already added', 5000);
-          $scope.conceptLoading = false;
-          return;
-        }
-      });
+      if (conceptPresent) {
+        notificationService.sendWarning('Concept already added', 5000);
+        $scope.conceptLoading = false;
+        return;
+      }
 
       // send loading notification for user display
       notificationService.sendMessage('Loading concepts...', 10000, null);
@@ -1547,47 +1548,77 @@ angular.module('singleConceptAuthoringApp.edit', [
       });
     };
 
+    //
+    // Sidebar Review Functionality
+    //
+
+    // list of tracked unsaved concepts
     $scope.unsavedConcepts = null;
-    $scope.toggleReview = function () {
+
+    // watch for concept changes to update the unsaved content list (if present)
+    $scope.$on('conceptEdit.conceptChange', function () {
+      console.debug('conceptChange detected', $scope.unsavedConcepts);
+      if ($scope.unsavedConcepts && $scope.unsavedConcepts.length > 0) {
+        reviewService.getUnsavedContent($scope.task).then(function (unsavedConcepts) {
+          $scope.unsavedConcepts = unsavedConcepts;
+        }, function (error) {
+          $scope.unsavedConcepts = [{conceptId: 'ERROR', fsn: 'Could not check for unsaved content'}]
+        });
+      }
+    });
+
+    $scope.cancelSubmitForReview = function () {
+      $scope.unsavedConcepts = null;
+    };
+
+    $scope.toggleReview = function (ignoreWarnings) {
       console.debug('toggleReview', $scope.task.status);
       switch ($scope.task.status) {
         case 'New':
         case 'In Progress':
 
-          if ($scope.unsavedConcepts) {
-            reviewService.submitForReview($scope.task).then(function() {
+          if (ignoreWarnings) {
+            reviewService.submitForReview($scope.task).then(function () {
+              $scope.unsavedConcepts = null;
               loadTask();
               notificationService.sendMessage('Submitted for review', 3000);
-            })
+            }, function (error) {
+              notificationService.sendError('Error submitting for review: ' + error);
+            });
           } else {
             // check for unsaved content
             reviewService.getUnsavedContent($scope.task).then(function (unsavedConcepts) {
               if (unsavedConcepts.length > 0) {
-               $scope.unsavedConcepts = unsavedConcepts;
+                $scope.unsavedConcepts = unsavedConcepts;
               } else {
-                reviewService.submitForReview($scope.task).then(function() {
+                reviewService.submitForReview($scope.task).then(function () {
                   loadTask();
-                  notificationService.sendMessage('Submitted for review', 3000);
-                })
+                }, function (error) {
+                  notificationService.sendError('Error submitting for review: ' + error);
+                });
               }
-
             }, function (error) {
               $scope.unsavedConcepts = [{conceptId: 'ERROR', fsn: 'Could not check for unsaved content'}]
             });
           }
+
           break;
         case 'In Review':
         case 'Review Complete':
           accountService.getRoleForTask($scope.task).then(function (role) {
             if (role === 'AUTHOR') {
-              reviewService.cancelReview($scope.task).then(function() {
+              reviewService.cancelReview($scope.task).then(function () {
                 loadTask();
                 notificationService.sendMessage('Review cancelled', 3000);
-              })
+              }, function (error) {
+                notificationService.sendError('Error cancelling review: ' + error);
+              });
             } else {
-              reviewService.unclaimReview($scope.task).then(function() {
+              reviewService.unclaimReview($scope.task).then(function () {
                 $location.url('review-tasks');
                 notificationService.sendMessage('Review unclaimed', 3000);
+              }, function (error) {
+                notificationService.sendError('Error unclaiming review: ' + error);
               });
             }
           });
@@ -1643,7 +1674,7 @@ angular.module('singleConceptAuthoringApp.edit', [
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
 
-              console.debug('role', role);
+                console.debug('role', role);
 
                 notificationService.sendMessage('Task details loaded', 3000);
 
