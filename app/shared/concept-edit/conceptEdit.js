@@ -167,7 +167,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // if template found in store, apply it to retrieved concept
           if (template) {
-            templateService.applyTemplateToConcept(concept, false, false, false);
+            templateService.applyTemplateToConcept(scope.concept, false, false, false);
           }
         });
 
@@ -340,8 +340,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.validateConcept = function () {
           var deferred = $q.defer();
 
+          // save template
+          var template = scope.concept.template;
+
           snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
 
+
+            // apply template
+            if (template) {
+              scope.concept.template = template;
+            }
             var results = {
               hasWarnings: false,
               hasErrors: false,
@@ -419,6 +427,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // store the template (if any) for later re-application
             var template = scope.concept.template;
 
+            console.debug('stored concept template', template);
+
             // clean the concept for snowowl-ready save
             snowowlService.cleanConcept(scope.concept);
 
@@ -453,16 +463,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
 
-                  // add isCreated
-
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
 
-                  // re-apply the template (if present)
+                  // store and re-apply the template (if present)
                   if (template) {
                     scope.concept.template = template;
-                    templateService.applyTemplateToConcept(concept);
+                    templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, template);
+                    templateService.applyTemplateToConcept(scope.concept);
                   }
+
+                  console.debug('after template reapplication', scope.concept);
 
                   // if a crs concept
                   if (crsService.isCrsConcept(originalConceptId)) {
@@ -1852,7 +1863,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          constraintService.validateRelationship(relationship, scope.allowedAttributes, scope.branch).then(function (response) {
+          constraintService.validateRelationship(target, scope.allowedAttributes, scope.branch).then(function (response) {
             if (response.length === 0) {
               // copy relationship object and replace target relationship
               var copy = angular.copy(source);

@@ -447,6 +447,7 @@ angular.module('singleConceptAuthoringApp')
 
         // save the UI state for a project, task, and panel triplet
         saveSharedUiStateForTask: function (projectKey, taskKey, panelId, uiState) {
+          console.debug('saveSharedUiState', projectKey, taskKey, panelId, uiState);
           return $http.post(apiEndpoint + 'projects/' + projectKey + '/tasks/' + taskKey + '/shared-ui-state/' + panelId, uiState).then(
             function (response) {
               return response;

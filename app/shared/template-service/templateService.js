@@ -594,7 +594,9 @@ angular.module('singleConceptAuthoringApp')
 
     function storeTemplateForConcept(projectKey, conceptId, template) {
       var deferred = $q.defer();
+      console.debug('saving shared ui state', projectKey, conceptId, template);
       scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId, template).then(function () {
+        console.debug('adding to template list');
         addConceptIdToTemplateList(projectKey, conceptId).then(function () {
           deferred.resolve();
         }, function (error) {
