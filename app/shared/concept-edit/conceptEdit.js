@@ -154,6 +154,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // initialize template variable with applied template
         scope.template = scope.concept.template;
 
+        scope.removeTemplate = function() {
+          templateService.removeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function() {
+            notificationService.sendMessage('Removed template from concept ' + scope.concept.conceptId + ' | ' + scope.concept.fsn);
+            scope.template = null;
+            scope.concept.template = null;
+            autoSave();
+          })
+        };
+
         // NOTE: Currently unused
         scope.validateAgainstTemplate = function () {
           templateService.applyTemplateToConcept(scope.concept, false, true, false).then(function () {
