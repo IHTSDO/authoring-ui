@@ -364,7 +364,7 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(concept.relationships, function (r) {
 
             // check for target slot
-            if (relationshipHasTargetSlot(r, template)) {
+            if (rt.targetSlot && r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
               matchFound = true;
               r.template = rt;
               if (applyStyles) {
