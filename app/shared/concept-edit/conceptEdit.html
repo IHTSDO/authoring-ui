@@ -109,19 +109,7 @@
           <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
             Revert
           </button>
-          <button type="button"
-                  class="blue lighten-2 btn-default tooltips-bottom editbuttons small-buttons"
-                  ng-if="template">
-            <img src="images/snodragon_blue_on_black.png" style="width:15px; margin-bottom:3px;">
-            <span>SnoDragon Template<br><br> {{template.name}}<br> Version {{template.version}}<br><br><a
-              ng-show="template" ng-click="removeTemplate()">Remove</a></span>
-          </button>
-          <!--
-                    <button type="button"
-                            class="blue lighten-2 btn-default md md-playlist-add tooltips-bottom editbuttons small-buttons"
-                            ng-if="template">
-                      <span>Template Concept<br><br> {{template.name}}<br> Version {{template.version}}</span>
-                    </button>-->
+
 
           <!-- control buttons -->
           <button type="button" style="vertical-align: bottom"
@@ -164,12 +152,6 @@
                   class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom tooltips-light"
                   ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified">
             <span>Revert to Saved</span>
-          </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons blue tooltips-bottom tooltips-light small-size-tooltip normal-case md fa-sca fa-sitemap"
-                  ng-if="!isStatic" ng-click="showModel(concept)">
-            <span ng-if="modelVisible"> Hide Model </span>
-            <span ng-if="!modelVisible"> Show Model </span>
           </button>
 
           <button type="button"

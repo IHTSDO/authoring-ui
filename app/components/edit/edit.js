@@ -1538,7 +1538,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       })
     };
     $scope.clearTemplate = function () {
-
       templateService.selectTemplate(null);
     };
 
