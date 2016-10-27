@@ -364,7 +364,7 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(concept.relationships, function (r) {
 
             // check for target slot
-            if (hasTargetSlot(r, template)) {
+            if (relationshipHasTargetSlot(r, template)) {
               matchFound = true;
               r.template = rt;
               if (applyStyles) {
@@ -636,7 +636,26 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function hasTargetSlot(relationship, template) {
+    function relationshipInLogicalModel(relationship, template) {
+      if (!template) {
+        return false;
+      }
+      for (var i = 0; i < template.conceptOutline.relationships.length; i++) {
+        var r = template.conceptOutline.relationships[i];
+
+        // if active, group, type match, and either target slot OR target matches
+        if (relationship.active && r.groupId === relationship.groupId
+          && r.type.conceptId === relationship.type.conceptId
+          && (r.targetSlot || r.target.conceptId === relationship.target.conceptId)) {
+          return true;
+        }
+
+      }
+      return false;
+
+    }
+
+    function relationshipHasTargetSlot(relationship, template) {
 
       if (!template) {
         return false;
@@ -661,7 +680,7 @@ angular.module('singleConceptAuthoringApp')
       updateTemplate: updateTemplate,
       removeTemplate: removeTemplate,
 
-      // Utility functions
+      // global template selection
       selectTemplate: selectTemplate,
       getSelectedTemplate: getSelectedTemplate,
       clearSelectedTemplate: clearSelectedTemplate,
@@ -671,8 +690,11 @@ angular.module('singleConceptAuthoringApp')
       applyTemplateToConcept: applyTemplateToConcept,
       removeTemplateFromConcept: removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
+
+      // utility functions
       isTemplateComplete: isTemplateComplete,
-      hasTargetSlot: hasTargetSlot,
+      relationshipHasTargetSlot: relationshipHasTargetSlot,
+      relationshipInLogicalModel:relationshipInLogicalModel,
 
       // template-flagging
       storeTemplateForConcept: storeTemplateForConcept,

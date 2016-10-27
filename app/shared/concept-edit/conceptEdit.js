@@ -154,7 +154,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // utility function pass-thrus
         scope.isSctid = snowowlService.isSctid;
-        scope.hasTargetSlot = templateService.hasTargetSlot;
+        scope.relationshipHasTargetSlot = templateService.relationshipHasTargetSlot;
+        scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
 
         scope.applyTemplate = function () {

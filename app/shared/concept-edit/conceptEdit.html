@@ -538,7 +538,7 @@
                      ng-class="getTargetSlotStyle(relationship)">
 
                   <textarea type="text" ng-model="relationship.target.fsn"
-                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !hasTargetSlot(relationship, template))"
+                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationshipHasTargetSlot(relationship, template))"
                             class="resizable-text relationship msd-elastic: \n;"
                             ng-class="[{'template-slot' : relationship.targetSlot}]"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template)"
@@ -567,14 +567,14 @@
                 </div>
 
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !template">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId)")>
 
-                  <button type="button" ng-click="addRelationship(groupId, relationship)"
+                  <button ng-if="!template" type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Add New Relationship</span>
                   </button>
 
-                  <button type="button" ng-click="removeRelationship(relationship)" ng-if="!relationship.released"
+                  <button type="button" ng-click="removeRelationship(relationship)" ng-if="!relationship.released && (!template || !relationshipInLogicalModel(relationship, template))"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Remove Relationship</span>
                   </button>
@@ -601,7 +601,7 @@
                 <span>Drag Relationship Group</span>
               </button>
 
-              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !concept.template"
+              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !template"
                       class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span>
               </button>
