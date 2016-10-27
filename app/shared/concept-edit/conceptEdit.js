@@ -188,28 +188,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        // If existing concept, check for and apply template
-        if (snowowlService.isSctid(scope.concept.conceptId)) {
-          console.debug('SCTID found, checking for template');
-          templateService.getTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
 
-            // if template found in store, apply it to retrieved concept
-            if (template) {
-              console.debug('template for existing concept', template);
+        templateService.getStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
 
-              // store in scope variable and on concept (for UI State saving)
-              scope.template = template;
-              scope.concept.template = template;
-              templateService.applyTemplateToConcept(scope.concept, false, false, false);
+          // if template found in store, apply it to retrieved concept
+          if (template) {
+            console.debug('template for existing concept', template);
+
+            // store in scope variable and on concept (for UI State saving)
+            scope.template = template;
+            scope.concept.template = template;
+            templateService.applyTemplateToConcept(scope.concept, false, false, false);
+          } // otherwise, assume that if template present it is newly created (no application required)
+          else {
+            console.debug('template for new concept', scope.template);
+            if (scope.concept.template) {
+              scope.template = scope.concept.template;
+              templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
             }
-          });
-        }
-
-        // otherwise, assume that if template present it is newly created (no application required)
-        else {
-          console.debug('template for new concept', scope.template);
-          scope.template = scope.concept.template;
-        }
+          }
+        });
 
 
         //
@@ -502,6 +500,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   if (scope.template) {
                     scope.concept.template = scope.template;
                     templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
+                    templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.template);
                     templateService.applyTemplateToConcept(scope.concept);
                   }
 
