@@ -307,10 +307,10 @@ angular.module('singleConceptAuthoringApp')
     function removeTemplateFromConcept(concept) {
       clearTemplateStylesAndMessages(concept);
       delete concept.template;
-      angular.forEach(concept.descriptions, function(d) {
+      angular.forEach(concept.descriptions, function (d) {
         delete d.template;
       });
-      angular.forEach(concept.relationships, function(r) {
+      angular.forEach(concept.relationships, function (r) {
         delete r.template;
         delete r.targetSlot;
       });
@@ -587,15 +587,15 @@ angular.module('singleConceptAuthoringApp')
     //
 
     // add concept to project master list (intended as reference for what concepts were created by what templates)
-    function addConceptIdToTemplateList(projectKey, conceptId, template) {
+    function logTemplateConceptSave(projectKey, conceptId, template) {
       var deferred = $q.defer();
       scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list').then(function (list) {
         var newList = list ? list : [];
         var item = {
-          conceptId : conceptId,
-          templateName : template.name,
-          templateVersion : template.version,
-          saveDate : new Date().getTime()
+          conceptId: conceptId,
+          templateName: template.name,
+          templateVersion: template.version,
+          saveDate: new Date().getTime()
         };
         newList.push(item);
         scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list', newList).then(function () {
@@ -613,11 +613,7 @@ angular.module('singleConceptAuthoringApp')
       console.debug('saving shared ui state', projectKey, conceptId, template);
       scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId, template).then(function () {
         console.debug('adding to template list');
-        addConceptIdToTemplateList(projectKey, conceptId, template).then(function () {
-          deferred.resolve();
-        }, function (error) {
-          deferred.reject('UI State Error: ' + error.message);
-        });
+        deferred.resolve();
       }, function (error) {
         deferred.reject('Shared UI-State Error: ' + error.message);
       });
@@ -634,7 +630,7 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function getTemplateForConcept(projectKey, conceptId) {
+    function getStoredTemplateForConcept(projectKey, conceptId) {
       var deferred = $q.defer();
       scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId).then(function (template) {
         deferred.resolve(template);
@@ -663,14 +659,15 @@ angular.module('singleConceptAuthoringApp')
       createTemplateConcept: createTemplateConcept,
       updateTemplateConcept: updateTemplateConcept,
       applyTemplateToConcept: applyTemplateToConcept,
-      removeTemplateFromConcept : removeTemplateFromConcept,
+      removeTemplateFromConcept: removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
       isTemplateComplete: isTemplateComplete,
 
       // template-flagging
       storeTemplateForConcept: storeTemplateForConcept,
       removeStoredTemplateForConcept: removeStoredTemplateForConcept,
-      getTemplateForConcept: getTemplateForConcept
+      getStoredTemplateForConcept: getStoredTemplateForConcept,
+      logTemplateConceptSave: logTemplateConceptSave
     };
 
   })
