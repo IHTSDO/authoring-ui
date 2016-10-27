@@ -480,7 +480,7 @@
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip"
                         style="vertical-align: bottom"
-                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId)"
+                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
                   <span ng-if="isStatic">Active/Inactive</span>
@@ -490,7 +490,7 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                                    <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId)"
+                                    <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
                                               ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
                                               ng-change="updateRelationship(relationship, true)"
                                               class="form-control rg msd-elastic: \n;"
@@ -508,7 +508,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
                                     <textarea type="text" ng-model="relationship.type.fsn"
-                                              ng-disabled="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || concept.template"
+                                              ng-disabled="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
                                               class="resizable-text form-control msd-elastic: \n;"
 
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
@@ -538,7 +538,7 @@
                      ng-class="getTargetSlotStyle(relationship)">
 
                   <textarea type="text" ng-model="relationship.target.fsn"
-                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (concept.template && !relationship.targetSlot)"
+                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !hasTargetSlot(relationship, template))"
                             class="resizable-text relationship msd-elastic: \n;"
                             ng-class="[{'template-slot' : relationship.targetSlot}]"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template)"
@@ -567,7 +567,7 @@
                 </div>
 
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !template">
 
                   <button type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
