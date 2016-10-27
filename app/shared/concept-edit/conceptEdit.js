@@ -155,14 +155,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // utility function pass-thrus
         scope.isSctid = snowowlService.isSctid;
         scope.hasTargetSlot = templateService.hasTargetSlot;
+        scope.getSelectedTemplate = templateService.getSelectedTemplate;
+
+        scope.applyTemplate = function () {
+          var selectedTemplate = scope.getSelectedTemplate();
+          console.debug('apply template', scope.concept, selectedTemplate);
+
+          templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate).then(function () {
+            scope.template = selectedTemplate;
+            templateService.applyTemplateToConcept(scope.concept, scope.template, false, true, false);
+          }, function (error) {
+            notificationService.sendError('Failed to store template for concept: ' + error);
+          });
+        };
 
         scope.removeTemplate = function () {
 
           console.debug('remove template', scope.concept);
-          // if SCTID, remove UI State
-          if (snowowlService.isSctid(scope.concept.conceptId)) {
+          // if has ID, remove UI State
+          if (scope.concept.conceptId) {
             templateService.removeStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function () {
-              notificationService.sendMessage('Removed template from concept ' + scope.concept.conceptId + ' | ' + scope.concept.fsn);
               scope.template = null;
               templateService.removeTemplateFromConcept(scope.concept);
               console.debug('after removal', scope.concept);
@@ -212,7 +224,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
           }
-        }, function(error) {
+        }, function (error) {
           notificationService.sendError('Unexpected error checking for concept template: ' + error);
         });
 
