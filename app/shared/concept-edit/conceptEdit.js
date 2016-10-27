@@ -155,7 +155,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // TODO Consider making this a directive parameter
         scope.template = scope.concept.template;
 
+        // utility function pass-thrus
         scope.isSctid = snowowlService.isSctid;
+        scope.hasTargetSlot = templateService.hasTargetSlot;
 
         scope.removeTemplate = function () {
 

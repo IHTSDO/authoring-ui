@@ -281,7 +281,7 @@ angular.module('singleConceptAuthoringApp')
 
     function updateTemplateConcept(concept, template) {
       var deferred = $q.defer();
-      applyTemplateToConcept(concept,template);
+      applyTemplateToConcept(concept, template);
       concept.templateComplete = isTemplateComplete(concept);
 
       deferred.resolve(concept);
@@ -330,7 +330,7 @@ angular.module('singleConceptAuthoringApp')
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
 
-      console.debug('apply template to concept',concept, template, applyValues, applyMessages, applyStyles);
+      console.debug('apply template to concept', concept, template, applyValues, applyMessages, applyStyles);
 
       // completion flag
       var templateComplete = true;
@@ -360,15 +360,11 @@ angular.module('singleConceptAuthoringApp')
       // match relationships
       angular.forEach(template.conceptOutline.relationships, function (rt) {
 
-        var matchFound = false;
-        angular.forEach(concept.relationships, function (r) {
+          var matchFound = false;
+          angular.forEach(concept.relationships, function (r) {
 
-          // check by active/group/type
-          if (r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
-
-            // if a target slot, assign template and target slot
-            if (rt.targetSlot) {
-
+            // check for target slot
+            if (hasTargetSlot(r, template)) {
               matchFound = true;
               r.template = rt;
               if (applyStyles) {
@@ -393,23 +389,24 @@ angular.module('singleConceptAuthoringApp')
               }
 
             }
-          }
-        });
-        if (!matchFound) {
 
-          var newRel = angular.copy(rt);
-          newRel.template = rt;
-          newRel.templateMessages = [];
-          if (applyStyles) {
-            newRel.templateStyle = 'tealhl';
-          }
-          if (applyMessages) {
-            newRel.templateMessages.push({type: 'Message', message: 'Relationship automatically added by template'});
-          }
-          concept.relationships.push(newRel);
+          });
+          if (!matchFound) {
 
+            var newRel = angular.copy(rt);
+            newRel.template = rt;
+            newRel.templateMessages = [];
+            if (applyStyles) {
+              newRel.templateStyle = 'tealhl';
+            }
+            if (applyMessages) {
+              newRel.templateMessages.push({type: 'Message', message: 'Relationship automatically added by template'});
+            }
+            concept.relationships.push(newRel);
+
+          }
         }
-      });
+      );
 
 
       angular.forEach(concept.relationships, function (r) {
@@ -423,12 +420,12 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-      // get values from target slots
+// get values from target slots
       var nameValueMap = getTemplateValues(template, concept);
 
       console.debug('nameValueMap', nameValueMap);
 
-      // match descriptions
+// match descriptions
       angular.forEach(template.conceptOutline.descriptions, function (dt) {
         var matchFound = false;
         angular.forEach(concept.descriptions, function (d) {
@@ -501,9 +498,9 @@ angular.module('singleConceptAuthoringApp')
 
       console.debug('before checking all', concept.descriptions);
 
-      // cycle over all descriptions -- no style flag means not in template
+// cycle over all descriptions -- no style flag means not in template
 
-      // otherwise, flag as outside template
+// otherwise, flag as outside template
       angular.forEach(concept.descriptions, function (d) {
         console.debug('checking description ', d.active, d.term, d.template)
         if (d.active && !d.template) {
@@ -526,7 +523,7 @@ angular.module('singleConceptAuthoringApp')
         console.debug('replaced values in concept', concept);
       }
 
-      // apply top-level messages
+// apply top-level messages
       if (applyMessages) {
         var msg = {type: 'Message', message: 'Template Concept Valid'};
         angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
@@ -580,12 +577,12 @@ angular.module('singleConceptAuthoringApp')
       return true;
     }
 
-    //
-    // Template "flagging" functions to track active templates across sessions
-    // NOTE: In absence of traceability or similar service, "faking" this with shared UI State
-    //
+//
+// Template "flagging" functions to track active templates across sessions
+// NOTE: In absence of traceability or similar service, "faking" this with shared UI State
+//
 
-    // add concept to project master list (intended as reference for what concepts were created by what templates)
+// add concept to project master list (intended as reference for what concepts were created by what templates)
     function logTemplateConceptSave(projectKey, conceptId, template) {
       var deferred = $q.defer();
       scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list').then(function (list) {
@@ -639,10 +636,19 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function isLockedRelationship(relationship, template) {
-      return template.conceptOutline.relationship.filter(function(r) {
-        return relationship.active && r.groupId === relationship.groupId && r.type.conceptId === relationship.type.conceptId;
-      }).length > 0;
+    function hasTargetSlot(relationship, template) {
+
+      if (!template) {
+        return false;
+      }
+
+      for (var i = 0; i < template.conceptOutline.relationships.length; i++) {
+        var r = template.conceptOutline.relationships[i];
+        if (relationship.active && r.targetSlot && r.groupId === relationship.groupId && r.type.conceptId === relationship.type.conceptId) {
+          return true;
+        }
+      }
+      return false;
     }
 
 
@@ -666,7 +672,7 @@ angular.module('singleConceptAuthoringApp')
       removeTemplateFromConcept: removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
       isTemplateComplete: isTemplateComplete,
-      isLockedRelationship : isLockedRelationship,
+      hasTargetSlot: hasTargetSlot,
 
       // template-flagging
       storeTemplateForConcept: storeTemplateForConcept,
