@@ -30,3 +30,29 @@ color:#b7dbff !important
     background-color: #54535b!important;
 }
 
+/*tooltips */
+.popover-content h3,
+.popover-content .h3
+{
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom: 11.5px;
+    font-weight: 500;
+padding-left:10px;
+padding-bottom:0px
+}
+
+.popover-content .table{margin-bottom:0px;}
+
+.popover-content .table-full thead tr > th:first-child {
+    padding-left: 15px;
+}
+
+.popover-content .table-full tbody > tr > td:first-child {
+    padding-left:15px;
+}
+
+.popover-content .table > thead > tr > th {
+    padding: 6px;
+    line-height: 1.56;}
+	
