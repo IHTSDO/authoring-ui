@@ -152,6 +152,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
 
         // initialize template variable with applied template
+        // TODO Consider making this a directive parameter
         scope.template = scope.concept.template;
 
         scope.isSctid = snowowlService.isSctid;
@@ -181,7 +182,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // NOTE: Currently unused
         scope.validateAgainstTemplate = function () {
-          templateService.applyTemplateToConcept(scope.concept, false, true, false).then(function () {
+          templateService.applyTemplateToConcept(scope.concept, scope.template, false, true, false).then(function () {
             console.debug('template validation result', scope.concept);
           }, function (error) {
             notificationService.sendError('Error applying template: ' + error);
@@ -198,7 +199,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // store in scope variable and on concept (for UI State saving)
             scope.template = template;
             scope.concept.template = template;
-            templateService.applyTemplateToConcept(scope.concept, false, false, false);
+            templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
           } // otherwise, assume that if template present it is newly created (no application required)
           else {
             console.debug('template for new concept', scope.template);
@@ -501,7 +502,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     scope.concept.template = scope.template;
                     templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
                     templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.template);
-                    templateService.applyTemplateToConcept(scope.concept);
+                    templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
                   }
 
                   // if a crs concept
@@ -2307,14 +2308,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete relationship.relationshipId;
           }
 
-          // if a template target slot, update via template service
-          console.debug('checking for target slot', relationship.targetSlot);
-          if (relationship.targetSlot) {
-            console.debug('calling update template concept');
-            templateService.updateTemplateConcept(scope.concept).then(function () {
+          // If template enabled, relationship must contain target slot
+          if (scope.template) {
+            // clear validation errors
+            scope.validation = {};
+
+            templateService.applyTemplateToConcept(scope.concept, scope.template, true, false, false).then(function () {
               scope.computeRelationshipGroups();
               autoSave()
-            })
+            }, function(error) {
+              notificationService.sendError('Unexpected template error: ' + error);
+            });
           }
 
           // otherwise save normally
