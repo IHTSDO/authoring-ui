@@ -153,6 +153,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         //
 
         // utility function pass-thrus
+        scope.templateInitialized = false;
         scope.isSctid = snowowlService.isSctid;
         scope.relationshipHasTargetSlot = templateService.relationshipHasTargetSlot;
         scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
@@ -210,6 +211,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // store in scope variable and on concept (for UI State saving)
             scope.template = template;
             templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
+
           }
 
           // check for new concept with non-SCTID conceptId -- ignore blank id concepts
@@ -225,6 +227,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
           }
+
+          scope.templateInitialized = true;
         }, function (error) {
           notificationService.sendError('Unexpected error checking for concept template: ' + error);
         });
