@@ -279,12 +279,9 @@ angular.module('singleConceptAuthoringApp')
 //
 
 
-    function updateTemplateConcept(concept) {
+    function updateTemplateConcept(concept, template) {
       var deferred = $q.defer();
-      clearTemplateStylesAndMessages(concept);
-      var nameValueMap = getTemplateValues(concept.template, concept);
-      replaceTemplateValues(concept, nameValueMap);
-
+      applyTemplateToConcept(concept,template);
       concept.templateComplete = isTemplateComplete(concept);
 
       deferred.resolve(concept);
@@ -330,15 +327,10 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function applyTemplateToConcept(concept, applyValues, applyMessages, applyStyles) {
+    function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
 
-      console.debug('apply template to concept', concept.template, concept, applyValues, applyStyles);
-
-      // use the selected template if no template already present
-      if (!concept.template) {
-        concept.template = selectedTemplate;
-      }
+      console.debug('apply template to concept',concept, template, applyValues, applyMessages, applyStyles);
 
       // completion flag
       var templateComplete = true;
@@ -366,7 +358,7 @@ angular.module('singleConceptAuthoringApp')
       });
 
       // match relationships
-      angular.forEach(concept.template.conceptOutline.relationships, function (rt) {
+      angular.forEach(template.conceptOutline.relationships, function (rt) {
 
         var matchFound = false;
         angular.forEach(concept.relationships, function (r) {
@@ -432,10 +424,12 @@ angular.module('singleConceptAuthoringApp')
       });
 
       // get values from target slots
-      var nameValueMap = getTemplateValues(concept.template, concept);
+      var nameValueMap = getTemplateValues(template, concept);
+
+      console.debug('nameValueMap', nameValueMap);
 
       // match descriptions
-      angular.forEach(concept.template.conceptOutline.descriptions, function (dt) {
+      angular.forEach(template.conceptOutline.descriptions, function (dt) {
         var matchFound = false;
         angular.forEach(concept.descriptions, function (d) {
 
@@ -645,6 +639,12 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function isLockedRelationship(relationship, template) {
+      return template.conceptOutline.relationship.filter(function(r) {
+        return relationship.active && r.groupId === relationship.groupId && r.type.conceptId === relationship.type.conceptId;
+      }).length > 0;
+    }
+
 
     return {
 
@@ -662,11 +662,11 @@ angular.module('singleConceptAuthoringApp')
 
       // Template application functions
       createTemplateConcept: createTemplateConcept,
-      updateTemplateConcept: updateTemplateConcept,
       applyTemplateToConcept: applyTemplateToConcept,
       removeTemplateFromConcept: removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
       isTemplateComplete: isTemplateComplete,
+      isLockedRelationship : isLockedRelationship,
 
       // template-flagging
       storeTemplateForConcept: storeTemplateForConcept,
