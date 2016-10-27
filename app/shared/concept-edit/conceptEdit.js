@@ -86,6 +86,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // whether to initially display inactive descriptions and relationships
         showInactive: '@?'
+
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -151,10 +152,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Template service functions
         //
 
-        // initialize template variable with applied template
-        // TODO Consider making this a directive parameter
-        scope.template = scope.concept.template;
-
         // utility function pass-thrus
         scope.isSctid = snowowlService.isSctid;
         scope.hasTargetSlot = templateService.hasTargetSlot;
@@ -191,25 +188,32 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-
+        // on load, get the stored template
         templateService.getStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
-
+          console.debug('template response', template);
           // if template found in store, apply it to retrieved concept
           if (template) {
-            console.debug('template for existing concept', template);
 
             // store in scope variable and on concept (for UI State saving)
             scope.template = template;
-            scope.concept.template = template;
             templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
-          } // otherwise, assume that if template present it is newly created (no application required)
-          else {
-            console.debug('template for new concept', scope.template);
-            if (scope.concept.template) {
-              scope.template = scope.concept.template;
-              templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
-            }
           }
+
+          // check for new concept with non-SCTID conceptId -- ignore blank id concepts
+          else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
+
+            console.debug('checking selected template', templateService.getSelectedTemplate());
+
+            // if a template is selected, apply and store
+            var selectedTemplate = templateService.getSelectedTemplate();
+            if (selectedTemplate) {
+              scope.template = selectedTemplate;
+              templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate);
+            }
+
+          }
+        }, function(error) {
+          notificationService.sendError('Unexpected error checking for concept template: ' + error);
         });
 
 
@@ -2318,7 +2322,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             templateService.applyTemplateToConcept(scope.concept, scope.template, true, false, false).then(function () {
               scope.computeRelationshipGroups();
               autoSave()
-            }, function(error) {
+            }, function (error) {
               notificationService.sendError('Unexpected template error: ' + error);
             });
           }
