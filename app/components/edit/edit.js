@@ -1531,10 +1531,12 @@ angular.module('singleConceptAuthoringApp.edit', [
     );
 
     $scope.getSelectedTemplate = templateService.getSelectedTemplate;
-    $scope.selectTemplate = function (template) {
+    $scope.selectTemplate = function (template, createConcept) {
       templateService.selectTemplate(template).then(function () {
         document.getElementById('templateCreateBtn').click();
-        $scope.createConcept();
+        if (createConcept) {
+          $scope.createConcept();
+        }
       })
     };
     $scope.clearTemplate = function () {
