@@ -524,7 +524,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   if (scope.template) {
                     scope.concept.template = scope.template;
                     templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
-                    templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.template);
+                    templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.concept.fsn, scope.template);
                     templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
                   }
 

@@ -583,12 +583,13 @@ angular.module('singleConceptAuthoringApp')
 //
 
 // add concept to project master list (intended as reference for what concepts were created by what templates)
-    function logTemplateConceptSave(projectKey, conceptId, template) {
+    function logTemplateConceptSave(projectKey, conceptId, fsn, template) {
       var deferred = $q.defer();
       scaService.getSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-list').then(function (list) {
         var newList = list ? list : [];
         var item = {
           conceptId: conceptId,
+          fsn : fsn,
           templateName: template.name,
           templateVersion: template.version,
           saveDate: new Date().getTime()
