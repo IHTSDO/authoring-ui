@@ -202,36 +202,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        // on load, get the stored template
-        templateService.getStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
-          console.debug('template response', template);
-          // if template found in store, apply it to retrieved concept
-          if (template) {
 
-            // store in scope variable and on concept (for UI State saving)
-            scope.template = template;
-            templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
-
-          }
-
-          // check for new concept with non-SCTID conceptId -- ignore blank id concepts
-          else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
-
-            console.debug('checking selected template', templateService.getSelectedTemplate());
-
-            // if a template is selected, apply and store
-            var selectedTemplate = templateService.getSelectedTemplate();
-            if (selectedTemplate) {
-              scope.template = selectedTemplate;
-              templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate);
-            }
-
-          }
-
-          scope.templateInitialized = true;
-        }, function (error) {
-          notificationService.sendError('Unexpected error checking for concept template: ' + error);
-        });
 
 
         //
@@ -340,6 +311,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               saveModifiedConcept();
               scope.isModified = true;
             }
+
+            // once concept fully loaded (from parameter or from modified state), check for template
+            templateService.getStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
+              console.debug('template response', template);
+              // if template found in store, apply it to retrieved concept
+              if (template) {
+
+                // store in scope variable and on concept (for UI State saving)
+                scope.template = template;
+                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
+
+              }
+
+              // check for new concept with non-SCTID conceptId -- ignore blank id concepts
+              else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
+
+                console.debug('checking selected template', templateService.getSelectedTemplate());
+
+                // if a template is selected, apply and store
+                var selectedTemplate = templateService.getSelectedTemplate();
+                if (selectedTemplate) {
+                  scope.template = selectedTemplate;
+                  templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate);
+                }
+
+              }
+
+              scope.templateInitialized = true;
+            }, function (error) {
+              notificationService.sendError('Unexpected error checking for concept template: ' + error);
+            });
 
           });
         }
