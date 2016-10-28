@@ -312,8 +312,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // exists -- only applies to task level, safety check
         if ($routeParams.taskKey && scope.autosave === true) {
 
+          console.debug('getting modified concept for task on initial load', scope.concept.catchExpectedRender);
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
 
+            console.debug('modified ocncept', modifiedConcept);
 
             // if not an empty JSON object, process the modified version
             if (modifiedConcept) {
@@ -333,23 +335,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.computeRelationshipGroups();
             }
 
-            // special case for unsaved concepts to catch possible bugs
-            else {
-              // if unsaved, and no modified data found, simply replace with
-              // blank concept
-              if (scope.concept.conceptId === 'unsaved') {
-                scope.concept = componentAuthoringUtil.getNewConcept(scope.branch);
-              }
-
-              // if an actual unsaved concept (no fsn assigned), mark as
-              // modified
-              if (!scope.concept.fsn) {
-                scope.isModified = true;
-              }
-
-              // save the modified state
-              scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, scope.concept);
+            // otherwise, persist modified state for unsaved concept with id
+            else if (scope.concept.conceptId && !scope.concept.fsn) {
+              saveModifiedConcept();
+              scope.isModified = true;
             }
+
           });
         }
 
@@ -393,6 +384,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
 
         scope.removeConcept = function (concept) {
+
+          if (scope.isModified || !snowowlService.isSctid(concept.conceptId)) {
+            if (window.confirm('This concept is unsaved; removing it will destroy your work.  Continue?')) {
+              scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
+            } else {
+              return;
+            }
+          }
+
           $rootScope.$broadcast('stopEditing', {concept: concept});
         };
 
@@ -445,9 +445,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
-        // on load, check for the requiresValidation flag applied in saveHelper
-        if (scope.concept.requiresValidation) {
-          delete scope.concept.requiresValidation;
+        // on load, check for expected render flag applied in saveHelper
+        if (scope.concept.catchExpectedRender) {
+          delete scope.concept.catchExpectedRender;
           scope.validateConcept();
         }
 
@@ -505,8 +505,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // if was created, add a requiresValidation flag for re-render triggering
                   // NOTE: Still unsure exactly why create is triggering a full re-render
                   // does not appear to be trackBy or similar issue in ng-repeat....
+                  // NOTE: Currently used for re-validation and prevention of spurious modified UI States on load
                   if (saveFn == snowowlService.createConcept) {
-                    response.requiresValidation = true;
+
+                    response.catchExpectedRender = true;
                   }
 
                   // set concept and unmodified state
@@ -514,6 +516,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.unmodifiedConcept = JSON.parse(JSON.stringify(response));
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
+
+                  console.debug('applying expected render flag', scope.concept);
 
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
@@ -547,7 +551,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   } else {
 
                     // clear the saved modified state
-                    scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
+                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
                   }
 
                   // ensure descriptions & relationships are sorted
@@ -2389,10 +2393,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveModifiedConcept() {
 
+          console.debug('saveModifiedConcept');
+
           scope.isModified = true;
 
           // broadcast event to any listeners (currently task detail)
-          $rootScope.$broadcast('conceptEdit.conceptModified', {
+          $rootScope.$broadcast('conceptEdit.c  onceptModified', {
             branch: scope.branch,
             conceptId: scope.concept.conceptId,
             concept: scope.concept
@@ -2412,6 +2418,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * NOTE: outside $watch to prevent spurious updates
          */
         function autoSave() {
+
+          console.debug('autosave');
 
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
