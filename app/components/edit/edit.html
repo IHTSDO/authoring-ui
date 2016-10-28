@@ -47,6 +47,7 @@
             type="button"
             id="templateCreateBtn"
             ng-disabled="task.status === 'Promoted' || !canCreateConcept"
+            ng-if="templates.length > 0"
             class="btn btn-default create-new-concept snodragon-templates widget-toolbar tooltips-right tooltips-light normal-case">
       <img src="images/snodragon.png" style="width:25px;">
       <span>Select SnoDragon Template</span></button>
