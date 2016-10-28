@@ -2,7 +2,7 @@
     <div class="pop-edit description-more row">
         <div class="sct-id pull-left">
             <label class="control-label">SCTID</label>
-            <span class="fields row"> {{description.descriptionId}}</span>
+            <span class="fields row" ng-show="isSctid" ng-init="isSctid = isSctid(description.descriptionId)"> {{description.descriptionId}}</span>
         </div>
         <div class="lang-id pull-left">
             <label class="control-label">Lang.</label>
