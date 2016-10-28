@@ -320,7 +320,7 @@ angular.module('singleConceptAuthoringApp')
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
 
-      // console.debug('apply template to concept', concept, template, applyValues, applyMessages, applyStyles);
+       console.debug('apply template to concept', concept, template, applyValues, applyMessages, applyStyles);
 
       // reset all template variables
       concept.templateMessages = [];

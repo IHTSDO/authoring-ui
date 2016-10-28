@@ -496,6 +496,21 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
 
+            // In order to ensure proper term-server behavior,
+            // need to delete SCTIDs without effective time on descriptions and relationships
+            // otherwise the values revert to termserver version
+            angular.forEach(scope.concept.descriptions, function(description) {
+            if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
+              delete description.descriptionId;
+            }
+            });
+            angular.forEach(scope.concept.relationships, function(relationship) {
+              if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime) {
+                delete relationship.relationshipId;
+              }
+            });
+
+
             saveFn(
               $routeParams.projectKey,
               $routeParams.taskKey,
@@ -681,6 +696,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
 
               // save concept
+              console.log('SAVE HELPER 1');
               saveHelper().then(function () {
 
                 $timeout(function () {
@@ -723,6 +739,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.concept.conceptId = originalConceptId;
               }
 
+              console.log('SAVE HELPER 2');
               saveHelper(scope.concept).then(function () {
                 scope.validateConcept();
                 notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
@@ -2307,13 +2324,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
 
-          // In order to ensure proper term-server behavior
-          // if this description is unpublished, but has an SCTID
-          // remove the id to allow proper deletion and update
-          // Otherwise, changes 'revert' to previously saved values
-          if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
-            delete description.descriptionId;
-          }
 
           // run automations
           var conceptCopy = angular.copy(scope.concept);
@@ -2333,13 +2343,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           if (!relationship) {
             return;
-          }
-
-          // if this relationship is unpublished, but has an SCTID
-          // remove the id to allow proper deletion and update
-          // Otherwise, changes 'revert' to previously saved values
-          if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !roleGroupOnly) {
-            delete relationship.relationshipId;
           }
 
           // If template enabled, relationship must contain target slot
