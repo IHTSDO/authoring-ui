@@ -490,11 +490,12 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                                    <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
-                                              ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
-                                              ng-change="updateRelationship(relationship, true)"
-                                              class="form-control rg msd-elastic: \n;"
-                                              type="text" placeholder="#" ui-on-drop="dropNullOp()">
+                                    <textarea
+                                      ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
+                                      ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
+                                      ng-change="updateRelationship(relationship, true)"
+                                      class="form-control rg msd-elastic: \n;"
+                                      type="text" placeholder="#" ui-on-drop="dropNullOp()">
                                     </textarea>
                   <span>Role Group</span>
                 </div>
@@ -541,7 +542,7 @@
                             ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationshipHasTargetSlot(relationship, template))"
                             class="resizable-text relationship msd-elastic: \n;"
                             ng-class="[{'template-slot' : relationship.targetSlot}]"
-                            typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template)"
+                            typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
                             typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
@@ -567,14 +568,15 @@
                 </div>
 
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId)")>
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId)" )>
 
                   <button ng-if="!template" type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Add New Relationship</span>
                   </button>
 
-                  <button type="button" ng-click="removeRelationship(relationship)" ng-if="!relationship.released && (!template || !relationshipInLogicalModel(relationship, template))"
+                  <button type="button" ng-click="removeRelationship(relationship)"
+                          ng-if="!relationship.released && (!template || !relationshipInLogicalModel(relationship, template))"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Remove Relationship</span>
                   </button>
@@ -654,9 +656,8 @@
       </button>
 
 
-
-        <span
-          style="padding-top:25px;">Template: {{template.name}}, version {{template.version}}</span>
+      <span
+        style="padding-top:25px;">Template: {{template.name}}, version {{template.version}}</span>
       &nbsp;&nbsp;
 
       <button class="pull-right btn btn-default blue darken-2" ng-click="removeTemplate()"

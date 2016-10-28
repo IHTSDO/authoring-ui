@@ -1799,7 +1799,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if type specified, validate against type
           if (relationship.type.conceptId !== null && metadataService.isMrcmEnabled()) {
 
-            constraintService.isValueAllowedForType(relationship.type.conceptId, data.name, scope.concept, scope.branch).then(function () {
+            constraintService.isValueAllowedForType(relationship.type.conceptId, data.name, scope.branch,
+              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
               relationship.target.conceptId = data.id;
               relationship.target.fsn = data.name;
               scope.updateRelationship(relationship, false);

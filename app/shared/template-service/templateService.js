@@ -34,15 +34,15 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function replaceTemplateValues(concept, nameValueMap) {
-      console.debug('replacing values', nameValueMap);
+      // console.debug('replacing values', nameValueMap);
 
       // TODO Check top-level concept properties
 
-      //  console.debug('replace template values', concept, nameValueMap);
+      //  // console.debug('replace template values', concept, nameValueMap);
       // replace in descriptions
       angular.forEach(concept.descriptions, function (d) {
         if (d.template) {
-          console.debug('checking description', d.term);
+          // console.debug('checking description', d.term);
           for (var name in nameValueMap) {
             if (nameValueMap.hasOwnProperty(name)) {
               d.term = d.template.term.replace('{{' + name + '}}', nameValueMap[name]);
@@ -61,7 +61,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getTemplateValues(template, concept) {
-      console.debug('getting template values', template, concept);
+      // console.debug('getting template values', template, concept);
 
       // full map of replacement values
       var nameValueMap = {};
@@ -73,9 +73,9 @@ angular.module('singleConceptAuthoringApp')
 
         // find the matching relationship target slot by takeFSNFromSlot
         angular.forEach(concept.relationships, function (r) {
-          //      console.debug('    checking relationship', r)
+          //      // console.debug('    checking relationship', r)
           if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot) {
-            //        console.debug('      target slot found');
+            //        // console.debug('      target slot found');
 
             if (!r.target.conceptId) {
               value = shortName;
@@ -122,7 +122,7 @@ angular.module('singleConceptAuthoringApp')
 
       var deferred = $q.defer();
 
-      console.debug('Initializing template', template.name);
+      // console.debug('Initializing template', template.name);
 
       if (template.initialized) {
         deferred.resolve(template);
@@ -147,11 +147,11 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(concepts.items, function (c) {
 
               idConceptMap[c.id] = c;
-              console.debug('setting ', c, idConceptMap[c.id]);
+              // console.debug('setting ', c, idConceptMap[c.id]);
             });
 
 
-            console.debug('idConceptMap', idConceptMap);
+            // console.debug('idConceptMap', idConceptMap);
             angular.forEach(template.conceptOutline.relationships, function (r) {
               r.type.fsn = r.type && r.type.conceptId ? idConceptMap[r.type.conceptId].fsn.term : null;
               r.target.fsn = r.target && r.target.conceptId ? idConceptMap[r.target.conceptId].fsn.term : null;
@@ -160,7 +160,7 @@ angular.module('singleConceptAuthoringApp')
 
 
             template.initialized = true;
-            console.debug('template initialized', template);
+            // console.debug('template initialized', template);
             deferred.resolve(template);
           },
           function (error) {
@@ -176,7 +176,7 @@ angular.module('singleConceptAuthoringApp')
 // Exposed functions
 //
     function getTemplates(refreshCache) {
-      console.debug('getTemplates', templateCache);
+      // console.debug('getTemplates', templateCache);
       var deferred = $q.defer();
       if (!templateCache || refreshCache) {
 
@@ -188,7 +188,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject('Failed to retrieve templates: ' + error.developerMessage);
         });
       } else {
-        console.debug('returning cached templates', templateCache);
+        // console.debug('returning cached templates', templateCache);
         deferred.resolve(templateCache);
       }
       return deferred.promise;
@@ -250,7 +250,7 @@ angular.module('singleConceptAuthoringApp')
         // ensure all required fields are set
         componentAuthoringUtil.setDefaultFields(tc);
 
-        console.debug('after default fields', tc);
+        // console.debug('after default fields', tc);
 
         // apply temporary UUIDs and template variables/flags
         tc.conceptId = snowowlService.createGuid();
@@ -268,7 +268,7 @@ angular.module('singleConceptAuthoringApp')
         var nameValueMap = getTemplateValues(template, tc);
         replaceTemplateValues(tc, nameValueMap);
 
-        console.debug('template concept', tc);
+        // console.debug('template concept', tc);
         deferred.resolve(tc);
       }
       return deferred.promise;
@@ -278,15 +278,6 @@ angular.module('singleConceptAuthoringApp')
 // Template functionality -- consider moving to templateUtility
 //
 
-
-    function updateTemplateConcept(concept, template) {
-      var deferred = $q.defer();
-      applyTemplateToConcept(concept, template);
-      concept.templateComplete = isTemplateComplete(concept);
-
-      deferred.resolve(concept);
-      return deferred.promise;
-    }
 
     function clearTemplateStylesAndMessages(concept) {
       delete concept.templateMessages;
@@ -311,7 +302,6 @@ angular.module('singleConceptAuthoringApp')
         delete r.template;
         delete r.targetSlot;
       });
-      return;
     }
 
 
@@ -330,10 +320,7 @@ angular.module('singleConceptAuthoringApp')
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
 
-      console.debug('apply template to concept', concept, template, applyValues, applyMessages, applyStyles);
-
-      // completion flag
-      var templateComplete = true;
+      // console.debug('apply template to concept', concept, template, applyValues, applyMessages, applyStyles);
 
       // reset all template variables
       concept.templateMessages = [];
@@ -423,7 +410,7 @@ angular.module('singleConceptAuthoringApp')
 // get values from target slots
       var nameValueMap = getTemplateValues(template, concept);
 
-      console.debug('nameValueMap', nameValueMap);
+      // console.debug('nameValueMap', nameValueMap);
 
 // match descriptions
       angular.forEach(template.conceptOutline.descriptions, function (dt) {
@@ -496,13 +483,13 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-      console.debug('before checking all', concept.descriptions);
+      // console.debug('before checking all', concept.descriptions);
 
 // cycle over all descriptions -- no style flag means not in template
 
 // otherwise, flag as outside template
       angular.forEach(concept.descriptions, function (d) {
-        console.debug('checking description ', d.active, d.term, d.template)
+        // console.debug('checking description ', d.active, d.term, d.template)
         if (d.active && !d.template) {
           if (applyStyles) {
             d.templateStyle = 'redhl';
@@ -520,7 +507,7 @@ angular.module('singleConceptAuthoringApp')
 
       if (applyValues) {
         concept = replaceTemplateValues(concept, nameValueMap);
-        console.debug('replaced values in concept', concept);
+        // console.debug('replaced values in concept', concept);
       }
 
 // apply top-level messages
@@ -537,7 +524,7 @@ angular.module('singleConceptAuthoringApp')
           });
         });
         concept.templateMessages.push(msg);
-        console.debug('concept messages', msg, concept.templateMessages);
+        // console.debug('concept messages', msg, concept.templateMessages);
       }
 
 
@@ -607,9 +594,9 @@ angular.module('singleConceptAuthoringApp')
 
     function storeTemplateForConcept(projectKey, conceptId, template) {
       var deferred = $q.defer();
-      console.debug('saving shared ui state', projectKey, conceptId, template);
+      // console.debug('saving shared ui state', projectKey, conceptId, template);
       scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId, template).then(function () {
-        console.debug('adding to template list');
+        // console.debug('adding to template list');
         deferred.resolve();
       }, function (error) {
         deferred.reject('Shared UI-State Error: ' + error.message);
