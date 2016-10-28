@@ -87,13 +87,13 @@ angular.module('singleConceptAuthoringApp')
         return newValues;
       }
 
-      function getConceptsForValueTypeahead(attributeId, termFilter, branch, componentTemplate) {
-        console.debug('typeahead', attributeId, termFilter, branch, componentTemplate);
+      function getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr) {
+        console.debug('typeahead', attributeId, termFilter, branch, escgExpr);
         var deferred = $q.defer();
 
         // if expression specified, perform direct retrieval
-        if (componentTemplate && componentTemplate.targetSlot) {
-          snowowlService.searchConcepts(branch, termFilter, componentTemplate.targetSlot.allowableRangeECL).then(function(response) {
+        if (escgExpr) {
+          snowowlService.searchConcepts(branch, termFilter, escgExpr).then(function(response) {
             var concepts = getConceptsForValueTypeaheadHelper(response);
             console.debug('results', concepts);
             deferred.resolve(concepts);
