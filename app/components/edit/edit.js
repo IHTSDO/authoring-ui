@@ -995,16 +995,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 // creates a blank (unsaved) concept in the editing list
     $scope.createConcept = function () {
 
-      // check if an unsaved concept already exists
-      for (var i = 0; i < $scope.concepts.length; i++) {
-        if (!$scope.concepts[i].conceptId) {
-          notificationService.sendWarning('A new, unsaved concept already exists.', 5000);
-          return;
-        }
-      }
-
-      scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
-
       var selectedTemplate = templateService.getSelectedTemplate();
 
       if (!selectedTemplate) {

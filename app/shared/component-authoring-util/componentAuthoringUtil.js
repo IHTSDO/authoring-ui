@@ -140,7 +140,7 @@ angular.module('singleConceptAuthoringApp')
       function getNewConcept() {
         var moduleId = metadataService.getCurrentModuleId();
         var concept = {
-          'conceptId': null,
+          'conceptId': snowowlService.createGuid(),
           'descriptions': [],
           'relationships': [],
           'fsn': null,
