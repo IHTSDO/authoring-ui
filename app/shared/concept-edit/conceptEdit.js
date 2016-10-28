@@ -1181,7 +1181,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
             if (a.groupId === b.groupId) {
+              if (a.type.fsn === b.type.fsn) {
               return a.target.fsn > b.target.fsn;
+              } else {
+                return a.type.fsn > b.type.fsn;
+              }
             } else {
               return a.groupId - b.groupId;
             }
