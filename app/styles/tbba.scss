@@ -15,9 +15,12 @@ color:#b7dbff !important
 }
 .tbba-notification{background-color: #201f23;}
 
-.is_a input[disabled], .is_a textarea[disabled], .is_a select[disabled], .is_a_bg[disabled] {
+.is_a input[disabled], 
+.is_a textarea[disabled], 
+.is_a select[disabled], 
+.is_a_bg[disabled] {
     background-color: #54535b!important;
-	color: #ffffdb !important;
+	color: #ffffe6! important;
 	    border-bottom: none!important;
 }
 
@@ -30,6 +33,61 @@ color:#b7dbff !important
     background-color: #54535b!important;
 }
 
+.def_FULLY_DEFINED textarea[disabled], 
+.def_FULLY_DEFINED select[disabled], 
+.def_FULLY_DEFINED .custom-button[disabled] {
+    color: #dbdbff !important;
+    background-color: #54535b!important;
+}
+
+
+/*light*/
+.sca-light .editing-form input[disabled], 
+.sca-light .editing-form textarea[disabled], 
+.sca-light .editing-form select[disabled]{
+ background-color: #757981!important;
+color:#cce6ff !important	
+}
+
+
+.sca-light .def_PRIMITIVE textarea[disabled], 
+.sca-light .def_PRIMITIVE select[disabled], 
+.sca-light .def_PRIMITIVE .custom-button[disabled]
+{ 
+background-color: #757981!important;
+color:#cce6ff !important
+}
+
+
+.sca-light .is_a input[disabled], 
+.sca-light .is_a textarea[disabled], 
+.sca-light .is_a select[disabled], 
+.sca-light .is_a_bg[disabled] {
+    background-color: #757981!important;
+	color: #ffffe6 !important;
+	    border-bottom: none!important;
+}
+
+.sca-light .PRIMITIVE textarea.relationship[disabled], 
+.sca-light .PRIMITIVE textarea.rg[disabled], 
+.sca-light .PRIMITIVE select[disabled], 
+.sca-light .PRIMITIVE .custom-button[disabled], 
+.sca-light .PRIMITIVE .sourcename[disabled] {
+    color: #cce6ff !important;
+    background-color: #757981!important;
+}
+
+.sca-light .def_FULLY_DEFINED textarea[disabled], 
+.sca-light .def_FULLY_DEFINED select[disabled], 
+.sca-light .def_FULLY_DEFINED .custom-button[disabled] {
+    color: #e5e5ff !important;
+    background-color: #757981!important;
+}
+.sca-light .release-template-bar,
+
+{color:#474747}
+
+.sca-light .release-template-bar button{margin-top:2px;}
 /*tooltips */
 .popover-content h3,
 .popover-content .h3
