@@ -626,8 +626,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // display error msg if concept not valid but no other
           // errors/warnings specified
-          if (!scope.isConceptValid(scope.concept) && !scope.errors && !scope.warnings) {
-            scope.errors = ['Concept is not complete, and cannot be saved.  Specify all empty fields and try again.'];
+          console.debug('concept validity', scope.isConceptValid(scope.concept));
+          var errors = scope.isConceptValid(scope.concept);
+          if (errors) {
+            scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
             return;
           }
           else if (!scope.isConceptValid(scope.concept) && scope.errors) {
@@ -2145,18 +2147,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isDescriptionValid = function (description) {
 
           var errors = [];
-          // if not published and inactive, consider valid (removed by
-          // saveConcept)
-          if (!description.active && !description.effectiveTime) {
-            return errors;
-          }
+
+          console.debug('checking description', description);
 
           if (!description.moduleId) {
             errors.push('Description moduleId must be set');
-            // specified';
-            return false;
           }
-          if (!description.term) {
+          if (!description.term || description.term.length === 0) {
             errors.push('Description term must be set');
           }
           if (description.active === null) {
@@ -2177,6 +2174,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // pass all checks -> return true
+          console.debug('errors', errors);
           return errors;
         };
 
@@ -2184,12 +2182,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isRelationshipValid = function (relationship) {
 
           var errors = [];
-
-          // if not active and no effective time, consider valid (removed by
-          // saveConcept)
-          if (!relationship.active && !relationship.effectiveTime) {
-            return errors;
-          }
 
           // check relationship fields
           if (!relationship.modifier) {
@@ -2222,13 +2214,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.isConceptValid = function (concept) {
 
           var errors = [];
-          //  console.debug('Checking concept valid', concept);
 
-          /*// check the basic concept fields
-           if (concept.isLeafInferred === null) {
-           console.error('Concept isleafInferred flag must be set');
-           return false;
-           }*/
           if (!concept.descriptions || concept.descriptions.length === 0) {
             errors.push('Concept must have at least one description');
 
@@ -2261,13 +2247,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // check descriptions
           for (var k = 0; k < concept.descriptions.length; k++) {
-            errors.concat(scope.isDescriptionValid(concept.descriptions[k]));
+            console.debug('description error', scope.isDescriptionValid(concept.descriptions[k]), errors.concat(scope.isDescriptionValid(concept.descriptions[k])))
+            errors = errors.concat(scope.isDescriptionValid(concept.descriptions[k]));
           }
 
           // check relationships
           for (var j = 0; j < concept.relationships.length; j++) {
-            errors.concat(scope.isRelationshipValid(concept.relationships[j]));
+            errors = errors.concat(scope.isRelationshipValid(concept.relationships[j]));
           }
+
+          console.debug(errors);
 
           // return any errors
           return errors;
