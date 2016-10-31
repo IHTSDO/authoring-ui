@@ -2,11 +2,90 @@
   .template-added {
     background-color: orange;
   }
+
   .template-invalid {
     background-color: red;
   }
+
   .template-valid {
     background-color: green;
+  }
+
+  /*
+    .navbar .navigation-link-list li .btn-link {
+      color: #4fc3f7;
+    }
+
+    .navbar .navigation-link-list li:hover .btn-link,
+    .navigation-link-list li a,
+    .navbar .navigation-link-list li:hover .btn-link {
+      color: #4fc3f7
+    }
+
+    .navbar .navigation-link-list li:hover .btn-link {
+      background-color: #5e5e5e
+    }*/
+
+  .navigation-link {
+    width: 50px;
+    height: 50px;
+  }
+
+  ul.navigation-link-list li {
+    padding: 0;
+  }
+
+  ul.navigation-link-list li ul li a {
+    color: #fff !important;
+  }
+
+  ul.navigation-link-list li ul {
+    padding-left: 10px;
+    position: relative;
+    width: 300px;
+    font-size: 13px !important;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    color: #fff !important;
+    -webkit-transiton: opacity 0.2s;
+    -moz-transition: opacity 0.2s;
+    -ms-transition: opacity 0.2s;
+    -o-transition: opacity 0.2s;
+    -transition: opacity 0.2s;
+  }
+
+  ul.navigation-link-list li ul:after {
+    content: '';
+    position: relative;
+
+    margin-left: 50px;
+    width: 0;
+    height: 0;
+    border-bottom: 6px solid #4fc3f7;
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+  }
+
+  ul.navigation-link-list li ul li {
+    background: #4fc3f7;
+    display: block;
+    color: #fff;
+    padding: 8px 13px;
+  }
+
+  ul.navigation-link-list li ul li:hover {
+    background: #409dc7;
+
+  }
+
+  ul.navigation-link-list li:hover ul {
+    display: block;
+    opacity: 1;
+    visibility: visible;
   }
 
 
@@ -29,16 +108,16 @@
     -->
 
     <!-- Create new concept (non-template) -->
-    <button 
-            ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
-            type="button" ng-click="createConcept()"
-            ng-disabled="task.status === 'Promoted' || !canCreateConcept"
-            class="btn btn-default create-new-concept widget-toolbar tooltips-right tooltips-light normal-case">
+    <button
+      ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+      type="button" ng-click="createConcept()"
+      ng-disabled="task.status === 'Promoted' || !canCreateConcept"
+      class="btn btn-default create-new-concept widget-toolbar tooltips-right tooltips-light normal-case">
       <div class="md fa-sca fa-edit"></div>
 
       <span>Create New Concept</span></button>
 
-<!-- Create new template concept -->
+    <!-- Create new template concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             popover-template="'shared/template-service/templateSelect.html'"
             popover-placement="right"
@@ -51,66 +130,131 @@
             class="btn btn-default create-new-concept snodragon-templates widget-toolbar tooltips-right tooltips-light normal-case">
       <img src="images/snodragon.png" style="width:25px;">
       <span>Select SnoDragon Template</span></button>
+    <div class="navigation-link green darken-1 classify">
 
-    <button type="button" id="classificationMenuButton"
-            class="btn btn-default widget-toolbar tooltips-right classify tooltips-light normal-case"
-            ng-class="[{'green darken-1' : task.latestClassificationJson}, {'grey' : !task.latestClassificationJson}]"
-            popover-template="'components/edit/edit-classification-menu.html'"
-            popover-placement="right"
-            popover-trigger="click: click"
-            popover-append-to-body="true">
-      <div class="md"  ng-class="[{'md-notifications-none' : !task.latestClassificationJson},
-            {'md-notifications-off' : task.latestClassificationJson.status === 'FAILED'},
-            {'md-notifications' : task.latestClassificationJson.status === 'COMPLETED'},
-            {'md-notifications-paused' : task.latestClassificationJson.status === 'RUNNING'}]"
-          ></div>
-      <span>Click for Classification Options</span>
-    </button>
+      <ul class="navigation-link-list">
+        <li>
+          <a>
+            <div class="home-link pointer btn btn-link withoutripple"><i class="md md-notifications "></i>
+            </div>
+          </a>
+
+
+          <ul>
+
+
+            <li ng-if="task.latestClassificationJson.status === 'COMPLETED'">
+              <a ng-click="viewClassificationFromSidebar()">
+                View Classification (completed {{classificationContainer.creationDate | date : 'medium'}}
+              </a>
+            </li>
+            <li ng-if="task.latestClassificationJson.status === 'FAILED'">
+              <a>
+                Classification Failed
+              </a>
+            </li>
+            <li ng-if="task.latestClassificationJson.status === 'RUNNING'">
+              <a>
+                Classification Running
+              </a>
+            </li>
+            <li ng-if="task.latestClassificationJson.status !== 'RUNNING'">
+              <a ng-click="classify()"
+                 ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">>
+                Start New Classification
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+
+    </div>
+
+    <div class="navigation-link deep-purple darken-2 validate">
+
+      <ul class="navigation-link-list">
+        <li>
+          <a>
+            <div class="home-link pointer btn btn-link withoutripple"><i class="md md-school "></i>
+            </div>
+          </a>
+
+          <ul>
+
+
+            <li ng-if="task.latestValidationStatus === 'FAILED'">
+              Validation Failed
+            </li>
+            <li
+              ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || task.latestValidationStatus === 'SCHEDULED')">
+              Validation Running
+            </li>
+
+            <li ng-if="task.latestValidationStatus === 'COMPLETED'">
+              <a ng-click="viewValidationFromSidebar()">
+                View Validation Report
+              </a>
+            </li>
+            <li
+              ng-if="task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'">
+
+              <a ng-click="validate()"
+                 ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+                Start New Validation
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+
+    </div>
+
+    <div class="navigation-link pink1 darken-2 review">
+
+      <ul class="navigation-link-list">
+        <li>
+          <a>
+            <div class="home-link pointer btn btn-link withoutripple"><i class="md md-email "></i>
+            </div>
+          </a>
+
+          <ul>
+            <li
+              ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && !reviewChecks">
+
+              <a ng-click="toggleReview()"
+                 ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+                Submit for Review
+              </a>
+            </li>
+
+            <li ng-if="reviewChecks">
+              <a ng-click="cancelSubmitForReview()">
+                Cancel Submit for Review
+              </a>
+            </li>
+            <li
+              ng-if="role === 'AUTHOR' && (task.status === 'In Review' || task.status === 'Review Completed')">
+              <a ng-click="toggleReview()">Cancel Review</a>
+            </li>
+
+            <li ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')">
+              <a ng-click="toggleReview()">
+                Unclaim Review
+              </a>
+            </li>
+            <li>
+              <a ng-click="viewReviewFromSidebar()">View Review and Feedback</a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+
+    </div>
     
-
-
-
-    <!-- Switch to Feedback/Review View -- Task View Only -->
-    <button type="button" id="feedbackMenuButton"
-            class="btn btn-default widget-toolbar tooltips-right review tooltips-light normal-case"
-            ng-class="[{'pink1' : task.status === 'In Review' || task.status === 'Review Completed'}, {'grey' : task.status !== 'In Review' && task.status !== 'Review Completed'}]"
-            popover-template="'components/edit/edit-feedback-menu.html'"
-            popover-placement="right"
-            popover-trigger="click: click"
-            popover-append-to-body="true">
-      <div class="md md-email"></div>
-      <span>Click for Review and Feedback Options</span>
-    </button>
-
-    <!-- Switch to Validate View -->
-    <button type="button" id="validationMenuButton"
-            class="btn btn-default widget-toolbar validate tooltips-right tooltips-light normal-case"
-            ng-class="[{'deep-purple lighten-1' : task.latestValidationStatus && task.validationStatus !== 'NOT_TRIGGERED'}, {'grey' : !task.latestValidationStatus || task.latestValidationStatus === 'NOT_TRIGGERED'}]"
-            popover-template="'components/edit/edit-validation-menu.html'"
-            popover-placement="right"
-            popover-trigger="click: click"
-            popover-append-to-body="true">
-      <div class="md"  ng-class="[{'md-school' : !task.latestValidationStatus || task.latestValidationStatus === 'NOT_TRIGGERED'},
-            {'md-school' : task.latestValidationStatus === 'FAILED'},
-            {'md-school' : task.latestValidationStatus === 'COMPLETED'},
-            {'md-school' : task.latestValidationStatus === 'SCHEDULED' || task.latestValidationStatus === 'BUILDING' || task.latestValidationStatus === 'RUNNING'}]"
-      ></div>
-      <span>Click for Validation Options</span>
-    </button>
-
-
-  <!--  <button type="button"
-            class="btn btn-default widget-toolbar deep-purple lighten-1 validate tooltips-right tooltips-light normal-case"
-            ng-click="setView('validation')"
-            ng-disabled="task.latestValidationStatus !== 'COMPLETED'">
-      <div class="md md-school"></div>
-      <span>View the most recent Validation Report</span></button>
--->
-    <!-- Switch to Conflict View -->
-    <!-- ng-class="[
-    {'red' : conflictsContainer.conflicts.concepts.length > 0},
-    {'grey lighten-3' : !conflictsContainer.conflicts.concepts || conflictsContainer.conflicts.concepts.length === 0}]"
-    -->
     <button type="button"
             class="btn btn-default widget-toolbar amber lighten-1 conflicts tooltips-right tooltips-light normal-case"
             ng-disabled="!canConflict || branchLocked"

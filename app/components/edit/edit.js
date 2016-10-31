@@ -1625,6 +1625,9 @@ angular.module('singleConceptAuthoringApp.edit', [
               notificationService.sendError('Error submitting for review: ' + error);
             });
           } else {
+
+            notificationService.sendMessage('Submit for review request: Checking for unsaved content...');
+
             // check for unsaved content
             reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
 
