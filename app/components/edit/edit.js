@@ -1623,7 +1623,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var deferred = $q.defer();
       var modalInstance = $modal.open({
-        templateUrl: '',
+        templateUrl: 'shared/review-check-modal/reviewCheckModal.html',
         controller: 'reviewCheckModalCtrl',
         resolve: {
           reviewChecks: reviewChecks

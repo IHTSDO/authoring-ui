@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService, constraintService, templateService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService, constraintService, templateService, modalService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -386,14 +386,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.removeConcept = function (concept) {
 
           if (scope.isModified || !snowowlService.isSctid(concept.conceptId)) {
-            if (window.confirm('This concept is unsaved; removing it will destroy your work.  Continue?')) {
+            modalService.confirm('This concept is unsaved; removing it will destroy your work.  Continue?').then(function () {
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
-            } else {
-              return;
-            }
-          }
+              $rootScope.$broadcast('stopEditing', {concept: concept});
+            }, function () {
+              // do nothing
+            });
 
-          $rootScope.$broadcast('stopEditing', {concept: concept});
+          } else {
+            $rootScope.$broadcast('stopEditing', {concept: concept});
+          }
         };
 
         ///////////////////////////////////////////////
