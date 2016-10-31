@@ -203,8 +203,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 
-
-
         //
         // CRS concept initialization
         //
@@ -499,12 +497,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // In order to ensure proper term-server behavior,
             // need to delete SCTIDs without effective time on descriptions and relationships
             // otherwise the values revert to termserver version
-            angular.forEach(scope.concept.descriptions, function(description) {
-            if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
-              delete description.descriptionId;
-            }
+            angular.forEach(scope.concept.descriptions, function (description) {
+              if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
+                delete description.descriptionId;
+              }
             });
-            angular.forEach(scope.concept.relationships, function(relationship) {
+            angular.forEach(scope.concept.relationships, function (relationship) {
               if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime) {
                 delete relationship.relationshipId;
               }
@@ -562,14 +560,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     crsService.saveCrsConcept(originalConceptId, scope.concept, null);
                   }
 
-                  // clear the modified state if no id was specified
-                  if (!originalConceptId || originalConceptId.indexOf('-') !== -1) {
-                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, null);
-                  } else {
+                  // clear the saved modified state from the original concept id
+                  scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConceptId, null);
 
-                    // clear the saved modified state
-                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
-                  }
 
                   // ensure descriptions & relationships are sorted
                   sortDescriptions();
@@ -1199,7 +1192,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
             if (a.groupId === b.groupId) {
               if (a.type.fsn === b.type.fsn) {
-              return a.target.fsn > b.target.fsn;
+                return a.target.fsn > b.target.fsn;
               } else {
                 return a.type.fsn > b.type.fsn;
               }
