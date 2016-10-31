@@ -6,19 +6,55 @@
   </div>
 
   <div class="modal-body">
-    <h4>Unsaved Content Detected</h4>
-    Click a row to add unsaved concept to edit panel
 
-    <table ng-table="unsavedConceptsTableParams" class="table table-full p-5 m-t-15"  template-pagination="utilities/data-table-pager.html">
-      <tr ng-repeat="concept in $data" class="clickable-row" ng-click="addToEditPanel(concept)">
-        <td data-title="'ID'" sortable="'conceptId'" header-class="'header-tooltips'"
-            header-title="'Click to sort'" filter="{ 'ID': 'number' }">{{concept.conceptId}}
-        </td>
-        <td data-title="'FSN'" sortable="'fsn'" header-class="'header-tooltips'"
-            header-title="'Click to sort'" filter="{ 'fsn': 'text' }">{{concept.fsn}}
-        </td>
-      </tr>
-    </table>
+    <div class="row p-b-10" ng-show="!reviewChecks.hasChangedContent">
+
+      <div class="col-md-1"></div>
+      <div class="col-md-1">
+        <h4>
+          <span class="md md-warning orange p-5"></span>
+        </h4>
+      </div>
+      <div class="col-md-9">
+        <h4>No Concepts Saved on Task</h4>
+      </div>
+      <div class="col-md-1">
+
+      </div>
+    </div>
+
+    <div class="row" ng-show="reviewChecks.unsavedConcepts.length > 0">
+
+      <div class="col-md-1">
+
+      </div>
+      <div class="col-md-1">
+        <h4>
+          <span class="md md-warning orange p-5"></span>
+        </h4>
+      </div>
+      <div class="col-md-9">
+        <h4>Unsaved Concepts Detected</h4>
+        Click a row to add unsaved concept to edit panel
+
+        <table ng-table="unsavedConceptsTableParams" class="table table-full p-5 m-t-15"
+               template-pagination="utilities/data-table-pager.html">
+          <tr ng-repeat="concept in $data" class="clickable-row" ng-click="addToEditPanel(concept)">
+            <td data-title="'ID'" sortable="'conceptId'" header-class="'header-tooltips'"
+                header-title="'Click to sort'" filter="{ 'ID': 'number' }">{{concept.conceptId}}
+            </td>
+            <td data-title="'FSN'" sortable="'fsn'" header-class="'header-tooltips'"
+                header-title="'Click to sort'" filter="{ 'fsn': 'text' }">{{concept.fsn}}
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="col-md-1">
+
+      </div>
+    </div>
+
+
   </div>
 
   <div class="modal-footer">

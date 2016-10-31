@@ -60,17 +60,8 @@ angular.module('singleConceptAuthoringApp')
 
     }
 
-    function checkReviewPrerequisites(task) {
+    function checkTraceability(task, results) {
       var deferred = $q.defer();
-
-      console.debug('get unsaved content');
-
-      // initialize the unsaved concept array
-      var results = {
-        unsavedConcepts: [],
-        hasChangedContent: false
-      };
-
       // first, check if traceability returns changes on this task
       snowowlService.getTraceabilityForBranch(task.branchPath).then(function (traceability) {
 
@@ -81,75 +72,103 @@ angular.module('singleConceptAuthoringApp')
           results.hasChangedContent = true;
         }
 
-        console.debug('getting modified concept ids');
+        deferred.resolve();
 
-        // retrieve the modified concepts for this task
-        scaService.getModifiedConceptIdsForTask(task.projectKey, task.key).then(function (conceptIds) {
+      }, function (error) {
+        // RESOLVE -- assume no changed content, and not an error
+        // TODO Revisit this, snowowl service should really resolve on 404s instead of rejecting
+        deferred.resolve();
+      });
+      return deferred.promise;
+    }
 
-          console.debug('modified concept ids', conceptIds);
-          var conceptCt = 0;
+    function checkModifiedConcepts(task, results) {
+      var deferred = $q.defer();
 
-          if (!conceptIds || conceptIds.length == 0) {
-            deferred.resolve(results);
-          }
+      console.debug('getting modified concept ids');
 
-          angular.forEach(conceptIds, function (conceptId) {
+      // retrieve the modified concepts for this task
+      scaService.getModifiedConceptIdsForTask(task.projectKey, task.key).then(function (conceptIds) {
 
-            // only check for unsaved content on SCTID-marked content
-            if (snowowlService.isSctid(conceptId)) {
-              scaService.getModifiedConceptForTask(task.projectKey, task.key, conceptId).then(function (concept) {
+        console.debug('modified concept ids', conceptIds);
+        var conceptCt = 0;
 
-                // Account for case where new concepts are marked 'current' in UI State
-                if (concept) {
+        if (!conceptIds || conceptIds.length == 0) {
+          console.debug('no modified conceptresults, resolving');
+          deferred.resolve();
+        }
 
-                  if (!concept.conceptId) {
-                    concept.conceptId = '(New concept)';
-                  }
-                  // find the FSN for display
-                  if (!concept.fsn) {
-                    angular.forEach(concept.descriptions, function (d) {
-                      if (d.type === 'FSN') {
-                        concept.fsn = d.term;
-                      }
-                    })
-                  }
-                  if (!concept.fsn) {
-                    concept.fsn = 'Could not determine FSN';
-                  }
-                  results.unsavedConcepts.push(concept);
+        angular.forEach(conceptIds, function (conceptId) {
+
+          // only check for unsaved content on SCTID-marked content
+          if (snowowlService.isSctid(conceptId)) {
+            scaService.getModifiedConceptForTask(task.projectKey, task.key, conceptId).then(function (concept) {
+
+              // Account for case where new concepts are marked 'current' in UI State
+              if (concept) {
+
+                if (!concept.conceptId) {
+                  concept.conceptId = '(New concept)';
                 }
-                // if no concepts survive processing, proceed with submission
-                if (++conceptCt === conceptIds.length) {
-                  deferred.resolve(results);
+                // find the FSN for display
+                if (!concept.fsn) {
+                  angular.forEach(concept.descriptions, function (d) {
+                    if (d.type === 'FSN') {
+                      concept.fsn = d.term;
+                    }
+                  })
                 }
-
-              }, function (error) {
-                deferred.reject('Unexpected error getting modified concept ' + conceptId + ': ' + error);
-              });
-            }
-
-            // otherwise, increment counter and continue
-            else {
+                if (!concept.fsn) {
+                  concept.fsn = 'Could not determine FSN';
+                }
+                results.unsavedConcepts.push(concept);
+              }
               // if no concepts survive processing, proceed with submission
               if (++conceptCt === conceptIds.length) {
                 deferred.resolve(results);
               }
+
+            }, function (error) {
+              deferred.reject('Unexpected error getting modified concept ' + conceptId + ': ' + error);
+            });
+          }
+
+          // otherwise, increment counter and continue
+          else {
+            // if no concepts survive processing, proceed with submission
+            if (++conceptCt === conceptIds.length) {
+              deferred.resolve(results);
             }
-          });
-
-
-        }, function (error) {
-          console.debug('ERROR getting modified conceptIds', error);
-          deferred.resolve([]);
+          }
         });
 
 
       }, function (error) {
-        // do nothing
+        console.debug('ERROR getting modified concept ids', error);
+        deferred.reject(results);
       });
 
+      return deferred.promise;
+    }
 
+    function checkReviewPrerequisites(task) {
+      var deferred = $q.defer();
 
+      console.debug('get unsaved content');
+      // initialize the unsaved concept array
+      var results = {
+        unsavedConcepts: [],
+        hasChangedContent: false,
+        messages: []
+      };
+
+      var promises = [checkModifiedConcepts(task, results),checkTraceability(task, results)];
+      $q.all(promises).then(function () {
+        console.debug('$q.all resolved')
+        deferred.resolve(results);
+      }, function () {
+        deferred.reject('Error checking review prerequisites: ' + error);
+      });
 
       return deferred.promise;
     }
