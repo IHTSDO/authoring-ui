@@ -1,12 +1,28 @@
 <div id="reviewCheckModal" class="clearfix">
 
   <div ng-if="!deletion" class="modal-header">
-    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <button type="button" class="close" ng-click="cancelSubmitForReview()">&times;</button>
     <h4 class="modal-title">Submit For Review Checks</h4>
   </div>
 
   <div class="modal-body">
     <h4>Unsaved Content Detected</h4>
+    Click a row to add unsaved concept to edit panel
+
+    <table ng-table="unsavedConceptsTableParams" class="table table-full p-5 m-t-15"  template-pagination="utilities/data-table-pager.html">
+      <tr ng-repeat="concept in $data" class="clickable-row" ng-click="addToEditPanel(concept)">
+        <td data-title="'Viewed'" sortable="'editing'" header-class="'header-tooltips'"
+            header-title="'Click to sort'" filter="{ 'ID': 'boolean' }">
+          <i class="md md-check blue" ng-show="concept.editing"></i>
+        </td>
+        <td data-title="'ID'" sortable="'conceptId'" header-class="'header-tooltips'"
+            header-title="'Click to sort'" filter="{ 'ID': 'number' }">{{concept.conceptId}}
+        </td>
+        <td data-title="'FSN'" sortable="'fsn'" header-class="'header-tooltips'"
+            header-title="'Click to sort'" filter="{ 'fsn': 'text' }">{{concept.fsn}}
+        </td>
+      </tr>
+    </table>
   </div>
 
   <div class="modal-footer">
@@ -23,7 +39,7 @@
       <div class=" col-md-6 left-button ">
         <button type="button"
                 class="btn btn-default red p-10 inactivation-button-modal m-t-20"
-                ng-click="cancel()">
+                ng-click="cancelSubmitForReview()">
           Cancel Submit For Review
         </button>
       </div>

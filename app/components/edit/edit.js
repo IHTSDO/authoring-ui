@@ -1607,9 +1607,21 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     function openReviewChecksModal(reviewChecks) {
 
+      // check if unsaved concepts are already in edit panel
+      angular.forEach(reviewChecks.unsavedConcepts, function (uc) {
+        angular.forEach($scope.editList, function (ec) {
+          console.debug('checking ', ec, uc);
+          if (ec === uc.conceptId) {
+            console.debug('match found');
+
+            uc.editing = true;
+          }
+        });
+      });
+
       var deferred = $q.defer();
       var modalInstance = $modal.open({
-        templateUrl: 'shared/review-service/reviewChecksModal.html',
+        templateUrl: 'shared/review-check-modal/reviewCheckModal.html',
         controller: 'reviewCheckModalCtrl',
         resolve: {
           reviewChecks: reviewChecks
@@ -1632,9 +1644,11 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'New':
         case 'In Progress':
 
+          notificationService.sendMessage('Submit for review requested: checking content changes...');
+
           reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
 
-            console.debug('review prerequisites', response);
+            console.debug('review prerequisites', reviewChecks);
 
             if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length == 0) {
               reviewService.submitForReview($scope.task).then(function () {
@@ -1644,7 +1658,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                 notificationService.sendError('Error submitting for review: ' + error);
               });
             } else {
-              console.debug('review checks detected', response);
+              console.debug('review checks detected', reviewChecks);
               openReviewChecksModal(reviewChecks).then(function () {
                 reviewService.submitForReview($scope.task).then(function () {
                   loadTask();
@@ -1653,13 +1667,13 @@ angular.module('singleConceptAuthoringApp.edit', [
                   notificationService.sendError('Error submitting for review: ' + error);
                 });
               }, function () {
-                // do nothing
+                notificationService.sendMessage('Cancelled submit for review', 3000);
               })
             }
           }, function (error) {
             notificationService.sendWarning('Task submitted for review, but could not verify content changes: ' + error);
           });
-    
+
 
           break;
         case 'In Review':
