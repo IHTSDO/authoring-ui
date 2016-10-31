@@ -1,0 +1,43 @@
+<div id="reviewCheckModal" class="clearfix">
+
+  <div ng-if="!deletion" class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Submit For Review Checks</h4>
+  </div>
+
+  <div class="modal-body">
+    <h4>Unsaved Content Detected</h4>
+  </div>
+
+  <div class="modal-footer">
+    <div class="row col-md-12 no-padding top-modal">
+      <style>
+        .top-modal .col-md-6.left-button {
+          padding-left: 0px
+        }
+
+        .top-modal .col-md-6.right-button {
+          padding-right: 0px
+        }
+      </style>
+      <div class=" col-md-6 left-button ">
+        <button type="button"
+                class="btn btn-default red p-10 inactivation-button-modal m-t-20"
+                ng-click="cancel()">
+          Cancel Submit For Review
+        </button>
+      </div>
+
+      <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
+        <button type="button"
+
+                class="btn btn-default green p-10 inactivation-button-modal m-t-20"
+                ng-click="submitAnyway()">
+          Submit Anyway
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

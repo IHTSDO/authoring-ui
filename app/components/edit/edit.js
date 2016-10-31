@@ -1605,6 +1605,26 @@ angular.module('singleConceptAuthoringApp.edit', [
       $scope.reviewChecks = null;
     };
 
+    function openReviewChecksModal(reviewChecks) {
+
+      var deferred = $q.defer();
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/review-service/reviewChecksModal.html',
+        controller: 'reviewCheckModalCtrl',
+        resolve: {
+          reviewChecks: reviewChecks
+        }
+      });
+
+      modalInstance.result.then(function (results) {
+        deferred.resolve(results);
+      }, function () {
+        deferred.reject();
+      });
+      return deferred.promise;
+
+    }
+
     $scope.toggleReview = function (ignoreWarnings) {
       console.debug('toggleReview', $scope.task.status);
       $scope.reviewChecks = null;
@@ -1612,38 +1632,34 @@ angular.module('singleConceptAuthoringApp.edit', [
         case 'New':
         case 'In Progress':
 
-          if (ignoreWarnings) {
-            reviewService.submitForReview($scope.task).then(function () {
-              loadTask();
-              notificationService.sendMessage('Submitted for review', 3000);
-              document.getElementById('feedbackMenuButton').click();
-            }, function (error) {
-              notificationService.sendError('Error submitting for review: ' + error);
-            });
-          } else {
+          reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
 
-            notificationService.sendMessage('Submit for review request: Checking for unsaved content...');
+            console.debug('review prerequisites', response);
 
-            // check for unsaved content
-            reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
-
-              console.debug('review prerequisites', response);
-
-              if (response.hasChangedContent && response.unsavedConcepts && response.unsavedConcepts.length == 0) {
+            if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length == 0) {
+              reviewService.submitForReview($scope.task).then(function () {
+                loadTask();
+                notificationService.sendMessage('Submitted for review', 3000);
+              }, function (error) {
+                notificationService.sendError('Error submitting for review: ' + error);
+              });
+            } else {
+              console.debug('review checks detected', response);
+              openReviewChecksModal(reviewChecks).then(function () {
                 reviewService.submitForReview($scope.task).then(function () {
                   loadTask();
                   notificationService.sendMessage('Submitted for review', 3000);
                 }, function (error) {
                   notificationService.sendError('Error submitting for review: ' + error);
                 });
-              } else {
-                console.debug('review checks detected', response);
-                $scope.reviewChecks = response;
-              }
-            }, function (error) {
-              $scope.reviewChecks = {error: 'Could not check review prerequisites'}
-            });
-          }
+              }, function () {
+                // do nothing
+              })
+            }
+          }, function (error) {
+            notificationService.sendWarning('Task submitted for review, but could not verify content changes: ' + error);
+          });
+    
 
           break;
         case 'In Review':
