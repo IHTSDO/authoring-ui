@@ -1593,16 +1593,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     // list of tracked unsaved concepts
     $scope.reviewChecks = null;
 
-    // watch for concept changes to update the unsaved content list (if present)
-    $scope.$on('conceptEdit.conceptChange', function () {
-      console.debug('conceptChange detected', $scope.reviewChecks.unsavedConcepts);
-      if ($scope.reviewChecks) {
-        reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
-          $scope.reviewChecks = response;
-        })
-      }
-    });
-
     $scope.cancelSubmitForReview = function () {
       $scope.reviewChecks = null;
     };
