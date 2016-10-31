@@ -644,25 +644,21 @@
   <div ng-show="template" class="row grey darken-4 p-5" ng-class="getConceptStyle()"
        style="margin-right:0px;">
 
-    <div class="col-md-1"></div>
-    <div class="col-md-10 no-padding">
+ 
+    <div class="col-md-12 no-padding release-template-bar">
 
-      <button
-        class="btn btn-default morebuttons grey darken-4 tooltips-bottom tooltips-light normal-case"
-      >
-        <img src="images/snodragon_black.png" style="width:15px;">
-        <span>SnoDragon Template</span></button>
-      </button>
+   
+     
 
 
       <span
-        style="padding-top:25px;">Template: {{template.name}}, version {{template.version}}</span>
-      &nbsp;&nbsp;
+         class="m-t-15 m-l-15">Template: {{template.name}}, version {{template.version}}</span>
+    
 
       <button class="pull-right btn btn-default blue darken-2" ng-click="removeTemplate()"
-              style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">&nbsp;Release
-        Template&nbsp;</button>
+              style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">Release
+        Template</button>
     </div>
-    <div class="col-md-1"></div>
+
   </div>
-</div>
+
