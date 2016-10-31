@@ -11,10 +11,6 @@
 
     <table ng-table="unsavedConceptsTableParams" class="table table-full p-5 m-t-15"  template-pagination="utilities/data-table-pager.html">
       <tr ng-repeat="concept in $data" class="clickable-row" ng-click="addToEditPanel(concept)">
-        <td data-title="'Viewed'" sortable="'editing'" header-class="'header-tooltips'"
-            header-title="'Click to sort'" filter="{ 'ID': 'boolean' }">
-          <i class="md md-check blue" ng-show="concept.editing"></i>
-        </td>
         <td data-title="'ID'" sortable="'conceptId'" header-class="'header-tooltips'"
             header-title="'Click to sort'" filter="{ 'ID': 'number' }">{{concept.conceptId}}
         </td>

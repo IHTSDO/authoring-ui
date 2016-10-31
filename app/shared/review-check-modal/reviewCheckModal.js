@@ -1,7 +1,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .controller('reviewCheckModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, reviewChecks ) {
+  .controller('reviewCheckModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, reviewChecks) {
 
     console.debug('review check modal', reviewChecks);
 
@@ -31,11 +31,10 @@ angular.module('singleConceptAuthoringApp')
       }
     );
 
-    $scope.addToEditPanel = function(concept) {
-      if (!concept.editing) {
-        concept.editing = true;
-        $rootScope.$broadcast('editConcept', {conceptId: concept.conceptId});
-      }
+    $scope.addToEditPanel = function (concept) {
+
+      $rootScope.$broadcast('editConcept', {conceptId: concept.conceptId});
+
     };
 
     $scope.cancelSubmitForReview = function () {
