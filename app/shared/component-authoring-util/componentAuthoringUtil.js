@@ -747,11 +747,9 @@ angular.module('singleConceptAuthoringApp')
         runInternationalDialectAutomation: runInternationalDialectAutomation,
 
         // grouped automations
-        runDescriptionAutomations: runDescriptionAutomations
+        runDescriptionAutomations: runDescriptionAutomations,
 
         // utility functions
-        getFsnForConcept : getFsnForConcept,
-        getPtForConcept : getPtForConcept,
         setDefaultFields : setDefaultFields
 
       };
