@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter) {
 
 
 
@@ -1565,9 +1565,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         }
 
         $rootScope.$broadcast('reloadTask');
-        document.getElementById('classificationMenuButton').click();
-
-
       }, function () {
         // do nothing on error
       });
@@ -1580,7 +1577,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
         $rootScope.$broadcast('reloadTask');
-        document.getElementById('validationMenuButton').click();
         notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
       }, function () {
         notificationService.sendMessage('Error submitting task for validation', 10000, null);
@@ -1637,7 +1633,6 @@ angular.module('singleConceptAuthoringApp.edit', [
                 reviewService.submitForReview($scope.task).then(function () {
                   loadTask();
                   notificationService.sendMessage('Submitted for review', 3000);
-                  document.getElementById('feedbackMenuButton').click();
                 }, function (error) {
                   notificationService.sendError('Error submitting for review: ' + error);
                 });
@@ -1676,6 +1671,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendError('Unexpected task status: ' + $scope.task.status);
       }
     };
+
 
 //////////////////////////////////////////
 // Initialization
