@@ -247,7 +247,7 @@ angular.module('singleConceptAuthoringApp')
       function downloadClassification(classifierId, branch, limit) {
         return $http({
           'method': 'GET',
-          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?expand=source.fsn,type.fsn,destination.fsn&limit=' + (limit ? limit : '1000'),
+          'url': apiEndpoint + branch + '/classifications/' + classifierId + '/relationship-changes?limit=' + (limit ? limit : '1000'),
           'headers': {
             'Accept': 'text/csv'
           }

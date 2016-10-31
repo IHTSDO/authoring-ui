@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $filter, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, templateService, $routeParams, $timeout, $interval, $q, crsService, ngTableParams) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams) {
 
 
 
@@ -683,14 +683,15 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       // verify that this SCTID does not exist in the edit list
-      angular.forEach($scope.concepts, function (concept) {
-        if (concept.conceptId === conceptId) {
+      var conceptPresent = $scope.concepts.filter(function (c) {
+          return c.conceptId === conceptId;
+        }).length > 0;
 
-          notificationService.sendWarning('Concept already added', 5000);
-          $scope.conceptLoading = false;
-          return;
-        }
-      });
+      if (conceptPresent) {
+        notificationService.sendWarning('Concept already added', 5000);
+        $scope.conceptLoading = false;
+        return;
+      }
 
       // send loading notification for user display
       notificationService.sendMessage('Loading concepts...', 10000, null);
@@ -711,7 +712,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $scope.conceptLoading = false;
         }
 
-        // otherwise, load from termserver
+        // otherwise, load from terserver
         else {
           loadConceptFromTermServerHelper(conceptId);
         }
@@ -1523,6 +1524,156 @@ angular.module('singleConceptAuthoringApp.edit', [
       templateService.selectTemplate(null);
     };
 
+    /////////////////////////////
+    // Sidebar Menu Controls
+    /////////////////////////////
+    $scope.viewClassificationFromSidebar = function () {
+      $scope.setView('classification');
+      document.getElementById('classificationMenuButton').click();
+    };
+
+    $scope.viewValidationFromSidebar = function () {
+      $scope.setView('validation');
+      document.getElementById('validationMenuButton').click();
+    };
+
+    $scope.viewReviewFromSidebar = function () {
+      $scope.setView('feedback');
+      document.getElementById('feedbackMenuButton').click();
+    };
+
+    //
+    // Sidebar menu actions -- duplicative of taskDetail
+    //
+
+    $scope.classify = function () {
+
+      notificationService.sendMessage('Starting classification for task ' + $routeParams.taskKey, 5000);
+
+      // start the classification
+      scaService.startClassificationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+
+        if (!response || !response.data || !response.data.id) {
+          notificationService.sendError('Error starting classification');
+          return;
+        }
+
+        if (response.data.status) {
+          notificationService.sendMessage('Classification is ' + response.data.status, 10000);
+        } else {
+          notificationService.sendMessage('Task submitted for classification', 10000);
+        }
+
+        $rootScope.$broadcast('reloadTask');
+        document.getElementById('classificationMenuButton').click();
+
+
+      }, function () {
+        // do nothing on error
+      });
+    };
+
+    $scope.validate = function () {
+      notificationService.sendMessage('Submitting task for validation...');
+
+      // NOTE: Validation does not lock task
+
+      scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
+        $rootScope.$broadcast('reloadTask');
+        document.getElementById('validationMenuButton').click();
+        notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
+      }, function () {
+        notificationService.sendMessage('Error submitting task for validation', 10000, null);
+        $rootScope.$broadcast('reloadTask');
+      });
+    };
+
+    //
+    // Sidebar Review Functionality
+    //
+
+    // list of tracked unsaved concepts
+    $scope.reviewChecks = null;
+
+    // watch for concept changes to update the unsaved content list (if present)
+    $scope.$on('conceptEdit.conceptChange', function () {
+      console.debug('conceptChange detected', $scope.reviewChecks.unsavedConcepts);
+      if ($scope.reviewChecks) {
+        reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
+          $scope.reviewChecks = response;
+        })
+      }
+    });
+
+    $scope.cancelSubmitForReview = function () {
+      $scope.reviewChecks = null;
+    };
+
+    $scope.toggleReview = function (ignoreWarnings) {
+      console.debug('toggleReview', $scope.task.status);
+      $scope.reviewChecks = null;
+      switch ($scope.task.status) {
+        case 'New':
+        case 'In Progress':
+
+          if (ignoreWarnings) {
+            reviewService.submitForReview($scope.task).then(function () {
+              loadTask();
+              notificationService.sendMessage('Submitted for review', 3000);
+              document.getElementById('feedbackMenuButton').click();
+            }, function (error) {
+              notificationService.sendError('Error submitting for review: ' + error);
+            });
+          } else {
+            // check for unsaved content
+            reviewService.checkReviewPrerequisites($scope.task).then(function (response) {
+
+              console.debug('review prerequisites', response);
+
+              if (response.hasChangedContent && response.unsavedConcepts && response.unsavedConcepts.length == 0) {
+                reviewService.submitForReview($scope.task).then(function () {
+                  loadTask();
+                  notificationService.sendMessage('Submitted for review', 3000);
+                  document.getElementById('feedbackMenuButton').click();
+                }, function (error) {
+                  notificationService.sendError('Error submitting for review: ' + error);
+                });
+              } else {
+                console.debug('review checks detected', response);
+                $scope.reviewChecks = response;
+              }
+            }, function (error) {
+              $scope.reviewChecks = {error: 'Could not check review prerequisites'}
+            });
+          }
+
+          break;
+        case 'In Review':
+        case 'Review Complete':
+          accountService.getRoleForTask($scope.task).then(function (role) {
+            if (role === 'AUTHOR') {
+              reviewService.cancelReview($scope.task).then(function () {
+                loadTask();
+                notificationService.sendMessage('Review cancelled', 3000);
+                document.getElementById('feedbackMenuButton').click();
+              }, function (error) {
+                notificationService.sendError('Error cancelling review: ' + error);
+              });
+            } else {
+              reviewService.unclaimReview($scope.task).then(function () {
+                $location.url('review-tasks');
+                notificationService.sendMessage('Review unclaimed', 3000);
+              }, function (error) {
+                notificationService.sendError('Error unclaiming review: ' + error);
+              });
+            }
+          });
+          break;
+        default:
+          notificationService.sendError('Unexpected task status: ' + $scope.task.status);
+      }
+    };
+
 //////////////////////////////////////////
 // Initialization
 //////////////////////////////////////////
@@ -1580,10 +1731,13 @@ angular.module('singleConceptAuthoringApp.edit', [
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
 
+                console.debug('role', role);
+
                 notificationService.sendMessage('Task details loaded', 3000);
 
                 // set role functionality and initial view
                 $scope.isOwnTask = role === 'AUTHOR';
+                $scope.role = role;
                 setBranchFunctionality($scope.task.branchState);
                 $scope.setInitialView();
               },
@@ -1598,8 +1752,8 @@ angular.module('singleConceptAuthoringApp.edit', [
                 notificationService.sendMessage('Task details loaded', 3000);
 
                 // set role functionality and initial view
-                var role = 'AUTHOR';
-                $scope.isOwnTask = role === 'AUTHOR';
+                $scope.role = 'UNDEFINED';
+                $scope.isOwnTask = $scope.role === 'AUTHOR';
                 setBranchFunctionality($scope.task.branchState);
                 $scope.setInitialView();
               });

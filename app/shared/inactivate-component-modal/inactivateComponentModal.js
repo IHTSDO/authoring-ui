@@ -103,16 +103,16 @@ angular.module('singleConceptAuthoringApp')
         orderBy: 'sortableName'
       },
       {
-        total: $scope.descendants && $scope.descendants.descendants && $scope.descendants.items ? $scope.descendants.descendants.items.length : 0, // length
+        total: $scope.descendants && $scope.descendants && $scope.descendants.items ? $scope.descendants.items.length : 0, // length
         // of
         // data
         getData: function ($defer, params) {
 
-          if (!$scope.descendants || !$scope.descendants.descendants || !$scope.descendants.descendants.items) {
+          if (!$scope.descendants || !$scope.descendants || !$scope.descendants.items) {
             $defer.resolve([]);
           } else {
-            params.total($scope.descendants.descendants.items.length);
-            var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.descendants.items, params.orderBy()) : $scope.descendants.descendants.items;
+            params.total($scope.descendants.items.length);
+            var descendantsDisplayed = params.sorting() ? $filter('orderBy')($scope.descendants.items, params.orderBy()) : $scope.descendants.items;
 
             $defer.resolve(descendantsDisplayed.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           }
@@ -237,7 +237,7 @@ angular.module('singleConceptAuthoringApp')
         $scope.tableParamsDescendants.reload();
 
         // convert the term into a top-level attribute for ng-table sorting
-        angular.forEach($scope.descendants.descendants.items, function (descendant) {
+        angular.forEach($scope.descendants.items, function (descendant) {
           descendant.sortableName = descendant.fsn.term;
         });
       });
