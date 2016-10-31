@@ -5,7 +5,7 @@
 'use strict';
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
-  .directive('drawModel', function () {
+  .directive('drawModel', function (snowowlService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -17,7 +17,7 @@ angular.module('singleConceptAuthoringApp')
       },
       templateUrl: 'shared/model-diagramming/drawModel.html',
 
-      link: function (scope, element, attrs, linkCtrl, snowowlService) {
+      link: function (scope, element, attrs, linkCtrl) {
         //scope.view = true;
         var idSequence = 0;
         if(scope.view !== 'snf')
@@ -206,7 +206,7 @@ angular.module('singleConceptAuthoringApp')
           } else {
             sctClass = "sct-defined-concept";
           }
-          var rect1 = drawSctBox(svg, x, y, concept.fsn, concept.conceptId, sctClass);
+          var rect1 = drawSctBox(svg, x, y, concept.fsn, snowowlService.isSctid(concept.conceptId) ? concept.conceptId : null, sctClass);
           x = x + 90;
           y = y + rect1.getBBox().height + 40;
           var circle1;
