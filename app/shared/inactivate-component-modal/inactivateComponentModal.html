@@ -35,7 +35,7 @@
         ng-click="actionTab=3" aria-controls="home"
         role="tab"
         data-toggle="tab">Descendants ({{!descendantsLoading
-                          ? descendants.descendants.total :
+                          ? descendants.total :
                           'Loading'}})</a>
       </li>
 
@@ -199,6 +199,7 @@
         <table ng-table="tableParamsDescendants" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
+            <td data-title="'ID'" sortable="'id'">{{item.id}}</td>
             <td data-title="'FSN'" sortable="'sortableName'">
               {{item.sortableName}}
             </td>
@@ -272,7 +273,7 @@ Cancel Deletion
 </div>
           <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0">
           <button type="button"
-                  
+
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
                   ng-click="delete()">
 Confirm Deletion
@@ -280,7 +281,7 @@ Confirm Deletion
 </div>
         <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
           <button type="button"
-                  
+
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
                   ng-click="selectReason(inactivationReason)">
 Continue with Deletion

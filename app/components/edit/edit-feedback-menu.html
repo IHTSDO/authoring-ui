@@ -1,0 +1,75 @@
+<div class="pink1">
+
+  <!-- View Review & Feedback -->
+  <button class="btn btn-default pink1 review"
+          ng-click="viewReviewFromSidebar()">
+    <span class="md md-search pink1 darken-2 iconbase"></span>
+    <span class="button-link">View Review and Feedback</span>
+    </span>
+  </button>
+
+  <!-- Spacer always present -- authors can always access traceability from button above-->
+  <br>
+
+
+  <button class="btn btn-default pink1 review"
+          ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && !reviewChecks"
+          ng-click="toggleReview()">
+    <span class="md md-thumb-up pink1 darken-2 iconbase"></span>
+    <span ng-if="!unsavedConcepts || unsavedConcepts.length == 0" class="button-link">Submit for Review</span>
+  </button>
+  <button class="btn btn-default pink1 review ng-scope"
+          ng-if="reviewChecks"
+          ng-click="cancelSubmitForReview()">
+    <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
+    <span class="button-link">Cancel Submit For Review</span>
+  </button>
+
+
+  <button class="btn btn-default pink1 review"
+          ng-if="role === 'AUTHOR' && (task.status === 'In Review' || task.status === 'Review Completed')"
+          ng-click="toggleReview()">
+    <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
+    <span class="button-link">Cancel Review</span>
+  </button>
+
+  <button class="btn btn-default pink1 review ng-scope"
+          ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
+          ng-click="toggleReview()">
+    <span class="glyphicon glyphicon-ban-circle pink1 darken-2 iconbase"></span>
+    <span class="button-link">Unclaim Review</span>
+  </button>
+
+  <div class="m-10"
+       ng-show="reviewChecks">
+
+    <div ng-show="reviewChecks.error">
+      <h4 style="color:white;">Warning: Unexpected error when checking review prerequisites.</h4>
+    </div>
+
+    <div ng-show="!reviewChecks.hasChangedContent">
+      <h4 style="color:white;" class="m-10">Warning: No saved content changes were detected for this task.</h4>
+    </div>
+
+    <div ng-show="reviewChecks.unsavedConcepts.length > 0">
+      <h4 style="color:white;" class="m-10">Warning: You have unsaved content on this task.</h4>
+      <table class="table m-l-10 m-r-10">
+        <tr ng-repeat="uc in reviewChecks.unsavedConcepts">
+          <td>{{uc.conceptId}}</td>
+          <td ng-click="addConceptToListFromId(uc.conceptId)">{{uc.fsn}}</td>
+        </tr>
+      </table>
+    </div>
+
+
+
+  </div>
+
+  <button class="btn btn-default pink1 review ng-scope"
+          ng-if="reviewChecks"
+          ng-click="toggleReview(true)">
+    <span class="md md-thumb-up pink1 darken-2 iconbase"></span>
+    <span class="button-link">
+    Click To Submit Anyway</span>
+  </button>
+</div>
