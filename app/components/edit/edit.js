@@ -1534,17 +1534,14 @@ angular.module('singleConceptAuthoringApp.edit', [
     /////////////////////////////
     $scope.viewClassificationFromSidebar = function () {
       $scope.setView('classification');
-      document.getElementById('classificationMenuButton').click();
     };
 
     $scope.viewValidationFromSidebar = function () {
       $scope.setView('validation');
-      document.getElementById('validationMenuButton').click();
     };
 
     $scope.viewReviewFromSidebar = function () {
       $scope.setView('feedback');
-      document.getElementById('feedbackMenuButton').click();
     };
 
     //
@@ -1626,7 +1623,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       var deferred = $q.defer();
       var modalInstance = $modal.open({
-        templateUrl: 'shared/review-check-modal/reviewCheckModal.html',
+        templateUrl: '',
         controller: 'reviewCheckModalCtrl',
         resolve: {
           reviewChecks: reviewChecks
@@ -1688,8 +1685,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               reviewService.cancelReview($scope.task).then(function () {
                 loadTask();
                 notificationService.sendMessage('Review cancelled', 3000);
-                document.getElementById('feedbackMenuButton').click();
-              }, function (error) {
+               }, function (error) {
                 notificationService.sendError('Error cancelling review: ' + error);
               });
             } else {
