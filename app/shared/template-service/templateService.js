@@ -77,12 +77,14 @@ angular.module('singleConceptAuthoringApp')
         replaceValue = '???';
       } else {
         replaceValue = match[1].toLowerCase();
-        angular.forEach(Object.keys(lt.replaceParts), function (rp) {
+        angular.forEach(lt.removeParts, function (rp) {
           if (replaceValue.indexOf(rp) != -1) {
             var re = new RegExp(rp, 'g');
-            replaceValue = replaceValue.replace(re, lt.replaceParts[rp]);
+            replaceValue = replaceValue.replace(re, '');
           }
         });
+
+        // TODO Support replacement by regex as well as removal
 
       }
       replaceValue = replaceValue.replace(/[\s]{2,}/g, ' ');
