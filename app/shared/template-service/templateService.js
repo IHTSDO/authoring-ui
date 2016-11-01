@@ -83,8 +83,9 @@ angular.module('singleConceptAuthoringApp')
             replaceValue = replaceValue.replace(re, '');
           }
         });
-        replaceValue = replaceValue.replace(/[\s]{2,}/g, ' ');
+
       }
+      replaceValue = replaceValue.replace(/[\s]{2,}/g, ' ');
       return replaceValue;
     }
 
@@ -96,6 +97,7 @@ angular.module('singleConceptAuthoringApp')
         var re = new RegExp(termSlot.replace(/(\$)/g, '\\$'), 'g');
         var sv = getSlotValue(termSlot, template, nameValueMap);
         newTerm = newTerm.replace(re, sv);
+        newTerm = newTerm.replace(/[\s]{2,}/g, ' ');
       });
       return newTerm;
     }
