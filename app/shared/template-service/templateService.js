@@ -82,7 +82,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getDescriptionTemplateTermValue(descriptionTemplate, template, nameValueMap) {
-      console.debug('getTermValue', descriptionTemplate, template, nameValueMap);
       // match all function/slotName pairs surrounded by $$
       var newTerm = descriptionTemplate.term;
       var termSlots = descriptionTemplate.term ? descriptionTemplate.term.match(/\$([^$]*)\$/g) : '';
@@ -317,8 +316,6 @@ angular.module('singleConceptAuthoringApp')
      */
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
-
-      console.debug('apply template to concept', concept, template, applyValues, applyMessages, applyStyles);
 
       // reset all template variables
       concept.templateMessages = [];

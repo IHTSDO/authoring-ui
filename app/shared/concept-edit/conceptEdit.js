@@ -280,11 +280,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // on load, check if a modified, unsaved version of this concept
         // exists -- only applies to task level, safety check
         if ($routeParams.taskKey && scope.autosave === true) {
-
-          console.debug('getting modified concept for task on initial load', scope.concept.catchExpectedRender);
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
-
-            console.debug('modified ocncept', modifiedConcept);
 
             // if not an empty JSON object, process the modified version
             if (modifiedConcept) {
@@ -312,7 +308,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // once concept fully loaded (from parameter or from modified state), check for template
             templateService.getStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
-              console.debug('template response', template);
               // if template found in store, apply it to retrieved concept
               if (template) {
 
@@ -524,7 +519,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // does not appear to be trackBy or similar issue in ng-repeat....
                   // NOTE: Currently used for re-validation and prevention of spurious modified UI States on load
                   if (saveFn == snowowlService.createConcept) {
-
                     response.catchExpectedRender = true;
                   }
 
@@ -628,11 +622,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // errors/warnings specified
           console.debug('concept validity', scope.isConceptValid(scope.concept));
           var errors = scope.isConceptValid(scope.concept);
-          if (errors) {
+          if (errors && errors.length > 0) {
             scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
-            return;
-          }
-          else if (!scope.isConceptValid(scope.concept) && scope.errors) {
             return;
           }
 
@@ -2539,7 +2530,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // recompute the domain attributes from MRCM service
           constraintService.getDomainAttributes(scope.concept, scope.branch).then(function (attributes) {
-            console.debug('Retrieved new domain attributes')
             scope.allowedAttributes = attributes;
           }, function (error) {
             notificationService.sendError('Error getting allowable domain attributes: ' + error);
