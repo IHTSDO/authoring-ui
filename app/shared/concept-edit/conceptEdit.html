@@ -237,7 +237,7 @@
 
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in concept.descriptions"
+    <div ng-repeat="description in concept.descriptions | filter : filterDescriptions"
 
          ng-class="getComponentStyle(description.descriptionId, null, '', description)"
          class="">
@@ -644,16 +644,16 @@
   <div ng-show="template" class="row grey darken-4 p-5" ng-class="getConceptStyle()"
        style="margin-right:0px;">
 
- 
+
     <div class="col-md-12 no-padding release-template-bar">
 
-   
-     
+
+
 
 
       <span
          class="m-t-15 m-l-15">Template: {{template.name}}, version {{template.version}}</span>
-    
+
 
       <button class="pull-right btn btn-default blue darken-2" ng-click="removeTemplate()"
               style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">Release

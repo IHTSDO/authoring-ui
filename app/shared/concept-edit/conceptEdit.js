@@ -980,6 +980,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.getExtensionMetadata = metadataService.getExtensionMetadata;
 
+        scope.filterDescriptions = function (d) {
+          return !scope.hideInactive || d.active;
+        };
+
+
 // Reorder descriptions based on type and acceptability
 // Must preserve position of untyped/new descriptions
         function sortDescriptions() {
