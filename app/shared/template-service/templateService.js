@@ -61,10 +61,8 @@ angular.module('singleConceptAuthoringApp')
           match = nameValueMap[sn].match(PATTERN_PT_FROM_FSN);
           break;
         default:
-          // do nothing
+        // do nothing
       }
-
-      console.debug('getValue', sn, sf, match);
 
       // replace specified parts and extraneous whitespace
       var replaceValue;
@@ -83,29 +81,26 @@ angular.module('singleConceptAuthoringApp')
       return replaceValue;
     }
 
-    function getDescriptionTemplateTermValue(description, template, nameValueMap) {
+    function getDescriptionTemplateTermValue(descriptionTemplate, template, nameValueMap) {
+      console.debug('getTermValue', descriptionTemplate, template, nameValueMap);
       // match all function/slotName pairs surrounded by $$
-      var termSlots = description.template.term ? description.template.term.match(/\$([^$]*)\$/g) : '';
-      console.debug('termSlots', description.template.term, termSlots);
-
-      var newTerm = description.term;
+      var newTerm = descriptionTemplate.term;
+      var termSlots = descriptionTemplate.term ? descriptionTemplate.term.match(/\$([^$]*)\$/g) : '';
       angular.forEach(termSlots, function (termSlot) {
         var re = new RegExp(termSlot.replace(/(\$)/g, '\\$'), 'g');
         var sv = getSlotValue(termSlot, template, nameValueMap);
-        console.debug('slot value', termSlot, re, sv);
-        newTerm.term = newTerm.term.replace(re, sv);
+        newTerm = newTerm.replace(re, sv);
       });
       return newTerm;
     }
 
     function replaceTemplateValues(concept, template) {
-      console.debug('replaceTemplateValues', concept, template);
       var nameValueMap = getTemplateValues(concept, template);
 
       // replace values in descriptions
       angular.forEach(concept.descriptions, function (d) {
         if (d.template) {
-          d.term = getDescriptionTemplateTermValue(d,template,nameValueMap);
+          d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
         }
       });
 
@@ -128,8 +123,6 @@ angular.module('singleConceptAuthoringApp')
      */
     function getTemplateValues(concept, template) {
 
-      console.debug('getTemplateValues', concept, template);
-
       // full map of replacement values
       var nameValueMap = {};
 
@@ -146,7 +139,6 @@ angular.module('singleConceptAuthoringApp')
         });
         nameValueMap[lt.name] = value;
       });
-      console.debug('nameValueMap', nameValueMap);
       return nameValueMap;
     }
 
@@ -154,8 +146,6 @@ angular.module('singleConceptAuthoringApp')
     function initializeTemplate(template) {
 
       var deferred = $q.defer();
-
-      // console.debug('Initializing template', template.name);
 
       if (template.initialized) {
         deferred.resolve(template);
@@ -418,8 +408,6 @@ angular.module('singleConceptAuthoringApp')
 // get values from target slots
       var nameValueMap = getTemplateValues(concept, template);
 
-      // console.debug('nameValueMap', nameValueMap);
-
 // match descriptions
       angular.forEach(template.conceptOutline.descriptions, function (dt) {
         var matchFound = false;
@@ -440,9 +428,10 @@ angular.module('singleConceptAuthoringApp')
 
             // otherwise, check by pattern matching
             else {
+              // replace slots with .*, escape special characters, and start/end terminate
               var exp = dt.term.replace(/\$.*\$/, '.*');
-              exp = exp.replace(/(\$)/g, '\\$');
-              exp = '^' + exp + '$';
+              exp = '^' + exp.replace(/([()[{$^\\|?])/g, '\\$1') + '$';
+
 
               // if match found
               if (d.term && d.term.match(exp)) {
@@ -491,13 +480,10 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-      // console.debug('before checking all', concept.descriptions);
-
 // cycle over all descriptions -- no style flag means not in template
 
 // otherwise, flag as outside template
       angular.forEach(concept.descriptions, function (d) {
-        // console.debug('checking description ', d.active, d.term, d.template)
         if (d.active && !d.template) {
           if (applyStyles) {
             d.templateStyle = 'redhl';
@@ -515,7 +501,6 @@ angular.module('singleConceptAuthoringApp')
 
       if (applyValues) {
         concept = replaceTemplateValues(concept, template);
-        // console.debug('replaced values in concept', concept);
       }
 
 // apply top-level messages
@@ -532,7 +517,6 @@ angular.module('singleConceptAuthoringApp')
           });
         });
         concept.templateMessages.push(msg);
-        // console.debug('concept messages', msg, concept.templateMessages);
       }
 
 
@@ -602,9 +586,7 @@ angular.module('singleConceptAuthoringApp')
 
     function storeTemplateForConcept(projectKey, conceptId, template) {
       var deferred = $q.defer();
-      // console.debug('saving shared ui state', projectKey, conceptId, template);
       scaService.saveSharedUiStateForTask(projectKey, 'project-template-store', 'template-concept-' + conceptId, template).then(function () {
-        // console.debug('adding to template list');
         deferred.resolve();
       }, function (error) {
         deferred.reject('Shared UI-State Error: ' + error.message);
