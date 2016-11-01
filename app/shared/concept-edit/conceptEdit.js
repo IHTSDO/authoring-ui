@@ -2144,8 +2144,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           var errors = [];
 
-          console.debug('checking description', description);
-
           if (!description.moduleId) {
             errors.push('Description moduleId must be set');
           }
@@ -2170,7 +2168,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // pass all checks -> return true
-          console.debug('errors', errors);
           return errors;
         };
 
@@ -2251,8 +2248,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           for (var j = 0; j < concept.relationships.length; j++) {
             errors = errors.concat(scope.isRelationshipValid(concept.relationships[j]));
           }
-
-          console.debug(errors);
 
           // return any errors
           return errors;

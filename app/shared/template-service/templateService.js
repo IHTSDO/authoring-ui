@@ -39,9 +39,16 @@ angular.module('singleConceptAuthoringApp')
     function getSlotValue(termSlot, template, nameValueMap) {
       var sn = getSlotName(termSlot);
       var sf = getSlotFunction(termSlot);
-      var lt = template.lexicalTemplates.filter(function (l) {
-        return l.name === sn;
-      });
+
+      var lt;
+      try {
+        lt = template.lexicalTemplates.filter(function (l) {
+          return l.name === sn;
+        })[0];
+      } catch(error) {
+        return '???';
+      }
+      console.debug('lexical template', lt);
       var match;
 
       // if no value, simply return the slot name (e.g. 'X' for 'term_X')
@@ -76,7 +83,7 @@ angular.module('singleConceptAuthoringApp')
             replaceValue = replaceValue.replace(re, '');
           }
         });
-        replaceValue = replaceValue.replace(/[ ]{2,}/g, ' ');
+        replaceValue = replaceValue.replace(/[\s]{2,}/g, ' ');
       }
       return replaceValue;
     }
