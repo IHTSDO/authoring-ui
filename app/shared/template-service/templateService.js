@@ -83,6 +83,21 @@ angular.module('singleConceptAuthoringApp')
       return replaceValue;
     }
 
+    function getDescriptionTemplateTermValue(description, template, nameValueMap) {
+      // match all function/slotName pairs surrounded by $$
+      var termSlots = description.template.term ? description.template.term.match(/\$([^$]*)\$/g) : '';
+      console.debug('termSlots', description.template.term, termSlots);
+
+      var newTerm = description.term;
+      angular.forEach(termSlots, function (termSlot) {
+        var re = new RegExp(termSlot.replace(/(\$)/g, '\\$'), 'g');
+        var sv = getSlotValue(termSlot, template, nameValueMap);
+        console.debug('slot value', termSlot, re, sv);
+        newTerm.term = newTerm.term.replace(re, sv);
+      });
+      return newTerm;
+    }
+
     function replaceTemplateValues(concept, template) {
       console.debug('replaceTemplateValues', concept, template);
       var nameValueMap = getTemplateValues(concept, template);
@@ -90,17 +105,7 @@ angular.module('singleConceptAuthoringApp')
       // replace values in descriptions
       angular.forEach(concept.descriptions, function (d) {
         if (d.template) {
-
-          // match all function/slotName pairs surrounded by $$
-          var termSlots = d.template.term ? d.template.term.match(/\$([^$]*)\$/g) : '';
-          console.debug('termSlots', d.template.term, termSlots);
-
-          angular.forEach(termSlots, function (termSlot) {
-            var re = new RegExp('\$' + termSlot | '\$', 'g');
-            var sv = getSlotValue(termSlot, template, nameValueMap);
-            console.debug('slot value', termSlot, re, sv);
-            d.term.replace(re, sv);
-          });
+          d.term = getDescriptionTemplateTermValue(d,template,nameValueMap);
         }
       });
 
@@ -315,18 +320,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function getTermForTemplateTerm(templateTerm, nameValueMap) {
-      var modTerm = templateTerm;
-      for (var name in nameValueMap) {
-        if (nameValueMap.hasOwnProperty(name)) {
-          modTerm = modTerm.replace('{{' + name + '}}', nameValueMap[name]);
-          modTerm = modTerm.replace(/[ ]{2,}/g, ' ');
-        }
-      }
-      return modTerm;
-    }
-
-
     /**
      * Main Functionality -- take a concept and apply a template to it
      * (1) Appends template elements to each component, adds missing components
@@ -447,15 +440,15 @@ angular.module('singleConceptAuthoringApp')
 
             // otherwise, check by pattern matching
             else {
-              var exp = dt.term.replace(/\{\{.*\}\}/, '.*');
-              exp = exp.replace(/([()[{$^\\|?])/g, '\\$1');
+              var exp = dt.term.replace(/\$.*\$/, '.*');
+              exp = exp.replace(/(\$)/g, '\\$');
               exp = '^' + exp + '$';
 
               // if match found
               if (d.term && d.term.match(exp)) {
                 matchFound = true;
                 d.template = dt;
-                var templateTerm = getTermForTemplateTerm(dt.term, nameValueMap);
+                var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
                 if (d.term !== templateTerm) {
                   // if apply values set, value will be replaced below, append warning
                   if (applyValues) {
@@ -485,7 +478,7 @@ angular.module('singleConceptAuthoringApp')
         if (!matchFound) {
           var newDesc = angular.copy(dt);
           newDesc.descriptionId = snowowlService.createGuid();
-          newDesc.term = getTermForTemplateTerm(dt.term, nameValueMap);
+          newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
           if (applyStyles) {
             newDesc.templateStyle = 'bluehl lighten-2';
           }
