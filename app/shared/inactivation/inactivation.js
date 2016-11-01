@@ -439,6 +439,8 @@ angular.module('singleConceptAuthoringApp')
                   notificationService.sendMessage('Updating Historical Associations...');
                   notificationService.sendMessage('Inactivation Complete');
                   $route.reload();
+                }, function(error) {
+                  notificationService.sendError('Error inactivating concept: ' + error);
                 });
               }
               else {
@@ -456,6 +458,8 @@ angular.module('singleConceptAuthoringApp')
 
                     }
                   });
+                }, function(error) {
+                  notificationService.sendError('Error inactivating concept: ' + error);
                 });
               }
             });

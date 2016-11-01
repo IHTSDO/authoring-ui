@@ -40,6 +40,8 @@ angular.module('singleConceptAuthoringApp')
         $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
           pollForBulkUpdate(response.headers('Location'), 1000).then(function (result) {
             deferred.resolve(response.data);
+          }, function(error) {
+            deferred.reject(error);
           });
         }, function (error) {
           deferred.reject(error);
@@ -60,7 +62,10 @@ angular.module('singleConceptAuthoringApp')
             // if review is ready, get the details
             if (response && response.data && response.data.status === 'COMPLETED') {
               deferred.resolve(response.data);
-            } else {
+            } else if (response && response.data && response.data.status === 'FAILED') {
+              deferred.reject('Bulk concept update failed');
+            } else
+            {
               pollForBulkUpdate(url, intervalTime).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
