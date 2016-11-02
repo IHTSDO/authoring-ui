@@ -314,6 +314,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // function to validate concept and display any errors or warnings
         scope.validateConcept = function () {
+          if (scope.concept.requiresValidation) {
+              delete scope.concept.requiresValidation;
+            }
           var deferred = $q.defer();
 
           snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
@@ -590,7 +593,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                     scope.saving = false;
                   });
-
                 }, 1000)
               }, function (error) {
                 if (error.status === 504) {
@@ -608,7 +610,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
                 scope.saving = false;
               });
-
             }
 
 
@@ -1868,6 +1869,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               delete copy.sourceId;
               delete copy.effectiveTime;
               delete copy.relationshipId;
+              delete copy.released;
 
               // set the group based on target
               copy.groupId = target.groupId;
