@@ -637,10 +637,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         if ($scope.concepts.length === $scope.editList.length) {
           notificationService.sendMessage('All concepts loaded', 10000, null);
-          // ensure loaded concepts match order of edit list
-          $scope.concepts.sort(function(a, b) {
-            return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
-          });
           $scope.updateEditListUiState();
         } else {
           // send loading notification for user display
@@ -693,7 +689,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // if concept exists and is unsaved, use JSON representation
         if (crsConcept && !crsConcept.saved) {
-
           // if the concept has been saved, retrieve from
           $scope.concepts.push(crsConcept.concept);
           notificationService.sendMessage('All concepts loaded', 5000, null);

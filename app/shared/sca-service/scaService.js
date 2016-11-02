@@ -1245,12 +1245,7 @@ angular.module('singleConceptAuthoringApp')
                       var event = newNotification.event.toLowerCase().replace(/\w\S*/g, function (txt) {
                         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                       });
-                      if (newNotification.task) {
-                        msg = 'Validation ' + event + ' for ' + 'task ' + newNotification.task;
-                      }
-                      else if (newNotification.project) {
-                        msg = 'Validation ' + event + ' for ' + 'project ' + newNotification.project;
-                      }
+                      msg = 'Validation ' + event + ' for ' + (newNotification.task ? 'task ' + newNotification.task :  'project ' + newNotification.project);
 
                       // do not supply a url (button link) for FAILED status
                       if (event !== 'FAILED') {

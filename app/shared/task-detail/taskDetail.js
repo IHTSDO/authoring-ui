@@ -246,6 +246,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 }
               }
             });
+
           }, function (error) {
 
             // TODO This will fire on actual errors as well as 404s, but other areas of the application rely on the reject()
@@ -302,14 +303,19 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.checkForLock = function () {
 
         snowowlService.getBranch($scope.branch).then(function (response) {
-
+            console.log($rootScope.classificationRunning)
           // if lock found, set rootscope variable and continue polling
           if (response.metadata && response.metadata.lock) {
             $rootScope.branchLocked = true;
             $timeout(function () {
               $scope.checkForLock()
             }, 10000);
-          }
+           }
+           else if($rootScope.classificationRunning){
+            $timeout(function () {
+              $scope.checkForLock()
+            }, 5000);
+           }
           else {
             $rootScope.branchLocked = false;
           }
@@ -345,11 +351,10 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // clear the branch variables (but not the task to avoid display re-initialization)
         $scope.taskBranch = null;
 
-        $scope.checkForLock();
-
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+          $scope.checkForLock();
 
           snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
           });

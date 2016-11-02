@@ -1391,8 +1391,8 @@ angular.module('singleConceptAuthoringApp')
         getDialectMatches: getDialectMatches,
 
         // utility
-        createGuid: createGuid,
-        isSctid: isSctid
+        createGuid : createGuid,
+        isSctid : isSctid
 
       };
     }
