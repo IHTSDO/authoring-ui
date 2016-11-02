@@ -440,11 +440,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                     // if unsaved, update possible GUID and concept property changes in saved and favorite lists
                     if (!crsConcept.saved) {
-                      $rootScope.$broadcast('saveCrsConcept', {concept: crsConcept, crsConceptId: originalConceptId});
+                      $rootScope.$broadcast('saveCrsConcept', {concept : crsConcept, crsConceptId : originalConceptId});
                     }
+                    console.debug('Saving CRS concept');
 
-                    // update the crs concept (no warning)
-                    crsService.saveCrsConcept(originalConceptId, scope.concept, null);
+                    // update the crs concept
+                    crsService.saveCrsConcept(originalConceptId, scope.concept);
+                    scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
                   }
 
                   // clear the modified state if no id was specified
