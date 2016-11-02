@@ -35,7 +35,7 @@ angular.module('singleConceptAuthoringApp')
         } else if ($rootScope.uat) {
           return 'https://uat-request.ihtsdotools.org/#/requests/view/' + issueId;
         } else {
-          return '';
+          return 'https://request.ihtsdotools.org/#/requests/view/' + issueId;
         }
       }
 
@@ -268,8 +268,6 @@ angular.module('singleConceptAuthoringApp')
                 deferred.resolve(concepts);
               } else {
                 initializeCrsTask().then(function () {
-
-                  console.debug('crs result', currentTaskConcepts);
                   deferred.resolve(currentTaskConcepts);
                 }, function () {
                   // NOTE: Must resolve to prevent blocking in edit.js
