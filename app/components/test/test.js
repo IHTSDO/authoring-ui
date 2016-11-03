@@ -18,40 +18,60 @@ angular.module('singleConceptAuthoringApp.test', [
       $rootScope.pageTitle = 'Test Management';
       $scope.name = 'Guided CT of X';
       $scope.templateMode = 'Get';
-      $scope.templateJson = null;
+      $scope.templateRaw = null;
+
+      function getTemplates() {
+        templateService.getTemplates().then(function (response) {
+          $scope.templates = response;
+        })
+      }
+
+      getTemplates();
 
       console.log('Entered TestCtrl');
 
-    function prettyPrint() {
-      var ugly = $scope.templateJson;
-      var obj = JSON.parse(ugly);
-      var pretty = JSON.stringify(obj, undefined, 4);
-      document.getElementById('prettyJson').value = pretty;
-    }
+      function prettyPrint() {
+        if ($scope.templateRaw) {
+          var ugly = $scope.templateRaw;
+          var obj = JSON.parse(ugly);
+          var pretty = JSON.stringify(obj, undefined, 4);
+          if (pretty && pretty !== 'null') {
+            document.getElementById('prettyJson').value = pretty;
+          }
+        }
+      }
+
+      $scope.$watch('templateRaw', function () {
+        prettyPrint();
+      });
+
+      $scope.$watch('templates', function () {
+        console.debug('new template cache', $scope.templates);
+      });
 
       $scope.performAction = function () {
-        console.debug('perform action', $scope.name, $scope.templateMode, $scope.templateJson);
+        console.debug('perform action', $scope.name, $scope.templateMode, $scope.templateRaw);
         switch ($scope.templateMode) {
           case 'Get':
             templateService.getTemplateForName($scope.name).then(function (response) {
-              $scope.templateJson = JSON.stringify(response);
-              prettyPrint();
+              $scope.templateRaw = JSON.stringify(response);
+              getTemplates()
             }, function (error) {
               notificationService.sendError('Error: ' + error);
             });
             break;
           case 'Create':
-            templateService.createTemplate($scope.templateJson, $scope.name).then(function (response) {
-              $scope.templateJson = JSON.stringify(response);
-              prettyPrint();
+            templateService.createTemplate(JSON.parse($scope.templateRaw)).then(function (response) {
+              $scope.templateRaw = JSON.stringify(response);
+              getTemplates()
             }, function (error) {
               notificationService.sendError('Error: ' + error);
             });
             break;
           case 'Update':
-            templateService.updateTemplate($scope.templateJson, $scope.name).then(function (response) {
-              $scope.templateJson = JSON.stringify(response);
-              prettyPrint();
+            templateService.updateTemplate(JSON.parse($scope.templateRaw)).then(function (response) {
+              $scope.templateRaw = JSON.stringify(response);
+              getTemplates()
             }, function (error) {
               notificationService.sendError('Error: ' + error);
             });

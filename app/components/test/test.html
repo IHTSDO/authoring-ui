@@ -9,16 +9,19 @@
     </div>
 
     <div class="row">
-      <select class="p-5" ng-model="templateMode">
+      <select class="p-5" ng-model="templateMode" style="min-width:100px;">
         <option>Get</option>
         <option>Create</option>
         <option>Update</option>
       </select>
 
-      <input class="p-5" ng-model="name">
+      <select ng-options="template.name as template.name for template in templates"
+              style="min-width:300px;"
+              ng-change="performAction()"
+              ng-show="templateMode != 'Create'" class="p-5" ng-model="name"></select>
 
       <button class="p-5" class="btn btn-default btn-primary"
-              ng-click="performAction(templateMode, templateJson, name)">Perform Action
+              ng-click="performAction()">Perform Action
       </button>
     </div>
 
@@ -26,12 +29,12 @@
       <div class="col-md-4 m-r-10">
         <h4>Raw Text</h4>
         <textarea style="min-height:500px !important; max-height: 1500px !important;min-width:200px;width:100%"
-                  ng-model="templateJson"></textarea>
+                  ng-model="templateRaw"></textarea>
       </div>
 
       <div class="col-md-7">
         <h4>Formatted Text</h4>
-        <textarea id="prettyJson"
+        <textarea disabled id="prettyJson"
                   style="min-height:500px !important; max-height: 1500px !important;min-width:200px;width:100%"></textarea>
       </div>
     </div>
