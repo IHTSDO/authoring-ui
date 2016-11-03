@@ -1,141 +1,166 @@
 <style>
   .template-added {
-      background-color:  #e49c2a;
+    background-color: #e49c2a;
   }
+
   .template-invalid {
-      background-color: #db454e;
+    background-color: #db454e;
   }
+
   .template-valid {
-      background-color: #03b18a;
+    background-color: #03b18a;
   }
+
   .navigation-link {
-      width: 50px;
-      height: 50px;
+    width: 50px;
+    height: 50px;
   }
+
   ul.sub-navigation-link-list li {
-      padding: 0;
+    padding: 0;
   }
+
   ul.sub-navigation-link-list li ul li a {
-      color: #fff;
+    color: #fff;
   }
+
   ul.sub-navigation-link-list li ul {
-      padding-left: 0px;
-      position: relative;
-      width: 300px;
-      font-size: 13px !important;
-      -webkit-box-shadow: none;
-      -moz-box-shadow: none;
-      box-shadow: none;
-      display: none;
-      opacity: 0;
-      visibility: hidden;
-      color: #fff !important;
+    padding-left: 0px;
+    position: relative;
+    width: 300px;
+    font-size: 13px !important;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    color: #fff !important;
   }
+
   ul.sub-navigation-link-list li ul li {
-      background: #4fc3f7;
-      display: block;
-      color: #fff;
-      padding: 12px 13px;
-      line-height: 1;
+    background: #4fc3f7;
+    display: block;
+    color: #fff;
+    padding: 12px 13px;
+    line-height: 1;
   }
+
   ul.sub-navigation-link-list li ul li:hover {
-      background: #409dc7;
+    background: #409dc7;
   }
- 
+
   ul.sub-navigation-link-list li:hover ul {
-      display: block;
-      opacity: 1;
-      visibility: visible;
+    display: block;
+    opacity: 1;
+    visibility: visible;
   }
+
   .sub-navigation-link-list {
-      list-style-type: none;
+    list-style-type: none;
   }
+
   ul.sub-navigation-link-list {
-      -webkit-padding-start: 0px;
-      margin-bottom: 0px;
-      -webkit-margin-before: 0em;
-      -webkit-margin-after: 0em;
-      -webkit-margin-start: 0px;
-      -webkit-margin-end: 0px;
-      color: #fff;
+    -webkit-padding-start: 0px;
+    margin-bottom: 0px;
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    color: #fff;
   }
+
   ul.button-sub-nav {
-      -webkit-padding-start: 0px;
-      margin-bottom: 0px;
-      -webkit-margin-before: 0em;
-      -webkit-margin-after: 0em;
-      -webkit-margin-start: 0px;
-      -webkit-margin-end: 0px;
+    -webkit-padding-start: 0px;
+    margin-bottom: 0px;
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
   }
+
   ul.button-sub-nav {
-      margin-left: 50px;
-      margin-top: -50px
+    margin-left: 50px;
+    margin-top: -50px
   }
+
   .sub-navigation-link-list .btn {
-      padding: 4px 0px;
-      font-size: 13px;
-      width: 50px;
-      height: 50px;
-      border-radius: 0px;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      color: #fff;
+    padding: 4px 0px;
+    font-size: 13px;
+    width: 50px;
+    height: 50px;
+    border-radius: 0px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #fff;
   }
+
   .sub-navigation-link-list .btn a {
-      height: 50px
+    height: 50px
   }
+
   ul.button-sub-nav {
-      padding-left: 0px;
+    padding-left: 0px;
   }
+
   /* classification */
-   ul.classification-nav .btn:hover,
+  ul.classification-nav .btn:hover,
   ul.classification-nav li ul li:focus,
   ul.classification-nav li ul li:active,
   ul.classification-nav li ul li:hover {
-      background: #03a07d;
+    background: #03a07d;
   }
+
   ul.classification-nav li ul li {
-      color: #3e3e42;
-      background: #55c1a7
+    color: #fff;
+    background: #55c1a7
   }
-  
+
   /* validation */
-    ul.validation-nav .btn:hover,
+  ul.validation-nav .btn:hover,
   ul.validation-nav li ul li:focus,
   ul.validation-nav li ul li:active,
   ul.validation-nav li ul li:hover {
-      background: #57447e;
+    background: #57447e;
   }
+
   ul.validation-nav li ul li {
-      color: #fff;
-      background: #6c549d
+    color: #fff;
+    background: #6c549d
   }
-   /* review */
-   
-   .sca-light .navigation-link.green.darken-1.classify{color:#d33c75}
- ul.review-nav .btn:hover,
+
+  /* review */
+
+  .sca-light .navigation-link.green.darken-1.classify {
+    color: #d33c75
+  }
+
+  ul.review-nav .btn:hover,
   ul.review-nav li ul li:focus,
   ul.review-nav li ul li:active,
   ul.review-nav li ul li:hover {
-      background: #d33c75;
+    background: #d33c75;
   }
+
   ul.review-nav li ul li {
-      color: #fff;
-      background: #e94281 
+    color: #fff;
+    background: #e94281
   }
-    ul.review-nav .btn:hover,
+
+  ul.review-nav .btn:hover,
   ul.review-nav li ul li:focus,
   ul.review-nav li ul li:active,
   ul.review-nav li ul li:hover {
-      background: #d33c75;
+    background: #d33c75;
   }
+
   ul.review-nav li ul li {
-      color: #fff;
-      background: #e94281 
+    color: #fff;
+    background: #e94281
   }
-  
+
 </style>
 
 <!-- Hide container until view is selected -->
@@ -190,26 +215,18 @@
           <ul class="button-sub-nav">
 
 
-            <li ng-if="task.latestClassificationJson.status === 'COMPLETED'">
-              <a ng-click="viewClassificationFromSidebar()">
-                View Classification (completed {{classificationContainer.creationDate | date : 'medium'}}
-              </a>
+            <li ng-if="task.latestClassificationJson.status === 'COMPLETED'" ng-click="viewClassificationFromSidebar()">
+              View Classification (completed {{classificationContainer.creationDate | date : 'medium'}}
             </li>
             <li ng-if="task.latestClassificationJson.status === 'FAILED'">
-              <a>
-                Classification Failed
-              </a>
+              Classification Failed
             </li>
             <li ng-if="task.latestClassificationJson.status === 'RUNNING'">
-              <a>
-                Classification Running
-              </a>
+              Classification Running
             </li>
-            <li ng-if="task.latestClassificationJson.status !== 'RUNNING'">
-              <a ng-click="classify()"
-                 ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked"> 
-                Start New Classification
-              </a>
+            <li ng-if="task.latestClassificationJson.status !== 'RUNNING'" ng-click="classify()"
+                ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
+              Start New Classification
             </li>
           </ul>
         </li>
@@ -227,9 +244,7 @@
             </div>
           </a>
 
-           <ul class="button-sub-nav">
-
-
+          <ul class="button-sub-nav">
             <li ng-if="task.latestValidationStatus === 'FAILED'">
               Validation Failed
             </li>
@@ -237,19 +252,14 @@
               ng-if="task.latestValidationStatus && (task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || task.latestValidationStatus === 'SCHEDULED')">
               Validation Running
             </li>
-
-            <li ng-if="task.latestValidationStatus === 'COMPLETED'">
-              <a ng-click="viewValidationFromSidebar()">
-                View Validation Report
-              </a>
+            <li ng-if="task.latestValidationStatus === 'COMPLETED'" ng-click="viewValidationFromSidebar()">
+              View Validation Report
             </li>
             <li
-              ng-if="task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'">
-
-              <a ng-click="validate()"
-                 ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
-                Start New Validation
-              </a>
+              ng-if="task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'"
+              ng-click="validate()"
+              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+              Start New Validation
             </li>
           </ul>
         </li>
@@ -266,34 +276,24 @@
             <div class="home-link pointer btn btn-link withoutripple"><i class="md md-email "></i>
             </div>
           </a>
-
-                <ul class="button-sub-nav">
+          <ul class="button-sub-nav">
             <li
-              ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && !reviewChecks">
-
-              <a ng-click="toggleReview()"
-                 ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
-                Submit for Review
-              </a>
-            </li>
-
-            <li ng-if="reviewChecks">
-              <a ng-click="cancelSubmitForReview()">
-                Cancel Submit for Review
-              </a>
+              ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && !reviewChecks"
+              ng-click="toggleReview()"
+              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
+              Submit for Review
             </li>
             <li
-              ng-if="role === 'AUTHOR' && (task.status === 'In Review' || task.status === 'Review Completed')">
-              <a ng-click="toggleReview()">Cancel Review</a>
+              ng-if="role === 'AUTHOR' && (task.status === 'In Review' || task.status === 'Review Completed')"
+              ng-click="toggleReview()">
+              Cancel Review
             </li>
-
-            <li ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')">
-              <a ng-click="toggleReview()">
-                Unclaim Review
-              </a>
+            <li ng-if="role === 'REVIEWER' && (task.status === 'In Review' || task.status === 'Review Completed')"
+                ng-click="toggleReview()">
+              Unclaim Review
             </li>
-            <li>
-              <a ng-click="viewReviewFromSidebar()">View Review and Feedback</a>
+            <li ng-click="viewReviewFromSidebar()">
+              View Review and Feedback
             </li>
           </ul>
         </li>
