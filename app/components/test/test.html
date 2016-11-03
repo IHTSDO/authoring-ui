@@ -2,18 +2,39 @@
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
 
-  <div class="col-md-9">
-    <h4>Template creation and update</h4>
+  <div class="sca-content col-lg-9 col-md-9 col-sm-9 pull-right no-gutter">
 
-    <select ng-model="templateMode">
-      <option>Create</option>
-      <option>Update</option>
-    </select>
+    <div class="row">
+      <h3 class="table-title p-20">Template Manipulation</h3>
+    </div>
 
-    <button class="btn btn-default btn-primary">Perform Action</button>
+    <div class="row">
+      <select class="p-5" ng-model="templateMode">
+        <option>Get</option>
+        <option>Create</option>
+        <option>Update</option>
+      </select>
 
-    <textarea style="min-height: 500px;" ng-model="templateJson"></textarea>
+      <input class="p-5" ng-model="name">
+
+      <button class="p-5" class="btn btn-default btn-primary"
+              ng-click="performAction(templateMode, templateJson, name)">Perform Action
+      </button>
+    </div>
+
+    <div class="row p-t-10">
+      <div class="col-md-4 m-r-10">
+        <h4>Raw Text</h4>
+        <textarea style="min-height:500px !important; max-height: 1500px !important;min-width:200px;width:100%"
+                  ng-model="templateJson"></textarea>
+      </div>
+
+      <div class="col-md-7">
+        <h4>Formatted Text</h4>
+        <textarea id="prettyJson"
+                  style="min-height:500px !important; max-height: 1500px !important;min-width:200px;width:100%"></textarea>
+      </div>
+    </div>
 
   </div>
-
 </div>
