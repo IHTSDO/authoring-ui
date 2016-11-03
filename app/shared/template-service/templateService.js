@@ -261,7 +261,33 @@ angular.module('singleConceptAuthoringApp')
 
 
     function updateTemplate(template) {
-      // TODO Wire to BE
+      var deferred = $q.defer();
+      if (!template || !template.name) {
+        deferred.reject('Template or template name not specified');
+      } else if (templateCache.filter(function (t) {
+          return t.name === template.name;
+        }).length === 0) {
+        deferred.reject('Update called, but template not in cache');
+      } else {
+
+        var version = template.version;
+        $http.put(apiEndpoint + 'templates?name=' + encodeUriComponent(template.name), template).then(function (response) {
+          getTemplates(true).then(function () {
+            if (templateCache.filter(function (t) {
+                return t.name === template.name && t.version === template.version;
+              }).length > 0) {
+              deferred.reject('Template update reported successful, but version not updated');
+            } else {
+              deferred.resolve(templateCache);
+            }
+          }, function (error) {
+            deferred.reject('Template update reported successful, but could not refresh template cache: ' + error.developerMessage);
+          });
+        }, function (error) {
+          deferred.reject('Failed to update template: ' + error.developerMessage);
+        });
+      }
+      return deferred.promise;
     }
 
 
