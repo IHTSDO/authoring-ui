@@ -48,7 +48,7 @@ angular.module('singleConceptAuthoringApp')
       } catch (error) {
         return '???';
       }
-      console.debug('lexical template', lt);
+
       var match;
 
       // if no value, simply return the slot name (e.g. 'X' for 'term_X')
@@ -226,19 +226,25 @@ angular.module('singleConceptAuthoringApp')
       if (!templateCache || refreshCache) {
         $http.get(apiEndpoint + 'templates').then(function (response) {
           templateCache = response.data;
-          deferred.resolve(templateCache);
+          deferred.resolve(templateCache.filter(function(t) {
+            return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
+          }));
 
         }, function (error) {
-          deferred.reject('Failed to retrieve templates: ' + error.developerMessage);
+          deferred.reject('Failed to retrieve templates: ' + error.message);
         });
       } else {
-        deferred.resolve(templateCache);
+        deferred.resolve(templateCache.filter(function(t) {
+          return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
+        }));
       }
       return deferred.promise;
     }
 
     function getTemplateForName(name, refreshCache) {
       var deferred = $q.defer();
+
+      console.debug('get template for name', name, templateCache);
 
       getTemplates(refreshCache).then(function (templates) {
         var tf = templates.filter(function (t) {
@@ -257,57 +263,58 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function createTemplate(template, name) {
-      console.debug('createTemplate', template['name'], template.name);
+    function createTemplate(template) {
+      console.debug('createTemplate', template);
       var deferred = $q.defer();
-      if (!template || !name) {
+      if (!template || !template.name) {
         deferred.reject('Template or template name not specified');
       } else {
-        $http.post(apiEndpoint + 'templates?name=' + encodeURIComponent(name), template).then(function (response) {
+        $http.post(apiEndpoint + 'templates?name=' + encodeURIComponent(template.name), template).then(function (response) {
           getTemplates(true).then(function () {
             if (templateCache.filter(function (t) {
-                return t.name === name;
+                return t.name === template.name;
               }).length === 0) {
               deferred.reject('Template creation reported successful, but not present in refreshed cache');
             } else {
               deferred.resolve(templateCache);
             }
           }, function (error) {
-            deferred.reject('Template creation reported successful, but could not refresh template cache: ' + error.developerMessage);
+            deferred.reject('Template creation reported successful, but could not refresh template cache: ' + error.message);
           });
         }, function (error) {
-          deferred.reject('Failed to create template: ' + error.developerMessage);
+          deferred.reject('Failed to create template: ' + error.message);
         });
       }
       return deferred.promise;
     }
 
 
-    function updateTemplate(template, name) {
+    function updateTemplate(template) {
+      console.debug('update template', template);
       var deferred = $q.defer();
-      if (!template || !name) {
+      if (!template || !template.name) {
         deferred.reject('Template or template name not specified');
       } else if (templateCache.filter(function (t) {
-          return t.name === name;
+          return t.name === template.name;
         }).length === 0) {
         deferred.reject('Update called, but template not in cache');
       } else {
 
         var version = template.version;
-        $http.put(apiEndpoint + 'templates/' + encodeURIComponent(name), template).then(function (response) {
+        $http.put(apiEndpoint + 'templates/' + encodeURIComponent(template.name), template).then(function (response) {
           getTemplates(true).then(function () {
             if (templateCache.filter(function (t) {
-                return t.name === template.name && (t.version === template['version'] || t.version === template.version);
+                return t.name === template.name && t.version === template.version;
               }).length > 0) {
               deferred.reject('Template update reported successful, but version not updated');
             } else {
               deferred.resolve(response.data);
             }
           }, function (error) {
-            deferred.reject('Template update reported successful, but could not refresh template cache: ' + error.developerMessage);
+            deferred.reject('Template update reported successful, but could not refresh template cache: ' + error.message);
           });
         }, function (error) {
-          deferred.reject('Failed to update template: ' + error.developerMessage);
+          deferred.reject('Failed to update template: ' + error.message);
         });
       }
       return deferred.promise;
@@ -316,6 +323,8 @@ angular.module('singleConceptAuthoringApp')
 
     function createTemplateConcept(template) {
       var deferred = $q.defer();
+
+      console.debug('Creating template for ' + template.name, template);
 
       // check required arguments
       if (!template) {
