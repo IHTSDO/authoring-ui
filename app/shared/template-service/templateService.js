@@ -104,6 +104,26 @@ angular.module('singleConceptAuthoringApp')
       return newTerm;
     }
 
+    function linkSlots(relationship, concept) {
+      console.debug('link slots', relationship, concept);
+
+      // check that this is actually a linked slot
+      if (!relationship || !relationship.template || !relationship.template.linkedSlot) {
+        console.debug('--> Not a linked slot');
+        return;
+      }
+      angular.forEach(concept.relationships, function (r) {
+        console.debug('checking against relationship:', r.template && r.template.targetSlot ? r.template.targetSlot.name : ' Not target slot');
+          // if this is a target slot
+          if (r.template && r.template.targetSlot
+            && relationship.template.linkedSlot.takeConceptFrom === r.template.targetSlot.name) {
+            relationship.target.conceptId = r.target.conceptId;
+            relationship.target.fsn = r.target.fsn;
+          }
+        }
+      )
+    }
+
     function replaceTemplateValues(concept, template) {
       var nameValueMap = getTemplateValues(concept, template);
 
@@ -116,8 +136,10 @@ angular.module('singleConceptAuthoringApp')
 
       // replace values in relationships
       angular.forEach(concept.relationships, function (r) {
-        // no use-case as yet
-      });
+        if (r.template && r.template.linkedSlot) {
+          linkSlot(relationship, concept);
+        }
+      })
 
       // replace values in top-level concept fields
       // no use-case as yet
@@ -152,7 +174,7 @@ angular.module('singleConceptAuthoringApp')
       return nameValueMap;
     }
 
-    // function to populate concept FSNs from ids in templates
+// function to populate concept FSNs from ids in templates
     function initializeTemplate(template) {
 
       var deferred = $q.defer();
