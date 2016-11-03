@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp')
         lt = template.lexicalTemplates.filter(function (l) {
           return l.name === sn;
         })[0];
-      } catch(error) {
+      } catch (error) {
         return '???';
       }
       console.debug('lexical template', lt);
@@ -236,16 +236,34 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function createTemplate(template) {
-      // TODO Wire to BE
+      var deferred = $q.defer();
+      if (!template || !template.name) {
+        deferred.reject('Template or template name not specified');
+      } else {
+        $http.post(apiEndpoint + 'templates?name=' + encodeUriComponent(template.name), template).then(function (response) {
+          getTemplates(true).then(function () {
+            if (templateCache.filter(function (t) {
+                return t.name === template.name;
+              }).length === 0) {
+              deferred.reject('Template creation reported successful, but not present in refreshed cache');
+            } else {
+              deferred.resolve(templateCache);
+            }
+          }, function (error) {
+            deferred.reject('Template creation reported successful, but could not refresh template cache: ' + error.developerMessage);
+          });
+        }, function (error) {
+          deferred.reject('Failed to create template: ' + error.developerMessage);
+        });
+      }
+      return deferred.promise;
     }
+
 
     function updateTemplate(template) {
       // TODO Wire to BE
     }
 
-    function removeTemplate(templateName) {
-      // TODO Wire to BE
-    }
 
     function createTemplateConcept(template) {
       var deferred = $q.defer();
@@ -664,7 +682,6 @@ angular.module('singleConceptAuthoringApp')
       getTemplateForName: getTemplateForName,
       createTemplate: createTemplate,
       updateTemplate: updateTemplate,
-      removeTemplate: removeTemplate,
 
       // global template selection
       selectTemplate: selectTemplate,
