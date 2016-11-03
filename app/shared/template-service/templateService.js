@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp')
       angular.forEach(concept.relationships, function (r) {
         if (r.template && r.template.targetSlot && r.target.conceptId) {
           angular.forEach(concept.relationships, function(r1) {
-            if (r1.template && r1.template.targetSlot && r1.template.targetSlot.name === r.template.targetSlot.name && !r1.target.conceptId) {
+            if (r1.template && r1.template.targetSlot && r1.template.targetSlot.name === r.template.targetSlot.name) {
               r1.target.conceptId = r.target.conceptId;
               r1.target.fsn = r.target.fsn;
             }

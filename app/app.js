@@ -46,7 +46,6 @@ angular
     'singleConceptAuthoringApp.sidebarEdit',
     'singleConceptAuthoringApp.taxonomyPanel',
     'singleConceptAuthoringApp.searchPanel',
-    'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail',
     'singleConceptAuthoringApp.conceptInformationModal'
