@@ -49,14 +49,14 @@ http {
 		server_name	localhost;
  
 		location / {
-			root /FileLocation/angular-app-template/dist;
+			root /FileLocation/authoring-ui/dist;
 		}
         location /config {
-			alias /FileLocation/angular-app-template;
+			alias /FileLocation/authoring-ui;
 		}
  
 		location /snowowl {
-			proxy_pass https://dev-term.ihtsdotools.org/snowowl;
+			proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
 		}
         
         location /ims-api {
@@ -71,11 +71,11 @@ http {
 			proxy_pass http://127.0.0.1:9000;
 		}
         location /config {
-			alias /FileLocation/angular-app-template;
+			alias /FileLocation/authoring-ui;
 		}
  
 		location /snowowl {
-			proxy_pass https://dev-term.ihtsdotools.org/snowowl;
+			proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
 		}
         
         location /ims-api {
@@ -83,9 +83,14 @@ http {
 		}
         
         location /traceability-service {
-			proxy_pass https://dev-term.ihtsdotools.org/traceability-service;
-            proxy_cookie_domain localhost dev-term.ihtsdotools.org;
+			proxy_pass https://dev-authoring.ihtsdotools.org/traceability-service;
+            proxy_cookie_domain localhost dev-authoring.ihtsdotools.org;
 		}
+		
+		location /template-service {
+                proxy_pass https://dev-authoring.ihtsdotools.org/template-service;
+                proxy_cookie_domain localhost dev-authoring.ihtsdotools.org;
+            }
 	}
 }
 ```
