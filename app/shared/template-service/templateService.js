@@ -235,15 +235,16 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function createTemplate(template) {
+    function createTemplate(template, name) {
+      console.debug('createTemplate', template['name'], template.name);
       var deferred = $q.defer();
-      if (!template || !template.name) {
+      if (!template || !name) {
         deferred.reject('Template or template name not specified');
       } else {
-        $http.post(apiEndpoint + 'templates?name=' + encodeUriComponent(template.name), template).then(function (response) {
+        $http.post(apiEndpoint + 'templates?name=' + encodeURIComponent(name), template).then(function (response) {
           getTemplates(true).then(function () {
             if (templateCache.filter(function (t) {
-                return t.name === template.name;
+                return t.name === name;
               }).length === 0) {
               deferred.reject('Template creation reported successful, but not present in refreshed cache');
             } else {
@@ -260,25 +261,25 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function updateTemplate(template) {
+    function updateTemplate(template, name) {
       var deferred = $q.defer();
-      if (!template || !template.name) {
+      if (!template || !name) {
         deferred.reject('Template or template name not specified');
       } else if (templateCache.filter(function (t) {
-          return t.name === template.name;
+          return t.name === name;
         }).length === 0) {
         deferred.reject('Update called, but template not in cache');
       } else {
 
         var version = template.version;
-        $http.put(apiEndpoint + 'templates?name=' + encodeUriComponent(template.name), template).then(function (response) {
+        $http.put(apiEndpoint + 'templates/' + encodeURIComponent(name), template).then(function (response) {
           getTemplates(true).then(function () {
             if (templateCache.filter(function (t) {
-                return t.name === template.name && t.version === template.version;
+                return t.name === template.name && (t.version === template['version'] || t.version === template.version);
               }).length > 0) {
               deferred.reject('Template update reported successful, but version not updated');
             } else {
-              deferred.resolve(templateCache);
+              deferred.resolve(response.data);
             }
           }, function (error) {
             deferred.reject('Template update reported successful, but could not refresh template cache: ' + error.developerMessage);
