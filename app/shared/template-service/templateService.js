@@ -104,72 +104,58 @@ angular.module('singleConceptAuthoringApp')
       return newTerm;
     }
 
-    function linkSlots(relationship, concept) {
+    // triggers replacement of logical values given a changed relationship
+    function replaceLogicalValues(concept, relationship) {
       var deferred = $q.defer();
-      console.debug('link slots', relationship, concept);
 
-      // check that this is actually a linked slot
-      if (!relationship || !relationship.template || !relationship.template.linkedSlot) {
-        console.debug('--> Not a linked slot');
-        return;
-      }
-      angular.forEach(concept.relationships, function (r) {
-        console.debug('checking against relationship:', r.template && r.template.targetSlot ? r.template.targetSlot.name : ' Not target slot');
-          // if this is a target slot
-          if (r.template && r.template.targetSlot
-            && relationship.template.linkedSlot.takeConceptFrom === r.template.targetSlot.name) {
-            relationship.target.conceptId = r.target.conceptId;
-            relationship.target.fsn = r.target.fsn;
-          }
+      if (!relationship || !relationship.template || !relationship.template.targetSlot) {
+        deferred.reject('No target slot detected');
+      } else {}
+
+      // check for target slots with 'targetName' and value set
+      for (var i = 0; i < concept.relationships.length; i++) {
+        var r = concept.relationships[i];
+        // TODO Change to r.targetSlot.slotReference once BE supports new nomenclature
+        if (r.targetSlot && r.targetSlot && r.targetSlot.slotName === relationship.template.targetSlot.slotName) {
+          r.target.conceptId = relationship.target.conceptId;
+          r.target.fsn = relationship.target.fsn;
         }
-      )
+      };
+
+      // placeholder resolution in anticipation of replacement using promises
       deferred.resolve();
       return deferred.promise;
     }
 
-    function replaceForLogicalModel(concept, template) {
+    function replaceLexicalValues(concept, template) {
       var deferred = $q.defer();
-
-      // check for linked target slots
-      angular.forEach(concept.relationships, function (r) {
-        if (r.template && r.template.targetSlot && r.target.conceptId) {
-          angular.forEach(concept.relationships, function(r1) {
-            if (r1.template && r1.template.targetSlot && r1.template.targetSlot.name === r.template.targetSlot.name) {
-              r1.target.conceptId = r.target.conceptId;
-              r1.target.fsn = r.target.fsn;
-            }
-          })
-        }
-      });
-
-      deferred.resolve();
-      return deferred.promise;
-    }
-
-    function replaceForLexicalModel(concept, template) {
-      var deferred = $q.defer();
-
-      deferred.resolve();
-      return deferred.promise;
-    }
-
-    function replaceTemplateValues(concept, template) {
       var nameValueMap = getTemplateValues(concept, template);
 
-
       // replace values in descriptions
-      angular.forEach(concept.descriptions, function (d) {
+      for (var i = 0; i < concept.descriptions.length; i++) {
+        var d = concept.descriptions[i];
         if (d.template) {
           d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
         }
+      }
+
+      // placeholder resolution in anticipation of replacement using promises
+      deferred.resolve();
+      return deferred.promise;
+    }
+
+    function updateTargetSlot(concept, template, relationship) {
+      var deferred = $q.defer();
+      replaceLogicalValues(concept, relationship).then(function() {
+        replaceLexicalValues(concept, template).then(function() {
+          deferred.resolve();
+        }, function(error) {
+          deferred.reject(error);
+        });
+      }, function(error) {
+        deferred.reject(error);
       });
-
-
-      // replace values in top-level concept fields
-      // no use-case as yet
-
-
-      return concept;
+      return deferred.promise;
     }
 
     /**
@@ -382,7 +368,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
         // replace template values (i.e. to replace display $term-x with x
-        replaceTemplateValues(tc, template);
+        replaceLexicalValues(tc, template);
 
         deferred.resolve(tc);
       }
@@ -608,7 +594,7 @@ angular.module('singleConceptAuthoringApp')
 
 
       if (applyValues) {
-        concept = replaceTemplateValues(concept, template);
+        concept = replaceLexicalValues(concept, template);
       }
 
 // apply top-level messages
@@ -775,6 +761,7 @@ angular.module('singleConceptAuthoringApp')
       applyTemplateToConcept: applyTemplateToConcept,
       removeTemplateFromConcept: removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
+      updateTargetSlot : updateTargetSlot,
 
       // utility functions
       isTemplateComplete: isTemplateComplete,
