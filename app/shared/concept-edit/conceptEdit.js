@@ -2326,7 +2326,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // clear validation errors
             scope.validation = {};
 
-            templateService.applyTemplateToConcept(scope.concept, scope.template, true, false, false).then(function () {
+            templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
               scope.computeRelationshipGroups();
               autoSave()
             }, function (error) {

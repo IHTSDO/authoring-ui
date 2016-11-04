@@ -55,8 +55,7 @@
           "conceptId": "405813007"
         },
         "targetSlot": {
-          "slotName": "procSite",
-          "allowableRangeECL": "<< 442083009 |Anatomical or acquired body structure|"
+          "slotName": "procSite"
         },
         "cardinalityMin": "1",
         "cardinalityMax": "1"
