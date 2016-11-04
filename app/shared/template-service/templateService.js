@@ -105,6 +105,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function linkSlots(relationship, concept) {
+      var deferred = $q.defer();
       console.debug('link slots', relationship, concept);
 
       // check that this is actually a linked slot
@@ -122,17 +123,12 @@ angular.module('singleConceptAuthoringApp')
           }
         }
       )
+      deferred.resolve();
+      return deferred.promise;
     }
 
-    function replaceTemplateValues(concept, template) {
-      var nameValueMap = getTemplateValues(concept, template);
-
-      // replace values in descriptions
-      angular.forEach(concept.descriptions, function (d) {
-        if (d.template) {
-          d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
-        }
-      });
+    function replaceForLogicalModel(concept, template) {
+      var deferred = $q.defer();
 
       // check for linked target slots
       angular.forEach(concept.relationships, function (r) {
@@ -145,6 +141,29 @@ angular.module('singleConceptAuthoringApp')
           })
         }
       });
+
+      deferred.resolve();
+      return deferred.promise;
+    }
+
+    function replaceForLexicalModel(concept, template) {
+      var deferred = $q.defer();
+
+      deferred.resolve();
+      return deferred.promise;
+    }
+
+    function replaceTemplateValues(concept, template) {
+      var nameValueMap = getTemplateValues(concept, template);
+
+
+      // replace values in descriptions
+      angular.forEach(concept.descriptions, function (d) {
+        if (d.template) {
+          d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
+        }
+      });
+
 
       // replace values in top-level concept fields
       // no use-case as yet
