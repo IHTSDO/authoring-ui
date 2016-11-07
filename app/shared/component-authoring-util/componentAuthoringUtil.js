@@ -725,6 +725,29 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
+      // utility functions
+      function getFsnForConcept(concept) {
+        try {
+          return concept.descriptions.filter(function(d) {
+            return d.active && d.type === 'FSN';
+          })[0].term;
+        } catch (error) {
+          console.debug('error determining fsn', concept);
+          return '???';
+        }
+      }
+
+      function getPtForConcept(concept, dialect) {
+        try {
+          return concept.descriptions.filter(function(d) {0
+            return d.active && d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap[dialect] === 'PREFERRED';
+          })[0].term;
+        } catch (error) {
+          console.debug('error determining pt', concept, dialect);
+          return '???';
+        }
+      }
+
       return {
         getNewConcept: getNewConcept,
         getNewDescription: getNewDescription,
@@ -750,7 +773,9 @@ angular.module('singleConceptAuthoringApp')
         runDescriptionAutomations: runDescriptionAutomations,
 
         // utility functions
-        setDefaultFields : setDefaultFields
+        setDefaultFields : setDefaultFields,
+        getFsnForConcept : getFsnForConcept,
+        getPtForConcept : getPtForConcept
 
       };
 

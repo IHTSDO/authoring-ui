@@ -41,6 +41,7 @@ angular
     'singleConceptAuthoringApp.projectMerge',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
+    'singleConceptAuthoringApp.batch',
     'singleConceptAuthoringApp.test',
     'singleConceptAuthoringApp.sidebar',
     'singleConceptAuthoringApp.sidebarEdit',
