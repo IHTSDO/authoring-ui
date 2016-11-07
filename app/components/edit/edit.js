@@ -62,7 +62,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
   })
 
-  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter) {
+  .controller('EditCtrl', function EditCtrl($scope, $window, $rootScope, $location, $modal, layoutHandler, metadataService, accountService, scaService, inactivationService, snowowlService, componentAuthoringUtil, notificationService, $routeParams, $timeout, $interval, $q, crsService, reviewService, ngTableParams, templateService, $filter, $compile) {
 
 
 
@@ -376,7 +376,10 @@ angular.module('singleConceptAuthoringApp.edit', [
             $scope.loadEditPanelConcepts();
           }
           break;
-
+        case 'batch':
+          $rootScope.pageTitle = 'Batch Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
+          $routeParams.mode = 'batch';
+          $scope.canCreateConcept = false;
         default:
           $rootScope.pageTitle = 'Invalid View Requested';
           $scope.canCreateConcept = false;
@@ -575,6 +578,8 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.setView('conflicts');
       } else if ($routeParams.mode === 'edit') {
         $scope.setView('edit-default');
+      } else if ($routeParams.mode === 'batch') {
+        $scope.setView('batch');
       }
 
       // if improper route, send error and halt
@@ -1675,7 +1680,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               reviewService.cancelReview($scope.task).then(function () {
                 loadTask();
                 notificationService.sendMessage('Review cancelled', 3000);
-               }, function (error) {
+              }, function (error) {
                 notificationService.sendError('Error cancelling review: ' + error);
               });
             } else {
@@ -1807,6 +1812,144 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     initialize();
 
+    //
+    // TBBA Testing Crap
+    //
+
+    $scope.hot = {
+      columns: [],
+      settings: {},
+      data: []
+
+    };
+
+    function getSlotType(concept) {
+      console.debug('getting slot type', concept);
+      for (var i = 0; i < concept.relationships.length; i++) {
+        console.debug('checking relationship', concept.relationships[i])
+        if (concept.relationships[i].targetSlot && concept.relationships[i].targetSlot.slotName) {
+          return concept.relationships[i].type.fsn;
+        }
+      }
+    }
+
+    $scope.getSlotType = function () {
+      console.debug('$scope.slotType', $scope.slotType);
+      return $scope.slotType;
+    };
+
+    function getRowForConcept(concept) {
+      // get the slot type
+      var row = {
+        conceptId: concept.conceptId,
+        fsn: componentAuthoringUtil.getFsnForConcept(concept),
+        pt: componentAuthoringUtil.getPtForConcept(concept, '900000000000509007'),
+        slotTarget: '',
+        editHtml: '<i class="glyphicon glyphicon-edit"></i>'
+      };
+      return row;
+    }
+
+    function updateConceptFromRow(row) {
+      // TODO Find concept by id, update fields
+    }
+
+    function getColumnObjectForField(field) {
+      var col = {
+        field: field,
+        name: null,
+        disabled: false
+      };
+      switch (field) {
+        case 'conceptId':
+          col.name = 'SCTID';
+          col.disabled = true;
+          break;
+        case 'fsn':
+          col.name = 'FSN';
+          break;
+        case 'pt':
+          col.name = 'PT';
+          break;
+        case 'slotTarget':
+          col.name = $scope.slotType;
+          break;
+        default:
+          col.name = '???';
+      }
+      return col;
+    }
+
+    function refreshColumns() {
+      $scope.hot.columns = [];
+
+      // get columsn from first row entry
+      if ($scope.hot.data.length > 0) {
+        var row = $scope.hot.data[1];
+        for (var key in row) {
+          $scope.hot.columns.push(getColumnObjectForField(key));
+        }
+      }
+    }
+
+    $scope.populateHotTable = function (template, batchSize) {
+      $scope.hot.data = [];
+      $scope.concepts = [];
+
+      var promises = [];
+
+      for (var i = 0; i < batchSize; i++) {
+        promises.push(templateService.createTemplateConcept(template));
+      }
+
+      $q.all(promises).then(function (concepts) {
+        console.debug(concepts);
+        for (var i = 0; i < concepts.length; i++) {
+          $scope.concepts.push(concepts[i]);
+          $scope.hot.data.push(getRowForConcept(concepts[i]));
+        }
+
+        $scope.slotType = getSlotType(concepts[1]);
+        refreshColumns();
+
+        console.debug('Batch Concepts', $scope.concepts);
+        console.debug('HOT Parameters', $scope.hot);
+      });
+
+
+    }
+
+    $scope.hot.renderer = function (hotInstance, td, row, col, prop, value) {
+      var el = $compile('<a href="" ng-click="editBatchConcept(' + row + ')">' + value + '</a>')($scope);
+      if (!td.firstChild) {
+        td.appendChild(el[0]);
+      }
+      return td;
+    };
+
+    $scope.editBatchConcept = function (row) {
+      console.debug('edit', row);
+      var conceptId = $scope.hot.data[row].conceptId;
+      $scope.viewedConcept = $scope.concepts.filter(function (c) {
+        return c.conceptId === conceptId;
+      })[0];
+    };
+
+    //3405 @62.618 [afterChange] [[1,5,5814,"asdf"]], "edit",
+    $scope.onAfterChange = function (data, action) {
+      console.debug('cell change', data, action);
+
+      if (data) {
+        angular.forEach(data, function (cellChange) {
+          // data format: row, fieldName, prevValue, newValue
+          if (action === 'edit' && cellChange[1] === 'slotTarget') {
+            console.debug('--> Target slot change', cellChange);
+          }
+        });
+      }
+    }
+
+    $scope.$on('')
 
   })
 ;

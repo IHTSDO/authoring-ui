@@ -279,6 +279,7 @@ angular.module('singleConceptAuthoringApp')
       if (!template || !template.name) {
         deferred.reject('Template or template name not specified');
       } else {
+
         $http.post(apiEndpoint + 'templates?name=' + encodeURIComponent(template.name), template).then(function (response) {
           getTemplates(true).then(function () {
             if (templateCache.filter(function (t) {
@@ -334,12 +335,14 @@ angular.module('singleConceptAuthoringApp')
     function createTemplateConcept(template) {
       var deferred = $q.defer();
 
-      console.debug('Creating template for ' + template.name, template);
-
       // check required arguments
       if (!template) {
         deferred.reject('Template error: invalid arguments');
       } else {
+
+        // ensure template is initialized
+        initializeTemplate(template).then(function() {
+
 
         // create concept from the concept template
         var tc = angular.copy(template.conceptOutline);
@@ -371,6 +374,10 @@ angular.module('singleConceptAuthoringApp')
         replaceLexicalValues(tc, template);
 
         deferred.resolve(tc);
+
+        }, function(error) {
+          deferred.reject('Error initializing template: ' + error);
+        })
       }
       return deferred.promise;
     }
