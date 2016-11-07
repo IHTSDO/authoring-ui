@@ -735,7 +735,7 @@ angular.module('singleConceptAuthoringApp')
 
       for (var i = 0; i < template.conceptOutline.relationships.length; i++) {
         var r = template.conceptOutline.relationships[i];
-        if (relationship.active && r.targetSlot && r.groupId === relationship.groupId && r.type.conceptId === relationship.type.conceptId) {
+        if (relationship.active && r.targetSlot && r.targetSlot.slotName && r.groupId === relationship.groupId && r.type.conceptId === relationship.type.conceptId) {
           return true;
         }
       }

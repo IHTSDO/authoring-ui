@@ -1,7 +1,7 @@
 {
   "name": "CT of X (Guided)",
   "focusConcept": "71388002",
-  "version": 2,
+  "version": 4,
   "logicalTemplate": "71388002 |Procedure|:\n\t[[~1..1]] {\n\t\t260686004 |Method| = 312251004 |Computed tomography imaging action|,\n\t\t[[~1..1]] 405813007 |Procedure site - Direct| = [[+id(<< 442083009 |Anatomical or acquired body structure|) @procSite]]\n\t},{\n\t\t363703001 |Has Intent| = 429892002|Computed tomography imaging action|,\n\t\t[[~1..1]] 405813007 |Procedure site - Direct| = [[+id(<< 442083009 |Anatomical or acquired body structure|) @procSite]]\n\t}\n",
   "conceptOutline": {
     "relationships": [
@@ -105,5 +105,5 @@
       ]
     }
   ],
-  "$$hashKey": "object:12"
+  "$$hashKey": "object:412"
 }
