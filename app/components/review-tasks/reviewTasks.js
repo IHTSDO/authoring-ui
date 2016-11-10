@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp.reviewTasks', [
 
       // Claimed tasks (right hand column)
       $scope.isClaimedTask = function (task) {
-        return task.status === 'In Review' && task.reviewer && $rootScope.accountDetails && task.reviewer.username === $rootScope.accountDetails.login;
+        return task.reviewer && $rootScope.accountDetails && task.reviewer.username === $rootScope.accountDetails.login;
       };
 
       $scope.hasClaimedTasks = function () {
