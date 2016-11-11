@@ -402,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
               // add as root tree
               scope.terminologyTree.push(parent);
 
-            })
+            });
           }
         }
 

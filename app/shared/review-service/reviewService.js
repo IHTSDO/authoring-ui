@@ -89,7 +89,7 @@ angular.module('singleConceptAuthoringApp')
 
         var conceptCt = 0;
 
-        if (!conceptIds || conceptIds.length == 0) {
+        if (!conceptIds || conceptIds.length === 0) {
           deferred.resolve();
         }
 
@@ -111,7 +111,7 @@ angular.module('singleConceptAuthoringApp')
                     if (d.type === 'FSN') {
                       concept.fsn = d.term;
                     }
-                  })
+                  });
                 }
                 if (!concept.fsn) {
                   concept.fsn = 'Could not determine FSN';
@@ -158,7 +158,7 @@ angular.module('singleConceptAuthoringApp')
       var promises = [checkModifiedConcepts(task, results),checkTraceability(task, results)];
       $q.all(promises).then(function () {
         deferred.resolve(results);
-      }, function () {
+      }, function (error) {
         deferred.reject('Error checking review prerequisites: ' + error);
       });
 
@@ -175,7 +175,7 @@ angular.module('singleConceptAuthoringApp')
 
       // utility functions
       checkReviewPrerequisites: checkReviewPrerequisites
-    }
+    };
 
   })
 ;

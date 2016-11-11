@@ -42,12 +42,12 @@ angular.module('singleConceptAuthoringApp')
       // replace specified parts and extraneous whitespace
       var match = nameValueMap[slotName].match(PATTERN_PT_FROM_FSN);
       var replaceValue;
-      if (!match || !match[1] || match[1].length == 0) {
+      if (!match || !match[1] || match[1].length === 0) {
         replaceValue = '???';
       } else {
         replaceValue = match[1].toLowerCase();
         angular.forEach(lt.removeParts, function (rp) {
-          if (replaceValue.indexOf(rp) != -1) {
+          if (replaceValue.indexOf(rp) !== -1) {
             var re = new RegExp(rp, 'g');
             replaceValue = replaceValue.replace(re, '');
           }
@@ -175,10 +175,10 @@ angular.module('singleConceptAuthoringApp')
 
         angular.forEach(template.conceptOutline.relationships, function (r) {
 
-          if (r.type.conceptId && conceptIds.indexOf(r.type.conceptId) == -1) {
+          if (r.type.conceptId && conceptIds.indexOf(r.type.conceptId) === -1) {
             conceptIds.push(r.type.conceptId);
           }
-          if (r.target.conceptId && conceptIds.indexOf(r.target.conceptId) == -1) {
+          if (r.target.conceptId && conceptIds.indexOf(r.target.conceptId) === -1) {
             conceptIds.push(r.target.conceptId);
           }
         });
@@ -250,7 +250,7 @@ angular.module('singleConceptAuthoringApp')
 
         }, function (error) {
           deferred.reject('Error initializing template: ' + error);
-        })
+        });
       }
       return deferred.promise;
     }
@@ -269,7 +269,7 @@ angular.module('singleConceptAuthoringApp')
       angular.forEach(concept.relationships, function (r) {
         delete r.templateStyle;
         delete r.templateMessages;
-      })
+      });
     }
 
 
@@ -556,7 +556,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.resolve();
         }, function (error) {
           deferred.reject('UI State Error: ' + error.message);
-        })
+        });
       });
       return deferred.promise;
     }
@@ -600,9 +600,9 @@ angular.module('singleConceptAuthoringApp')
         var r = template.conceptOutline.relationships[i];
 
         // if active, group, type match, and either target slot OR target matches
-        if (relationship.active && r.groupId === relationship.groupId
-          && r.type.conceptId === relationship.type.conceptId
-          && (r.targetSlot || r.target.conceptId === relationship.target.conceptId)) {
+        if (relationship.active && r.groupId === relationship.groupId &&
+          r.type.conceptId === relationship.type.conceptId &&
+          (r.targetSlot || r.target.conceptId === relationship.target.conceptId)) {
           return true;
         }
 
@@ -652,7 +652,7 @@ angular.module('singleConceptAuthoringApp')
         var tf = templates.filter(function (t) {
           return t.name === name;
         });
-        if (tf.length == 1) {
+        if (tf.length === 1) {
           deferred.resolve(tf[0]);
         } else if (tf.length > 1) {
           deferred.reject('Multiple templates for name: ' + name);

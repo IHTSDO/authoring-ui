@@ -777,7 +777,7 @@ angular.module('singleConceptAuthoringApp')
 
         // set preferred description type to synonym if indicated (note: blank defaults to FSN)
         if (synonymFlag) {
-          descTypeStr = '&preferredDescriptionType=SYNONYM'
+          descTypeStr = '&preferredDescriptionType=SYNONYM';
         }
 
         // ensure & not present in search string, to prevent bad requests
@@ -1308,7 +1308,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var wordsStr = '';
         for (var i = 0; i < words.length; i++) {
-          wordsStr += words[i] + (i == words.length - 1 ? '' : '%2C');
+          wordsStr += words[i] + (i === words.length - 1 ? '' : '%2C');
         }
         $http.get(apiEndpoint + 'browser/dialect/matches?tokenizedWords=' + wordsStr).then(function (response) {
           deferred.resolve(response.data);

@@ -124,7 +124,7 @@ angular.module('singleConceptAuthoringApp')
         isAttributeAllowedForArray: isAttributeAllowedForArray,
         isAttributeAllowedForConcept: isAttributeAllowedForConcept,
         isValueAllowedForType: isValueAllowedForType
-      }
+      };
     }
 
   ])

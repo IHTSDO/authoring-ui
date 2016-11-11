@@ -42,7 +42,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(revisedList);
             }, function (error) {
               deferred.reject('Unexpected error updating the list of modified concepts for this task');
-            })
+            });
           }
         }, function (error) {
           deferred.reject(error);
@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(revisedList);
             }, function (error) {
               deferred.reject('Unexpected error updating the list of modified concepts for this task');
-            })
+            });
           }
         }, function (error) {
           deferred.reject(error);
@@ -106,7 +106,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(revisedList);
             }, function (error) {
               deferred.reject('Unexpected error updating the list of modified concepts for this task');
-            })
+            });
           }
         }, function (error) {
           deferred.reject(error);
@@ -127,7 +127,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(revisedList);
             }, function (error) {
               deferred.reject('Unexpected error updating the list of concepts with unread feedback for this task');
-            })
+            });
           }
         }, function (error) {
           deferred.reject(error);
