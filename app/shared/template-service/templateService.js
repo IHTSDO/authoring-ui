@@ -645,17 +645,12 @@ angular.module('singleConceptAuthoringApp')
       if (!templateCache || refreshCache) {
         $http.get(apiEndpoint + 'templates').then(function (response) {
           templateCache = response.data;
-          deferred.resolve(templateCache.filter(function (t) {
-            return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
-          }));
-
+          deferred.resolve(templateCache);
         }, function (error) {
           deferred.reject('Failed to retrieve templates: ' + error.message);
         });
       } else {
-        deferred.resolve(templateCache.filter(function (t) {
-          return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
-        }));
+        deferred.resolve(templateCache);
       }
       return deferred.promise;
     }
