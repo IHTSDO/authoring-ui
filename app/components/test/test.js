@@ -23,7 +23,7 @@ angular.module('singleConceptAuthoringApp.test', [
       function getTemplates() {
         templateService.getTemplates().then(function (response) {
           $scope.templates = response;
-        })
+        });
       }
 
       getTemplates();
@@ -51,7 +51,7 @@ angular.module('singleConceptAuthoringApp.test', [
           case 'Get':
             templateService.getTemplateForName($scope.name).then(function (response) {
               $scope.templateRaw = JSON.stringify(response);
-              getTemplates()
+              getTemplates();
             }, function (error) {
               notificationService.sendError('Error: ' + error);
             });
@@ -59,7 +59,7 @@ angular.module('singleConceptAuthoringApp.test', [
           case 'Create':
             templateService.createTemplate(JSON.parse($scope.templateRaw)).then(function (response) {
               $scope.templateRaw = JSON.stringify(response);
-              getTemplates()
+              getTemplates();
             }, function (error) {
               notificationService.sendError('Error: ' + error);
             });
@@ -67,13 +67,13 @@ angular.module('singleConceptAuthoringApp.test', [
           case 'Update':
             templateService.updateTemplate(JSON.parse($scope.templateRaw)).then(function (response) {
               $scope.templateRaw = JSON.stringify(response);
-              getTemplates()
+              getTemplates();
             }, function (error) {
               notificationService.sendError('Error: ' + error);
             });
             break;
         }
-      }
+      };
 
 
     }

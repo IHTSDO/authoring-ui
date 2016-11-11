@@ -380,6 +380,7 @@ angular.module('singleConceptAuthoringApp.edit', [
           $rootScope.pageTitle = 'Batch Concepts/' + $routeParams.projectKey + '/' + $routeParams.taskKey;
           $routeParams.mode = 'batch';
           $scope.canCreateConcept = false;
+          break;
         default:
           $rootScope.pageTitle = 'Invalid View Requested';
           $scope.canCreateConcept = false;
@@ -730,7 +731,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       else if (conceptId === 'unsaved' || !snowowlService.isSctid(conceptId)) {
         $scope.concepts.push({conceptId: conceptId});
 
-                // send loading notification
+        // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
           $scope.conceptLoading = false;
           notificationService.sendMessage('All concepts loaded', 10000, null);
@@ -1634,7 +1635,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
 
-            if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length == 0) {
+            if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length === 0) {
               reviewService.submitForReview($scope.task).then(function () {
                 loadTask();
                 notificationService.sendMessage('Submitted for review', 3000);
@@ -1651,7 +1652,7 @@ angular.module('singleConceptAuthoringApp.edit', [
                 });
               }, function () {
                 notificationService.sendMessage('Cancelled submit for review', 3000);
-              })
+              });
             }
           }, function (error) {
             notificationService.sendWarning('Task submitted for review, but could not verify content changes: ' + error);
@@ -1699,7 +1700,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         angular.forEach($scope.templates, function (template) {
           template.name = template.name;
           template.version = template.version;
-        })
+        });
         $scope.templateTableParams.reload();
       });
 
@@ -1891,7 +1892,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.slotType = getSlotType(concepts[1]);
         refreshColumns();
 
-        });
+      });
 
 
     };
@@ -1922,8 +1923,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         });
       }
     };
-
-    $scope.$on('')
 
   })
 ;

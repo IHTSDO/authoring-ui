@@ -226,7 +226,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // save the initialized state into the UI State
                 saveCrsConceptsUiState();
-      // resolve
+                // resolve
                 deferred.resolve(currentTaskConcepts);
               }
             }, function (error) {
@@ -393,7 +393,7 @@ angular.module('singleConceptAuthoringApp')
                     changedConceptIds.push(conceptChange.conceptId);
                   });
                 }
-              })
+              });
             } else {
               deferred.reject('Empty traceability for branch ' + currentTask.branchPath);
             }
@@ -402,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(currentTaskConcepts, function (crsConcept) {
 
               // link to request of matching concept id; empty requests match all changed concepts
-              if (crsConcept.saved && crsConcept.concept && changedConceptIds.indexOf(crsConcept.concept.conceptId != -1)) {
+              if (crsConcept.saved && crsConcept.concept && changedConceptIds.indexOf(crsConcept.concept.conceptId !== -1)) {
                 lines.push('CRS Request ' + crsConcept.crsId + ' (' + crsConcept.scaId + '): ' + crsConcept.concept.conceptId + ' | ' + crsConcept.concept.fsn);
               }
             });
@@ -416,7 +416,7 @@ angular.module('singleConceptAuthoringApp')
               comment += line + '\n';
             });
             if (comment.length > 0) {
-              comment = 'Automated Comment - CRS request concepts promoted to project level:\n' + comment
+              comment = 'Automated Comment - CRS request concepts promoted to project level:\n' + comment;
             }
             deferred.resolve(comment);
 

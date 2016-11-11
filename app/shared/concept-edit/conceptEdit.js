@@ -179,7 +179,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               templateService.removeTemplateFromConcept(scope.concept);
             }, function (error) {
               notificationService.sendError('Error removing template: ' + error);
-            })
+            });
           }
 
           // otherwise, simply remove from unsaved concept
@@ -680,7 +680,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     scope.saving = false;
                   });
 
-                }, 1000)
+                }, 1000);
               }, function (error) {
                 if (error.status === 504) {
 
@@ -1235,7 +1235,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
             // if no acceptability map, display to allow setting values
-            if (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length == 0) {
+            if (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length === 0) {
               return true;
             }
 
@@ -1480,20 +1480,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // if preferred, switch to acceptable
               case 'PREFERRED':
                 description.acceptabilityMap[dialectId] = 'ACCEPTABLE';
-                autoSave()
+                autoSave();
                 break;
 
               // if acceptable, switch to not acceptable (i.e. clear the dialect
               // key)
               case 'ACCEPTABLE':
                 delete description.acceptabilityMap[dialectId];
-                autoSave()
+                autoSave();
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
-                autoSave()
+                autoSave();
                 break;
             }
           }
@@ -1501,13 +1501,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             switch (description.acceptabilityMap[dialectId]) {
               case 'PREFERRED':
                 delete description.acceptabilityMap[dialectId];
-                autoSave()
+                autoSave();
                 break;
 
               // if neither of the above, or blank, set to preferred
               default:
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
-                autoSave()
+                autoSave();
                 break;
             }
           }
@@ -1800,7 +1800,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               relationship.target.fsn = data.name;
               scope.updateRelationship(relationship, false);
             }, function (error) {
-              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.']
+              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
               relationship.target.fsn = tempFsn;
             });
           } else {
@@ -1849,7 +1849,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             relationship.type.conceptId = data.id;
             relationship.type.fsn = data.name;
           }
-        }
+        };
 
 
         /**
@@ -2142,7 +2142,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             errors.push('Description type must be set');
           }
 
-          if (description.active && (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length == 0)) {
+          if (description.active && (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length === 0)) {
             errors.push('Description acceptability map cannot be empty');
           }
 
@@ -2304,7 +2304,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
               scope.computeRelationshipGroups();
-              autoSave()
+              autoSave();
             }, function (error) {
               notificationService.sendError('Unexpected template error: ' + error);
             });
@@ -2527,6 +2527,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
+
           relationship.target.conceptId = item.id;
           relationship.target.fsn = item.fsn.term;
           relationship.target.definitionStatus = item.definitionStatus;

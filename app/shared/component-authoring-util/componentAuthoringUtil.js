@@ -430,8 +430,8 @@ angular.module('singleConceptAuthoringApp')
 
             angular.forEach(concept.descriptions, function (description) {
               // find en-us PT containing fetal/fetus and set en-gb to PREFERRED
-              if (description.type === 'SYNONYM' && description.acceptabilityMap['900000000000509007'] === 'PREFERRED'
-                && (description.term.toLowerCase().indexOf('fetus') !== -1 || description.term.toLowerCase().indexOf('fetal') !== -1)) {
+              if (description.type === 'SYNONYM' && description.acceptabilityMap['900000000000509007'] === 'PREFERRED' &&
+                (description.term.toLowerCase().indexOf('fetus') !== -1 || description.term.toLowerCase().indexOf('fetal') !== -1)) {
                 description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
               }
 
@@ -449,7 +449,7 @@ angular.module('singleConceptAuthoringApp')
         // check if description already exists
         var dialectDescription = null;
         angular.forEach(concept.descriptions, function (d) {
-          if (d.type === type && d.term === term && d.acceptabilityMap[dialectId] == acceptability) {
+          if (d.type === type && d.term === term && d.acceptabilityMap[dialectId] === acceptability) {
             dialectDescription = d;
           }
         });
@@ -521,7 +521,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // if no matching words, skip automation
-            if (!matchingWords || matchingWords.length == 0) {
+            if (!matchingWords || matchingWords.length === 0) {
               deferred.resolve(concept);
             }
 
@@ -733,7 +733,7 @@ angular.module('singleConceptAuthoringApp')
 
       function getPtForConcept(concept, dialect) {
         try {
-          return concept.descriptions.filter(function(d) {0
+          return concept.descriptions.filter(function(d) {
             return d.active && d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap[dialect] === 'PREFERRED';
           })[0].term;
         } catch (error) {
