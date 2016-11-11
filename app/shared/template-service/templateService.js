@@ -99,6 +99,8 @@ angular.module('singleConceptAuthoringApp')
       for (var i = 0; i < concept.relationships.length; i++) {
         var r = concept.relationships[i];
         if (r.targetSlot && r.targetSlot && r.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
+
+          console.debug('replacing slotReference', r.targetSlot.slotReference);
           r.target.conceptId = relationship.target.conceptId;
           r.target.fsn = relationship.target.fsn;
         }
@@ -119,6 +121,7 @@ angular.module('singleConceptAuthoringApp')
         if (d.template) {
           console.debug('replacing lexical values for ', d);
           d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
+          d.term = d.term.substring(0,1).toUpperCase() + d.term.substring(1);
         }
       }
 
