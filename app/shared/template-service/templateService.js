@@ -22,56 +22,27 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_PT_FROM_FSN = /(.+)\s\(.*\)/i;
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
 
-    //
-    // Internal functions
-    //
+    function getSlotValue(slotName, template, nameValueMap) {
+      console.debug('getSlotvalue', slotName, template, nameValueMap);
 
-    function getSlotFunction(termSlot) {
-      var t = termSlot.replace(/\$/g, '');
-      return t.substring(0, t.lastIndexOf('_'));
-    }
-
-    function getSlotName(termSlot) {
-      var t = termSlot.replace(/\$/g, '');
-      return t.substring(t.lastIndexOf('_') + 1);
-    }
-
-    function getSlotValue(termSlot, template, nameValueMap) {
-      var sn = getSlotName(termSlot);
-      var sf = getSlotFunction(termSlot);
-
+      // find the lexical template for this slot
       var lt;
       try {
         lt = template.lexicalTemplates.filter(function (l) {
-          return l.name === sn;
+          return l.name === slotName;
         })[0];
       } catch (error) {
         return '???';
       }
 
-      var match;
+      console.debug('lexical template for slot', slotName, lt, nameValueMap[slotName]);
 
-      // if no value, simply return the slot name (e.g. 'X' for 'term_X')
-      if (!nameValueMap[sn]) {
-        return sn;
+      // if no value, return display name in brackets
+      if (!nameValueMap[slotName]) {
+        return '[' + lt.displayName + ']';
       }
-
-      // apply function to value
-      switch (sf) {
-        case 'fsn':
-          match = nameValueMap[sn].match(PATTERN_FSN);
-          break;
-        case 'tag':
-          match = nameValueMap[sn].match(PATTERN_SEMANTIC_TAG);
-          break;
-        case 'term':
-          match = nameValueMap[sn].match(PATTERN_PT_FROM_FSN);
-          break;
-        default:
-        // do nothing
-      }
-
       // replace specified parts and extraneous whitespace
+      var match = nameValueMap[slotName].match(PATTERN_PT_FROM_FSN);
       var replaceValue;
       if (!match || !match[1] || match[1].length == 0) {
         replaceValue = '???';
@@ -83,9 +54,6 @@ angular.module('singleConceptAuthoringApp')
             replaceValue = replaceValue.replace(re, '');
           }
         });
-
-        // TODO Support replacement by regex as well as removal
-
       }
       replaceValue = replaceValue.replace(/[\s]{2,}/g, ' ');
       return replaceValue;
@@ -94,8 +62,10 @@ angular.module('singleConceptAuthoringApp')
     function getDescriptionTemplateTermValue(descriptionTemplate, template, nameValueMap) {
       // match all function/slotName pairs surrounded by $$
       var newTerm = descriptionTemplate.term;
-      var termSlots = descriptionTemplate.term ? descriptionTemplate.term.match(/\$([^$]*)\$/g) : '';
+      console.debug('getting getDescriptionTemplateTermValue ', descriptionTemplate, template, nameValueMap);
+      var termSlots = descriptionTemplate.termTemplate ? descriptionTemplate.termTemplate.match(/\$([^$]*)\$/g) : [];
       angular.forEach(termSlots, function (termSlot) {
+        console.debug('getting slot value for term slot', termSlot);
         var re = new RegExp(termSlot.replace(/(\$)/g, '\\$'), 'g');
         var sv = getSlotValue(termSlot, template, nameValueMap);
         newTerm = newTerm.replace(re, sv);
@@ -110,17 +80,17 @@ angular.module('singleConceptAuthoringApp')
 
       if (!relationship || !relationship.template || !relationship.template.targetSlot) {
         deferred.reject('No target slot detected');
-      } else {}
+      } else {
+      }
 
-      // check for target slots with 'targetName' and value set
+      // check for linked/referenced slots
       for (var i = 0; i < concept.relationships.length; i++) {
         var r = concept.relationships[i];
-        // TODO Change to r.targetSlot.slotReference once BE supports new nomenclature
-        if (r.targetSlot && r.targetSlot && r.targetSlot.slotName === relationship.template.targetSlot.slotName) {
+        if (r.targetSlot && r.targetSlot && r.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
           r.target.conceptId = relationship.target.conceptId;
           r.target.fsn = relationship.target.fsn;
         }
-      };
+      }
 
       // placeholder resolution in anticipation of replacement using promises
       deferred.resolve();
@@ -135,6 +105,7 @@ angular.module('singleConceptAuthoringApp')
       for (var i = 0; i < concept.descriptions.length; i++) {
         var d = concept.descriptions[i];
         if (d.template) {
+          console.debug('replacing lexical values for ', d);
           d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
         }
       }
@@ -146,13 +117,13 @@ angular.module('singleConceptAuthoringApp')
 
     function updateTargetSlot(concept, template, relationship) {
       var deferred = $q.defer();
-      replaceLogicalValues(concept, relationship).then(function() {
-        replaceLexicalValues(concept, template).then(function() {
+      replaceLogicalValues(concept, relationship).then(function () {
+        replaceLexicalValues(concept, template).then(function () {
           deferred.resolve();
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
         });
-      }, function(error) {
+      }, function (error) {
         deferred.reject(error);
       });
       return deferred.promise;
@@ -228,109 +199,6 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-//
-// Exposed functions
-//
-    function getTemplates(refreshCache) {
-      var deferred = $q.defer();
-      if (!templateCache || refreshCache) {
-        $http.get(apiEndpoint + 'templates').then(function (response) {
-          templateCache = response.data;
-          deferred.resolve(templateCache.filter(function(t) {
-            return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
-          }));
-
-        }, function (error) {
-          deferred.reject('Failed to retrieve templates: ' + error.message);
-        });
-      } else {
-        deferred.resolve(templateCache.filter(function(t) {
-          return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
-        }));
-      }
-      return deferred.promise;
-    }
-
-    function getTemplateForName(name, refreshCache) {
-      var deferred = $q.defer();
-
-      console.debug('get template for name', name, templateCache);
-
-      getTemplates(refreshCache).then(function (templates) {
-        var tf = templates.filter(function (t) {
-          return t.name === name;
-        });
-        if (tf.length == 1) {
-          deferred.resolve(tf[0]);
-        } else if (tf.length > 1) {
-          deferred.reject('Multiple templates for name: ' + name);
-        } else {
-          deferred.reject('No template for name: ' + name);
-        }
-      }, function (error) {
-        deferred.reject('Could not get templates: ' + error);
-      });
-      return deferred.promise;
-    }
-
-    function createTemplate(template) {
-      console.debug('createTemplate', template);
-      var deferred = $q.defer();
-      if (!template || !template.name) {
-        deferred.reject('Template or template name not specified');
-      } else {
-
-        $http.post(apiEndpoint + 'templates?name=' + encodeURIComponent(template.name), template).then(function (response) {
-          getTemplates(true).then(function () {
-            if (templateCache.filter(function (t) {
-                return t.name === template.name;
-              }).length === 0) {
-              deferred.reject('Template creation reported successful, but not present in refreshed cache');
-            } else {
-              deferred.resolve(templateCache);
-            }
-          }, function (error) {
-            deferred.reject('Template creation reported successful, but could not refresh template cache: ' + error.message);
-          });
-        }, function (error) {
-          deferred.reject('Failed to create template: ' + error.message);
-        });
-      }
-      return deferred.promise;
-    }
-
-
-    function updateTemplate(template) {
-      console.debug('update template', template);
-      var deferred = $q.defer();
-      if (!template || !template.name) {
-        deferred.reject('Template or template name not specified');
-      } else if (templateCache.filter(function (t) {
-          return t.name === template.name;
-        }).length === 0) {
-        deferred.reject('Update called, but template not in cache');
-      } else {
-
-        var version = template.version;
-        $http.put(apiEndpoint + 'templates/' + encodeURIComponent(template.name), template).then(function (response) {
-          getTemplates(true).then(function () {
-            if (templateCache.filter(function (t) {
-                return t.name === template.name && t.version === template.version;
-              }).length > 0) {
-              deferred.reject('Template update reported successful, but version not updated');
-            } else {
-              deferred.resolve(response.data);
-            }
-          }, function (error) {
-            deferred.reject('Template update reported successful, but could not refresh template cache: ' + error.message);
-          });
-        }, function (error) {
-          deferred.reject('Failed to update template: ' + error.message);
-        });
-      }
-      return deferred.promise;
-    }
-
 
     function createTemplateConcept(template) {
       var deferred = $q.defer();
@@ -341,41 +209,43 @@ angular.module('singleConceptAuthoringApp')
       } else {
 
         // ensure template is initialized
-        initializeTemplate(template).then(function() {
+        initializeTemplate(template).then(function () {
 
 
-        // create concept from the concept template
-        var tc = angular.copy(template.conceptOutline);
+          // create concept from the concept template
+          var tc = angular.copy(template.conceptOutline);
 
-        // store template details against each component
-        angular.forEach(tc.descriptions, function (d) {
-          d.template = angular.copy(d);
-        });
-        angular.forEach(tc.relationships, function (r) {
-          r.template = angular.copy(r);
-        });
+          // store template details against each component
+          angular.forEach(tc.descriptions, function (d) {
+            d.template = angular.copy(d);
+          });
+          angular.forEach(tc.relationships, function (r) {
+            r.template = angular.copy(r);
+          });
 
-        // ensure all required fields are set
-        componentAuthoringUtil.setDefaultFields(tc);
+          // ensure all required fields are set
+          componentAuthoringUtil.setDefaultFields(tc);
 
-        // apply temporary UUIDs and template variables/flags
-        tc.conceptId = snowowlService.createGuid();
-        tc.template = template;
-        tc.templateComplete = false;
+          // apply temporary UUIDs and template variables/flags
+          tc.conceptId = snowowlService.createGuid();
+          tc.template = template;
+          tc.templateComplete = false;
 
-        angular.forEach(tc.descriptions, function (d) {
-          d.descriptionId = snowowlService.createGuid();
-        });
-        angular.forEach(tc.relationships, function (r) {
-          r.relationshipId = snowowlService.createGuid();
-        });
+          angular.forEach(tc.descriptions, function (d) {
+            d.descriptionId = snowowlService.createGuid();
+          });
+          angular.forEach(tc.relationships, function (r) {
+            r.relationshipId = snowowlService.createGuid();
+          });
 
-        // replace template values (i.e. to replace display $term-x with x
-        replaceLexicalValues(tc, template);
+          console.debug('template concept before replace', tc);
 
-        deferred.resolve(tc);
+          // replace template values (i.e. to replace display $term-x with x
+          replaceLexicalValues(tc, template);
 
-        }, function(error) {
+          deferred.resolve(tc);
+
+        }, function (error) {
           deferred.reject('Error initializing template: ' + error);
         })
       }
@@ -750,6 +620,111 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
+//
+// Exposed functions
+//
+    function getTemplates(refreshCache) {
+      var deferred = $q.defer();
+      if (!templateCache || refreshCache) {
+        $http.get(apiEndpoint + 'templates').then(function (response) {
+          templateCache = response.data;
+          deferred.resolve(templateCache.filter(function (t) {
+            return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
+          }));
+
+        }, function (error) {
+          deferred.reject('Failed to retrieve templates: ' + error.message);
+        });
+      } else {
+        deferred.resolve(templateCache.filter(function (t) {
+          return t.name === 'CT of X' || t.name === 'CT of X (Guided)'
+        }));
+      }
+      return deferred.promise;
+    }
+
+    function getTemplateForName(name, refreshCache) {
+      var deferred = $q.defer();
+
+      console.debug('get template for name', name, templateCache);
+
+      getTemplates(refreshCache).then(function (templates) {
+        var tf = templates.filter(function (t) {
+          return t.name === name;
+        });
+        if (tf.length == 1) {
+          deferred.resolve(tf[0]);
+        } else if (tf.length > 1) {
+          deferred.reject('Multiple templates for name: ' + name);
+        } else {
+          deferred.reject('No template for name: ' + name);
+        }
+      }, function (error) {
+        deferred.reject('Could not get templates: ' + error);
+      });
+      return deferred.promise;
+    }
+
+    function createTemplate(template) {
+      console.debug('createTemplate', template);
+      var deferred = $q.defer();
+      if (!template || !template.name) {
+        deferred.reject('Template or template name not specified');
+      } else {
+
+        $http.post(apiEndpoint + 'templates?name=' + encodeURIComponent(template.name), template).then(function (response) {
+          getTemplates(true).then(function () {
+            if (templateCache.filter(function (t) {
+                return t.name === template.name;
+              }).length === 0) {
+              deferred.reject('Template creation reported successful, but not present in refreshed cache');
+            } else {
+              deferred.resolve(templateCache);
+            }
+          }, function (error) {
+            deferred.reject('Template creation reported successful, but could not refresh template cache: ' + error.message);
+          });
+        }, function (error) {
+          deferred.reject('Failed to create template: ' + error.message);
+        });
+      }
+      return deferred.promise;
+    }
+
+
+    function updateTemplate(template) {
+      console.debug('update template', template);
+      var deferred = $q.defer();
+      if (!template || !template.name) {
+        deferred.reject('Template or template name not specified');
+      } else if (templateCache.filter(function (t) {
+          return t.name === template.name;
+        }).length === 0) {
+        deferred.reject('Update called, but template not in cache');
+      } else {
+
+        var version = template.version;
+        $http.put(apiEndpoint + 'templates/' + encodeURIComponent(template.name), template).then(function (response) {
+          getTemplates(true).then(function () {
+            if (templateCache.filter(function (t) {
+                return t.name === template.name && t.version === template.version;
+              }).length > 0) {
+              deferred.reject('Template update reported successful, but version not updated');
+            } else {
+              deferred.resolve(response.data);
+            }
+          }, function (error) {
+            deferred.reject('Template update reported successful, but could not refresh template cache: ' + error.message);
+          });
+        }, function (error) {
+          deferred.reject('Failed to update template: ' + error.message);
+        });
+      }
+      return deferred.promise;
+    }
+
+
+
     return {
 
       // Template CRUD functions
@@ -768,7 +743,7 @@ angular.module('singleConceptAuthoringApp')
       applyTemplateToConcept: applyTemplateToConcept,
       removeTemplateFromConcept: removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
-      updateTargetSlot : updateTargetSlot,
+      updateTargetSlot: updateTargetSlot,
 
       // utility functions
       isTemplateComplete: isTemplateComplete,
