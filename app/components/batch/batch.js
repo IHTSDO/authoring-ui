@@ -36,9 +36,7 @@ angular.module('singleConceptAuthoringApp.batch', [
       };
 
       function getSlotType(concept) {
-        console.debug('getting slot type', concept);
         for (var i = 0; i < concept.relationships.length; i++) {
-          console.debug('checking relationship', concept.relationships[i])
           if (concept.relationships[i].targetSlot && concept.relationships[i].targetSlot.slotName) {
             return concept.relationships[i].type.fsn;
           }
@@ -46,7 +44,6 @@ angular.module('singleConceptAuthoringApp.batch', [
       }
 
       $scope.getSlotType = function () {
-        console.debug('$scope.slotType', $scope.slotType);
         return $scope.slotType;
       };
 
@@ -115,7 +112,6 @@ angular.module('singleConceptAuthoringApp.batch', [
         }
 
         $q.all(promises).then(function (concepts) {
-          console.debug(concepts);
           for (var i = 0; i < concepts.length; i++) {
             templateService.storeTemplateForConcept($routeParms.projectKey, concepts[i].conceptId, template);
             $scope.concepts.push(concepts[i]);
@@ -125,8 +121,6 @@ angular.module('singleConceptAuthoringApp.batch', [
           $scope.slotType = getSlotType(concepts[1]);
           refreshColumns();
 
-          console.debug('Batch Concepts', $scope.concepts);
-          console.debug('HOT Parameters', $scope.hot);
         });
 
 
@@ -141,9 +135,8 @@ angular.module('singleConceptAuthoringApp.batch', [
       };
 
       $scope.editBatchConcept = function (row) {
-        console.debug('edit', row);
         var conceptId = $scope.hot.data[row].conceptId;
-        $scope.viewedConcept = $scope.concepts.filter(function(c) {
+        $scope.viewedConcept = $scope.concepts.filter(function (c) {
           return c.conceptId === conceptId;
         })[0];
       };

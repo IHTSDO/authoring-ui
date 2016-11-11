@@ -65,8 +65,6 @@ angular.module('singleConceptAuthoringApp')
       // first, check if traceability returns changes on this task
       snowowlService.getTraceabilityForBranch(task.branchPath).then(function (traceability) {
 
-        console.debug('traceability', traceability);
-
         // first check -- does traceability exist?
         if (traceability && traceability.numberOfElements > 0) {
           results.hasChangedContent = true;
@@ -85,16 +83,13 @@ angular.module('singleConceptAuthoringApp')
     function checkModifiedConcepts(task, results) {
       var deferred = $q.defer();
 
-      console.debug('getting modified concept ids');
 
       // retrieve the modified concepts for this task
       scaService.getModifiedConceptIdsForTask(task.projectKey, task.key).then(function (conceptIds) {
 
-        console.debug('modified concept ids', conceptIds);
         var conceptCt = 0;
 
         if (!conceptIds || conceptIds.length == 0) {
-          console.debug('no modified conceptresults, resolving');
           deferred.resolve();
         }
 
@@ -144,7 +139,6 @@ angular.module('singleConceptAuthoringApp')
 
 
       }, function (error) {
-        console.debug('ERROR getting modified concept ids', error);
         deferred.reject(results);
       });
 
@@ -154,7 +148,6 @@ angular.module('singleConceptAuthoringApp')
     function checkReviewPrerequisites(task) {
       var deferred = $q.defer();
 
-      console.debug('get unsaved content');
       // initialize the unsaved concept array
       var results = {
         unsavedConcepts: [],
@@ -164,7 +157,6 @@ angular.module('singleConceptAuthoringApp')
 
       var promises = [checkModifiedConcepts(task, results),checkTraceability(task, results)];
       $q.all(promises).then(function () {
-        console.debug('$q.all resolved')
         deferred.resolve(results);
       }, function () {
         deferred.reject('Error checking review prerequisites: ' + error);

@@ -3,10 +3,7 @@
 angular.module('singleConceptAuthoringApp')
   .controller('reviewCheckModalCtrl', function ($rootScope, $scope, $modalInstance, $filter, ngTableParams, reviewChecks) {
 
-    console.debug('review check modal', reviewChecks);
-
     $scope.reviewChecks = reviewChecks;
-
 
     // template ng-table
     // declare table parameters
@@ -20,7 +17,6 @@ angular.module('singleConceptAuthoringApp')
         total: $scope.reviewChecks && $scope.reviewChecks.unsavedConcepts ? $scope.reviewChecks.unsavedConcepts.length : 0, // length of data
         getData: function ($defer, params) {
 
-          console.debug('getData', $scope.reviewChecks.unsavedConcepts);
           if ($scope.reviewChecks && $scope.reviewChecks.unsavedConcepts) {
             var data = params.sorting() ? $filter('orderBy')($scope.reviewChecks.unsavedConcepts, params.orderBy()) : $scope.reviewChecks.unsavedConcepts;
             $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));

@@ -597,14 +597,9 @@ angular.module('singleConceptAuthoringApp')
             else {
               // when FSN
               if (description.type === 'FSN') {
-                console.debug('new FSN found', hasMatchingWords);
                 // when spelling variant is present, result is
                 if (hasMatchingWords) {
-                  // ensure FSN en-US preferred
-//                  description.acceptabilityMap = {'900000000000509007' :'PREFERRED'};
-//                  console.debug('fsn after deletion', description);
-
-                  // SYN en-US preferred
+                 // SYN en-US preferred
                   addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
 
                   // SYN en-GB preferred
@@ -732,7 +727,6 @@ angular.module('singleConceptAuthoringApp')
             return d.active && d.type === 'FSN';
           })[0].term;
         } catch (error) {
-          console.debug('error determining fsn', concept);
           return '???';
         }
       }
@@ -743,7 +737,6 @@ angular.module('singleConceptAuthoringApp')
             return d.active && d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap[dialect] === 'PREFERRED';
           })[0].term;
         } catch (error) {
-          console.debug('error determining pt', concept, dialect);
           return '???';
         }
       }

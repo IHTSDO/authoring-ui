@@ -81,7 +81,6 @@ angular.module('singleConceptAuthoringApp')
 
       function removeInvalidCharacters(term) {
         if (term) {
-          console.debug('stripping characters');
           // strip invalid characters from term
           term = term.replace(/[@|$|#|\\]/g, ' ');
 

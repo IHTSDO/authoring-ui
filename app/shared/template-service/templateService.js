@@ -24,7 +24,6 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_SLOT = /\$([^$]+)\$/g;
 
     function getSlotValue(slotName, template, nameValueMap) {
-      console.debug('getSlotvalue', slotName, template, nameValueMap);
 
       // find the lexical template for this slot
       var lt;
@@ -35,8 +34,6 @@ angular.module('singleConceptAuthoringApp')
       } catch (error) {
         return '???';
       }
-
-      console.debug('lexical template for slot', slotName, lt, nameValueMap[slotName]);
 
       // if no value, return display name in brackets
       if (!nameValueMap[slotName]) {
@@ -63,7 +60,6 @@ angular.module('singleConceptAuthoringApp')
     function getDescriptionTemplateTermValue(descriptionTemplate, template, nameValueMap) {
       // match all function/slotName pairs surrounded by $$
       var newTerm = descriptionTemplate.termTemplate;
-      console.debug('getting getDescriptionTemplateTermValue ', descriptionTemplate, template, nameValueMap);
 
       var termSlots = [];
       var match;
@@ -71,14 +67,9 @@ angular.module('singleConceptAuthoringApp')
         termSlots.push(match[1]);
       }
 
-      console.debug('match', match);
-
       // OLD STUFFS
-      console.debug('termSlots', termSlots);
       angular.forEach(termSlots, function (termSlot) {
-        console.debug('getting slot value for term slot', termSlot);
         var re = new RegExp('\\$' + termSlot + '\\$');
-        console.debug('slot value re', re);
         var sv = getSlotValue(termSlot, template, nameValueMap);
         newTerm = newTerm.replace(re, sv);
         newTerm = newTerm.replace(/[\s]{2,}/g, ' ');
@@ -100,7 +91,6 @@ angular.module('singleConceptAuthoringApp')
         var r = concept.relationships[i];
         if (r.targetSlot && r.targetSlot && r.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
 
-          console.debug('replacing slotReference', r.targetSlot.slotReference);
           r.target.conceptId = relationship.target.conceptId;
           r.target.fsn = relationship.target.fsn;
         }
@@ -119,7 +109,6 @@ angular.module('singleConceptAuthoringApp')
       for (var i = 0; i < concept.descriptions.length; i++) {
         var d = concept.descriptions[i];
         if (d.template) {
-          console.debug('replacing lexical values for ', d);
           d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
           d.term = d.term.substring(0,1).toUpperCase() + d.term.substring(1);
         }
@@ -253,8 +242,6 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(tc.relationships, function (r) {
             r.relationshipId = snowowlService.createGuid();
           });
-
-          console.debug('template concept before replace', tc);
 
           // replace template values (i.e. to replace display $term-x with x
           replaceLexicalValues(tc, template);
@@ -661,8 +648,6 @@ angular.module('singleConceptAuthoringApp')
     function getTemplateForName(name, refreshCache) {
       var deferred = $q.defer();
 
-      console.debug('get template for name', name, templateCache);
-
       getTemplates(refreshCache).then(function (templates) {
         var tf = templates.filter(function (t) {
           return t.name === name;
@@ -681,7 +666,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function createTemplate(template) {
-      console.debug('createTemplate', template);
       var deferred = $q.defer();
       if (!template || !template.name) {
         deferred.reject('Template or template name not specified');
@@ -708,7 +692,6 @@ angular.module('singleConceptAuthoringApp')
 
 
     function updateTemplate(template) {
-      console.debug('update template', template);
       var deferred = $q.defer();
       if (!template || !template.name) {
         deferred.reject('Template or template name not specified');

@@ -685,8 +685,6 @@ angular.module('singleConceptAuthoringApp.edit', [
      */
     $scope.addConceptToListFromId = function (conceptId) {
 
-      console.debug('adding concept to list', conceptId);
-
       if (!conceptId) {
         console.error('Could not add concept to edit list, id required');
         return;
@@ -732,9 +730,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       else if (conceptId === 'unsaved' || !snowowlService.isSctid(conceptId)) {
         $scope.concepts.push({conceptId: conceptId});
 
-        console.debug('concepts', $scope.concepts);
-
-        // send loading notification
+                // send loading notification
         if ($scope.concepts.length === $scope.editList.length) {
           $scope.conceptLoading = false;
           notificationService.sendMessage('All concepts loaded', 10000, null);
@@ -1010,12 +1006,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       if (!selectedTemplate) {
         var concept = componentAuthoringUtil.getNewConcept();
-        console.debug('new concept', concept);
         $scope.concepts.unshift(concept);
         $scope.updateEditListUiState();
       } else {
         templateService.createTemplateConcept(selectedTemplate).then(function (concept) {
-          console.debug('template concept', concept);
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
 
@@ -1516,7 +1510,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         total: $scope.templates ? $scope.templates.length : 0, // length of data
         getData: function ($defer, params) {
           // TODO support paging and filtering
-          console.debug('getData', $scope.templates);
           var data = params.sorting() ? $filter('orderBy')($scope.templates, params.orderBy()) : $scope.templates;
           $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         }
@@ -1607,10 +1600,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       // check if unsaved concepts are already in edit panel
       angular.forEach(reviewChecks.unsavedConcepts, function (uc) {
         angular.forEach($scope.editList, function (ec) {
-          console.debug('checking ', ec, uc);
           if (ec === uc.conceptId) {
-            console.debug('match found');
-
             uc.editing = true;
           }
         });
@@ -1635,7 +1625,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.toggleReview = function (ignoreWarnings) {
-      console.debug('toggleReview', $scope.task.status);
       $scope.reviewChecks = null;
       switch ($scope.task.status) {
         case 'New':
@@ -1645,8 +1634,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
           reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
 
-            console.debug('review prerequisites', reviewChecks);
-
             if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length == 0) {
               reviewService.submitForReview($scope.task).then(function () {
                 loadTask();
@@ -1655,7 +1642,6 @@ angular.module('singleConceptAuthoringApp.edit', [
                 notificationService.sendError('Error submitting for review: ' + error);
               });
             } else {
-              console.debug('review checks detected', reviewChecks);
               openReviewChecksModal(reviewChecks).then(function () {
                 reviewService.submitForReview($scope.task).then(function () {
                   loadTask();
@@ -1709,7 +1695,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
       // retrieve available templates
       templateService.getTemplates().then(function (templates) {
-        console.debug('edit templates', templates);
         $scope.templates = templates;
         angular.forEach($scope.templates, function (template) {
           template.name = template.name;
@@ -1755,8 +1740,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
             // retrieve user role
             accountService.getRoleForTask($scope.task).then(function (role) {
-
-                console.debug('role', role);
 
                 notificationService.sendMessage('Task details loaded', 3000);
 
@@ -1824,9 +1807,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     function getSlotType(concept) {
-      console.debug('getting slot type', concept);
       for (var i = 0; i < concept.relationships.length; i++) {
-        console.debug('checking relationship', concept.relationships[i])
         if (concept.relationships[i].targetSlot && concept.relationships[i].targetSlot.slotName) {
           return concept.relationships[i].type.fsn;
         }
@@ -1834,7 +1815,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     }
 
     $scope.getSlotType = function () {
-      console.debug('$scope.slotType', $scope.slotType);
       return $scope.slotType;
     };
 
@@ -1903,7 +1883,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
 
       $q.all(promises).then(function (concepts) {
-        console.debug(concepts);
         for (var i = 0; i < concepts.length; i++) {
           $scope.concepts.push(concepts[i]);
           $scope.hot.data.push(getRowForConcept(concepts[i]));
@@ -1912,12 +1891,10 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.slotType = getSlotType(concepts[1]);
         refreshColumns();
 
-        console.debug('Batch Concepts', $scope.concepts);
-        console.debug('HOT Parameters', $scope.hot);
-      });
+        });
 
 
-    }
+    };
 
     $scope.hot.renderer = function (hotInstance, td, row, col, prop, value) {
       var el = $compile('<a href="" ng-click="editBatchConcept(' + row + ')">' + value + '</a>')($scope);
@@ -1928,7 +1905,6 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
 
     $scope.editBatchConcept = function (row) {
-      console.debug('edit', row);
       var conceptId = $scope.hot.data[row].conceptId;
       $scope.viewedConcept = $scope.concepts.filter(function (c) {
         return c.conceptId === conceptId;
@@ -1937,17 +1913,15 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     //3405 @62.618 [afterChange] [[1,5,5814,"asdf"]], "edit",
     $scope.onAfterChange = function (data, action) {
-      console.debug('cell change', data, action);
 
       if (data) {
         angular.forEach(data, function (cellChange) {
           // data format: row, fieldName, prevValue, newValue
           if (action === 'edit' && cellChange[1] === 'slotTarget') {
-            console.debug('--> Target slot change', cellChange);
           }
         });
       }
-    }
+    };
 
     $scope.$on('')
 
