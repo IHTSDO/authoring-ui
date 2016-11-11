@@ -218,6 +218,7 @@ angular.module('singleConceptAuthoringApp')
           // store template details against each component
           angular.forEach(tc.descriptions, function (d) {
             d.template = angular.copy(d);
+            d.term = d.initialTerm;
           });
           angular.forEach(tc.relationships, function (r) {
             r.template = angular.copy(r);
