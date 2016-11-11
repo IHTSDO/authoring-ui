@@ -22,19 +22,28 @@ angular.module('singleConceptAuthoringApp')
           } else {
             deferred.reject('Attribute not allowed');
           }
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error.message);
         });
         return deferred.promise;
       }
 
-      function isValueAllowedForType(typeId, valueName, branch, expr) {
+      function isValueAllowedForType(typeId, targetId, branch, expr) {
         var deferred = $q.defer();
 
-        getConceptsForValueTypeahead(typeId, valueName, branch, expr).then(function (response) {
-          if (response.length === 0) {
+        getConceptsForValueTypeahead(typeId, targetId, branch, expr).then(function (response) {
+          console.debug('response', response, response.filter(function (c) {
+            return c.id === targetId;
+          }),(response.filter(function (c) {
+            return c.id === targetId;
+          }).length === 0));
+          if (response.filter(function (c) {
+              return c.id === targetId;
+            }).length === 0) {
+            console.debug('not allowed');
             deferred.reject();
           } else {
+            console.debug('allowed');
             deferred.resolve();
           }
         });
@@ -91,10 +100,10 @@ angular.module('singleConceptAuthoringApp')
 
         // if expression specified, perform direct retrieval
         if (escgExpr) {
-          snowowlService.searchConcepts(branch, termFilter, escgExpr).then(function(response) {
+          snowowlService.searchConcepts(branch, termFilter, escgExpr).then(function (response) {
             var concepts = getConceptsForValueTypeaheadHelper(response);
-             deferred.resolve(concepts);
-          }, function(error) {
+            deferred.resolve(concepts);
+          }, function (error) {
             deferred.reject(error.message);
           });
         }

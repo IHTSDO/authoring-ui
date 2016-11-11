@@ -89,6 +89,9 @@ angular.module('singleConceptAuthoringApp')
 
           // replace any 2+ sequences of space with single space
           term = term.replace(/[ ]{2,}/g, ' ');
+
+          // replace any leading or trailing whitespace
+          term = term.trim();
         }
         return term;
       }

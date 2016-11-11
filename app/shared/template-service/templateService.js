@@ -79,25 +79,22 @@ angular.module('singleConceptAuthoringApp')
 
     // triggers replacement of logical values given a changed relationship
     function replaceLogicalValues(concept, relationship) {
+      // placeholder promise in anticipation of asynchronous operations
       var deferred = $q.defer();
 
       if (!relationship || !relationship.template || !relationship.template.targetSlot) {
         deferred.reject('No target slot detected');
       } else {
-      }
-
-      // check for linked/referenced slots
-      for (var i = 0; i < concept.relationships.length; i++) {
-        var r = concept.relationships[i];
-        if (r.targetSlot && r.targetSlot && r.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
-
-          r.target.conceptId = relationship.target.conceptId;
-          r.target.fsn = relationship.target.fsn;
+        // check for linked/referenced slots
+        for (var i = 0; i < concept.relationships.length; i++) {
+          var r = concept.relationships[i];
+          if (r.targetSlot && r.targetSlot && r.targetSlot.slotReference && r.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
+            r.target.conceptId = relationship.target.conceptId;
+            r.target.fsn = relationship.target.fsn;
+          }
         }
+        deferred.resolve();
       }
-
-      // placeholder resolution in anticipation of replacement using promises
-      deferred.resolve();
       return deferred.promise;
     }
 
@@ -110,7 +107,7 @@ angular.module('singleConceptAuthoringApp')
         var d = concept.descriptions[i];
         if (d.template) {
           d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
-          d.term = d.term.substring(0,1).toUpperCase() + d.term.substring(1);
+          d.term = d.term.substring(0, 1).toUpperCase() + d.term.substring(1);
         }
       }
 
@@ -720,7 +717,6 @@ angular.module('singleConceptAuthoringApp')
       }
       return deferred.promise;
     }
-
 
 
     return {
