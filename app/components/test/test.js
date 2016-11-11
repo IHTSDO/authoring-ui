@@ -45,12 +45,8 @@ angular.module('singleConceptAuthoringApp.test', [
         prettyPrint();
       });
 
-      $scope.$watch('templates', function () {
-        console.debug('new template cache', $scope.templates);
-      });
 
       $scope.performAction = function () {
-        console.debug('perform action', $scope.name, $scope.templateMode, $scope.templateRaw);
         switch ($scope.templateMode) {
           case 'Get':
             templateService.getTemplateForName($scope.name).then(function (response) {

@@ -161,7 +161,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.applyTemplate = function () {
           var selectedTemplate = scope.getSelectedTemplate();
-          console.debug('apply template', scope.concept, selectedTemplate);
 
           templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate).then(function () {
             scope.template = selectedTemplate;
@@ -173,13 +172,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.removeTemplate = function () {
 
-          console.debug('remove template', scope.concept);
           // if has ID, remove UI State
           if (scope.concept.conceptId) {
             templateService.removeStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function () {
               scope.template = null;
               templateService.removeTemplateFromConcept(scope.concept);
-              console.debug('after removal', scope.concept);
             }, function (error) {
               notificationService.sendError('Error removing template: ' + error);
             })
@@ -189,14 +186,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           else {
             scope.template = null;
             templateService.removeTemplateFromConcept(scope.concept);
-            console.debug('after removal', scope.concept);
           }
         };
 
         // NOTE: Currently unused
         scope.validateAgainstTemplate = function () {
           templateService.applyTemplateToConcept(scope.concept, scope.template, false, true, false).then(function () {
-            console.debug('template validation result', scope.concept);
           }, function (error) {
             notificationService.sendError('Error applying template: ' + error);
           });
@@ -320,8 +315,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // check for new concept with non-SCTID conceptId -- ignore blank id concepts
               else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
 
-                console.debug('checking selected template', templateService.getSelectedTemplate());
-
                 // if a template is selected, apply and store
                 var selectedTemplate = templateService.getSelectedTemplate();
                 if (selectedTemplate) {
@@ -431,7 +424,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
 
             scope.validation = results;
-            console.debug('in validate concept', scope.validation);
             deferred.resolve(results);
           }, function (error) {
             notificationService.sendError('Unexpected error validating concept prior to save');
@@ -528,14 +520,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
                   scope.isModified = false;
 
-                  console.debug('applying expected render flag', scope.concept);
-
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
 
                   // if a template specified, store template/concept info
                   // store and re-apply the template (if present), cleaned during save
-                  console.debug('after save -- is template?', scope.template)
                   if (scope.template) {
                     scope.concept.template = scope.template;
                     templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
@@ -604,10 +593,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 
         scope.saveConcept = function () {
-
-          console.debug('saveConcept');
-
-
           // clear the top level errors and warnings
           scope.errors = null;
           scope.warnings = null;
@@ -620,7 +605,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // display error msg if concept not valid but no other
           // errors/warnings specified
-          console.debug('concept validity', scope.isConceptValid(scope.concept));
           var errors = scope.isConceptValid(scope.concept);
           if (errors && errors.length > 0) {
             scope.errors = scope.errors ? scope.errors.concat(errors) : errors;
@@ -657,7 +641,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // special case -- inactivation:  simply broadcast concept
             else if (scope.isInactivation) {
-              console.log('inactivation');
 
               if (scope.validation && scope.validation.hasErrors) {
                 notificationService.sendError('Fix errors before continuing');
@@ -690,8 +673,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 $timeout(function () {
                   // recompute validation warnings
                   scope.validateConcept().then(function (results) {
-                    console.debug('validation after save helper', results);
-                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                   notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
                     scope.saving = false;
                   }, function (error) {
                     notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
@@ -1070,9 +1052,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               var aVal = descA.acceptabilityMap ? descA.acceptabilityMap[dialect] : null;
               var bVal = descB.acceptabilityMap ? descB.acceptabilityMap[dialect] : null;
-
-              console.debug(aVal, bVal, descA.term, descB.term);
-
 
               if (aVal !== bVal) {
                 if (aVal && !bVal) {
@@ -2240,7 +2219,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // check descriptions
           for (var k = 0; k < concept.descriptions.length; k++) {
-            console.debug('description error', scope.isDescriptionValid(concept.descriptions[k]), errors.concat(scope.isDescriptionValid(concept.descriptions[k])))
             errors = errors.concat(scope.isDescriptionValid(concept.descriptions[k]));
           }
 
@@ -2284,7 +2262,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // strip any non-international dialects
               angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                console.debug('checking2', dialectId);
                 if (!metadataService.isUsDialect(dialectId) && !metadataService.isGbDialect(dialectId)) {
                   delete description.acceptabilityMap[dialectId];
                 }
@@ -2292,7 +2269,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // ensure all dialects returned from metadata are preferred
               angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
-                console.debug('checking', dialectId);
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
 
               });
@@ -2336,7 +2312,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise save normally
           else {
-            console.debug('normal save');
             scope.computeRelationshipGroups();
             autoSave();
           }
@@ -2358,7 +2333,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             resetConceptHistory();
 
             // broadcast to edit.js to trigger unsaved list update
-            console.debug('broadcasting');
             $rootScope.$broadcast('conceptEdit.conceptChange', {
               branch: scope.branch,
               conceptId: scope.concept.conceptId,
@@ -2387,8 +2361,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function saveModifiedConcept() {
 
-          console.debug('saveModifiedConcept');
-
           scope.isModified = true;
 
           // broadcast event to any listeners (currently task detail)
@@ -2412,8 +2384,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * NOTE: outside $watch to prevent spurious updates
          */
         function autoSave() {
-
-          console.debug('autosave');
 
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;

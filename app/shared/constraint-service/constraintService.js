@@ -30,7 +30,6 @@ angular.module('singleConceptAuthoringApp')
 
       function isValueAllowedForType(typeId, valueName, branch, expr) {
         var deferred = $q.defer();
-        console.debug('isValueAllowedForType', typeId, valueName, branch, expr);
 
         getConceptsForValueTypeahead(typeId, valueName, branch, expr).then(function (response) {
           if (response.length === 0) {
@@ -88,15 +87,13 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function getConceptsForValueTypeahead(attributeId, termFilter, branch, escgExpr) {
-        console.debug('typeahead', attributeId, termFilter, branch, escgExpr);
         var deferred = $q.defer();
 
         // if expression specified, perform direct retrieval
         if (escgExpr) {
           snowowlService.searchConcepts(branch, termFilter, escgExpr).then(function(response) {
             var concepts = getConceptsForValueTypeaheadHelper(response);
-            console.debug('results', concepts);
-            deferred.resolve(concepts);
+             deferred.resolve(concepts);
           }, function(error) {
             deferred.reject(error.message);
           });
@@ -106,7 +103,6 @@ angular.module('singleConceptAuthoringApp')
         else {
           snowowlService.getAttributeValues(branch, attributeId, termFilter).then(function (response) {
               var concepts = getConceptsForValueTypeaheadHelper(response);
-            console.debug('results', concepts);
               deferred.resolve(concepts);
             },
             function (error) {
