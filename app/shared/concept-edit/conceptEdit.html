@@ -1,8 +1,8 @@
 <div class="edits editing-form darken-3 grey">
 
-<style>
+  <style>
 
-</style>
+  </style>
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
     <button class="btn btn-default md md-close pull-right white" ng-click="errors = []" style="background: transparent"
@@ -539,8 +539,10 @@
                      drop-validate="!relationship.effectiveTime && !isStatic"
                      ng-class="getTargetSlotStyle(relationship)">
 
+
+
                   <textarea type="text" ng-model="relationship.target.fsn"
-                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.targetName)"
+                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
                             class="resizable-text relationship msd-elastic: \n;"
                             ng-class="[{'template-slot' : relationship.targetSlot}]"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
@@ -654,12 +656,13 @@
 
 
       <span
-         class="m-t-15 m-l-15">Template: {{template.name}}, version {{template.version}}</span>
+        class="m-t-15 m-l-15">Template: {{template.name}}, version {{template.version}}</span>
 
 
       <button class="pull-right btn btn-default blue darken-2" ng-click="removeTemplate()"
               style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">Release
-        Template</button>
+        Template
+      </button>
     </div>
 
   </div>
