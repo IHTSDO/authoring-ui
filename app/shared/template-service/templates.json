@@ -1,136 +1,5 @@
 [
   {
-    "name": "CT Guided Procedure of X",
-    "focusConcept": "71388002",
-    "version": 1,
-    "logicalTemplate": "71388002 |Procedure|:   [[~1..1]] {      260686004 |Method| = 312251004 |Computed tomography imaging action|,      [[~1..1]] 405813007 |Procedure site - Direct| = [[+id(<< 442083009 |Anatomical or acquired body structure|) @procSite]],      363703001 |Has intent| = 429892002 |Guidance intent|   },   {      260686004 |Method| = [[+id (<< 312251004 |Action|) @action]],      [[~1..1]] 405813007 |Procedure site - Direct| = [[+id $procSite]]   }",
-    "conceptOutline": {
-      "relationships": [
-        {
-          "characteristicType": "STATED_RELATIONSHIP",
-          "groupId": 0,
-          "type": {
-            "conceptId": "116680003"
-          },
-          "target": {
-            "conceptId": "71388002"
-          }
-        },
-        {
-          "characteristicType": "STATED_RELATIONSHIP",
-          "groupId": 1,
-          "type": {
-            "conceptId": "260686004"
-          },
-          "target": {
-            "conceptId": "312251004"
-          }
-        },
-        {
-          "characteristicType": "STATED_RELATIONSHIP",
-          "groupId": 1,
-          "type": {
-            "conceptId": "405813007"
-          },
-          "targetSlot": {
-            "slotName": "procSite",
-            "allowableRangeECL": "<< 442083009 |Anatomical or acquired body structure|"
-          },
-          "cardinalityMin": "1",
-          "cardinalityMax": "1"
-        },
-        {
-          "characteristicType": "STATED_RELATIONSHIP",
-          "groupId": 1,
-          "type": {
-            "conceptId": "363703001"
-          },
-          "target": {
-            "conceptId": "429892002"
-          }
-        },
-        {
-          "characteristicType": "STATED_RELATIONSHIP",
-          "groupId": 2,
-          "type": {
-            "conceptId": "260686004"
-          },
-          "targetSlot": {
-            "slotName": "action",
-            "allowableRangeECL": "<< 312251004 |Action|"
-          }
-        },
-        {
-          "characteristicType": "STATED_RELATIONSHIP",
-          "groupId": 2,
-          "type": {
-            "conceptId": "405813007"
-          },
-          "targetSlot": {
-            "slotReference": "procSite"
-          },
-          "cardinalityMin": "1",
-          "cardinalityMax": "1"
-        }
-      ],
-      "descriptions": [
-        {
-          "type": "FSN",
-          "lang": "en",
-          "termTemplate": "$actionTerm$ of $procSiteTerm$ using computed tomography guidance (procedure)",
-          "initialTerm": "[X] of [Procedure] using computed tomography guidance (procedure)",
-          "caseSignificance": "CASE_INSENSITIVE",
-          "acceptabilityMap": {
-            "900000000000508004": "PREFERRED",
-            "900000000000509007": "PREFERRED"
-          }
-        },
-        {
-          "type": "SYNONYM",
-          "lang": "en",
-          "termTemplate": "CT guided $actionTerm$ of $procSiteTerm$",
-          "initialTerm": "CT guided [X] of [Procedure]",
-          "caseSignificance": "ENTIRE_TERM_CASE_SENSITIVE",
-          "acceptabilityMap": {
-            "900000000000508004": "PREFERRED",
-            "900000000000509007": "PREFERRED"
-          }
-        },
-        {
-          "type": "SYNONYM",
-          "lang": "en",
-          "termTemplate": "$actionTerm$ of $procSiteTerm$ using computed tomography guidance",
-          "initialTerm": "[X] of [Procedure] using computed tomography guidance",
-          "caseSignificance": "CASE_INSENSITIVE",
-          "acceptabilityMap": {
-            "900000000000508004": "ACCEPTABLE",
-            "900000000000509007": "ACCEPTABLE"
-          }
-        }
-      ]
-    },
-    "lexicalTemplates": [
-      {
-        "name": "procSiteTerm",
-        "displayName": "Procedure",
-        "takeFSNFromSlot": "procSite",
-        "removeParts": [
-          "structure of",
-          "structure",
-          "part of"
-        ]
-      },
-      {
-        "name": "actionTerm",
-        "displayName": "X",
-        "takeFSNFromSlot": "action",
-        "removeParts": [
-          " - action"
-        ]
-      }
-    ]
-  },
-  {
     "name": "CT of X",
     "focusConcept": "71388002",
     "version": 3,
@@ -216,6 +85,137 @@
           "structure of",
           "structure",
           "part of"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "CT Guided Procedure of X",
+    "focusConcept": "71388002",
+    "version": 2,
+    "logicalTemplate": "71388002 |Procedure|:   [[~1..1]] {      260686004 |Method| = 312251004 |Computed tomography imaging action|,      [[~1..1]] 405813007 |Procedure site - Direct| = [[+id(<< 442083009 |Anatomical or acquired body structure|) @procSite]],      363703001 |Has intent| = 429892002 |Guidance intent|   },   {      260686004 |Method| = [[+id (<< 129264002 |Action|) @action]],      [[~1..1]] 405813007 |Procedure site - Direct| = [[+id $procSite]]   }",
+    "conceptOutline": {
+      "relationships": [
+        {
+          "characteristicType": "STATED_RELATIONSHIP",
+          "groupId": 0,
+          "type": {
+            "conceptId": "116680003"
+          },
+          "target": {
+            "conceptId": "71388002"
+          }
+        },
+        {
+          "characteristicType": "STATED_RELATIONSHIP",
+          "groupId": 1,
+          "type": {
+            "conceptId": "260686004"
+          },
+          "target": {
+            "conceptId": "312251004"
+          }
+        },
+        {
+          "characteristicType": "STATED_RELATIONSHIP",
+          "groupId": 1,
+          "type": {
+            "conceptId": "405813007"
+          },
+          "targetSlot": {
+            "slotName": "procSite",
+            "allowableRangeECL": "<< 442083009 |Anatomical or acquired body structure|"
+          },
+          "cardinalityMin": "1",
+          "cardinalityMax": "1"
+        },
+        {
+          "characteristicType": "STATED_RELATIONSHIP",
+          "groupId": 1,
+          "type": {
+            "conceptId": "363703001"
+          },
+          "target": {
+            "conceptId": "429892002"
+          }
+        },
+        {
+          "characteristicType": "STATED_RELATIONSHIP",
+          "groupId": 2,
+          "type": {
+            "conceptId": "260686004"
+          },
+          "targetSlot": {
+            "slotName": "action",
+            "allowableRangeECL": "<< 129264002 |Action|"
+          }
+        },
+        {
+          "characteristicType": "STATED_RELATIONSHIP",
+          "groupId": 2,
+          "type": {
+            "conceptId": "405813007"
+          },
+          "targetSlot": {
+            "slotReference": "procSite"
+          },
+          "cardinalityMin": "1",
+          "cardinalityMax": "1"
+        }
+      ],
+      "descriptions": [
+        {
+          "type": "FSN",
+          "lang": "en",
+          "termTemplate": "$actionTerm$ of $procSiteTerm$ using computed tomography guidance (procedure)",
+          "initialTerm": "[X] of [Procedure] using computed tomography guidance (procedure)",
+          "caseSignificance": "CASE_INSENSITIVE",
+          "acceptabilityMap": {
+            "900000000000508004": "PREFERRED",
+            "900000000000509007": "PREFERRED"
+          }
+        },
+        {
+          "type": "SYNONYM",
+          "lang": "en",
+          "termTemplate": "CT guided $actionTerm$ of $procSiteTerm$",
+          "initialTerm": "CT guided [X] of [Procedure]",
+          "caseSignificance": "ENTIRE_TERM_CASE_SENSITIVE",
+          "acceptabilityMap": {
+            "900000000000508004": "PREFERRED",
+            "900000000000509007": "PREFERRED"
+          }
+        },
+        {
+          "type": "SYNONYM",
+          "lang": "en",
+          "termTemplate": "$actionTerm$ of $procSiteTerm$ using computed tomography guidance",
+          "initialTerm": "[X] of [Procedure] using computed tomography guidance",
+          "caseSignificance": "CASE_INSENSITIVE",
+          "acceptabilityMap": {
+            "900000000000508004": "ACCEPTABLE",
+            "900000000000509007": "ACCEPTABLE"
+          }
+        }
+      ]
+    },
+    "lexicalTemplates": [
+      {
+        "name": "procSiteTerm",
+        "displayName": "Procedure",
+        "takeFSNFromSlot": "procSite",
+        "removeParts": [
+          "structure of",
+          "structure",
+          "part of"
+        ]
+      },
+      {
+        "name": "actionTerm",
+        "displayName": "X",
+        "takeFSNFromSlot": "action",
+        "removeParts": [
+          " - action"
         ]
       }
     ]

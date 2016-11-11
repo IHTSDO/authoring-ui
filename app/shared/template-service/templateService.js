@@ -67,12 +67,13 @@ angular.module('singleConceptAuthoringApp')
         termSlots.push(match[1]);
       }
 
-      // OLD STUFFS
       angular.forEach(termSlots, function (termSlot) {
         var re = new RegExp('\\$' + termSlot + '\\$');
         var sv = getSlotValue(termSlot, template, nameValueMap);
         newTerm = newTerm.replace(re, sv);
         newTerm = newTerm.replace(/[\s]{2,}/g, ' ');
+        newTerm = newTerm.trim();
+        newTerm = newTerm.substring(0,1).toUpperCase() + newTerm.substring(1);
       });
       return newTerm;
     }
@@ -405,11 +406,16 @@ angular.module('singleConceptAuthoringApp')
 
 
               // if match found
-              if (d.termTemplate && d.termTemplate.match(exp)) {
+              if (d.term && d.term.match(exp)) {
                 matchFound = true;
                 d.template = dt;
                 var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
+                console.debug('comparing terms', templateTerm, d.term);
                 if (d.term !== templateTerm) {
+                  if (applyStyles) {
+                    d.templateStyle = 'redhl';
+                  }
+
                   // if apply values set, value will be replaced below, append warning
                   if (applyValues) {
                     d.term = templateTerm;
