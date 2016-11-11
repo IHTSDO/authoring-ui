@@ -308,7 +308,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // store in scope variable and on concept (for UI State saving)
                 scope.template = template;
-                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
+                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, true);
 
               }
 
@@ -673,7 +673,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 $timeout(function () {
                   // recompute validation warnings
                   scope.validateConcept().then(function (results) {
-                   notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
+                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
                     scope.saving = false;
                   }, function (error) {
                     notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
@@ -1792,17 +1792,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           relationship.target.fsn = 'Validating...';
 
           // if type specified, validate against type
-          if (relationship.type.conceptId !== null && metadataService.isMrcmEnabled()) {
+          if (metadataService.isMrcmEnabled()) {
 
-            constraintService.isValueAllowedForType(relationship.type.conceptId, data.name, scope.branch,
-              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
-              relationship.target.conceptId = data.id;
-              relationship.target.fsn = data.name;
-              scope.updateRelationship(relationship, false);
-            }, function (error) {
-              scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
-              relationship.target.fsn = tempFsn;
-            });
+            if (relationship.type.conceptId) {
+
+              constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
+                relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+                relationship.target.conceptId = data.id;
+                relationship.target.fsn = data.name;
+                scope.updateRelationship(relationship, false);
+              }, function (error) {
+                scope.warnings = ['MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+                relationship.target.fsn = tempFsn;
+              });
+            } else {
+              scope.warnings = ['MRCM validation error: Must set relationship type first'];
+            }
           } else {
             relationship.target.conceptId = data.id;
             relationship.target.fsn = data.name;
@@ -1831,7 +1836,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // if target already specified, validate it
               if (relationship.target.conceptId) {
-                constraintService.isValueAllowedForType(data.id, relationship.target.fsn, scope.concept, scope.branch).then(function () {
+                constraintService.isValueAllowedForType(data.id, relationship.target.conceptId, scope.concept, scope.branch).then(function () {
                   // do nothing
                 }, function (error) {
                   scope.warnings = ['MRCM validation error: ' + relationship.target.fsn + ' is not a valid target for attribute type ' + data.name + '.'];
@@ -1917,8 +1922,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          constraintService.validateRelationship(target, scope.allowedAttributes, scope.branch).then(function (response) {
-            if (response.length === 0) {
+          if (constraintService.isAttributeAllowedForArray(target.target.fsn, scope.allowedAttributes)) {
+
+            constraintService.isValueAllowedForType(target.type.conceptId, target.target.conceptId, scope.branch).then(function () {
               // copy relationship object and replace target relationship
               var copy = angular.copy(source);
 
@@ -1947,12 +1953,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               autoSave();
 
               scope.computeRelationshipGroups();
-
-            } else {
-              scope.warnings = response;
-              scope.warnings.splice(0, 0, 'Could not drop relationship:');
-            }
-          });
+            }, function () {
+              scope.warnings = ['MRCM validation error: ' + target.target.fsn + ' is not valid for attribute type ' + target.type.fsn];
+            });
+          } else {
+            scope.warnings = ['MRCM validation error: Attribute ' + target.type.fsn + ' not allowed for concept']
+          }
 
 
         };
@@ -2527,12 +2533,27 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
+          console.debug('set target concept', relationship, item);
+          if (metadataService.isMrcmEnabled()) {
+            if (!relationship.type.conceptId) {
+              scope.warnings = ['MRCM validation error: Must set attribute type first'];
+            } else {
+              constraintService.isValueAllowedForType(relationship.type.conceptId, item.id, scope.branch).then(function () {
+                relationship.target.conceptId = item.id;
+                relationship.target.fsn = item.fsn.term;
+                relationship.target.definitionStatus = item.definitionStatus;
+                scope.updateRelationship(relationship, false);
+              }, function () {
+                scope.warnings = ['MRCM validation error: ' + item.fsn.term + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
+              });
+            }
+          } else {
+            relationship.target.conceptId = item.id;
+            relationship.target.fsn = item.fsn.term;
+            relationship.target.definitionStatus = item.definitionStatus;
+            scope.updateRelationship(relationship, false);
+          }
 
-          relationship.target.conceptId = item.id;
-          relationship.target.fsn = item.fsn.term;
-          relationship.target.definitionStatus = item.definitionStatus;
-
-          scope.updateRelationship(relationship, false);
         };
 
 //////////////////////////////////////////////
