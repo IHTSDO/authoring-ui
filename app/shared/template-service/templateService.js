@@ -21,6 +21,7 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_FSN = /(.+\s\(.*\))/i;
     var PATTERN_PT_FROM_FSN = /(.+)\s\(.*\)/i;
     var PATTERN_SEMANTIC_TAG = /.+\s\((.*)\)/i;
+    var PATTERN_SLOT = /\$([^$]+)\$/g;
 
     function getSlotValue(slotName, template, nameValueMap) {
       console.debug('getSlotvalue', slotName, template, nameValueMap);
@@ -61,9 +62,19 @@ angular.module('singleConceptAuthoringApp')
 
     function getDescriptionTemplateTermValue(descriptionTemplate, template, nameValueMap) {
       // match all function/slotName pairs surrounded by $$
-      var newTerm = descriptionTemplate.term;
+      var newTerm = descriptionTemplate.termTemplate;
       console.debug('getting getDescriptionTemplateTermValue ', descriptionTemplate, template, nameValueMap);
-      var termSlots = descriptionTemplate.termTemplate ? descriptionTemplate.termTemplate.match(/\$([^$]*)\$/g) : [];
+
+      var termSlots = [];
+      var match;
+      while (match = PATTERN_SLOT.exec(newTerm)) {
+        termSlots.push(match[1]);
+      }
+
+      console.debug('match', match);
+
+      // OLD STUFFS
+      console.debug('termSlots', termSlots);
       angular.forEach(termSlots, function (termSlot) {
         console.debug('getting slot value for term slot', termSlot);
         var re = new RegExp(termSlot.replace(/(\$)/g, '\\$'), 'g');
