@@ -77,7 +77,8 @@ angular.module('singleConceptAuthoringApp')
       console.debug('termSlots', termSlots);
       angular.forEach(termSlots, function (termSlot) {
         console.debug('getting slot value for term slot', termSlot);
-        var re = new RegExp(termSlot.replace(/(\$)/g, '\\$'), 'g');
+        var re = new RegExp('\\$' + termSlot + '\\$');
+        console.debug('slot value re', re);
         var sv = getSlotValue(termSlot, template, nameValueMap);
         newTerm = newTerm.replace(re, sv);
         newTerm = newTerm.replace(/[\s]{2,}/g, ' ');
