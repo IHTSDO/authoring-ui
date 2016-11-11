@@ -77,7 +77,7 @@ h4.timeline-title {
 }
 .sca-dark .create-new-concept {
     background-color: #262e39!important;
-    color: #00a6e5!important;
+    color: #56b8e7!important;
 }
 .sca-dark .create-new-concept:hover {
     color: #eee!important;
@@ -771,3 +771,29 @@ sca-dark .pull-left.follow-up {
 .sca-dark .header-alerts .blue{
     color:#fff;
 }
+
+/*left nav */
+
+.sca-dark .navigation-link.deep-purple.darken-2.validate .btn:hover,
+.sca-dark .navigation-link.green.darken-1.classify .btn:hover,
+.sca-dark .navigation-link.pink1.darken-2.review .btn:hover,
+.sca-dark .snodragon-templates:hover{color :#fff}
+.sca-dark .snodragon-templates:active, 
+.sca-dark .snodragon-templates:hover
+
+{background:#0082b3}
+
+.sca-dark .navigation-link.deep-purple.darken-2.validate .btn {color :#8b72b7}
+.sca-dark .navigation-link.green.darken-1.classify .btn {color :#03b18a}
+.sca-dark .navigation-link.pink1.darken-2.review .btn {color :#e94281}
+.sca-dark .snodragon-templates{background-color:transparent; color:#009cd7}
+
+.sca-dark .snodragon-templates,
+.sca-dark .navigation-link.deep-purple.darken-2.validate,
+.sca-dark .navigation-link.green.darken-1.classify,
+.sca-dark .navigation-link.pink1.darken-2.review,
+.sca-dark .create-new-concept{
+    border-top: 1px #1f2731 solid !important;
+    border-right: 1px #1f2731 solid !important;
+}
+
