@@ -402,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
           // TODO Add acceptability
           if (d.active && d.type === dt.type) {
             // check exact term match first
-            if (d.term === dt.term) {
+            if (d.term === dt.initialTerm) {
               matchFound = true;
               d.template = dt;
               if (applyStyles) {
@@ -413,12 +413,12 @@ angular.module('singleConceptAuthoringApp')
             // otherwise, check by pattern matching
             else {
               // replace slots with .*, escape special characters, and start/end terminate
-              var exp = dt.term.replace(/\$.*\$/, '.*');
+              var exp = dt.termTemplate.replace(/\$.*\$/, '.*');
               exp = '^' + exp.replace(/([()[{$^\\|?])/g, '\\$1') + '$';
 
 
               // if match found
-              if (d.term && d.term.match(exp)) {
+              if (d.termTemplate && d.termTemplate.match(exp)) {
                 matchFound = true;
                 d.template = dt;
                 var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
@@ -440,6 +440,10 @@ angular.module('singleConceptAuthoringApp')
                       type: 'Warning',
                       message: 'Description term does not conform to template, expected: ' + templateTerm
                     });
+                  }
+                } else {
+                  if (applyStyles) {
+                    d.templateStyle = 'tealhl';
                   }
                 }
 
