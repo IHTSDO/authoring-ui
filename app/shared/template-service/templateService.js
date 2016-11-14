@@ -121,7 +121,7 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       replaceLogicalValues(concept, relationship).then(function () {
         replaceLexicalValues(concept, template).then(function () {
-          deferred.resolve();
+          deferred.resolve(concept);
         }, function (error) {
           deferred.reject(error);
         });
