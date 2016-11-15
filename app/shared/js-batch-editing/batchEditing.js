@@ -54,6 +54,13 @@ angular.module('singleConceptAuthoringApp')
 
           }
 
+          var deleteControl = function (hotInstance, td, row, col, prop, value) {
+            var el = '<a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(' + row + ')">' + '</a>';
+            var compiled = $compile(el)(scope);
+            td.appendChild(compiled[0]);
+            return td;
+          }
+
           var userControls = function (hotInstance, td, row, col, prop, value) {
             console.debug('user controls');
             var els = [
@@ -94,6 +101,12 @@ angular.module('singleConceptAuthoringApp')
               data: hotData,
               colHeaders: true,
               columns: [
+                {
+                  title: ' ',
+                  renderer: deleteControl,
+                  readOnly: true
+                } , // null/empty values render as Excel-style alphabetic title
+                // }
                 {data: 'conceptId', title: 'ID', readOnly: true},
                 {data: 'sctid', title: 'SCTID', readOnly: true},
                 {data: 'fsn', title: 'FSN'},
