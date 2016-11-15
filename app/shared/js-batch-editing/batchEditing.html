@@ -5,7 +5,7 @@
   <select ng-options="template as template.name for template in templates" ng-model="selectedTemplate"></select>
   <input ng-model="batchSize" ng-init="batchSize = 5;">
   <button class="btn btn-default btn-primary" ng-disabled="!selectedTemplate || !batchSize"
-          ng-click="loadTestData(selectedTemplate, batchSize)">Load Test Concepts
+          ng-click="addBatchConceptsFromTemplate(selectedTemplate, batchSize)">Load Test Concepts
   </button>
 
   search results: {{testItems}}
