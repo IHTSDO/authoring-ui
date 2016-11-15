@@ -27,36 +27,17 @@ angular.module('singleConceptAuthoringApp')
             hotDebounce     // debounce timer used for async operations
             ;
 
-          function getTemplateConcepts(template, batchSize) {
+          scope.viewedConcepts = [];  // concepts opened for editing by user
+          scope.templates = []; // available templates
 
-            var deferred = $q.defer();
-
-            console.debug('creating template concepts');
-
-            // store the selected template for use by conceptEdit.js
-            templateService.selectTemplate(template);
-
-            var concepts = [];
-            var promises = [];
-
-            for (var i = 0; i < batchSize; i++) {
-              promises.push(templateService.createTemplateConcept(template));
-            }
-
-            $q.all(promises).then(function (concepts) {
-              deferred.resolve(concepts);
-            }, function (error) {
-              notificationService.sendError('Error generating test data');
-            });
-
-            return deferred.promise;
-
-
-          }
+          //
+          // HTML Renderers for removal and other user actions
+          //
 
           var deleteControl = function (hotInstance, td, row, col, prop, value) {
             var el = '<a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(' + row + ')">' + '</a>';
             var compiled = $compile(el)(scope);
+            td.empty();
             td.appendChild(compiled[0]);
             return td;
           }
@@ -69,25 +50,18 @@ angular.module('singleConceptAuthoringApp')
               '<a class="md md-school" title="Validate Concept" ng-click="validateConcept(' + row + ')">' + '</a>'
             ];
 
+            td.empty();
             angular.forEach(els, function (el) {
               var compiled = $compile(el)(scope);
               td.appendChild(compiled[0]);
+              console.debug('td', td);
             });
             return td;
           };
 
-          scope.addBatchConceptsFromTemplate = function (template, batchSize) {
-
-            getTemplateConcepts(template, batchSize).then(function (concepts) {
-
-              console.debug('created template concepts', concepts);
-              batchEditingService.addBatchConcepts(concepts);
-
-              // weirdly can't seem to actually add rows from format in instantiation, so recreate table
-              createHotTableFromConcepts(batchEditingService.getBatchConcepts());
-            });
-          };
-
+          //
+          // HoT Table Functions
+          //
 
           function createHotTableFromConcepts(concepts) {
 
@@ -100,6 +74,9 @@ angular.module('singleConceptAuthoringApp')
             hot = new Handsontable(hotElem, {
               data: hotData,
               colHeaders: true,
+              removeRowPlugin: true,
+
+              // columns for CT of X
               columns: [
                 {
                   title: ' ',
@@ -142,13 +119,60 @@ angular.module('singleConceptAuthoringApp')
             })
           }
 
+          function getIndexForColumnName(colName) {
+            console.debug('col heade3rs', hot.getColHeader());
+            return hot.getColHeader().indexOf(colName);
+          }
 
-          scope.viewedConcepts = [];
+
+          //
+          // User action functions
+          //
+
+          function createTemplateConcepts(template, batchSize) {
+
+            var deferred = $q.defer();
+
+            console.debug('creating template concepts');
+
+            // store the selected template for use by conceptEdit.js
+            templateService.selectTemplate(template);
+
+            var concepts = [];
+            var promises = [];
+
+            for (var i = 0; i < batchSize; i++) {
+              promises.push(templateService.createTemplateConcept(template));
+            }
+
+            $q.all(promises).then(function (concepts) {
+              deferred.resolve(concepts);
+            }, function (error) {
+              deferred.reject('Error creating template concepts: ' + error);
+            });
+
+            return deferred.promise;
+
+
+          }
+
+
+          scope.addBatchConceptsFromTemplate = function (template, batchSize) {
+
+            createTemplateConcepts(template, batchSize).then(function (concepts) {
+
+              // add to the existing batch concepts
+              batchEditingService.addBatchConcepts(concepts);
+
+              // weirdly can't seem to actually add rows from format in instantiation, so recreate table
+              createHotTableFromConcepts(batchEditingService.getBatchConcepts());
+            });
+          };
 
 // retrieve and add concept to editing panel
           scope.editConcept = function (row) {
-            console.debug('edit row', row, hot.getDataAtRow(row));
-            var conceptId = hot.getDataAtRow(row)[0]; // direct match to column
+            console.debug('edit row', row, hot.getSourceDataAtRow(row));
+            var conceptId = hot.getSourceDataAtRow(row).conceptId; // direct match to column
             var concept = batchEditingService.getBatchConcept(conceptId);
             console.debug('concept for row', concept);
             if (scope.viewedConcepts.filter(function (c) {
@@ -161,22 +185,43 @@ angular.module('singleConceptAuthoringApp')
           };
 
 // update the actual concept from row values
-          scope.updateConceptFromRow = function (row) {
+          scope.saveConcept = function (row) {
+
+          };
+
+          scope.removeConcept = function (row) {
+            console.debug('remove row', row, hot.getSourceDataAtRow(row));
+            var colIndex = getIndexForColumnName('sctid');
+            var conceptId = hot.getSourceDataAtRow(row).conceptId; // direct match to column
+            batchEditingService.removeBatchConcept(conceptId).then(function() {
+              hot.alter('remove-row', row);
+              removeViewedConcept(conceptId);
+            }, function(error) {
+              notificationService.sendError('Unexpected error removing batch concept: ' + error);
+            })
+
+          };
+
+          scope.validateConcept = function (row) {
 
           };
 
 // watch for close events
           scope.$on('conceptEdit.stopEditing', function (event, data) {
+            removeViewedConcept(data.conceptId);
+          });
+
+          function removeViewedConcept(conceptId) {
             var index;
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
-              if (scope.viewedConcepts[i].conceptId === data.conceptId) {
+              if (scope.viewedConcepts[i].conceptId === conceptId) {
                 index = i;
               }
             }
             if (index) {
               scope.viewedConcepts.splice(index, 1);
             }
-          });
+          }
 
 // watch for save events from editing panel
           scope.$on('conceptEdit.conceptChange', function (event, data) {
