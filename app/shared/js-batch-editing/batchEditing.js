@@ -2,15 +2,18 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('jsBatchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'templateService', 'batchEditingService', 'constraintService', 'notificationService',
-    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, templateService, batchEditingService, constraintService, notificationService) {
+  .directive('jsBatchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'templateService', 'batchEditingService', 'scaService', 'constraintService', 'notificationService',
+    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, templateService, batchEditingService, scaService, constraintService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
         replace: true,
         scope: {
           // branch
-          branch: '='
+          branch: '=',
+
+          // task
+          task: '='
         },
         templateUrl: 'shared/js-batch-editing/batchEditing.html',
 
@@ -29,6 +32,9 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
 
             console.debug('creating template concepts');
+
+            // store the selected template for use by conceptEdit.js
+            templateService.selectTemplate(template);
 
             var concepts = [];
             var promises = [];
@@ -61,73 +67,72 @@ angular.module('singleConceptAuthoringApp')
               td.appendChild(compiled[0]);
             });
             return td;
-          }
+          };
 
-
-          scope.loadTestData = function (template, batchSize) {
-
-            hotElem = document.getElementById('hotElem');
-
-            console.debug('getting template concepts');
+          scope.addBatchConceptsFromTemplate = function (template, batchSize) {
 
             getTemplateConcepts(template, batchSize).then(function (concepts) {
 
               console.debug('created template concepts', concepts);
+              batchEditingService.addBatchConcepts(concepts);
 
-              // store the created concepts
-              batchEditingService.setBatchConcepts(concepts);
-
-              var hotData = [];
-              angular.forEach(concepts, function (concept) {
-                hotData.push(batchEditingService.getHotRowForConcept(concept));
-              });
-
-              console.debug('hotData', hotData);
-
-              hot = new Handsontable(hotElem, {
-                data: hotData,
-                colHeaders: true,
-                columns: [
-                  {data: 'conceptId', title: 'ID', readOnly: true},
-                  {data: 'sctid', title: 'SCTID', readOnly: true},
-                  {data: 'fsn', title: 'FSN'},
-                  {
-                    data: 'targetSlot_0.target.fsn',
-                    title: 'Procedure Site -- direct (attribute)',
-                    type: 'autocomplete',
-                    source: function (query, process) {
-
-                      $timeout.cancel(hotDebounce);
-                      if (query && query.length > 2) {
-                        hotDebounce = $timeout(function () {
-                          console.debug(hot.getSchema(), hot.getSchema().targetSlot_0);
-                          constraintService.getConceptsForValueTypeahead(
-                            '405813007 ', query, scope.branch,
-                            '<< 442083009 | Anatomical or acquired body structure |')
-                            .then(function (concepts) {
-                              process(concepts.map(function (c) {
-                                return c.fsn.term
-                              }));
-                            }, function (error) {
-                              console.error('error getting typeahead values', error);
-                            })
-                        }, 500)
-                      }
-
-                    }
-                  }, {
-                    title: ' ', // null/empty values render as Excel-style alphabetic title
-                    renderer: userControls,
-                    readOnly: true
-                  }]
-              })
+              // weirdly can't seem to actually add rows from format in instantiation, so recreate table
+              createHotTableFromConcepts(batchEditingService.getBatchConcepts());
             });
           };
 
 
+          function createHotTableFromConcepts(concepts) {
+
+            var hotData = [];
+            angular.forEach(concepts, function (concept) {
+              hotData.push(batchEditingService.getHotRowForConcept(concept));
+            });
+
+            hotElem = document.getElementById('hotElem');
+            hot = new Handsontable(hotElem, {
+              data: hotData,
+              colHeaders: true,
+              columns: [
+                {data: 'conceptId', title: 'ID', readOnly: true},
+                {data: 'sctid', title: 'SCTID', readOnly: true},
+                {data: 'fsn', title: 'FSN'},
+                {
+                  data: 'targetSlot_0.target.fsn',
+                  title: 'Procedure Site -- direct (attribute)',
+                  type: 'autocomplete',
+                  source: function (query, process) {
+
+                    $timeout.cancel(hotDebounce);
+                    if (query && query.length > 2) {
+                      hotDebounce = $timeout(function () {
+                        console.debug(hot.getSchema(), hot.getSchema().targetSlot_0);
+                        constraintService.getConceptsForValueTypeahead(
+                          '405813007 ', query, scope.branch,
+                          '<< 442083009 | Anatomical or acquired body structure |')
+                          .then(function (concepts) {
+                            process(concepts.map(function (c) {
+                              return c.fsn.term
+                            }));
+                          }, function (error) {
+                            console.error('error getting typeahead values', error);
+                          })
+                      }, 500)
+                    }
+
+                  }
+                }, {
+                  title: ' ', // null/empty values render as Excel-style alphabetic title
+                  renderer: userControls,
+                  readOnly: true
+                }]
+            })
+          }
+
+
           scope.viewedConcepts = [];
 
-          // retrieve and add concept to editing panel
+// retrieve and add concept to editing panel
           scope.editConcept = function (row) {
             console.debug('edit row', row, hot.getDataAtRow(row));
             var conceptId = hot.getDataAtRow(row)[0]; // direct match to column
@@ -142,12 +147,12 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
-          // update the actual concept from row values
+// update the actual concept from row values
           scope.updateConceptFromRow = function (row) {
 
           };
 
-          // watch for close events
+// watch for close events
           scope.$on('conceptEdit.stopEditing', function (event, data) {
             var index;
             for (var i = 0; i < scope.viewedConcepts.length; i++) {
@@ -160,7 +165,7 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          // watch for save events from editing panel
+// watch for save events from editing panel
           scope.$on('conceptEdit.conceptChange', function (event, data) {
 
           });
@@ -170,13 +175,31 @@ angular.module('singleConceptAuthoringApp')
           // Initialization
           //
           function initialize() {
+
+            console.debug('Batch Editing: initializing');
+
+            // get templates for dropdown
             templateService.getTemplates().then(function (templates) {
               scope.templates = templates;
             });
+
+
+            // initialize from task
+            batchEditingService.initializeFromTask(scope.task).then(function () {
+
+              // create the table from batch concepts (if present)
+              createHotTableFromConcepts(batchEditingService.getBatchConcepts());
+            })
           }
 
-          initialize();
+
+          scope.$watch('task', function () {
+           if (scope.task) {
+              initialize();
+            }
+          });
         }
+
       }
     }
   ]);
