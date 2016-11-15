@@ -22,42 +22,54 @@ angular.module('singleConceptAuthoringApp')
           console.debug('js-batch-editing directive');
 
           var
-            hotElem,        // the html element itself
-            hot,            // the hands on table object
-            hotDebounce     // debounce timer used for async operations
+            hotElem,          // the html element itself
+            hot,              // the hands on table object
+            hotDebounce,      // debounce timer used for async operations
+            fsnToIdMap = {}        // map of fsn to SCTID used by target slots
             ;
 
           scope.viewedConcepts = [];  // concepts opened for editing by user
           scope.templates = []; // available templates
-
           //
           // HTML Renderers for removal and other user actions
           //
 
           var deleteControl = function (hotInstance, td, row, col, prop, value) {
             var el = '<a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(' + row + ')">' + '</a>';
+
+            // clear children so that re-renders don't cause duplication
+            while (td.firstChild) {
+              td.removeChild(td.firstChild);
+            }
             var compiled = $compile(el)(scope);
-            td.empty();
             td.appendChild(compiled[0]);
             return td;
           }
 
           var userControls = function (hotInstance, td, row, col, prop, value) {
-            console.debug('user controls');
             var els = [
               '<a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(' + row + ')">' + '</a>',
               '<a class="md md-save" title="Save Concept" ng-click="saveConcept(' + row + ')">' + '</a>',
               '<a class="md md-school" title="Validate Concept" ng-click="validateConcept(' + row + ')">' + '</a>'
             ];
 
-            td.empty();
+            // clear children so that re-renders don't cause duplication
+            while (td.firstChild) {
+              td.removeChild(td.firstChild);
+            }
             angular.forEach(els, function (el) {
               var compiled = $compile(el)(scope);
               td.appendChild(compiled[0]);
-              console.debug('td', td);
             });
             return td;
           };
+
+          //
+          // HoT <-> Concept model interface functions
+          //
+          function updateConceptModelFromRow(row) {
+
+          }
 
           //
           // HoT Table Functions
@@ -74,7 +86,63 @@ angular.module('singleConceptAuthoringApp')
             hot = new Handsontable(hotElem, {
               data: hotData,
               colHeaders: true,
-              removeRowPlugin: true,
+              afterChange: function (changes, source) {
+
+                console.debug('after change', source, changes);
+
+                // if not user edit, perform no actions
+                if (source === 'edit') {
+
+
+                  /// cycle over each cell change
+                  angular.forEach(changes, function (change) {
+
+                    console.debug('checking change', change);
+
+                    // format: row, field, oldValue, newValue
+                    if (change[1].startsWith('targetSlot') && change[3] !== change[2]) {
+
+                      // convenience variables
+                      var row = change[0];
+                      var field = change[1];
+                      var fsn = change[3];
+
+                      // get concept for row
+                      var conceptId = hot.getSourceDataAtRow(row).conceptId;
+                      var concept = batchEditingService.getBatchConcept(conceptId);
+                      console.debug('concept affected', concept);
+
+                      // extract slot name (format targetSlot_SLOTNAME.target.fsn)
+                      var slotName = field.match(/^targetSlot_([^.]*)/i)[1];
+                      console.debug('target slot name', slotName);
+
+                      // replace target slot values
+                      angular.forEach(concept.relationships, function (r) {
+                        if (r.targetSlot && r.targetSlot.slotName === slotName) {
+                          r.target.fsn = fsn;
+                          r.target.conceptId = fsnToIdMap[fsn];
+                          console.debug('found target slot, modified concept', concept);
+
+                          // apply template logical/lexical replacement
+                          templateService.updateTargetSlot(concept, concept.template, r).then(function () {
+                            // replace row values
+                            var newRow = batchEditingService.getHotRowForConcept(concept);
+                            console.debug('new row', newRow);
+                            for (var key in newRow) {
+                              console.debug('setting ', row, key, newRow[key], 'template');
+                              hot.setDataAtRowProp(row, key, newRow[key], 'template');
+                            }
+
+                          })
+                        }
+                      });
+
+                    }
+                  });
+                }
+
+              },
+
 
               // columns for CT of X
               columns: [
@@ -82,15 +150,19 @@ angular.module('singleConceptAuthoringApp')
                   title: ' ',
                   renderer: deleteControl,
                   readOnly: true
-                } , // null/empty values render as Excel-style alphabetic title
+                }, // null/empty values render as Excel-style alphabetic title
                 // }
-                {data: 'conceptId', title: 'ID', readOnly: true},
+                /* temp or SCTID, used for testing only
+                 {data: 'conceptId', title: 'ID', readOnly: true},*/
+
+                // SCTID -- computed field, actual concept id is hidden
                 {data: 'sctid', title: 'SCTID', readOnly: true},
                 {data: 'fsn', title: 'FSN'},
                 {
-                  data: 'targetSlot_0.target.fsn',
+                  data: 'targetSlot_procSite.target.fsn',
                   title: 'Procedure Site -- direct (attribute)',
                   type: 'autocomplete',
+                  strict: true,
                   source: function (query, process) {
 
                     $timeout.cancel(hotDebounce);
@@ -101,6 +173,11 @@ angular.module('singleConceptAuthoringApp')
                           '405813007 ', query, scope.branch,
                           '<< 442083009 | Anatomical or acquired body structure |')
                           .then(function (concepts) {
+                            // TODO Ideally would store only one fsn (on select), but haven't found HoT hook yet
+                            angular.forEach(concepts, function (c) {
+                              fsnToIdMap[c.fsn.term] = c.id;
+                            });
+                            console.debug('updated fsn to id map', fsnToIdMap);
                             process(concepts.map(function (c) {
                               return c.fsn.term
                             }));
@@ -123,6 +200,8 @@ angular.module('singleConceptAuthoringApp')
             console.debug('col heade3rs', hot.getColHeader());
             return hot.getColHeader().indexOf(colName);
           }
+
+          //3405 @62.618 [afterChange] [[1,5,5814,"asdf"]], "edit",
 
 
           //
@@ -193,10 +272,10 @@ angular.module('singleConceptAuthoringApp')
             console.debug('remove row', row, hot.getSourceDataAtRow(row));
             var colIndex = getIndexForColumnName('sctid');
             var conceptId = hot.getSourceDataAtRow(row).conceptId; // direct match to column
-            batchEditingService.removeBatchConcept(conceptId).then(function() {
-              hot.alter('remove-row', row);
+            batchEditingService.removeBatchConcept(conceptId).then(function () {
+              hot.alter('remove_row', row);
               removeViewedConcept(conceptId);
-            }, function(error) {
+            }, function (error) {
               notificationService.sendError('Unexpected error removing batch concept: ' + error);
             })
 
@@ -206,24 +285,29 @@ angular.module('singleConceptAuthoringApp')
 
           };
 
-// watch for close events
-          scope.$on('conceptEdit.stopEditing', function (event, data) {
-            removeViewedConcept(data.conceptId);
-          });
 
           function removeViewedConcept(conceptId) {
-            var index;
-            for (var i = 0; i < scope.viewedConcepts.length; i++) {
-              if (scope.viewedConcepts[i].conceptId === conceptId) {
-                index = i;
-              }
-            }
-            if (index) {
+            var index = scope.viewedConcepts.map(function (c) {
+              return c.conceptId
+            }).indexOf(conceptId);
+            console.debug('remove index', conceptId, index);
+            if (index !== -1) {
               scope.viewedConcepts.splice(index, 1);
             }
           }
 
-// watch for save events from editing panel
+          //
+          // Scope listeners
+          //
+
+          // watch for close events
+          scope.$on('stopEditing', function (event, data) {
+            console.debug('received stop editing', data)
+            removeViewedConcept(data.concept.conceptId);
+          });
+
+
+          // watch for save events from editing panel
           scope.$on('conceptEdit.conceptChange', function (event, data) {
 
           });
@@ -252,7 +336,7 @@ angular.module('singleConceptAuthoringApp')
 
 
           scope.$watch('task', function () {
-           if (scope.task) {
+            if (scope.task) {
               initialize();
             }
           });
