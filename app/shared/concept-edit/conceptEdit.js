@@ -308,7 +308,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // store in scope variable and on concept (for UI State saving)
                 scope.template = template;
-                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, true);
+                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
 
               }
 
