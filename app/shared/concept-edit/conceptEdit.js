@@ -303,31 +303,41 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             // once concept fully loaded (from parameter or from modified state), check for template
             templateService.getStoredTemplateForConcept($routeParams.projectKey, scope.concept.conceptId).then(function (template) {
-              // if template found in store, apply it to retrieved concept
-              if (template) {
+                // if template found in store, apply it to retrieved concept
+                if (template) {
 
-                // store in scope variable and on concept (for UI State saving)
-                scope.template = template;
-                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
+                  // store in scope variable and on concept (for UI State saving)
+                  scope.template = template;
+                  templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
 
-              }
-
-              // check for new concept with non-SCTID conceptId -- ignore blank id concepts
-              else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
-
-                // if a template is selected, apply and store
-                var selectedTemplate = templateService.getSelectedTemplate();
-                if (selectedTemplate) {
-                  scope.template = selectedTemplate;
-                  templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate);
                 }
 
-              }
+                // check for new concept with non-SCTID conceptId -- ignore blank id concepts
+                else if (scope.concept.conceptId && !snowowlService.isSctid(scope.concept.conceptId)) {
 
-              scope.templateInitialized = true;
-            }, function (error) {
-              notificationService.sendError('Unexpected error checking for concept template: ' + error);
-            });
+                  // if template attached to this concept, use that
+                  if (scope.concept.template) {
+                    scope.template = scope.concept.template;
+                  }
+
+                  // otherwise, check for selected template and apply if exists
+                  else {
+                    var selectedTemplate = templateService.getSelectedTemplate();
+
+                    if (selectedTemplate) {
+                      scope.template = selectedTemplate;
+                      templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate);
+                    }
+                  }
+                }
+
+                scope.templateInitialized = true;
+              }
+              ,
+              function (error) {
+                notificationService.sendError('Unexpected error checking for concept template: ' + error);
+              }
+            );
 
           });
         }
