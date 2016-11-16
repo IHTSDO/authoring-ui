@@ -28,13 +28,14 @@ angular.module('singleConceptAuthoringApp').service('modalService', function ($m
       });
       return deferred.promise;
     },
-    message: function (message) {
+    message: function (title, message, messageList) {
       var deferred = $q.defer();
       var modalInstance = $modal.open({
-        templateUrl: 'shared/modal-service/modalConfirm.html',
-        controller: function ($scope, $modalInstance, title, message) {
+        templateUrl: 'shared/modal-service/modalMessage.html',
+        controller: function ($scope, $modalInstance, title, message, messageList) {
           $scope.title = title;
           $scope.message = message;
+          $scope.messageList = messageList;
           $scope.cancel = function () {
             $modalInstance.dismiss();
           };
@@ -48,6 +49,9 @@ angular.module('singleConceptAuthoringApp').service('modalService', function ($m
           },
           message: function () {
             return message;
+          },
+          messageList : function() {
+            return messageList;
           }
         }
       });

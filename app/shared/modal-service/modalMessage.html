@@ -13,6 +13,9 @@
 
       <div class="col-md-9">
         <h4>{{message}}</h4>
+        <ul ng-show="messageList.length > 0">
+          <li ng-repeat="entry in messageList">{{entry}}</li>
+        </ul>
       </div>
       <div class="col-md-1"></div>
     </div>
