@@ -264,9 +264,10 @@ angular.module('singleConceptAuthoringApp')
           }
 
 // retrieve and add concept to editing panel
-          scope.editConcept = function (row) {
-            console.debug('edit row', row, hot.getSourceDataAtRow(row));
-            var conceptId = hot.getSourceDataAtRow(row).conceptId; // direct match to column
+          scope.editConcept = function (visibleIndex) {
+            console.debug('physicalIndex', visibleIndex, hot.sortIndex)
+            var physicalIndex = hot.sortIndex[visibleIndex][0];
+            var conceptId = hot.getSourceDataAtRow(physicalIndex).conceptId; // direct match to column
             var concept = batchEditingService.getBatchConcept(conceptId);
             console.debug('concept for row', concept);
             if (scope.viewedConcepts.filter(function (c) {
@@ -345,8 +346,8 @@ angular.module('singleConceptAuthoringApp')
                 if (template) {
 
                   templateService.applyTemplateToConcept(savedConcept, template).then(function () {
-                    templateService.storeTemplateForConcept(scope.task.projectKey,concept.conceptId, template);
-                    templateService.logTemplateConceptSave(scope.task.projectKey, concept.conceptId, concept.fsn, template);
+                    templateService.storeTemplateForConcept(scope.task.projectKey,savedConcept.conceptId, template);
+                    templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, savedConcept.fsn, template);
 
                     console.debug('after applying template', savedConcept);
                     // replace row values
