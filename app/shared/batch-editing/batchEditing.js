@@ -34,16 +34,25 @@ angular.module('singleConceptAuthoringApp')
           // HTML Renderers for removal and other user actions
           //
 
-          var deleteControl = function (hotInstance, td, row, col, prop, value) {
-            var el = '<a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(' + row + ')">' + '</a>';
-
+          function compileCell(td, elements) {
             // clear children so that re-renders don't cause duplication
             while (td.firstChild) {
               td.removeChild(td.firstChild);
             }
-            var compiled = $compile(el)(scope);
-            td.appendChild(compiled[0]);
-            return td;
+            angular.forEach(elements, function (el) {
+              var compiled = $compile(el)(scope);
+              td.appendChild(compiled[0]);
+            });
+          }
+
+          var deleteControl = function (hotInstance, td, row, col, prop, value) {
+            var els = ['<a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(' + row + ')">' + '</a>'];
+            return compileCell(td, els);
+          };
+
+          var relationshipTarget = function (hotInstance, td, row, col, prop, value) {
+            var els = ['<div contenteditable="true" style="width: 100%;" class="pull-left sourcename" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(row, prop, $data)"></div>'];
+            return compileCell(td, els);
           }
 
           var userControls = function (hotInstance, td, row, col, prop, value) {
@@ -52,16 +61,7 @@ angular.module('singleConceptAuthoringApp')
               '<a class="md md-save" title="Save Concept" ng-click="saveConcept(' + row + ')">' + '</a>',
               '<a class="md md-school" title="Validate Concept" ng-click="validateConcept(' + row + ')">' + '</a>'
             ];
-
-            // clear children so that re-renders don't cause duplication
-            while (td.firstChild) {
-              td.removeChild(td.firstChild);
-            }
-            angular.forEach(els, function (el) {
-              var compiled = $compile(el)(scope);
-              td.appendChild(compiled[0]);
-            });
-            return td;
+            return compileCell(td, els);
           };
 
           //
@@ -275,7 +275,7 @@ angular.module('singleConceptAuthoringApp')
 
             if (completionErrors.length > 0) {
               var msg = 'Concept is not complete. Please fix the following problems:';
-              angular.forEach(completionErrors, function(error) {
+              angular.forEach(completionErrors, function (error) {
                 msg += '\n' + error;
               });
               modalService.message('Please Complete Concept', msg);
@@ -314,7 +314,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.task.key,
                 scope.concept
               ).then(function (response) {
-                
+
               })
 
             }
@@ -365,6 +365,39 @@ angular.module('singleConceptAuthoringApp')
 
           });
 
+          //
+          // Drag 'n Drop
+          //
+
+          scope.dropConcept = function (event, data) {
+
+            console.debug('drop concept', event, data);
+
+
+            // Hide the helper, so that we can use .elementFromPoint
+            // to grab the item beneath the cursor by coordinate
+
+            var $destination = $(document.elementFromPoint(event.clientX, event.clientY));
+
+            // Grab the parent tr, then the parent tbody so that we
+            // can use their index to find the row and column of the
+            // destination object
+            var $tr = $destination.closest('tr');
+            var $tbody = $tr.closest('tbody');
+
+            var col = $tr.children().index($destination);
+            var row = $tbody.children().index($tr);
+
+            // get the column prop
+            var prop = hot.colToProp(col);
+
+            // Use the setDataAtCell method, which takes a row and
+            // col number, to adjust the data
+            if (prop.startsWith('targetSlot')) {
+              hot.setDataAtCell(row, col, data.name, 'edit');
+            }
+
+          };
 
           //
           // Initialization

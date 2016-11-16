@@ -131,6 +131,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         } else {
           $scope.searchStatus = null;
         }
+
+        // apply dragging for batch view
+        $(".draggable").draggable({revert: "invalid", helper: 'clone'});
+
+        $('.draggable').click(function () {
+          //$("#excel_table").insertAtCaret($(this).text());
+          return false
+        });
       };
 
       /**
