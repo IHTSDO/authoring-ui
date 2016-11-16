@@ -37,22 +37,30 @@ angular.module('singleConceptAuthoringApp')
       //
       function updateBatchUiState() {
         var deferred = $q.defer();
-        scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'batch-concepts', batchConcepts).then(function () {
-          deferred.resolve();
-        }, function (error) {
-          deferred.reject('UI State Error: ' + error.message);
-        });
+        if (!currentTask) {
+          deferred.reject('Batch service error: task not set');
+        } else {
+          scaService.saveUiStateForTask(currentTask.projectKey, currentTask.key, 'batch-concepts', batchConcepts).then(function () {
+            deferred.resolve();
+          }, function (error) {
+            deferred.reject('UI State Error: ' + error.message);
+          });
+        }
         return deferred.promise;
 
       }
 
       function getBatchUiState() {
         var deferred = $q.defer();
-        scaService.getUiStateForTask(currentTask.projectKey, currentTask.key, 'batch-concepts').then(function (concepts) {
-          deferred.resolve(concepts);
-        }, function (error) {
-          deferred.reject('UI State Error: ' + error.message);
-        });
+        if (!currentTask) {
+          deferred.reject('Batch service error: task not set');
+        } else {
+          scaService.getUiStateForTask(currentTask.projectKey, currentTask.key, 'batch-concepts').then(function (concepts) {
+            deferred.resolve(concepts);
+          }, function (error) {
+            deferred.reject('UI State Error: ' + error.message);
+          });
+        }
         return deferred.promise;
 
       }
@@ -127,10 +135,15 @@ angular.module('singleConceptAuthoringApp')
 
 
       function setBatchConcepts(concepts) {
+        var deferred = $q.defer();
         batchConcepts = concepts;
-        if (task) {
-          updateBatchUiState();
-        }
+
+        updateBatchUiState().then(function () {
+          deferred.resolve();
+        }, function (error) {
+          deferred.reject(error);
+        })
+        return deferred.promise;
       }
 
       function getBatchConcepts(concepts) {
@@ -151,19 +164,31 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function addBatchConcept(concept) {
+        var deferred = $q.defer();
         if (!batchConcepts) {
           batchConcepts = [];
         }
         batchConcepts.push(concept);
-        updateBatchUiState();
+        updateBatchUiState().then(function () {
+          deferred.resolve();
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
       }
 
       function addBatchConcepts(concepts) {
+        var deferred = $q.defer();
         if (!batchConcepts) {
           batchConcepts = [];
         }
         batchConcepts = batchConcepts.concat(concepts);
-        updateBatchUiState();
+        updateBatchUiState().then(function () {
+          deferred.resolve();
+        }, function (error) {
+          deferred.reject(error);
+        })
+        return deferred.promise;
       }
 
       function updateBatchConcept(concept, previousConceptId) {
@@ -172,17 +197,17 @@ angular.module('singleConceptAuthoringApp')
         if (!batchConcepts) {
           deferred.reject('Cannot update batch concept, batch concepts not initialized');
         } else {
-          // find by model concept id first
-          var index = batchConcepts.map(function (c) {
+
+          var conceptIdArray = batchConcepts.map(function (c) {
             return c.conceptId
-          }).indexOf(conceptId);
+          });
+          // find by model concept id first
+          var index = conceptIdArray.indexOf(concept.conceptId);
 
           // if concept id not found, check against previous concept id if supplied
           // intended for use on concept creation (new SCTID assigned)
           if (!index && previousConceptId) {
-            batchConcepts.map(function (c) {
-              return previousConceptId
-            }).indexOf(conceptId);
+            index = conceptIdArray.indexOf(previousConceptId);
           }
 
           if (!index) {
@@ -191,11 +216,11 @@ angular.module('singleConceptAuthoringApp')
             batchConcepts[index] = concept;
           }
         }
-        updateBatchUiState().then(function() {
+        updateBatchUiState().then(function () {
           deferred.resolve();
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
-        })
+        });
         return deferred.promise;
       }
 
@@ -208,11 +233,13 @@ angular.module('singleConceptAuthoringApp')
         var index = batchConcepts.map(function (c) {
           return c.conceptId
         }).indexOf(conceptId);
-        console.debug('concept index', index, console.debug(batchConcepts.map(function(c) {return c.conceptId})));
+        console.debug('concept index', index, console.debug(batchConcepts.map(function (c) {
+          return c.conceptId
+        })));
         batchConcepts.splice(index, 1);
-        updateBatchUiState().then(function() {
+        updateBatchUiState().then(function () {
           deferred.resolve();
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
         })
         return deferred.promise;
@@ -237,4 +264,5 @@ angular.module('singleConceptAuthoringApp')
         removeBatchConcept: removeBatchConcept
 
       }
-    }]);
+    }])
+;
