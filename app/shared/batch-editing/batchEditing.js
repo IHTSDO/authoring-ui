@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('jsBatchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'templateService', 'batchEditingService', 'scaService', 'constraintService', 'notificationService',
-    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, templateService, batchEditingService, scaService, constraintService, notificationService) {
+  .directive('batchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'modalService', 'componentAuthoringUtil', 'templateService', 'batchEditingService', 'scaService', 'snowowlService', 'constraintService', 'notificationService',
+    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, modalService, componentAuthoringUtil, templateService, batchEditingService, scaService, snowowlService, constraintService, notificationService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -15,11 +15,11 @@ angular.module('singleConceptAuthoringApp')
           // task
           task: '='
         },
-        templateUrl: 'shared/js-batch-editing/batchEditing.html',
+        templateUrl: 'shared/batch-editing/batchEditing.html',
 
         link: function (scope, element, attrs, linkCtrl) {
 
-          console.debug('js-batch-editing directive');
+          console.debug('batch-editing directive');
 
           var
             hotElem,          // the html element itself
@@ -132,6 +132,7 @@ angular.module('singleConceptAuthoringApp')
                               console.debug('setting ', row, key, newRow[key], 'template');
                               hot.setDataAtRowProp(row, key, newRow[key], 'template');
                             }
+                            batchEditingService.updateBatchConcept(concept);
 
                           })
                         }
@@ -265,6 +266,58 @@ angular.module('singleConceptAuthoringApp')
 
 // update the actual concept from row values
           scope.saveConcept = function (row) {
+
+            // get corresponding concept
+            var concept = batchEditingService.getBatchConcept(hot.getSourceDataAtRow(row).conceptId);
+
+            // check for completion
+            var completionErrors = componentAuthoringUtil.checkConceptComplete(concept);
+
+            if (completionErrors.length > 0) {
+              var msg = 'Concept is not complete. Please fix the following problems:';
+              angular.forEach(completionErrors, function(error) {
+                msg += '\n' + error;
+              });
+              modalService.message('Please Complete Concept', msg);
+            } else {
+
+              // store concept id
+              var originalConceptId = concept.conceptId;
+
+              // clean concept
+              snowowlService.cleanConcept(concept);
+
+              // In order to ensure proper term-server behavior,
+              // need to delete SCTIDs without effective time on descriptions and relationships
+              // otherwise the values revert to termserver version
+              angular.forEach(scope.concept.descriptions, function (description) {
+                if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
+                  delete description.descriptionId;
+                }
+              });
+              angular.forEach(scope.concept.relationships, function (relationship) {
+                if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime) {
+                  delete relationship.relationshipId;
+                }
+              });
+
+              var saveFn = null;
+
+              if (!scope.concept.conceptId) {
+                saveFn = snowowlService.createConcept;
+              } else {
+                saveFn = snowowlService.updateConcept;
+              }
+
+              saveFn(
+                scope.task.projectKey,
+                scope.task.key,
+                scope.concept
+              ).then(function (response) {
+                
+              })
+
+            }
 
           };
 

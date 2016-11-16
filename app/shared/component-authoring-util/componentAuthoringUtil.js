@@ -741,7 +741,128 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      function checkDescriptionComplete(description) {
+
+        var errors = [];
+
+        if (!description.moduleId) {
+          errors.push('Description moduleId must be set');
+        }
+        if (!description.term || description.term.length === 0) {
+          errors.push('Description term must be set');
+        }
+        if (description.active === null) {
+          errors.push('Description active flag must be set');
+        }
+        if (!description.lang) {
+          errors.push('Description lang must be set');
+        }
+        if (!description.caseSignificance) {
+          errors.push('Description case significance must be set');
+        }
+        if (!description.type) {
+          errors.push('Description type must be set');
+        }
+
+        if (description.active && (!description.acceptabilityMap || Object.keys(description.acceptabilityMap).length === 0)) {
+          errors.push('Description acceptability map cannot be empty');
+        }
+
+        // pass all checks -> return true
+        return errors;
+      };
+
+      // method to check single relationship for validity
+      function checkRelationshipComplete(relationship) {
+
+        var errors = [];
+
+        // check relationship fields
+        if (!relationship.modifier) {
+          errors.push('Relationship modifier must be set');
+        }
+        if (relationship.groupId === null) {
+          errors.push('Relationship groupId must be set');
+
+        }
+        if (!relationship.moduleId) {
+          errors.push('Relationship moduleId must be set');
+        }
+        if (relationship.active === null) {
+          errors.push(relationship.error = 'Relationship active flag must be set');
+        }
+        if (!relationship.characteristicType) {
+          errors.push('Relationship characteristic type must be specified');
+        }
+        if (!relationship.type || !relationship.type.conceptId) {
+          errors.push('Relationship typeId must be set');
+        }
+        if (!relationship.target || !relationship.target.conceptId) {
+          errors.push('Relationship targetId must be set');
+        }
+
+        return errors;
+      };
+
+      function checkConceptComplete(concept) {
+        var errors = [];
+
+        if (!concept.descriptions || concept.descriptions.length === 0) {
+          errors.push('Concept must have at least one description');
+
+        }
+        if (!concept.relationships || concept.relationships.length === 0) {
+          errors.push('Concept must have at lalst one relationship');
+
+        }
+        if (!concept.definitionStatus) {
+          errors.push('Concept definitionStatus must be set');
+
+        }
+        if (concept.active === null) {
+          errors.push('Concept active flag must be set');
+
+        }
+        if (!concept.moduleId) {
+          errors.push('Concept moduleId must be set');
+
+        }
+        var activeFsn = [];
+        for (var i = 0; i < concept.descriptions.length; i++) {
+          if (concept.descriptions[i].type === 'FSN' && concept.descriptions[i].active === true) {
+            activeFsn.push(concept.descriptions[i]);
+          }
+        }
+        if (activeFsn.length !== 1) {
+          errors.push('Concept must have exactly one active FSN');
+        }
+
+        // check descriptions
+        for (var k = 0; k < concept.descriptions.length; k++) {
+          errors = errors.concat(checkDescriptionComplete(concept.descriptions[k]));
+        }
+
+        // check relationships
+        for (var j = 0; j < concept.relationships.length; j++) {
+          errors = errors.concat(checkRelationshipComplete(concept.relationships[j]));
+        }
+
+        // strip any duplicate messages
+        for (var i = 0; i < errors.length; i++) {
+          for (var j = i+1; j < errors.length; j++) {
+            if (errors[i] === errors[j]) {
+              errors.splice(j--, 1);
+            }
+          }
+        }
+
+        // return any errors
+        return errors;
+      }
+
       return {
+
+        // creation
         getNewConcept: getNewConcept,
         getNewDescription: getNewDescription,
         getNewFsn: getNewFsn,
@@ -749,8 +870,13 @@ angular.module('singleConceptAuthoringApp')
         getNewTextDefinition: getNewTextDefinition,
         getNewIsaRelationship: getNewIsaRelationship,
         getNewAttributeRelationship: getNewAttributeRelationship,
+
+        // validation and minimum fields
         applyMinimumFields: applyMinimumFields,
         hasMinimumFields: hasMinimumFields,
+        checkConceptComplete : checkConceptComplete,
+
+        // equality functions
         isComponentsEqual: isComponentsEqual,
         isConceptsEqual: isConceptsEqual,
         isDescriptionsEqual: isDescriptionsEqual,

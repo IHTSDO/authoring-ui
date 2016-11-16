@@ -1001,16 +1001,16 @@ angular.module('singleConceptAuthoringApp.edit', [
     });
 
 // creates a blank (unsaved) concept in the editing list
-    $scope.createConcept = function () {
+    $scope.createConcept = function (isTemplate) {
 
-      var selectedTemplate = templateService.getSelectedTemplate();
-
-      if (!selectedTemplate) {
+  
+      if (!isTemplate) {
+        templateService.clearSelectedTemplate();
         var concept = componentAuthoringUtil.getNewConcept();
         $scope.concepts.unshift(concept);
         $scope.updateEditListUiState();
       } else {
-        templateService.createTemplateConcept(selectedTemplate).then(function (concept) {
+        templateService.createTemplateConcept(templateService.getSelectedTemplate()).then(function (concept) {
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
 
@@ -1521,7 +1521,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.selectTemplate = function (template) {
       templateService.selectTemplate(template).then(function () {
         document.getElementById('templateCreateBtn').click();
-        $scope.createConcept();
+        $scope.createConcept(true);
       });
     };
     $scope.clearTemplate = function () {
