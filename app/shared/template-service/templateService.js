@@ -297,6 +297,7 @@ angular.module('singleConceptAuthoringApp')
       if (!concept.conceptId) {
         concept.conceptId = snowowlService.createGuid();
       }
+      concept.template = template;
       angular.forEach(concept.descriptions, function (d) {
         d.template = null;
         d.templateStyle = null;
