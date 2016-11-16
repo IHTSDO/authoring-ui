@@ -71,6 +71,8 @@ angular.module('singleConceptAuthoringApp')
 
       function getHotRowForConcept(concept) {
 
+        console.debug('Get hot row for concept', concept);
+
         // get the slot type
         var row = {
           sctid: snowowlService.isSctid(concept.conceptId) ? concept.conceptId : '',
@@ -192,7 +194,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function updateBatchConcept(concept, previousConceptId) {
-        console.debug('update batch concept', concept, previousConceptId);
+        console.debug('update batch concept', concept, previousConceptId, batchConcepts);
         var deferred = $q.defer();
         if (!batchConcepts) {
           deferred.reject('Cannot update batch concept, batch concepts not initialized');
@@ -201,23 +203,31 @@ angular.module('singleConceptAuthoringApp')
           var conceptIdArray = batchConcepts.map(function (c) {
             return c.conceptId
           });
+          console.debug('conceptIdArray', conceptIdArray);
           // find by model concept id first
           var index = conceptIdArray.indexOf(concept.conceptId);
 
+          console.debug('index from concept id', index);
+
           // if concept id not found, check against previous concept id if supplied
           // intended for use on concept creation (new SCTID assigned)
-          if (!index && previousConceptId) {
+          if (index === -1 && previousConceptId) {
             index = conceptIdArray.indexOf(previousConceptId);
           }
 
-          if (!index) {
+          console.debug('index from previousConceptId', index);
+
+          if (index === -1) {
             deferred.reject('Cannot update batch concept, no concept with id found');
           } else {
             batchConcepts[index] = concept;
+            console.debug('updated batch concepts', batchConcepts, batchConcepts[index]);
           }
+
+
         }
         updateBatchUiState().then(function () {
-          deferred.resolve();
+          deferred.resolve(concept);
         }, function (error) {
           deferred.reject(error);
         });

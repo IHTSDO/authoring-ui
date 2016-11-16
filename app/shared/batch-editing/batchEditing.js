@@ -86,21 +86,21 @@ angular.module('singleConceptAuthoringApp')
             hot = new Handsontable(hotElem, {
               data: hotData,
               colHeaders: true,
+              columnSorting: {
+                column: 3
+              },
               afterChange: function (changes, source) {
-
-                console.debug('after change', source, changes);
 
                 // if not user edit, perform no actions
                 if (source === 'edit') {
 
-
                   /// cycle over each cell change
                   angular.forEach(changes, function (change) {
 
-                    console.debug('checking change', change);
-
                     // format: row, field, oldValue, newValue
                     if (change[1].startsWith('targetSlot') && change[3] !== change[2]) {
+
+                      console.debug('targetSlot change on edit action detected', change, source);
 
                       // convenience variables
                       var row = change[0];
@@ -240,10 +240,14 @@ angular.module('singleConceptAuthoringApp')
 
           scope.addBatchConceptsFromTemplate = function (template, batchSize) {
 
+            notificationService.sendMessage('Adding ' + batchSize + ' concepts from template ' + template.name + '...');
+
             createTemplateConcepts(template, batchSize).then(function (concepts) {
 
               // add to the existing batch concepts
               batchEditingService.addBatchConcepts(concepts).then(function () {
+
+                notificationService.sendMessage(' Concepts added', 3000);
 
                 // weirdly can't seem to actually add rows from format in instantiation, so recreate table
                 createHotTableFromConcepts(batchEditingService.getBatchConcepts());
@@ -294,8 +298,11 @@ angular.module('singleConceptAuthoringApp')
               modalService.message('Please Complete Concept', msg, completionErrors);
             } else {
 
+              // store template
+              var template = concept.template;
+
               // store concept id (if not an SCTID)
-              var conceptGuid = snowowlService.isSctid(concept.conceptId) ? null : concept.conceptId;
+              var originalConceptId = concept.conceptId;
 
               // clean concept
               snowowlService.cleanConcept(concept);
@@ -328,19 +335,36 @@ angular.module('singleConceptAuthoringApp')
                 scope.task.projectKey,
                 scope.task.key,
                 concept
-              ).then(function (concept) {
-                // replace row values
-                var newRow = batchEditingService.getHotRowForConcept(concept);
-                console.debug('new row', newRow);
-                for (var key in newRow) {
-                  console.debug('setting ', row, key, newRow[key], 'template');
-                  hot.setDataAtRowProp(row, key, newRow[key], 'template');
+              ).then(function (savedConcept) {
+
+                // re-attach the concept id if present, using passed reference object from batchEditingService
+                concept.conceptId = originalConceptId;
+
+                console.debug('concept saved', savedConcept);
+                if (template) {
+
+                  templateService.applyTemplateToConcept(savedConcept, template).then(function () {
+
+                    console.debug('after applying template', savedConcept);
+                    // replace row values
+                    var newRow = batchEditingService.getHotRowForConcept(savedConcept);
+                    console.debug('new row', newRow);
+                    for (var key in newRow) {
+                      console.debug('  -> setting ', row, key, newRow[key], 'template');
+                      hot.setDataAtRowProp(row, key, newRow[key], 'template');
+                    }
+                    batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
+                      notificationService.sendMessage('Concept saved, batch successfully updated', 3000);
+                    }, function (error) {
+                      notificationService.sendWarning('Concept saved, but batch failed to update: ' + error);
+                    })
+                  }, function (error) {
+                    notificationService.sendError('Failed to apply template: ' + error);
+                  })
+                } else {
+                  notificationService.sendError('Unexpected error: No template stored for concept');
                 }
-                batchEditingService.updateBatchConcept(concept, conceptGuid).then(function () {
-                  notificationService.sendMessage('Concept saved, batch successfully updated', 3000);
-                }, function (error) {
-                  notificationService.sendWarning('Concept saved, but batch failed to update: ' + error);
-                })
+
               }, function (error) {
                 notificationService.sendError('Error saving concept: ' + error);
               })
