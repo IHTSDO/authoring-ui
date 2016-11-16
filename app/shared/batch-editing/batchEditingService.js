@@ -166,9 +166,37 @@ angular.module('singleConceptAuthoringApp')
         updateBatchUiState();
       }
 
-      function updateBatchConcept(concept) {
-        // TODO
-        updateBatchUiState();
+      function updateBatchConcept(concept, previousConceptId) {
+        console.debug('update batch concept', concept, previousConceptId);
+        var deferred = $q.defer();
+        if (!batchConcepts) {
+          deferred.reject('Cannot update batch concept, batch concepts not initialized');
+        } else {
+          // find by model concept id first
+          var index = batchConcepts.map(function (c) {
+            return c.conceptId
+          }).indexOf(conceptId);
+
+          // if concept id not found, check against previous concept id if supplied
+          // intended for use on concept creation (new SCTID assigned)
+          if (!index && previousConceptId) {
+            batchConcepts.map(function (c) {
+              return previousConceptId
+            }).indexOf(conceptId);
+          }
+
+          if (!index) {
+            deferred.reject('Cannot update batch concept, no concept with id found');
+          } else {
+            batchConcepts[index] = concept;
+          }
+        }
+        updateBatchUiState().then(function() {
+          deferred.resolve();
+        }, function(error) {
+          deferred.reject(error);
+        })
+        return deferred.promise;
       }
 
       function removeBatchConcept(conceptId) {
