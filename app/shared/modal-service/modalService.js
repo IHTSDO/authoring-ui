@@ -27,6 +27,36 @@ angular.module('singleConceptAuthoringApp').service('modalService', function ($m
         deferred.reject();
       });
       return deferred.promise;
+    },
+    message: function (message) {
+      var deferred = $q.defer();
+      var modalInstance = $modal.open({
+        templateUrl: 'shared/modal-service/modalConfirm.html',
+        controller: function ($scope, $modalInstance, title, message) {
+          $scope.title = title;
+          $scope.message = message;
+          $scope.cancel = function () {
+            $modalInstance.dismiss();
+          };
+          $scope.confirm = function () {
+            $modalInstance.close();
+          };
+        },
+        resolve: {
+          title: function() {
+            return title;
+          },
+          message: function () {
+            return message;
+          }
+        }
+      });
+      modalInstance.result.then(function () {
+        deferred.resolve();
+      }, function () {
+        deferred.reject();
+      });
+      return deferred.promise;
     }
   }
 });
