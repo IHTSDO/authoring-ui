@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp')
           'type': 'SYNONYM',
           'term': null,
           'lang': metadataService.getDefaultLanguageForModuleId(moduleId),
-          'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
+          'caseSignificance': 'CASE_INSENSITIVE',
           'conceptId': null,
           'acceptabilityMap': getNewAcceptabilityMap(moduleId, 'ACCEPTABLE')
         };
