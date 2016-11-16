@@ -2293,7 +2293,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if a new description (determined by blank term), ensure sensitivity
           // do not modify acceptability map
           else if (!description.effectiveTime && description.type === 'SYNONYM' && !metadataService.isLockedModule(description.moduleId)) {
-            description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+            description.caseSignificance = 'CASE_INSENSITIVE';
           }
 
           // if this is the FSN, apply defaults (if new) and check if a
@@ -2317,7 +2317,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
 
               });
-              description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+              description.caseSignificance = 'CASE_INSENSITIVE';
             }
           }
 
