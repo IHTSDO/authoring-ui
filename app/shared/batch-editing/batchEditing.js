@@ -89,6 +89,7 @@ angular.module('singleConceptAuthoringApp')
               columnSorting: {
                 column: 3
               },
+              sortIndicator: true,
               afterChange: function (changes, source) {
 
                 // if not user edit, perform no actions
@@ -344,6 +345,8 @@ angular.module('singleConceptAuthoringApp')
                 if (template) {
 
                   templateService.applyTemplateToConcept(savedConcept, template).then(function () {
+                    templateService.storeTemplateForConcept(scope.task.projectKey,concept.conceptId, template);
+                    templateService.logTemplateConceptSave(scope.task.projectKey, concept.conceptId, concept.fsn, template);
 
                     console.debug('after applying template', savedConcept);
                     // replace row values
