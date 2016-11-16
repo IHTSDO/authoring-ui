@@ -209,6 +209,7 @@ angular.module('singleConceptAuthoringApp')
           // User action functions
           //
 
+
           function createTemplateConcepts(template, batchSize) {
 
             var deferred = $q.defer();
@@ -242,12 +243,20 @@ angular.module('singleConceptAuthoringApp')
             createTemplateConcepts(template, batchSize).then(function (concepts) {
 
               // add to the existing batch concepts
-              batchEditingService.addBatchConcepts(concepts);
+              batchEditingService.addBatchConcepts(concepts).then(function () {
 
-              // weirdly can't seem to actually add rows from format in instantiation, so recreate table
-              createHotTableFromConcepts(batchEditingService.getBatchConcepts());
+                // weirdly can't seem to actually add rows from format in instantiation, so recreate table
+                createHotTableFromConcepts(batchEditingService.getBatchConcepts());
+              })
             });
           };
+
+          scope.clearConcepts = function () {
+            hot.destroy();
+            batchEditingService.setBatchConcepts([]).then(function () {
+              notificationService.sendMessage('Concepts removed from batch', 3000);
+            })
+          }
 
 // retrieve and add concept to editing panel
           scope.editConcept = function (row) {
@@ -268,34 +277,40 @@ angular.module('singleConceptAuthoringApp')
           scope.saveConcept = function (row) {
 
             // get corresponding concept
-            var concept = batchEditingService.getBatchConcept(hot.getSourceDataAtRow(row).conceptId);
+            var sourceData = hot.getSourceDataAtRow(row);
+            var concept = batchEditingService.getBatchConcept(sourceData.conceptId);
+
+            notificationService.sendMessage('Saving batch concept ' +
+              (sourceData.sctid ? sourceData.sctid : '(new)') +
+              ' |' + sourceData.fsn + '| ...');
+
+            console.debug('concept to save', concept);
 
             // check for completion
             var completionErrors = componentAuthoringUtil.checkConceptComplete(concept);
 
             if (completionErrors.length > 0) {
               var msg = 'Concept is not complete. Please fix the following problems:';
-              angular.forEach(completionErrors, function (error) {
-                msg += '\n' + error;
-              });
-              modalService.message('Please Complete Concept', msg);
+              modalService.message('Please Complete Concept', msg, completionErrors);
             } else {
 
-              // store concept id
-              var originalConceptId = concept.conceptId;
+              // store concept id (if not an SCTID)
+              var conceptGuid = snowowlService.isSctid(concept.conceptId) ? null : concept.conceptId;
 
               // clean concept
               snowowlService.cleanConcept(concept);
 
+              console.debug('cleaned concept', concept);
+
               // In order to ensure proper term-server behavior,
               // need to delete SCTIDs without effective time on descriptions and relationships
               // otherwise the values revert to termserver version
-              angular.forEach(scope.concept.descriptions, function (description) {
+              angular.forEach(concept.descriptions, function (description) {
                 if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
                   delete description.descriptionId;
                 }
               });
-              angular.forEach(scope.concept.relationships, function (relationship) {
+              angular.forEach(concept.relationships, function (relationship) {
                 if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime) {
                   delete relationship.relationshipId;
                 }
@@ -303,7 +318,7 @@ angular.module('singleConceptAuthoringApp')
 
               var saveFn = null;
 
-              if (!scope.concept.conceptId) {
+              if (!concept.conceptId) {
                 saveFn = snowowlService.createConcept;
               } else {
                 saveFn = snowowlService.updateConcept;
@@ -312,11 +327,23 @@ angular.module('singleConceptAuthoringApp')
               saveFn(
                 scope.task.projectKey,
                 scope.task.key,
-                scope.concept
-              ).then(function (response) {
-
+                concept
+              ).then(function (concept) {
+                // replace row values
+                var newRow = batchEditingService.getHotRowForConcept(concept);
+                console.debug('new row', newRow);
+                for (var key in newRow) {
+                  console.debug('setting ', row, key, newRow[key], 'template');
+                  hot.setDataAtRowProp(row, key, newRow[key], 'template');
+                }
+                batchEditingService.updateBatchConcept(concept, conceptGuid).then(function () {
+                  notificationService.sendMessage('Concept saved, batch successfully updated', 3000);
+                }, function (error) {
+                  notificationService.sendWarning('Concept saved, but batch failed to update: ' + error);
+                })
+              }, function (error) {
+                notificationService.sendError('Error saving concept: ' + error);
               })
-
             }
 
           };
