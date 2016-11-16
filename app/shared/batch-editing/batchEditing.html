@@ -8,10 +8,9 @@
           ng-click="addBatchConceptsFromTemplate(selectedTemplate, batchSize)">Load Test Concepts
   </button>
 
-
   <div class="row">
 
-    <div id="hotElem" class="hot handsontable htColumnHeaders" style="height:300px; overflow: hidden"></div>
+    <div id="hotElem" class="hot handsontable htColumnHeaders" style="height:300px; overflow: hidden" drop-channel="conceptPropertiesObj" ui-on-drop="dropConcept($event, $data)"></div>
   </div>
 
   <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
