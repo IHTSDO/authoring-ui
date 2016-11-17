@@ -543,16 +543,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   // all concept updates should clear the validation failure exclusions
                   validationService.clearValidationFailureExclusionsForConceptId(scope.concept.conceptId);
 
-                  // if a template specified, store template/concept info
-                  // store and re-apply the template (if present), cleaned during save
-                  if (scope.template) {
-                    scope.concept.template = scope.template;
-                    templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
-                    templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.concept.fsn, scope.template);
-                    templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
-                      console.debug('conceptEdit -- after apply template', scope.concept);
-                    })
-                  }
 
                   // if a crs concept
                   if (crsService.isCrsConcept(originalConceptId)) {
@@ -698,9 +688,37 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.validateConcept().then(function (results) {
                     notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
                     scope.saving = false;
+
+                    // if a template specified, store template/concept info
+                    // store and re-apply the template (if present), cleaned during save
+                    if (scope.template) {
+                      console.debug('reapplying template');
+                      scope.concept.template = scope.template;
+                      templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
+                      templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.concept.fsn, scope.template);
+                      templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
+                        console.debug('conceptEdit -- after apply template', scope.concept);
+                      })
+                    }
+
+
                   }, function (error) {
                     notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                     scope.saving = false;
+
+                    // if a template specified, store template/concept info
+                    // store and re-apply the template (if present), cleaned during save
+                    if (scope.template) {
+                      console.debug('reapplying template');
+                      scope.concept.template = scope.template;
+                      templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
+                      templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.concept.fsn, scope.template);
+                      templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
+                        console.debug('conceptEdit -- after apply template', scope.concept);
+                      })
+                    }
+
+
                   });
 
                 }, 1000);
@@ -734,7 +752,20 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               console.log('SAVE HELPER 2');
               saveHelper(scope.concept).then(function () {
-                scope.validateConcept();
+                scope.validateConcept().then(function() {
+                  // if a template specified, store template/concept info
+                  // store and re-apply the template (if present), cleaned during save
+                  if (scope.template) {
+                    console.debug('reapplying template');
+                    scope.concept.template = scope.template;
+                    templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
+                    templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.concept.fsn, scope.template);
+                    templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
+                      console.debug('conceptEdit -- after apply template', scope.concept);
+                    })
+                  }
+
+                })
                 notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
                 scope.saving = false;
               }, function (error) {
