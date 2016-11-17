@@ -93,6 +93,7 @@ angular.module('singleConceptAuthoringApp')
               afterChange: function (changes, source) {
 
                 // if not user edit, perform no actions
+                // currently used sources are: edit, save, templateService
                 if (source === 'edit') {
 
                   /// cycle over each cell change
@@ -126,13 +127,7 @@ angular.module('singleConceptAuthoringApp')
 
                           // apply template logical/lexical replacement
                           templateService.updateTargetSlot(concept, concept.template, r).then(function () {
-                            // replace row values
-                            var newRow = batchEditingService.getHotRowForConcept(concept);
-                            console.debug('new row', newRow);
-                            for (var key in newRow) {
-                              console.debug('setting ', row, key, newRow[key], 'template');
-                              hot.setDataAtRowProp(row, key, newRow[key], 'template');
-                            }
+                            updateRowDataFromConcept(row, concept, 'templateService');
                             batchEditingService.updateBatchConcept(concept);
 
                           })
@@ -199,13 +194,19 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function getIndexForColumnName(colName) {
-            console.debug('col heade3rs', hot.getColHeader());
+            console.debug('col headeers', hot.getColHeader());
             return hot.getColHeader().indexOf(colName);
           }
 
-          //3405 @62.618 [afterChange] [[1,5,5814,"asdf"]], "edit",
-
-
+          function updateRowDataFromConcept(rowIndex, concep, source) {
+            // replace row values
+            var newRow = batchEditingService.getHotRowForConcept(concept);
+            console.debug('new row', newRow);
+            for (var key in newRow) {
+              console.debug('setting ', rowIndex, key, newRow[key], source);
+              hot.setDataAtRowProp(rowIndex, key, newRow[key], source);
+            }
+          }
           //
           // User action functions
           //
@@ -350,13 +351,7 @@ angular.module('singleConceptAuthoringApp')
                     templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, savedConcept.fsn, template);
 
                     console.debug('after applying template', savedConcept);
-                    // replace row values
-                    var newRow = batchEditingService.getHotRowForConcept(savedConcept);
-                    console.debug('new row', newRow);
-                    for (var key in newRow) {
-                      console.debug('  -> setting ', row, key, newRow[key], 'template');
-                      hot.setDataAtRowProp(row, key, newRow[key], 'template');
-                    }
+                    updateRowDataFromConcept(row, savedConcept, 'save');
                     batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
                       notificationService.sendMessage('Concept saved, batch successfully updated', 3000);
                     }, function (error) {
@@ -417,7 +412,31 @@ angular.module('singleConceptAuthoringApp')
 
           // watch for save events from editing panel
           scope.$on('conceptEdit.conceptChange', function (event, data) {
+            if (!data || !data.concept) {
+              return;
+            }
 
+            notificationService.sendMessage('Updating batch list with saved concept...');
+
+            console.debug('concept edit panel save event', data.concept);
+
+            batchEditingService.updateBatchConcept(data.concept);
+
+            var hotData = hot.getData();
+            var rowFound = false;
+            for (var i = 0; i < hotData.length; i++) {
+              console.debug('checking row', hotData[i]);
+              if (hotData[i].conceptId === data.concept.conceptId) {
+                rowFound = true;
+                updateRowDataFromConcept(i, data.concept, 'save');
+                break;
+              }
+            }
+            if (!rowFound) {
+              notificationService.sendError('Concept saved from edit panel, but not found in batch');
+            } else {
+              notificationService.sendMessage('Batch list successfully updated', 3000); 
+            }
           });
 
           //
