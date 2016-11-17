@@ -418,15 +418,7 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Updating batch list with saved concept...');
 
-            console.debug('concept edit panel save event', data.concept);
-
-            batchEditingService.updateBatchConcept(data.concept, data.previousConceptId);
-
-            // replace id in viewed list if different
-            if (data.concept.conceptId !== data.previousConceptId) {
-              scope.viewedConcepts.replace(data.previousConceptId, data.concept.conceptId);
-              console.debug('new viewed concepts', scope.viewedConcepts);
-            }
+            console.debug('concept edit panel save event', data.concept, scope.viewedConcepts);
 
             // replace in tabular data
             var hotData = hot.getData();
