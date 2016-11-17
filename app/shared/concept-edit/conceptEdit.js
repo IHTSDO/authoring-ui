@@ -752,7 +752,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               console.log('SAVE HELPER 2');
               saveHelper(scope.concept).then(function () {
-                scope.validateConcept().then(function() {
+                scope.validateConcept().then(function () {
                   // if a template specified, store template/concept info
                   // store and re-apply the template (if present), cleaned during save
                   if (scope.template) {
@@ -2684,6 +2684,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
           }
         });
+
+        scope.$on('batchEditing.conceptChange', function (event, data) {
+          console.debug('batchEditing.conceptChange', data);
+          if (data.concept.conceptId === scope.concept.conceptId || data.concept.previousConceptId === scope.concept.conceptId) {
+            scope.concept = data.concept;
+            scope.isModified = data.isModified;
+          }
+        })
 
 //
 // CRS Key Filtering and Display
