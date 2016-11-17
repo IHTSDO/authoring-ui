@@ -20,7 +20,6 @@ angular.module('singleConceptAuthoringApp')
       //
 
       function initializeFromTask(task) {
-        console.debug('batchEditingService.initializeFromTask', task);
         var deferred = $q.defer();
         currentTask = task;
         getBatchUiState().then(function (concepts) {
@@ -71,17 +70,14 @@ angular.module('singleConceptAuthoringApp')
 
       function getHotRowForConcept(concept) {
 
-        console.debug('Get hot row for concept', concept);
-
         // get the slot type
         var row = {
           sctid: snowowlService.isSctid(concept.conceptId) ? concept.conceptId : '',
           conceptId: concept.conceptId,
-          fsn: componentAuthoringUtil.getFsnForConcept(concept),
+          fsn: componentAuthoringUtil.getFsnForConcept(concept)
         };
 
         // get the target slots
-        var slotCt = 0;
         angular.forEach(concept.relationships, function (r) {
           if (r.targetSlot && r.targetSlot.slotName) {
             row['targetSlot_' + r.targetSlot.slotName] = {
@@ -95,6 +91,8 @@ angular.module('singleConceptAuthoringApp')
 
           }
         });
+
+        console.debug('row', row);
 
         // detach object references
         return angular.copy(row);
@@ -111,7 +109,7 @@ angular.module('singleConceptAuthoringApp')
 
         var updatePromises = [];
         angular.forEach(slotKeys, function (slotKey) {
-          var targetSlot = row[slotKey]
+          var targetSlot = row[slotKey];
           angular.forEach(concept.relationships, function (r) {
             if (r.groupId === targetSlot.groupId && r.type.conceptId === targetSlot.type.conceptId) {
               r.target = targetSlot.target;
@@ -144,19 +142,16 @@ angular.module('singleConceptAuthoringApp')
           deferred.resolve();
         }, function (error) {
           deferred.reject(error);
-        })
+        });
         return deferred.promise;
       }
 
-      function getBatchConcepts(concepts) {
+      function getBatchConcepts() {
         return batchConcepts;
       }
 
       function getBatchConcept(conceptId) {
-        console.debug('get batch concept', conceptId, batchConcepts, batchConcepts.filter(function (c) {
-          return c.conceptId === conceptId;
-        }));
-        try {
+       try {
           return batchConcepts.filter(function (c) {
             return c.conceptId === conceptId;
           })[0];
@@ -189,12 +184,11 @@ angular.module('singleConceptAuthoringApp')
           deferred.resolve();
         }, function (error) {
           deferred.reject(error);
-        })
+        });
         return deferred.promise;
       }
 
       function updateBatchConcept(concept, previousConceptId) {
-        console.debug('update batch concept', concept, previousConceptId, batchConcepts);
         var deferred = $q.defer();
         if (!batchConcepts) {
           deferred.reject('Cannot update batch concept, batch concepts not initialized');
@@ -203,11 +197,8 @@ angular.module('singleConceptAuthoringApp')
           var conceptIdArray = batchConcepts.map(function (c) {
             return c.conceptId
           });
-          console.debug('conceptIdArray', conceptIdArray);
-          // find by model concept id first
+         // find by model concept id first
           var index = conceptIdArray.indexOf(concept.conceptId);
-
-          console.debug('index from concept id', index);
 
           // if concept id not found, check against previous concept id if supplied
           // intended for use on concept creation (new SCTID assigned)
@@ -215,13 +206,10 @@ angular.module('singleConceptAuthoringApp')
             index = conceptIdArray.indexOf(previousConceptId);
           }
 
-          console.debug('index from previousConceptId', index);
-
           if (index === -1) {
             deferred.reject('Cannot update batch concept, no concept with id found');
           } else {
             batchConcepts[index] = concept;
-            console.debug('updated batch concepts', batchConcepts, batchConcepts[index]);
           }
 
 
@@ -235,7 +223,6 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function removeBatchConcept(conceptId) {
-        console.debug('remove batch concept', conceptId);
         var deferred = $q.defer();
         if (!batchConcepts) {
           batchConcepts = [];
@@ -243,15 +230,12 @@ angular.module('singleConceptAuthoringApp')
         var index = batchConcepts.map(function (c) {
           return c.conceptId
         }).indexOf(conceptId);
-        console.debug('concept index', index, console.debug(batchConcepts.map(function (c) {
-          return c.conceptId
-        })));
-        batchConcepts.splice(index, 1);
+         batchConcepts.splice(index, 1);
         updateBatchUiState().then(function () {
           deferred.resolve();
         }, function (error) {
           deferred.reject(error);
-        })
+        });
         return deferred.promise;
       }
 

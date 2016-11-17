@@ -19,9 +19,7 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
-          console.debug('batch-editing directive');
-
-          var
+         var
             hotElem,          // the html element itself
             hot,              // the hands on table object
             hotDebounce,      // debounce timer used for async operations
@@ -112,18 +110,15 @@ angular.module('singleConceptAuthoringApp')
                       // get concept for row
                       var conceptId = hot.getSourceDataAtRow(row).conceptId;
                       var concept = batchEditingService.getBatchConcept(conceptId);
-                      console.debug('concept affected', concept);
 
                       // extract slot name (format targetSlot_SLOTNAME.target.fsn)
                       var slotName = field.match(/^targetSlot_([^.]*)/i)[1];
-                      console.debug('target slot name', slotName);
 
                       // replace target slot values
                       angular.forEach(concept.relationships, function (r) {
                         if (r.targetSlot && r.targetSlot.slotName === slotName) {
                           r.target.fsn = fsn;
                           r.target.conceptId = fsnToIdMap[fsn];
-                          console.debug('found target slot, modified concept', concept);
 
                           // apply template logical/lexical replacement
                           templateService.updateTargetSlot(concept, concept.template, r).then(function () {
@@ -146,13 +141,10 @@ angular.module('singleConceptAuthoringApp')
               // columns for CT of X
               columns: [
                 {
-                  title: ' ',
+                  title: ' ', // null/empty values render as Excel-style alphabetic title
                   renderer: deleteControl,
                   readOnly: true
-                }, // null/empty values render as Excel-style alphabetic title
-                // }
-                /* temp or SCTID, used for testing only
-                 {data: 'conceptId', title: 'ID', readOnly: true},*/
+                },
 
                 // SCTID -- computed field, actual concept id is hidden
                 {data: 'sctid', title: 'SCTID', readOnly: true},
@@ -167,7 +159,6 @@ angular.module('singleConceptAuthoringApp')
                     $timeout.cancel(hotDebounce);
                     if (query && query.length > 2) {
                       hotDebounce = $timeout(function () {
-                        console.debug(hot.getSchema(), hot.getSchema().targetSlot_0);
                         constraintService.getConceptsForValueTypeahead(
                           '405813007 ', query, scope.branch,
                           '<< 442083009 | Anatomical or acquired body structure |')
@@ -176,7 +167,6 @@ angular.module('singleConceptAuthoringApp')
                             angular.forEach(concepts, function (c) {
                               fsnToIdMap[c.fsn.term] = c.id;
                             });
-                            console.debug('updated fsn to id map', fsnToIdMap);
                             process(concepts.map(function (c) {
                               return c.fsn.term
                             }));
@@ -196,14 +186,12 @@ angular.module('singleConceptAuthoringApp')
           }
 
           function getIndexForColumnName(colName) {
-            console.debug('col headeers', hot.getColHeader());
             return hot.getColHeader().indexOf(colName);
           }
 
           function updateRowDataFromConcept(rowIndex, concept, source) {
             // replace row values
             var newRow = batchEditingService.getHotRowForConcept(concept);
-            console.debug('new row', newRow);
             for (var key in newRow) {
               hot.setDataAtRowProp(rowIndex, key, newRow[key], source);
             }
@@ -216,8 +204,6 @@ angular.module('singleConceptAuthoringApp')
           function createTemplateConcepts(template, batchSize) {
 
             var deferred = $q.defer();
-
-            console.debug('creating template concepts');
 
             // store the selected template for use by conceptEdit.js
             templateService.selectTemplate(template);
@@ -267,11 +253,9 @@ angular.module('singleConceptAuthoringApp')
 
 // retrieve and add concept to editing panel
           scope.editConcept = function (visibleIndex) {
-            console.debug('physicalIndex', visibleIndex, hot.sortIndex)
             var physicalIndex = hot.sortIndex[visibleIndex][0];
             var conceptId = hot.getSourceDataAtRow(physicalIndex).conceptId; // direct match to column
             var concept = batchEditingService.getBatchConcept(conceptId);
-            console.debug('concept for row', concept);
             if (scope.viewedConcepts.filter(function (c) {
                 return c.conceptId === concept.conceptId;
               }).length === 0) {
@@ -292,7 +276,6 @@ angular.module('singleConceptAuthoringApp')
               (sourceData.sctid ? sourceData.sctid : '(new)') +
               ' |' + sourceData.fsn + '| ...');
 
-            console.debug('concept to save', concept);
 
             // check for completion
             var completionErrors = componentAuthoringUtil.checkConceptComplete(concept);
@@ -310,8 +293,6 @@ angular.module('singleConceptAuthoringApp')
 
               // clean concept
               snowowlService.cleanConcept(concept);
-
-              console.debug('cleaned concept', concept);
 
               // In order to ensure proper term-server behavior,
               // need to delete SCTIDs without effective time on descriptions and relationships
@@ -343,15 +324,12 @@ angular.module('singleConceptAuthoringApp')
 
                 // re-attach the concept id if present, using passed reference object from batchEditingService
                 concept.conceptId = originalConceptId;
-
-                console.debug('concept saved', savedConcept);
-                if (template) {
+      if (template) {
 
                   templateService.applyTemplateToConcept(savedConcept, template).then(function () {
                     templateService.storeTemplateForConcept(scope.task.projectKey,savedConcept.conceptId, template);
                     templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, savedConcept.fsn, template);
 
-                    console.debug('after applying template', savedConcept);
                     $rootScope.$broadcast('batchEditing.conceptChange', {concept : concept, isModified : false, previousConceptId: originalConceptId});
                     updateRowDataFromConcept(row, savedConcept, 'save');
                     batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
@@ -374,7 +352,6 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.removeConcept = function (row) {
-            console.debug('remove row', row, hot.getSourceDataAtRow(row));
             var colIndex = getIndexForColumnName('sctid');
             var conceptId = hot.getSourceDataAtRow(row).conceptId; // direct match to column
             batchEditingService.removeBatchConcept(conceptId).then(function () {
@@ -395,7 +372,6 @@ angular.module('singleConceptAuthoringApp')
             var index = scope.viewedConcepts.map(function (c) {
               return c.conceptId
             }).indexOf(conceptId);
-            console.debug('remove index', conceptId, index);
             if (index !== -1) {
               scope.viewedConcepts.splice(index, 1);
             }
@@ -407,8 +383,7 @@ angular.module('singleConceptAuthoringApp')
 
           // watch for close events
           scope.$on('stopEditing', function (event, data) {
-            console.debug('received stop editing', data)
-            removeViewedConcept(data.concept.conceptId);
+             removeViewedConcept(data.concept.conceptId);
           });
 
 
@@ -420,14 +395,12 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Updating batch list with saved concept...');
 
-            console.debug('concept edit panel save event', data.concept, scope.viewedConcepts);
 
             // replace in tabular data
             var hotData = hot.getData();
             var rowFound = false;
             for (var i = 0; i < hotData.length; i++) {
               var sourceDataRow = hot.getSourceDataAtRow(i);
-              console.debug('checking row', hotData[i]);
               if (sourceDataRow.conceptId === data.concept.conceptId || sourceDataRow.conceptId === data.previousConceptId) {
                 rowFound = true;
                 updateRowDataFromConcept(i, data.concept, 'save');
@@ -447,10 +420,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.dropConcept = function (event, data) {
 
-            console.debug('drop concept', event, data);
-
-
-            // Hide the helper, so that we can use .elementFromPoint
+                  // Hide the helper, so that we can use .elementFromPoint
             // to grab the item beneath the cursor by coordinate
 
             var $destination = $(document.elementFromPoint(event.clientX, event.clientY));
@@ -480,9 +450,7 @@ angular.module('singleConceptAuthoringApp')
           //
           function initialize() {
 
-            console.debug('Batch Editing: initializing');
-
-            // get templates for dropdown
+                   // get templates for dropdown
             templateService.getTemplates().then(function (templates) {
               scope.templates = templates;
             });
