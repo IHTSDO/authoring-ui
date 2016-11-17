@@ -9,9 +9,9 @@
   </button>
   <button class="btn btn-default btn-danger" ng-click="clearConcepts()">Clear Batch</button>
 
-  <div class="row">
+  <div class="row" ng-show="isBatchLoaded()">
 
-    <div id="hotElem" class="hot handsontable htColumnHeaders" style="height:300px; overflow: hidden" drop-channel="conceptPropertiesObj" ui-on-drop="dropConcept($event, $data)"></div>
+    <div id="hotElem" class="hot handsontable htColumnHeaders" style="height:300px;   overflow: hidden" drop-channel="conceptPropertiesObj" ui-on-drop="dropConcept($event, $data)"></div>
   </div>
 
   <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
