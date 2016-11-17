@@ -581,6 +581,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   $rootScope.$broadcast('conceptEdit.conceptChange', {
                     branch: scope.branch,
                     conceptId: scope.concept.conceptId,
+                    previousConceptId: originalConceptId,
                     concept: scope.concept
                   });
 

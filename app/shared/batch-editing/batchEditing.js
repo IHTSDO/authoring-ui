@@ -198,7 +198,7 @@ angular.module('singleConceptAuthoringApp')
             return hot.getColHeader().indexOf(colName);
           }
 
-          function updateRowDataFromConcept(rowIndex, concep, source) {
+          function updateRowDataFromConcept(rowIndex, concept, source) {
             // replace row values
             var newRow = batchEditingService.getHotRowForConcept(concept);
             console.debug('new row', newRow);
@@ -420,13 +420,21 @@ angular.module('singleConceptAuthoringApp')
 
             console.debug('concept edit panel save event', data.concept);
 
-            batchEditingService.updateBatchConcept(data.concept);
+            batchEditingService.updateBatchConcept(data.concept, data.previousConceptId);
 
+            // replace id in viewed list if different
+            if (data.concept.conceptId !== data.previousConceptId) {
+              scope.viewedConcepts.replace(data.previousConceptId, data.concept.conceptId);
+              console.debug('new viewed concepts', scope.viewedConcepts);
+            }
+
+            // replace in tabular data
             var hotData = hot.getData();
             var rowFound = false;
             for (var i = 0; i < hotData.length; i++) {
+              var sourceDataRow = hot.getSourceDataAtRow(i);
               console.debug('checking row', hotData[i]);
-              if (hotData[i].conceptId === data.concept.conceptId) {
+              if (sourceDataRow.conceptId === data.concept.conceptId || sourceDataRow.conceptId === data.previousConceptId) {
                 rowFound = true;
                 updateRowDataFromConcept(i, data.concept, 'save');
                 break;
@@ -435,7 +443,7 @@ angular.module('singleConceptAuthoringApp')
             if (!rowFound) {
               notificationService.sendError('Concept saved from edit panel, but not found in batch');
             } else {
-              notificationService.sendMessage('Batch list successfully updated', 3000); 
+              notificationService.sendMessage('Batch list successfully updated', 3000);
             }
           });
 
