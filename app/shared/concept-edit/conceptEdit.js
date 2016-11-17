@@ -91,7 +91,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         showInactive: '@?',
 
 
-
       },
       templateUrl: 'shared/concept-edit/conceptEdit.html',
 
@@ -550,7 +549,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     scope.concept.template = scope.template;
                     templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
                     templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.concept.fsn, scope.template);
-                    templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
+                    templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
+                      console.debug('conceptEdit -- after apply template', scope.concept);
+                    })
                   }
 
                   // if a crs concept
