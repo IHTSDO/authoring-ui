@@ -21,10 +21,9 @@ angular.module('singleConceptAuthoringApp')
 
          var
             hotElem,          // the html element itself
-            hot,              // the hands on table object
-            hotDebounce,      // debounce timer used for async operations
-            fsnToIdMap = {}        // map of fsn to SCTID used by target slots
+            hot              // the hands on table object
             ;
+
 
           scope.viewedConcepts = [];  // concepts opened for editing by user
           scope.templates = []; // available templates
@@ -32,35 +31,8 @@ angular.module('singleConceptAuthoringApp')
           // HTML Renderers for removal and other user actions
           //
 
-          function compileCell(td, elements) {
-            // clear children so that re-renders don't cause duplication
-            while (td.firstChild) {
-              td.removeChild(td.firstChild);
-            }
-            angular.forEach(elements, function (el) {
-              var compiled = $compile(el)(scope);
-              td.appendChild(compiled[0]);
-            });
-          }
 
-          var deleteControl = function (hotInstance, td, row, col, prop, value) {
-            var els = ['<a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(' + row + ')">' + '</a>'];
-            return compileCell(td, els);
-          };
 
-          var relationshipTarget = function (hotInstance, td, row, col, prop, value) {
-            var els = ['<div contenteditable="true" style="width: 100%;" class="pull-left sourcename" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(row, prop, $data)"></div>'];
-            return compileCell(td, els);
-          }
-
-          var userControls = function (hotInstance, td, row, col, prop, value) {
-            var els = [
-              '<a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(' + row + ')">' + '</a>',
-              '<a class="md md-save" title="Save Concept" ng-click="saveConcept(' + row + ')">' + '</a>',
-              '<a class="md md-school" title="Validate Concept" ng-click="validateConcept(' + row + ')">' + '</a>'
-            ];
-            return compileCell(td, els);
-          };
 
           //
           // HoT <-> Concept model interface functions
@@ -118,7 +90,7 @@ angular.module('singleConceptAuthoringApp')
                       angular.forEach(concept.relationships, function (r) {
                         if (r.targetSlot && r.targetSlot.slotName === slotName) {
                           r.target.fsn = fsn;
-                          r.target.conceptId = fsnToIdMap[fsn];
+                          r.target.conceptId = batchEditingService.getConceptIdForFsn(fsn);
 
                           // apply template logical/lexical replacement
                           templateService.updateTargetSlot(concept, concept.template, r).then(function () {
@@ -139,50 +111,8 @@ angular.module('singleConceptAuthoringApp')
 
 
               // columns for CT of X
-              columns: [
-                {
-                  title: ' ', // null/empty values render as Excel-style alphabetic title
-                  renderer: deleteControl,
-                  readOnly: true
-                },
-
-                // SCTID -- computed field, actual concept id is hidden
-                {data: 'sctid', title: 'SCTID', readOnly: true},
-                {data: 'fsn', title: 'FSN'},
-                {
-                  data: 'targetSlot_procSite.target.fsn',
-                  title: 'Procedure Site -- direct (attribute)',
-                  type: 'autocomplete',
-                  strict: true,
-                  source: function (query, process) {
-
-                    $timeout.cancel(hotDebounce);
-                    if (query && query.length > 2) {
-                      hotDebounce = $timeout(function () {
-                        constraintService.getConceptsForValueTypeahead(
-                          '405813007 ', query, scope.branch,
-                          '<< 442083009 | Anatomical or acquired body structure |')
-                          .then(function (concepts) {
-                            // TODO Ideally would store only one fsn (on select), but haven't found HoT hook yet
-                            angular.forEach(concepts, function (c) {
-                              fsnToIdMap[c.fsn.term] = c.id;
-                            });
-                            process(concepts.map(function (c) {
-                              return c.fsn.term
-                            }));
-                          }, function (error) {
-                            console.error('error getting typeahead values', error);
-                          })
-                      }, 500)
-                    }
-
-                  }
-                }, {
-                  title: ' ', // null/empty values render as Excel-style alphabetic title
-                  renderer: userControls,
-                  readOnly: true
-                }]
-            })
+              columns: batchEditingService.getHotColumns()
+            });
           }
 
           function getIndexForColumnName(colName) {
@@ -457,7 +387,7 @@ angular.module('singleConceptAuthoringApp')
 
 
             // initialize from task
-            batchEditingService.initializeFromTask(scope.task).then(function () {
+            batchEditingService.initializeFromScope(scope).then(function () {
 
               // create the table from batch concepts (if present)
               createHotTableFromConcepts(batchEditingService.getBatchConcepts());
