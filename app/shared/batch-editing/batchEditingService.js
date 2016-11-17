@@ -28,7 +28,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         currentScope = scope;
         initializeFromTask(scope.task).then(function() {
-          deferred.resolve();
+          deferred.resolve(batchConcepts);
         }, function(error) {
           deferred.reject(error);
         });
@@ -48,6 +48,10 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject(error);
         });
         return deferred.promise;
+      }
+
+      function getCurrentTemplate() {
+        return currentTemplate;
       }
 
       function changeTemplate(template) {
@@ -173,7 +177,7 @@ angular.module('singleConceptAuthoringApp')
 
             columns.push({
               data: 'targetSlot_' + relationship.targetSlot.slotName + '.target.fsn',
-              title: 'TODO SLOT NAME HERE',
+              title: relationship.targetSlot.slotName,
               type: 'autocomplete',
               strict: true,
               source: sourceFn
@@ -367,8 +371,6 @@ angular.module('singleConceptAuthoringApp')
 
         // initialization
         initializeFromScope : initializeFromScope,
-        initializeFromTask: initializeFromTask,
-        changeTemplate : changeTemplate,
 
         // HOT functions
         getHotColumns: getHotColumns,
@@ -377,6 +379,8 @@ angular.module('singleConceptAuthoringApp')
 
         // Utility functions
         getConceptIdForFsn : getConceptIdForFsn,
+        getCurrentTemplate : getCurrentTemplate,
+        changeTemplate : changeTemplate,
 
         // CRUD operations
         setBatchConcepts: setBatchConcepts,

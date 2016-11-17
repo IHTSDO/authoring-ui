@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp')
 
         link: function (scope, element, attrs, linkCtrl) {
 
-         var
+          var
             hotElem,          // the html element itself
             hot              // the hands on table object
             ;
@@ -27,23 +27,19 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewedConcepts = [];  // concepts opened for editing by user
           scope.templates = []; // available templates
+          scope.selectedTemplate = null;
           //
           // HTML Renderers for removal and other user actions
           //
 
 
-
-
-          //
-          // HoT <-> Concept model interface functions
-          //
-          function updateConceptModelFromRow(row) {
-
-          }
-
           //
           // HoT Table Functions
           //
+
+          scope.isBatchLoaded = function() {
+            return hot ? true : false;
+          }
 
           function createHotTableFromConcepts(concepts) {
 
@@ -60,6 +56,7 @@ angular.module('singleConceptAuthoringApp')
                 column: 3
               },
               sortIndicator: true,
+              manualColumnResize: true,
               afterChange: function (changes, source) {
 
                 // if not user edit, perform no actions
@@ -94,7 +91,7 @@ angular.module('singleConceptAuthoringApp')
 
                           // apply template logical/lexical replacement
                           templateService.updateTargetSlot(concept, concept.template, r).then(function () {
-                            $rootScope.$broadcast('batchEditing.conceptChange', {concept : concept, isModified : true});
+                            $rootScope.$broadcast('batchEditing.conceptChange', {concept: concept, isModified: true});
                             updateRowDataFromConcept(row, concept, 'templateService');
                             batchEditingService.updateBatchConcept(concept);
                           })
@@ -102,7 +99,7 @@ angular.module('singleConceptAuthoringApp')
                       });
 
                     } else {
-                      $rootScope.$broadcast('batchEditing.conceptChange', {concept : concept});
+                      $rootScope.$broadcast('batchEditing.conceptChange', {concept: concept});
                     }
                   });
                 }
@@ -126,6 +123,7 @@ angular.module('singleConceptAuthoringApp')
               hot.setDataAtRowProp(rowIndex, key, newRow[key], source);
             }
           }
+
           //
           // User action functions
           //
@@ -176,6 +174,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.clearConcepts = function () {
             hot.destroy();
+            scope.viewedConcepts = [];
             batchEditingService.setBatchConcepts([]).then(function () {
               notificationService.sendMessage('Concepts removed from batch', 3000);
             })
@@ -254,13 +253,17 @@ angular.module('singleConceptAuthoringApp')
 
                 // re-attach the concept id if present, using passed reference object from batchEditingService
                 concept.conceptId = originalConceptId;
-      if (template) {
+                if (template) {
 
                   templateService.applyTemplateToConcept(savedConcept, template).then(function () {
-                    templateService.storeTemplateForConcept(scope.task.projectKey,savedConcept.conceptId, template);
+                    templateService.storeTemplateForConcept(scope.task.projectKey, savedConcept.conceptId, template);
                     templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, savedConcept.fsn, template);
 
-                    $rootScope.$broadcast('batchEditing.conceptChange', {concept : concept, isModified : false, previousConceptId: originalConceptId});
+                    $rootScope.$broadcast('batchEditing.conceptChange', {
+                      concept: concept,
+                      isModified: false,
+                      previousConceptId: originalConceptId
+                    });
                     updateRowDataFromConcept(row, savedConcept, 'save');
                     batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
                       notificationService.sendMessage('Concept saved, batch successfully updated', 3000);
@@ -286,6 +289,9 @@ angular.module('singleConceptAuthoringApp')
             var conceptId = hot.getSourceDataAtRow(row).conceptId; // direct match to column
             batchEditingService.removeBatchConcept(conceptId).then(function () {
               hot.alter('remove_row', row);
+              if (hot.getData().length === 0) {
+                hot.destroy();
+              }
               removeViewedConcept(conceptId);
             }, function (error) {
               notificationService.sendError('Unexpected error removing batch concept: ' + error);
@@ -313,7 +319,7 @@ angular.module('singleConceptAuthoringApp')
 
           // watch for close events
           scope.$on('stopEditing', function (event, data) {
-             removeViewedConcept(data.concept.conceptId);
+            removeViewedConcept(data.concept.conceptId);
           });
 
 
@@ -350,7 +356,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.dropConcept = function (event, data) {
 
-                  // Hide the helper, so that we can use .elementFromPoint
+            // Hide the helper, so that we can use .elementFromPoint
             // to grab the item beneath the cursor by coordinate
 
             var $destination = $(document.elementFromPoint(event.clientX, event.clientY));
@@ -380,17 +386,20 @@ angular.module('singleConceptAuthoringApp')
           //
           function initialize() {
 
-                   // get templates for dropdown
+            // get templates for dropdown
             templateService.getTemplates().then(function (templates) {
               scope.templates = templates;
             });
 
 
             // initialize from task
-            batchEditingService.initializeFromScope(scope).then(function () {
-
+            batchEditingService.initializeFromScope(scope).then(function (batchConcepts) {
               // create the table from batch concepts (if present)
-              createHotTableFromConcepts(batchEditingService.getBatchConcepts());
+              if (batchConcepts.length > 0) {
+                createHotTableFromConcepts(batchConcepts);
+                scope.selectedTemplate = batchEditingService.getCurrentTemplate();
+                console.debug('selected template', scope.selectedTemplate);
+              }
             })
           }
 
