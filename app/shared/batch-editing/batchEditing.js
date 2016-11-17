@@ -127,13 +127,15 @@ angular.module('singleConceptAuthoringApp')
 
                           // apply template logical/lexical replacement
                           templateService.updateTargetSlot(concept, concept.template, r).then(function () {
+                            $rootScope.$broadcast('batchEditing.conceptChange', {concept : concept, isModified : true});
                             updateRowDataFromConcept(row, concept, 'templateService');
                             batchEditingService.updateBatchConcept(concept);
-
                           })
                         }
                       });
 
+                    } else {
+                      $rootScope.$broadcast('batchEditing.conceptChange', {concept : concept});
                     }
                   });
                 }
@@ -203,7 +205,6 @@ angular.module('singleConceptAuthoringApp')
             var newRow = batchEditingService.getHotRowForConcept(concept);
             console.debug('new row', newRow);
             for (var key in newRow) {
-              console.debug('setting ', rowIndex, key, newRow[key], source);
               hot.setDataAtRowProp(rowIndex, key, newRow[key], source);
             }
           }
@@ -351,6 +352,7 @@ angular.module('singleConceptAuthoringApp')
                     templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, savedConcept.fsn, template);
 
                     console.debug('after applying template', savedConcept);
+                    $rootScope.$broadcast('batchEditing.conceptChange', {concept : concept, isModified : false, previousConceptId: originalConceptId});
                     updateRowDataFromConcept(row, savedConcept, 'save');
                     batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
                       notificationService.sendMessage('Concept saved, batch successfully updated', 3000);
