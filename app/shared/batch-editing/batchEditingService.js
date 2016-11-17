@@ -96,8 +96,8 @@ angular.module('singleConceptAuthoringApp')
           }
         });
 
-
-        return row;
+        // detach object references
+        return angular.copy(row);
       }
 
       function updateConceptFromHotRow(row) {
