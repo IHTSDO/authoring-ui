@@ -148,7 +148,12 @@
           <tr ng-repeat="concept in conceptsToReviewViewed">
             <td class="col-checkbox col-md-1 no-padding " ng-show="role === 'REVIEWER' && task.status === 'In Review'"
                 header="'ng-table/headers/checkboxToReview.html'">
-              <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
+                <div class="checkbox">
+                <label class="filled">
+                <input type="checkbox" ng-model="concept.selected" ui-on-drop="">
+                </label>
+            </div> 
+              
             </td>
             <td class=" col-md-8" data-title="'Concept'" sortable="'term'"
                 filter="{ 'term': 'text' }"
