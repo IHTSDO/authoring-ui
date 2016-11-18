@@ -45,7 +45,7 @@ angular.module('singleConceptAuthoringApp')
           'type': 'SYNONYM',
           'term': null,
           'lang': metadataService.getDefaultLanguageForModuleId(moduleId),
-          'caseSignificance': 'INITIAL_CHARACTER_CASE_INSENSITIVE',
+          'caseSignificance': 'CASE_INSENSITIVE',
           'conceptId': null,
           'acceptabilityMap': getNewAcceptabilityMap(moduleId, 'ACCEPTABLE')
         };
@@ -361,7 +361,7 @@ angular.module('singleConceptAuthoringApp')
           var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
           var pt = null;
           angular.forEach(concept.descriptions, function (d) {
-            if (d.type === 'SYNONYM' && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+            if (d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
               if (d.term && d.term !== '' && d.term !== null) {
                 pt = d;
               }
@@ -645,6 +645,7 @@ angular.module('singleConceptAuthoringApp')
             applyDialectAutomationExceptions(concept, tokenizedWords, matchingWords);
 
 
+            //applyDialectAutomationExceptions(concept, tokenizedWords, matchingWords);
             deferred.resolve(concept);
           }, function (error) {
             deferred.reject('Error matching dialect words: ' + error);
@@ -664,8 +665,6 @@ angular.module('singleConceptAuthoringApp')
           ptFromFsnAutomation(concept, description);
           deferred.resolve(concept);
         }
-
-
         // run international dialect automation (includes PT automation for international)
         else {
           runInternationalDialectAutomation(concept, description).then(function (updatedConcept) {

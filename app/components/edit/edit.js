@@ -714,7 +714,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // if concept exists and is unsaved, use JSON representation
         if (crsConcept && !crsConcept.saved) {
-
           // if the concept has been saved, retrieve from
           $scope.concepts.push(crsConcept.concept);
           notificationService.sendMessage('All concepts loaded', 5000, null);
