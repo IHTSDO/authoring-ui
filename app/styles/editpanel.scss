@@ -315,9 +315,9 @@ select.primitive {
     border-color: #2fa94f;
     background-color: #41ca65;
 }
-textarea,
-input,
-select {
+.editing-form textarea,
+.editing-form input,
+.editing-form select {
     resize: none!important;
     min-height: 30px!important;
     max-height: 60px;

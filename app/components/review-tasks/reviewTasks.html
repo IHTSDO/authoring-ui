@@ -31,6 +31,7 @@
   .review-checkbox {
     text-align: center;
   }
+ 
 </style>
 
 <div class="row no-gutter sca-container ">
@@ -45,13 +46,15 @@
 
         <div class="row" style="margin-right:0px;">
           <div class="col-md-3 no-padding">
-            <h3 class="table-title p-20">Review Tasks
-              &nbsp;&nbsp;
+            <h3 class="table-title ">     <div class="p-20 pull-left">Review Tasks
+         </div>
+              <div class="min-height-20 pull-right p-15">
               <button ng-show="hasSelectedUnclaimedTasks()"
                       ng-click="assignSelectedUnclaimedTasks()"
                       class="badge In Review"><i class="md md-email"></i>&nbsp;Claim
                 Selected
               </button>
+              </div>
             </h3>
           </div>
 
@@ -93,8 +96,8 @@
             <tr ng-repeat="task in $data" class="clickable-row">
 
               <td class="review-checkbox no-padding " ng-show="hasUnclaimedTasks()">
-                <input type="checkbox" ng-model="task.selectedUnclaimed" ui-on-drop="" ng-show="isUnclaimedTask(task)">
-              </td>
+               <div class="checkbox"><label class="filled"><input type="checkbox" ng-model="task.selectedUnclaimed" ui-on-drop="" ng-show="isUnclaimedTask(task)"></label>
+            </div>  </td>
 
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'"
                   filter="{ 'summary': 'text' }">
