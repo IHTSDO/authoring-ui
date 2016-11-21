@@ -640,40 +640,8 @@ angular.module('singleConceptAuthoringApp.edit', [
           notificationService.sendMessage('Concept loaded', 3000);
         } else {
 
-          // get the concept and add it to the stack
-          snowowlService.getFullConcept(conceptId, $scope.targetBranch).then(function (response) {
-            $scope.conceptLoading = false;
-            if (!response) {
-              return;
-            }
-
-            $scope.concepts.push(response);
-
-            if ($scope.editList.indexOf(conceptId) === -1) {
-              $scope.updateEditListUiState();
-            }
-
-            if ($scope.concepts.length === $scope.editList.length) {
-              notificationService.sendMessage('All concepts loaded', 10000, null);
-              // ensure loaded concepts match order of edit list
-              $scope.concepts.sort(function (a, b) {
-                return $scope.editList.indexOf(a.conceptId) > $scope.editList.indexOf(b.conceptId);
-              });
-              $scope.updateEditListUiState();
-            } else {
-              // send loading notification for user display
-              notificationService.sendMessage('Loading concepts...', 10000, null);
-            }
-
-          }, function (error) {
-            $scope.conceptLoading = false;
-            console.log('Error retrieving concept', error);
-            if (error.status === 404) {
-              notificationService.sendWarning('Concept not found on this branch. If it exists on another branch, promote that branch and try again');
-            } else {
-              notificationService.sendError('Unexpected error retrieving concept');
-            }
-          });
+        if ($scope.concepts.length === $scope.editList.length) {
+          notificationService.sendMessage('All concepts loaded', 10000, null);
         }
       });
       return deferred.promise;
@@ -714,7 +682,6 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // if concept exists and is unsaved, use JSON representation
         if (crsConcept && !crsConcept.saved) {
-
           // if the concept has been saved, retrieve from
           $scope.concepts.push(crsConcept.concept);
           notificationService.sendMessage('All concepts loaded', 5000, null);

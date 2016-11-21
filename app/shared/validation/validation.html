@@ -47,19 +47,7 @@
       border: 1px solid #00a6e5 !important;
     }
 
-    .validation-report .checkbox input[type=checkbox]:after, .validation-report .checkbox-inline input[type=checkbox]:after, .validation-report input[type=checkbox]:after {
-      content: "";
-      display: block;
-      width: 20px;
-      height: 20px;
-      margin-top: -2px;
-      margin-right: 5px;
-      border: 1px solid #DBDBDB;
-      border-radius: 2px;
-      transition: 240ms;
-      background: transparent !important;
-
-    }
+   
 
     .table-full thead tr > th input[type=checkbox] {
       width: 16px;
@@ -69,46 +57,7 @@
       padding-top: 10px;
     }
 
-    .validation-report input[type=checkbox]:after, .table-full thead tr > th input[type=checkbox]:after {
-      content: "";
-      display: block;
-      width: 16px;
-      height: 16px;
-      margin-top: -6px;
-      margin-right: 5px;
-      margin-left: 5px;
-      border: 1px solid #ddd;
-      border-radius: 2px;
-      -webkit-transition: 240ms;
-      -o-transition: 240ms;
-      transition: 240ms;
-      color: #000 !important
-
-    }
-
-    .validation-report input[type=checkbox]:checked:before, .table-full thead tr > th input[type=checkbox]:before {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: table;
-      width: 6px;
-      height: 12px;
-      border: 2px solid #fff;
-      border-top-width: 0;
-      border-left-width: 0;
-      -webkit-transform: rotate(45deg);
-      -ms-transform: rotate(45deg);
-      -o-transform: rotate(45deg);
-      transform: rotate(45deg);
-    }
-
-    .validation-report .table-full input[type=checkbox] {
-      /* margin: 7px 0 0; */
-      color: #009cd7 !important;
-      min-height: 16px !important;
-    }
-
+   
     .validation-report .table-full-small tbody > tr > td:first-child, .validation-report .table-full-small thead tr > th:first-child {
       padding-left: 10px;
     }
@@ -215,9 +164,14 @@
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">
-            <td class="col-checkbox" header-title="'Click to select all'"
+            <td  header-title="'Click to select all'"
                 header="'ng-table/headers/checkboxHeader.html'">
-              <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
+                 <div class="checkbox">
+                            <label class="filled">
+                            <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
+                            </label>
+            </div> 
+             
             </td>
             <!-- other columns here -->
             <td header-title="'Click to sort'" data-title="'Concept Id'" sortable="'conceptId'">

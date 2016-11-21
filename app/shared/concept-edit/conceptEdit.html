@@ -319,7 +319,7 @@
 
                         <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
                                   ng-model-options="{updateOn: 'blur'}"
-                                  ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                                  ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                                   maxlength="255"
                                   ng-model="description.term"
                                   class="form-control msd-elastic: \n;"
@@ -330,7 +330,7 @@
 
             <textarea autofocus ng-if="description.type === 'SYNONYM'"
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
-                      ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       maxlength="255"
                       ng-model="description.term"
                       ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
@@ -340,7 +340,7 @@
             <textarea ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="2048"
                       ng-change="updateDescription(description)"
-                      ng-disabled="isStatic || description.released || isLockedModule(description.moduleId)"
+                      ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
@@ -491,12 +491,12 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                                    <textarea
-                                      ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
-                                      ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
-                                      ng-change="updateRelationship(relationship, true)"
-                                      class="form-control rg msd-elastic: \n;"
-                                      type="text" placeholder="#" ui-on-drop="dropNullOp()">
+                                    <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
+                                    <textarea ng-readonly="isStatic  || isLockedModule(relationship.moduleId)"
+                                              ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
+                                              ng-change="updateRelationship(relationship, true)"
+                                              class="form-control rg msd-elastic: \n;"
+                                              type="text" placeholder="#" ui-on-drop="dropNullOp()">
                                     </textarea>
                   <span>Role Group</span>
                 </div>
@@ -510,7 +510,7 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
                                     <textarea type="text" ng-model="relationship.type.fsn"
-                                              ng-disabled="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
+                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
                                               class="resizable-text form-control msd-elastic: \n;"
 
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
@@ -542,7 +542,7 @@
 
 
                   <textarea type="text" ng-model="relationship.target.fsn"
-                            ng-disabled="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
+                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
                             class="resizable-text relationship msd-elastic: \n;"
                             ng-class="[{'template-slot' : relationship.targetSlot}]"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"

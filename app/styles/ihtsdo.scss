@@ -5307,7 +5307,6 @@ select[multiple] {
 .radio label,
 .radio-inline label {
   padding-left: 33px;
-  margin-bottom: 5px;
   line-height: 30px;
   cursor: pointer;
 }
@@ -5398,10 +5397,10 @@ input[type=radio]:disabled:checked:before {
 }
 .checkbox input[type=checkbox],
 .checkbox-inline input[type=checkbox] {
-  margin-left: -33px;
+  margin-left: -26px;
 }
 label input[type=checkbox] {
-  margin-left: -33px;
+  margin-left: -26px;
   position: inherit;
 }
 .checkbox input[type=checkbox],
@@ -5417,42 +5416,9 @@ input[type=checkbox] {
 input[type=checkbox]:focus {
   outline: 0;
 }
-.checkbox input[type=checkbox]:after,
-.checkbox-inline input[type=checkbox]:after,
-input[type=checkbox]:after {
-  content: "";
-  display: block;
-  width: 25px;
-  height: 25px;
-  margin-top: -2px;
-  margin-right: 5px;
-  border: 2px solid #666;
-  border-radius: 2px;
-  -webkit-transition: 240ms;
-  -o-transition: 240ms;
-  transition: 240ms;
-}
 .progress,
 .progress-bar:last-child {
   border-radius: 0;
-}
-.checkbox input[type=checkbox]:checked:before,
-.checkbox-inline input[type=checkbox]:checked:before,
-input[type=checkbox]:checked:before {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 10px;
-  display: table;
-  width: 6px;
-  height: 12px;
-  border: 2px solid #fff;
-  border-top-width: 0;
-  border-left-width: 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
 }
 .checkbox input[type=checkbox]:disabled:checked:after,
 .checkbox-inline input[type=checkbox]:disabled:checked:after,
@@ -12728,4 +12694,36 @@ Uat Ribbon
 	background-image: url("../images/uat_ribbon.png");
 	background-position: center center;
 	background-repeat: no-repeat;
+}
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
+	margin-left: -26px;
+}
+ .checkbox input[type=checkbox]:checked:before, .checkbox-inline input[type=checkbox]:checked:before, input[type=checkbox]:checked:before {
+    content: "";
+    position: absolute;
+   top: -2px;
+    left: 5px;
+    display: table;
+    width: 6px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-top-width: 0;
+    border-left-width: 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.checkbox input[type=checkbox]:after, .checkbox-inline input[type=checkbox]:after, input[type=checkbox]:after {
+    content: "";
+    display: block;
+    width: 17px;
+    height: 17px;
+    margin-top: -2px;
+    margin-right: 5px;
+    border: 1px solid #94969a;
+    border-radius: 2px;
+    -webkit-transition: 240ms;
+    -o-transition: 240ms;
+    transition: 240ms;
 }
