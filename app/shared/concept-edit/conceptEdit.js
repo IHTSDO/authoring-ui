@@ -162,15 +162,18 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.relationshipInLogicalModel = templateService.relationshipInLogicalModel;
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
 
-        scope.applyTemplate = function () {
-          var selectedTemplate = scope.getSelectedTemplate();
+        //
+        // Function to reapply template, intended for use after cleanConcept invocations
+        //
+        scope.reapplyTemplate = function () {
+         if (scope.template) {
 
-          templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate).then(function () {
-            scope.template = selectedTemplate;
-            templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
-          }, function (error) {
-            notificationService.sendError('Failed to store template for concept: ' + error);
-          });
+           templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template).then(function () {
+             templateService.applyTemplateToConcept(scope.concept, scope.template);
+           }, function (error) {
+             notificationService.sendError('Failed to reapply template for concept: ' + error);
+           });
+         }
         };
 
         scope.removeTemplate = function () {
@@ -190,14 +193,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.template = null;
             templateService.removeTemplateFromConcept(scope.concept);
           }
-        };
-
-        // NOTE: Currently unused
-        scope.validateAgainstTemplate = function () {
-          templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
-          }, function (error) {
-            notificationService.sendError('Error applying template: ' + error);
-          });
         };
 
 
@@ -670,6 +665,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else if (scope.validation && scope.validation.hasErrors) {
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
               scope.saving = false;
+              scope.reapplyTemplate();
             }
 
             // if no errors but warnings, save, results will be displayed
@@ -690,9 +686,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                   scope.validateConcept().then(function (results) {
                     notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
                     scope.saving = false;
+                    scope.reapplyTemplate();
                   }, function (error) {
                     notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                     scope.saving = false;
+                    scope.reapplyTemplate();
                   });
                 }, 1000);
               }, function (error) {
@@ -709,6 +707,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 else {
                   notificationService.sendError('Error saving concept: ' + error.statusText);
                 }
+                scope.reapplyTemplate();
                 scope.saving = false;
               });
             }
@@ -725,6 +724,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               console.log('SAVE HELPER 2');
               saveHelper(scope.concept).then(function () {
                 scope.validateConcept();
+                scope.reapplyTemplate();
                 notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
                 scope.saving = false;
               }, function (error) {
@@ -740,12 +740,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 else {
                   notificationService.sendError('Error saving concept: ' + error.statusText);
                 }
+                scope.reapplyTemplate();
                 scope.saving = false;
               });
             }
 
           }, function (error) {
             notificationService.sendError('Fatal error: Could not validate concept');
+            scope.reapplyTemplate();
             scope.saving = false;
           });
         };
