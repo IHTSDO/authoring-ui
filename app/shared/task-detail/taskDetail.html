@@ -106,6 +106,82 @@
     </div>
     <div style="padding: 15px; width: 100%" class="classification-btn">
 
+      <button class="btn btn-default green classify" ng-click="classify()"
+              ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
+        <span class="md md-notifications green darken-1 iconbase"></span>
+        <span class="button-link">Classify</span>
+      </button>
+      <button ng-if="editable !== 'false'" class="btn btn-default deep-purple validate"
+              ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked"
+              ng-click="startValidation()" style="text-transform: none">
+        <span class="md md-school deep-purple darken-2 iconbase"></span>
+        <span class="button-link">Validate</span>
+      </button>
+
+
+      <div ng-show="unsavedConcepts.length > 0" class="m-b-15">
+        <div class="row">
+          <div class="col-md-10">
+            <h4>Warning: Unsaved Changes
+            </h4>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-default md md-close pull-right" ng-click="unsavedConcepts = null"
+                    style="background: transparent" aria-hidden="false"></button>
+          </div>
+        </div>
+        <div class="row" ng-repeat="unsavedConcept in unsavedConcepts | orderBy:'fsn'">
+          <div class="col-md-4 ">
+            {{unsavedConcept.conceptId}}
+          </div>
+          <div class="col-md-8">
+            {{unsavedConcept.fsn}}
+          </div>
+        </div>
+
+      </div>
+
+      <div ng-show="unsavedConcepts !== null && unsavedConcepts.length === 0" class="m-b-15">
+        <div class="row">
+          <div class="col-md-10">
+            <h4>Warning: No Task Changes Detected
+            </h4>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-default md md-close pull-right" ng-click="unsavedConcepts = null"
+                    style="background: transparent" aria-hidden="false"></button>
+          </div>
+        </div>
+      </div>
+
+
+      <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="unsavedConcepts === null">
+        <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'" class="btn btn-default pink1 review"
+                style="text-transform: none" ng-click="submitForReview()">
+          <span class="md md-forum pink darken-2 iconbase"></span>
+          <span class="button-link" ng-if="!unsavedConcepts">Submit For Review</span>
+
+
+        </button>
+      </div>
+
+
+      <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="unsavedConcepts !== null">
+        <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'" class="btn btn-default pink1 review"
+                style="text-transform: none" ng-click="submitForReview()">
+          <span class="md md-forum pink darken-2 iconbase"></span>
+
+          <span class="button-link">Submit Anyway</span>
+
+        </button>
+      </div>
+
+      <button ng-show="task.status === 'In Review' && role === 'AUTHOR'" class="btn btn-default pink1 review"
+              style="text-transform: none" ng-click="cancelReview()"><span
+        class="md md-forum pink darken-2 iconbase"></span>
+        <span class="button-link">Cancel This Review</span>
+      </button>
+
 
 
       <button ng-if="editable !== 'false'"
