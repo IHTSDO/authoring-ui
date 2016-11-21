@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q',
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService',
     function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService) {
 
       $scope.task = null;
@@ -109,167 +109,106 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.$broadcast('reloadTask');
-          notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
-        }, function () {
-          notificationService.sendMessage('Error submitting task for validation', 10000, null);
+          notificationService.sendMessage('Task successfully submitted for validation', 3000, null);
+        }, function (error) {
+          notificationService.sendError('Error submitting task for validation: ' + error);
           $rootScope.$broadcast('reloadTask');
         });
       };
 
+      // list of tracked unsaved concepts
+      $scope.reviewChecks = null;
 
-      //
-      // Helper function to mark the task for review
-      //
-      function markTaskForReview() {
-        // create the request body
-        var updateObj = {
-          'reviewer': {
-            'username': ''
-          },
-          'status': 'IN_REVIEW'
-        };
+      $scope.cancelSubmitForReview = function () {
+        $scope.reviewChecks = null;
+      };
 
-        // update the task
-        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function (response) {
-          notificationService.sendMessage('Task submitted for review', 5000);
-          scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
-          $rootScope.$broadcast('reloadTask');
-          $scope.task = response;
-        }, function (error) {
-          notificationService.sendError('Error submitting task for review');
+      function openReviewChecksModal(reviewChecks) {
+
+        // check if unsaved concepts are already in edit panel
+        angular.forEach(reviewChecks.unsavedConcepts, function (uc) {
+          angular.forEach($scope.editList, function (ec) {
+            if (ec === uc.conceptId) {
+              uc.editing = true;
+            }
+          });
         });
+
+        var deferred = $q.defer();
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/review-check-modal/reviewCheckModal.html',
+          controller: 'reviewCheckModalCtrl',
+          resolve: {
+            reviewChecks: reviewChecks
+          }
+        });
+
+        modalInstance.result.then(function (results) {
+          deferred.resolve(results);
+        }, function () {
+          deferred.reject();
+        });
+        return deferred.promise;
+
       }
 
-      $scope.unsavedConcepts = null;
-      $scope.submitForReview = function () {
-        notificationService.sendMessage('Submitting task for review...');
+      $scope.toggleReview = function (ignoreWarnings) {
+        $scope.reviewChecks = null;
+        switch ($scope.task.status) {
+          case 'New':
+          case 'In Progress':
 
-        // if unsaved concepts already calculated, clear and "submit anyway"
-        if ($scope.unsavedConcepts) {
-          $scope.unsavedConcepts = null;
-          markTaskForReview();
-        } else {
+            notificationService.sendMessage('Submit for review requested: checking content changes...');
 
-          // first, check if traceability returns changes on this task
-          snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
+            reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
 
-            if (!traceability || !traceability.numberOfElements || traceability.numberOfElements === 0) {
-              notificationService.sendWarning('No changes detected on task; are you sure you want to submit for review?');
-
-              // empty array for unsaved concepts to bypass null check
-              $scope.unsavedConcepts = [];
-
-              return;
-            }
-
-            // retrieve the modified concepts for this task
-            scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (conceptIds) {
-
-              // if no modified concepts stored, submit directly
-              if ((conceptIds && conceptIds.length === 0) || $scope.unsavedConcepts) {
-
-                // clear array of unsaved content
-                $scope.unsavedConcepts = null;
-                markTaskForReview();
-
-              }
-
-              // otherwise, prepare the unsaved concepts array
-              else {
-
-                // initialize the unsaved concept array
-                var unsavedConcepts = [];
-
-
-                // if bad result, throw user error
-                if (!conceptIds) {
-                  notificationService.sendError('Unexpected error checking for unsaved changes');
-                }
-
-                // otherwise get the unsaved content for display
-                else {
-
-                  var conceptCt = 0;
-
-                  angular.forEach(conceptIds, function (conceptId) {
-                    console.debug('checking ', conceptId);
-                    if (snowowlService.isSctid(conceptId)) {
-                      console.debug('  is sctid');
-                      scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
-
-                        // Account for case where new concepts are marked 'current' in UI State
-                        if (concept) {
-
-                          if (!concept.conceptId) {
-                            concept.conceptId = '(New concept)';
-                          }
-                          // find the FSN for display
-                          if (!concept.fsn) {
-                            angular.forEach(concept.descriptions, function (d) {
-                              if (d.type === 'FSN') {
-                                concept.fsn = d.term;
-                              }
-                            })
-                          }
-                          if (!concept.fsn) {
-                            concept.fsn = 'Could not determine FSN';
-                          }
-                          unsavedConcepts.push(concept);
-                        }
-                        // if no concepts survive processing, proceed with submission
-                        if (++conceptCt === conceptIds.length) {
-                          if (unsavedConcepts.length === 0) {
-                            markTaskForReview();
-                          } else {
-                            $scope.unsavedConcepts = unsavedConcepts;
-                            notificationService.sendWarning('Save your changes before submitting for review');
-
-                          }
-                        }
-
-                      }, function (error) {
-                        notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
-                      });
-                    } else {
-                      // if no concepts survive processing, proceed with submission
-                      if (++conceptCt === conceptIds.length) {
-                        if (unsavedConcepts.length === 0) {
-                          markTaskForReview();
-                        } else {
-                          $scope.unsavedConcepts = unsavedConcepts;
-                          notificationService.sendWarning('Save your changes before submitting for review');
-
-                        }
-                      }
-                    }
+              if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length === 0) {
+                reviewService.submitForReview($scope.task).then(function () {
+                  notificationService.sendMessage('Submitted for review', 3000);
+                }, function (error) {
+                  notificationService.sendError('Error submitting for review: ' + error);
+                });
+              } else {
+                openReviewChecksModal(reviewChecks).then(function () {
+                  reviewService.submitForReview($scope.task).then(function () {
+                    notificationService.sendMessage('Submitted for review', 3000);
+                  }, function (error) {
+                    notificationService.sendError('Error submitting for review: ' + error);
                   });
-                }
+                }, function () {
+                  notificationService.sendMessage('Cancelled submit for review', 3000);
+                });
               }
+            }, function (error) {
+              notificationService.sendWarning('Task submitted for review, but could not verify content changes: ' + error);
             });
 
-          }, function (error) {
 
-            // TODO This will fire on actual errors as well as 404s, but other areas of the application rely on the reject()
-            notificationService.sendWarning('No changes detected on task; are you sure you want to submit for review?');
-
-            // empty array for unsaved concepts to bypass null check
-            $scope.unsavedConcepts = [];
-
-
-          })
+            break;
+          case 'In Review':
+          case 'Review Complete':
+            accountService.getRoleForTask($scope.task).then(function (role) {
+              if (role === 'AUTHOR') {
+                reviewService.cancelReview($scope.task).then(function () {
+                  notificationService.sendMessage('Review cancelled', 3000);
+                }, function (error) {
+                  notificationService.sendError('Error cancelling review: ' + error);
+                });
+              } else {
+                reviewService.unclaimReview($scope.task).then(function () {
+                  $location.url('review-tasks');
+                  notificationService.sendMessage('Review unclaimed', 3000);
+                }, function (error) {
+                  notificationService.sendError('Error unclaiming review: ' + error);
+                });
+              }
+            });
+            break;
+          default:
+            notificationService.sendError('Unexpected task status: ' + $scope.task.status);
         }
       };
 
-      // cancel review
-      $scope.cancelReview = function () {
-        scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey).then(function() {
-          notificationService.sendMessage('Review cancelled', 2000);
-          $rootScope.$broadcast('reloadTask');
-        }, function(error) {
-          notificationService.sendError('Unexpected error cancelling review: ' + error);
-        });
-
-      };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
           templateUrl: 'shared/task/task.html',
