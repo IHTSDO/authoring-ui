@@ -35,8 +35,7 @@
       </div>
       <div class="col-md-9">
         <h4>Unsaved Concepts Detected</h4>
-        Click a row to add unsaved concept to edit panel
-
+        
         <table ng-table="unsavedConceptsTableParams" class="table table-full p-5 m-t-15"
                template-pagination="utilities/data-table-pager.html">
           <tr ng-repeat="concept in $data" class="clickable-row" ng-click="addToEditPanel(concept)">

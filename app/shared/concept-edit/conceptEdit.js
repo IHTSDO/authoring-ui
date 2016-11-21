@@ -376,7 +376,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.removeConcept = function (concept) {
 
-          if (scope.isModified || !snowowlService.isSctid(concept.conceptId)) {
+          if (!snowowlService.isSctid(concept.conceptId)) {
             modalService.confirm('This concept is unsaved; removing it will destroy your work.  Continue?').then(function () {
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
               $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -384,6 +384,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // do nothing
             });
 
+          } else if(scope.isModified) {
+            modalService.confirm('This concept has unsaved changes; removing it will abandon your modifications.  Continue?').then(function () {
+              scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
+              $rootScope.$broadcast('stopEditing', {concept: concept});
+            }, function () {
+              // do nothing
+            });
           } else {
             $rootScope.$broadcast('stopEditing', {concept: concept});
           }
