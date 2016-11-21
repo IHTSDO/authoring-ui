@@ -117,6 +117,159 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       };
 
 
+      //
+      // Helper function to mark the task for review
+      //
+      function markTaskForReview() {
+        // create the request body
+        var updateObj = {
+          'reviewer': {
+            'username': ''
+          },
+          'status': 'IN_REVIEW'
+        };
+
+        // update the task
+        scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, updateObj).then(function (response) {
+          notificationService.sendMessage('Task submitted for review', 5000);
+          scaService.saveUiStateForReviewTask($routeParams.projectKey, $routeParams.taskKey, 'reviewed-list', []);
+          $rootScope.$broadcast('reloadTask');
+          $scope.task = response;
+        }, function (error) {
+          notificationService.sendError('Error submitting task for review');
+        });
+      }
+
+      $scope.unsavedConcepts = null;
+      $scope.submitForReview = function () {
+        notificationService.sendMessage('Submitting task for review...');
+
+        // if unsaved concepts already calculated, clear and "submit anyway"
+        if ($scope.unsavedConcepts) {
+          $scope.unsavedConcepts = null;
+          markTaskForReview();
+        } else {
+
+          // first, check if traceability returns changes on this task
+          snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
+
+            if (!traceability || !traceability.numberOfElements || traceability.numberOfElements === 0) {
+              notificationService.sendWarning('No changes detected on task; are you sure you want to submit for review?');
+
+              // empty array for unsaved concepts to bypass null check
+              $scope.unsavedConcepts = [];
+
+              return;
+            }
+
+            // retrieve the modified concepts for this task
+            scaService.getModifiedConceptIdsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (conceptIds) {
+
+              // if no modified concepts stored, submit directly
+              if ((conceptIds && conceptIds.length === 0) || $scope.unsavedConcepts) {
+
+                // clear array of unsaved content
+                $scope.unsavedConcepts = null;
+                markTaskForReview();
+
+              }
+
+              // otherwise, prepare the unsaved concepts array
+              else {
+
+                // initialize the unsaved concept array
+                var unsavedConcepts = [];
+
+
+                // if bad result, throw user error
+                if (!conceptIds) {
+                  notificationService.sendError('Unexpected error checking for unsaved changes');
+                }
+
+                // otherwise get the unsaved content for display
+                else {
+
+                  var conceptCt = 0;
+
+                  angular.forEach(conceptIds, function (conceptId) {
+                    console.debug('checking ', conceptId);
+                    if (snowowlService.isSctid(conceptId)) {
+                      console.debug('  is sctid');
+                      scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, conceptId).then(function (concept) {
+
+                        // Account for case where new concepts are marked 'current' in UI State
+                        if (concept) {
+
+                          if (!concept.conceptId) {
+                            concept.conceptId = '(New concept)';
+                          }
+                          // find the FSN for display
+                          if (!concept.fsn) {
+                            angular.forEach(concept.descriptions, function (d) {
+                              if (d.type === 'FSN') {
+                                concept.fsn = d.term;
+                              }
+                            })
+                          }
+                          if (!concept.fsn) {
+                            concept.fsn = 'Could not determine FSN';
+                          }
+                          unsavedConcepts.push(concept);
+                        }
+                        // if no concepts survive processing, proceed with submission
+                        if (++conceptCt === conceptIds.length) {
+                          if (unsavedConcepts.length === 0) {
+                            markTaskForReview();
+                          } else {
+                            $scope.unsavedConcepts = unsavedConcepts;
+                            notificationService.sendWarning('Save your changes before submitting for review');
+
+                          }
+                        }
+
+                      }, function (error) {
+                        notificationService.sendError('Application error: reporting unsaved content for concept ' + conceptId);
+                      });
+                    } else {
+                      // if no concepts survive processing, proceed with submission
+                      if (++conceptCt === conceptIds.length) {
+                        if (unsavedConcepts.length === 0) {
+                          markTaskForReview();
+                        } else {
+                          $scope.unsavedConcepts = unsavedConcepts;
+                          notificationService.sendWarning('Save your changes before submitting for review');
+
+                        }
+                      }
+                    }
+                  });
+                }
+              }
+            });
+
+          }, function (error) {
+
+            // TODO This will fire on actual errors as well as 404s, but other areas of the application rely on the reject()
+            notificationService.sendWarning('No changes detected on task; are you sure you want to submit for review?');
+
+            // empty array for unsaved concepts to bypass null check
+            $scope.unsavedConcepts = [];
+
+
+          })
+        }
+      };
+
+      // cancel review
+      $scope.cancelReview = function () {
+        scaService.markTaskInProgress($routeParams.projectKey, $routeParams.taskKey).then(function() {
+          notificationService.sendMessage('Review cancelled', 2000);
+          $rootScope.$broadcast('reloadTask');
+        }, function(error) {
+          notificationService.sendError('Unexpected error cancelling review: ' + error);
+        });
+
+      };
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
           templateUrl: 'shared/task/task.html',
@@ -150,14 +303,27 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
       $scope.checkForLock = function () {
 
         snowowlService.getBranch($scope.branch).then(function (response) {
-
+          if($scope.classificationLockCheck){
+            $timeout(function () {
+              $scope.checkForLock()
+            }, 10000);
+           }
           // if lock found, set rootscope variable and continue polling
           if (response.metadata && response.metadata.lock) {
+            if(response.metadata.lock.context.description === 'classifying the ontology')
+                {
+                    $scope.ontologyLock = true;
+                }
             $rootScope.branchLocked = true;
             $timeout(function () {
               $scope.checkForLock()
             }, 10000);
-          }
+           }
+          else if($scope.classificationLockCheck && !$scope.ontologyLock){
+            $timeout(function () {
+              $scope.checkForLock()
+            }, 10000);
+           }
           else {
             $rootScope.branchLocked = false;
           }
@@ -190,11 +356,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         // clear the branch variables (but not the task to avoid display re-initialization)
         $scope.taskBranch = null;
 
-        $scope.checkForLock();
-
         // retrieve the task
         scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $scope.task = response;
+          $scope.classificationLockCheck = false;
+          $scope.ontologyLock = $rootScope.classificationRunning;
+          $scope.checkForLock();
 
           snowowlService.getTraceabilityForBranch($scope.task.branchPath).then(function (traceability) {
           });

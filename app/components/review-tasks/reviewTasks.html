@@ -31,19 +31,8 @@
   .review-checkbox {
     text-align: center;
   }
+ 
 </style>
-
-<script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
-  <input type="checkbox" ng-model="checkedToReview" ng-change="toggleSelectAllUnclaimedTasks(checkedToReview)"
-         id="select_all_to_review"
-         name="filter-checkbox-unclaimed" value=""/>
-</script>
-
-<script type="text/ng-template" id="ng-table/headers/checkboxToReturn.html">
-  <input type="checkbox" ng-model="checkedToReturn" ng-change="toggleSelectAllClaimedTasks(checkedToReturn)"
-         id="select_all_to_return"
-         name="filter-checkbox-claimed" value=""/>
-</script>
 
 <div class="row no-gutter sca-container ">
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
@@ -57,13 +46,15 @@
 
         <div class="row" style="margin-right:0px;">
           <div class="col-md-3 no-padding">
-            <h3 class="table-title p-20">Review Tasks
-              &nbsp;&nbsp;
+            <h3 class="table-title ">     <div class="p-20 pull-left">Review Tasks
+         </div>
+              <div class="min-height-20 pull-right p-15">
               <button ng-show="hasSelectedUnclaimedTasks()"
                       ng-click="assignSelectedUnclaimedTasks()"
                       class="badge In Review"><i class="md md-email"></i>&nbsp;Claim
                 Selected
               </button>
+              </div>
             </h3>
           </div>
 
@@ -104,10 +95,9 @@
                  class="table table-full table-full-small col-md-12 no-padding">
             <tr ng-repeat="task in $data" class="clickable-row">
 
-              <td class="review-checkbox no-padding " ng-show="hasUnclaimedTasks()"
-                  header="'ng-table/headers/checkboxToReview.html'">
-                <input type="checkbox" ng-model="task.selectedUnclaimed" ui-on-drop="" ng-show="isUnclaimedTask(task)">
-              </td>
+              <td class="review-checkbox no-padding " ng-show="hasUnclaimedTasks()">
+               <div class="checkbox"><label class="filled"><input type="checkbox" ng-model="task.selectedUnclaimed" ui-on-drop="" ng-show="isUnclaimedTask(task)"></label>
+            </div>  </td>
 
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'"
                   filter="{ 'summary': 'text' }">
@@ -212,12 +202,11 @@
 
               </td>
 
-              <td class="review-checkbox no-padding " ng-show="hasClaimedTasks()"
-                  header="'ng-table/headers/checkboxToReturn.html'">
+    <!--          <td class="review-checkbox no-padding " ng-show="hasClaimedTasks()">
                 <input type="checkbox" ng-model="task.selectedClaimed" ui-on-drop="" ng-show="isClaimedTask(task)">
 
               </td>
-
+-->
 
             </tr>
           </table>

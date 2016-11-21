@@ -100,6 +100,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if ($rootScope.branchLocked) {
             scope.isStatic = true;
           }
+          else{
+            scope.isStatic = false;
+          }
 
         }, true);
         scope.saving = false;
@@ -393,6 +396,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // function to validate concept and display any errors or warnings
         scope.validateConcept = function () {
+          if (scope.concept.requiresValidation) {
+            delete scope.concept.requiresValidation;
+          }
           var deferred = $q.defer();
 
           snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, scope.concept).then(function (validationResults) {
@@ -540,9 +546,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     if (!crsConcept.saved) {
                       $rootScope.$broadcast('saveCrsConcept', {concept: crsConcept, crsConceptId: originalConceptId});
                     }
+                    console.debug('Saving CRS concept');
 
-                    // update the crs concept (no warning)
-                    crsService.saveCrsConcept(originalConceptId, scope.concept, null);
+                    // update the crs concept
+                    crsService.saveCrsConcept(originalConceptId, scope.concept);
+                    scaService.saveModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId, null);
                   }
 
                   // clear the saved modified state from the original concept id
@@ -679,7 +687,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
                     scope.saving = false;
                   });
-
                 }, 1000);
               }, function (error) {
                 if (error.status === 504) {
@@ -697,7 +704,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
                 scope.saving = false;
               });
-
             }
 
 
@@ -1026,26 +1032,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
 
-            /*
-             // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
-             var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
-             if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
-             return true;
-             }
-             }).length > 0;
-             var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
-             if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
-             return true;
-             }
-             }).length > 0;
+
+            // ensure non-en-US PREFERRED terms appear above non-PREFERRED terms
+            var aHasOtherP = a.acceptabilityMap && Object.keys(a.acceptabilityMap).filter(function (dialect) {
+                if (dialect !== '900000000000509007' && a.acceptabilityMap[dialect] === 'PREFERRED') {
+                  return true;
+                }
+              }).length > 0;
+            var bHasOtherP = b.acceptabilityMap && Object.keys(b.acceptabilityMap).filter(function (dialect) {
+                if (dialect !== '900000000000509007' && b.acceptabilityMap[dialect] === 'PREFERRED') {
+                  return true;
+                }
+              }).length > 0;
 
 
-             if (aHasOtherP && !bHasOtherP) {
-             return -1;
-             }
-             if (!aHasOtherP && bHasOtherP) {
-             return 1;
-             }*/
+            if (aHasOtherP && !bHasOtherP) {
+              return -1;
+            }
+            if (!aHasOtherP && bHasOtherP) {
+              return 1;
+            }
 
             // comparator function for sorting by acceptabilities within a specified dialect
             var acceptabilityComparator = function (descA, descB, dialect) {
@@ -2256,7 +2262,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // if a new description (determined by blank term), ensure sensitivity
           // do not modify acceptability map
           else if (!description.effectiveTime && description.type === 'SYNONYM' && !metadataService.isLockedModule(description.moduleId)) {
-            description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+            description.caseSignificance = 'CASE_INSENSITIVE';
           }
 
           // if this is the FSN, apply defaults (if new) and check if a
@@ -2278,7 +2284,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
 
               });
-              description.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+              description.caseSignificance = 'CASE_INSENSITIVE';
             }
           }
 
