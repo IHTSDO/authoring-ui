@@ -167,7 +167,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, selectedTemplate).then(function () {
             scope.template = selectedTemplate;
-            templateService.applyTemplateToConcept(scope.concept, scope.template, false, true, false);
+            templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
           }, function (error) {
             notificationService.sendError('Failed to store template for concept: ' + error);
           });
@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // NOTE: Currently unused
         scope.validateAgainstTemplate = function () {
-          templateService.applyTemplateToConcept(scope.concept, scope.template, false, true, false).then(function () {
+          templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
           }, function (error) {
             notificationService.sendError('Error applying template: ' + error);
           });
@@ -311,7 +311,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // store in scope variable and on concept (for UI State saving)
                 scope.template = template;
-                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, true);
+                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
 
               }
 
