@@ -234,6 +234,9 @@ angular.module('singleConceptAuthoringApp')
           tc.template = template;
           tc.templateComplete = false;
 
+          // by default, template concepts are Fully Defined
+          tc.definitionStatus = 'FULLY_DEFINED';
+
           angular.forEach(tc.descriptions, function (d) {
             d.descriptionId = snowowlService.createGuid();
           });
