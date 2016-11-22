@@ -2347,7 +2347,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
               scope.computeRelationshipGroups();
-              autoSave();
+              componentAuthoringUtil.runConceptAutomations(scope.concept).then(function () {
+                sortDescriptions();
+                autoSave();
+              });
             }, function (error) {
               notificationService.sendError('Unexpected template error: ' + error);
             });

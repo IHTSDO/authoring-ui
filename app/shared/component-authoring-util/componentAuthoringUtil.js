@@ -672,6 +672,22 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function runConceptAutomations(concept) {
+        var deferred = $q.defer();
+
+        var promises = [];
+        angular.forEach(concept.descriptions, function(d) {
+          promises.push(runDescriptionAutomations(concept, d));
+        });
+        $q.all(promises).then(function() {
+          deferred.resolve(concept);
+        }, function(error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
       function setDefaultFields(concept) {
 
         if (!concept.hasOwnProperty('active')) {
@@ -759,6 +775,7 @@ angular.module('singleConceptAuthoringApp')
 
         // grouped automations
         runDescriptionAutomations: runDescriptionAutomations,
+        runConceptAutomations: runConceptAutomations,
 
         // utility functions
         setDefaultFields : setDefaultFields,
