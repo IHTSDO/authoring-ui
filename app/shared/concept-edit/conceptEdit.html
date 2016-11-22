@@ -72,6 +72,17 @@
           <span>More details</span>
         </button>
 
+        <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+                popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
+                popover-placement="right"
+                popover-trigger="click: click"
+                popover-append-to-body="true"
+                type="button"
+                id="templateCreateBtn"
+                ng-if="template"
+                class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
+          <span>Template Controls</span>
+        </button>
       </div>
 
       <!-- concept name -->
@@ -653,26 +664,5 @@
     </div>
     <div class="clearfix"></div>
   </div>
-  <div ng-show="template" class="row grey darken-4 p-5" ng-class="getConceptStyle()"
-       style="margin-right:0px;">
-
-
-    <div class="col-md-12 no-padding release-template-bar">
-
-
-
-
-
-      <span
-        class="m-t-15 m-l-15">Template: {{template.name}}, version {{template.version}}</span>
-
-
-      <button class="pull-right btn btn-default blue darken-2" ng-click="removeTemplate()"
-              style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">
-        Release
-        Template
-      </button>
-    </div>
-
-  </div>
+</div>
 
