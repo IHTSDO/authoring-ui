@@ -893,8 +893,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             else {
               scope.concept.definitionStatus = 'FULLY_DEFINED';
             }
-            // only action required is autosave, value is changed via select
-            // (unlike toggle buttons)
             autoSave();
           }
 
