@@ -418,8 +418,15 @@
           <div ng-bind="message.message"></div>
         </div>
       </div>
-
-
+      <div class="row p-10" ng-show="description.spellcheckSuggestions">
+        <strong>Spelling Errors Detected:</strong>
+        <div class="p-b-5" ng-repeat="(word, suggestions) in description.spellcheckSuggestions">
+          <div class="col-md-2">{{word}}</div>
+          <div class="col-md-10"><span ng-repeat="suggestion in suggestions">[&nbsp;<a
+            ng-click="replaceSuggestion(description, word, suggestion)">{{suggestion}}</a>&nbsp;]&nbsp;&nbsp;</span>
+          </div>
+        </div>
+      </div>
     </div>
 
 
@@ -491,12 +498,12 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                                    <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
-                                    <textarea ng-readonly="isStatic  || isLockedModule(relationship.moduleId)"
-                                              ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
-                                              ng-change="updateRelationship(relationship, true)"
-                                              class="form-control rg msd-elastic: \n;"
-                                              type="text" placeholder="#" ui-on-drop="dropNullOp()">
+                  <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
+                  <textarea ng-readonly="isStatic  || isLockedModule(relationship.moduleId)"
+                            ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
+                            ng-change="updateRelationship(relationship, true)"
+                            class="form-control rg msd-elastic: \n;"
+                            type="text" placeholder="#" ui-on-drop="dropNullOp()">
                                     </textarea>
                   <span>Role Group</span>
                 </div>
@@ -534,7 +541,8 @@
                 </div>
 
                 <!-- linked concept -->
-                <div class="pull-left sourcename" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover"
+                <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic"
                      ng-class="getTargetSlotStyle(relationship)">
@@ -660,7 +668,8 @@
 
 
       <button class="pull-right btn btn-default blue darken-2" ng-click="removeTemplate()"
-              style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">Release
+              style="border-radius:8px; font-size:13px; padding-left:5px; padding-right: 5px; font-weight:400">
+        Release
         Template
       </button>
     </div>

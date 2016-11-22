@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -100,7 +100,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if ($rootScope.branchLocked) {
             scope.isStatic = true;
           }
-          else{
+          else {
             scope.isStatic = false;
           }
 
@@ -166,14 +166,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // Function to reapply template, intended for use after cleanConcept invocations
         //
         scope.reapplyTemplate = function () {
-         if (scope.template) {
+          if (scope.template) {
 
-           templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template).then(function () {
-             templateService.applyTemplateToConcept(scope.concept, scope.template);
-           }, function (error) {
-             notificationService.sendError('Failed to reapply template for concept: ' + error);
-           });
-         }
+            templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template).then(function () {
+              templateService.applyTemplateToConcept(scope.concept, scope.template);
+            }, function (error) {
+              notificationService.sendError('Failed to reapply template for concept: ' + error);
+            });
+          }
         };
 
         scope.removeTemplate = function () {
@@ -379,7 +379,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // do nothing
             });
 
-          } else if(scope.isModified) {
+          } else if (scope.isModified) {
             modalService.confirm('This concept has unsaved changes; removing it will abandon your modifications.  Continue?').then(function () {
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, concept.conceptId);
               $rootScope.$broadcast('stopEditing', {concept: concept});
@@ -2253,11 +2253,33 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.replaceSuggestion = function (description, word, suggestion) {
+          console.debug('replace', description.term, word, suggestion);
+          if (description.term && word && suggestion) {
+            var re = new RegExp(word, 'gi');
+            description.term = description.term.replace(re, suggestion);
+          }
+          console.debug('new term', description.term);
+
+          // remove this suggestion
+          delete description.spellcheckSuggestions[word];
+          if (Object.keys(description.spellcheckSuggestions).length === 0) {
+            delete description.spellcheckSuggestions;
+          }
+        };
+
 // function to update description and autoSave if indicated
         scope.updateDescription = function (description) {
           if (!description) {
             return;
           }
+
+          // run spellchecker
+          spellcheckService.checkSpelling(description.term).then(function (suggestions) {
+            if (suggestions) {
+              description.spellcheckSuggestions = suggestions;
+            }
+          });
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
