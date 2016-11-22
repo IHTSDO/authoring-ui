@@ -373,8 +373,15 @@
           <div ng-bind="warning"></div>
         </div>
       </div>
-
-
+      <div class="row p-10" ng-show="description.spellcheckSuggestions">
+        <strong>Spelling Errors Detected:</strong>
+        <div class="p-b-5" ng-repeat="(word, suggestions) in description.spellcheckSuggestions">
+          <div class="col-md-2">{{word}}</div>
+          <div class="col-md-10"><span ng-repeat="suggestion in suggestions">[&nbsp;<a
+            ng-click="replaceSuggestion(description, word, suggestion)">{{suggestion}}</a>&nbsp;]&nbsp;&nbsp;</span>
+          </div>
+        </div>
+      </div>
     </div>
 
 
@@ -488,7 +495,8 @@
                 </div>
 
                 <!-- linked concept -->
-                <div class="pull-left sourcename" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover"
+                <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic">
 

@@ -10,17 +10,33 @@ angular.module('singleConceptAuthoringApp')
     var endpoint = '../check';
 
     var testWords = {
-      'mispelled' : ['misspelled', 'misspelling', 'misspellings'],
-      'whiskee' : ['whiskey', 'whisky'],
-      'wordz' : ['word', 'words', 'wordy']
+      'mispelled': ['misspelled', 'misspelling', 'misspellings'],
+      'whiskee': ['whiskey', 'whisky'],
+      'wordz': ['word', 'words', 'wordy']
     }
 
     function checkSpelling(term) {
-      return [];
+      console.debug('spellchecking term', term);
+      var deferred = $q.defer();
+      var suggestions = null;
+      angular.forEach(term.split(' '), function (word) {
+        console.debug('checking word', word);
+        if (testWords.hasOwnProperty(word.toLowerCase())) {
+          console.debug('mispelled word found');
+          if (!suggestions) {
+            suggestions = {};
+          }
+          suggestions[word] = testWords[word];
+        }
+      });
+      console.debug('suggestions', suggestions);
+      deferred.resolve(suggestions);
+      return deferred.promise;
+
     }
 
     return {
-      checkSpelling : checkSpelling
+      checkSpelling: checkSpelling
     }
 
   })

@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -99,7 +99,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if ($rootScope.branchLocked) {
             scope.isStatic = true;
           }
-          else{
+          else {
             scope.isStatic = scope.static === 'true' || scope.static === true;
           }
 
@@ -2275,11 +2275,33 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.replaceSuggestion = function (description, word, suggestion) {
+          console.debug('replace', description.term, word, suggestion);
+          if (description.term && word && suggestion) {
+            var re = new RegExp(word, 'gi');
+            description.term = description.term.replace(re, suggestion);
+          }
+          console.debug('new term', description.term);
+
+          // remove this suggestion
+          delete description.spellcheckSuggestions[word];
+          if (Object.keys(description.spellcheckSuggestions).length === 0) {
+            delete description.spellcheckSuggestions;
+          }
+        };
+
 // function to update description and autoSave if indicated
         scope.updateDescription = function (description) {
           if (!description) {
             return;
           }
+
+          // run spellchecker
+          spellcheckService.checkSpelling(description.term).then(function (suggestions) {
+            if (suggestions) {
+              description.spellcheckSuggestions = suggestions;
+            }
+          });
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
