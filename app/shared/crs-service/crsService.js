@@ -381,6 +381,65 @@ angular.module('singleConceptAuthoringApp')
         return result;
       }
 
+      function getCrsTaskComment() {
+        var deferred = $q.defer();
+        if (!currentTask) {
+          deferred.reject('No CRS task set');
+        } else {
+          var lines = [];
+
+          // retrieve traceability to determine concept changes
+          var changedConceptIds = [];
+
+          snowowlService.getTraceabilityForBranch(currentTask.branchPath).then(function (traceability) {
+
+            if (traceability) {
+              angular.forEach(traceability.content, function (change) {
+                if (change.activityType === 'CONTENT_CHANGE') {
+                  angular.forEach(change.conceptChanges, function (conceptChange) {
+                    changedConceptIds.push(conceptChange.conceptId);
+                  });
+                }
+              });
+            } else {
+              deferred.reject('Empty traceability for branch ' + currentTask.branchPath);
+            }
+
+
+            angular.forEach(currentTaskConcepts, function (crsConcept) {
+
+              // link to request of matching concept id; empty requests match all changed concepts
+              if (crsConcept.saved && crsConcept.concept && changedConceptIds.indexOf(crsConcept.concept.conceptId !== -1)) {
+                lines.push('CRS Request ' + crsConcept.crsId + ' (' + crsConcept.scaId + '): ' + crsConcept.concept.conceptId + ' | ' + crsConcept.concept.fsn);
+              }
+            });
+
+            // sort lines
+            lines.sort();
+
+            // convert to new-line delimited comment
+            var comment = '';
+            angular.forEach(lines, function (line) {
+              comment += line + '\n';
+            });
+            if (comment.length > 0) {
+              // NOTE: This *must* match the expected text in AuthoringTaskStatusChangeHandler in Content Request Service
+              comment = 'CRS_TASK_PROMOTION - CRS request concepts promoted to project level:\n' + comment;
+            }
+            deferred.resolve(comment);
+
+          }, function (error) {
+            deferred.reject('Could not retrieve traceability for branch ' + currentTask.branchPath);
+          });
+          /*
+           scaService.leaveCommentForTask(task.projectKey, task.key, comment).then(function () {
+           deferred.resolve();
+           }, function (error) {
+           deferred.reject('Error leaving comment: ' + error);
+           })*/
+        }
+        return deferred.promise;
+      }
 //
 // Function exposure
 //
