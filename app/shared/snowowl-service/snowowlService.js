@@ -139,9 +139,6 @@ angular.module('singleConceptAuthoringApp')
               delete description[key];
             }
           }
-
-          // remove invalid characters
-          description.term = removeInvalidCharacters(description.term);
         });
 
         var allowableRelationshipProperties = [
