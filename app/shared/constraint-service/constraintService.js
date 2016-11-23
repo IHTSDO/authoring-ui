@@ -32,18 +32,11 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
 
         getConceptsForValueTypeahead(typeId, targetId, branch, expr).then(function (response) {
-          console.debug('response', response, response.filter(function (c) {
-            return c.id === targetId;
-          }),(response.filter(function (c) {
-            return c.id === targetId;
-          }).length === 0));
           if (response.filter(function (c) {
               return c.id === targetId;
             }).length === 0) {
-            console.debug('not allowed');
             deferred.reject();
           } else {
-            console.debug('allowed');
             deferred.resolve();
           }
         });

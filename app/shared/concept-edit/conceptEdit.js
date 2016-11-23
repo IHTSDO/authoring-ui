@@ -548,7 +548,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     if (!crsConcept.saved) {
                       $rootScope.$broadcast('saveCrsConcept', {concept: crsConcept, crsConceptId: originalConceptId});
                     }
-                    console.debug('Saving CRS concept');
 
                     // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
@@ -2252,12 +2251,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.replaceSuggestion = function (description, word, suggestion) {
-          console.debug('replace', description.term, word, suggestion);
           if (description.term && word && suggestion) {
             var re = new RegExp(word, 'gi');
             description.term = description.term.replace(re, suggestion);
           }
-          console.debug('new term', description.term);
 
           // remove this suggestion
           delete description.spellcheckSuggestions[word];
@@ -2594,7 +2591,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
-          console.debug('set target concept', relationship, item);
           if (metadataService.isMrcmEnabled()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];

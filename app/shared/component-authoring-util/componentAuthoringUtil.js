@@ -355,7 +355,6 @@ angular.module('singleConceptAuthoringApp')
 
       function ptFromFsnAutomation(concept, description) {
 
-        console.debug('ptFromFsnAutomation');
         if (!description || !description.term) {
           return concept;
         }
@@ -699,9 +698,6 @@ angular.module('singleConceptAuthoringApp')
 
       function runInternationalDialectAutomationForConcept(concept, isTemplateConcept) {
         var deferred = $q.defer();
-
-        console.debug('run international dialect automation for concept');
-
         var promises = [];
         angular.forEach(concept.descriptions, function (d) {
           promises.push(runInternationalDialectAutomation(concept, d, isTemplateConcept));
