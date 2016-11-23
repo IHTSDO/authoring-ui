@@ -460,7 +460,7 @@ angular.module('singleConceptAuthoringApp')
           dialectDescription = getNewDescription(description.moduleId);
           dialectDescription.type = type;
           dialectDescription.term = term;
-          dialectDescription.caseSignifiance = description.caseSignificance;
+          dialectDescription.caseSignificance = description.caseSignificance;
           dialectDescription.acceptabilityMap = {};
           dialectDescription.acceptabilityMap[dialectId] = acceptability;
 
