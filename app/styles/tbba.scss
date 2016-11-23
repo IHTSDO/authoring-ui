@@ -135,13 +135,13 @@ padding-bottom:0px
   ul.classification-nav li ul li:focus,
   ul.classification-nav li ul li:active,
   ul.classification-nav li ul li:hover {
-    background: #03a07d;
+    background: #4CAF50;
 	 color: #fff;
   }
 
   ul.classification-nav li ul li {
     color: #fff;
-    background: #55c1a7
+    background: #66BB6A
   }
 
   /* validation */
@@ -159,6 +159,11 @@ padding-bottom:0px
   }
 
   /* review */
+  ul.review-nav li ul li,
+  div.navigation-link.pink1.darken-2.review > ul > li > ul > li{
+    color: #fff;
+    background: #e94281
+  }
 
 
 	.template-controls{
