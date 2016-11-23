@@ -1029,80 +1029,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       }
     };
 
-////////////////////////////////////////
-// Classification functions           //
-////////////////////////////////////////
-
-// get the various elements of a classification once it has been
-// retrieved
-    $scope.setClassificationComponents = function () {
-
-      if (!$scope.classificationContainer || !$scope.classificationContainer.id) {
-        console.error('Cannot set classification components, classification or its id not set');
-        return;
-      }
-
-      // get relationship changes
-      snowowlService.getRelationshipChanges($scope.classificationContainer.id, $scope.targetBranch).then(function (relationshipChanges) {
-        $scope.classificationContainer.relationshipChanges = relationshipChanges ? relationshipChanges : {};
-      });
-
-      // get equivalent concepts if detected
-      if ($scope.classificationContainer.equivalentConceptsFound) {
-        snowowlService.getEquivalentConcepts($scope.classificationContainer.id, $scope.targetBranch).then(function (equivalentConcepts) {
-          equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
-          $scope.classificationContainer.equivalentConcepts = [];
-          angular.forEach(equivalentConcepts, function (item) {
-
-            if (item.equivalentConcepts.length === 2) {
-              $scope.classificationContainer.equivalentConcepts.push(item.equivalentConcepts);
-            }
-            else {
-              var key = item.equivalentConcepts[0];
-              angular.forEach(item.equivalentConcepts, function (equivalence) {
-
-                if (equivalence !== key) {
-                  var newEq = [];
-                  newEq.push(key);
-                  newEq.push(equivalence);
-                  $scope.classificationContainer.equivalentConcepts.push(newEq);
-                }
-              });
-            }
-          });
-
-        });
-      } else {
-        $scope.classificationContainer.equivalentConcepts = [];
-      }
-    };
-
-// function to get the latest classification result
-    $scope.getLatestClassification = function () {
-
-      snowowlService.getClassificationsForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
-        if (!response || response.length === 0) {
-          $scope.classificationContainer = {status: 'No classification found'};
-        } else {
-          // assign results to the classification container (note,
-          // chronological order, use last value)
-          $scope.classificationContainer = response[response.length - 1];
-          $scope.setClassificationComponents();
-        }
-      });
-
-    };
-
-// on classification reload notification, reload latest classification
-    $scope.$on('reloadClassification', function (event, data) {
-      $scope.classificationContainer = null;
-
-      // add a short time out to ensure don't retrieve previous classification
-      $timeout(function () {
-        $scope.getLatestClassification();
-      }, 2000);
-    });
-
 //////////////////////////////////////////
 // Latest Validation
 //////////////////////////////////////////
@@ -1770,7 +1696,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               });
 
             // populate the container objects
-            $scope.getLatestClassification();
+
             $scope.getLatestValidation();
             $scope.getLatestConflictsReport();
 
