@@ -159,6 +159,8 @@ angular.module('singleConceptAuthoringApp')
 
             notificationService.sendMessage('Adding ' + batchSize + ' concepts from template ' + template.name + '...');
 
+            batchEditingService.changeTemplate(template);
+
             createTemplateConcepts(template, batchSize).then(function (concepts) {
 
               // add to the existing batch concepts
