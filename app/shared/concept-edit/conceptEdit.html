@@ -35,22 +35,6 @@
   <!-- The concept itself -->
   <style>
 
-    .new-concept .grey.darken-4 {
-      background-color: #ffcadc !important;
-      color: #212121 !important
-    }
-
-    .new-concept .concept-headers:first-child {
-      padding-top: 3px !important
-    }
-
-    .template-term {
-      background-color: red !important;
-    }
-
-    .template-slot {
-      background-color: red !important;
-    }
   </style>
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
@@ -69,17 +53,18 @@
           <span>More details</span>
         </button>
 
-        <div class="" ng-if="template">
+       
+ <div class="template-controls " ng-if="template">
 
-          <ul class="sub-navigation-link-list">
+          <ul class="sub-navigation-link-list ">
             <li>
               <a>
-                <div class="pointer btn "><i class="blue fa fa-magic md "></i>
+                <div class="pointer btn "><i class=" fa fa-magic md "></i>
                 </div>
               </a>
 
 
-              <ul class="button-sub-nav">
+              <ul class="template-nav">
 
 
                 <li ng-click="removeTemplate()">Detach Template {{template.name}} v {{template.version}}</li>
@@ -89,8 +74,6 @@
           </ul>
 
         </div>
-
-
 <!--
         <div id="wrap">
 
@@ -110,9 +93,10 @@
       </div>
 
       <!-- concept name -->
-      <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
+      <div class="col-md-6 no-padding title-text" >
 
-        <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
+
+        <button type="button" class="btn-default grey darken-4 title-text fsn-title-button pull-right">
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
