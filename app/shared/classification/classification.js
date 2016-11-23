@@ -415,6 +415,7 @@ angular.module('singleConceptAuthoringApp')
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
 
+            console.debug('classificationContainer', scope.classificationContainer);
             if (!scope.classificationContainer || !scope.classificationContainer.id) {
               return;
             }
