@@ -64,7 +64,7 @@
 
   <!-- Classification Report Contents -->
   <div
-    ng-show="resultsNotEmpty && !errorState && !isCollapsed && (classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED')">
+    ng-show="resultsNotEmpty && !errorState && !isCollapsed && (classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED' || classificationContainer.status === 'STALE')">
 
     <!-- Nav tabs -->
     <div class="row classification-report">
