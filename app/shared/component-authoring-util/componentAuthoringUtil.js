@@ -354,6 +354,8 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function ptFromFsnAutomation(concept, description) {
+
+        console.debug('ptFromFsnAutomation');
         if (!description || !description.term) {
           return concept;
         }
@@ -688,6 +690,24 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+    function runInternationalDialectAutomationForConcept(concept) {
+      var deferred = $q.defer();
+
+      console.debug('run international dialect automation for concept');
+
+      var promises = [];
+      angular.forEach(concept.descriptions, function(d) {
+        promises.push(runInternationalDialectAutomation(concept, d));
+      });
+      $q.all(promises).then(function() {
+        deferred.resolve(concept);
+      }, function(error) {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
+    }
+
       function setDefaultFields(concept) {
 
         if (!concept.hasOwnProperty('active')) {
@@ -776,6 +796,7 @@ angular.module('singleConceptAuthoringApp')
         // grouped automations
         runDescriptionAutomations: runDescriptionAutomations,
         runConceptAutomations: runConceptAutomations,
+        runInternationalDialectAutomationForConcept : runInternationalDialectAutomationForConcept,
 
         // utility functions
         setDefaultFields : setDefaultFields,
