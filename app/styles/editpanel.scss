@@ -866,6 +866,12 @@ button.fsn-title-button {
     z-index: 1070;
 }
 
+#wrap .popover {
+  margin-top: 1px;
+  min-width: 250px;
+  z-index: 1070;
+}
+
 .pop-edit {
     font-size: 11px;
     margin: 0px !important;
@@ -1112,7 +1118,7 @@ button-link .bluehl .grey.darken-3 {
 }
 .tealhl .p-t-5{
   padding-top:0px!important
-	
+
 }
 .tealhl .grey.darken-4{background-color:transparent!important;}
 

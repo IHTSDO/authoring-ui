@@ -1,8 +1,5 @@
 <div class="edits editing-form darken-3 grey">
 
-  <style>
-
-  </style>
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
     <button class="btn btn-default md md-close pull-right white" ng-click="errors = []" style="background: transparent"
@@ -72,17 +69,44 @@
           <span>More details</span>
         </button>
 
-        <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
-                popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
-                popover-placement="right"
-                popover-trigger="click: click"
-                popover-append-to-body="true"
-                type="button"
-                id="templateCreateBtn"
-                ng-if="template"
-                class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
-          <span>Template Controls</span>
-        </button>
+        <div class="" ng-if="template">
+
+          <ul class="sub-navigation-link-list">
+            <li>
+              <a>
+                <div class="pointer btn "><i class="blue fa fa-magic md "></i>
+                </div>
+              </a>
+
+
+              <ul class="button-sub-nav">
+
+
+                <li ng-click="removeTemplate()">Detach Template {{template.name}} v {{template.version}}</li>
+              </ul>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+<!--
+        <div id="wrap">
+
+          <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+                  popover-container="wrap"
+                  popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
+                  popover-placement="right"
+                  popover-trigger="click: click"
+                  popover-append-to-body="true"
+                  type="button"
+                  id="template-control-btn"
+                  ng-if="template"
+                  class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
+            <span>Template Controls</span>
+          </button>
+        </div>-->
       </div>
 
       <!-- concept name -->
