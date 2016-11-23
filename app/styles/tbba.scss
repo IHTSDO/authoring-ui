@@ -160,28 +160,71 @@ padding-bottom:0px
 
   /* review */
 
-  .sca-light .navigation-link.green.darken-1.classify {
-    color: #d33c75
-  }
 
-  ul.review-nav .btn:hover,
-  ul.review-nav li ul li:focus,
-  ul.review-nav li ul li:active,
-  ul.review-nav li ul li:hover {
-    background: #d33c75;
-	 color: #fff;
-  }
-
-  ul.review-nav li ul li {
+	.template-controls{
+	height:19px;
+	width:19px;
+	float:left;	
+	}
+	
+	.template-controls .sub-navigation-link-list .btn {
+    padding: 0px;
+    font-size: 13px;
+    width: 19px;
+    height: 19px;
+    border-radius: 0px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     color: #fff;
-    background: #e94281
-  }
-
-
-
- 
-.sub-navigation-link-list .btn:hover {
-   
-    color: #fff;
+	z-index:100000
 }
 
+		.template-controls .sub-navigation-link-list .btn {
+  position: relative;
+  display: inline;
+}
+.template-controls ul.sub-navigation-link-list li ul {
+  position: absolute;
+  max-width:220px;
+  color: #474747;
+  background: #E9F5FD;
+  min-height: 15px;
+  line-height: .9;
+  text-align: center;
+  visibility: hidden;
+  border-radius: 0px;
+}
+.template-controls ul.sub-navigation-link-list li ul:after {
+	
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  width: 0; height: 0;
+  border-right: 5px solid #E9F5FD;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+.template-controls ul.sub-navigation-link-list li ul{
+   visibility: visible;
+  opacity: 1;
+  left: 100%;
+  top: 50%;
+  margin-top: -15px;
+  margin-left: -7px;
+  z-index: 999;
+}
+
+.template-controls ul.sub-navigation-link-list li ul li {
+    background: #E9F5FD;
+    display: block;
+    color: #474747;
+    padding:5px 2px;
+
+	font-size:11px
+}
+
+.template-controls ul.sub-navigation-link-list .btn{background-color:transparent; color:#7acafd}

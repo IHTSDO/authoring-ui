@@ -117,10 +117,9 @@
               </td>
 
 
-              <td header-title="'Click to sort'" data-title="'Classification'"
-                  sortable="'latestClassificationJson.status'">
+              <td header-title="'Click to sort'"  data-title="'Classification'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                  <button ng-show="task.latestClassificationJson !== null"
+                  <button ng-show="task.latestClassificationJson"
                           type="button"
                           ng-class="[
                           {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
@@ -143,7 +142,8 @@
 
               </td>
 
-              <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'">
+              
+ <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
                   <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
                           type="button"
@@ -160,7 +160,6 @@
                   </button>
                 </a>
               </td>
-
               <td header-title="'Click to sort'" data-title="'Feedback'" class="feedback-icon-link"
                   sortable="'feedbackMessagesStatus'">
 
