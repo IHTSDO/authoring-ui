@@ -2339,36 +2339,41 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // If template enabled, relationship must contain target slot
-          if (scope.template) {
+          if (relationship.targetSlot) {
             // clear validation errors
             scope.validation = {};
 
-            templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
-              scope.computeRelationshipGroups();
+            snowowlService.getFullConcept(relationship.target.conceptId, scope.branch).then(function (targetConcept) {
 
-              // run international dialect automations on target slot update (if appropriate)
-              if (!metadataService.isExtensionSet()) {
+              templateService.updateTargetSlot(scope.concept, scope.template, relationship, targetConcept).then(function () {
+                scope.computeRelationshipGroups();
 
-                // if all target slots are set
-                if (scope.concept.relationships.filter(function (r) {
-                    return r.targetSlot && !r.target.conceptId;
-                  }).length === 0) {
+                // run international dialect automations on target slot update (if appropriate)
+                if (!metadataService.isExtensionSet()) {
 
-                  // run automations with isTemplateConcept flag set to ensure proper behavior
-                  componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
-                    sortDescriptions();
+                  // if all target slots are set
+                  if (scope.concept.relationships.filter(function (r) {
+                      return r.targetSlot && !r.target.conceptId;
+                    }).length === 0) {
+
+                    // run automations with isTemplateConcept flag set to ensure proper behavior
+                    componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
+                      sortDescriptions();
+                      autoSave();
+                    });
+                  } else {
                     autoSave();
-                  });
+                  }
+
+
                 } else {
                   autoSave();
                 }
-
-
-              } else {
-                autoSave();
-              }
+              }, function(error) {
+                notificationService.sendError('Unexpected template error: ' + error);
+              })
             }, function (error) {
-              notificationService.sendError('Unexpected template error: ' + error);
+              notificationService.sendError('Unexpected error retrieving target concept for template: ' + error);
             });
           }
 

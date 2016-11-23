@@ -13,9 +13,8 @@ angular.module('singleConceptAuthoringApp')
     // Internal variables
     //
     var currentTask = null;
-    var templateCache = null;
     var selectedTemplate = null;
-    var targetConceptCache = {};
+    var templateCache = null;
 
     //
     // Patterns
@@ -47,7 +46,7 @@ angular.module('singleConceptAuthoringApp')
       if (!match || !match[1] || match[1].length === 0) {
         replaceValue = '???';
       } else {
-        replaceValue = match[1].toLowerCase();
+        replaceValue = match[1];
         angular.forEach(lt.removeParts, function (rp) {
           if (replaceValue.indexOf(rp) !== -1) {
             var re = new RegExp(rp, 'g');
@@ -103,27 +102,36 @@ angular.module('singleConceptAuthoringApp')
 
     function replaceLexicalValues(concept, template) {
       var deferred = $q.defer();
-      var nameValueMap = getTemplateValues(concept, template);
+      getTemplateValues(concept, template).then(function (nameValueMap) {
 
-      // replace values in descriptions
-      for (var i = 0; i < concept.descriptions.length; i++) {
-        var d = concept.descriptions[i];
-        if (d.template) {
-          d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
-          d.term = d.term.substring(0, 1).toUpperCase() + d.term.substring(1);
+        // replace values in descriptions
+        for (var i = 0; i < concept.descriptions.length; i++) {
+          var d = concept.descriptions[i];
+          if (d.template) {
+            d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
+            d.term = d.term.substring(0, 1).toUpperCase() + d.term.substring(1);
+
+            // check case sensitive terms for non-CS terms
+            if (d.caseSignificance !== 'ENTIRE_TERM_CASE_SENSITIVE') {
+              if (d.term.substring(1).toLowerCase() !== d.term.substring(1)) {
+                d.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+              } else {
+                d.caseSignificance = 'CASE_INSENSITIVE';
+              }
+            }
+          }
         }
-      }
 
-      // placeholder resolution in anticipation of replacement using promises
-      deferred.resolve();
+        // placeholder resolution in anticipation of replacement using promises
+        deferred.resolve();
+      }, function (error) {
+        deferred.reject('Could not replace lexical valus: ' + error);
+      });
       return deferred.promise;
     }
 
     function updateTargetSlot(concept, template, relationship, targetConcept) {
       var deferred = $q.defer();
-
-      // put/update the concept in the cache for lexical processing
-      targetConceptCache[targetConcept.conceptId] = targetConcept;
 
       replaceLogicalValues(concept, relationship).then(function () {
         replaceLexicalValues(concept, template).then(function () {
@@ -137,53 +145,81 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function getTargetSlotConcepts(concept) {
+      console.debug('get target slot concepts');
+      var deferred = $q.defer();
+      var conceptIds = [];
+      angular.forEach(concept.relationships, function (r) {
+        if (r.targetSlot && r.target.conceptId) {
+          conceptIds.push(r.target.conceptId);
+        }
+      });
+
+      if (conceptIds.length > 0) {
+        snowowlService.bulkGetConcept(conceptIds, currentTask.branchPath).then(function (response) {
+          deferred.resolve(response.items);
+        }, function (error) {
+          deferred.reject(error);
+        })
+      } else {
+        deferred.resolve([]);
+      }
+
+      return deferred.promise;
+    }
+
     /**
      * @param template the template applied
      * @param concept the concept
      * @returns {{}} map of names and values from template slots
      */
     function getTemplateValues(concept, template) {
+
+      var deferred = $q.defer();
+
       // full map of replacement values
       var nameValueMap = {};
 
-      angular.forEach(template.lexicalTemplates, function (lt) {
-        var value = null;
+      // get full target concepts
+      getTargetSlotConcepts(concept).then(function (targetConcepts) {
 
-        // find the matching relationship target slot by takeFSNFromSlot
-        angular.forEach(concept.relationships, function (r) {
+        console.debug('targetconcepts', targetConcepts);
 
-          // if a target slot with specified slot name
-          if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
+        angular.forEach(template.lexicalTemplates, function (lt) {
 
-            // get the concept from the cache of passed concepts
-            var fullTargetConcept = targetConceptCache[conceptId];
+          // find the matching relationship target slot by takeFSNFromSlot
+          angular.forEach(concept.relationships, function (r) {
 
-            // get the FSN
-            var fsn = componentAuthoringUtil.getFsnDescriptionForConcept(fullTargetConcept);
+            // if a target slot with specified slot name
+            if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
 
-            // determine value based on case signifiance
-            switch (fsn.caseSignificanceId) {
-              case '900000000000448009': // entire term case insensitive
-                value = fsn.term.toLowerCase();
-                break;
-              case '900000000000017005' : // entire term case sensitive
-                value = fsn.term;
-                break;
-              case '900000000000020002' : // initial character case insensitive
-                value = fsn.term.substring(0, 1).toLowerCase() + fsn.term.substring(1);
-                break;
+              var targetConcept = targetConcepts.filter(function (c) {
+                return c.id === r.target.conceptId
+              })[0];
+              var fsn = targetConcept.fsn;
+
+              console.debug('fsn', fsn);
+
+              // determine value based on case signifiance
+              switch (fsn.caseSignificance) {
+                case 'ENTIRE_TERM_CASE_SENSITIVE' : // entire term case sensitive
+                  nameValueMap[lt.name] = fsn.term;
+                  break;
+                case 'CASE_INSENSITIVE': // entire term case insensitive
+                case 'INITIAL_CHARACTER_CASE_INSENSITIVE' : // initial character case insensitive
+                  nameValueMap[lt.name] = fsn.term.substring(0, 1).toLowerCase() + fsn.term.substring(1);
+                  break;
+                default:
+                  nameValueMap[lt.name] = '???';
+              }
             }
-          }
+          });
         });
-        nameValueMap[lt.name] = value;
-      });
-
-      $q.all(promises).then(function () {
+        console.debug('nameValueMap', nameValueMap);
         deferred.resolve(nameValueMap);
       }, function (error) {
         deferred.reject(error);
       });
-
       return deferred.promise;
     }
 
@@ -410,131 +446,136 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-// get values from target slots
-      var nameValueMap = getTemplateValues(concept, template);
+      // get the target slot name->value map and process descriptions
+      var nameValueMap;
+      getTemplateValues(concept, template).then(function (map) {
+        nameValueMap = map;
 
 // match descriptions
-      angular.forEach(template.conceptOutline.descriptions, function (dt) {
-        var matchFound = false;
-        angular.forEach(concept.descriptions, function (d) {
+        angular.forEach(template.conceptOutline.descriptions, function (dt) {
+          var matchFound = false;
+          angular.forEach(concept.descriptions, function (d) {
 
 
-          // check by active/type/acceptability
-          // TODO Add acceptability
-          if (d.active && d.type === dt.type) {
-            // check exact term match first
-            if (d.term === dt.initialTerm) {
-              matchFound = true;
-              d.template = dt;
-              if (applyStyles) {
-                d.templateStyle = 'tealhl';
-              }
-            }
-
-            // otherwise, check by pattern matching
-            else {
-              // replace slots with .*, escape special characters, and start/end terminate
-              var exp = dt.termTemplate.replace(/\$.*\$/, '.*');
-              exp = '^' + exp.replace(/([()[{$^\\|?])/g, '\\$1') + '$';
-
-
-              // if match found
-              if (d.term && d.term.match(exp)) {
+            // check by active/type/acceptability
+            // TODO Add acceptability
+            if (d.active && d.type === dt.type) {
+              // check exact term match first
+              if (d.term === dt.initialTerm) {
                 matchFound = true;
                 d.template = dt;
-                var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
-                console.debug('comparing terms', templateTerm, d.term);
-                if (d.term !== templateTerm) {
-                  if (applyStyles) {
-                    d.templateStyle = 'redhl';
-                  }
+                if (applyStyles) {
+                  d.templateStyle = 'tealhl';
+                }
+              }
 
-                  // if apply values set, value will be replaced below, append warning
-                  if (applyValues) {
-                    d.term = templateTerm;
-                    if (applyMessages) {
+              // otherwise, check by pattern matching
+              else {
+                // replace slots with .*, escape special characters, and start/end terminate
+                var exp = dt.termTemplate.replace(/\$.*\$/, '.*');
+                exp = '^' + exp.replace(/([()[{$^\\|?])/g, '\\$1') + '$';
+
+
+                // if match found
+                if (d.term && d.term.match(exp)) {
+                  matchFound = true;
+                  d.template = dt;
+                  var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
+                  console.debug('comparing terms', templateTerm, d.term);
+                  if (d.term !== templateTerm) {
+                    if (applyStyles) {
+                      d.templateStyle = 'redhl';
+                    }
+
+                    // if apply values set, value will be replaced below, append warning
+                    if (applyValues) {
+                      d.term = templateTerm;
+                      if (applyMessages) {
+                        d.templateMessages.push({
+                          type: 'Warning',
+                          message: 'Description term updated to conform to template, previous term: ' + d.term
+                        });
+                      }
+                    }
+
+                    // otherwise, append error
+                    else if (applyMessages) {
                       d.templateMessages.push({
                         type: 'Warning',
-                        message: 'Description term updated to conform to template, previous term: ' + d.term
+                        message: 'Description term does not conform to template, expected: ' + templateTerm
                       });
+                    }
+                  } else {
+                    if (applyStyles) {
+                      d.templateStyle = 'tealhl';
                     }
                   }
 
-                  // otherwise, append error
-                  else if (applyMessages) {
-                    d.templateMessages.push({
-                      type: 'Warning',
-                      message: 'Description term does not conform to template, expected: ' + templateTerm
-                    });
-                  }
-                } else {
-                  if (applyStyles) {
-                    d.templateStyle = 'tealhl';
-                  }
                 }
-
               }
             }
+          });
+
+          if (!matchFound) {
+            var newDesc = angular.copy(dt);
+            newDesc.descriptionId = snowowlService.createGuid();
+            newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
+            if (applyStyles) {
+              newDesc.templateStyle = 'bluehl lighten-2';
+            }
+            newDesc.template = dt;
+            newDesc.templateMessages = [];
+            if (applyMessages) {
+              newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
+            }
+            concept.descriptions.push(newDesc);
           }
         });
-
-        if (!matchFound) {
-          var newDesc = angular.copy(dt);
-          newDesc.descriptionId = snowowlService.createGuid();
-          newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
-          if (applyStyles) {
-            newDesc.templateStyle = 'bluehl lighten-2';
-          }
-          newDesc.template = dt;
-          newDesc.templateMessages = [];
-          if (applyMessages) {
-            newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
-          }
-          concept.descriptions.push(newDesc);
-        }
-      });
 
 // cycle over all descriptions -- no style flag means not in template
 
 // otherwise, flag as outside template
-      angular.forEach(concept.descriptions, function (d) {
-        if (d.active && !d.template) {
-          if (applyStyles) {
-            d.templateStyle = 'redhl';
-          }
+        angular.forEach(concept.descriptions, function (d) {
+          if (d.active && !d.template) {
+            if (applyStyles) {
+              d.templateStyle = 'redhl';
+            }
 
-          d.templateMessages = [];
-          if (applyMessages) {
-            d.templateMessages.push({type: 'Error', message: 'Description not valid for template; please remove'});
+            d.templateMessages = [];
+            if (applyMessages) {
+              d.templateMessages.push({type: 'Error', message: 'Description not valid for template; please remove'});
+            }
           }
+        });
+
+        componentAuthoringUtil.setDefaultFields(concept);
+
+
+        if (applyValues) {
+          concept = replaceLexicalValues(concept, template);
         }
-      });
-
-      componentAuthoringUtil.setDefaultFields(concept);
-
-
-      if (applyValues) {
-        concept = replaceLexicalValues(concept, template);
-      }
 
 // apply top-level messages
-      if (applyMessages) {
-        var msg = {type: 'Message', message: 'Template Concept Valid'};
-        angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
-          angular.forEach(component.templateMessages, function (tm) {
-            // overwrite with highest severity
-            if (tm.type === 'Error') {
-              msg = {type: 'Error', message: 'Template Errors Found'};
-            } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
-              msg = {type: 'Warning', message: 'Template Warnings Found'};
-            }
+        if (applyMessages) {
+          var msg = {type: 'Message', message: 'Template Concept Valid'};
+          angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
+            angular.forEach(component.templateMessages, function (tm) {
+              // overwrite with highest severity
+              if (tm.type === 'Error') {
+                msg = {type: 'Error', message: 'Template Errors Found'};
+              } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
+                msg = {type: 'Warning', message: 'Template Warnings Found'};
+              }
+            });
           });
-        });
-        concept.templateMessages.push(msg);
-      }
+          concept.templateMessages.push(msg);
+        }
 
 
-      deferred.resolve(concept);
+        deferred.resolve(concept);
+      }, function (error) {
+        deferred.reject('Could not compute target slot values: ' + error);
+      });
 
       return deferred.promise;
     }
@@ -668,6 +709,7 @@ angular.module('singleConceptAuthoringApp')
 //
     function getTemplates(refreshCache) {
       var deferred = $q.defer();
+      console.debug('get templates', refreshCache);
       if (!templateCache || refreshCache) {
         $http.get(apiEndpoint + 'templates').then(function (response) {
           templateCache = response.data;
