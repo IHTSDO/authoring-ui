@@ -2345,10 +2345,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
               scope.computeRelationshipGroups();
-              componentAuthoringUtil.runConceptAutomations(scope.concept).then(function () {
-                sortDescriptions();
-                autoSave();
-              });
+
+              // run international dialect automations on target slot update (if appropriate)
+              if (!metadataService.isExtensionSet()) {
+                componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept).then(function () {
+                  sortDescriptions();
+                  autoSave();
+                });
+              }
             }, function (error) {
               notificationService.sendError('Unexpected template error: ' + error);
             });
