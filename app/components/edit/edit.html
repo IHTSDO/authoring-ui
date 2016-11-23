@@ -1,4 +1,3 @@
-
 <!-- Hide container until view is selected -->
 <div class="sca-container" ng-if="thisView" style="">
 
@@ -16,6 +15,7 @@
 
       <span>Create New Concept</span></button>
 
+
     <!-- Create new template concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
             popover-template="'components/edit/editTemplateSelect.html'"
@@ -27,7 +27,7 @@
             ng-disabled="task.status === 'Promoted' || !canCreateConcept"
             ng-if="templates.length > 0"
             class="btn btn-default snodragon-templates widget-toolbar tooltips-right tooltips-light normal-case">
-    <i class="md fa fa-magic"></i>
+      <i class="md fa fa-magic"></i>
 
       <span>Create New Concept From Template</span></button>
     <div class="navigation-link green darken-1 classify">
@@ -461,7 +461,7 @@
             <hot-column data="conceptId" title="'SCTID'" read-only></hot-column>
             <hot-column data="fsn" title="'FSN'"></hot-column>
             <hot-column data="pt" title="'PT'"></hot-column>
-            <hot-column data="slotTarget" title="'Procedure site (attribute)'" ></hot-column>
+            <hot-column data="slotTarget" title="'Procedure site (attribute)'"></hot-column>
             <hot-column data="editHtml" title="' '" renderer="hot.renderer">
             </hot-column>
 
