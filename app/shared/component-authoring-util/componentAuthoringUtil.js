@@ -779,6 +779,16 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
+      function getFsnDescriptionForConcept(concept) {
+        try {
+          return concept.descriptions.filter(function (d) {
+            return d.active && d.type === 'FSN';
+          })[0];
+        } catch (error) {
+          return null;
+        }
+      }
+
       return {
         getNewConcept: getNewConcept,
         getNewDescription: getNewDescription,
@@ -808,7 +818,8 @@ angular.module('singleConceptAuthoringApp')
         // utility functions
         setDefaultFields: setDefaultFields,
         getFsnForConcept: getFsnForConcept,
-        getPtForConcept: getPtForConcept
+        getPtForConcept: getPtForConcept,
+        getFsnDescriptionForConcept : getFsnDescriptionForConcept
 
       };
 
