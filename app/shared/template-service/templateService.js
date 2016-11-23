@@ -12,8 +12,10 @@ angular.module('singleConceptAuthoringApp')
     //
     // Internal variables
     //
+    var currentTask = null;
     var templateCache = null;
     var selectedTemplate = null;
+    var targetConceptCache = {};
 
     //
     // Patterns
@@ -73,7 +75,7 @@ angular.module('singleConceptAuthoringApp')
         newTerm = newTerm.replace(re, sv);
         newTerm = newTerm.replace(/[\s]{2,}/g, ' ');
         newTerm = newTerm.trim();
-        newTerm = newTerm.substring(0,1).toUpperCase() + newTerm.substring(1);
+        newTerm = newTerm.substring(0, 1).toUpperCase() + newTerm.substring(1);
       });
       return newTerm;
     }
@@ -117,8 +119,12 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function updateTargetSlot(concept, template, relationship) {
+    function updateTargetSlot(concept, template, relationship, targetConcept) {
       var deferred = $q.defer();
+
+      // put/update the concept in the cache for lexical processing
+      targetConceptCache[targetConcept.conceptId] = targetConcept;
+
       replaceLogicalValues(concept, relationship).then(function () {
         replaceLexicalValues(concept, template).then(function () {
           deferred.resolve();
@@ -137,7 +143,6 @@ angular.module('singleConceptAuthoringApp')
      * @returns {{}} map of names and values from template slots
      */
     function getTemplateValues(concept, template) {
-
       // full map of replacement values
       var nameValueMap = {};
 
@@ -149,12 +154,37 @@ angular.module('singleConceptAuthoringApp')
 
           // if a target slot with specified slot name
           if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
-            value = r.target.fsn;
+
+            // get the concept from the cache of passed concepts
+            var fullTargetConcept = targetConceptCache[conceptId];
+
+            // get the FSN
+            var fsn = componentAuthoringUtil.getFsnDescriptionForConcept(fullTargetConcept);
+
+            // determine value based on case signifiance
+            switch (fsn.caseSignificanceId) {
+              case '900000000000448009': // entire term case insensitive
+                value = fsn.term.toLowerCase();
+                break;
+              case '900000000000017005' : // entire term case sensitive
+                value = fsn.term;
+                break;
+              case '900000000000020002' : // initial character case insensitive
+                value = fsn.term.substring(0, 1).toLowerCase() + fsn.term.substring(1);
+                break;
+            }
           }
         });
         nameValueMap[lt.name] = value;
       });
-      return nameValueMap;
+
+      $q.all(promises).then(function () {
+        deferred.resolve(nameValueMap);
+      }, function (error) {
+        deferred.reject(error);
+      });
+
+      return deferred.promise;
     }
 
 // function to populate concept FSNs from ids in templates
@@ -727,8 +757,15 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function setTask(task) {
+      currentTask = task;
+    }
+
 
     return {
+
+      // task initialization
+      setTask: setTask,
 
       // Template CRUD functions
       getTemplates: getTemplates,
