@@ -42,6 +42,12 @@
 
           <ul class="button-sub-nav">
 
+            <li ng-if="!task.latestClassificationJson">
+              No Classification Run
+            </li>
+            <li ng-if="task.latestClassificationJson.status === 'STALE'" ng-click="viewClassificationFromSidebar()">
+              View Stale Classification (completed {{classificationContainer.creationDate | date : 'medium'}})
+            </li>
 
             <li ng-if="task.latestClassificationJson.status === 'COMPLETED'" ng-click="viewClassificationFromSidebar()">
               View Classification (completed {{classificationContainer.creationDate | date : 'medium'}}
