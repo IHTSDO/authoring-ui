@@ -5,7 +5,7 @@ angular.module('singleConceptAuthoringApp.sidebar', [])
     function sidebarCtrl($scope, $rootScope, $location, $modal) {
 
       $scope.gotoBrowser = function() {
-        window.open('..', '_blank');
+        window.open('/browser', '_blank');
       };
 
       $scope.gotoMyProjects = function() {
