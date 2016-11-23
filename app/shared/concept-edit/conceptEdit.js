@@ -2348,7 +2348,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // run international dialect automations on target slot update (if appropriate)
               if (!metadataService.isExtensionSet()) {
-                componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept).then(function () {
+
+                // run automations with isTemplateConcept flag set to ensure proper behavior
+                componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
                   sortDescriptions();
                   autoSave();
                 });
