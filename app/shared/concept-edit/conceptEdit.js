@@ -2349,11 +2349,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // run international dialect automations on target slot update (if appropriate)
               if (!metadataService.isExtensionSet()) {
 
-                // run automations with isTemplateConcept flag set to ensure proper behavior
-                componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
-                  sortDescriptions();
+                // if all target slots are set
+                if (scope.concept.relationships.filter(function (r) {
+                    return r.targetSlot && !r.target.conceptId;
+                  }).length === 0) {
+
+                  // run automations with isTemplateConcept flag set to ensure proper behavior
+                  componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
+                    sortDescriptions();
+                    autoSave();
+                  });
+                } else {
                   autoSave();
-                });
+                }
+
+
+              } else {
+                autoSave();
               }
             }, function (error) {
               notificationService.sendError('Unexpected template error: ' + error);
