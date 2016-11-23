@@ -1638,6 +1638,9 @@ angular.module('singleConceptAuthoringApp.edit', [
       // initialize the task and project
       $q.all([loadTask(), loadProject()]).then(function () {
 
+        // set the task for the template service
+        templateService.setTask($scope.task);
+
         // set the metadata for use by other elements
         metadataService.setBranchMetadata($scope.task);
 
