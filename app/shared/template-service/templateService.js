@@ -146,7 +146,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getTargetSlotConcepts(concept) {
-      console.debug('get target slot concepts');
       var deferred = $q.defer();
       var conceptIds = [];
       angular.forEach(concept.relationships, function (r) {
@@ -183,7 +182,6 @@ angular.module('singleConceptAuthoringApp')
       // get full target concepts
       getTargetSlotConcepts(concept).then(function (targetConcepts) {
 
-        console.debug('targetconcepts', targetConcepts);
 
         angular.forEach(template.lexicalTemplates, function (lt) {
 
@@ -197,8 +195,6 @@ angular.module('singleConceptAuthoringApp')
                 return c.id === r.target.conceptId
               })[0];
               var fsn = targetConcept.fsn;
-
-              console.debug('fsn', fsn);
 
               // determine value based on case signifiance
               switch (fsn.caseSignificance) {
@@ -215,7 +211,6 @@ angular.module('singleConceptAuthoringApp')
             }
           });
         });
-        console.debug('nameValueMap', nameValueMap);
         deferred.resolve(nameValueMap);
       }, function (error) {
         deferred.reject(error);
@@ -481,7 +476,6 @@ angular.module('singleConceptAuthoringApp')
                   matchFound = true;
                   d.template = dt;
                   var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
-                  console.debug('comparing terms', templateTerm, d.term);
                   if (d.term !== templateTerm) {
                     if (applyStyles) {
                       d.templateStyle = 'redhl';
@@ -709,7 +703,6 @@ angular.module('singleConceptAuthoringApp')
 //
     function getTemplates(refreshCache) {
       var deferred = $q.defer();
-      console.debug('get templates', refreshCache);
       if (!templateCache || refreshCache) {
         $http.get(apiEndpoint + 'templates').then(function (response) {
           templateCache = response.data;
