@@ -19,11 +19,16 @@
               Dashboard</a>
 
             <ul>
-              <li><a ng-href="#/home">My Tasks</a>
+              <li ng-click="gotoMyTasks()">My Tasks
               </li>
-              <li><a ng-href="#/review-tasks">Review Tasks</a>
+              <li ng-click="gotoReviewTasks()">Review Tasks
               </li>
-
+              <li ng-click="gotoMyProjects()">My Projects
+              </li>
+              <li ng-click="gotoAllProjects()">All Projects
+              </li>
+              <li ng-click="openBrowser()">TS Browser
+              </li>
             </ul>
           </li>
 
@@ -60,7 +65,7 @@
 
 
 	</style>
-    <!-- Hiding this pending discussion I think it appears as a duplicate and may cause confusion 
+    <!-- Hiding this pending discussion I think it appears as a duplicate and may cause confusion
     <div ng-if="getSelectedTemplate() != null"  class="pull-left header-alerts col-md-3 pull-left">
 
       <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
@@ -69,7 +74,7 @@
 
              style="padding-right: 8px;">
 
-     
+
           <button type="button" class=" fa-sca fa-close "
 
                   ng-click="clearTemplate()"></button>

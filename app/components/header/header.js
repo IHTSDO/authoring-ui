@@ -143,6 +143,26 @@ angular.module('singleConceptAuthoringApp')
           }, function () {
           });
         };
+
+        scope.gotoMyTasks = function() {
+          $location.url('home');
+        };
+
+        scope.gotoReviewTasks = function() {
+          $location.url('review-tasks');
+        };
+
+        scope.gotoMyProjects = function() {
+          $location.url('my-projects');
+        };
+
+        scope.gotoAllProjects = function() {
+          $location.url('projects');
+        };
+
+        scope.openBrowser = function() {
+          window.open('/browser', '_blank');
+        };
       }
     };
   }]);
