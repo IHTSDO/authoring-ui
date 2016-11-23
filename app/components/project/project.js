@@ -55,15 +55,6 @@ angular.module('singleConceptAuthoringApp.project', [
           $rootScope.validationRunning =
             $scope.project.validationStatus && ($scope.project.validationStatus !== 'COMPLETED' && $scope.project.validationStatus !== 'NOT_TRIGGERED' && $scope.project.validationStatus !== 'FAILED');
 
-          // get the latest classification for this project (if exists)
-
-          if ($scope.project.latestClassificationJson) {
-            snowowlService.getClassificationForProject($scope.project.key, $scope.project.latestClassificationJson.id, $scope.project.branchPath).then(function (response) {
-              console.log(response);
-              $scope.classificationContainer = response;
-            });
-          }
-
           // get the latest validation for this project (if exists)
           if ($scope.project.validationStatus !== 'FAILED') {
             scaService.getValidationForProject($scope.project.key).then(function (response) {
