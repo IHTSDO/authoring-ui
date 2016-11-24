@@ -244,7 +244,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         snowowlService.getBranch($scope.branch).then(function (response) {
           if($scope.classificationLockCheck){
             $timeout(function () {
-              $scope.checkForLock()
+              $scope.checkForLock();
             }, 10000);
            }
           // if lock found, set rootscope variable and continue polling
@@ -255,12 +255,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 }
             $rootScope.branchLocked = true;
             $timeout(function () {
-              $scope.checkForLock()
+              $scope.checkForLock();
             }, 10000);
            }
           else if($scope.classificationLockCheck && !$scope.ontologyLock){
             $timeout(function () {
-              $scope.checkForLock()
+              $scope.checkForLock();
             }, 10000);
            }
           else {

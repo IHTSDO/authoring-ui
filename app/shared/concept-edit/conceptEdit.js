@@ -1969,7 +1969,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.warnings = ['MRCM validation error: ' + target.target.fsn + ' is not valid for attribute type ' + target.type.fsn];
             });
           } else {
-            scope.warnings = ['MRCM validation error: Attribute ' + target.type.fsn + ' not allowed for concept']
+            scope.warnings = ['MRCM validation error: Attribute ' + target.type.fsn + ' not allowed for concept'];
           }
 
 
@@ -2368,7 +2368,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
               }, function(error) {
                 notificationService.sendError('Unexpected template error: ' + error);
-              })
+              });
             }, function (error) {
               notificationService.sendError('Unexpected error retrieving target concept for template: ' + error);
             });
