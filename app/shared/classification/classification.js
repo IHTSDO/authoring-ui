@@ -373,7 +373,7 @@ angular.module('singleConceptAuthoringApp')
             return scope.relationshipChanges && scope.redundantStatedRelationships && scope.inferredNotPreviouslyStated && scope.equivalentConcepts;
           };
 
-          scope.loadRelationshipChanges = function(limit) {
+          scope.loadRelationshipChanges = function (limit) {
             scope.statusText = 'Loading...';
             scope.relationshipChanges = null;
             // get relationship changes
@@ -406,11 +406,11 @@ angular.module('singleConceptAuthoringApp')
               }
 
               scope.setStatusText();
-            }, function(error) {
+            }, function (error) {
               notificationService.sendError('Unexpected error: ' + error);
               scope.errorState = true;
             });
-          }
+          };
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
@@ -471,7 +471,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
                 console.log(scope.equivalentConcepts);
-              }, function(error) {
+              }, function (error) {
                 notificationService.sendError('Unexpected error: ' + error);
                 scope.errorState = true;
 

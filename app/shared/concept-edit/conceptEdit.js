@@ -548,7 +548,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     if (!crsConcept.saved) {
                       $rootScope.$broadcast('saveCrsConcept', {concept: crsConcept, crsConceptId: originalConceptId});
                     }
-                    console.debug('Saving CRS concept');
 
                     // update the crs concept
                     crsService.saveCrsConcept(originalConceptId, scope.concept);
@@ -1970,7 +1969,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.warnings = ['MRCM validation error: ' + target.target.fsn + ' is not valid for attribute type ' + target.type.fsn];
             });
           } else {
-            scope.warnings = ['MRCM validation error: Attribute ' + target.type.fsn + ' not allowed for concept']
+            scope.warnings = ['MRCM validation error: Attribute ' + target.type.fsn + ' not allowed for concept'];
           }
 
 
@@ -2252,12 +2251,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
         scope.replaceSuggestion = function (description, word, suggestion) {
-          console.debug('replace', description.term, word, suggestion);
           if (description.term && word && suggestion) {
             var re = new RegExp(word, 'gi');
             description.term = description.term.replace(re, suggestion);
           }
-          console.debug('new term', description.term);
 
           // remove this suggestion
           delete description.spellcheckSuggestions[word];
@@ -2339,18 +2336,41 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // If template enabled, relationship must contain target slot
-          if (scope.template) {
+          if (relationship.targetSlot) {
             // clear validation errors
             scope.validation = {};
 
-            templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
-              scope.computeRelationshipGroups();
-              componentAuthoringUtil.runConceptAutomations(scope.concept).then(function () {
-                sortDescriptions();
-                autoSave();
+            snowowlService.getFullConcept(relationship.target.conceptId, scope.branch).then(function (targetConcept) {
+
+              templateService.updateTargetSlot(scope.concept, scope.template, relationship, targetConcept).then(function () {
+                scope.computeRelationshipGroups();
+
+                // run international dialect automations on target slot update (if appropriate)
+                if (!metadataService.isExtensionSet()) {
+
+                  // if all target slots are set
+                  if (scope.concept.relationships.filter(function (r) {
+                      return r.targetSlot && !r.target.conceptId;
+                    }).length === 0) {
+
+                    // run automations with isTemplateConcept flag set to ensure proper behavior
+                    componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
+                      sortDescriptions();
+                      autoSave();
+                    });
+                  } else {
+                    autoSave();
+                  }
+
+
+                } else {
+                  autoSave();
+                }
+              }, function(error) {
+                notificationService.sendError('Unexpected template error: ' + error);
               });
             }, function (error) {
-              notificationService.sendError('Unexpected template error: ' + error);
+              notificationService.sendError('Unexpected error retrieving target concept for template: ' + error);
             });
           }
 
@@ -2571,7 +2591,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }
-          console.debug('set target concept', relationship, item);
           if (metadataService.isMrcmEnabled()) {
             if (!relationship.type.conceptId) {
               scope.warnings = ['MRCM validation error: Must set attribute type first'];
