@@ -159,7 +159,7 @@ angular.module('singleConceptAuthoringApp')
           deferred.resolve(response.items);
         }, function (error) {
           deferred.reject(error);
-        })
+        });
       } else {
         deferred.resolve([]);
       }
@@ -192,7 +192,7 @@ angular.module('singleConceptAuthoringApp')
             if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
 
               var targetConcept = targetConcepts.filter(function (c) {
-                return c.id === r.target.conceptId
+                return c.id === r.target.conceptId;
               })[0];
               var fsn = targetConcept.fsn;
 

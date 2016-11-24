@@ -410,7 +410,7 @@ angular.module('singleConceptAuthoringApp')
               notificationService.sendError('Unexpected error: ' + error);
               scope.errorState = true;
             });
-          }
+          };
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {

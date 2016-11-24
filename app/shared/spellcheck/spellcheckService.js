@@ -29,7 +29,7 @@ angular.module('singleConceptAuthoringApp')
 
     return {
       checkSpelling: checkSpelling
-    }
+    };
 
   })
 ;
