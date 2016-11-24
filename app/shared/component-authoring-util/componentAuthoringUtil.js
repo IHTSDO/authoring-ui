@@ -354,6 +354,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function ptFromFsnAutomation(concept, description) {
+
         if (!description || !description.term) {
           return concept;
         }
@@ -458,7 +459,7 @@ angular.module('singleConceptAuthoringApp')
           dialectDescription = getNewDescription(description.moduleId);
           dialectDescription.type = type;
           dialectDescription.term = term;
-          dialectDescription.caseSignifiance = description.caseSignificance;
+          dialectDescription.caseSignificance = description.caseSignificance;
           dialectDescription.acceptabilityMap = {};
           dialectDescription.acceptabilityMap[dialectId] = acceptability;
 
@@ -477,7 +478,7 @@ angular.module('singleConceptAuthoringApp')
        * @param matchingWords
        * @returns {*}
        */
-      function runInternationalDialectAutomation(concept, description) {
+      function runInternationalDialectAutomation(concept, description, isTemplateConcept) {
 
         var deferred = $q.defer();
 
@@ -564,7 +565,9 @@ angular.module('singleConceptAuthoringApp')
                   delete description.acceptabilityMap['900000000000508004'];
 
                   // SYN, en-GB acceptable
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                  if (!isTemplateConcept) {
+                    addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                  }
                 }
                 // else, ensure FSN en-US and en-GB preferred, do not add matching PT
                 else {
@@ -599,19 +602,24 @@ angular.module('singleConceptAuthoringApp')
               if (description.type === 'FSN') {
                 // when spelling variant is present, result is
                 if (hasMatchingWords) {
-                 // SYN en-US preferred
-                  addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+                  if (!isTemplateConcept) {
+                    // SYN en-US preferred
+                    addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
 
-                  // SYN en-GB preferred
-                  addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                    // SYN en-GB preferred
+                    addDialectDescription(concept, description, 'SYNONYM', termGb, '900000000000508004', 'PREFERRED');
+                  }
                 }
                 // else, add matching PT
                 else {
+
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
                   description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-                  newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
-                  newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
-                  newPt.automationFlag = true;
+                  if (!isTemplateConcept) {
+                    newPt = addDialectDescription(concept, description, 'SYNONYM', termUs, '900000000000509007', 'PREFERRED');
+                    newPt.acceptabilityMap['900000000000508004'] = 'PREFERRED';
+                    newPt.automationFlag = true;
+                  }
                 }
               }
               // when SYN
@@ -652,7 +660,7 @@ angular.module('singleConceptAuthoringApp')
 
       }
 
-      function runDescriptionAutomations(concept, description) {
+      function runDescriptionAutomations(concept, description, isTemplateConcept) {
 
         var deferred = $q.defer();
 
@@ -663,7 +671,7 @@ angular.module('singleConceptAuthoringApp')
         }
         // run international dialect automation (includes PT automation for international)
         else {
-          runInternationalDialectAutomation(concept, description).then(function (updatedConcept) {
+          runInternationalDialectAutomation(concept, description, isTemplateConcept).then(function (updatedConcept) {
             deferred.resolve(updatedConcept);
           }, function (error) {
             deferred.reject(error);
@@ -672,16 +680,31 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
-      function runConceptAutomations(concept) {
+      function runConceptAutomations(concept, isTemplateConcept) {
         var deferred = $q.defer();
 
         var promises = [];
-        angular.forEach(concept.descriptions, function(d) {
-          promises.push(runDescriptionAutomations(concept, d));
+        angular.forEach(concept.descriptions, function (d) {
+          promises.push(runDescriptionAutomations(concept, d, isTemplateConcept));
         });
-        $q.all(promises).then(function() {
+        $q.all(promises).then(function () {
           deferred.resolve(concept);
-        }, function(error) {
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
+      }
+
+      function runInternationalDialectAutomationForConcept(concept, isTemplateConcept) {
+        var deferred = $q.defer();
+        var promises = [];
+        angular.forEach(concept.descriptions, function (d) {
+          promises.push(runInternationalDialectAutomation(concept, d, isTemplateConcept));
+        });
+        $q.all(promises).then(function () {
+          deferred.resolve(concept);
+        }, function (error) {
           deferred.reject(error);
         });
 
@@ -703,7 +726,7 @@ angular.module('singleConceptAuthoringApp')
           concept.released = false;
         }
 
-        angular.forEach(concept.descriptions, function(description) {
+        angular.forEach(concept.descriptions, function (description) {
           if (!description.hasOwnProperty('active')) {
             description.active = true;
           }
@@ -712,7 +735,7 @@ angular.module('singleConceptAuthoringApp')
           }
         });
 
-        angular.forEach(concept.relationships, function(relationship) {
+        angular.forEach(concept.relationships, function (relationship) {
           if (!relationship.hasOwnProperty('active')) {
             relationship.active = true;
           }
@@ -723,10 +746,10 @@ angular.module('singleConceptAuthoringApp')
             relationship.modifier = 'EXISTENTIAL';
           }
           if (!relationship.hasOwnProperty('type')) {
-            relationship.type = { conceptId : null};
+            relationship.type = {conceptId: null};
           }
           if (!relationship.hasOwnProperty('target')) {
-            relationship.target = { conceptId : null };
+            relationship.target = {conceptId: null};
           }
         });
       }
@@ -734,7 +757,7 @@ angular.module('singleConceptAuthoringApp')
       // utility functions
       function getFsnForConcept(concept) {
         try {
-          return concept.descriptions.filter(function(d) {
+          return concept.descriptions.filter(function (d) {
             return d.active && d.type === 'FSN';
           })[0].term;
         } catch (error) {
@@ -744,11 +767,21 @@ angular.module('singleConceptAuthoringApp')
 
       function getPtForConcept(concept, dialect) {
         try {
-          return concept.descriptions.filter(function(d) {
+          return concept.descriptions.filter(function (d) {
             return d.active && d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap[dialect] === 'PREFERRED';
           })[0].term;
         } catch (error) {
           return '???';
+        }
+      }
+
+      function getFsnDescriptionForConcept(concept) {
+        try {
+          return concept.descriptions.filter(function (d) {
+            return d.active && d.type === 'FSN';
+          })[0];
+        } catch (error) {
+          return null;
         }
       }
 
@@ -776,11 +809,13 @@ angular.module('singleConceptAuthoringApp')
         // grouped automations
         runDescriptionAutomations: runDescriptionAutomations,
         runConceptAutomations: runConceptAutomations,
+        runInternationalDialectAutomationForConcept: runInternationalDialectAutomationForConcept,
 
         // utility functions
-        setDefaultFields : setDefaultFields,
-        getFsnForConcept : getFsnForConcept,
-        getPtForConcept : getPtForConcept
+        setDefaultFields: setDefaultFields,
+        getFsnForConcept: getFsnForConcept,
+        getPtForConcept: getPtForConcept,
+        getFsnDescriptionForConcept : getFsnDescriptionForConcept
 
       };
 

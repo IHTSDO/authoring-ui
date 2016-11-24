@@ -342,12 +342,12 @@ angular.module('singleConceptAuthoringApp')
             // do nothing
           }, function(error) {
             // do nothing
-          })
+          });
         }, function(error) {
           // do nothing
-        })
+        });
       }, function(error) {
-        defer.reject('Error promoting task: ' + error);
+        deferred.reject('Error promoting task: ' + error);
       });
       return deferred.promise;
     }
@@ -358,9 +358,9 @@ angular.module('singleConceptAuthoringApp')
       // NOTE: No extra steps, simply promote via scaService
 
       scaService.promoteProject(projectKey).then(function (response) {
-        defer.resolve();
+        deferred.resolve();
       }, function(error) {
-        defer.reject('Error promoting project: ' + error);
+        deferred.reject('Error promoting project: ' + error);
       });
       return deferred.promise;
     }

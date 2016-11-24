@@ -42,6 +42,12 @@
 
           <ul class="button-sub-nav">
 
+            <li ng-if="!task.latestClassificationJson">
+              No Classification Run
+            </li>
+            <li ng-if="task.latestClassificationJson.status === 'STALE'" ng-click="viewClassificationFromSidebar()">
+              View Stale Classification (completed {{classificationContainer.creationDate | date : 'medium'}})
+            </li>
 
             <li ng-if="task.latestClassificationJson.status === 'COMPLETED'" ng-click="viewClassificationFromSidebar()">
               View Classification (completed {{classificationContainer.creationDate | date : 'medium'}}
@@ -408,7 +414,7 @@
 
         <!-- classification report -->
         <div class="col-md-12">
-          <div classification classification-container="classificationContainer" branch="targetBranch"
+          <div classification classification-container="task.latestClassificationJson" branch="targetBranch"
                editable="true"></div>
         </div>
       </div>
