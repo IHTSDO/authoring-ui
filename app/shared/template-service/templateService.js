@@ -81,6 +81,7 @@ angular.module('singleConceptAuthoringApp')
 
     // triggers replacement of logical values given a changed relationship
     function replaceLogicalValues(concept, relationship) {
+      console.debug('replace logcial values', concept);
       // placeholder promise in anticipation of asynchronous operations
       var deferred = $q.defer();
 
@@ -401,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // otherwise, check specified target concept id
-            else if (r.active && r.target.conceptId === rt.target.conceptId) {
+            else if (r.active && r.groupId === rt.groupId && r.type && rt.type && r.target && rt.target && r.type.conceptId === rt.type.conceptId && r.target.conceptId === rt.target.conceptId) {
 
               matchFound = true;
               r.template = rt;
