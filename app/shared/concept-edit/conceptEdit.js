@@ -306,7 +306,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // store in scope variable and on concept (for UI State saving)
                 scope.template = template;
-                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function() {
+                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function () {
                   resetConceptHistory();
                 })
 
@@ -447,7 +447,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         // on load, check for expected render flag applied in saveHelper
         if (scope.concept.catchExpectedRender) {
           delete scope.concept.catchExpectedRender;
-          scope.validateConcept();
+          scope.validateConcept().then(function () {
+            reapplyTemplate();
+          });
         }
 
 
@@ -539,7 +541,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     scope.concept.template = scope.template;
                     templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template);
                     templateService.logTemplateConceptSave($routeParams.projectKey, scope.concept.conceptId, scope.concept.fsn, scope.template);
-                    templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
                   }
 
                   // if a crs concept
@@ -655,6 +656,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               if (scope.validation && scope.validation.hasErrors) {
                 notificationService.sendError('Fix errors before continuing');
+                scope.reapplyTemplate();
               } else {
                 scope.saving = false;
                 scope.isModified = false;
@@ -667,84 +669,53 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               notificationService.sendError('Concept contains convention errors. Please resolve before saving.');
               scope.saving = false;
               scope.reapplyTemplate();
+
+              return;
             }
 
-            // if no errors but warnings, save, results will be displayed
-            // after save NOTE: Do not notify or display until after save, as
-            // component ids may change on return from term server
-            else if (scope.validation && scope.validation.hasWarnings) {
+            if (originalConceptId) {
+              scope.concept.conceptId = originalConceptId;
+            }
 
-              if (originalConceptId) {
-                scope.concept.conceptId = originalConceptId;
-              }
-
-              // save concept
-              console.log('SAVE HELPER 1');
+            // save concept
               saveHelper().then(function () {
 
-                $timeout(function () {
-                  // recompute validation warnings
-                  scope.validateConcept().then(function (results) {
-                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review.');
-                    scope.saving = false;
-                    scope.reapplyTemplate();
-                  }, function (error) {
-                    notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
-                    scope.saving = false;
-                    scope.reapplyTemplate();
-                  });
-                }, 1000);
-              }, function (error) {
-                if (error.status === 504) {
-
-                  // on timeouts, must save crs concept to ensure termserver retrieval
-                  if (crsService.isCrsConcept(originalConceptId)) {
-                    crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
-                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConceptId);
+              // brief timeout to alleviate timing issues, may no longer be needed
+              $timeout(function () {
+                // perform a second validation to catch any convention warnings introduced by termserver
+                scope.validateConcept().then(function (results) {
+                  if (scope.validation.hasErrors) {
+                    notificationService.sendError('Concept saved, but modifications introduced by server led to convention errors. Please review');
                   }
-                  notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
+                  else if (scope.validation.hasWarnings) {
+                    notificationService.sendWarning('Concept saved, but contains convention warnings. Please review');
+                  } else {
+                    notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
+                  }
+                  scope.saving = false;
+                  scope.reapplyTemplate();
+                }, function (error) {
+                  notificationService.sendError('Error: Concept saved with warnings, but could not retrieve convention validation warnings');
+                  scope.saving = false;
+                  scope.reapplyTemplate();
+                });
+              }, 500);
+            }, function (error) {
+              if (error.status === 504) {
 
+                // on timeouts, must save crs concept to ensure termserver retrieval
+                if (crsService.isCrsConcept(originalConceptId)) {
+                  crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
+                  scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConceptId);
                 }
-                else {
-                  notificationService.sendError('Error saving concept: ' + error.statusText);
-                }
-                scope.reapplyTemplate();
-                scope.saving = false;
-              });
-            }
-
-
-            // otherwise, just save
-            else {
-
-
-              if (originalConceptId) {
-                scope.concept.conceptId = originalConceptId;
+                notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
               }
-
-              console.log('SAVE HELPER 2');
-              saveHelper(scope.concept).then(function () {
-                scope.validateConcept();
-                scope.reapplyTemplate();
-                notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
-                scope.saving = false;
-              }, function (error) {
-                console.log(error);
-                if (error.status === 504) {
-                  // on timeouts, must save crs concept to ensure termserver retrieval
-                  if (crsService.isCrsConcept(originalConceptId)) {
-                    crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
-                    scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConceptId);
-                  }
-                  notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
-                }
-                else {
-                  notificationService.sendError('Error saving concept: ' + error.statusText);
-                }
-                scope.reapplyTemplate();
-                scope.saving = false;
-              });
-            }
+              else {
+                notificationService.sendError('Error saving concept: ' + error.statusText);
+              }
+              scope.reapplyTemplate();
+              scope.saving = false;
+            });
 
           }, function (error) {
             notificationService.sendError('Fatal error: Could not validate concept');
@@ -752,10 +723,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.saving = false;
           });
         };
-
-        // pass inactivation service function to determine whether in process of inactivation
-        //scope.isInactivation = inactivationService.isInactivation;
-
 
         // function to toggle active status of concept
         // cascades to children components
