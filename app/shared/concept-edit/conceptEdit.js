@@ -1801,6 +1801,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          // cancel if template applied and this is not a valid target slot
+          if (scope.template && relationship.targetSlot && !relationship.targetSlot.slotName) {
+            return;
+          }
+
           var tempFsn = relationship.target.fsn;
 
           relationship.target.fsn = 'Validating...';
@@ -1839,6 +1844,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // cancel if static or released relationship
           if (scope.isStatic || relationship.effectiveTime) {
+            return;
+          }
+
+          // cancel if template applied -- logical model restricted
+          if (scope.template) {
             return;
           }
 
