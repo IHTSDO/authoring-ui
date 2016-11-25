@@ -568,12 +568,15 @@
                   <textarea type="text" ng-model="relationship.target.fsn"
                             ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
                             class="resizable-text relationship msd-elastic: \n;"
-                            ng-class="[{'template-slot' : relationship.targetSlot}]"
+                            ng-class="[{'template-slot' : relationship.targetSlot.slotName}]"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
                             typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
                             typeahead-editable="false" typeahead-min-length="3"></textarea>
+
+
+
                   <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                        ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
@@ -610,7 +613,6 @@
 
 
                 </div>
-
 
               </div>
               <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
