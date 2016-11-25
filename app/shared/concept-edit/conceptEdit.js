@@ -163,16 +163,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.getSelectedTemplate = templateService.getSelectedTemplate;
 
         //
-        // Function to reapply template, intended for use after cleanConcept invocations
+        // Functionality for stashing and reapplying template, intended for use after cleanConcept invocations
         //
+
+        // compares stashed concept components to current components
+        // attempts to match by component id, then by component elements
         scope.reapplyTemplate = function () {
           if (scope.template) {
-
-            templateService.storeTemplateForConcept($routeParams.projectKey, scope.concept.conceptId, scope.template).then(function () {
-              templateService.applyTemplateToConcept(scope.concept, scope.template);
-            }, function (error) {
-              notificationService.sendError('Failed to reapply template for concept: ' + error);
-            });
+            templateService.applyTemplateToConcept(scope.concept, scope.template);
           }
         };
 
@@ -196,9 +194,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 
-        //
-        // CRS concept initialization
-        //
+//
+// CRS concept initialization
+//
         if (crsService.isCrsConcept(scope.concept.conceptId)) {
 
 
@@ -209,9 +207,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.isModified = !crsContainer.saved;
         }
 
-        //////////////////////////////////////////////////////////////
-        // Handle additional fields, if required
-        /////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
+// Handle additional fields, if required
+/////////////////////////////////////////////////////////////
 
         if (angular.isDefined(scope.additionalFields)) {
           scope.additionalFieldsDeclared = true;
@@ -253,25 +251,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        //
-        // Extension handling
-        // TODO Move relevant content here
-        //
+//
+// Extension handling
+// TODO Move relevant content here
+//
         scope.isLockedModule = metadataService.isLockedModule;
         scope.isExtensionDialect = metadataService.isExtensionDialect;
-        /////////////////////////////////////////////////////////////////
-        // Autosaving and Modified Concept Storage Initialization
-        /////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+// Autosaving and Modified Concept Storage Initialization
+/////////////////////////////////////////////////////////////////
 
-        // initialize the last saved version of this concept
+// initialize the last saved version of this concept
         scope.unmodifiedConcept = JSON.parse(JSON.stringify(scope.concept));
         scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
         if (scope.autosave === false) {
           scope.concept = scope.unmodifiedConcept;
         }
 
-        // on load, check if a modified, unsaved version of this concept
-        // exists -- only applies to task level, safety check
+// on load, check if a modified, unsaved version of this concept
+// exists -- only applies to task level, safety check
         if ($routeParams.taskKey && scope.autosave === true) {
           scaService.getModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId).then(function (modifiedConcept) {
 
@@ -349,24 +347,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
-        // allowable attributes for relationships
+// allowable attributes for relationships
         scope.allowedAttributes = [];
 
         scope.toggleHideInactive = function () {
           scope.hideInactive = !scope.hideInactive;
         };
 
-        ////////////////////////////////
-        // Concept Elements
-        ////////////////////////////////
+////////////////////////////////
+// Concept Elements
+////////////////////////////////
 
-        // define characteristic types
+// define characteristic types
         scope.definitionStatuses = [
           {id: 'PRIMITIVE', name: 'P'},
           {id: 'FULLY_DEFINED', name: 'FD'}
         ];
 
-        // Retrieve inactivation reasons from metadata service
+// Retrieve inactivation reasons from metadata service
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
@@ -393,12 +391,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        ///////////////////////////////////////////////
-        // Validation and saving
-        ///////////////////////////////////////////////
+///////////////////////////////////////////////
+// Validation and saving
+///////////////////////////////////////////////
 
 
-        // function to validate concept and display any errors or warnings
+// function to validate concept and display any errors or warnings
         scope.validateConcept = function () {
           if (scope.concept.requiresValidation) {
             delete scope.concept.requiresValidation;
@@ -444,11 +442,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return deferred.promise;
         };
 
-        // on load, check for expected render flag applied in saveHelper
+// on load, check for expected render flag applied in saveHelper
         if (scope.concept.catchExpectedRender) {
           delete scope.concept.catchExpectedRender;
           scope.validateConcept().then(function () {
-            reapplyTemplate();
+            scope.reapplyTemplate();
           });
         }
 
@@ -609,6 +607,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.errors = null;
           scope.warnings = null;
 
+          // stash the concept with template applied
+          if (scope.template) {
+            scope.stashTemplate();
+          }
+
           // clear the component-level errors and warnings
           scope.validation = {
             'warnings': {},
@@ -678,7 +681,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
 
             // save concept
-              saveHelper().then(function () {
+            saveHelper().then(function () {
 
               // brief timeout to alleviate timing issues, may no longer be needed
               $timeout(function () {
@@ -724,10 +727,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
         };
 
-        // function to toggle active status of concept
-        // cascades to children components
-        // NOTE: This function hard-saves the concept, to prevent sync errors
-        // between inactivation reason persistence and concept state
+// function to toggle active status of concept
+// cascades to children components
+// NOTE: This function hard-saves the concept, to prevent sync errors
+// between inactivation reason persistence and concept state
         scope.toggleConceptActive = function (concept, deletion) {
 
           if (scope.isStatic) {
@@ -878,17 +881,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           autoSave();
         };
 
-        //
-        // Component more functions
-        //
+//
+// Component more functions
+//
 
-        // get the avialable languages for this module id
+// get the avialable languages for this module id
         scope.getAvailableLanguages = function (moduleId) {
 
           return metadataService.getLanguagesForModuleId(moduleId);
         };
 
-        // get the available modules based on whether this is an extension element
+// get the available modules based on whether this is an extension element
         scope.getAvailableModules = function (moduleId) {
           return metadataService.getModulesForModuleId(moduleId);
 
@@ -906,10 +909,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           {id: '900000000000550004', abbr: 'DEF', name: 'TEXT_DEFINITION'}
         ];
 
-        // define the available dialects
+// define the available dialects
         scope.dialects = metadataService.getAllDialects();
 
-        // always return en-us dialect first
+// always return en-us dialect first
         scope.dialectComparator = function (a, b) {
           if (a === '900000000000509007') {
             return -1;
@@ -920,13 +923,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        // function to retrieve branch dialect ids as array instead of map
-        // NOTE: Required for orderBy in ng-repeat
+// function to retrieve branch dialect ids as array instead of map
+// NOTE: Required for orderBy in ng-repeat
         scope.getDialectIdsForDescription = function (description, FSN) {
           return Object.keys(metadataService.getDialectsForModuleId(description.moduleId, FSN)).sort(scope.dialectComparator);
         };
 
-        // define acceptability types
+// define acceptability types
         scope.acceptabilityAbbrs = {
           'PREFERRED': 'P',
           'ACCEPTABLE': 'A'
@@ -1164,7 +1167,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.concept.relationships = isaRels.concat(attrRels);
         }
 
-        // on load, sort descriptions && relationships
+// on load, sort descriptions && relationships
         sortDescriptions();
         sortRelationships();
 
@@ -1495,7 +1498,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
-        // returns the name of a dialect given its refset id
+// returns the name of a dialect given its refset id
         function getShortDialectName(id) {
           if (!scope.dialects[id]) {
             return '??';
@@ -1516,7 +1519,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return description.acceptabilityMap[dialectId] === 'PREFERRED' ? 'Preferred' : 'Acceptable';
         };
 
-        // returns the display abbreviation for a specified dialect
+// returns the display abbreviation for a specified dialect
         scope.getAcceptabilityDisplayText = function (description, dialectId) {
           if (!description || !dialectId) {
             return null;
@@ -1539,9 +1542,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
 
 
-        ////////////////////////////////
-        // Relationship Elements
-        ////////////////////////////////
+////////////////////////////////
+// Relationship Elements
+////////////////////////////////
 
         scope.relationshipGroups = {};
 
@@ -1560,7 +1563,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return activeRels.length > 0;
         };
 
-        // function compute the relationship groups
+// function compute the relationship groups
         scope.computeRelationshipGroups = function () {
 
           // sort relationships to ensure proper sorting
@@ -2526,7 +2529,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         }, true);
 
 
-        // pass constraint typeahead concept search function directly
+// pass constraint typeahead concept search function directly
         scope.getConceptsForValueTypeahead = constraintService.getConceptsForValueTypeahead;
 
 //
@@ -2678,7 +2681,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
         };
 
-        // TODO Make functional, styling overrides blocking -- template-field not currently defined
+// TODO Make functional, styling overrides blocking -- template-field not currently defined
         scope.getTargetSlotStyle = function (relationship) {
           if (relationship && relationship.targetSlot && relationship.targetSlot.slotName) {
             return 'template-editable';
