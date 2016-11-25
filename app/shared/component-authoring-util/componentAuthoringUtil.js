@@ -447,6 +447,8 @@ angular.module('singleConceptAuthoringApp')
 
       function addDialectDescription(concept, description, type, term, dialectId, acceptability) {
 
+        console.debug('add dialect description', concept, description);
+
         // check if description already exists
         var dialectDescription = null;
         angular.forEach(concept.descriptions, function (d) {
