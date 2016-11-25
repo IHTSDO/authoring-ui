@@ -453,10 +453,9 @@ angular.module('singleConceptAuthoringApp')
 
 
             // check by active/type/en-us acceptability
-            // TODO Add acceptability
             if (d.active && d.type === dt.type && d.acceptabilityMap && dt.acceptabilityMap &&  d.acceptabilityMap['900000000000509007'] === dt.acceptabilityMap['900000000000509007']) {
-              // check exact term match only if applyValues specified
-              if (!applyValues || d.term === dt.initialTerm) {
+              // if term matches initial term, match found
+              if (d.term === dt.initialTerm) {
                 matchFound = true;
                 d.template = dt;
                 if (applyStyles) {
