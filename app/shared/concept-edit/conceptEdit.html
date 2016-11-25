@@ -53,8 +53,8 @@
           <span>More details</span>
         </button>
 
-       
- <div class="template-controls " ng-if="template">
+
+        <div class="template-controls " ng-if="template">
 
           <ul class="sub-navigation-link-list ">
             <li>
@@ -74,26 +74,26 @@
           </ul>
 
         </div>
-<!--
-        <div id="wrap">
+        <!--
+                <div id="wrap">
 
-          <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
-                  popover-container="wrap"
-                  popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
-                  popover-placement="right"
-                  popover-trigger="click: click"
-                  popover-append-to-body="true"
-                  type="button"
-                  id="template-control-btn"
-                  ng-if="template"
-                  class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
-            <span>Template Controls</span>
-          </button>
-        </div>-->
+                  <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+                          popover-container="wrap"
+                          popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
+                          popover-placement="right"
+                          popover-trigger="click: click"
+                          popover-append-to-body="true"
+                          type="button"
+                          id="template-control-btn"
+                          ng-if="template"
+                          class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
+                    <span>Template Controls</span>
+                  </button>
+                </div>-->
       </div>
 
       <!-- concept name -->
-      <div class="col-md-6 no-padding title-text" >
+      <div class="col-md-6 no-padding title-text">
 
 
         <button type="button" class="btn-default grey darken-4 title-text fsn-title-button pull-right">
@@ -333,26 +333,23 @@
           <!-- Term -->
           <div class="pull-left description no-padding"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
-
-
-
-                        <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
-                                  ng-model-options="{updateOn: 'blur'}"
-                                  ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
-                                  maxlength="255"
-                                  ng-model="description.term"
-                                  class="form-control msd-elastic: \n;"
-                                  ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
-                                  type="text"
-                                  placeholder="Description">
-                        </textarea>
+              <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
+                        ng-model-options="{updateOn: 'blur'}"
+                        ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
+                        maxlength="255"
+                        ng-model="description.term"
+                        class="form-control msd-elastic: \n;"
+                        ng-class="[{'template-editable' : description.template}]"
+                        type="text"
+                        placeholder="Description">
+              </textarea>
 
             <textarea autofocus ng-if="description.type === 'SYNONYM'"
                       ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       maxlength="255"
                       ng-model="description.term"
-                      ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
+                      ng-class="[{'template-editable' : description.template}]"
                       class="form-control  msd-elastic: \n;" type="text"
                       placeholder="Description">
                         </textarea>
@@ -362,7 +359,7 @@
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
-                      ng-class="[{'template-term' : description.template}, {'color_{{relationship.groupId}}' : !description.template}]"
+                      ng-class="[{'template-editable' : description.template}]"
                       class="form-control msd-elastic: \n;" autofocus>
                         </textarea>
           </div>

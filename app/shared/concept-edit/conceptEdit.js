@@ -2366,7 +2366,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 } else {
                   autoSave();
                 }
-              }, function(error) {
+              }, function (error) {
                 notificationService.sendError('Unexpected template error: ' + error);
               });
             }, function (error) {
@@ -2723,14 +2723,17 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         // TODO Make functional, styling overrides blocking -- template-field not currently defined
         scope.getTargetSlotStyle = function (relationship) {
-          return relationship && relationship.targetSlot ? 'template-field' : '';
+          if (relationship && relationship.targetSlot && relationship.targetSlot.slotName) {
+            return 'template-editable';
+          }
+          return '';
         };
 
         scope.getComponentStyle = function (id, field, defaultStyle, component) {
 
           // if dialect automation flag detected
           if (component && component.automationFlag) {
-            return 'redhl';
+            return 'tealhl';
           }
 
           if (component && component.templateStyle) {
