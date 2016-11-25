@@ -90,7 +90,7 @@ angular.module('singleConceptAuthoringApp')
         // check for linked/referenced slots
         for (var i = 0; i < concept.relationships.length; i++) {
           var r = concept.relationships[i];
-          if (r.targetSlot && r.targetSlot && r.targetSlot.slotReference && r.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
+          if (r.template && r.template.targetSlot && r.template.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
             r.target.conceptId = relationship.target.conceptId;
             r.target.fsn = relationship.target.fsn;
           }
