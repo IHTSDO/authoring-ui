@@ -607,11 +607,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.errors = null;
           scope.warnings = null;
 
-          // stash the concept with template applied
-          if (scope.template) {
-            scope.stashTemplate();
-          }
-
           // clear the component-level errors and warnings
           scope.validation = {
             'warnings': {},
@@ -2297,15 +2292,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
 
-          // run automations
-          var conceptCopy = angular.copy(scope.concept);
-          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function (updatedConcept) {
-            scope.concept = updatedConcept;
-            autoSave();
-          }, function (error) {
-            notificationService.sendWarning('Automations failed: ' + error);
-            autoSave();
-          });
+
+           componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
+              autoSave();
+            }, function (error) {
+              notificationService.sendWarning('Automations failed: ' + error);
+              autoSave();
+            });
+
 
 
         };
