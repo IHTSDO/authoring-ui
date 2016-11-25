@@ -2382,33 +2382,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
-        scope.revertConcept = function () {
-          if (!scope.parentBranch) {
-            return;
-          }
-
-          notificationService.sendMessage('Reverting concept ' + scope.concept.fsn + ' to parent branch ' + scope.parentBranch, 0);
-
-          snowowlService.getFullConcept(scope.concept.conceptId, scope.parentBranch).then(function (response) {
-            scope.concept = response;
-            sortDescriptions();
-            sortRelationships();
-            notificationService.clear();
-            resetConceptHistory();
-
-            // broadcast to edit.js to trigger unsaved list update
-            $rootScope.$broadcast('conceptEdit.conceptChange', {
-              branch: scope.branch,
-              conceptId: scope.concept.conceptId,
-              concept: scope.concept
-            });
-            scope.isModified = false;
-          }, function (error) {
-            notificationService.sendError('Error reverting: Could not retrieve concept ' + scope.concept.conceptId + ' from parent branch ' + scope.parentBranch);
-          });
-
-        };
-
 /////////////////////////////
 // Undo / Redo functions
 /////////////////////////////
@@ -2449,6 +2422,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function autoSave() {
 
+          console.debug('autosave', scope.concept);
+
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
 
@@ -2462,6 +2437,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
             }
           }
+
+          console.debug('concept history', scope.conceptHistoryPtr, scope.conceptHistory)
 
           // save the modified concept
           saveModifiedConcept();
@@ -2532,6 +2509,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.unmodifiedConcept = scope.addAdditionalFields(scope.unmodifiedConcept);
               scope.isModified = false;
               scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, scope.concept.conceptId);
+
+              // if template concept, reapply
+              if (scope.template) {
+                templateService.applyTemplateToConcept(scope.concept, scope.template);
+              }
 
               // broadcast change event to edit.js for unsaved list update
               $rootScope.$broadcast('conceptEdit.conceptChange', {
