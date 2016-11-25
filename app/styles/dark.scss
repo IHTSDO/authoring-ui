@@ -768,11 +768,16 @@ sca-dark .pull-left.follow-up {
 /* header alert fix */
 .sca-dark .header-alerts a, 
 .sca-dark .header-alerts div a,
-.sca-dark .btn,
-.sca-dark .header-alerts .blue{
+.sca-dark .navbar-fixed-top .btn,
+.sca-dark .header-alerts .blue,
+.sca-dark .search-scroll input[type=search],
+.sca-dark .white-text a,
+.sca-dark .classification-header .btn[disabled],
+.sca-dark .dark-centured-text{
     color:#fff;
 }
 
+.sca-dark .dark-fix{color:#00adee}
 /*left nav */
 
 .sca-dark .navigation-link.deep-purple.darken-2.validate .btn:hover,
@@ -783,7 +788,8 @@ sca-dark .pull-left.follow-up {
 .sca-dark .snodragon-templates:hover
 
 {background:#0082b3}
-
+.sca-dark .blue.search-type{background-color:#00a6e5; color:#fff;}
+.sca-dark .blue.search-type:hover{background-color:#448AFF; color:#fff;}
 .sca-dark .navigation-link.deep-purple.darken-2.validate .btn {color :#8b72b7}
 .sca-dark .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
 .sca-dark .widget-toolbar.review.btn {color :#e94281}
@@ -803,3 +809,4 @@ sca-dark .pull-left.follow-up {
 .sca-dark .sub-navigation-link-list.review-nav .btn   {
     color: #e94281;
 }
+.sca-dark .btn[disabled] {color:#666;}
