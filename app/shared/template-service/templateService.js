@@ -412,7 +412,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
           });
-          if (!matchFound) {
+          if (!matchFound && applyValues) {
 
             var newRel = angular.copy(rt);
             newRel.template = rt;
@@ -452,11 +452,11 @@ angular.module('singleConceptAuthoringApp')
           angular.forEach(concept.descriptions, function (d) {
 
 
-            // check by active/type/acceptability
+            // check by active/type/en-us acceptability
             // TODO Add acceptability
-            if (d.active && d.type === dt.type) {
-              // check exact term match first
-              if (d.term === dt.initialTerm) {
+            if (d.active && d.type === dt.type && d.acceptabilityMap && dt.acceptabilityMap &&  d.acceptabilityMap['900000000000509007'] === dt.acceptabilityMap['900000000000509007']) {
+              // check exact term match only if applyValues specified
+              if (!applyValues || d.term === dt.initialTerm) {
                 matchFound = true;
                 d.template = dt;
                 if (applyStyles) {
@@ -464,7 +464,7 @@ angular.module('singleConceptAuthoringApp')
                 }
               }
 
-              // otherwise, check by pattern matching
+              // otherwise, check for value match via pattern matching
               else {
                 // replace slots with .*, escape special characters, and start/end terminate
                 var exp = dt.termTemplate.replace(/\$.*\$/, '.*');
@@ -510,7 +510,7 @@ angular.module('singleConceptAuthoringApp')
             }
           });
 
-          if (!matchFound) {
+          if (!matchFound && applyValues) {
             var newDesc = angular.copy(dt);
             newDesc.descriptionId = snowowlService.createGuid();
             newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
