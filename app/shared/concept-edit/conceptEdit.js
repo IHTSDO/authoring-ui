@@ -306,7 +306,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
                 // store in scope variable and on concept (for UI State saving)
                 scope.template = template;
-                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false);
+                templateService.applyTemplateToConcept(scope.concept, scope.template, false, false, false).then(function() {
+                  resetConceptHistory();
+                })
 
               }
 
@@ -2422,8 +2424,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          */
         function autoSave() {
 
-          console.debug('autosave', scope.concept);
-
           scope.conceptHistory.push(JSON.parse(JSON.stringify(scope.concept)));
           scope.conceptHistoryPtr++;
 
@@ -2437,8 +2437,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               $rootScope.$broadcast('saveInactivationEditing', {concept: scope.concept});
             }
           }
-
-          console.debug('concept history', scope.conceptHistoryPtr, scope.conceptHistory)
 
           // save the modified concept
           saveModifiedConcept();
