@@ -233,3 +233,9 @@ padding-bottom:0px
 }
 
 .template-controls ul.sub-navigation-link-list .btn{background-color:transparent; color:#7acafd}
+/* template slots */
+ .editing-form .template-editable,
+ .editing-form .template-slot
+{-webkit-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;
+-moz-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;
+box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;}
