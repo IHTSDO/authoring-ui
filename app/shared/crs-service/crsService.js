@@ -424,7 +424,8 @@ angular.module('singleConceptAuthoringApp')
               comment += line + '\n';
             });
             if (comment.length > 0) {
-              comment = 'Automated Comment - CRS request concepts promoted to project level:\n' + comment;
+              // NOTE: This *must* match the expected text in AuthoringTaskStatusChangeHandler in Content Request Service
+              comment = 'CRS_TASK_PROMOTION - CRS request concepts promoted to project level:\n' + comment;
             }
             deferred.resolve(comment);
 

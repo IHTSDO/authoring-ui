@@ -337,16 +337,18 @@ angular.module('singleConceptAuthoringApp')
 
       scaService.promoteTask(projectKey, taskKey).then(function (response) {
         // invoke crs service to leave comment if appropriate
-        crsService.getCrsTaskComment().then(function(comment) {
-          scaService.leaveCommentForTask( projectKey, taskKey, comment).then(function(response) {
-            // do nothing
-          }, function(error) {
-            // do nothing
-          });
-        }, function(error) {
+        crsService.getCrsTaskComment().then(function (comment) {
+          if (comment && comment.length > 0) {
+            scaService.leaveCommentForTask(projectKey, taskKey, comment).then(function (response) {
+              // do nothing
+            }, function (error) {
+              // do nothing
+            })
+          }
+        }, function (error) {
           // do nothing
         });
-      }, function(error) {
+      }, function (error) {
         deferred.reject('Error promoting task: ' + error);
       });
       return deferred.promise;
@@ -359,7 +361,7 @@ angular.module('singleConceptAuthoringApp')
 
       scaService.promoteProject(projectKey).then(function (response) {
         deferred.resolve();
-      }, function(error) {
+      }, function (error) {
         deferred.reject('Error promoting project: ' + error);
       });
       return deferred.promise;
@@ -370,8 +372,8 @@ angular.module('singleConceptAuthoringApp')
       checkPrerequisitesForTask: checkPrerequisitesForTask,
       checkPrerequisitesForProject: checkPrerequisitesForProject,
 
-      promoteTask : promoteTask,
-      promoteProject : promoteProject
+      promoteTask: promoteTask,
+      promoteProject: promoteProject
 
     };
   }]);
