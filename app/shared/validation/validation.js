@@ -115,6 +115,7 @@ angular.module('singleConceptAuthoringApp')
               getData: function ($defer, params) {
 
                 if (!scope.assertionsFailed || scope.assertionsFailed.length === 0) {
+                  params.total(0); // resolving empty array does not actually set total to 0
                   $defer.resolve([]);
                 } else {
 
@@ -354,6 +355,7 @@ angular.module('singleConceptAuthoringApp')
                 scope.failuresLoading = false;
 
                 if (!scope.failures || scope.failures.length === 0) {
+                  params.total(0); // resolving empty array does not actually set total to 0
                   $defer.resolve([]);
                 } else {
 
