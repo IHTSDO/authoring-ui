@@ -14,7 +14,7 @@
 	padding-left: 0px;
 }
 .classification-report .editing-form .is_a {
-	width: 25.5%;
+	width: 24%;
 	padding-left: .25%;
 }
 .classification-report .editing-form .sourcename {
@@ -24,16 +24,16 @@
 .classification-report {
 	border-bottom: #ddd solid 2px;
 	background-color: #fafafa;
-	margin-top: 5px;
 	border-top: 1px solid #F0F0F0;
 }
 .classification-report .nav-tabs li a {
 	padding: 10px 15px;
 }
 .classification-header {
-	padding-bottom: 8px;
-	padding-top: 2px;
-	max-height: 48px;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    max-height: 48px;
+    line-height: 1;
 }
 .classification-header p {
 	margin: 0px;
@@ -47,7 +47,7 @@
 	color: #2fa084!important;
 }
 .classification-report .button-width {
-    width: 3%;}
+    width: 2.5%;}
 	.classification-report .button-width-acceptability {
     width: 5%;}
 	.classification-report .editing-form .description {
@@ -63,8 +63,9 @@
 }
 
 .classification-report .editing-form .is_a {
-    width: 27%;
+    width: 24%;
     padding-left: .25%;
 }
 
-.classification-report .title-text{max-width:100%}
+.green-text {color: #4CAF50;}
+.red-text {color:#fd5252}
