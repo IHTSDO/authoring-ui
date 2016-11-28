@@ -150,6 +150,10 @@ angular.module('singleConceptAuthoringApp')
           if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
             delete relationship.relationshipId;
           }
+
+          // if concept has sctid and sourceId not set, apply
+          relationship.sourceId = concept.conceptId;
+
           for (var key in relationship) {
             if (allowableRelationshipProperties.indexOf(key) === -1) {
               delete relationship[key];
