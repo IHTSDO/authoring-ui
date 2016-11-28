@@ -1911,9 +1911,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          if (constraintService.isAttributeAllowedForArray(target.target.fsn, scope.allowedAttributes)) {
+          if (constraintService.isAttributeAllowedForArray(source.type.fsn, scope.allowedAttributes)) {
 
-            constraintService.isValueAllowedForType(target.type.conceptId, target.target.conceptId, scope.branch).then(function () {
+            constraintService.isValueAllowedForType(source.type.conceptId, source.target.conceptId, scope.branch).then(function () {
               // copy relationship object and replace target relationship
               var copy = angular.copy(source);
 
@@ -1925,6 +1925,9 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // set the group based on target
               copy.groupId = target.groupId;
+
+              // set module id for new relationship
+              copy.moduleId = metadataService.getCurrentModuleId();
 
               // get index of target relationship
               var targetIndex = scope.concept.relationships.indexOf(target);
@@ -1940,13 +1943,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
 
               autoSave();
-
               scope.computeRelationshipGroups();
             }, function () {
-              scope.warnings = ['MRCM validation error: ' + target.target.fsn + ' is not valid for attribute type ' + target.type.fsn];
+              scope.warnings = ['MRCM validation error: ' + source.target.fsn + ' is not valid for attribute type ' + source.type.fsn];
             });
           } else {
-            scope.warnings = ['MRCM validation error: Attribute ' + target.type.fsn + ' not allowed for concept'];
+            scope.warnings = ['MRCM validation error: Attribute ' + source.type.fsn + ' not allowed for concept'];
           }
 
 
@@ -1970,8 +1972,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         scope.dropRelationshipGroup = function (relGroup) {
 
-          //      console.debug('dropped relationship group', relGroup);
-
           if (!relGroup || relGroup.length === 0) {
             return;
           }
@@ -1980,56 +1980,62 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
-          constraintService.validateRelationships(relGroup, scope.allowedAttributes, scope.branch).then(function (response) {
-
-            // if no validation errors, continue
-            if (response.length === 0) {
-
-              // get the max group id and increment by one (or set to zero if no
-              // groups defined)
-              var maxGroup = -1;
-              angular.forEach(scope.concept.relationships, function (rel) {
-                if (parseInt(rel.groupId) > maxGroup) {
-                  maxGroup = parseInt(rel.groupId);
-                }
-              });
-              var newGroupId = maxGroup + 1;
-
-              // strip identifying information from each relationship and push
-              // to relationships with new group id
-              angular.forEach(relGroup, function (rel) {
-                if (rel.active === true) {
-                  var copy = angular.copy(rel);
-
-                  // set the group id based on whether it is an isa relationship
-                  if (metadataService.isIsaRelationship(copy.type.conceptId)) {
-                    copy.groupId = 0;
-                  } else {
-                    copy.groupId = newGroupId;
-                  }
-
-                  // clear the effective time and source information
-                  delete copy.sourceId;
-                  delete copy.effectiveTime;
-                  delete copy.relationshipId;
-                  delete copy.released;
-
-                  // push to relationships
-                  scope.concept.relationships.push(copy);
-                }
-              });
-
-              // recompute the relationship groups
-              scope.computeRelationshipGroups();
-
-              autoSave();
-            } else {
-              scope.warnings = response;
-              scope.warnings.splice(0, 0, 'Could not drop role group:');
+          // get the max group id and increment by one (or set to zero if no
+          // groups defined)
+          var maxGroup = -1;
+          angular.forEach(scope.concept.relationships, function (rel) {
+            if (parseInt(rel.groupId) > maxGroup) {
+              maxGroup = parseInt(rel.groupId);
             }
-          }, function (error) {
-            scope.warnings = ['Could not drop relationship group:  unexpected error validating type/value pairs'];
           });
+          var newGroup = maxGroup + 1;
+
+          var relsProcessed = 0;
+
+          scope.warnings = [];
+
+          // strip identifying information from each relationship and push
+          // to relationships with new group id
+          angular.forEach(relGroup, function (rel) {
+            if (constraintService.isAttributeAllowedForArray(rel.type.fsn, scope.allowedAttributes)) {
+
+              constraintService.isValueAllowedForType(rel.type.conceptId, rel.target.conceptId, scope.branch).then(function () {
+                // copy relationship object and replace target relationship
+                var copy = angular.copy(rel);
+
+                // clear the effective time and source information
+                delete copy.sourceId;
+                delete copy.effectiveTime;
+                delete copy.relationshipId;
+                delete copy.released;
+
+                // set module id based on metadata
+                copy.moduleId = metadataService.getCurrentModuleId();
+
+                // set the group based on target
+                copy.groupId = newGroup;
+
+                scope.concept.relationships.push(copy);
+                if (++relsProcessed === relGroup.length) {
+                  autoSave();
+                  scope.computeRelationshipGroups();
+                }
+              }, function () {
+                scope.warnings.push('MRCM validation error: ' + rel.target.fsn + ' is not valid for attribute type ' + rel.type.fsn);
+                if (++relsProcessed === relGroup.length) {
+                  autoSave();
+                  scope.computeRelationshipGroups();
+                }
+              });
+            } else {
+              if (++relsProcessed === relGroup.length) {
+                autoSave();
+                scope.computeRelationshipGroups();
+              }
+              scope.warnings.push('MRCM validation error: Attribute ' + rel.type.fsn + ' not allowed for concept');
+            }
+          });
+
         };
 
 
@@ -2292,14 +2298,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
 
-
-           componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
-              autoSave();
-            }, function (error) {
-              notificationService.sendWarning('Automations failed: ' + error);
-              autoSave();
-            });
-
+          componentAuthoringUtil.runDescriptionAutomations(scope.concept, description, scope.template ? true : false).then(function () {
+            autoSave();
+          }, function (error) {
+            notificationService.sendWarning('Automations failed: ' + error);
+            autoSave();
+          });
 
 
         };
