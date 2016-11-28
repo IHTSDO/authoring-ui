@@ -636,12 +636,6 @@ angular.module('singleConceptAuthoringApp')
               }
             }
 
-            // remove empty descriptions after automation
-            for (var i = concept.descriptions.length - 1; i--; i >= 0) {
-              if (!concept.descriptions[i].term) {
-                concept.descriptions.splice(i, 1);
-              }
-            }
             // apply exceptions to the dialect description
             //applyDialectAutomationExceptions(concept, tokenizedWords, matchingWords);
             deferred.resolve(concept);
