@@ -612,7 +612,7 @@
     color: #333!important
 }
 .sca-light .feedback .switch {
-    color: #fff!important
+    color: #424242!important
 }
 .sca-light .edits-row.color_0 .add-buttons,
 .sca-light .edits-row.color_1 .add-buttons,
@@ -772,4 +772,10 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 .sca-light .create-new-concept {
     background-color: transparent!important;
     color: #56b8e7 !important;
+}
+.sca-light .report-header-main {
+    color: #2d2d2d;
+border: 1px #ddd solid ;
+    background-color: #fff;
+ 
 }

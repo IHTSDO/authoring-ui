@@ -1,12 +1,12 @@
 <div>
   <div class="row no-padding no-gutter">
     <div class="col-md-12 green classification-header" style="vertical-align: middle">
-      <div class="p-5">Classification Report: {{statusText}}
+      <div class="p-l-10">Classification Report: {{statusText}}
 
         <!-- Only display classification action buttons if results are found -->
         <button
           ng-if="resultsNotEmpty  && !errorState && classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
-          class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case green darken-1 m-l-10"
+          class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case dark-button  m-l-10 "
           ng-click="downloadClassification()" style="text-transform: none">
           <span>Download Classification Results</span>
         </button>
@@ -17,20 +17,20 @@
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
 
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'COMPLETED'"
-                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                class="btn btn-default green darken-4 pull-right dark-button" style="text-transform: none"
                 ng-hide="classificationContainer.status === 'SAVED'" ng-click="saveClassification()"><i
-          class="md md-check m-r-10"></i>Accept Classification Results
+          class="md md-check m-r-10 "></i>Accept Classification Results
         </button>
 
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'SAVING_IN_PROGRESS'"
                 disabled
-                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                class="btn btn-default green darken-4 dark-button pull-right" style="text-transform: none"
                 ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification...
         </button>
 
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'SAVED'"
                 disabled
-                class="btn btn-default green darken-4 pull-right" style="text-transform: none"
+                class="btn btn-default green darken-4 dark-button pull-right" style="text-transform: none"
                 ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Classification Saved
         </button>
 
@@ -91,7 +91,7 @@
     </div>
 
     <!-- Tab panes -->
-    <div class="tab-content row m-t-10 col-sm-12 no-padding">
+    <div class="tab-content row col-sm-12 no-padding">
 
       <!-- changed relationships -->
       <div role="tabpanel" ng-if="actionTab===1">
