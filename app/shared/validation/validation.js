@@ -715,7 +715,7 @@ angular.module('singleConceptAuthoringApp')
               return viewed.conceptId;
             });
 
-            var failuresToLoad = scope.failures.map(function (failure) {
+            var failuresToLoad = scope.failures.filter(function (failure) {
               return failure.selected && existingIds.indexOf(failure.conceptId.toString()) === -1;
             });
 
