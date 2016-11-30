@@ -1345,7 +1345,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
-          deferred.resolve(response.data.items ? response.data.items : []);
+          deferred.resolve(response.data ? response.data : {items: [], total: 0});
         }, function (error) {
           deferred.reject(error);
         });
