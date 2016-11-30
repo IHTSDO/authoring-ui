@@ -47,6 +47,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.searchType = 'Active Only';
+      $scope.isEscgMode = false;
+      $scope.escgExpr = null;
 
       $scope.toggleGroupByConcept = function () {
         $scope.userOptions.groupByConcept = !$scope.userOptions.groupByConcept;
@@ -148,7 +150,13 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        */
       $scope.search = function (appendResults) {
 
-        if (!$scope.searchStr || $scope.searchStr.length < 3) {
+        console.debug('searching', $scope.isEscgMode);
+
+        if (!$scope.isEscgMode && ( !$scope.searchStr || $scope.searchStr.length < 3)) {
+          return;
+        }
+
+        if ($scope.isEscgMode && !$scope.escgExpr) {
           return;
         }
 
@@ -171,35 +179,77 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
           $scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
 
-        // set the return synonym flag to true for extensions
-        // TODO Later this will be toggle-able between extension synonym and fsn
-        // For now, just assume always want the extension-language synonym if available
-        // set as scope variable for expected future toggle
-        $scope.synonymFlag = metadataService.isExtensionSet();
+        if (!$scope.isEscgMode) {
 
-        snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, $scope.synonymFlag).then(function (concepts) {
+          // set the return synonym flag to true for extensions
+          // TODO Later this will be toggle-able between extension synonym and fsn
+          // For now, just assume always want the extension-language synonym if available
+          // set as scope variable for expected future toggle
+          $scope.synonymFlag = metadataService.isExtensionSet();
 
-          if (!concepts) {
-            notificationService.sendError('Unexpected error searching for concepts', 10000);
-          }
+          snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, $scope.searchStr, $scope.results.length, $scope.resultsSize, acceptLanguageValue, $scope.synonymFlag).then(function (concepts) {
 
-          // set load more parameters
-          $scope.loadPerformed = true;
-          $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
+            if (!concepts) {
+              notificationService.sendError('Unexpected error searching for concepts', 10000);
+            }
 
-          $scope.storedResults = appendResults ? $scope.storedResults.concat(concepts) : concepts;
+            // set load more parameters
+            $scope.loadPerformed = true;
+            $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
 
-          $scope.processResults();
+            $scope.storedResults = appendResults ? $scope.storedResults.concat(concepts) : concepts;
 
-        }, function (error) {
-          $scope.searchStatus = 'Error performing search: ' + error;
-          if (error.statusText) {
-            $scope.searchStatus += ': ' + error.statusText;
-          }
-          if (error.data && error.data.message) {
-            $scope.searchStatus += ': ' + error.data.message;
-          }
-        });
+            $scope.processResults();
+
+          }, function (error) {
+            $scope.searchStatus = 'Error performing search: ' + error.message;
+            if (error.statusText) {
+              $scope.searchStatus += ': ' + error.statusText;
+            }
+            if (error.data && error.data.message) {
+              $scope.searchStatus += ': ' + error.data.message;
+            }
+          });
+        } else {
+          console.debug('escg search', $scope.searchStr, $scope.escgExpr)
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize).then(function (results) {
+            // set load more parameters
+            var concepts = results.items;
+            $scope.searchTotal = results.total;
+            $scope.loadPerformed = true;
+            $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
+
+
+
+            // convert to snowowl description search conceptObj
+            var conceptObjs = [];
+            angular.forEach(concepts, function(c) {
+              conceptObjs.push({
+                active: c.active,
+                concept : {
+                  active : c.active,
+                  conceptId : c.id,
+                  definitionStatus : c.definitionStatus,
+                  fsn : c.fsn.term,
+                  moduleId: c.moduleId
+                },
+                term: c.fsn.term
+              })
+            });
+
+            $scope.storedResults = appendResults ? $scope.storedResults.concat(conceptObjs) : conceptObjs;
+
+            $scope.processResults();
+          }, function (error) {
+            $scope.searchStatus = 'Error performing search: ' + error;
+            if (error.statusText) {
+              $scope.searchStatus += ': ' + error.statusText;
+            }
+            if (error.data && error.data.message) {
+              $scope.searchStatus += ': ' + error.data.message;
+            }
+          });
+        }
       };
 
       /**
@@ -218,14 +268,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         $scope.results = [];
         $scope.searchStatus = null;
       };
-    $scope.selectItem = function (item) {
-      if (!item) {
-        return;
-      }
-      console.log(item.concept.conceptId);
-      $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
+      $scope.selectItem = function (item) {
+        if (!item) {
+          return;
+        }
+        console.log(item.concept.conceptId);
+        $rootScope.$broadcast('editConcept', {conceptId: item.concept.conceptId});
 
-    };
+      };
       $scope.isEdited = function (item) {
         return $scope.editList && $scope.editList.indexOf(item.concept.conceptId) !== -1;
       };
@@ -234,7 +284,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           concept: {
             conceptId: item.concept.conceptId,
             fsn: item.concept.fsn,
-            preferredSynonym : item.concept.preferredSynonym
+            preferredSynonym: item.concept.preferredSynonym
           }
         });
       };
@@ -244,7 +294,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           concept: {
             conceptId: item.concept.conceptId,
             fsn: item.concept.fsn,
-            preferredSynonym : item.concept.preferredSynonym
+            preferredSynonym: item.concept.preferredSynonym
           }
         });
       };
