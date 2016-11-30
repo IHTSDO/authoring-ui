@@ -28,18 +28,155 @@ angular.module('singleConceptAuthoringApp')
           scope.viewedConcepts = [];  // concepts opened for editing by user
           scope.templates = []; // available templates
           scope.selectedTemplate = null;
+          scope.slotNames = [];
+
           //
-          // HTML Renderers for removal and other user actions
+          // Utility functions from services
           //
+          scope.isSctid = snowowlService.isSctid;
+
+          //
+          // View controls
+          //
+          scope.render = function (viewMode) {
+            switch (viewMode) {
+              case 'HandsOnTable':
+                createHotTableFromConcepts(batchEditingService.getBatchConcepts());
+                break;
+              case 'ngTable':
+                scope.batchTableParams.reload();
+            }
+          };
+
+          //
+          // NgTable functions
+          //
+
+          function applyNgTableSortingParams(concept) {
+            concept.sctid = snowowlService.isSctid(concept.conceptId) ? concept.conceptId : '';
+            concept.fsn = componentAuthoringUtil.getFsnForConcept(concept);
+            angular.forEach(concept.relationships, function (r) {
+              if (r.targetSlot && r.targetSlot.slotName) {
+                concept[r.targetSlot.slotName] = r.target.fsn;
+              }
+            });
+          }
+
+          scope.updateField = function (concept, fieldName, text, id) {
+
+          };
+
+          function initNgTableSlots() {
+            scope.slotNames = [];
+            scope.batchTableColumns = [
+              {title: 'SCTID', field: 'sctid', editable: false},
+              {title: 'FSN', field: 'fsn', editable: true}
+            ];
+            var template = batchEditingService.getCurrentTemplate();
+            if (template) {
+              angular.forEach(template.conceptOutline.relationships, function (r) {
+                if (r.targetSlot && r.targetSlot.slotName) {
+                  scope.batchTableColumns.push(
+                    {title: r.targetSlot.slotName, field: r.targetSlot.slotName, editable: true, targetSlot: true}
+                  );
+                }
+              });
+            }
+          }
+
+          scope.batchTableParams = new ngTableParams({
+              page: 1,
+              count: 10,
+              sorting: {fsn: 'asc'}
+            },
+            {
+              filterDelay: 50,
+              total: batchEditingService.getBatchConcepts() ? batchEditingService.getBatchConcepts().length : 0,
+              getData: function ($defer, params) {
+
+                // initialize columns from template
+                initNgTableSlots();
+
+                // get the current batch concepts
+                var bcs = batchEditingService.getBatchConcepts();
+
+                if (!bcs || bcs.length === 0) {
+                  $defer.resolve([]);
+                } else {
+
+                  var searchStr = params.filter().search;
+                  var concepts = [];
+
+                  if (searchStr) {
+                    concepts = bcs.filter(function (item) {
+                      return item.toLowerCase().indexOf(searchStr) !== -1;
+                    });
+                  } else {
+                    concepts = bcs;
+                  }
+
+
+                  angular.forEach(concepts, function (c) {
+                    applyNgTableSortingParams(c);
+                  });
+
+                  params.total(concepts.length);
+                  concepts = params.sorting() ? $filter('orderBy')(concepts, params.orderBy()) : concepts;
+                  concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
+
+                  console.debug('ngTable data', concepts);
+                  $defer.resolve(concepts);
+                }
+
+              }
+            }
+          );
+
+          scope.getConceptsForValueTypeahead = function (concept, slotName, searchStr) {
+            console.debug('get typeahead', concept, slotName, searchStr);
+            var deferred = $q.defer();
+            // get the slot name
+            try {
+              var slotRelationship = concept.relationships.filter(function (r) {
+                return r.targetSlot && r.targetSlot.slotName === slotName;
+              })[0];
+              constraintService.getConceptsForValueTypeahead(slotRelationship.type.conceptId, searchStr, scope.branch, slotRelationship.targetSlot.allowableRangeECL).then(function (response) {
+                deferred.resolve(response);
+              }, function (e) {
+                deferred.reject();
+              })
+            } catch (e) {
+              deferred.reject();
+            }
+            return deferred.promise;
+          }
+
+          scope.dropRelationshipTargetInNgTable = function (concept, slotName, data) {
+            console.debug('drop relationship target / ng table', concept, slotName, data);
+            angular.forEach(concept.relationships, function (relationship) {
+              if (relationship.targetSlot && relationship.targetSlot.slotName === slotName) {
+                constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
+                  relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+                  relationship.target.conceptId = data.id;
+                  relationship.target.fsn = data.name;
+                  templateService.updateTargetSlot(concept, scope.selectedTemplate, relationship);
+                }, function (error) {
+                  notificationService.sendWarning('MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.');
+                  relationship.target.fsn = tempFsn;
+                });
+
+              }
+            })
+          };
 
 
           //
           // HoT Table Functions
           //
 
-          scope.isBatchLoaded = function() {
+          scope.isBatchLoaded = function () {
             return hot ? true : false;
-          }
+          };
 
           function createHotTableFromConcepts(concepts) {
 
@@ -178,9 +315,20 @@ angular.module('singleConceptAuthoringApp')
             hot.destroy();
             scope.viewedConcepts = [];
             batchEditingService.setBatchConcepts([]).then(function () {
+              scope.batchTableParams.reload();
               notificationService.sendMessage('Concepts removed from batch', 3000);
             })
-          }
+          };
+
+          scope.editConceptNg = function (concept) {
+            if (scope.viewedConcepts.filter(function (c) {
+                return c.conceptId === concept.conceptId;
+              }).length === 0) {
+              scope.viewedConcepts.push(concept);
+            } else {
+              notificationService.sendWarning('Concept already added', 3000);
+            }
+          };
 
 // retrieve and add concept to editing panel
           scope.editConcept = function (visibleIndex) {
@@ -394,14 +542,12 @@ angular.module('singleConceptAuthoringApp')
             });
 
 
-            // initialize from task
-            batchEditingService.initializeFromScope(scope).then(function (batchConcepts) {
-              // create the table from batch concepts (if present)
-              if (batchConcepts.length > 0) {
-                createHotTableFromConcepts(batchConcepts);
-                scope.selectedTemplate = batchEditingService.getCurrentTemplate();
-                console.debug('selected template', scope.selectedTemplate);
-              }
+            // initialize from scope
+            batchEditingService.initializeFromScope(scope).then(function () {
+
+              scope.selectedTemplate = batchEditingService.getCurrentTemplate();
+              console.debug('selected template', scope.selectedTemplate);
+
             })
           }
 
