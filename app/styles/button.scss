@@ -147,11 +147,11 @@
      height: auto;
      word-wrap: break-word!important;
  }
- <!--.review-columns {
+.review-columns {
      background-color: #f2f2f2;
      border-top-color: #e3e3e3!important;
  }
- --> .indicator_grey {
+.indicator_grey {
      background-color: #f2f2f2!important;
      color: #666!important;
  }
@@ -160,7 +160,7 @@
      color: #666!important;
  }
  .indicator_green {
-     background-color: #03b18a!important;
+     background-color: #4CAF50!important;
      color: #fff!important;
  }
  .indicator_green:hover {
@@ -359,7 +359,45 @@
      box-shadow: none!important
  }
 
+  .sca-light .navigation-link.green.darken-1.classify {
+    color: #d33c75
+  }
 
+  ul.review-nav .btn:hover,
+  ul.review-nav li ul li:focus,
+  ul.review-nav li ul li:active,
+  ul.review-nav li ul li:hover {
+    background: #c2185b;
+	 color: #fff;
+  }
+
+  ul.review-nav li ul li {
+    color: #fff;
+    background: #e94281
+  }
+
+
+
+ 
+.sub-navigation-link-list .btn:hover {
+   
+    color: #fff;
+}
+
+
+
+
+    .new-concept .concept-headers:first-child {
+      padding-top: 3px !important
+    }
+
+    .template-term {
+      background-color: red !important;
+    }
+
+    .template-slot {
+      background-color: red !important;
+    }
 /*left nav */
 
 .snodragon-templates{    padding: 4px 0px;
@@ -371,3 +409,6 @@
 .snodragon-templates:active  {background:#0082b3; color:#fff}
 
 
+.dark-button {background-color: rgba(0, 0, 0, 0.2)!important; color:#fff!important;}
+.dark-button:hover,
+.dark-button:active {background-color: rgba(0, 0, 0, 0.3) !important; color:#fff!important;}

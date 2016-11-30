@@ -1,11 +1,11 @@
 <div class=" col-md-12 no-padding  search-scroll " ng-controller="searchPanelCtrl">
     <div class="row no-padding">
         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
-            <input type="search" class="form-control m-5" placeholder="Enter at least three characters"
+            <input type="search" class="form-control m-5 search-box" placeholder="Enter at least three characters"
                    ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
         </div>
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-            <button ng-show="searchStr" class="btn btn-default md md-close" ng-click="clearSearch()"
+            <button ng-show="searchStr" class="btn btn-default md md-close dark-fix" ng-click="clearSearch()"
                     style="background: transparent"></button>
         </div>
       <!--  Removed pending design and reuqirements discussion
@@ -13,12 +13,12 @@
             <select ng-options="id as name for (id, name) in dialects" ng-model="selectedDialect"></select>
         </div>-->
         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-            <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right "
+            <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right dark-fix "
                     ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0"
                     style="background: transparent">
                 <span>View Matching Terms</span>
             </button>
-            <button class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right"
+            <button class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right dark-fix"
                     ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0"
                     style="background: transparent">
                 <span>Group by Concept</span>
@@ -27,8 +27,8 @@
     </div>
 
     <div class="row no-padding">
-        <div class="col-md-8">
-            <button type="button" class="blue accent-2 custom-button ng-click-active" title="Search Type"
+        <div class="col-md-12">
+            <button type="button" class="blue accent-2 col-md-12 text-center custom-button ng-click-active search-type" title="Search Type"
                     ng-click="toggleSearchType()">
                 <div class="md col-md-12 no-padding text-center ng-binding">
                     {{searchType}}
@@ -36,7 +36,7 @@
             </button>
         </div>
     </div>
-    <div class="col-md-12 no-padding" ng-if="searchStatus">{{searchStatus}}</div>
+    <div class="col-md-12 p-t-10  text-center" ng-if="searchStatus">{{searchStatus}}</div>
     <div ng-show="results.length > 0" class="m-l-10 scroll-if-height ">
         <!-- headers -->
         <div class="row no-padding">
@@ -65,7 +65,7 @@
         <div ng-repeat="result in results">
             <div class="row">
                 <div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">
-                    <div class="p-5 wordbreak">{{result.term}}</div>
+                    <div class="p-5 white-text wordbreak">{{result.term}}</div>
                 </div>
                 <div class=" col-md-1 no-padding">
                     <div class="p-t-5">
@@ -85,7 +85,7 @@
                 </div>
                 <div class="no-padding"
                      ng-class="[{'col-md-4' : !userOptions.groupByConcept}, {'col-md-8' : userOptions.groupByConcept}]">
-                    <div class="p-5 wordbreak draggable" ui-draggable="true" style="display:inline"
+                    <div class="p-5 white-text  wordbreak" ui-draggable="true" style="display:inline"
                          drag="getConceptPropertiesObj(result.concept)" drag-channel="conceptPropertiesObj"
                          drag-image="result.concept.preferredSynonym ? result.concept.preferredSynonym : result.concept.fsn"><a class=" wordbreak  " title="Edit"
                                                             ng-click=" selectItem(result)"

@@ -31,6 +31,7 @@
   .review-checkbox {
     text-align: center;
   }
+
 </style>
 
 <div class="row no-gutter sca-container ">
@@ -45,13 +46,16 @@
 
         <div class="row" style="margin-right:0px;">
           <div class="col-md-3 no-padding">
-            <h3 class="table-title p-20">Review Tasks
-              &nbsp;&nbsp;
-              <button ng-show="hasSelectedUnclaimedTasks()"
-                      ng-click="assignSelectedUnclaimedTasks()"
-                      class="badge In Review"><i class="md md-email"></i>&nbsp;Claim
-                Selected
-              </button>
+            <h3 class="table-title ">
+              <div class="p-20 pull-left">Review Tasks
+              </div>
+              <div class="min-height-20 pull-right p-15">
+                <button ng-show="hasSelectedUnclaimedTasks()"
+                        ng-click="assignSelectedUnclaimedTasks()"
+                        class="badge In Review"><i class="md md-email"></i>&nbsp;Claim
+                  Selected
+                </button>
+              </div>
             </h3>
           </div>
 
@@ -62,7 +66,7 @@
             </div>
           </div>
           <div class="col-md-2 promoted-check-box">
-            <button class="btn btn-default form-control"
+            <button class="btn btn-default form-control dark-fix"
                     ng-class="[{'md-check-box' : showPromotedReviews}, {'md-check-box-outline-blank' : !showPromotedReviews}]"
                     ng-click="toggleShowPromotedReviews()" style="background: transparent">
               <span class="promoted-check-box">Show Promoted</span></button>
@@ -93,7 +97,10 @@
             <tr ng-repeat="task in $data" class="clickable-row">
 
               <td class="review-checkbox no-padding " ng-show="hasUnclaimedTasks()">
-                <input type="checkbox" ng-model="task.selectedUnclaimed" ui-on-drop="" ng-show="isUnclaimedTask(task)">
+                <div class="checkbox"><label class="filled"><input type="checkbox" ng-model="task.selectedUnclaimed"
+                                                                   ui-on-drop=""
+                                                                   ng-show="isUnclaimedTask(task)"></label>
+                </div>
               </td>
 
               <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'"
@@ -117,7 +124,7 @@
               <td header-title="'Click to sort'" data-title="'Classification'"
                   sortable="'latestClassificationJson.status'">
                 <a ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/classify">
-                  <button ng-show="task.latestClassificationJson !== null"
+                  <button ng-show="task.latestClassificationJson"
                           type="button"
                           ng-class="[
                           {indicator_green : task.latestClassificationJson.redundantStatedRelationshipsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.equivalentConceptsFound === false && task.latestClassificationJson.status !== 'STALE'},
@@ -140,9 +147,12 @@
 
               </td>
 
+
               <td header-title="'Click to sort'" data-title="'Validation'" sortable="'latestValidationStatus'">
+
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED' &&
+                  task.latestValidationStatus !== 'Failed-to-retrieve'"
                           type="button"
                           ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
                           {indicator_red : task.latestValidationStatus === 'FAILED'},
@@ -152,12 +162,12 @@
                           class="btn btn-round   btn-default lighten-2 pull-left ">
 
 
-                    <div class="md md-school "></div>
+                    <div ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                         class="md md-school "></div>
                     <span> <div class="message_validation_{{task.latestValidationStatus}}"> </div></span>
                   </button>
                 </a>
               </td>
-
               <td header-title="'Click to sort'" data-title="'Feedback'" class="feedback-icon-link"
                   sortable="'feedbackMessagesStatus'">
 
@@ -199,11 +209,11 @@
 
               </td>
 
-    <!--          <td class="review-checkbox no-padding " ng-show="hasClaimedTasks()">
-                <input type="checkbox" ng-model="task.selectedClaimed" ui-on-drop="" ng-show="isClaimedTask(task)">
+              <!--          <td class="review-checkbox no-padding " ng-show="hasClaimedTasks()">
+                          <input type="checkbox" ng-model="task.selectedClaimed" ui-on-drop="" ng-show="isClaimedTask(task)">
 
-              </td>
--->
+                        </td>
+          -->
 
             </tr>
           </table>

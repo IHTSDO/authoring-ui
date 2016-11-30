@@ -350,7 +350,7 @@ select {
 }
 .editing-form .is_a {
     width: 25.5%;
-    padding-left: 0%;
+    padding-left: .5%;
 }
 .editing-form .attr {
     width: 25%;
@@ -358,7 +358,7 @@ select {
 }
 .editing-form .sourcename {
     width: 49%;
-    padding-left: 0%;
+    padding-left: .5%;
 }
 .editing-form .relations {
     width: 55%;
@@ -389,7 +389,7 @@ select {
     color: #eee !important;
 }
 .small-buttons.green {
-    color: #03b18a;
+    color: #4CAF50;
     background-color: transparent;
 }
 .small-buttons.orange.darken-3 {
@@ -459,7 +459,7 @@ select {
     float: left;
 }
 .is_a .drag-button-width {
-    background-color: #fdfde7 !important;
+    background-color: #ffffdb !important;
     color: #474747;
     width: 18% !important;
     float: left;
@@ -468,7 +468,6 @@ select {
     text-align: center;
 }
 .editing-form .sourcename .drag-button-width {
-    background-color: #ebe8ff !important;
     color: #474747 !important;
     width: 8.75% !important;
     float: left;
@@ -612,7 +611,7 @@ button.fsn-title-button {
 .color_ textarea,
 .color_ select,
 .color_ .custom-button {
-    background-color: #d1e6fc !important;
+    background-color: #b7dbff !important;
     color: #474747 !important;
 }
 .color_0 input,
@@ -621,7 +620,7 @@ button.fsn-title-button {
 .color_0 .custom-button,
 .PRIMITIVE .color_0 .sourcename,
 .color_0 .sourcename {
-    background-color: #ebe8ff;
+    background-color: #dbdbff;
     color: #474747 !important;
 }
 .color_1 input,
@@ -629,7 +628,7 @@ button.fsn-title-button {
 .color_1 select,
 .color_1 .custom-button,
 .color_1 .sourcename {
-    background-color: #ebe8ff !important;
+    background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .color_2 input,
@@ -637,27 +636,27 @@ button.fsn-title-button {
 .color_2 select,
 .color_2 .custom-button,
 .color_2 .sourcename {
-    background-color: #ebe8ff !important;
+    background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .color_3 input,
 .color_3 textarea,
 .color_3 select,
 .color_3 .sourcename {
-    background-color: #ebe8ff !important;
+    background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .color_4 input,
 .color_4 textarea,
 .color_4 select,
 .color_4 .sourcename {
-    background-color: #ebe8ff !important;
+    background-color: #dbdbff !important;
 }
 .color_5 input,
 .color_5 textarea,
 .color_5 select,
 .color_5 .sourcename {
-    background-color: #ebe8ff !important;
+    background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .color_6 {
@@ -677,15 +676,15 @@ button.fsn-title-button {
 .is_a textarea,
 .is_a select,
 .is_a_bg {
-    background-color: #fdfde7 !important;
+    background-color: #ffffdb !important;
 }
 .is_a_bg {
-    margin-left: .8% !important;
+    margin-left: .5% !important;
 }
 .attr input,
 .attr textarea,
 .attr select {
-    background-color: #fdfde7 !important;
+    background-color: #ffffdb !important;
 }
 /* edit panel buttons */
 
@@ -725,7 +724,7 @@ button.fsn-title-button {
     position: fixed;
     top: 64px;
     bottom: 0px;
-    background-color: #7d7b80;
+    background-color: grey;
     width: 50px;
     z-index: 101;
 }
@@ -733,11 +732,11 @@ button.fsn-title-button {
     font-size: 22px;
 }
 .button-nav .validate:hover {
-    background-color: #57447e;
+    background-color: #4527a0;
     color: #fff
 }
 .pink1 {
-    background-color: #e94281;
+    background-color: #e91e63;
     color: #fff;
 }
 .CASE_INSENSITIVE::before {
@@ -757,34 +756,34 @@ button.fsn-title-button {
 
 
 .color_ input, .color_ textarea, .color_ select {
-    background-color: #2e2d30 !important;  color: #d1e6fc !important;
+    background-color: #303030 !important;  color: #b7dbff !important;
 }
 
 .color_0 input, .color_0 textarea, .color_0 select {
-    background-color: #2e2d30 !important;  color: #ebe8ff !important;
+    background-color: #303030 !important;  color: #dbdbff !important;
 }
 .color_1 input, .color_1 textarea, .color_1 select{
-    background-color: #2e2d30 !important;  color: #ebe8ff !important;
+    background-color: #303030 !important;  color: #dbdbff !important;
 }
 
 .color_2 input, .color_2 textarea, .color_2 select{
-    background-color: #2e2d30 !important;  color: #ebe8ff !important;
+    background-color: #303030 !important;  color: #dbdbff !important;
 }
 .color_3 input, .color_3 textarea, .color_3 select{
-    background-color: #2e2d30 !important; color: #ebe8ff !important;
+    background-color: #303030 !important; color: #dbdbff !important;
 }
 .is_a input, .is_a textarea, .is_a select{
-    background-color: #2e2d30 !important; color: #fdfde7 !important;
+    background-color: #303030 !important; color: #ffffdb !important;
 }
 .attr input, .attr textarea, .attr select{
-    background-color: #2e2d30 !important; color: #fdfde7 !important;
+    background-color: #303030 !important; color: #ffffdb !important;
 }
 .green {
-    background-color: #2e2d30 !important;
-    color: #03b18a !important;
+    background-color: #303030 !important;
+    color: #4CAF50 !important;
 }
 .blue {
-    background-color: #2e2d30 !important;
+    background-color: #303030 !important;
     color: #00a6e5 !important;
 }
 */
@@ -864,6 +863,12 @@ button.fsn-title-button {
     margin-top: 1px;
     min-width: 650px;
     z-index: 1070;
+}
+
+#wrap .popover {
+  margin-top: 1px;
+  min-width: 250px;
+  z-index: 1070;
 }
 
 .pop-edit {
@@ -987,28 +992,28 @@ button.fsn-title-button {
 .role_group_divider_top_2,
 .role_group_divider_top_4,
 .role_group_divider_top_6 {
-    border-bottom: 6px solid #201f23;
+    border-bottom: 6px solid #2d2d2d;
     border-top: 1px solid #464646
 }
 .role_group_divider_bottom_0,
 .role_group_divider_bottom_2,
 .role_group_divider_bottom_4,
 .role_group_divider_bottom_5 {
-    border-top: 6px solid #201f23;
+    border-top: 6px solid #2d2d2d;
     border-bottom: 1px solid #464646
 }
 .role_group_divider_top_1,
 .role_group_divider_top_3,
 .role_group_divider_top_5,
 .role_group_divider_top_7 {
-    border-bottom: 6px solid #6e6e75;
+    border-bottom: 6px solid #757575;
     border-top: 1px solid #8e8e8e
 }
 .role_group_divider_bottom_1,
 .role_group_divider_bottom_3,
 .role_group_divider_bottom_5,
 .role_group_divider_bottom_6 {
-    border-top: 6px solid #6e6e75;
+    border-top: 6px solid #757575;
     border-bottom: 1px solid #8e8e8e
 }
 /* role groups highlighting */
@@ -1017,25 +1022,25 @@ button.fsn-title-button {
 .edits-row.color_2,
 .edits-row.color_4,
 .edits-row.color_6 {
-    background-color: #201f23;
+    background-color: #2d2d2d;
 }
 .edits-row.color_1,
 .edits-row.color_3,
 .edits-row.color_5,
 .edits-row.color_7 {
-    background-color: #6e6e75;
+    background-color: #757575;
 }
 .color_0.role-group-drag,
 .color_2.role-group-drag,
 .color_4.role-group-drag,
 .color_6.role-group-drag {
-    background-color: #201f23;
+    background-color: #212121;
 }
 .color_1.role-group-drag,
 .color_3.role-group-drag,
 .color_5.role-group-drag,
 .color_7.role-group-drag {
-    background-color: #6e6e75;
+    background-color: #616161;
 }
 .tealhl .color_0.role-group-drag,
 .tealhl .color_2.role-group-drag,
@@ -1112,7 +1117,7 @@ button-link .bluehl .grey.darken-3 {
 }
 .tealhl .p-t-5{
   padding-top:0px!important
-	
+
 }
 .tealhl .grey.darken-4{background-color:transparent!important;}
 
@@ -1143,56 +1148,56 @@ button-link .bluehl .grey.darken-3 {
 }
 .editing-form button.green:focus,
 .editing-form button.green:active {
-    background-color: #03b18a;
+    background-color: #4CAF50;
 }
 .color_ .custom-button:focus {
-    background-color: #d1e6fc !important;
+    background-color: #b7dbff !important;
 }
 .PRIMITIVE .color_0 input,
 .PRIMITIVE .color_0 textarea,
 .PRIMITIVE .color_0 select,
 .PRIMITIVE .color_0 .custom-button {
-    background-color: #d1e6fc;
+    background-color: #b7dbff;
 }
 .p-t-3 {
     padding-top: 3px!important;
 }
 .editing-form .PRIMITIVE .sourcename .drag-button-width {
-    background-color: #d1e6fc !important;
+    background-color: #b7dbff !important;
 }
 .FULLY_DEFINED .color_ input,
 .FULLY_DEFINED .color_ textarea,
 .FULLY_DEFINED .color_ select,
 .FULLY_DEFINED .color_ .custom-button .FULLY_DEFINED .sourcename {
-    background-color: #ebe8ff !important;
+    background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .sourcename {
-    margin-left: 0.8%
+    margin-left: .5%
 }
 .PRIMITIVE textarea.relationship,
 .PRIMITIVE textarea.rg,
 .PRIMITIVE select,
 .PRIMITIVE .custom-button,
 .PRIMITIVE .sourcename {
-    background-color: #d1e6fc !important;
+    background-color: #b7dbff !important;
     color: #474747 !important;
 }
 .is_a input,
 .is_a textarea,
 .is_a select {
-    background-color: #fdfde7 !important;
+    background-color: #ffffdb !important;
 }
 .def_PRIMITIVE textarea,
 .def_PRIMITIVE select,
 .def_PRIMITIVE .custom-button {
-    background-color: #d1e6fc !important;
+    background-color: #b7dbff !important;
     color: #474747 !important;
 }
 .def_FULLY_DEFINED textarea,
 .def_FULLY_DEFINED select,
 .def_FULLY_DEFINED .custom-button {
-    background-color: #ebe8ff !important;
+    background-color: #dbdbff !important;
     color: #474747 !important;
 }
 .sidebar-tabs.nav > li > a {

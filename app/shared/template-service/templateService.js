@@ -12,8 +12,9 @@ angular.module('singleConceptAuthoringApp')
     //
     // Internal variables
     //
-    var templateCache = null;
+    var currentTask = null;
     var selectedTemplate = null;
+    var templateCache = null;
 
     //
     // Patterns
@@ -45,7 +46,7 @@ angular.module('singleConceptAuthoringApp')
       if (!match || !match[1] || match[1].length === 0) {
         replaceValue = '???';
       } else {
-        replaceValue = match[1].toLowerCase();
+        replaceValue = match[1];
         angular.forEach(lt.removeParts, function (rp) {
           if (replaceValue.indexOf(rp) !== -1) {
             var re = new RegExp(rp, 'g');
@@ -73,13 +74,14 @@ angular.module('singleConceptAuthoringApp')
         newTerm = newTerm.replace(re, sv);
         newTerm = newTerm.replace(/[\s]{2,}/g, ' ');
         newTerm = newTerm.trim();
-        newTerm = newTerm.substring(0,1).toUpperCase() + newTerm.substring(1);
+        newTerm = newTerm.substring(0, 1).toUpperCase() + newTerm.substring(1);
       });
       return newTerm;
     }
 
     // triggers replacement of logical values given a changed relationship
     function replaceLogicalValues(concept, relationship) {
+      console.debug('replace logcial values', concept);
       // placeholder promise in anticipation of asynchronous operations
       var deferred = $q.defer();
 
@@ -89,7 +91,7 @@ angular.module('singleConceptAuthoringApp')
         // check for linked/referenced slots
         for (var i = 0; i < concept.relationships.length; i++) {
           var r = concept.relationships[i];
-          if (r.targetSlot && r.targetSlot && r.targetSlot.slotReference && r.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
+          if (r.template && r.template.targetSlot && r.template.targetSlot.slotReference === relationship.template.targetSlot.slotName) {
             r.target.conceptId = relationship.target.conceptId;
             r.target.fsn = relationship.target.fsn;
           }
@@ -101,24 +103,37 @@ angular.module('singleConceptAuthoringApp')
 
     function replaceLexicalValues(concept, template) {
       var deferred = $q.defer();
-      var nameValueMap = getTemplateValues(concept, template);
+      getTemplateValues(concept, template).then(function (nameValueMap) {
 
-      // replace values in descriptions
-      for (var i = 0; i < concept.descriptions.length; i++) {
-        var d = concept.descriptions[i];
-        if (d.template) {
-          d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
-          d.term = d.term.substring(0, 1).toUpperCase() + d.term.substring(1);
+        // replace values in descriptions
+        for (var i = 0; i < concept.descriptions.length; i++) {
+          var d = concept.descriptions[i];
+          if (d.template) {
+            d.term = getDescriptionTemplateTermValue(d.template, template, nameValueMap);
+            d.term = d.term.substring(0, 1).toUpperCase() + d.term.substring(1);
+
+            // check case sensitive terms for non-CS terms
+            if (d.caseSignificance !== 'ENTIRE_TERM_CASE_SENSITIVE') {
+              if (d.term.substring(1).toLowerCase() !== d.term.substring(1)) {
+                d.caseSignificance = 'INITIAL_CHARACTER_CASE_INSENSITIVE';
+              } else {
+                d.caseSignificance = 'CASE_INSENSITIVE';
+              }
+            }
+          }
         }
-      }
 
-      // placeholder resolution in anticipation of replacement using promises
-      deferred.resolve();
+        // placeholder resolution in anticipation of replacement using promises
+        deferred.resolve();
+      }, function (error) {
+        deferred.reject('Could not replace lexical valus: ' + error);
+      });
       return deferred.promise;
     }
 
-    function updateTargetSlot(concept, template, relationship) {
+    function updateTargetSlot(concept, template, relationship, targetConcept) {
       var deferred = $q.defer();
+
       replaceLogicalValues(concept, relationship).then(function () {
         replaceLexicalValues(concept, template).then(function () {
           deferred.resolve(concept);
@@ -131,6 +146,28 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function getTargetSlotConcepts(concept) {
+      var deferred = $q.defer();
+      var conceptIds = [];
+      angular.forEach(concept.relationships, function (r) {
+        if (r.targetSlot && r.target.conceptId) {
+          conceptIds.push(r.target.conceptId);
+        }
+      });
+
+      if (conceptIds.length > 0) {
+        snowowlService.bulkGetConcept(conceptIds, currentTask.branchPath).then(function (response) {
+          deferred.resolve(response.items);
+        }, function (error) {
+          deferred.reject(error);
+        });
+      } else {
+        deferred.resolve([]);
+      }
+
+      return deferred.promise;
+    }
+
     /**
      * @param template the template applied
      * @param concept the concept
@@ -138,23 +175,48 @@ angular.module('singleConceptAuthoringApp')
      */
     function getTemplateValues(concept, template) {
 
+      var deferred = $q.defer();
+
       // full map of replacement values
       var nameValueMap = {};
 
-      angular.forEach(template.lexicalTemplates, function (lt) {
-        var value = null;
+      // get full target concepts
+      getTargetSlotConcepts(concept).then(function (targetConcepts) {
 
-        // find the matching relationship target slot by takeFSNFromSlot
-        angular.forEach(concept.relationships, function (r) {
 
-          // if a target slot with specified slot name
-          if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
-            value = r.target.fsn;
-          }
+        angular.forEach(template.lexicalTemplates, function (lt) {
+
+          // find the matching relationship target slot by takeFSNFromSlot
+          angular.forEach(concept.relationships, function (r) {
+
+            // if a target slot with specified slot name
+            if (r.targetSlot && r.targetSlot.slotName === lt.takeFSNFromSlot && r.target && r.target.conceptId) {
+
+              var targetConcept = targetConcepts.filter(function (c) {
+                return c.id === r.target.conceptId;
+              })[0];
+              var fsn = targetConcept.fsn;
+
+              // determine value based on case signifiance
+              switch (fsn.caseSignificance) {
+                case 'ENTIRE_TERM_CASE_SENSITIVE' : // entire term case sensitive
+                  nameValueMap[lt.name] = fsn.term;
+                  break;
+                case 'CASE_INSENSITIVE': // entire term case insensitive
+                case 'INITIAL_CHARACTER_CASE_INSENSITIVE' : // initial character case insensitive
+                  nameValueMap[lt.name] = fsn.term.substring(0, 1).toLowerCase() + fsn.term.substring(1);
+                  break;
+                default:
+                  nameValueMap[lt.name] = '???';
+              }
+            }
+          });
         });
-        nameValueMap[lt.name] = value;
+        deferred.resolve(nameValueMap);
+      }, function (error) {
+        deferred.reject(error);
       });
-      return nameValueMap;
+      return deferred.promise;
     }
 
 // function to populate concept FSNs from ids in templates
@@ -233,6 +295,9 @@ angular.module('singleConceptAuthoringApp')
           tc.conceptId = snowowlService.createGuid();
           tc.template = template;
           tc.templateComplete = false;
+
+          // by default, template concepts are Fully Defined
+          tc.definitionStatus = 'FULLY_DEFINED';
 
           angular.forEach(tc.descriptions, function (d) {
             d.descriptionId = snowowlService.createGuid();
@@ -338,7 +403,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
             // otherwise, check specified target concept id
-            else if (r.active && r.target.conceptId === rt.target.conceptId) {
+            else if (r.active && r.groupId === rt.groupId && r.type && rt.type && r.target && rt.target && r.type.conceptId === rt.type.conceptId && r.target.conceptId === rt.target.conceptId) {
 
               matchFound = true;
               r.template = rt;
@@ -349,7 +414,7 @@ angular.module('singleConceptAuthoringApp')
             }
 
           });
-          if (!matchFound) {
+          if (!matchFound && applyValues) {
 
             var newRel = angular.copy(rt);
             newRel.template = rt;
@@ -378,131 +443,134 @@ angular.module('singleConceptAuthoringApp')
         }
       });
 
-// get values from target slots
-      var nameValueMap = getTemplateValues(concept, template);
+      // get the target slot name->value map and process descriptions
+      var nameValueMap;
+      getTemplateValues(concept, template).then(function (map) {
+        nameValueMap = map;
 
 // match descriptions
-      angular.forEach(template.conceptOutline.descriptions, function (dt) {
-        var matchFound = false;
-        angular.forEach(concept.descriptions, function (d) {
+        angular.forEach(template.conceptOutline.descriptions, function (dt) {
+          var matchFound = false;
+          angular.forEach(concept.descriptions, function (d) {
 
 
-          // check by active/type/acceptability
-          // TODO Add acceptability
-          if (d.active && d.type === dt.type) {
-            // check exact term match first
-            if (d.term === dt.initialTerm) {
-              matchFound = true;
-              d.template = dt;
-              if (applyStyles) {
-                d.templateStyle = 'tealhl';
-              }
-            }
-
-            // otherwise, check by pattern matching
-            else {
-              // replace slots with .*, escape special characters, and start/end terminate
-              var exp = dt.termTemplate.replace(/\$.*\$/, '.*');
-              exp = '^' + exp.replace(/([()[{$^\\|?])/g, '\\$1') + '$';
-
-
-              // if match found
-              if (d.term && d.term.match(exp)) {
+            // check by active/type/en-us acceptability
+            if (d.active && d.type === dt.type && d.acceptabilityMap && dt.acceptabilityMap &&  d.acceptabilityMap['900000000000509007'] === dt.acceptabilityMap['900000000000509007']) {
+              // if term matches initial term, match found
+              if (d.term === dt.initialTerm) {
                 matchFound = true;
                 d.template = dt;
-                var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
-                console.debug('comparing terms', templateTerm, d.term);
-                if (d.term !== templateTerm) {
-                  if (applyStyles) {
-                    d.templateStyle = 'redhl';
-                  }
+                if (applyStyles) {
+                  d.templateStyle = 'tealhl';
+                }
+              }
 
-                  // if apply values set, value will be replaced below, append warning
-                  if (applyValues) {
-                    d.term = templateTerm;
-                    if (applyMessages) {
+              // otherwise, check for value match via pattern matching
+              else {
+                // replace slots with .*, escape special characters, and start/end terminate
+                var exp = dt.termTemplate.replace(/\$.*\$/, '.*');
+                exp = '^' + exp.replace(/([()[{$^\\|?])/g, '\\$1') + '$';
+
+
+                // if match found
+                if (d.term && d.term.match(exp)) {
+                  matchFound = true;
+                  d.template = dt;
+                  var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
+                  if (d.term !== templateTerm) {
+                    if (applyStyles) {
+                      d.templateStyle = 'redhl';
+                    }
+
+                    // if apply values set, value will be replaced below, append warning
+                    if (applyValues) {
+                      d.term = templateTerm;
+                      if (applyMessages) {
+                        d.templateMessages.push({
+                          type: 'Warning',
+                          message: 'Description term updated to conform to template, previous term: ' + d.term
+                        });
+                      }
+                    }
+
+                    // otherwise, append error
+                    else if (applyMessages) {
                       d.templateMessages.push({
                         type: 'Warning',
-                        message: 'Description term updated to conform to template, previous term: ' + d.term
+                        message: 'Description term does not conform to template, expected: ' + templateTerm
                       });
+                    }
+                  } else {
+                    if (applyStyles) {
+                      d.templateStyle = 'tealhl';
                     }
                   }
 
-                  // otherwise, append error
-                  else if (applyMessages) {
-                    d.templateMessages.push({
-                      type: 'Warning',
-                      message: 'Description term does not conform to template, expected: ' + templateTerm
-                    });
-                  }
-                } else {
-                  if (applyStyles) {
-                    d.templateStyle = 'tealhl';
-                  }
                 }
-
               }
             }
+          });
+
+          if (!matchFound && applyValues) {
+            var newDesc = angular.copy(dt);
+            newDesc.descriptionId = snowowlService.createGuid();
+            newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
+            if (applyStyles) {
+              newDesc.templateStyle = 'bluehl lighten-2';
+            }
+            newDesc.template = dt;
+            newDesc.templateMessages = [];
+            if (applyMessages) {
+              newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
+            }
+            concept.descriptions.push(newDesc);
           }
         });
-
-        if (!matchFound) {
-          var newDesc = angular.copy(dt);
-          newDesc.descriptionId = snowowlService.createGuid();
-          newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
-          if (applyStyles) {
-            newDesc.templateStyle = 'bluehl lighten-2';
-          }
-          newDesc.template = dt;
-          newDesc.templateMessages = [];
-          if (applyMessages) {
-            newDesc.templateMessages.push({type: 'Message', message: 'Description automatically added by template'});
-          }
-          concept.descriptions.push(newDesc);
-        }
-      });
 
 // cycle over all descriptions -- no style flag means not in template
 
 // otherwise, flag as outside template
-      angular.forEach(concept.descriptions, function (d) {
-        if (d.active && !d.template) {
-          if (applyStyles) {
-            d.templateStyle = 'redhl';
-          }
+        angular.forEach(concept.descriptions, function (d) {
+          if (d.active && !d.template) {
+            if (applyStyles) {
+              d.templateStyle = 'redhl';
+            }
 
-          d.templateMessages = [];
-          if (applyMessages) {
-            d.templateMessages.push({type: 'Error', message: 'Description not valid for template; please remove'});
+            d.templateMessages = [];
+            if (applyMessages) {
+              d.templateMessages.push({type: 'Error', message: 'Description not valid for template; please remove'});
+            }
           }
+        });
+
+        componentAuthoringUtil.setDefaultFields(concept);
+
+
+        if (applyValues) {
+          concept = replaceLexicalValues(concept, template);
         }
-      });
-
-      componentAuthoringUtil.setDefaultFields(concept);
-
-
-      if (applyValues) {
-        concept = replaceLexicalValues(concept, template);
-      }
 
 // apply top-level messages
-      if (applyMessages) {
-        var msg = {type: 'Message', message: 'Template Concept Valid'};
-        angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
-          angular.forEach(component.templateMessages, function (tm) {
-            // overwrite with highest severity
-            if (tm.type === 'Error') {
-              msg = {type: 'Error', message: 'Template Errors Found'};
-            } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
-              msg = {type: 'Warning', message: 'Template Warnings Found'};
-            }
+        if (applyMessages) {
+          var msg = {type: 'Message', message: 'Template Concept Valid'};
+          angular.forEach(concept.descriptions.concat(concept.relationships), function (component) {
+            angular.forEach(component.templateMessages, function (tm) {
+              // overwrite with highest severity
+              if (tm.type === 'Error') {
+                msg = {type: 'Error', message: 'Template Errors Found'};
+              } else if (tm.type === 'Warning' && msg && msg.type !== 'Error') {
+                msg = {type: 'Warning', message: 'Template Warnings Found'};
+              }
+            });
           });
-        });
-        concept.templateMessages.push(msg);
-      }
+          concept.templateMessages.push(msg);
+        }
 
 
-      deferred.resolve(concept);
+        deferred.resolve(concept);
+      }, function (error) {
+        deferred.reject('Could not compute target slot values: ' + error);
+      });
 
       return deferred.promise;
     }
@@ -725,8 +793,15 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
+    function setTask(task) {
+      currentTask = task;
+    }
+
 
     return {
+
+      // task initialization
+      setTask: setTask,
 
       // Template CRUD functions
       getTemplates: getTemplates,

@@ -43,7 +43,7 @@
               </td>
            <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
                 <a ng-href="#/project/{{project.key}}">
-             <button ng-show="project.latestClassificationJson !== null"
+             <button ng-show="project.latestClassificationJson"
                           type="button"
                           ng-class="[
                           {indicator_green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
@@ -55,18 +55,18 @@
                            {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.status !== 'STALE'},
                            ]"
   class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                    <div class="md md-notifications "></div> 
+                    <div class="md md-notifications "></div>
                                         <span > <div class="message_classification_{{project.latestClassificationJson.status}}"><div ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
                   </button>
-                    
+
                 </a>
-               
+
 
               </td>
               <td data-title="'Validation Results'" sortable="'validationStatus'">
                 <a ng-href="#/project/{{project.key}}">
-        
-                  <button ng-show="project.validationStatus !== null"
+
+                  <button ng-show="project.validationStatus && project.validationStatus !== 'Failed-to-retrieve'"
                        type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
                           {indicator_blue : project.validationStatus === 'SCHEDULED'},
@@ -78,9 +78,9 @@
                       <div class="md md-school "></div>
                     <span > <div class="message_validation_{{project.validationStatus}}"> </div></span>
                   </button>
-                        
+
                 </a>
-            
+
 
               </td>
               <!--
