@@ -2496,7 +2496,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 relationship.target.conceptId = item.id;
                 relationship.target.fsn = item.fsn.term;
                 relationship.target.definitionStatus = item.definitionStatus;
-                scope.updateRelationship(relationship, false);
+                templateService.updateTargetSlot(concept, scope.selectedTemplate, relationship)
               }, function () {
                 scope.warnings = ['MRCM validation error: ' + item.fsn.term + ' is not a valid target for attribute type ' + relationship.type.fsn + '.'];
               });

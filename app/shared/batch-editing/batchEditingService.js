@@ -40,7 +40,7 @@ angular.module('singleConceptAuthoringApp')
         currentTask = task;
         getBatchUiState().then(function (concepts) {
           batchConcepts = concepts;
-          if (batchConcepts.length > 0) {
+          if (batchConcepts && batchConcepts.length > 0) {
             currentTemplate = batchConcepts[0].template;
           }
           deferred.resolve();
@@ -191,7 +191,9 @@ angular.module('singleConceptAuthoringApp')
           title: ' ', // null/empty values render as Excel-style alphabetic title
           renderer: userControls,
           readOnly: true
-        })
+        });
+
+        console.debug('HOT Columns', columns);
 
         return columns;
       }
@@ -219,8 +221,6 @@ angular.module('singleConceptAuthoringApp')
 
           }
         });
-
-        console.debug('row', row);
 
         // detach object references
         return angular.copy(row);
