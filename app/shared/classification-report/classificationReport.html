@@ -11,7 +11,7 @@
   </style>
 
   <!-- No results display banner -->
-  <div class="ng-table-no-results" ng-if="items && items.length === 0">
+  <div class="ng-table-no-results dark-centured-text" ng-if="items && items.length === 0">
     No results.
   </div>
 
@@ -24,8 +24,8 @@
            class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
         <td header-title="'Click to sort'" data-title="'Differences'" sortable="'changeNature'">
-          <span ng-show="result.changeNature === 'INFERRED'" style="color:green">Added</span>
-          <span ng-show="result.changeNature === 'REDUNDANT'" style="color:red">Removed</span>
+          <span ng-show="result.changeNature === 'INFERRED'" class="green-text">Added</span>
+          <span ng-show="result.changeNature === 'REDUNDANT'" class="red-text">Removed</span>
         </td>
         <td header-title="'Click to sort'" data-title="'Source'" sortable="'sourceName'"
             ng-click="editSourceConcept(result)">

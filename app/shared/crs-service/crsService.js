@@ -125,7 +125,15 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, if NEW_CONCEPT specified, simply return the request
         else if (crsRequest.definitionOfChanges && crsRequest.definitionOfChanges.changeType === 'NEW_CONCEPT') {
-          deferred.resolve(angular.copy(crsRequest));
+
+          var copy = angular.copy(crsRequest);
+
+          //  if id provided, trim any erroneous whitespace
+          if (copy.conceptId) {
+            copy.conceptId = copy.conceptId.trim();
+          }
+
+          deferred.resolve(angular.copy(copy));
         }
 
         // otherwise, get the concept as it exists on this branch
@@ -416,7 +424,8 @@ angular.module('singleConceptAuthoringApp')
               comment += line + '\n';
             });
             if (comment.length > 0) {
-              comment = 'Automated Comment - CRS request concepts promoted to project level:\n' + comment;
+              // NOTE: This *must* match the expected text in AuthoringTaskStatusChangeHandler in Content Request Service
+              comment = 'CRS_TASK_PROMOTION - CRS request concepts promoted to project level:\n' + comment;
             }
             deferred.resolve(comment);
 

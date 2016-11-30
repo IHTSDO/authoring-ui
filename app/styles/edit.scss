@@ -28,11 +28,11 @@ a .side-text {
     font-size: 11px;
 }
 .green.btn-default:active {
-    background-color: #03b18a;
+    background-color: #43A047;
     color: #474747;
 }
 .deep-purple.btn-default:active {
-    background-color: #6c549d;
+    background-color: #512da8;
     color: #474747;
 }
 .pink1.btn-default:active {
@@ -127,7 +127,7 @@ button.widget-toolbar {
     background-color: #fff;
 }
 .concept-bg {
-    background-color: #3e3e42
+    background-color: #424242
 }
 .tooltip {
     top: 0px !important;
@@ -145,7 +145,7 @@ button,
 }
 .darkbuttons:active,
 .darkbuttons:focus {
-    background-color: #201f23 !important;
+    background-color: #212121 !important;
     color: #66bbfd !important;
 }
 .toggle-buttons {
@@ -163,7 +163,7 @@ h1 {
 .project-buttons {
     background-color: transparent !important;
     padding: 0px !important;
-    color: #3e3e42 !important;
+    color: #424242 !important;
     font-size: 18px;
 }
 .project-buttons[disabled] {
@@ -178,7 +178,7 @@ h1 {
 .green.darken-1:hover,
 .green.darken-1:focus,
 .green.darken-1:active {
-    background-color: #2fa084;
+    background-color: #2d7130;
     color: #fff;
     border-color: transparent;
 }
@@ -203,7 +203,7 @@ h1 {
 .saved-list-buttons {
     background-color: transparent !important;
     padding: 0px 1px !important;
-    color: #3e3e42 !important;
+    color: #424242 !important;
     font-size: 13px !important;
     line-height: 1 !important;
 }
@@ -211,7 +211,7 @@ h1 {
     color: #009cd7 !important;
 }
 .create-new-concept {
-    background-color: #56b8e7 !important;
+    background-color: #00adee !important;
     text-align: left !important;
     color: #fff !important;
     font-size: 14px !important;
@@ -225,7 +225,7 @@ h1 {
     font-size: 14px !important;
 }
 .create-new-concept i {
-    font-size: 20px ;
+    font-size: 17px !important;
 }
 .savedlist-buttons {
     width: 75px;
@@ -370,7 +370,7 @@ h1 {
 }
 .widget-toolbar:hover {
     background-color: transparent;
-    color: #3e3e42;
+    color: #424242;
 }
 /* taxonomy */
 
@@ -447,7 +447,7 @@ h1 {
 }
 #bp-taxonomy_canvas-mainPanel .treeButton:hover {
     background-color: #e6e6e6;
-    color: #3e3e42;
+    color: #424242;
     text-transform: none;
 }
 #bp-taxonomy_canvas-mainPanel .treeLabel {
@@ -463,7 +463,7 @@ h1 {
 .widget-button:hover {
     font-size: 18px;
     box-shadow: none;
-    background-color: #3e3e42;
+    background-color: #424242;
     color: #fff;
 }
 .text-center {
@@ -639,11 +639,11 @@ sca-column .hasSVG {
     background-color: #fff;
 }
 .classification-btn .Classify {
-    background-color: #03b18a;
+    background-color: #4CAF50;
     color: #fff;
 }
 .classification-btn .Running {
-    background-color: #3e3e42;
+    background-color: #424242;
     color: #fff;
 }
 .classification-btn .Failed {
@@ -655,7 +655,7 @@ sca-column .hasSVG {
     color: #fff;
 }
 .classification-btn .ng-click-active.amber {
-    background-color: #3e3e42;
+    background-color: #424242;
 }
 .search-snomed {
     width: 90%;
@@ -723,7 +723,7 @@ sca-column .hasSVG {
     margin-top: 22px;
     border-top: 8px solid transparent;
     border-bottom: 8px solid transparent;
-    border-right: 8px solid #03b18a;
+    border-right: 8px solid #4CAF50;
 }
 .arrow-blue {
     width: 0;
@@ -756,7 +756,7 @@ sca-column .hasSVG {
     border-radius: 0px 4px 4px 0px;
 }
 button[disabled] .project-icon {
-    background-color: #76747c
+    background-color: #7c7c7c
 }
 .card-title .project-icon .md {
     font-size: 24px;
@@ -766,7 +766,7 @@ button[disabled] .project-icon {
     float: left;
 }
 .card-header button[disabled]:hover {
-    color: #76747c
+    color: #7c7c7c
 }
 .project-page .card {
     margin: 10px;
@@ -794,7 +794,7 @@ button[disabled] .project-icon {
     border: 1px solid #eee !important;
     border-radius: 4px;
     text-transform: none;
-    color: #3e3e42;
+    color: #424242;
     padding: 0px 10px 0px 0px !important;
     line-height: 30px;
 }
@@ -806,7 +806,7 @@ button[disabled] .project-icon {
     border: 1px solid #eee !important;
     border-radius: 4px;
     text-transform: none;
-    color: #76747c !important;
+    color: #7c7c7c !important;
     padding: 0px 10px 0px 0px !important;
     line-height: 30px;
 }
@@ -831,7 +831,7 @@ button[disabled] .project-icon {
 }
 .switch label input[type=checkbox][disabled]+.lever:after,
 .switch label input[type=checkbox][disabled]:checked+.lever:after {
-    background-color: #03b18a;
+    background-color: #4CAF50;
 }
 .close {
     font-size: 28px!important;

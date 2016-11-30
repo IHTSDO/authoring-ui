@@ -4,15 +4,6 @@
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
 
-    <!-- Inactivation button (shown only if service has concept set) -->
-    <!--
-        <button
-          type="button" ng-click="setView('inactivation')"
-          ng-show="isInactivation"
-          class="btn btn-default red widget-toolbar tooltips-right tooltips-light normal-case">
-          <div class="md fa-sca fa-power-off"></div>
-          <span>Inactivation</span></button>
-    -->
 
     <!-- Create new concept (non-template) -->
     <button
@@ -24,9 +15,10 @@
 
       <span>Create New Concept</span></button>
 
+
     <!-- Create new template concept -->
     <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
-            popover-template="'shared/template-service/templateSelect.html'"
+            popover-template="'components/edit/editTemplateSelect.html'"
             popover-placement="right"
             popover-trigger="click: click"
             popover-append-to-body="true"
@@ -37,7 +29,7 @@
             class="btn btn-default snodragon-templates widget-toolbar tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i>
 
-      <span>Select SnoDragon Template</span></button>
+      <span>Create New Concept From Template</span></button>
     <div class="navigation-link green darken-1 classify">
 
       <ul class="sub-navigation-link-list classification-nav">
@@ -50,9 +42,17 @@
 
           <ul class="button-sub-nav">
 
-
+            <li ng-if="!task.latestClassificationJson">
+              No Classification Run
+            </li>
+            <li ng-if="task.latestClassificationJson.status === 'STALE'" ng-click="viewClassificationFromSidebar()">
+              View Stale Classification (completed {{task.latestClassificationJson.creationDate | date : 'medium'}})
+            </li>
+            <li ng-if="task.latestClassificationJson.status === 'SAVED'" ng-click="viewClassificationFromSidebar()">
+              View Classification (saved {{task.latestClassificationJson.saveDate | date : 'medium'}})
+            </li>
             <li ng-if="task.latestClassificationJson.status === 'COMPLETED'" ng-click="viewClassificationFromSidebar()">
-              View Classification (completed {{classificationContainer.creationDate | date : 'medium'}}
+              View Classification (completed {{task.latestClassificationJson.creationDate | date : 'medium'}})
             </li>
             <li ng-if="task.latestClassificationJson.status === 'FAILED'">
               Classification Failed
@@ -416,7 +416,7 @@
 
         <!-- classification report -->
         <div class="col-md-12">
-          <div classification classification-container="classificationContainer" branch="targetBranch"
+          <div classification classification-container="task.latestClassificationJson" branch="targetBranch"
                editable="true"></div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.taskDetail', [])
 
-  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q',
+  .controller('taskDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$location', '$timeout', '$modal', 'metadataService', 'accountService', 'scaService', 'snowowlService', 'promotionService', 'crsService', 'notificationService', '$q', 'reviewService',
     function taskDetailCtrl($rootScope, $scope, $routeParams, $location, $timeout, $modal, metadataService, accountService, scaService, snowowlService, promotionService, crsService, notificationService, $q, reviewService) {
 
       $scope.task = null;
@@ -109,13 +109,105 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
 
         scaService.startValidationForTask($routeParams.projectKey, $routeParams.taskKey).then(function (response) {
           $rootScope.$broadcast('reloadTask');
-          notificationService.sendMessage('Task successfully submitted for validation', 5000, null);
-        }, function () {
-          notificationService.sendMessage('Error submitting task for validation', 10000, null);
+          notificationService.sendMessage('Task successfully submitted for validation', 3000, null);
+        }, function (error) {
+          notificationService.sendError('Error submitting task for validation: ' + error);
           $rootScope.$broadcast('reloadTask');
         });
       };
 
+      // list of tracked unsaved concepts
+      $scope.reviewChecks = null;
+
+      $scope.cancelSubmitForReview = function () {
+        $scope.reviewChecks = null;
+      };
+
+      function openReviewChecksModal(reviewChecks) {
+
+        // check if unsaved concepts are already in edit panel
+        angular.forEach(reviewChecks.unsavedConcepts, function (uc) {
+          angular.forEach($scope.editList, function (ec) {
+            if (ec === uc.conceptId) {
+              uc.editing = true;
+            }
+          });
+        });
+
+        var deferred = $q.defer();
+        var modalInstance = $modal.open({
+          templateUrl: 'shared/review-check-modal/reviewCheckModal.html',
+          controller: 'reviewCheckModalCtrl',
+          resolve: {
+            reviewChecks: reviewChecks
+          }
+        });
+
+        modalInstance.result.then(function (results) {
+          deferred.resolve(results);
+        }, function () {
+          deferred.reject();
+        });
+        return deferred.promise;
+
+      }
+
+      $scope.toggleReview = function (ignoreWarnings) {
+        $scope.reviewChecks = null;
+        switch ($scope.task.status) {
+          case 'New':
+          case 'In Progress':
+
+            notificationService.sendMessage('Submit for review requested: checking content changes...');
+
+            reviewService.checkReviewPrerequisites($scope.task).then(function (reviewChecks) {
+
+              if (reviewChecks.hasChangedContent && reviewChecks.unsavedConcepts && reviewChecks.unsavedConcepts.length === 0) {
+                reviewService.submitForReview($scope.task).then(function () {
+                  notificationService.sendMessage('Submitted for review', 3000);
+                }, function (error) {
+                  notificationService.sendError('Error submitting for review: ' + error);
+                });
+              } else {
+                openReviewChecksModal(reviewChecks).then(function () {
+                  reviewService.submitForReview($scope.task).then(function () {
+                    notificationService.sendMessage('Submitted for review', 3000);
+                  }, function (error) {
+                    notificationService.sendError('Error submitting for review: ' + error);
+                  });
+                }, function () {
+                  notificationService.sendMessage('Cancelled submit for review', 3000);
+                });
+              }
+            }, function (error) {
+              notificationService.sendWarning('Task submitted for review, but could not verify content changes: ' + error);
+            });
+
+
+            break;
+          case 'In Review':
+          case 'Review Complete':
+            accountService.getRoleForTask($scope.task).then(function (role) {
+              if (role === 'AUTHOR') {
+                reviewService.cancelReview($scope.task).then(function () {
+                  notificationService.sendMessage('Review cancelled', 3000);
+                }, function (error) {
+                  notificationService.sendError('Error cancelling review: ' + error);
+                });
+              } else {
+                reviewService.unclaimReview($scope.task).then(function () {
+                  $location.url('review-tasks');
+                  notificationService.sendMessage('Review unclaimed', 3000);
+                }, function (error) {
+                  notificationService.sendError('Error unclaiming review: ' + error);
+                });
+              }
+            });
+            break;
+          default:
+            notificationService.sendError('Unexpected task status: ' + $scope.task.status);
+        }
+      };
 
       $scope.updateTask = function () {
         var modalInstance = $modal.open({
@@ -152,7 +244,7 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
         snowowlService.getBranch($scope.branch).then(function (response) {
           if($scope.classificationLockCheck){
             $timeout(function () {
-              $scope.checkForLock()
+              $scope.checkForLock();
             }, 10000);
            }
           // if lock found, set rootscope variable and continue polling
@@ -163,12 +255,12 @@ angular.module('singleConceptAuthoringApp.taskDetail', [])
                 }
             $rootScope.branchLocked = true;
             $timeout(function () {
-              $scope.checkForLock()
+              $scope.checkForLock();
             }, 10000);
            }
           else if($scope.classificationLockCheck && !$scope.ontologyLock){
             $timeout(function () {
-              $scope.checkForLock()
+              $scope.checkForLock();
             }, 10000);
            }
           else {

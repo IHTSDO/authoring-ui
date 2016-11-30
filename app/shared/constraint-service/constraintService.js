@@ -7,6 +7,7 @@ angular.module('singleConceptAuthoringApp')
 
       // Search str matches fsn or id of provided attributes
       function isAttributeAllowedForArray(searchStr, attributesAllowed) {
+        console.debug(searchStr, attributesAllowed)
         var matches = attributesAllowed.filter(function (item) {
           return item.fsn.term.toLowerCase() === searchStr.toLowerCase() || item.id === searchStr;
         });
@@ -31,22 +32,24 @@ angular.module('singleConceptAuthoringApp')
       function isValueAllowedForType(typeId, targetId, branch, expr) {
         var deferred = $q.defer();
 
-        getConceptsForValueTypeahead(typeId, targetId, branch, expr).then(function (response) {
-          console.debug('response', response, response.filter(function (c) {
-            return c.id === targetId;
-          }),(response.filter(function (c) {
-            return c.id === targetId;
-          }).length === 0));
-          if (response.filter(function (c) {
-              return c.id === targetId;
-            }).length === 0) {
-            console.debug('not allowed');
-            deferred.reject();
-          } else {
-            console.debug('allowed');
-            deferred.resolve();
-          }
-        });
+        // empty type never allowed
+        if (!typeId) {
+          deferred.reject();
+        }
+        // empty targets always allowed
+        else if (!targetId) {
+          deferred.resolve();
+        } else {
+          getConceptsForValueTypeahead(typeId, targetId, branch, expr).then(function (response) {
+            if (response.filter(function (c) {
+                return c.id === targetId;
+              }).length === 0) {
+              deferred.reject();
+            } else {
+              deferred.resolve();
+            }
+          });
+        }
         return deferred.promise;
       }
 

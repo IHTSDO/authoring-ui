@@ -109,11 +109,11 @@
 
 
 .sca-light .green.classification-header {
-    background-color: #03b18a;
+    background-color: #4CAF50;
     color: #fff;
 }
 .sca-light .green.darken-1.classification-header {
-    background-color: #03b18a;
+    background-color: #4CAF50;
     color: #fff;
 }
 .sca-light .button-nav .review.btn-default[disabled],
@@ -126,7 +126,7 @@
 
 .sca-light .green.lighten-2 {
     background-color: transparent;
-    color: #03b18a;
+    color: #4CAF50;
 }
 .sca-light .pink.darken-1 {
     background-color: transparent;
@@ -150,7 +150,7 @@
 }
 .sca-light .New.badge {
     background-color: transparent;
-    color: #03b18a;
+    color: #4CAF50;
 }
 .sca-light .Review.Completed.badge {
     background-color: transparent;
@@ -243,14 +243,14 @@
     background-color: transparent;
 }
 .sca-light .green.darken-1 {
-    color: #03b18a;
+    color: #4CAF50;
     background-color: transparent;
 }
 .sca-light .editpanel {
     background-color: #eee
 }
 .sca-light .green {
-    color: #03b18a;
+    color: #4CAF50;
     background-color: transparent;
 }
 .sca-light .deep-purple {
@@ -331,7 +331,7 @@
     color: #fff;
 }
 .sca-light .project-icon.green {
-    background-color: #03b18a;
+    background-color: #4CAF50;
     color: #fff;
 }
 .sca-light .project-icon.red {
@@ -343,7 +343,7 @@
     color: #fff;
 }
 .sca-light .loading-merges.green {
-    background-color: #03b18a
+    background-color: #4CAF50
 }
 .sca-light .loading-merges.blue.darken-1 {
     background-color: #009cd7
@@ -352,11 +352,11 @@
     background-color: #d01c3e
 }
 .sca-light .classification-header .green.darken-4 {
-    background-color: #1B5E20;
+    background-color: #4CAF50;
     color: #fff;
 }
 .sca-light .classification-header .green {
-    background-color: #03b18a;
+    background-color: #4CAF50;
     color: #fff;
 }
 /* scolll bars */
@@ -438,7 +438,7 @@
 .sca-light .green.btn-round,
 {
     background-color: transparent!important;
-    color: #03b18a
+    color: #4CAF50
 }
 .sca-light .green.btn-round:hover {
     color: #2fa084!important;
@@ -550,7 +550,7 @@
     background-color: transparent!important;
 }
 .sca-light .indicator_green {
-    color: #03b18a!important;
+    color: #4CAF50!important;
     background-color: transparent!important;
 }
 .sca-light .indicator_green:hover {
@@ -612,7 +612,7 @@
     color: #333!important
 }
 .sca-light .feedback .switch {
-    color: #fff!important
+    color: #424242!important
 }
 .sca-light .edits-row.color_0 .add-buttons,
 .sca-light .edits-row.color_1 .add-buttons,
@@ -665,7 +665,7 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 /*tooltip offsets */
 
 .header-nav-button.indicator_green {
-    background-color: #03b18a !important;
+    background-color: #4CAF50 !important;
     color: #fff !important;
 }
 .header-nav-button.indicator_green:hover {
@@ -730,7 +730,7 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 {background:#0082b3}
 
 .sca-light .navigation-link.deep-purple.darken-2 .btn {color :#8b72b7}
-.sca-light .navigation-link.green.darken-1.classify .btn {color :#03b18a}
+.sca-light .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
 .sca-light .navigation-link.pink1.darken-2.review .btn {color :#e94281}
 .sca-light .snodragon-templates{background-color:transparent; color:#009cd7}
 
@@ -756,7 +756,7 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 {background:#0082b3}
 
 .sca-light .navigation-link.deep-purple.darken-2 .btn {color :#8b72b7}
-.sca-light .navigation-link.green.darken-1.classify .btn {color :#03b18a}
+.sca-light .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
 .sca-light .navigation-link.pink1.darken-2.review .btn {color :#e94281}
 .sca-light .snodragon-templates{background-color:transparent; color:#009cd7}
 
@@ -772,4 +772,10 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 .sca-light .create-new-concept {
     background-color: transparent!important;
     color: #56b8e7 !important;
+}
+.sca-light .report-header-main {
+    color: #2d2d2d;
+border: 1px #ddd solid ;
+    background-color: #fff;
+ 
 }

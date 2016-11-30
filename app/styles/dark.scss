@@ -164,7 +164,7 @@ a {
     color: #fff;
 }
 .sca-dark .project-icon.green {
-    background-color: #03b18a;
+    background-color: #4CAF50;
     color: #fff;
 }
 .sca-dark .project-icon.yellow.darken-2 {
@@ -247,7 +247,7 @@ a {
 }
 .sca-dark .green.lighten-2 {
     background-color: transparent;
-    color: #03b18a;
+    color: #4CAF50;
 }
 .sca-dark .pink.darken-2 {
     background-color: transparent;
@@ -383,7 +383,7 @@ a {
     background-color: transparent;
 }
 .sca-dark .green.darken-1 {
-    color: #03b18a;
+    color: #4CAF50;
     background-color: transparent;
 }
 .sca-dark .editpanel {
@@ -391,7 +391,7 @@ a {
     color: #aeb2b5;
 }
 .sca-dark .green {
-    color: #03b18a;
+    color: #4CAF50;
     background-color: transparent;
 }
 .sca-dark .blue.darken-1 {
@@ -488,11 +488,11 @@ a {
 .sca-dark .green.btn-round,
 {
     background-color: transparent!important;
-    color: #03b18a
+    color: #4CAF50
 }
 .sca-dark .green.btn-round:hover {
     color: #fff!important;
-    background-color: #03b18a!important
+    background-color: #4CAF50!important
 }
 .sca-dark .blue.btn-round,
 {
@@ -768,11 +768,16 @@ sca-dark .pull-left.follow-up {
 /* header alert fix */
 .sca-dark .header-alerts a, 
 .sca-dark .header-alerts div a,
-.sca-dark .btn,
-.sca-dark .header-alerts .blue{
+.sca-dark .navbar-fixed-top .btn,
+.sca-dark .header-alerts .blue,
+.sca-dark .search-scroll input[type=search],
+.sca-dark .white-text a,
+.sca-dark .classification-header .btn[disabled],
+.sca-dark .dark-centured-text{
     color:#fff;
 }
 
+.sca-dark .dark-fix{color:#00adee}
 /*left nav */
 
 .sca-dark .navigation-link.deep-purple.darken-2.validate .btn:hover,
@@ -783,9 +788,10 @@ sca-dark .pull-left.follow-up {
 .sca-dark .snodragon-templates:hover
 
 {background:#0082b3}
-
+.sca-dark .blue.search-type{background-color:#00a6e5; color:#fff;}
+.sca-dark .blue.search-type:hover{background-color:#448AFF; color:#fff;}
 .sca-dark .navigation-link.deep-purple.darken-2.validate .btn {color :#8b72b7}
-.sca-dark .navigation-link.green.darken-1.classify .btn {color :#03b18a}
+.sca-dark .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
 .sca-dark .widget-toolbar.review.btn {color :#e94281}
 .sca-dark .amber.conflicts.btn {color:#ffc107;}
 .sca-dark .widget-toolbar.blue.btn{color:#5fc1e6}
@@ -799,3 +805,24 @@ sca-dark .pull-left.follow-up {
     border-top: 1px #1f2731 solid !important;
     border-right: 1px #1f2731 solid !important;
 }
+.sca-dark .widget-toolbar.review.btn,
+.sca-dark .sub-navigation-link-list.review-nav .btn   {
+    color: #e94281;
+}
+.sca-dark .btn[disabled] {color:#666;}
+
+.sca-dark .report-header-main {
+
+    background-color: #262e39;
+   
+}
+
+.sca-dark .classification-header {
+    color: #fff;
+    background-color: #33691e;
+}
+.sca-dark  .green-text {
+    color: #8bc34a;
+}
+
+.sca-dark .validation-header{background-color:#4527a0}
