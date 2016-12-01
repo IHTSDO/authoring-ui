@@ -1686,6 +1686,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
          * @param fsn the fsn
          */
         scope.setRelationshipTargetConcept = function (relationship, item) {
+          console.debug('set relationship target concept', item);
           if (!relationship || !item) {
             console.error('Cannot set relationship concept field, either field or item not specified');
           }

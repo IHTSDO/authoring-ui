@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService) {
 
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
@@ -22,6 +22,35 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.userOptions = {
         groupByConcept: true,
         searchType: 1
+      };
+
+      // on load, get templates
+      templateService.getTemplates().then(function (response) {
+        $scope.templates = response;
+        angular.forEach(response, function (r) {
+          if (r.name === 'CT of X') {
+            $scope.selectTemplate(r);
+          }
+        });
+        console.debug('search templates', $scope.templates);
+      });
+
+      $scope.selectedTemplate = null;
+      $scope.slotName = null;
+
+      $scope.updateSlotName = function(slotName) {
+        $scope.slotName = slotName;
+      }
+
+      $scope.selectTemplate = function (template) {
+        $scope.selectedTemplate = template;
+        $scope.slotNames = template.conceptOutline.relationships.filter(function (r) {
+          return r.targetSlot && r.targetSlot.slotName;
+        }).map(function (r) {
+          return r.targetSlot.slotName;
+        });
+
+        $scope.slotName = $scope.slotNames[0];
       };
 
       // $scope.options from searchPlugin.js ( not all used)
@@ -220,17 +249,16 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             $scope.loadMoreEnabled = concepts.length === $scope.resultsSize;
 
 
-
             // convert to snowowl description search conceptObj
             var conceptObjs = [];
-            angular.forEach(concepts, function(c) {
+            angular.forEach(concepts, function (c) {
               conceptObjs.push({
                 active: c.active,
-                concept : {
-                  active : c.active,
-                  conceptId : c.id,
-                  definitionStatus : c.definitionStatus,
-                  fsn : c.fsn.term,
+                concept: {
+                  active: c.active,
+                  conceptId: c.id,
+                  definitionStatus: c.definitionStatus,
+                  fsn: c.fsn.term,
                   moduleId: c.moduleId
                 },
                 term: c.fsn.term
@@ -397,6 +425,66 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       $scope.getConceptPropertiesObj = function (concept) {
         return {id: concept.conceptId, name: concept.preferredSynonym ? concept.preferredSynonym : concept.fsn};
       };
+
+      function getTargetSlotMap(conceptObj) {
+
+        var targetSlotMap = {};
+        targetSlotMap[$scope.slotName] = {
+          conceptId: conceptObj.conceptId,
+          fsn: conceptObj.fsn
+        };
+        return targetSlotMap;
+      }
+
+      $scope.addBatchConceptFromResult = function (conceptObj, template) {
+        notificationService.sendMessage('Generating batch concept from template ' + template.name + '...');
+
+        console.debug('creating batch concept', conceptObj);
+
+        batchEditingService.changeTemplate(template);
+
+        var targetSlotMap = getTargetSlotMap(conceptObj);
+        templateService.createTemplateConcept(template, targetSlotMap).then(function (concept) {
+          batchEditingService.addBatchConcept(concept);
+          console.debug('batch concepts', batchEditingService.getBatchConcepts());
+          notificationService.sendMessage('Successfully added batch concept', 3000);
+          $rootScope.$broadcast('batchConcept.change');
+        }, function (error) {
+          notificationService.sendError('Unexpected error: ' + error);
+        });
+
+
+      };
+
+      $scope.addBatchConceptsFromResults = function (template) {
+
+        if ($scope.searchTotal > 25) {
+          notificationService.sendWarning('Batch mode limited to 25 concepts during testing', 10000);
+          return;
+        }
+
+        notificationService.sendMessage('Generating batch concepts from template ' + template.name + '...');
+
+        var conceptPromises = [];
+
+        batchEditingService.changeTemplate(template);
+
+        angular.forEach($scope.results, function (conceptObj) {
+          console.debug('adding from object', conceptObj);
+          var targetSlotMap = getTargetSlotMap(conceptObj.concept);
+          conceptPromises.push(templateService.createTemplateConcept(template, targetSlotMap));
+        });
+
+        $q.all(conceptPromises).then(function (concepts) {
+          batchEditingService.addBatchConcepts(concepts);
+          notificationService.sendMessage('Successfully added batch concepts', 3000);
+          console.debug('batch concepts', batchEditingService.getBatchConcepts());
+          $rootScope.$broadcast('batchConcept.change');
+          $scope.batchTableParams.reload();
+        }, function (error) {
+          notificationService.sendError('Unexpected error: ' + error);
+        })
+      }
 
     }
   ])
