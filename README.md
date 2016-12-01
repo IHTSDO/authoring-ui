@@ -86,6 +86,11 @@ http {
 			proxy_pass https://dev-term.ihtsdotools.org/traceability-service;
             proxy_cookie_domain localhost dev-term.ihtsdotools.org;
 		}
+		
+		location /template-service {
+    			proxy_pass https://dev-term.ihtsdotools.org/template-service;
+                proxy_cookie_domain localhost dev-term.ihtsdotools.org;
+    		}
 	}
 }
 ```
