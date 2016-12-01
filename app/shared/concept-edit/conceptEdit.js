@@ -2275,11 +2275,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
-        scope.ignoreSuggestion = function(description, word) {
+        scope.ignoreSuggestion = function (description, word) {
           delete description.spellcheckSuggestions[word];
           if (Object.keys(description.spellcheckSuggestions).length === 0) {
             delete description.spellcheckSuggestions;
-            scope.updateDescription(description);
+            scope.updateDescription(description, false);
           }
         };
 
@@ -2295,22 +2295,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           delete description.spellcheckSuggestions[word];
           if (Object.keys(description.spellcheckSuggestions).length === 0) {
             delete description.spellcheckSuggestions;
-            scope.updateDescription(description);
+            scope.updateDescription(description, false);
           }
         };
 
 // function to update description and autoSave if indicated
-        scope.updateDescription = function (description) {
+        scope.updateDescription = function (description, applySpellcheck) {
           if (!description) {
             return;
           }
 
           // run spellchecker
-          spellcheckService.checkSpelling(description.term).then(function (suggestions) {
-            if (suggestions) {
-              description.spellcheckSuggestions = suggestions;
-            }
-          });
+          if (applySpellcheck) {
+            spellcheckService.checkSpelling(description.term).then(function (suggestions) {
+              if (suggestions) {
+                description.spellcheckSuggestions = suggestions;
+              }
+            });
+          }
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
