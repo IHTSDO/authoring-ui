@@ -111,7 +111,7 @@ angular.module('singleConceptAuthoringApp.batch', [
           promises.push(templateService.createTemplateConcept(template));
         }
 
-        $q.all(promises).then(function (concepts) {
+        $q.all(promises).then(function () {
           for (var i = 0; i < concepts.length; i++) {
             templateService.storeTemplateForConcept($routeParms.projectKey, concepts[i].conceptId, template);
             $scope.concepts.push(concepts[i]);
