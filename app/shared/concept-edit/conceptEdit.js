@@ -100,7 +100,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             scope.isStatic = true;
           }
           else{
-            scope.isStatic = false;
+            scope.isStatic = scope.static === 'true' || scope.static === true;
           }
 
         }, true);
