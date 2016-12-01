@@ -59,16 +59,11 @@
           <ul class="sub-navigation-link-list ">
             <li>
               <a>
-                <div class="pointer btn "><i class=" fa fa-magic md "></i>
+                <div class="pointer btn tooltips-right tooltips-light normal-case" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
+                <span>Detach Template {{template.name}} v {{template.version}}</span>
                 </div>
               </a>
 
-
-              <ul class="template-nav">
-
-
-                <li ng-click="removeTemplate()">Detach Template {{template.name}} v {{template.version}}</li>
-              </ul>
             </li>
 
           </ul>
