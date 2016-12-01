@@ -61,6 +61,7 @@ angular.module('singleConceptAuthoringApp')
         function drawConceptDiagram(concept, div, options, snfConcept) {
           var svgIsaModel = [];
           var svgAttrModel = [];
+          scope.numberOfGroups = 0;
           if (scope.view === 'stated') {
             $.each(concept.relationships, function (i, field) {
               if (field.active === true && field.characteristicType === "STATED_RELATIONSHIP") {
@@ -78,6 +79,10 @@ angular.module('singleConceptAuthoringApp')
                   if (field.type.conceptId === 116680003) {
                     svgIsaModel.push(field);
                   } else {
+                    if(field.groupId > scope.numberOfGroups)
+                        {
+                            scope.numberOfGroups = field.groupId;
+                        }
                     svgAttrModel.push(field);
                   }
                 }
@@ -187,11 +192,20 @@ angular.module('singleConceptAuthoringApp')
           }
 
           var parentDiv = div;
-
+          var height = 1250;
+          var width  = 2500;
+          if(scope.numberOfGroups > 6)
+              {
+                  var i = scope.numberOfGroups - 6;
+                  for(i > 0; i--;)
+                      {
+                          height = height + 200;
+                      }
+              }
           parentDiv.svg({
             settings: {
-              height: '1250px',
-              width: '2500px',
+              height: height + 'px',
+              width: width  + 'px',
               id: 'svg-' + concept.conceptId
             }
           });
