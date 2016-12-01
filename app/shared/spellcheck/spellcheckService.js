@@ -12,7 +12,8 @@ angular.module('singleConceptAuthoringApp')
     var testWords = {
       'mispelled': ['misspelled', 'misspelling', 'misspellings'],
       'whiskee': ['whiskey', 'whisky'],
-      'wordz': ['word', 'words', 'wordy']
+      'wordz': ['word', 'words', 'wordy'],
+      'carot' : ['carrot', 'caret']
     }
 
     function checkSpelling(term) {
