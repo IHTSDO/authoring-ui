@@ -161,6 +161,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.hideInactive = true;
         }
 
+        console.debug('Concept validatoin', scope.concept.validation);
+        if (scope.concept.validation) {
+          scope.validation = scope.concept.validation;
+        }
+
+        scope.$on('validation', function() {
+          console.debug('new validation', scope.validation);
+        })
+
         //
         // Template service functions
         //
@@ -591,7 +600,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                     branch: scope.branch,
                     conceptId: scope.concept.conceptId,
                     previousConceptId: originalConceptId,
-                    concept: scope.concept
+                    concept: scope.concept,
+                    validation: scope.validation
                   });
 
                   // if ui state update function specified, call it (after a
@@ -633,6 +643,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             'warnings': {},
             'errors': {}
           };
+
+          // broadcast event to any listeners (currently task detail, crs concept list,
+          // conflict/feedback resolved lists)
+          $rootScope.$broadcast('conceptEdit.saveConcept', {
+            branch: scope.branch,
+            conceptId: scope.concept.conceptId,
+            previousConceptId: originalConceptId,
+            concept: scope.concept,
+            validation: scope.validation
+          });
 
           // display error msg if concept not valid but no other
           // errors/warnings specified
@@ -689,6 +709,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               scope.saving = false;
               scope.reapplyTemplate();
 
+              $rootScope.$broadcast('conceptEdit.validation', {
+                branch: scope.branch,
+                conceptId: scope.concept.conceptId,
+                previousConceptId: originalConceptId,
+                concept: scope.concept,
+                validation: scope.validation
+              });
+
               return;
             }
 
@@ -705,9 +733,23 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 scope.validateConcept().then(function (results) {
                   if (scope.validation.hasErrors) {
                     notificationService.sendError('Concept saved, but modifications introduced by server led to convention errors. Please review');
+                    $rootScope.$broadcast('conceptEdit.validation', {
+                      branch: scope.branch,
+                      conceptId: scope.concept.conceptId,
+                      previousConceptId: originalConceptId,
+                      concept: scope.concept,
+                      validation: scope.validation
+                    });
                   }
                   else if (scope.validation.hasWarnings) {
                     notificationService.sendWarning('Concept saved, but contains convention warnings. Please review');
+                    $rootScope.$broadcast('conceptEdit.validation', {
+                      branch: scope.branch,
+                      conceptId: scope.concept.conceptId,
+                      previousConceptId: originalConceptId,
+                      concept: scope.concept,
+                      validation: scope.validation
+                    });
                   } else {
                     notificationService.sendMessage('Concept saved: ' + scope.concept.fsn, 5000);
                   }

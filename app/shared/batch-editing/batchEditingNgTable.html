@@ -16,59 +16,104 @@
   <h3>Batch Editing Development Sandbox</h3>
 
 
-  <select ng-options="template as template.name for template in templates" ng-model="selectedTemplate"></select>
-  <input ng-model="batchSize" ng-init="batchSize = 5;">
-  <button class="btn btn-default btn-primary" ng-disabled="!selectedTemplate || !batchSize"
-          ng-click="addBatchConceptsFromTemplate(selectedTemplate, batchSize)">Add Concepts to Batch
-  </button>
-  <button class="btn btn-default btn-danger" ng-click="clearConcepts()">Clear Batch</button>
+  <div class="row no-padding no-gutter">
+    <div class="col-md-8">
+      <select ng-options="template as template.name for template in templates" ng-model="selectedTemplate"></select>
+      <input ng-model="batchSize" ng-init="batchSize = 5;">
+      <button class="btn btn-default btn-primary" ng-disabled="!selectedTemplate || !batchSize"
+              ng-click="addBatchConceptsFromTemplate(selectedTemplate, batchSize)">Add Concepts to Batch
+      </button>
+      <button class="btn btn-default btn-danger" ng-click="clearConcepts()">Clear Batch</button>
+    </div>
 
+    <div class="col-md-4">
+      <button class="btn btn-default btn-primary"
+              ng-click="saveAll()">Save All
+      </button>
+      <button class="btn btn-default deep-purple darken-2 validate"
+              ng-click="validateAll()">Validate All
+      </button>
+    </div>
+  </div>
 
   <div style="width:90%;height: 300px;">
 
-    Total: {{batchTableParams.params.total()}}
-
     <table ng-table="batchTableParams" ng-show="params.total() > 0"
            template-pagination="utilities/data-table-pager.html"
-           class="table table-striped table-full">
+           class="table-striped table-full">
 
-      <thead>
-      <tr>
-        <td></td>
-        <td ng-repeat="column in batchTableColumns">{{column.title}}</td>
-        <td></td>
-      </tr>
-      </thead>
-
-      <tr ng-repeat="concept in $data" class="p-10">
+      <tr ng-repeat="concept in $data" class="m-10">
         <td>
           <a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(concept)"></a>
         </td>
+        <td sortable="'sctid'" title="'SCTID'">
+          {{concept.sctid}}
+        </td>
+        <td sortable="'fsn'" title="'FSN'">
+          {{concept.fsn}}
+        </td>
+        <td sortable="'procSite'" title="'Procedure Site'" ng-show="hasProcSite">
+           <textarea type="text" ng-model="concept.procSite" style="width:250px;"
+                     ng-change="updateTargetSlot(concept, 'action')"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropRelationshipTargetInNgTable(concept, 'procSite', data)"
+                     typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, 'procSite', $viewValue)"
+                     typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
+                     typeahead-wait-ms="700"
+                     typeahead-on-select="setTargetSlot(concept, 'procSite', $item)"
+                     typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm"
+                     required/>
+        </td>
+        <td sortable="'action'" title="'Action'" ng-show="hasAction">
+           <textarea type="text" ng-model="concept.procSite" style="width:250px;"
+                     ng-change="updateTargetSlot(concept, 'action')"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropRelationshipTargetInNgTable(concept, 'action', data)"
+                     typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, 'action', $viewValue)"
+                     typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
+                     typeahead-wait-ms="700"
+                     typeahead-on-select="setTargetSlot(concept, 'action', $item)"
+                     typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm"
+                     required/>
+        </td>
+        <td>
+          <button class="alert-danger" ng-show="concept.validation.hasErrors">Errors</button>
+          <button class="alert-warning" ng-show="concept.validation.hasWarnings && !concept.validation.hasErrors">Warnings</button>
+          <button class="alert-success" ng-show="concept.validation && !concept.validation.hasErrors && !concept.validation.hasWarnings">Valid</button>
+        </td>
+        <td>
+          <div ng-show="concept.action">
+            <i class="md md-cached"></i>&nbsp;{{concept.action}}
+          </div>
+          <div ng-show="!concept.action">
+            <a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(concept)"></a>,
+            <a class="md md-save" title="Save Concept" ng-click="saveConcept(concept)"></a>,
+            <a class="md md-school" title="Validate Concept" ng-click="validateConcept(concept)"></a>
+          </div>
+          <div class="alert alert-danger" ng-show="concept.message">
+            {{concept.message}}
+          </div>
+
+        </td>
+      </tr>
+    </table>
+
+    <!--
         <td style="padding:1px;" ng-repeat="column in batchTableColumns" show-filter="true">
           <div ng-show="!column.editable">
             {{concept[column.field]}}
           </div>
           <div ng-show="column.editable && !column.targetSlot">
-            <textarea type="text" ng-model="concept[column.field]" ng-change="updateFsn(concept)" class="editable-input form-control input-sm" required />
+            <textarea type="text" ng-model="concept[column.field]" ng-change="updateFsn(concept)"
+                      class="editable-input form-control input-sm" required/>
           </div>
           <div ng-show="column.editable && column.targetSlot">
-            <textarea type="text" ng-model="concept[column.field]"
-                      ng-change="updateTargetSlot(concept, column.field)"
-                      drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTargetInNgTable(concept, column.field, data)"
-                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, column.field, $viewValue)"
-                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
-                      typeahead-wait-ms="700"
-                      typeahead-on-select="setTargetSlot(concept, column.field, $item)"
-                      typeahead-editable="false" typeahead-min-length="3"class="editable-input form-control input-sm" required />
+
           </div>
         </td>
-        <td>
-          <a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(concept)"></a>,
-          <a class="md md-save" title="Save Concept" ng-click="saveConcept(concept)"></a>,
-          <a class="md md-school" title="Validate Concept" ng-click="validateConcept(concept)"></a>
-        </td>
-      </tr>
-    </table>
+
+        </tr>
+        </table>-->
   </div>
 
   <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
