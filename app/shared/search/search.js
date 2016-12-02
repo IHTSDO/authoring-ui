@@ -441,7 +441,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         console.debug('creating batch concept', conceptObj);
 
-        batchEditingService.changeTemplate(template);
+        batchEditingService.setCurrentTemplate(template);
 
         var targetSlotMap = getTargetSlotMap(conceptObj);
         templateService.createTemplateConcept(template, targetSlotMap).then(function (concept) {
@@ -467,7 +467,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
 
         var conceptPromises = [];
 
-        batchEditingService.changeTemplate(template);
+        batchEditingService.setCurrentTemplate(template);
 
         angular.forEach($scope.results, function (conceptObj) {
           console.debug('adding from object', conceptObj);
@@ -480,7 +480,6 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           notificationService.sendMessage('Successfully added batch concepts', 3000);
           console.debug('batch concepts', batchEditingService.getBatchConcepts());
           $rootScope.$broadcast('batchConcept.change');
-          $scope.batchTableParams.reload();
         }, function (error) {
           notificationService.sendError('Unexpected error: ' + error);
         })

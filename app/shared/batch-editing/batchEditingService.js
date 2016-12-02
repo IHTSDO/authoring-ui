@@ -54,8 +54,8 @@ angular.module('singleConceptAuthoringApp')
         return currentTemplate;
       }
 
-      function changeTemplate(template) {
-        var currentTemplate = template;
+      function setCurrentTemplate(template) {
+        currentTemplate = template;
       }
 
       //
@@ -380,7 +380,7 @@ angular.module('singleConceptAuthoringApp')
         // Utility functions
         getConceptIdForFsn : getConceptIdForFsn,
         getCurrentTemplate : getCurrentTemplate,
-        changeTemplate : changeTemplate,
+        setCurrentTemplate : setCurrentTemplate,
 
         // CRUD operations
         setBatchConcepts: setBatchConcepts,
