@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, languageService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, spellcheckService) {
     return {
       restrict: 'A',
       transclude: false,
@@ -99,8 +99,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if ($rootScope.branchLocked) {
             scope.isStatic = true;
           }
-          else{
-            scope.isStatic = false;
+          else {
+            scope.isStatic = scope.static === 'true' || scope.static === true;
           }
 
         }, true);
@@ -2275,10 +2275,43 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         };
 
+        scope.ignoreSuggestion = function (description, word) {
+          delete description.spellcheckSuggestions[word];
+          if (Object.keys(description.spellcheckSuggestions).length === 0) {
+            delete description.spellcheckSuggestions;
+            scope.updateDescription(description, false);
+          }
+        };
+
+        scope.replaceSuggestion = function (description, word, suggestion) {
+          console.debug('replace', description.term, word, suggestion);
+          if (description.term && word && suggestion) {
+            var re = new RegExp(word, 'gi');
+            description.term = description.term.replace(re, suggestion);
+          }
+          console.debug('new term', description.term);
+
+          // remove this suggestion
+          delete description.spellcheckSuggestions[word];
+          if (Object.keys(description.spellcheckSuggestions).length === 0) {
+            delete description.spellcheckSuggestions;
+            scope.updateDescription(description, false);
+          }
+        };
+
 // function to update description and autoSave if indicated
-        scope.updateDescription = function (description) {
+        scope.updateDescription = function (description, applySpellcheck) {
           if (!description) {
             return;
+          }
+
+          // run spellchecker
+          if (applySpellcheck) {
+            spellcheckService.checkSpelling(description.term).then(function (suggestions) {
+              if (suggestions) {
+                description.spellcheckSuggestions = suggestions;
+              }
+            });
           }
 
           // if this is a new TEXT_DEFINITION, apply defaults
@@ -2305,7 +2338,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // strip any non-international dialects
               angular.forEach(Object.keys(description.acceptabilityMap), function (dialectId) {
-                console.debug('checking2', dialectId);
                 if (!metadataService.isUsDialect(dialectId) && !metadataService.isGbDialect(dialectId)) {
                   delete description.acceptabilityMap[dialectId];
                 }
@@ -2313,9 +2345,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
               // ensure all dialects returned from metadata are preferred
               angular.forEach(scope.getDialectIdsForDescription(description, true), function (dialectId) {
-                console.debug('checking', dialectId);
                 description.acceptabilityMap[dialectId] = 'PREFERRED';
-
               });
               description.caseSignificance = 'CASE_INSENSITIVE';
             }
@@ -2329,7 +2359,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             delete description.descriptionId;
           }
 
-          // run automations
           var conceptCopy = angular.copy(scope.concept);
           componentAuthoringUtil.runDescriptionAutomations(scope.concept, description).then(function (updatedConcept) {
             scope.concept = updatedConcept;
@@ -2338,8 +2367,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             notificationService.sendWarning('Automations failed: ' + error);
             autoSave();
           });
-
-
         };
 
 // function to update relationship and autoSave if indicated

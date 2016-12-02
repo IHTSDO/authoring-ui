@@ -1,4 +1,3 @@
-
 <div class="edits editing-form darken-3 grey">
 
   <!-- begin validation error -->
@@ -22,145 +21,152 @@
   </div>
 
 
-
   <!-- end validation error -->
   <!-- The concept itself -->
   <style>
 
-  .new-concept .grey.darken-4{background-color: #ffcadc!important; color:#212121!important}
-  .new-concept .concept-headers:first-child{padding-top:3px!important}
+    .new-concept .grey.darken-4 {
+      background-color: #ffcadc !important;
+      color: #212121 !important
+    }
+
+    .new-concept .concept-headers:first-child {
+      padding-top: 3px !important
+    }
   </style>
-    <div  ng-class="[{'new-concept' : componentStyles.isNew}]">
-      <div class="row">
-        {{scope.validation}}
+  <div ng-class="[{'new-concept' : componentStyles.isNew}]">
+    <div class="row">
+      {{scope.validation}}
+    </div>
+    <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
+
+      <div class="pull-left col-md-1 no-padding">
+
+
+        <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
+                class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
+                popover-template="'shared/component-more/conceptMore.html'"
+                popover-placement="{{popoverDirection}}"
+                popover-trigger="click: click"
+                popover-append-to-body="true">
+          <span>More details</span>
+        </button>
+
       </div>
-  <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
 
-    <div class="pull-left col-md-1 no-padding">
+      <!-- concept name -->
+      <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
 
+        <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
+          <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
+            ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
-      <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
-              class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
-              popover-template="'shared/component-more/conceptMore.html'"
-              popover-placement="{{popoverDirection}}"
-              popover-trigger="click: click"
-              popover-append-to-body="true">
-        <span>More details</span>
-      </button>
-
-    </div>
-
-    <!-- concept name -->
-    <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
-
-      <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
-        <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
-
-        <span ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey" class="fsn">Unsaved Concept</span>
-      </button>
-    </div>
-
-    <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
-      <div class=" p-t-3  ">
-        <button type="button"
-                class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic" ng-disabled="saving">
-          <span> Save Concept </span>
+          <span ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey" class="fsn">Unsaved Concept</span>
         </button>
-        <button type="button"
-                class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
-                ng-click="saveConcept()" ng-if="isMerge" style="margin-bottom: -2px;">
-          <span> Accept This Version </span>
-        </button>
-        <!-- Revert button only appears if parent is specified -->
-        <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
-          Revert
-        </button>
+      </div>
 
-        <!-- control buttons -->
-        <button type="button" style="vertical-align: bottom"
-                ng-click="toggleConceptActive(concept, true)"
-                ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released"
-                class="red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
+      <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
+        <div class=" p-t-3  ">
+          <button type="button"
+                  class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
+                  ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic" ng-disabled="saving">
+            <span> Save Concept </span>
+          </button>
+          <button type="button"
+                  class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
+                  ng-click="saveConcept()" ng-if="isMerge" style="margin-bottom: -2px;">
+            <span> Accept This Version </span>
+          </button>
+          <!-- Revert button only appears if parent is specified -->
+          <button ng-if="parentBranch" type="button" class="btn btn-default revert-button" ng-click="revertConcept()">
+            Revert
+          </button>
 
-          <span ng-if="!isStatic  && !isInactivation">Delete Unpublished Concept</span>
-        </button>
-        <button type="button" style="vertical-align: bottom"
-                ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
-                ng-click="toggleConceptActive(concept)"
-                ng-if="concept.released"
-                ng-disabled="isInactivation  || isLockedModule(concept.moduleId) && concept.released"
-                class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
+          <!-- control buttons -->
+          <button type="button" style="vertical-align: bottom"
+                  ng-click="toggleConceptActive(concept, true)"
+                  ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released"
+                  class="red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
 
-          <span ng-if="!isStatic  && !isInactivation"> Activate/ inactivate concept </span>
-          <span ng-if="!isStatic && isInactivation">Inactivation in progress, cannot change active status</span>
-          <span ng-if="isStatic || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
-        </button>
-        <button type="button"
-                style="vertical-align: bottom"
-                class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case"
-                ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]"
-                ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
-        </button>
+            <span ng-if="!isStatic  && !isInactivation">Delete Unpublished Concept</span>
+          </button>
+          <button type="button" style="vertical-align: bottom"
+                  ng-class="[btn-default, editbuttons, ' fa-sca fa-power-off', {green : concept.active}, {red: !concept.active}]"
+                  ng-click="toggleConceptActive(concept)"
+                  ng-if="concept.released"
+                  ng-disabled="isInactivation  || isLockedModule(concept.moduleId) && concept.released"
+                  class="small-buttons tooltips-bottom status-concept tooltips-light normal-case">
+
+            <span ng-if="!isStatic  && !isInactivation"> Activate/ inactivate concept </span>
+            <span ng-if="!isStatic && isInactivation">Inactivation in progress, cannot change active status</span>
+            <span ng-if="isStatic || isLockedModule(concept.moduleId)"> {{concept.active ? 'Active Concept' : 'InactiveConcept'}} </span>
+          </button>
+          <button type="button"
+                  style="vertical-align: bottom"
+                  class="btn-default editbuttons small-buttons tooltips-bottom tooltips-light large-size-tooltip normal-case"
+                  ng-class="[{'red fa-sca fa-level-down' : !hideInactive}, {'fa-sca fa-level-up green' : hideInactive}]"
+                  ng-click="toggleHideInactive()"><span> Show/hide inactive components </span>
+          </button>
 
 
-        <button type="button"
-                class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
-                ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">
-          <span>Undo Changes</span>
-        </button>
-        <button type="button"
-                class="btn-default editbuttons small-buttons amber md md-redo tooltips-bottom tooltips-light small-size-tooltip"
-                ng-click="redo()" ng-if="!isStatic" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1">
-          <span>Redo Changes</span>
-        </button>
-        <button type="button"
-                class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom tooltips-light"
-                ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified">
-          <span>Revert to Saved</span>
-        </button>
-        <button type="button"
-                class="btn-default editbuttons small-buttons blue tooltips-bottom tooltips-light small-size-tooltip normal-case md fa-sca fa-sitemap"
-                ng-if="!isStatic" ng-click="showModel(concept)">
-          <span ng-if="modelVisible"> Hide Model </span>
-          <span ng-if="!modelVisible"> Show Model </span>
-        </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons amber md md-undo tooltips-bottom tooltips-light small-size-tooltip"
+                  ng-click="undo()" ng-disabled="conceptHistoryPtr < 1" ng-if="!isStatic">
+            <span>Undo Changes</span>
+          </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons amber md md-redo tooltips-bottom tooltips-light small-size-tooltip"
+                  ng-click="redo()" ng-if="!isStatic" ng-disabled="conceptHistoryPtr === conceptHistory.length - 1">
+            <span>Redo Changes</span>
+          </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom tooltips-light"
+                  ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified">
+            <span>Revert to Saved</span>
+          </button>
+          <button type="button"
+                  class="btn-default editbuttons small-buttons blue tooltips-bottom tooltips-light small-size-tooltip normal-case md fa-sca fa-sitemap"
+                  ng-if="!isStatic" ng-click="showModel(concept)">
+            <span ng-if="modelVisible"> Hide Model </span>
+            <span ng-if="!modelVisible"> Show Model </span>
+          </button>
 
-        <button type="button"
-                class="btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case"
-                ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span>
-        </button>
-        <div ng-repeat="field in concept.additionalFields">
+          <button type="button"
+                  class="btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case"
+                  ng-click="removeConcept(concept)"><span>Remove concept from edit panel</span>
+          </button>
+          <div ng-repeat="field in concept.additionalFields">
                     <textarea class="msd-elastic resizable-text" ng-model-options="{updateOn: 'blur'}"
                               ng-model="field.value" type="text" placeholder="{{field}}" autofocus>
                     </textarea>
+          </div>
+
+          <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
+                  ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+                  class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
+                  ng-click="toggleConceptDefinitionStatus(isStatic)">
+
+            <div class="badge alert-warning ng-binding">≡&nbsp; </div>
+            <span>Fully Defined</span>
+          </button>
+          <button ng-if="concept.definitionStatus === 'PRIMITIVE'"
+                  ng-disabled="isStatic || isLockedModule(concept.moduleId)"
+                  class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
+                  ng-click="toggleConceptDefinitionStatus(isStatic)">
+            <div class="badge alert-warning ng-binding">&nbsp; </div>
+            <span>Primitive</span>
+          </button>
+
+
+          <button ng-init="isCollapsed = false" class="btn-default editbuttons small-buttons"
+                  ng-click="collapse(concept)"
+                  type="button"
+                  ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"></button>
+
         </div>
-
-        <button ng-if="concept.definitionStatus === 'FULLY_DEFINED'"
-                ng-disabled="isStatic || isLockedModule(concept.moduleId)"
-                class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip tooltips-light"
-                ng-click="toggleConceptDefinitionStatus(isStatic)">
-
-          <div class="badge alert-warning ng-binding">≡&nbsp; </div>
-          <span>Fully Defined</span>
-        </button>
-        <button ng-if="concept.definitionStatus === 'PRIMITIVE'"
-                ng-disabled="isStatic || isLockedModule(concept.moduleId)"
-                class=" p-t-5 p-l-3 primitive-buttons white-text tooltips-bottom small-size-tooltip tooltips-light"
-                ng-click="toggleConceptDefinitionStatus(isStatic)">
-          <div class="badge alert-warning ng-binding">&nbsp; </div>
-          <span>Primitive</span>
-        </button>
-
-
-        <button ng-init="isCollapsed = false" class="btn-default editbuttons small-buttons" ng-click="collapse(concept)"
-                type="button"
-                ng-class="[btn, btn-default, darkbuttons, grey, 'darken-4', 'toggle-buttons', md, {'fa-sca fa-caret-down' : isCollapsed, ' fa-sca fa-caret-up' : !isCollapsed}]"></button>
-
       </div>
     </div>
   </div>
-</div>
   <div class="row">
     <div class="validation red" ng-repeat="error in validation.errors[concept.conceptId]"><strong>Convention
       Error:</strong>
@@ -181,10 +187,12 @@
     <div ng-show="concept.definitionOfChanges" class="">
 
       <div class="row">
-   <style>
+        <style>
 
-   </style>
-        <div class="change_request_container {{concept.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{concept.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{concept.definitionOfChanges.changeType}}"></span></div>
+        </style>
+        <div class="change_request_container {{concept.definitionOfChanges.changeType}}">
+          <div class=" m-l-5 fa {{concept.definitionOfChanges.changeType}}"></div>
+          <span class="change_type_{{concept.definitionOfChanges.changeType}}"></span></div>
       </div>
       <div class="row">
 
@@ -194,7 +202,7 @@
                ng-repeat="(key, val) in crsFilter(concept.definitionOfChanges)"
                ng-show="!concept.hideCrsDetails">
             <div class="col-md-12">
-              {{key}}:  {{val}}
+              {{key}}: {{val}}
             </div>
 
 
@@ -206,7 +214,6 @@
     </div>
 
 
-
     <!-- rows: Concept Descriptions -->
     <div ng-repeat="description in concept.descriptions"
          ng-show="isDescriptionViewable(description)"
@@ -216,7 +223,9 @@
       <div ng-show="description.definitionOfChanges" class="">
 
         <div class="row">
-          <div class="change_request_container {{description.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{description.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{description.definitionOfChanges.changeType}}"></span></div>
+          <div class="change_request_container {{description.definitionOfChanges.changeType}}">
+            <div class=" m-l-5 fa {{description.definitionOfChanges.changeType}}"></div>
+            <span class="change_type_{{description.definitionOfChanges.changeType}}"></span></div>
         </div>
         <div class="row"></div>
 
@@ -226,7 +235,7 @@
                ng-repeat="(key, val) in crsFilter(description.definitionOfChanges)"
                ng-show="!description.hideCrsDetails">
             <div class="col-md-12" ng-show="val">
-              {{key}}:  {{val}}
+              {{key}}: {{val}}
             </div>
 
           </div>
@@ -284,7 +293,7 @@
 
 
 
-                        <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
+                        <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description, true)"
                                   ng-model-options="{updateOn: 'blur'}"
                                   ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                                   maxlength="255"
@@ -294,7 +303,7 @@
                         </textarea>
 
             <textarea autofocus ng-if="description.type === 'SYNONYM'"
-                      ng-change="updateDescription(description)" ng-model-options="{updateOn: 'blur'}"
+                      ng-change="updateDescription(description, true)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       maxlength="255"
                       ng-model="description.term"
@@ -303,7 +312,7 @@
                         </textarea>
             <textarea ng-if="description.type === 'TEXT_DEFINITION'"
                       maxlength="2048"
-                      ng-change="updateDescription(description)"
+                      ng-change="updateDescription(description, true)"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
@@ -373,8 +382,31 @@
           <div ng-bind="warning"></div>
         </div>
       </div>
+      <div ng-show="description.spellcheckSuggestions" class="m-b-10">
+        <div class="row no-padding no-gutter">
+          <div class="col-md-1" style="padding-right: 5px;"></div>
+          <div class="col-md-11">
+            <strong>Spelling Errors Detected:</strong>
+          </div>
+        </div>
+        <div>
+          <div class="row no-padding no-gutter" ng-repeat="(word, suggestions) in description.spellcheckSuggestions">
+            <div class="col-md-1" style="padding-right: 5px;">
+              <button type="button"
+                      class="pull-right btn-default editbuttons small-buttons orange darken-3 md fa-sca fa-close tooltips-bottom large-size-tooltip offset-tooltip-right tooltips-light normal-case"
+                      ng-click="ignoreSuggestion(description, word)"><span>Ignore spellcheck suggestions</span>
+              </button>
+            </div>
+            <div class="col-md-3">
+              {{word}}
+            </div>
 
-
+            <div class="col-md-8"><span ng-repeat="suggestion in suggestions">[&nbsp;<a
+              ng-click="replaceSuggestion(description, word, suggestion)">{{suggestion}}</a>&nbsp;]&nbsp;&nbsp;</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
 
@@ -389,10 +421,10 @@
           <div ng-show="relationship.definitionOfChanges" class="">
 
             <div class="row">
-              <div class="change_request_container {{relationship.definitionOfChanges.changeType}}"><div class=" m-l-5 fa {{relationship.definitionOfChanges.changeType}}" > </div> <span class="change_type_{{relationship.definitionOfChanges.changeType}}"></span></div>
+              <div class="change_request_container {{relationship.definitionOfChanges.changeType}}">
+                <div class=" m-l-5 fa {{relationship.definitionOfChanges.changeType}}"></div>
+                <span class="change_type_{{relationship.definitionOfChanges.changeType}}"></span></div>
             </div>
-
-
 
 
             <div class="row"
@@ -403,7 +435,6 @@
               </div>
 
             </div>
-
 
 
           </div>
@@ -488,7 +519,8 @@
                 </div>
 
                 <!-- linked concept -->
-                <div class="pull-left sourcename" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover"
+                <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
