@@ -43,6 +43,10 @@ angular.module('singleConceptAuthoringApp')
           if (batchConcepts && batchConcepts.length > 0) {
             currentTemplate = batchConcepts[0].template;
           }
+          angular.forEach(concepts, function(c) {
+            c.tableAction = null;
+            c.errorMsg = null;
+          });
           deferred.resolve();
         }, function (error) {
           deferred.reject(error);
@@ -318,6 +322,7 @@ angular.module('singleConceptAuthoringApp')
 
       function updateBatchConcept(concept, previousConceptId) {
         var deferred = $q.defer();
+        console.debug('before update', batchConcepts);
         if (!batchConcepts) {
           deferred.reject('Cannot update batch concept, batch concepts not initialized');
         } else {
@@ -342,6 +347,8 @@ angular.module('singleConceptAuthoringApp')
 
 
         }
+
+        console.debug('after update', batchConcepts);
         updateBatchUiState().then(function () {
           deferred.resolve(concept);
         }, function (error) {
@@ -396,3 +403,4 @@ angular.module('singleConceptAuthoringApp')
 
   ])
 ;
+

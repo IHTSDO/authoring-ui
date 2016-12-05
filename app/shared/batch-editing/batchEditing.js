@@ -21,7 +21,6 @@ angular.module('singleConceptAuthoringApp')
 
           scope.viewedConcepts = [];  // concepts opened for editing by user
           scope.templates = []; // available templates
-          scope.selectedTemplate = null;
 
           scope.isBatchLoaded = false;
 
@@ -39,9 +38,11 @@ angular.module('singleConceptAuthoringApp')
             concept.fsn = componentAuthoringUtil.getFsnForConcept(concept);
             angular.forEach(concept.relationships, function (r) {
               if (r.targetSlot && r.targetSlot.slotName) {
+                console.debug('setting for ', r.targetSlot, r.target.fsn);
                 concept[r.targetSlot.slotName] = r.target.fsn;
               }
             });
+            console.debug('final concept', concept);
           }
 
           scope.updateField = function (concept, fieldName, text, id) {
@@ -56,7 +57,6 @@ angular.module('singleConceptAuthoringApp')
                 if (r.targetSlot && r.targetSlot.slotName) {
                   console.debug('Slot detected', r.targetSlot.slotName);
                   switch (r.targetSlot.slotName) {
-
                     case 'procSite':
                       scope.hasProcSite = true;
                       break;
@@ -71,6 +71,15 @@ angular.module('singleConceptAuthoringApp')
             }
             console.debug('columns', template, scope.batchTableColumns);
           }
+
+          scope.sortTable = function (sortBy, direction) {
+            var sortObj = {};
+            if (sortBy) {
+              sortObj[sortBy] = direction ? direction : 'asc';
+            }
+            scope.batchTableParams.sorting(sortObj);
+            scope.batchTableParams.reload();
+          };
 
           scope.batchTableParams = new ngTableParams({
               page: 1,
@@ -91,6 +100,19 @@ angular.module('singleConceptAuthoringApp')
                 if (!bcs || bcs.length === 0) {
                   $defer.resolve([]);
                 } else {
+
+                  // apply sort to batch concepts to ensure table/operation order matching
+                  console.debug('params.sorting()', params.sorting());
+                  bcs.sort(function (a, b) {
+                    for (var key in params.sorting()) {
+                      var dir = params.sorting()[key] === 'asc' ? 1 : -1;
+                      if (a[key] < b[key]) {
+                        return dir
+                      }
+                    }
+
+                    return 0;
+                  });
 
                   var searchStr = params.filter().search;
                   var concepts = [];
@@ -115,6 +137,7 @@ angular.module('singleConceptAuthoringApp')
 
                   concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
 
+                  console.debug('CONCEPTS', concepts);
                   $defer.resolve(concepts);
                 }
 
@@ -139,19 +162,35 @@ angular.module('singleConceptAuthoringApp')
               deferred.reject();
             }
             return deferred.promise;
-          }
+          };
 
-          scope.dropRelationshipTargetInNgTable = function (concept, slotName, data) {
+          scope.getRelationshipTargetDragObject = function (concept, slotName) {
+            var dragObj;
+            angular.forEach(concept.relationships, function (relationship) {
+              if (relationship.targetSlot && relationship.targetSlot.slotName === slotName) {
+                dragObj = {
+                  id: relationship.target.conceptId,
+                  name: relationship.target.fsn
+                };
+              }
+            });
+            console.debug('drag object', dragObj);
+            return dragObj;
+          };
+
+          scope.dropRelationshipTarget = function (concept, slotName, data) {
+            console.debug('drop relationship target', concept, slotName, data);
             angular.forEach(concept.relationships, function (relationship) {
               if (relationship.targetSlot && relationship.targetSlot.slotName === slotName) {
                 constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
                   relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
                   relationship.target.conceptId = data.id;
                   relationship.target.fsn = data.name;
-                  templateService.updateTargetSlot(concept, scope.selectedTemplate, relationship);
+                  templateService.updateTargetSlot(concept, scope.selectedTemplate, relationship).then(function () {
+                    scope.batchTableParams.reload();
+                  })
                 }, function (error) {
                   notificationService.sendWarning('MRCM validation error: ' + data.name + ' is not a valid target for attribute type ' + relationship.type.fsn + '.');
-                  relationship.target.fsn = tempFsn;
                 });
 
               }
@@ -163,13 +202,23 @@ angular.module('singleConceptAuthoringApp')
             console.debug('set target slot', concept, slotName, data);
             angular.forEach(concept.relationships, function (r) {
               if (r.targetSlot && r.targetSlot.slotName === slotName) {
+                console.debug('setting target for ', r.targetSlot);
                 r.target.conceptId = data.id;
                 r.target.fsn = data.fsn.term;
                 templateService.updateTargetSlot(concept, concept.template, r).then(function () {
-                  scope.batchTableParams.reload();
-                })
+                  batchEditingService.updateBatchConcept(concept).then(function () {
+                    scope.batchTableParams.reload();
+                  })
+                });
               }
             })
+          };
+
+          // checks for empty assignments
+          scope.cleanTargetSlot = function (concept, slotName) {
+            if (!concept[slotName]) {
+              scope.setTargetSlot(concept, slotName, {id: null, fsn: {term: null}});
+            }
           };
 
 //
@@ -242,51 +291,72 @@ angular.module('singleConceptAuthoringApp')
           // Validation Functions
           //
 
-          function validateAllHelper(conceptIds) {
-            console.debug('validateAllHelper', conceptIds, scope.batchTableParams.data, scope.batchTableParams.data.filter(function (c) {
-              return c.conceptId === conceptIds[0];
-            }));
-            try {
-              var concept = batchEditingService.getBatchConcepts().filter(function (c) {
-                return c.conceptId === conceptIds[0];
-              })[0];
-              concept.action = 'Validating...';
-              scope.validateConcept(angular.copy(concept), true).then(function () {
-                conceptIds.splice(0, 1);
-                validateAllHelper(conceptIds);
-                scope.batchTableParams.reload();
+          function validateAllHelper(concepts) {
 
-              }, function (error) {
-                validateAllHelper(conceptIds);
-                conceptIds.splice(0, 1);
-
-              })
-            } catch (e) {
-              console.error('Concept validation error: ' + conceptIds[0] + ' -- ' + e);
+            if (!concepts || concepts.length === 0) {
+              return;
             }
+
+            var concept = concepts[0];
+
+            var tableConcept;
+
+            try {
+              tableConcept = scope.batchTableParams.data.filter(function (c) {
+                return c.conceptId === concept.conceptId;
+              })[0];
+            } catch (e) {
+              // do nothing
+            }
+            console.debug('table concept', tableConcept);
+            if (tableConcept) {
+              tableConcept.tableAction = 'Validating...';
+            }
+
+            console.debug('calling save');
+
+            scope.validateConcept(tableConcept ? tableConcept : concept, true).then(function () {
+              console.debug('validate returned successfully');
+              if (tableConcept) {
+                tableConcept.tableAction = null;
+                scope.batchTableParams.reload();
+              }
+              validateAllHelper(concepts.slice(1));
+
+            }, function (error) {
+              console.debug('rejected validation');
+              if (tableConcept) {
+                tableConcept.tableAction = null;
+                tableConcept.errorMsg = error;
+              }
+              validateAllHelper(concepts.slice(1));
+            });
+
           }
 
           scope.validateAll = function () {
             console.debug('validateAll');
-            var conceptIds = scope.batchTableParams.data.map(function (c) {
-              return c.conceptId
+            angular.forEach(scope.batchTableParams.data, function (c) {
+              c.errorMsg = null;
+              c.tableAction = 'Waiting...'
             });
-            if (conceptIds.length > 0) {
-              validateAllHelper(conceptIds);
-            }
+            var concepts = batchEditingService.getBatchConcepts();
+            validateAllHelper(concepts);
           };
 
           scope.validateConcept = function (concept) {
             var deferred = $q.defer();
 
-            concept.action = 'Validating...';
+            var template = concept.template;
+
+            concept.tableAction = 'Validating...';
             concept.validation = null;
+            var originalConceptId = concept.conceptId;
             var conceptCopy = angular.copy(concept);
             snowowlService.validateConcept(scope.task.projectKey,
               scope.task.key,
               conceptCopy
             ).then(function (validationResults) {
-              concept.action = null;
               var results = {
                 hasWarnings: false,
                 hasErrors: false,
@@ -311,15 +381,30 @@ angular.module('singleConceptAuthoringApp')
                   results.errors[validationResult.componentId].push(validationResult.message);
                 }
               });
+              console.debug('applying template to concept');
+              templateService.applyTemplateToConcept(conceptCopy, template).then(function () {
 
-              concept.validation = results;
+                  console.debug('success');
+                  conceptCopy.validation = results;
+                  conceptCopy.tableAction = null;
 
-              batchEditingService.updateBatchConcept(concept, concept.conceptId).then(function () {
-                scope.batchTableParams.reload();
-                deferred.resolve();
-              }, function (error) {
+                  applyNgTableSortingParams(conceptCopy);
+
+                  concept = conceptCopy;
+
+                  console.debug('conceptCopy', concept);
+
+                  batchEditingService.updateBatchConcept(concept, originalConceptId).then(function () {
+                    scope.batchTableParams.reload();
+                    deferred.resolve();
+                  }, function (error) {
+                    deferred.reject(error);
+                  });
+                }
+              ), function (error) {
+                console.debug('template reapplication error after validation');
                 deferred.reject(error);
-              });
+              }
             }, function (error) {
               deferred.reject(error);
             });
@@ -333,58 +418,79 @@ angular.module('singleConceptAuthoringApp')
 
 // update the actual concept from row values\
 
-          function saveAllHelper(conceptIds) {
-            console.debug('saveAllHelper', conceptIds, scope.batchTableParams.data, scope.batchTableParams.data.filter(function (c) {
-              return c.conceptId === conceptIds[0];
-            }));
-            try {
-              var concept = batchEditingService.getBatchConcepts().filter(function (c) {
-                return c.conceptId === conceptIds[0];
-              })[0];
-              concept.action = 'Saving...';
-              scope.saveConcept(angular.copy(concept), true).then(function () {
-                conceptIds.splice(0, 1);
-                saveAllHelper(conceptIds);
-                scope.batchTableParams.reload();
+          function saveAllHelper(concepts) {
 
-              }, function (error) {
-                saveAllHelper(conceptIds);
-                conceptIds.splice(0, 1);
 
-              })
-            } catch (e) {
-              console.error('Concept not found: ' + conceptIds[0] + ' -- ' + e);
+            console.debug('save all helper', concepts);
+
+            if (concepts.length === 0) {
+              return;
             }
+            var concept = concepts[0];
+
+            var tableConcept;
+
+            try {
+              tableConcept = scope.batchTableParams.data.filter(function (c) {
+                return c.conceptId === concept.conceptId;
+              })[0];
+            } catch (e) {
+              // do nothing
+            }
+            console.debug('table concept', tableConcept);
+            if (tableConcept) {
+              tableConcept.tableAction = 'Saving...';
+            }
+
+            console.debug('calling save');
+
+            scope.saveConcept(tableConcept ? tableConcept : concept, true).then(function () {
+              console.debug('save returned successfully');
+              if (tableConcept) {
+                tableConcept.tableAction = null;
+                scope.batchTableParams.reload();
+              }
+              saveAllHelper(concepts.slice(1));
+
+            }, function (error) {
+              console.debug('rejected save');
+              if (tableConcept) {
+                tableConcept.tableAction = null;
+                tableConcept.errorMsg = error;
+              }
+              saveAllHelper(concepts.slice(1));
+            });
           }
+
 
           scope.saveAll = function () {
             console.debug('saveAll');
-            var conceptIds = scope.batchTableParams.data.map(function (c) {
-              return c.conceptId
+            angular.forEach(scope.batchTableParams.data, function (c) {
+              c.errorMsg = null;
+              c.tableAction = 'Waiting...'
             });
-            if (conceptIds.length > 0) {
-              saveAllHelper(conceptIds);
-            }
+            var concepts = batchEditingService.getBatchConcepts();
+            saveAllHelper(concepts);
           };
 
-          scope.saveConcept = function (concept, saveAllMode) {
+          scope.saveConcept = function (originalConcept, saveAllMode) {
+
+            originalConcept.errorMsg = null;
 
             var deferred = $q.defer();
 
-            notificationService.sendMessage('Saving batch concept ' + (concept.sctid ? concept.sctid : '(new)') + ' |' + concept.fsn + '| ...');
+            notificationService.sendMessage('Saving batch concept ' + (originalConcept.sctid ? originalConcept.sctid : '(new)') + ' |' + originalConcept.fsn + '| ...');
 
 
             // check for completion
-            var completionErrors = componentAuthoringUtil.checkConceptComplete(concept);
+            var completionErrors = componentAuthoringUtil.checkConceptComplete(originalConcept);
 
             if (completionErrors.length > 0) {
-              if (!saveAllMode) {
-                var msg = 'Concept is not complete. Please fix the following problems:';
-                modalService.message('Please Complete Concept', msg, completionErrors);
-              } else {
-                deferred.reject('Concept incomplete. ' + completionErrors);
-              }
+              originalConcept.errorMsg = 'Incomplete';
+              deferred.reject('Incomplete');
             } else {
+
+              var concept = angular.copy(originalConcept);
 
               // store template
               var template = concept.template;
@@ -411,12 +517,13 @@ angular.module('singleConceptAuthoringApp')
 
               var saveFn = null;
 
+
               if (!concept.conceptId) {
                 saveFn = snowowlService.createConcept;
               } else {
                 saveFn = snowowlService.updateConcept;
               }
-
+              console.debug('saveFn')
               saveFn(
                 scope.task.projectKey,
                 scope.task.key,
@@ -500,6 +607,8 @@ angular.module('singleConceptAuthoringApp')
             if (!data || !data.concept) {
               return;
             }
+
+            console.debug('conceptEdit.conceptChange', data);
 
             // if validation result returned, apply to concept for storage
             if (data.validation) {

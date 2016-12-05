@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.searchPanel', [])
 
-  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService',
-    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService) {
+  .controller('searchPanelCtrl', ['$scope', '$rootScope', '$modal', '$location', '$routeParams', '$q', '$http', 'metadataService', 'notificationService', 'scaService', 'snowowlService', 'templateService', 'batchEditingService', 'modalService',
+    function searchPanelCtrl($scope, $rootScope, $modal, $location, $routeParams, $q, $http, metadataService, notificationService, scaService, snowowlService, templateService, batchEditingService, modalService) {
 
       // controller $scope.options
       $scope.branch = metadataService.getBranch();
@@ -27,30 +27,43 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // on load, get templates
       templateService.getTemplates().then(function (response) {
         $scope.templates = response;
-        angular.forEach(response, function (r) {
-          if (r.name === 'CT of X') {
-            $scope.selectTemplate(r);
-          }
-        });
-        console.debug('search templates', $scope.templates);
       });
 
-      $scope.selectedTemplate = null;
-      $scope.slotName = null;
+      $scope.templateOptions = {
 
-      $scope.updateSlotName = function(slotName) {
-        $scope.slotName = slotName;
-      }
+        selectedTemplate: null,
+        selectedSlot: null,
+        availableSlots: null
+      };
+      $scope.updateTemplateOptions = function (slot) {
+        console.debug('updating template options', $scope.templateOptions);
+        if ($scope.searchStr) {
+          $scope.search();
+        }
+      };
 
-      $scope.selectTemplate = function (template) {
-        $scope.selectedTemplate = template;
-        $scope.slotNames = template.conceptOutline.relationships.filter(function (r) {
-          return r.targetSlot && r.targetSlot.slotName;
-        }).map(function (r) {
-          return r.targetSlot.slotName;
-        });
+      $scope.updateTemplateOptions = function () {
 
-        $scope.slotName = $scope.slotNames[0];
+        console.debug('before update template options', $scope.templateOptions);
+
+        if ($scope.templateOptions.selectedTemplate) {
+          $scope.templateOptions.availableSlots = $scope.templateOptions.selectedTemplate.conceptOutline.relationships.filter(function (r) {
+            return r.targetSlot && r.targetSlot.slotName;
+          }).map(function (r) {
+            return r.targetSlot;
+          });
+
+          if (!$scope.templateOptions.selectedSlot ||
+            $scope.templateOptions.availableSlots.indexOf($scope.templateOptions.selectedSlot) === -1) {
+            $scope.templateOptions.selectedSlot = $scope.templateOptions.availableSlots[0];
+          }
+
+        }
+
+        console.debug('after update template options', $scope.templateOptions);
+        if ($scope.searchStr) {
+          $scope.search();
+        }
       };
 
       // $scope.options from searchPlugin.js ( not all used)
@@ -208,7 +221,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
         var acceptLanguageValue = metadataService.getAcceptLanguageValueForModuleId(
           $scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
 
-        if (!$scope.isEscgMode) {
+        if (!$scope.isEscgMode && !$scope.templateOptions.selectedTemplate) {
 
           // set the return synonym flag to true for extensions
           // TODO Later this will be toggle-able between extension synonym and fsn
@@ -240,8 +253,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             }
           });
         } else {
-          console.debug('escg search', $scope.searchStr, $scope.escgExpr)
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr, $scope.results.length, $scope.resultsSize).then(function (results) {
+          console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions)
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr ? $scope.escgExpr : $scope.templateOptions.selectedSlot.allowableRangeECL, $scope.results.length, $scope.resultsSize).then(function (results) {
             // set load more parameters
             var concepts = results.items;
             $scope.searchTotal = results.total;
@@ -429,7 +442,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       function getTargetSlotMap(conceptObj) {
 
         var targetSlotMap = {};
-        targetSlotMap[$scope.slotName] = {
+        targetSlotMap[$scope.templateOptions.slotName] = {
           conceptId: conceptObj.conceptId,
           fsn: conceptObj.fsn
         };
@@ -437,6 +450,17 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       }
 
       $scope.addBatchConceptFromResult = function (conceptObj, template) {
+
+        // check if template matches current batch
+        if (!batchEditingService.getCurrentTemplate() || batchEditingService.getBatchConcepts().length === 0) {
+          batchEditingService.setCurrentTemplate(template);
+        }
+
+        if (batchEditingService.getCurrentTemplate().name !== template.name) {
+          modalService.message('Template Mismatch', 'Requested concept using template ' + template.name + ', but the current batch uses template ' + batchEditingService.getCurrentTemplate().name + '.  Please clear the current batch or switch templates.');
+          return;
+        }
+
         notificationService.sendMessage('Generating batch concept from template ' + template.name + '...');
 
         console.debug('creating batch concept', conceptObj);
@@ -457,6 +481,16 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       };
 
       $scope.addBatchConceptsFromResults = function (template) {
+
+        // check if template matches current batch
+        if (!batchEditingService.getCurrentTemplate() || batchEditingService.getBatchConcepts().length === 0) {
+          batchEditingService.setCurrentTemplate(template);
+        }
+
+        if (batchEditingService.getCurrentTemplate().name !== template.name) {
+          modalService.message('Template Mismatch', 'Requested concepts using template ' + template.name + ', but the current batch uses template ' + batchEditingService.getCurrentTemplate().name + '.  Please clear the current batch or switch templates.');
+          return;
+        }
 
         if ($scope.searchTotal > 25) {
           notificationService.sendWarning('Batch mode limited to 25 concepts during testing', 10000);

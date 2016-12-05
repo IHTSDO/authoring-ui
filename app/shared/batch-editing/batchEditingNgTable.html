@@ -15,6 +15,9 @@
 
   <h3>Batch Editing Development Sandbox</h3>
 
+  Procsite:  {{hasProcSite}}
+  Action: {{hasAction}}
+
 
   <div class="row no-padding no-gutter">
     <div class="col-md-8">
@@ -49,51 +52,95 @@
         <td sortable="'sctid'" title="'SCTID'">
           {{concept.sctid}}
         </td>
-        <td sortable="'fsn'" title="'FSN'">
-          {{concept.fsn}}
+        <td sortable="'fsn'" title="'FSN'"
+            style="color: transparent !important; background-color: transparent !important;">
+          <div style="width:100%; color: transparent !important;">
+            <textarea class="editable-input form-control input-sm" style="width:90%;"
+                      type="text" ng-model="concept.fsn"></textarea>
+            value: {{concept.fsn}}
+          </div>
         </td>
-        <td sortable="'procSite'" title="'Procedure Site'" ng-show="hasProcSite">
-           <textarea type="text" ng-model="concept.procSite" style="width:250px;"
-                     ng-change="updateTargetSlot(concept, 'action')"
-                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
-                     ui-on-drop="dropRelationshipTargetInNgTable(concept, 'procSite', data)"
+        <td sortable="'procSite'" title="'Procedure Site'" ng-show="hasProcSite" style="width:25%;"
+            ui-on-drop="dropRelationshipTarget(concept, 'procSite', $data)" drag-hover-class="sca-drag-hover"
+            drop-channel="conceptPropertiesObj">
+          <div class="pull-left" style="width:80%">
+           <textarea style="width:100%" type="text" ng-model="concept.procSite"
                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, 'procSite', $viewValue)"
                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                      typeahead-wait-ms="700"
                      typeahead-on-select="setTargetSlot(concept, 'procSite', $item)"
                      typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm"
-                     required/>
+                     ng-blur="cleanTargetSlot(concept, 'procSite')"
+                     required></textarea>
+
+            <br>
+
+          </div>
+          <div class="pull-right" style="width:20%">
+            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-open-with "
+                 ng-show="concept.procSite && !targetTypeaheadLoading"
+                 ui-draggable="true" drag="getRelationshipTargetDragObject(concept, 'procSite')"
+                 drag-channel="conceptPropertiesObj"
+                 drag-image="getDragImageForConcept(concept.procSite)">
+              <span>Drag This Component</span>
+            </div>
+            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-cached "
+                 ng-show="targetTypeaheadLoading">
+              <span>Loading...</span>
+            </div>
+          </div>
+
         </td>
-        <td sortable="'action'" title="'Action'" ng-show="hasAction">
-           <textarea type="text" ng-model="concept.procSite" style="width:250px;"
-                     ng-change="updateTargetSlot(concept, 'action')"
-                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
-                     ui-on-drop="dropRelationshipTargetInNgTable(concept, 'action', data)"
+        <td sortable="'action'" title="'Action'" ng-show="hasAction" style="width:25%;"
+            ui-on-drop="dropRelationshipTarget(concept, 'action', $data)" drag-hover-class="sca-drag-hover"
+            drop-channel="conceptPropertiesObj">
+          <div class="pull-left" style="width:80%">
+           <textarea style="width:100%" type="text" ng-model="concept.action"
                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, 'action', $viewValue)"
                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                      typeahead-wait-ms="700"
                      typeahead-on-select="setTargetSlot(concept, 'action', $item)"
                      typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm"
-                     required/>
-        </td>
-        <td>
-          <button class="alert-danger" ng-show="concept.validation.hasErrors">Errors</button>
-          <button class="alert-warning" ng-show="concept.validation.hasWarnings && !concept.validation.hasErrors">Warnings</button>
-          <button class="alert-success" ng-show="concept.validation && !concept.validation.hasErrors && !concept.validation.hasWarnings">Valid</button>
-        </td>
-        <td>
-          <div ng-show="concept.action">
-            <i class="md md-cached"></i>&nbsp;{{concept.action}}
+                     ng-blur="cleanTargetSlot(concept, 'action')"
+                     required></textarea>
+
+            <br>
+
           </div>
-          <div ng-show="!concept.action">
+          <div class="pull-right" style="width:20%">
+            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-open-with "
+                 ng-show="concept.action && !targetTypeaheadLoading"
+                 ui-draggable="true" drag="getRelationshipTargetDragObject(concept, 'action')"
+                 drag-channel="conceptPropertiesObj"
+                 drag-image="getDragImageForConcept(concept.action)">
+              <span>Drag This Component</span>
+            </div>
+            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-cached "
+                 ng-show="targetTypeaheadLoading">
+              <span>Loading...</span>
+            </div>
+          </div>
+
+        </td>
+        <td>
+          <button class="m-r-5 alert-danger" ng-show="concept.errorMsg">{{concept.errorMsg}}</button>
+          <button class="m-r-5 alert-danger" ng-show="concept.validation.hasErrors">Errors</button>
+          <button class="m-r-5 alert-warning" ng-show="concept.validation.hasWarnings && !concept.validation.hasErrors">
+            Warnings
+          </button>
+          <button class="m-r-5 alert-success"
+                  ng-show="concept.validation && !concept.validation.hasErrors && !concept.validation.hasWarnings">Valid
+          </button>
+        </td>
+        <td>
+          <div ng-show="concept.tableAction">
+            <i class="md md-cached"></i>&nbsp;{{concept.tableAction}}
+          </div>
+          <div ng-show="!concept.tableAction">
             <a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(concept)"></a>,
             <a class="md md-save" title="Save Concept" ng-click="saveConcept(concept)"></a>,
             <a class="md md-school" title="Validate Concept" ng-click="validateConcept(concept)"></a>
           </div>
-          <div class="alert alert-danger" ng-show="concept.message">
-            {{concept.message}}
-          </div>
-
         </td>
       </tr>
     </table>
