@@ -192,14 +192,25 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
        */
       $scope.search = function (appendResults) {
 
-        console.debug('searching', $scope.isEscgMode);
+        console.debug('searching', $scope.isEscgMode, $scope.templateOptions.selectedTemplate);
 
-        if (!$scope.isEscgMode && ( !$scope.searchStr || $scope.searchStr.length < 3)) {
-          return;
+        // if template selected, require search string
+        if ($scope.templateOptions.selectedTemplate) {
+          if (!$scope.searchStr || $scope.searchStr.length < 3) {
+            return;
+          }
         }
 
-        if ($scope.isEscgMode && !$scope.escgExpr) {
-          return;
+        // if escg do nothing, empty search allowed
+        else if ($scope.isEscgMode) {
+
+        }
+
+        // for straight text mode, require search string
+        else {
+          if (!$scope.searchStr || $scope.searchStr.length < 3) {
+            return;
+          }
         }
 
         $scope.searchStatus = 'Searching...';
@@ -222,6 +233,8 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
           $scope.searchExtensionFlag ? metadataService.getCurrentModuleId() : metadataService.getInternationalModuleId());
 
         if (!$scope.isEscgMode && !$scope.templateOptions.selectedTemplate) {
+
+          console.debug('normal text mode');
 
           // set the return synonym flag to true for extensions
           // TODO Later this will be toggle-able between extension synonym and fsn
@@ -442,7 +455,7 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       function getTargetSlotMap(conceptObj) {
 
         var targetSlotMap = {};
-        targetSlotMap[$scope.templateOptions.slotName] = {
+        targetSlotMap[$scope.templateOptions.selectedSlot.slotName] = {
           conceptId: conceptObj.conceptId,
           fsn: conceptObj.fsn
         };

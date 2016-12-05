@@ -102,7 +102,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // function to remove disallowed elements from a concept
-      function cleanConcept(concept) {
+      function cleanConcept(concept, keepTempIds) {
 
         // strip unknown tags
         var allowableProperties = [
@@ -111,7 +111,7 @@ angular.module('singleConceptAuthoringApp')
           'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets'];
 
         // if a locally assigned UUID, strip
-        if (!isSctid(concept.conceptId)) {
+        if (!isSctid(concept.conceptId) && !keepTempIds) {
           concept.conceptId = null;
         }
 
@@ -128,7 +128,7 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(concept.descriptions, function (description) {
 
           // if a locally assigned UUID, strip
-          if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
+          if (description.descriptionId && description.descriptionId.indexOf('-') !== -1  && !keepTempIds) {
             delete description.descriptionId;
           }
           if (description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated') {
@@ -147,7 +147,7 @@ angular.module('singleConceptAuthoringApp')
         angular.forEach(concept.relationships, function (relationship) {
 
           // if a locally assigned UUID, strip
-          if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
+          if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1  && !keepTempIds) {
             delete relationship.relationshipId;
           }
 
@@ -1270,9 +1270,10 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
-      function validateConcept(projectKey, taskKey, concept) {
+      function validateConcept(projectKey, taskKey, concept, keepTempIds) {
 
-        cleanConcept(concept);
+
+        cleanConcept(concept, keepTempIds);
 
         // assign UUIDs to elements without an SCTID
         if (!concept.conceptId) {
@@ -1288,6 +1289,7 @@ angular.module('singleConceptAuthoringApp')
             relationship.relationshipId = createGuid();
           }
         });
+
 
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {

@@ -21,10 +21,10 @@
 
   <div class="row no-padding no-gutter">
     <div class="col-md-8">
-      <select ng-options="template as template.name for template in templates" ng-model="selectedTemplate"></select>
+      <select ng-options="template as template.name for template in templateOptions.availableTemplates" ng-model="templateOptions.selectedTemplate"></select>
       <input ng-model="batchSize" ng-init="batchSize = 5;">
-      <button class="btn btn-default btn-primary" ng-disabled="!selectedTemplate || !batchSize"
-              ng-click="addBatchConceptsFromTemplate(selectedTemplate, batchSize)">Add Concepts to Batch
+      <button class="btn btn-default btn-primary" ng-disabled="!templateOptions.selectedTemplate || !batchSize"
+              ng-click="addBatchConceptsFromTemplate(templateOptions.selectedTemplate, batchSize)">Add Concepts to Batch
       </button>
       <button class="btn btn-default btn-danger" ng-click="clearConcepts()">Clear Batch</button>
     </div>

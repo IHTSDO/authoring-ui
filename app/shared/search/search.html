@@ -17,7 +17,7 @@
              ng-model-options="{ debounce: 500 }"/></div>
 
   </div>
-  <div class="row no-padding" ng-show="!isEscgMode">
+  <div class="row no-padding" ng-show="!isEscgMode || templateOptions.selectedTemplate">
     <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xl-10 no-padding">
       <input type="search" class="form-control m-5 search-box" placeholder="Enter at least three characters"
              ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
@@ -57,7 +57,6 @@
       </button>
     </div>
 
-    hello
 
     <div class="col-md-6" ng-show="!templateOptions.selectedTemplate">
       <button type="button" class="blue accent-2 col-md-12 text-center custom-button ng-click-active search-type"
@@ -112,6 +111,7 @@
       <button
         type="button" class="blue accent-2 col-md-12 text-center custom-button ng-click-active search-type"
         title="Create batch from search results"
+        ng-show="templateOptions.selectedTemplate"
         ng-click="addBatchConceptsFromResults(templateOptions.selectedTemplate)">
         <div class="md col-md-12 no-padding text-center ng-binding">
           <i class="fa fa-magic"></i>&nbsp;Create Batch Concepts
@@ -197,6 +197,7 @@
             <span>Add to Project Favorites</span>
           </button>
           <button type="button" ng-click="addBatchConceptFromResult(result.concept, templateOptions.selectedTemplate)"
+                  ng-show="templateOptions.selectedTemplate"
                   ng-disabled=""
                   class="addButton btn btn-round widget-button fa fa-magic medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2">
             <span>Add to Batch</span>
