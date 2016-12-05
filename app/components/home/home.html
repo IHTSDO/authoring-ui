@@ -93,11 +93,10 @@
                   header-title="'Click to sort'" filter="{ 'summary': 'text' }"><a class="tooltips-right"
                                                                                    ng-click="goToTask(task)">
                 {{task.summary}}<span> Click to open editing view</span></a>
-              </td>
-
-              <td data-title="'Task Id'" sortable="'taskKey'" header-title="'Click to sort'" filter="{ 'key': 'text' }">
+             <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
+          
               <td data-title="'Modified'" sortable="'updated'" header-title="'Click to sort'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
