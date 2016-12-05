@@ -147,8 +147,10 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function updateTargetSlot(concept, template, relationship, targetConcept) {
+    function updateTargetSlot(concept, template, relationship) {
       var deferred = $q.defer();
+
+      console.debug('updatetargetslot', concept, relationship);
 
       replaceLogicalValuesForRelationship(concept, relationship).then(function () {
         replaceLexicalValues(concept, template).then(function () {

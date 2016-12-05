@@ -1,6 +1,6 @@
 <div class=" col-md-12 no-padding  search-scroll " ng-controller="searchPanelCtrl">
 
-  <div clas="row no-padding m-b-15" ng-show="isEscgMode">
+  <div clas="row no-padding m-b-15" ng-show="isEscgMode && !templateOptions.selectedTemplate">
     <div class="col-md-10 no-padding">
 
       <input type="search" class="form-control m-5 search-box" placeholder="Enter ESCG expression"
@@ -57,8 +57,9 @@
       </button>
     </div>
 
+    hello
 
-    <div class="col-md-6">
+    <div class="col-md-6" ng-show="!templateOptions.selectedTemplate">
       <button type="button" class="blue accent-2 col-md-12 text-center custom-button ng-click-active search-type"
               title="Search Mode"
               ng-click="isEscgMode = !isEscgMode">
@@ -67,19 +68,34 @@
         </div>
       </button>
     </div>
+
+    <div class="col-md-6" ng-show="templateOptions.selectedTemplate">
+      <button type="button" class="blue accent-2 col-md-12 text-center custom-button ng-click-active search-type"
+              title="Search Mode"
+              ng-click="templateOptions.selectedTemplate = ''; selectTemplate('')">
+        <div class="md col-md-12 no-padding text-center ng-binding">
+          Template Mode
+        </div>
+      </button>
+    </div>
   </div>
 
   <div class="row no-padding m-t-15" ng-if="templates.length > 0">
     <div class="col-md-6">Select Template</div>
     <div class="col-md-6">
-      <select ng-options="template as template.name for template in templates" ng-model="selectedTemplate" ng-change="selectTemplate(selectedTemplate)"></select>
+
+      <select ng-options="template as template.name for template in templates" ng-model="templateOptions.selectedTemplate"
+              ng-change="updateTemplateOptions()">
+        <option value="">(none)</option>
+      </select>
     </div>
   </div>
-  <div class="row no-padding m-t-15" ng-if="selectedTemplate">
+  <div class="row no-padding m-t-15" ng-if="templateOptions.selectedTemplate">
     <div class="col-md-6">Select Template Slot</div>
     <div class="col-md-6">
-      <select style="width: 100px;" ng-options="slotName for slotName in slotNames" ng-model="slotName" ng-change="updateSlotName(slotName)">
-        <option value="" selected hidden />
+      <select style="width: 100px;" ng-options="slot as slot.slotName for slot in templateOptions.availableSlots" ng-model="templateOptions.selectedSlot"
+              ng-change="updateTemplateOptions()">
+        <option value="" selected hidden/>
       </select>
     </div>
   </div>
@@ -96,7 +112,7 @@
       <button
         type="button" class="blue accent-2 col-md-12 text-center custom-button ng-click-active search-type"
         title="Create batch from search results"
-        ng-click="addBatchConceptsFromResults(selectedTemplate)">
+        ng-click="addBatchConceptsFromResults(templateOptions.selectedTemplate)">
         <div class="md col-md-12 no-padding text-center ng-binding">
           <i class="fa fa-magic"></i>&nbsp;Create Batch Concepts
         </div>
@@ -180,7 +196,7 @@
                   class="addButton btn btn-round widget-button md md-favorite medium-size-tooltip  tooltips-bottom offset-tooltip-right pink lighten-2">
             <span>Add to Project Favorites</span>
           </button>
-          <button type="button" ng-click="addBatchConceptFromResult(result.concept, selectedTemplate)"
+          <button type="button" ng-click="addBatchConceptFromResult(result.concept, templateOptions.selectedTemplate)"
                   ng-disabled=""
                   class="addButton btn btn-round widget-button fa fa-magic medium-size-tooltip  tooltips-bottom offset-tooltip-right blue lighten-2">
             <span>Add to Batch</span>
