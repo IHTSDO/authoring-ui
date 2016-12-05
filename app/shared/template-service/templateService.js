@@ -26,6 +26,7 @@ angular.module('singleConceptAuthoringApp')
 
     function getSlotValue(slotName, template, nameValueMap) {
 
+      console.debug('getSlotValue', slotName, template, nameValueMap);
       // find the lexical template for this slot
       var lt;
       try {
