@@ -53,6 +53,9 @@ angular.module('singleConceptAuthoringApp')
 
           function initNgTableSlots(template) {
 
+            scope.hasProcSite = false;
+            scope.hasAction = false;
+
             if (template) {
               angular.forEach(template.conceptOutline.relationships, function (r) {
                 if (r.targetSlot && r.targetSlot.slotName) {
@@ -94,6 +97,8 @@ angular.module('singleConceptAuthoringApp')
               total: batchEditingService.getBatchConcepts() ? batchEditingService.getBatchConcepts().length : 0,
               getData: function ($defer, params) {
 
+                console.debug(scope.batchTableParams);
+
                 // initialize columns from template
                 initNgTableSlots(batchEditingService.getCurrentTemplate());
 
@@ -101,8 +106,11 @@ angular.module('singleConceptAuthoringApp')
                 var bcs = batchEditingService.getBatchConcepts();
 
                 if (!bcs || bcs.length === 0) {
+                  scope.batchHasData = false;
                   $defer.resolve([]);
                 } else {
+
+                  scope.batchHasData = true;
 
                   // ensure stored concepts are sorted according to current view
                   // i.e. apply sorting outside of current page to ensure batch action matching
@@ -340,41 +348,47 @@ angular.module('singleConceptAuthoringApp')
 
             var conceptCopy = angular.copy(concept);
             console.debug('validating', conceptCopy);
-            snowowlService.validateConcept(scope.task.projectKey,
-              scope.task.key,
-              conceptCopy,
-              true // retain temporary ids
-            ).then(function (validationResults) {
-              console.debug(concept)
-              var results = {
-                hasWarnings: false,
-                hasErrors: false,
-                warnings: {},
-                errors: {}
-              };
 
-              angular.forEach(validationResults, function (validationResult) {
-                if (validationResult.severity === 'WARNING') {
-                  results.hasWarnings = true;
-                  if (!results.warnings[validationResult.componentId]) {
-                    results.warnings[validationResult.componentId] = [];
-                  }
-                  results.warnings[validationResult.componentId].push(validationResult.message);
-                }
+            if (!componentAuthoringUtil.checkConceptComplete(concept)) {
+              concept.errorMsg = 'Incomplete';
+            } else {
 
-                else if (validationResult.severity === 'ERROR') {
-                  results.hasErrors = true;
-                  if (!results.errors[validationResult.componentId]) {
-                    results.errors[validationResult.componentId] = [];
+              snowowlService.validateConcept(scope.task.projectKey,
+                scope.task.key,
+                conceptCopy,
+                true // retain temporary ids
+              ).then(function (validationResults) {
+                console.debug(concept)
+                var results = {
+                  hasWarnings: false,
+                  hasErrors: false,
+                  warnings: {},
+                  errors: {}
+                };
+
+                angular.forEach(validationResults, function (validationResult) {
+                  if (validationResult.severity === 'WARNING') {
+                    results.hasWarnings = true;
+                    if (!results.warnings[validationResult.componentId]) {
+                      results.warnings[validationResult.componentId] = [];
+                    }
+                    results.warnings[validationResult.componentId].push(validationResult.message);
                   }
-                  results.errors[validationResult.componentId].push(validationResult.message);
-                }
+
+                  else if (validationResult.severity === 'ERROR') {
+                    results.hasErrors = true;
+                    if (!results.errors[validationResult.componentId]) {
+                      results.errors[validationResult.componentId] = [];
+                    }
+                    results.errors[validationResult.componentId].push(validationResult.message);
+                  }
+                });
+
+                deferred.resolve(results);
+              }, function (error) {
+                deferred.reject(error);
               });
-
-              deferred.resolve(results);
-            }, function (error) {
-              deferred.reject(error);
-            });
+            }
 
 
             return deferred.promise;
@@ -383,6 +397,9 @@ angular.module('singleConceptAuthoringApp')
 
           scope.validateConcept = function (concept) {
             var deferred = $q.defer();
+
+            concept.errorMsg = null;
+            concept.validation = null;
 
             var template = concept.template;
 
@@ -442,7 +459,6 @@ angular.module('singleConceptAuthoringApp')
             }, function (error) {
               if (tableConcept) {
                 tableConcept.tableAction = null;
-                tableConcept.errorMsg = error;
               }
               saveAllHelper(concepts.slice(1));
             });
@@ -464,8 +480,6 @@ angular.module('singleConceptAuthoringApp')
             originalConcept.validation = null;
 
             var deferred = $q.defer();
-
-            notificationService.sendMessage('Saving batch concept ' + (originalConcept.sctid ? originalConcept.sctid : '(new)') + ' |' + originalConcept.fsn + '| ...');
 
             console.debug('saving concept', originalConcept);
 
@@ -551,7 +565,6 @@ angular.module('singleConceptAuthoringApp')
                           previousConceptId: originalConceptId
                         });
                         batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
-                          notificationService.sendMessage('Concept saved, batch successfully updated', 3000);
                           savedConcept.tableAction = null;
                           scope.batchTableParams.reload();
                           deferred.resolve(savedConcept);
@@ -603,6 +616,15 @@ angular.module('singleConceptAuthoringApp')
             }
           }
 
+          scope.updateFsn = function(concept) {
+            console.debug('updateFSN', concept);
+            var fsnDesc = componentAuthoringUtil.getFsnDescriptionForConcept(concept);
+            fsnDesc.term = concept.fsn;
+            batchEditingService.updateBatchConcept(concept).then(function() {
+              console.debug('concept after update', concept);
+            })
+          };
+
 //
 // Scope listeners
 //
@@ -626,42 +648,11 @@ angular.module('singleConceptAuthoringApp')
               data.concept.validation = data.validation;
             }
 
-            notificationService.sendMessage('Updating batch list with saved concept...');
             batchEditingService.updateBatchConcept(data.concept, data.previousConceptId).then(function () {
               scope.batchTableParams.reload();
             });
           });
 
-//
-// Drag 'n Drop
-//
-
-          scope.dropConcept = function (event, data) {
-
-            // Hide the helper, so that we can use .elementFromPoint
-            // to grab the item beneath the cursor by coordinate
-
-            var $destination = $(document.elementFromPoint(event.clientX, event.clientY));
-
-            // Grab the parent tr, then the parent tbody so that we
-            // can use their index to find the row and column of the
-            // destination object
-            var $tr = $destination.closest('tr');
-            var $tbody = $tr.closest('tbody');
-
-            var col = $tr.children().index($destination);
-            var row = $tbody.children().index($tr);
-
-            // get the column prop
-            var prop = hot.colToProp(col);
-
-            // Use the setDataAtCell method, which takes a row and
-            // col number, to adjust the data
-            if (prop.startsWith('targetSlot')) {
-              hot.setDataAtCell(row, col, data.name, 'edit');
-            }
-
-          };
 
 //
 // Initialization
