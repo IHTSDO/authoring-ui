@@ -266,8 +266,11 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
             }
           });
         } else {
-          console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions)
-          snowowlService.searchConcepts($scope.branch, $scope.searchStr, $scope.escgExpr ? $scope.escgExpr : $scope.templateOptions.selectedSlot.allowableRangeECL, $scope.results.length, $scope.resultsSize).then(function (results) {
+          console.debug('escg search', $scope.searchStr, $scope.escgExpr, $scope.templateOptions);
+
+          var escgExpr = $scope.templateOptions.selectedTemplate ? $scope.templateOptions.selectedSlot.allowableRangeECL : $scope.escgExpr;
+
+          snowowlService.searchConcepts($scope.branch, $scope.searchStr, escgExpr, $scope.results.length, $scope.resultsSize).then(function (results) {
             // set load more parameters
             var concepts = results.items;
             $scope.searchTotal = results.total;
