@@ -322,8 +322,7 @@ angular.module('singleConceptAuthoringApp')
 
       function updateBatchConcept(concept, previousConceptId) {
         var deferred = $q.defer();
-        console.debug('before update', batchConcepts);
-        if (!batchConcepts) {
+         if (!batchConcepts) {
           deferred.reject('Cannot update batch concept, batch concepts not initialized');
         } else {
 
@@ -348,7 +347,6 @@ angular.module('singleConceptAuthoringApp')
 
         }
 
-        console.debug('after update', batchConcepts);
         updateBatchUiState().then(function () {
           deferred.resolve(concept);
         }, function (error) {
