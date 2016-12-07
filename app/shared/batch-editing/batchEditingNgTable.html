@@ -28,16 +28,16 @@
     </div>
 
     <div class="col-md-4" ng-show="batchHasData">
-      <button class="btn btn-default btn-primary"
+      <button class="btn btn-default btn-primary  pull-right m-r-15"
               ng-click="saveAll()">Save All
       </button>
-      <button class="btn btn-default deep-purple darken-2 validate"
+      <button class="btn btn-default btn-primary  pull-right m-r-10"
               ng-click="validateAll()">Validate All
       </button>
     </div>
   </div>
 
-  <div style="width:90%;height: 300px;" class="m-t-10" ng-show="batchHasData">
+  <div style="width:99%; "class="m-t-10" ng-show="batchHasData">
 
     <table ng-table="batchTableParams"
            template-pagination="utilities/data-table-pager.html"
@@ -136,7 +136,7 @@
           <div ng-show="!concept.tableAction" class="pull-right">
             <a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(concept)"></a>
             <a class="md md-save m-l-10" title="Save Concept" ng-click="saveConcept(concept)"></a>
-            <a class="md md-school m-l-10" title="Validate Concept" ng-click="validateConcept(concept)"></a>
+            <a class="md md-school m-l-10 " title="Validate Concept" ng-click="validateConcept(concept)"></a>
           </div>
         </td>
       </tr>
