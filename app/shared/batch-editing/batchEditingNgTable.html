@@ -1,3 +1,4 @@
+
 <div>
   <script id="ngHeader" type="text/ng-template">
     <tr>
@@ -52,7 +53,7 @@
         <td sortable="'fsn'" title="'FSN'"
             style="color: transparent !important; background-color: transparent !important; height: 40px;; max-height:40px;">
           <div style="width:100%; color: transparent !important; height: 40px;; max-height:40px;">
-            <textarea class="editable-input form-control input-sm" style="width:90%;"
+            <textarea class="editable-input form-control input-sm m-t-10" style="width:90%;"
                       type="text" ng-model="concept.fsn" ng-change="updateFsn(concept)"></textarea>
           </div>
         </td>
@@ -65,7 +66,7 @@
                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                      typeahead-wait-ms="700"
                      typeahead-on-select="setTargetSlot(concept, 'procSite', $item)"
-                     typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm"
+                     typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm m-t-10"
                      ng-blur="cleanTargetSlot(concept, 'procSite')"
                      required></textarea>
 
@@ -90,7 +91,7 @@
         <td sortable="'action'" title="'Action'" ng-show="hasAction" style="width:25%;  height: 40px;; max-height:40px;"
             ui-on-drop="dropRelationshipTarget(concept, 'action', $data)" drag-hover-class="sca-drag-hover"
             drop-channel="conceptPropertiesObj">
-          <div class="pull-left" style="width:80%; height: 40px;; max-height:40px;">
+          <div class="pull-left m-t-5" style="width:80%; height: 40px;; max-height:40px;">
            <textarea style="width:100%" type="text" ng-model="concept.action"
                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, 'action', $viewValue)"
                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
@@ -132,10 +133,10 @@
           <div ng-show="concept.tableAction">
             <i class="md md-cached"></i>&nbsp;{{concept.tableAction}}
           </div>
-          <div ng-show="!concept.tableAction">
-            <a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(concept)"></a>,
-            <a class="md md-save" title="Save Concept" ng-click="saveConcept(concept)"></a>,
-            <a class="md md-school" title="Validate Concept" ng-click="validateConcept(concept)"></a>
+          <div ng-show="!concept.tableAction" class="pull-right">
+            <a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(concept)"></a>
+            <a class="md md-save m-l-10" title="Save Concept" ng-click="saveConcept(concept)"></a>
+            <a class="md md-school m-l-10" title="Validate Concept" ng-click="validateConcept(concept)"></a>
           </div>
         </td>
       </tr>
