@@ -1321,6 +1321,21 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function isConceptId(id) {
+        var idStr = String(id);
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '0';
+      }
+
+      function isDescriptionId(id) {
+        var idStr = String(id);
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '1';
+      }
+
+      function isRelationshipId(id) {
+        var idStr = String(id);
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '2';
+      }
+
       ////////////////////////////////////////////
       // Method Visibility
       // TODO All methods currently visible!
@@ -1396,7 +1411,10 @@ angular.module('singleConceptAuthoringApp')
 
         // utility
         createGuid : createGuid,
-        isSctid : isSctid
+        isSctid : isSctid,
+        isConceptId : isConceptId,
+        isDescriptionId : isDescriptionId,
+        isRelationshipId : isRelationshipId
 
       };
     }
