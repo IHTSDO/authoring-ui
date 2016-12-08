@@ -100,11 +100,11 @@
   </div>
   <div class="card m-10 validation-report">
 
-    <div class="ng-table-no-results" ng-show="!initializing && affectedRelationshipIds.length === 0 && affectedAssocs.length === 0">
+    <div class="ng-table-no-results" ng-show="!initializing && affectedRelationshipIds.length === 0 && affectedAssocs.length === 0 && affectedDescAssocs.length === 0">
       Inactivation affects no relationships or concepts.
     </div>
 
-    <div ng-show="!initializing && affectedRelationshipIds.length > 0 || affectedAssocs.length > 0">
+    <div ng-show="!initializing && (affectedRelationshipIds.length > 0 || affectedAssocs.length > 0 || affectedDescAssocs.length > 0)">
 
       <!-- Nav tabs -->
       <div class="row classification-report">
@@ -121,7 +121,7 @@
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
                                                        data-toggle="tab">Historical Associations Affected
-            ({{assocsTableParams.total()}})</a>
+            ({{assocsTableParams.total() + assocsDescTableParams.total()}})</a>
           </li>
           <li>
               <button class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left" style="text-transform: none"
@@ -296,7 +296,7 @@
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
 
-            <td data-title="'Description'" sortable="'term'">{{rel.fsn}}
+            <td data-title="'Description'" sortable="'term'">{{rel.term}}
             </td>
             <td data-title="'Reason'" sortable="''">
 
