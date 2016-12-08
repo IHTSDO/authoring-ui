@@ -779,7 +779,7 @@ angular.module('singleConceptAuthoringApp')
           };
 
           scope.isComplete = function () {
-            return !scope.initializing && rowsAccepted === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.assocsTableParams.total();
+            return !scope.initializing && rowsAccepted === scope.isaRelsTableParams.total() + scope.attrRelsTableParams.total() + scope.assocsTableParams.total() + scope.assocsDescTableParams.total();
           };
 
           //
