@@ -1327,6 +1327,21 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       }
 
+      function isConceptId(id) {
+        var idStr = String(id);
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '0';
+      }
+
+      function isDescriptionId(id) {
+        var idStr = String(id);
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '1';
+      }
+
+      function isRelationshipId(id) {
+        var idStr = String(id);
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '2';
+      }
+
       // search concepts by branch, filter, and escgExpr
       function searchConcepts(branch, termFilter, escgExpr, offset, limit) {
         var deferred = $q.defer();
@@ -1431,6 +1446,11 @@ angular.module('singleConceptAuthoringApp')
         createGuid: createGuid,
         isSctid: isSctid,
         removeInvalidCharacters: removeInvalidCharacters
+        createGuid : createGuid,
+        isSctid : isSctid,
+        isConceptId : isConceptId,
+        isDescriptionId : isDescriptionId,
+        isRelationshipId : isRelationshipId
 
       };
     }
