@@ -126,7 +126,7 @@ angular.module('singleConceptAuthoringApp')
                         var item = concept;
                         item.inactivationIndicator = scope.reasonId;
                         item.refsetName = scope.associationTargets[j].id;
-                        if (concepts.map(function (c) {
+                        if (parsedComponents.concepts.map(function (c) {
                             return c.conceptId
                           }).indexOf(item.conceptId) === -1) {
                           parsedComponents.concepts.push(item);
@@ -151,6 +151,7 @@ angular.module('singleConceptAuthoringApp')
                   console.debug('   description', description);
                   // for each association reference set
                   for (var j = 0; j < scope.associationTargets.length; j++) {
+
                     console.debug('    checking against target', scope.associationTargets[j]);
 
                     // if this description has this association reference set
@@ -205,6 +206,8 @@ angular.module('singleConceptAuthoringApp')
                             }).indexOf(item.id) === -1) {
                             console.debug('           adding row', item);
                             parsedComponents.descriptionsWithConceptTarget.push(item);
+                          } else {
+                            console.debug('not adding row');
                           }
                         }
                       }
@@ -217,7 +220,7 @@ angular.module('singleConceptAuthoringApp')
                         item.refsetName = scope.associationTargets[j].id;
                         item.inactivationIndicator = scope.reasonId;
                         item.previousTargetId = targetComponentId;
-                        snowowlService.getDescriptionProperties(targetComponentId, scope.branch).then(function(descriptionTarget) {
+                        snowowlService.getDescriptionProperties(targetComponentId, scope.branch).then(function (descriptionTarget) {
                           item.previousTargetTerm = descriptionTarget.term;
                           parsedComponents.descriptionsWithDescriptionTarget.push(item);
                           if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length === list.length) {
@@ -566,83 +569,102 @@ angular.module('singleConceptAuthoringApp')
             scope.finalizing = true;
             notificationService.sendMessage('Saving Modified Relationships...');
             console.log(scope.affectedConcepts);
+
+            // clear association targets for affected concepts
             angular.forEach(scope.affectedConceptAssocs, function (item) {
               item.associationTargets = {};
             });
-            updateHistoricalAssociations(scope.affectedConceptAssocs).then(function () {
-              var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
-                return [value];
-              });
-              angular.forEach(scope.affectedConceptAssocs, function (item) {
-                conceptArray.push(item);
-              });
-              angular.forEach(conceptArray, function (concept) {
-                console.log(concept);
-                if (concept.newTargetFsn) {
-                  delete concept.newTargetFsn;
-                }
-                if (concept.newTargetId) {
-                  delete concept.newTargetId;
-                }
-                if (concept.refsetName) {
-                  delete concept.refsetName;
-                }
-                if (concept.accepted) {
-                  delete concept.accepted;
-                }
-                if (concept && concept.relationships) {
 
-                  angular.forEach(concept.relationships, function (rel) {
-                    if (rel.sourceFsn) {
-                      delete rel.sourceFsn;
-                    }
-                    if (rel.typeFsn) {
-                      delete rel.typeFsn;
-                    }
-                    if (rel.accepted) {
-                      delete rel.accepted;
-                      if (rel.relationshipId !== null) {
-                        rel.relationshipId = null;
-                      }
-                    }
-
-                  });
-                }
-              });
-              if (!scope.deletion) {
-                scope.inactivationConcept.inactivationIndicator = scope.reasonId;
-                scope.inactivationConcept.associationTargets = scope.assocs;
-                scope.inactivationConcept.active = false;
-                conceptArray.push(scope.inactivationConcept);
-                console.log(conceptArray);
-                snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-                  notificationService.sendMessage('Updating Historical Associations...');
-                  notificationService.sendMessage('Inactivation Complete');
-                  $route.reload();
-                }, function (error) {
-                  notificationService.sendError('Error inactivating concept: ' + error);
-                });
-              }
-              else {
-                snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-                  notificationService.sendMessage('Updating Historical Associations...');
-                  snowowlService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
-                    if (response.status === 409) {
-                      notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
-                      $route.reload();
-                    }
-                    else {
-                      $rootScope.$broadcast('removeItem', {concept: scope.concept});
-                      notificationService.sendMessage('Concept Deleted', 5000);
-                      $route.reload();
-
-                    }
-                  });
-                }, function (error) {
-                  notificationService.sendError('Error inactivating concept: ' + error);
-                });
-              }
+            // clear association targets for affected descriptions
+            angular.forEach(scope.affectedDescToConceptAssocs, function (item) {
+              item.associationTargets = {};
             });
+
+            // update the historical associations on the objects
+            updateHistoricalAssociations(scope.affectedConceptAssocs).then(function () {
+              updateHistoricalAssociations(scope.affectedDescToConceptAssocs).then(function () {
+
+                console.debug('desc to concept after update', scope.affectedDescToConceptAssocs);
+
+                //
+                // prepare concepts from affected concepts map and affected concept associations
+                //
+                var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
+                  return [value];
+                });
+                angular.forEach(scope.affectedConceptAssocs, function (item) {
+                  conceptArray.push(item);
+                });
+
+                angular.forEach(conceptArray, function (concept) {
+
+                  // apparent special handling -- accepted relationships should have ids nulled
+                  // TODO Not sure why? Needs explanation
+                  angular.forEach(concept.relationships, function (rel) {
+                    if (rel.accepted) {
+                      rel.relationshipId = null;
+                    }
+                  });
+                  snowowlService.cleanConcept(concept);
+                });
+
+                //
+                // prepare descriptions from affected description historical associations
+                // For now, do not include desc-to-desc associations
+                //
+                var descriptionArray = scope.affectedDescToConceptAssocs;
+                angular.forEach(descriptionArray, function (description) {
+                  snowowlService.cleanDescription(description);
+                });
+
+                console.debug('conceptArray', conceptArray);
+                console.debug('descriptionArray', descriptionArray);
+
+                return;
+
+                if (!scope.deletion) {
+                  scope.inactivationConcept.inactivationIndicator = scope.reasonId;
+                  scope.inactivationConcept.associationTargets = scope.assocs;
+                  scope.inactivationConcept.active = false;
+                  conceptArray.push(scope.inactivationConcept);
+                  console.log(conceptArray);
+                  snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
+                    snowowlService.bulkUpdateDescription(scope.branch, descriptionArray).then(function (response) {
+                      notificationService.sendMessage('Updating Historical Associations...');
+                      notificationService.sendMessage('Inactivation Complete');
+                      $route.reload();
+                    }, function (error) {
+                      notificationService.sendError('Error inactivating concept: ' + error);
+                    });
+                  }, function (error) {
+                    notificationService.sendError('Error inactivating concept: ' + error);
+                  });
+                }
+                else {
+                  snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
+                    snowowlService.bulkUpdateDescription(scope.branch, descriptionArray).then(function (response) {
+                      notificationService.sendMessage('Updating Historical Associations...');
+                      snowowlService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
+                        if (response.status === 409) {
+                          notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
+                          $route.reload();
+                        }
+                        else {
+                          $rootScope.$broadcast('removeItem', {concept: scope.concept});
+                          notificationService.sendMessage('Concept Deleted', 5000);
+                          $route.reload();
+
+                        }
+                      });
+                    }, function (error) {
+                      notificationService.sendError('Error inactivating concept: ' + error);
+                    });
+                  }, function (error) {
+                    notificationService.sendError('Error inactivating concept: ' + error);
+                  });
+                }
+              });
+            })
           };
 
           scope.dropAssociationTarget = function (relationship, data) {
@@ -666,7 +688,6 @@ angular.module('singleConceptAuthoringApp')
                 else {
                   deferred.resolve();
                 }
-                ;
               }
 
               next();
@@ -674,9 +695,8 @@ angular.module('singleConceptAuthoringApp')
             else {
               deferred.resolve();
             }
-            ;
             return deferred.promise;
-          };
+          }
 
 
           //
@@ -749,7 +769,7 @@ angular.module('singleConceptAuthoringApp')
                   scope.affectedConceptAssocs = parsedAssocs.concepts;
                   scope.affectedDescToConceptAssocs = parsedAssocs.descriptionsWithConceptTarget;
                   scope.affectedDescToDescAssocs = parsedAssocs.descriptionsWithDescriptionTarget;
-                  scope.affectedOtherAssocs= parsedAssocs.other;
+                  scope.affectedOtherAssocs = parsedAssocs.other;
 
                   console.debug('affected concept assocs', scope.affectedConceptAssocs);
                   console.debug('affected desc-concept assocs', scope.affectedDescToConceptAssocs);

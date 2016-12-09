@@ -551,6 +551,23 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
+      // mocks bulk description update with sequential calls, used by inactivation and possibly will be actual endpoint later
+      function bulkUpdateDescription(branch, descriptions) {
+        var deferred = $q.defer();
+
+        if (!descriptions || descriptions.length === 0) {
+          deferred.resolve();
+        } else {
+          updateDescription(descriptions[0], branch).then(function() {
+            bulkUpdateDescription(descriptions.slice(1)).then(function() {
+              deferred.resolve();
+            })
+          })
+        }
+
+        return deferred.promise;
+      }
+
       ///////////////////////////////////////////////////
       // Relationship functions
       //////////////////////////////////////////////////
@@ -1399,6 +1416,7 @@ angular.module('singleConceptAuthoringApp')
         getConceptPreferredTerm: getConceptPreferredTerm,
         updateConcept: updateConcept,
         bulkUpdateConcept: bulkUpdateConcept,
+        bulkUpdateDescription: bulkUpdateDescription,
         createConcept: createConcept,
         inactivateConcept: inactivateConcept,
         inactivateDescription: inactivateDescription,
@@ -1420,7 +1438,6 @@ angular.module('singleConceptAuthoringApp')
         getClassificationsForProject: getClassificationsForProject,
         getEquivalentConcepts: getEquivalentConcepts,
         getRelationshipChanges: getRelationshipChanges,
-        cleanConcept: cleanConcept,
         getModelPreview: getModelPreview,
         saveClassification: saveClassification,
         addModules: addModules,
@@ -1463,13 +1480,12 @@ angular.module('singleConceptAuthoringApp')
         // utility
         createGuid: createGuid,
         isSctid: isSctid,
-        removeInvalidCharacters: removeInvalidCharacters
-        createGuid : createGuid,
-        isSctid : isSctid,
-        isConceptId : isConceptId,
-        isDescriptionId : isDescriptionId,
-        isRelationshipId : isRelationshipId
-
+        isConceptId: isConceptId,
+        isDescriptionId: isDescriptionId,
+        isRelationshipId: isRelationshipId,
+        cleanConcept: cleanConcept,
+        cleanDescription: cleanDescription,
+        cleanRelationship: cleanRelationship
       };
     }
 
