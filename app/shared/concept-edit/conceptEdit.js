@@ -1775,13 +1775,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           relationship.target.fsn = 'Validating...';
 
-          // if type specified, validate against type
-          if (metadataService.isMrcmEnabled()) {
+          // if template supplied, check ECL/ESCG
+          if (scope.template) {
+
+            constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
+              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+              relationship.target.conceptId = data.id;
+              relationship.target.fsn = data.name;
+              scope.updateRelationship(relationship, false);
+            }, function (error) {
+              scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
+              relationship.target.fsn = tempFsn;
+            });
+          }
+
+          // otherwise use mrcm rules
+          else if (metadataService.isMrcmEnabled()) {
 
             if (relationship.type.conceptId) {
 
-              constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
-                relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+              constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
                 scope.updateRelationship(relationship, false);
@@ -1792,7 +1805,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             } else {
               scope.warnings = ['MRCM validation error: Must set relationship type first'];
             }
-          } else {
+          }
+
+          // otherwise simply allow drop
+          else {
             relationship.target.conceptId = data.id;
             relationship.target.fsn = data.name;
             scope.updateRelationship(relationship, false);
