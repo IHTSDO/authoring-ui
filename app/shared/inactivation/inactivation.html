@@ -126,7 +126,7 @@
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
                                                        data-toggle="tab">Historical Associations Affected
-            ({{assocsTableParams.total() + assocsDescTableParams.total()}})</a>
+            ({{assocsConceptTableParams.total() + assocsDescToConceptTableParams.total()}})</a>
           </li>
           <li>
             <button class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
@@ -372,6 +372,8 @@
 
           </table>
         </div>
+
+        <!-- Removed pending further discussion
         <div ng-show="affectedDescToDescAssocs.length > 0">
           <h4>Description Historical Associations Referencing Descriptions</h4>
 
@@ -398,7 +400,7 @@
             </tr>
 
           </table>
-        </div>
+        </div>-->
 
         </br></br></br>
       </div>
