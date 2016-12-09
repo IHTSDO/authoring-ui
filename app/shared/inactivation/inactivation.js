@@ -76,6 +76,8 @@ angular.module('singleConceptAuthoringApp')
 
           function parseAssocs(list) {
 
+            console.debug('parseAssocs', list);
+
             var deferred = $q.defer();
             var parsedComponents = {
               concepts: [],
@@ -135,7 +137,7 @@ angular.module('singleConceptAuthoringApp')
                     }
                   }
 
-                  console.debug('check');
+                  console.debug('check', parsedComponents, list.length);
                   if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === list.length) {
                     deferred.resolve(parsedComponents);
                   }
@@ -185,8 +187,8 @@ angular.module('singleConceptAuthoringApp')
 
                             // add to list if not already present
                             if (parsedComponents.descriptionsWithConceptTarget.map(function (d) {
-                                return d.descriptionId;
-                              }).indexOf(item.descriptionId) === -1) {
+                                return d.id;
+                              }).indexOf(item.id) === -1) {
                               console.debug('           adding row', item);
                               parsedComponents.descriptionsWithConceptTarget.push(item);
                             }
@@ -223,6 +225,8 @@ angular.module('singleConceptAuthoringApp')
                         snowowlService.getDescriptionProperties(targetComponentId, scope.branch).then(function (descriptionTarget) {
                           item.previousTargetTerm = descriptionTarget.term;
                           parsedComponents.descriptionsWithDescriptionTarget.push(item);
+
+                          console.debug('check', parsedComponents, list.length);
                           if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length === list.length) {
                             deferred.resolve(parsedComponents);
                           }
@@ -231,6 +235,10 @@ angular.module('singleConceptAuthoringApp')
                       } else {
                         console.debug('found other target component');
                         parsedComponents.descriptionsWithDescriptionTarget.push(description);
+                        console.debug('check', parsedComponents, list.length);
+                        if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length === list.length) {
+                          deferred.resolve(parsedComponents);
+                        }
                       }
                     }
 
@@ -248,6 +256,7 @@ angular.module('singleConceptAuthoringApp')
               // add to other (dump)  list
               else {
                 parsedComponents.other.push(list[i].referencedComponent);
+                console.debug('check', parsedComponents, list.length);
                 if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === list.length) {
                   deferred.resolve(parsedComponents);
                 }
@@ -386,6 +395,12 @@ angular.module('singleConceptAuthoringApp')
                     rowsAccepted++;
                   }
                 });
+                angular.forEach(scope.affectedDescToConceptAssocs, function (rel) {
+                  if (rel.accepted !== false) {
+                    rel.accepted = false;
+                    rowsAccepted++;
+                  }
+                });
               }
               scope.tabThreeAccepted = !scope.tabThreeAccepted;
             }
@@ -438,15 +453,10 @@ angular.module('singleConceptAuthoringApp')
               // initial display text, overwritten in getData
               total: '-',
               getData: function ($defer, params) {
-                var data = [];
-                // recompute the affected relationships from ids or blank ids
-                data = scope.affectedConceptAssocs;
+                var data = scope.affectedConceptAssocs ? scope.affectedConceptAssocs : [];
                 params.total(data.length);
-
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
-
                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-
               }
             }
           );
@@ -460,15 +470,10 @@ angular.module('singleConceptAuthoringApp')
               // initial display text, overwritten in getData
               total: '-',
               getData: function ($defer, params) {
-                var data = [];
-                // recompute the affected relationships from ids or blank ids
-                data = scope.affectedDescToConceptAssocs;
+                var data = scope.affectedDescToConceptAssocs ? scope.affectedDescToConceptAssocs : [];
                 params.total(data.length);
-
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
-
                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-
               }
             }
           );
@@ -482,15 +487,10 @@ angular.module('singleConceptAuthoringApp')
               // initial display text, overwritten in getData
               total: '-',
               getData: function ($defer, params) {
-                var data = [];
-                // recompute the affected relationships from ids or blank ids
-                data = scope.affectedDescToDescAssocs;
+                var data = scope.affectedDescToDescAssocs ? scope.affectedDescToDescAssocs : [];
                 params.total(data.length);
-
                 data = params.sorting() ? $filter('orderBy')(data, params.orderBy()) : data;
-
                 $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-
               }
             }
           );
@@ -563,6 +563,28 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          function getFullConceptsForIds(ids, array) {
+            var deferred = $q.defer();
+            if (!array) {
+              array = [];
+            }
+            if (!ids || ids.length === 0) {
+              deferred.resolve(array);
+            } else {
+              snowowlService.getFullConcept(ids[0], scope.branch).then(function (concept) {
+                array.push(concept);
+                getFullConceptsForIds(ids.slice(1), array).then(function (concepts) {
+                  deferred.resolve(concepts);
+                }, function (error) {
+                  deferred.reject(error);
+                })
+              }, function (error) {
+                deferred.reject(error);
+              });
+            }
+            return deferred.promise;
+          }
+
           function getConceptsToUpdate() {
             console.debug('getConceptsToupdate');
 
@@ -578,26 +600,12 @@ angular.module('singleConceptAuthoringApp')
               conceptArray.push(item);
             });
 
-            angular.forEach(conceptArray, function (concept) {
-
-              // apparent special handling -- accepted relationships should have ids nulled
-              // TODO Not sure why? Needs explanation
-              angular.forEach(concept.relationships, function (rel) {
-                if (rel.accepted) {
-                  rel.relationshipId = null;
-                }
-              });
-              snowowlService.cleanConcept(concept);
-            });
 
             //
             // prepare descriptions from affected description historical associations
             // For now, do not include desc-to-desc associations
             //
             var descriptionArray = scope.affectedDescToConceptAssocs;
-            angular.forEach(descriptionArray, function (description) {
-              snowowlService.cleanDescription(description);
-            });
 
             console.debug('conceptArray', conceptArray);
             console.debug('descriptionArray', descriptionArray);
@@ -605,23 +613,31 @@ angular.module('singleConceptAuthoringApp')
             var conceptIds = conceptArray.map(function (c) {
               return c.id;
             });
-            var descConceptIds = descriptions.map(function (d) {
-              return d.id;
-            }).filter(function (d) {
-              return conceptIds.indexOf(d.conceptId) === -1;
+            console.debug('conceptIds', conceptIds);
+            var tempIds = descriptionArray.map(function (d) {
+              return d.conceptId;
             });
+            var descConceptIds = [];
+            angular.forEach(tempIds, function (id) {
+              if (conceptIds.indexOf(id) === -1 && descConceptIds.indexOf(id) === -1) {
+                descConceptIds.push(id);
+              }
+            });
+            console.debug('descConceptIds', descConceptIds);
 
-            snowowlService.bulkGetConcept(descConceptIds, scope.branch).then(function (descConcepts) {
+            getFullConceptsForIds(descConceptIds).then(function (descConcepts) {
               conceptArray = conceptArray.concat(descConcepts);
               console.debug('concepts', conceptArray);
+
+
               angular.forEach(descriptionArray, function (d) {
-                console.debug('checking description', d.id, d.descriptionId);
+                console.debug('checking description', d.id, d);
                 angular.forEach(conceptArray, function (c) {
-                  console.debug(' checking against concept', c.id, c.conceptId);
-                  if (c.id === d.conceptId) {
+                  console.debug(' checking against concept', c.conceptId);
+                  if (c.conceptId === d.conceptId) {
                     console.debug('  concept match found');
                     angular.forEach(c.descriptions, function (cd) {
-                      console.debug('    checking against concept description', cd.id, cd.descriptionId);
+                      console.debug('    checking against concept description', cd.descriptionId);
                       if (cd.descriptionId === d.id) {
                         console.debug('      match found');
                         cd.associationTargets = d.associationTargets;
@@ -659,7 +675,20 @@ angular.module('singleConceptAuthoringApp')
             updateHistoricalAssociations(scope.affectedConceptAssocs).then(function () {
               updateHistoricalAssociations(scope.affectedDescToConceptAssocs).then(function () {
                 getConceptsToUpdate().then(function (conceptArray) {
-                  return;
+
+                  angular.forEach(conceptArray, function (concept) {
+
+                    // apparent special handling -- accepted relationships should have ids nulled
+                    // TODO Not sure why? Needs explanation
+                    angular.forEach(concept.relationships, function (rel) {
+                      if (rel.accepted) {
+                        rel.relationshipId = null;
+                      }
+                    });
+                    snowowlService.cleanConcept(concept);
+                  });
+
+
                   if (!scope.deletion) {
                     scope.inactivationConcept.inactivationIndicator = scope.reasonId;
                     scope.inactivationConcept.associationTargets = scope.assocs;
@@ -785,14 +814,15 @@ angular.module('singleConceptAuthoringApp')
           function getAffectedAssociations() {
             var deferred = $q.defer();
             snowowlService.getMembersByTargetComponent(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
-              scope.affectedConceptAssocs = response.items ? response.items.filter(assocFilter) : [];
 
-              console.debug('affected assocs after after getAffectedAssociations', scope.affectedConceptAssocs);
-
+              scope.affectedConceptAssocs = [];
+              scope.affectedDescToConceptAssocs = [];
+              scope.affectedDescToDescAssocs = [];
+              scope.affectedOtherAssocs = [];
 
               if (response.items && response.items.length > 0) {
                 console.debug('parsing assocs');
-                parseAssocs(scope.affectedConceptAssocs).then(function (parsedAssocs) {
+                parseAssocs(response.items).then(function (parsedAssocs) {
                   console.debug('parsedAssocs', parsedAssocs);
                   scope.affectedConceptAssocs = parsedAssocs.concepts;
                   scope.affectedDescToConceptAssocs = parsedAssocs.descriptionsWithConceptTarget;
