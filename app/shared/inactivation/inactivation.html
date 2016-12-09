@@ -236,17 +236,19 @@
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
 
-            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.fsn}}
+            <td data-title="'SCTID'" sortable="'id'">{{rel.id}}</td>
+
+            <td data-title="'Concept FSN'" sortable="'sourceFsn'">{{rel.fsn}}
             </td>
             <td data-title="'Reason'" sortable="''">
 
-              <select ng-model="rel.inactivationIndicator" class="form-control"
+              <select ng-model="rel.inactivationIndicator" class=""
                       ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
 
             </td>
             <td data-title="'Association'" sortable="'refsetName'">
 
-              <select ng-model="rel.refsetName" class="form-control"
+              <select ng-model="rel.refsetName" class=""
                       ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)" ng-change="updateRefTarget(rel)"></select>
             </td>
             <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
@@ -296,17 +298,20 @@
           class="table table-full table-full-small">
           <tr ng-repeat="rel in $data">
 
-            <td data-title="'Description'" sortable="'term'">{{rel.term}}
+            <td data-title="'SCTID'" sortable="'id'">{{rel.id}}</td>
+
+
+            <td data-title="'Description Term'" sortable="'term'">{{rel.term}}
             </td>
             <td data-title="'Reason'" sortable="''">
 
-              <select ng-model="rel.inactivationIndicator" class="form-control"
+              <select ng-model="rel.inactivationIndicator" class=""
                       ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
 
             </td>
             <td data-title="'Association'" sortable="'refsetName'">
 
-              <select ng-model="rel.refsetName" class="form-control"
+              <select ng-model="rel.refsetName" class=""
                       ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)" ng-change="updateRefTarget(rel)"></select>
             </td>
             <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
