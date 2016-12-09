@@ -40,7 +40,7 @@ angular.module('singleConceptAuthoringApp')
         $http.post(apiEndpoint + 'browser/' + branch + '/concepts/bulk', conceptArray).then(function (response) {
           pollForBulkUpdate(response.headers('Location'), 1000).then(function (result) {
             deferred.resolve(response.data);
-          }, function(error) {
+          }, function (error) {
             deferred.reject(error);
           });
         }, function (error) {
@@ -64,8 +64,7 @@ angular.module('singleConceptAuthoringApp')
               deferred.resolve(response.data);
             } else if (response && response.data && response.data.status === 'FAILED') {
               deferred.reject('Bulk concept update failed');
-            } else
-            {
+            } else {
               pollForBulkUpdate(url, intervalTime).then(function (pollResults) {
                 deferred.resolve(pollResults);
               }, function (error) {
@@ -82,6 +81,57 @@ angular.module('singleConceptAuthoringApp')
 
       function isSctid(id) {
         return id && id.match(/^[0-9]+$/);
+      }
+
+      function cleanRelationship(relationship) {
+
+        var allowableRelationshipProperties = [
+          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
+        ];
+
+        // if a locally assigned UUID, strip
+        if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
+          delete relationship.relationshipId;
+        }
+
+        // if concept has sctid and sourceId not set, apply
+        relationship.sourceId = concept.conceptId;
+
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
+        }
+      }
+
+      function cleanDescription(description) {
+        var allowableDescriptionProperties = [
+          'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap', 'inactivationIndicator', 'associationTargets',
+        ];
+
+        // if a locally assigned UUID, strip
+        if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
+          delete description.descriptionId;
+        }
+        if (description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated') {
+          delete description.inactivationIndicator;
+        }
+        for (var key in description) {
+          if (allowableDescriptionProperties.indexOf(key) === -1) {
+            delete description[key];
+          }
+        }
+
+        if (description.term) {
+          // strip invalid characters from term
+          description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
+
+          //replace any non-space whitespace characters (tab, newline, etc.)
+          description.term = description.term.replace(/[^\S ]/g, ' ');
+
+          // replace any 2+ sequences of space with single space
+          description.term = description.term.replace(/[ ]{2,}/g, ' ');
+        }
       }
 
       function removeInvalidCharacters(term) {
@@ -121,44 +171,12 @@ angular.module('singleConceptAuthoringApp')
           }
         }
 
-        var allowableDescriptionProperties = [
-          'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap', 'inactivationIndicator'
-        ];
-
         angular.forEach(concept.descriptions, function (description) {
-
-          // if a locally assigned UUID, strip
-          if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
-            delete description.descriptionId;
-          }
-          if (description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated') {
-            delete description.inactivationIndicator;
-          }
-          for (var key in description) {
-            if (allowableDescriptionProperties.indexOf(key) === -1) {
-              delete description[key];
-            }
-          }
+          cleanDescription(description);
         });
 
-        var allowableRelationshipProperties = [
-          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
-        ];
         angular.forEach(concept.relationships, function (relationship) {
-
-          // if a locally assigned UUID, strip
-          if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
-            delete relationship.relationshipId;
-          }
-
-          // if concept has sctid and sourceId not set, apply
-          relationship.sourceId = concept.conceptId;
-
-          for (var key in relationship) {
-            if (allowableRelationshipProperties.indexOf(key) === -1) {
-              delete relationship[key];
-            }
-          }
+          cleanRelationship(relationship);
         });
       }
 
@@ -1329,17 +1347,17 @@ angular.module('singleConceptAuthoringApp')
 
       function isConceptId(id) {
         var idStr = String(id);
-        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '0';
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length - 1) === '0';
       }
 
       function isDescriptionId(id) {
         var idStr = String(id);
-        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '1';
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length - 1) === '1';
       }
 
       function isRelationshipId(id) {
         var idStr = String(id);
-        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length-1) === '2';
+        return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length - 1) === '2';
       }
 
       // search concepts by branch, filter, and escgExpr
