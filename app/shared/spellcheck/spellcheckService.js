@@ -10,6 +10,8 @@ angular.module('singleConceptAuthoringApp')
     var endpoint = '../check';
 
     var testWords = [];
+        // on errors, simply resolve empty object
+        deferred.resolve({});
 
     function checkSpelling(term) {
       var deferred = $q.defer();
