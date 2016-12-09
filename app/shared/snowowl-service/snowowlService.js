@@ -94,9 +94,6 @@ angular.module('singleConceptAuthoringApp')
           delete relationship.relationshipId;
         }
 
-        // if concept has sctid and sourceId not set, apply
-        relationship.sourceId = concept.conceptId;
-
         for (var key in relationship) {
           if (allowableRelationshipProperties.indexOf(key) === -1) {
             delete relationship[key];
@@ -176,7 +173,11 @@ angular.module('singleConceptAuthoringApp')
         });
 
         angular.forEach(concept.relationships, function (relationship) {
-          cleanRelationship(relationship);
+          cleanRelationship(relationship, concept);
+
+          // snowowl require source id set
+          relationship.sourceId = concept.conceptId;
+
         });
       }
 
@@ -558,8 +559,8 @@ angular.module('singleConceptAuthoringApp')
         if (!descriptions || descriptions.length === 0) {
           deferred.resolve();
         } else {
-          updateDescription(descriptions[0], branch).then(function() {
-            bulkUpdateDescription(descriptions.slice(1)).then(function() {
+          updateDescription(descriptions[0], branch).then(function () {
+            bulkUpdateDescription(descriptions.slice(1)).then(function () {
               deferred.resolve();
             })
           })
