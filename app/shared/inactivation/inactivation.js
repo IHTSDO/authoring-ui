@@ -565,7 +565,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.completeInactivation = function () {
             scope.finalizing = true;
-            notificationService.sendMessage('Saving Modified Relationships...');
+            notificationService.sendMessage('Saving modified components and historical associations...');
             console.log(scope.affectedConcepts);
 
             // clear association targets for affected concepts
@@ -618,7 +618,6 @@ angular.module('singleConceptAuthoringApp')
                 console.debug('conceptArray', conceptArray);
                 console.debug('descriptionArray', descriptionArray);
 
-                return;
 
                 if (!scope.deletion) {
                   scope.inactivationConcept.inactivationIndicator = scope.reasonId;
@@ -626,9 +625,9 @@ angular.module('singleConceptAuthoringApp')
                   scope.inactivationConcept.active = false;
                   conceptArray.push(scope.inactivationConcept);
                   console.log(conceptArray);
+
                   snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                     snowowlService.bulkUpdateDescription(scope.branch, descriptionArray).then(function (response) {
-                      notificationService.sendMessage('Updating Historical Associations...');
                       notificationService.sendMessage('Inactivation Complete');
                       $route.reload();
                     }, function (error) {
@@ -641,7 +640,7 @@ angular.module('singleConceptAuthoringApp')
                 else {
                   snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                     snowowlService.bulkUpdateDescription(scope.branch, descriptionArray).then(function (response) {
-                      notificationService.sendMessage('Updating Historical Associations...');
+
                       snowowlService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
                         if (response.status === 409) {
                           notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
