@@ -9,29 +9,50 @@
             <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="isStatic || isLockedModule(description.moduleId)"
               ng-model="description.lang" ng-change="updateDescription(description)"
               ng-options="language as language for language in getAvailableLanguages(description.moduleId)"></select>
-        </div>
-        <div class="time pull-left ">
-            <label class="control-label">Eff. Time</label>
-            <span class="fields row"> {{description.effectiveTime}}</span>
-        </div>
-        <div class="module-id pull-left">
-            <label class="control-label">Module Id</label>
-            <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
+    </div>
+    <div class="time pull-left ">
+      <label class="control-label">Eff. Time</label>
+      <span class="fields row"> {{description.effectiveTime}}</span>
+    </div>
+    <div class="module-id pull-left">
+      <label class="control-label">Module Id</label>
+      <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
               ng-model="description.moduleId" ng-disabled="isStatic || isLockedModule(description.moduleId)"
-              ng-change="updateDescription(description)" ng-options="module.id as module.name for module in getAvailableModules(description.moduleId)"></select>
-        </div>
+              ng-change="updateDescription(description)"
+              ng-options="module.id as module.name for module in getAvailableModules(description.moduleId)"></select>
     </div>
-    <div ng-if="!description.active" class="pop-edit description-more row">
-        <div class="module pull-left">
-            <label class="control-label">Inactivation Reason
+  </div>
+  <div ng-if="!description.active" class="pop-edit description-more row">
+    <div class="module pull-left">
+      <label class="control-label">Inactivation Reason
 
-                <button ng-if="!isStatic && !isLockedModule(description.moduleId)" type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editDescriptionInactivationReason(description)" aria-disabled="false">
-                    <i class="md fa-sca fa-pencil"></i>
-                    <span>Edit</span>
-                </button>
-            </label>
-            <span class="fields row" ng-if="description.inactivationIndicator">{{formatComponentMoreText(description.inactivationIndicator)}}</span>
-            <span class="fields row" ng-if="!description.inactivationIndicator || description.inactivationIndicator.length === 0">Reason not stated</span>
-        </div>
+        <button ng-if="!isStatic && !isLockedModule(description.moduleId)" type="button"
+                class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active"
+                title="Edit" ng-click="editDescriptionInactivationReason(description)" aria-disabled="false">
+          <i class="md fa-sca fa-pencil"></i>
+          <span>Edit</span>
+        </button>
+      </label>
+      <span class="fields row" ng-if="description.inactivationIndicator">{{formatComponentMoreText(description.inactivationIndicator)}}</span>
+      <span class="fields row"
+            ng-if="!description.inactivationIndicator || description.inactivationIndicator.length === 0">Reason not stated</span>
     </div>
+    <div class="col-md-12 no-padding pull-left m-t-20">
+      <label class="control-label">Association Targets</label>
+      <div ng-show="!description.associationTargets">None</div>
+      <div ng-repeat="(key, value) in description.associationTargets" class="p-b-10">
+        <div class="row no-gutter col-md-12 no-padding">
+          <div class="col-md-4">
+            {{formatComponentMoreText(key)}}
+          </div>
+          <div class="col-md-8">
+            <div class="row  p-b-5" ng-repeat="target in value">
+              <div class="col-md-4">{{target}}</div>
+              <div class="col-md-8">{{getTerm(target)}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
