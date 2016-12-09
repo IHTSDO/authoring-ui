@@ -126,10 +126,11 @@
           </button>
 
 
+
           <!-- control buttons -->
           <button type="button" style="vertical-align: bottom"
                   ng-click="toggleConceptActive(concept, true)"
-                  ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released"
+                  ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
                   class="red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
 
             <span ng-if="!isStatic  && !isInactivation">Delete Unpublished Concept</span>

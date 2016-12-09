@@ -80,7 +80,11 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function isSctid(id) {
-        return id && id.match(/^[0-9]+$/);
+        if (!id) {
+          return false;
+        }
+        var match = id.match(/^[0-9]+$/);
+        return match ? true : false;
       }
 
       function cleanRelationship(relationship) {
@@ -1367,9 +1371,9 @@ angular.module('singleConceptAuthoringApp')
 
         // paging/filtering/sorting with defaults applied
         var params = {
-          offset : offset ? offset : '0',
-          limit : limit ? limit : '50',
-          expand : 'fsn()'
+          offset: offset ? offset : '0',
+          limit: limit ? limit : '50',
+          expand: 'fsn()'
         };
         if (termFilter) {
           params.termFilter = termFilter;
@@ -1432,7 +1436,7 @@ angular.module('singleConceptAuthoringApp')
         getDialects: getDialects,
         downloadClassification: downloadClassification,
         findConceptsForQuery: findConceptsForQuery,
-        searchConcepts : searchConcepts,
+        searchConcepts: searchConcepts,
         getReview: getReview,
         getMembersByTargetComponent: getMembersByTargetComponent,
 

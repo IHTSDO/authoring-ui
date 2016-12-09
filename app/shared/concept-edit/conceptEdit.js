@@ -735,6 +735,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you want to modify an activation status please accept the merge and then make these changes within the task.');
             return;
           }
+
+          // if not an SCTID, simply remove the concept instead of deleting it
+          if (!snowowlService.isConceptId(concept.conceptId)) {
+            scope.removeConcept(concept);
+            return;
+          }
+
+
           // if active, ensure concept is fully saved prior to inactivation
           // don't want to persist the inactivation reason without a forced
           // save
