@@ -536,6 +536,7 @@ angular.module('singleConceptAuthoringApp')
 
 
           scope.removeRelationship = function (relationship) {
+            console.debug('remove relationship', relationship);
             var concept = scope.affectedConcepts[relationship.sourceId];
             for (var i = concept.relationships.length - 1; i >= 0; i--) {
               if (concept.relationships[i].target.conceptId === relationship.target.conceptId && concept.relationships[i].type.conceptId === relationship.type.conceptId) {
