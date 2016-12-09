@@ -563,6 +563,83 @@ angular.module('singleConceptAuthoringApp')
             }
           };
 
+          function getConceptsToUpdate() {
+            console.debug('getConceptsToupdate');
+
+            var deferred = $q.defer();
+
+            //
+            // prepare concepts from affected concepts map and affected concept associations
+            //
+            var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
+              return [value];
+            });
+            angular.forEach(scope.affectedConceptAssocs, function (item) {
+              conceptArray.push(item);
+            });
+
+            angular.forEach(conceptArray, function (concept) {
+
+              // apparent special handling -- accepted relationships should have ids nulled
+              // TODO Not sure why? Needs explanation
+              angular.forEach(concept.relationships, function (rel) {
+                if (rel.accepted) {
+                  rel.relationshipId = null;
+                }
+              });
+              snowowlService.cleanConcept(concept);
+            });
+
+            //
+            // prepare descriptions from affected description historical associations
+            // For now, do not include desc-to-desc associations
+            //
+            var descriptionArray = scope.affectedDescToConceptAssocs;
+            angular.forEach(descriptionArray, function (description) {
+              snowowlService.cleanDescription(description);
+            });
+
+            console.debug('conceptArray', conceptArray);
+            console.debug('descriptionArray', descriptionArray);
+
+            var conceptIds = conceptArray.map(function (c) {
+              return c.id;
+            });
+            var descConceptIds = descriptions.map(function (d) {
+              return d.id;
+            }).filter(function (d) {
+              return conceptIds.indexOf(d.conceptId) === -1;
+            });
+
+            snowowlService.bulkGetConcept(descConceptIds, scope.branch).then(function (descConcepts) {
+              conceptArray = conceptArray.concat(descConcepts);
+              console.debug('concepts', conceptArray);
+              angular.forEach(descriptionArray, function (d) {
+                console.debug('checking description', d.id, d.descriptionId);
+                angular.forEach(conceptArray, function (c) {
+                  console.debug(' checking against concept', c.id, c.conceptId);
+                  if (c.id === d.conceptId) {
+                    console.debug('  concept match found');
+                    angular.forEach(c.descriptions, function (cd) {
+                      console.debug('    checking against concept description', cd.id, cd.descriptionId);
+                      if (cd.descriptionId === d.id) {
+                        console.debug('      match found');
+                        cd.associationTargets = d.associationTargets;
+                      }
+                    });
+                  }
+                });
+              });
+              console.debug('updated concepts', conceptArray);
+              deferred.resolve(conceptArray);
+            }, function (error) {
+              deferred.reject(error);
+            });
+
+            return deferred.promise;
+
+          }
+
           scope.completeInactivation = function () {
             scope.finalizing = true;
             notificationService.sendMessage('Saving modified components and historical associations...');
@@ -581,66 +658,23 @@ angular.module('singleConceptAuthoringApp')
             // update the historical associations on the objects
             updateHistoricalAssociations(scope.affectedConceptAssocs).then(function () {
               updateHistoricalAssociations(scope.affectedDescToConceptAssocs).then(function () {
-
-                console.debug('desc to concept after update', scope.affectedDescToConceptAssocs);
-
-                //
-                // prepare concepts from affected concepts map and affected concept associations
-                //
-                var conceptArray = $.map(scope.affectedConcepts, function (value, index) {
-                  return [value];
-                });
-                angular.forEach(scope.affectedConceptAssocs, function (item) {
-                  conceptArray.push(item);
-                });
-
-                angular.forEach(conceptArray, function (concept) {
-
-                  // apparent special handling -- accepted relationships should have ids nulled
-                  // TODO Not sure why? Needs explanation
-                  angular.forEach(concept.relationships, function (rel) {
-                    if (rel.accepted) {
-                      rel.relationshipId = null;
-                    }
-                  });
-                  snowowlService.cleanConcept(concept);
-                });
-
-                //
-                // prepare descriptions from affected description historical associations
-                // For now, do not include desc-to-desc associations
-                //
-                var descriptionArray = scope.affectedDescToConceptAssocs;
-                angular.forEach(descriptionArray, function (description) {
-                  snowowlService.cleanDescription(description);
-                });
-
-                console.debug('conceptArray', conceptArray);
-                console.debug('descriptionArray', descriptionArray);
-
-
-                if (!scope.deletion) {
-                  scope.inactivationConcept.inactivationIndicator = scope.reasonId;
-                  scope.inactivationConcept.associationTargets = scope.assocs;
-                  scope.inactivationConcept.active = false;
-                  conceptArray.push(scope.inactivationConcept);
-                  console.log(conceptArray);
-
-                  snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-                    snowowlService.bulkUpdateDescription(scope.branch, descriptionArray).then(function (response) {
+                getConceptsToUpdate().then(function (conceptArray) {
+                  return;
+                  if (!scope.deletion) {
+                    scope.inactivationConcept.inactivationIndicator = scope.reasonId;
+                    scope.inactivationConcept.associationTargets = scope.assocs;
+                    scope.inactivationConcept.active = false;
+                    conceptArray.push(scope.inactivationConcept);
+                    console.log(conceptArray);
+                    snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                       notificationService.sendMessage('Inactivation Complete');
                       $route.reload();
                     }, function (error) {
                       notificationService.sendError('Error inactivating concept: ' + error);
                     });
-                  }, function (error) {
-                    notificationService.sendError('Error inactivating concept: ' + error);
-                  });
-                }
-                else {
-                  snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
-                    snowowlService.bulkUpdateDescription(scope.branch, descriptionArray).then(function (response) {
-
+                  }
+                  else {
+                    snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
                       snowowlService.deleteConcept(scope.inactivationConcept.conceptId, scope.branch).then(function (response) {
                         if (response.status === 409) {
                           notificationService.sendError('Cannot delete concept - One or more components is published', 5000);
@@ -650,16 +684,13 @@ angular.module('singleConceptAuthoringApp')
                           $rootScope.$broadcast('removeItem', {concept: scope.concept});
                           notificationService.sendMessage('Concept Deleted', 5000);
                           $route.reload();
-
                         }
                       });
                     }, function (error) {
                       notificationService.sendError('Error inactivating concept: ' + error);
                     });
-                  }, function (error) {
-                    notificationService.sendError('Error inactivating concept: ' + error);
-                  });
-                }
+                  }
+                })
               });
             })
           };
