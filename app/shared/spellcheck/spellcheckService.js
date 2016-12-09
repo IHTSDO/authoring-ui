@@ -16,11 +16,9 @@ angular.module('singleConceptAuthoringApp')
       $http.get(uri).then(function (response) {
         deferred.resolve(response);
       }, function (error) {
+        // on errors, simply resolve empty object
+        deferred.resolve({});
 
-        // TODO REMOVE in favor of rejection -- this is in for demo and styling while endpoint not up
-        var testResults = testCheckSpelling(tokenizedWords);
-        deferred.resolve(testResults);
-        //   deferred.reject('Spellcheck failed: ' + error);
       });
       return deferred.promise;
     }
