@@ -2069,16 +2069,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // Component property retrieval (Inactivation)
 ///////////////////////////////////////////////)
 
-        var conceptFsns = {};
-        scope.getFsn = function (conceptId) {
-          if (conceptFsns.hasOwnProperty(conceptId)) {
-            return conceptFsns[conceptId];
-          } else {
-            conceptFsns[conceptId] = 'Retrieving FSN...';
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
-              conceptFsns[conceptId] = response.fsn;
-            });
 
+        var componentTerms = {};
+        scope.getTerm = function (componentId) {
+          if (componentTerms.hasOwnProperty(componentId)) {
+            return componentTerms[componentId];
+          } else {
+            componentTerms[componentId] = 'Retrieving term...';
+            if (snowowlService.isConceptId(componentId)) {
+              snowowlService.getFullConcept(componentId, scope.branch).then(function (response) {
+                componentTerms[componentId] = response.fsn;
+              });
+            } else if (snowowlService.isDescriptionId(componentId)) {
+              snowowlService.getDescriptionProperties(componentId, scope.branch).then(function (response) {
+                componentTerms[componentId] = response.term;
+              })
+            }
           }
         };
 
