@@ -387,6 +387,13 @@ angular.module('singleConceptAuthoringApp')
                     rowsAccepted++;
                   }
                 });
+                angular.forEach(scope.affectedDescToConceptAssocs, function (rel) {
+                  console.debug('accepting', rel);
+                  if (rel.accepted !== true) {
+                    rel.accepted = true;
+                    rowsAccepted++;
+                  }
+                });
               }
               else {
                 angular.forEach(scope.affectedConceptAssocs, function (rel) {
@@ -396,6 +403,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
                 angular.forEach(scope.affectedDescToConceptAssocs, function (rel) {
+                  console.debug('accepting', rel);
                   if (rel.accepted !== false) {
                     rel.accepted = false;
                     rowsAccepted++;
