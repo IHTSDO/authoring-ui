@@ -58,9 +58,11 @@ angular.module('singleConceptAuthoringApp')
       var tokenizedWords = term ? term.toLowerCase().split(' ') : [];
       getSuggestions(tokenizedWords).then(function (suggestions) {
         angular.forEach(tokenizedWords, function (word) {
-          if (word.charAt(0) === word.charAt(0).toUpperCase()) {
-            suggestions[capitalizeFirstCharacter(word)] = suggestions[word].map(capitalizeFirstCharacter);
-            delete suggestions[word];
+          if (suggestions.hasOwnProperty(word)) {
+            if (word.charAt(0) === word.charAt(0).toUpperCase()) {
+              suggestions[capitalizeFirstCharacter(word)] = suggestions[word].map(capitalizeFirstCharacter);
+              delete suggestions[word];
+            }
           }
         });
         deferred.resolve(suggestions);

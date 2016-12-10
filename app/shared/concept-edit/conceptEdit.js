@@ -2312,13 +2312,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // run spellchecker
-          if (applySpellcheck) {
-            spellcheckService.checkSpelling(description.term).then(function (suggestions) {
-              if (suggestions) {
-                description.spellcheckSuggestions = suggestions;
-              }
-            });
-          }
+          spellcheckService.checkSpelling(description.term).then(function (suggestions) {
+            if (suggestions && suggestions.length > 0) {
+              description.spellcheckSuggestions = suggestions;
+            }
+          });
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
