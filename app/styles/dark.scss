@@ -826,3 +826,79 @@ sca-dark .pull-left.follow-up {
 }
 
 .sca-dark .validation-header{background-color:#4527a0}
+
+/*tbba*/
+
+  /* classification */
+.sca-dark .navigation-link.green.darken-1
+{color:#4CAF50;
+background-color: #262e39;}
+.sca-dark .navigation-link.green.darken-1:hover
+{color:#fff;
+background-color: #262e39;}
+ .sca-dark  .green.darken-1.iconbase{
+    color:#4CAF50;
+	  background-color: #262e39;
+  }
+ .sca-dark  ul.classification-nav .btn:hover,
+.sca-dark .navigation-link.green.darken-1:hover, 
+.sca-dark .navigation-link.green.darken-1:focus, 
+.sca-dark .navigation-link.green.darken-1:active
+ .sca-dark  ul.classification-nav li ul li:focus,
+ .sca-dark  ul.classification-nav li ul li:active,
+ .sca-dark  ul.classification-nav li ul li:hover {
+    color: #fff;
+	  background-color: #262e39;
+  }
+
+ .sca-dark  ul.classification-nav li ul li {
+   background-color: #262e39;
+    color: #4CAF50
+  }
+  /*validation*/
+   .sca-dark  .navigation-link.deep-purple.darken-2.validate
+  {color:#673ab7;
+  background-color: #262e39;
+	  }
+  .sca-dark .deep-purple.darken-2.validate:hover,
+  .sca-dark .deep-purple.darken-2.validate:focus,
+  .sca-dark  .deep-purple.darken-2.validate:active,
+   .sca-dark  ul.validation-nav .btn:hover,
+	.sca-dark ul.validation-nav .btn:focus,
+	.sca-dark ul.validation-nav .btn:active,
+  .sca-dark ul.validation-nav li ul li:focus,
+  .sca-dark ul.validation-nav li ul li:active,
+  .sca-dark ul.validation-nav li ul li:hover {
+    color: #fff;
+	 background-color: #262e39;
+  }
+
+  .sca-dark ul.validation-nav li ul li {
+     background-color:  #262e39;
+    color: #673ab7
+  }
+  
+   /* review */
+   
+    .sca-dark .navigation-link.pink.darken-2.review > ul > li > a > div{
+		border-top: 1px #1f2731 solid !important;}
+ .sca-dark  ul.review-nav li ul li,
+ .sca-dark  div.navigation-link.pink1.darken-2.review > ul > li > ul > li,
+ .sca-dark .pink1.darken-2 .sub-navigation-link-list .btn,
+ .sca-dark .navigation-link.pink.darken-2.review > ul > li > a > div
+ {
+    background-color: #262e39;
+    color: #e91e63;
+  }
+.sca-dark .navigation-link.pink.darken-2.review > ul > li > a  > div:hover,
+  .sca-dark ul.review-nav  li ul li:focus,
+  .sca-dark ul.review-nav li ul li:active,
+  .sca-dark ul.review-nav li ul li:hover,
+ .sca-dark ul.review-nav .btn:hover,
+.sca-dark .navigation-link.pink.darken-2:hover,
+.sca-dark .navigation-link.pink.darken-2:active,
+.sca-dark .navigation-link.pink.darken-2:focus{
+	background-color:#262e39;
+	color:#fff
+}
+

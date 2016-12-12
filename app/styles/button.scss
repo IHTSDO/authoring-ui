@@ -118,8 +118,9 @@
  .validate.btn-default[disabled] {
      background-color: rgb(103, 58, 183);
  }
+
  .validate.btn-default:hover {
-     background-color: #6c549d;
+     background-color: #512da8;
      color: #fff;
  }
  .promote.btn-default:hover {
@@ -135,6 +136,12 @@
      float: left;
      font-weight: 500
  }
+  .md-forum.pink.darken-3.iconbase:hover,
+  .md-forum.pink.darken-3.iconbase:focus
+ {background-color: #ad1457;}
+ .md-forum.pink.darken-3.iconbase:hover,
+  .md-forum.pink.darken-3.iconbase:focus
+ {background-color: #ad1457;}
  .btn-default .iconbase[disabled] {
      background-color: #d8d8d8 !important;
      border-color: #d8d8d8 !important;
@@ -363,13 +370,6 @@
     color: #d33c75
   }
 
-  ul.review-nav .btn:hover,
-  ul.review-nav li ul li:focus,
-  ul.review-nav li ul li:active,
-  ul.review-nav li ul li:hover {
-    background: #c2185b;
-	 color: #fff;
-  }
 
   ul.review-nav li ul li {
     color: #fff;

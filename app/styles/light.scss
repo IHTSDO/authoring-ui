@@ -720,9 +720,6 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 }
 /*left nav */
 
-.sca-light .navigation-link.deep-purple.darken-2 .btn:hover,
-.sca-light .navigation-link.green.darken-1.classify .btn:hover,
-.sca-light .navigation-link.pink1.darken-2.review .btn:hover,
 .sca-light .snodragon-templates:hover{color :#fff}
 .sca-light .snodragon-templates:active, 
 .sca-light .snodragon-templates:hover
@@ -749,7 +746,7 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 .sca-light .navigation-link.deep-purple.darken-2 .btn:hover,
 .sca-light .navigation-link.green.darken-1.classify .btn:hover,
 .sca-light .navigation-link.pink1.darken-2.review .btn:hover,
-.sca-light .snodragon-templates:hover{color :#fff}
+.sca-light .snodragon-templates:hover{color :#474747}
 .sca-light .snodragon-templates:active, 
 .sca-light .snodragon-templates:hover
 
@@ -778,4 +775,76 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 border: 1px #ddd solid ;
     background-color: #fff;
  
+}
+
+/*tbba*/
+
+  /* classification */
+.sca-light .navigation-link.green.darken-1
+{color:#4CAF50;
+background-color: #fff;}
+.sca-light .navigation-link.green.darken-1:hover
+{color:#474747;
+background-color: #fff;}
+ .sca-light  .green.darken-1.iconbase,
+ .sca-light  ul.classification-nav .btn:hover,
+.sca-light .navigation-link.green.darken-1:hover, 
+.sca-light .navigation-link.green.darken-1:focus, 
+.sca-light .navigation-link.green.darken-1:active
+ .sca-light  ul.classification-nav li ul li:focus,
+ .sca-light  ul.classification-nav li ul li:active,
+ .sca-light  ul.classification-nav li ul li:hover {
+    color: #474747;
+	  background-color: #fff;
+  }
+
+ .sca-light  ul.classification-nav li ul li {
+   background-color: #fff;
+    color: #4CAF50
+  }
+  /*validation*/
+   .sca-light  .navigation-link.deep-purple.darken-2.validate
+  {color:#673ab7;
+  background-color: #fff;
+	  }
+  .sca-light .deep-purple.darken-2.validate:hover,
+  .sca-light .deep-purple.darken-2.validate:focus,
+  .sca-light  .deep-purple.darken-2.validate:active,
+   .sca-light  ul.validation-nav .btn:hover,
+	.sca-light ul.validation-nav .btn:focus,
+	.sca-light ul.validation-nav .btn:active,
+  .sca-light ul.validation-nav li ul li:focus,
+  .sca-light ul.validation-nav li ul li:active,
+  .sca-light ul.validation-nav li ul li:hover {
+    color: #474747;
+	 background-color: #fff;
+  }
+
+  .sca-light ul.validation-nav li ul li {
+     background-color:  #fff;
+    color: #673ab7
+  }
+  
+   /* review */
+   
+    .sca-light .navigation-link.pink.darken-2.review > ul > li > a > div{
+		border-top: 1px #e6e6e6 solid !important;}
+ .sca-light  ul.review-nav li ul li,
+ .sca-light  div.navigation-link.pink1.darken-2.review > ul > li > ul > li,
+ .sca-light .pink1.darken-2 .sub-navigation-link-list .btn,
+ .sca-light .navigation-link.pink.darken-2.review > ul > li > a > div
+ {
+    background-color: transparent;
+    color: #e91e63;
+  }
+.sca-light .navigation-link.pink.darken-2.review > ul > li > a  > div:hover,
+  .sca-light ul.review-nav  li ul li:focus,
+  .sca-light ul.review-nav li ul li:active,
+  .sca-light ul.review-nav li ul li:hover,
+ .sca-light ul.review-nav .btn:hover,
+.sca-light .navigation-link.pink.darken-2:hover,
+.sca-light .navigation-link.pink.darken-2:active,
+.sca-light .navigation-link.pink.darken-2:focus{
+	background-color:#fff;
+	color:#474747
 }
