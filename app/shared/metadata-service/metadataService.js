@@ -35,55 +35,81 @@ angular.module('singleConceptAuthoringApp')
     ];
     // var inactivationParent = '900000000000481005';
 
+    //
+    // Historical Association Reference Set
+    // Restriction notes:
+    // type - CONCEPT, NAMESPACE; if null, any component permitted
+    // activeOnly - if true, only active components
     var associationInactivationReasons =
       [
         {
           id: 'MOVED_FROM',
           conceptId: '900000000000525002',
           text: 'MOVED FROM association reference set',
-          display: 2
+          display: 2,
+          restrict: {}
         },
         {
           id: 'MOVED_TO',
           conceptId: '900000000000524003',
           text: 'MOVED TO association reference set',
-          display: 3
+          display: 3,
+          restrict: {
+            type: 'NAMESPACE'
+          }
         },
         {
           id: 'POSSIBLY_EQUIVALENT_TO',
           conceptId: '900000000000523009',
           text: 'POSSIBLY EQUIVALENT TO association reference set',
-          display: 4
+          display: 4,
+          restrict: {
+            activeOnly: true
+          }
         },
         {
           id: 'REFERS_TO',
           conceptId: '900000000000531004',
           text: 'REFERS TO concept association reference set',
-          display: 5
+          display: 5,
+          restrict: {
+            type: 'CONCEPT'
+          }
         },
         {
           id: 'REPLACED_BY',
           conceptId: '900000000000526001',
           text: 'REPLACED BY association reference set',
-          display: 6
+          display: 6,
+          restrict: {
+            activeOnly: true
+          }
         },
         {
           id: 'SAME_AS',
           conceptId: '900000000000527005',
           text: 'SAME AS association reference set',
-          display: 7
+          display: 7,
+          restrict: {
+            activeOnly: true
+          }
         },
         {
           id: 'SIMILAR_TO',
           conceptId: '900000000000529008',
           text: 'SIMILAR TO association reference set',
-          display: 8
+          display: 8,
+          restrict: {} // NOTE: Not currently used according to TIG
         },
         {
           id: 'WAS_A',
           conceptId: '900000000000528000',
           text: 'WAS A association reference set',
-          display: 9
+          display: 9,
+          restrict: {
+            type: 'CONCEPT',
+            activeOnly: true
+          }
         }
       ];
     // var associationInactivationParent = '900000000000522004';

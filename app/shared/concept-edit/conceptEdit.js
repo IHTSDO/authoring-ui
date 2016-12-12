@@ -735,6 +735,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             notificationService.sendWarning('Concept and Description inactivation has been disabled during merge. In the case that you want to modify an activation status please accept the merge and then make these changes within the task.');
             return;
           }
+
+          // if not an SCTID, simply remove the concept instead of deleting it
+          if (!snowowlService.isConceptId(concept.conceptId)) {
+            scope.removeConcept(concept);
+            return;
+          }
+
+
           // if active, ensure concept is fully saved prior to inactivation
           // don't want to persist the inactivation reason without a forced
           // save
@@ -1775,13 +1783,26 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           relationship.target.fsn = 'Validating...';
 
-          // if type specified, validate against type
-          if (metadataService.isMrcmEnabled()) {
+          // if template supplied, check ECL/ESCG
+          if (scope.template) {
+
+            constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
+              relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+              relationship.target.conceptId = data.id;
+              relationship.target.fsn = data.name;
+              scope.updateRelationship(relationship, false);
+            }, function (error) {
+              scope.warnings = ['Concept ' + data.id + ' |' + data.name + '| not in target slot allowable range: ' + relationship.template.targetSlot.allowableRangeECL];
+              relationship.target.fsn = tempFsn;
+            });
+          }
+
+          // otherwise use mrcm rules
+          else if (metadataService.isMrcmEnabled()) {
 
             if (relationship.type.conceptId) {
 
-              constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch,
-                relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
+              constraintService.isValueAllowedForType(relationship.type.conceptId, data.id, scope.branch).then(function () {
                 relationship.target.conceptId = data.id;
                 relationship.target.fsn = data.name;
                 scope.updateRelationship(relationship, false);
@@ -1792,7 +1813,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             } else {
               scope.warnings = ['MRCM validation error: Must set relationship type first'];
             }
-          } else {
+          }
+
+          // otherwise simply allow drop
+          else {
             relationship.target.conceptId = data.id;
             relationship.target.fsn = data.name;
             scope.updateRelationship(relationship, false);
@@ -2067,16 +2091,22 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 // Component property retrieval (Inactivation)
 ///////////////////////////////////////////////)
 
-        var conceptFsns = {};
-        scope.getFsn = function (conceptId) {
-          if (conceptFsns.hasOwnProperty(conceptId)) {
-            return conceptFsns[conceptId];
-          } else {
-            conceptFsns[conceptId] = 'Retrieving FSN...';
-            snowowlService.getFullConcept(conceptId, scope.branch).then(function (response) {
-              conceptFsns[conceptId] = response.fsn;
-            });
 
+        var componentTerms = {};
+        scope.getTerm = function (componentId) {
+          if (componentTerms.hasOwnProperty(componentId)) {
+            return componentTerms[componentId];
+          } else {
+            componentTerms[componentId] = 'Retrieving term...';
+            if (snowowlService.isConceptId(componentId)) {
+              snowowlService.getFullConcept(componentId, scope.branch).then(function (response) {
+                componentTerms[componentId] = response.fsn;
+              });
+            } else if (snowowlService.isDescriptionId(componentId)) {
+              snowowlService.getDescriptionProperties(componentId, scope.branch).then(function (response) {
+                componentTerms[componentId] = response.term;
+              })
+            }
           }
         };
 
@@ -2254,8 +2284,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // run spellchecker
           spellcheckService.checkSpelling(description.term).then(function (suggestions) {
-            if (suggestions) {
+              console.log(suggestions);
+            if (suggestions && Object.keys(suggestions).length !== 0) {
               description.spellcheckSuggestions = suggestions;
+              
             }
           });
 
