@@ -129,19 +129,24 @@ padding-bottom:0px
   ul.button-sub-nav {
     padding-left: 0px;
   }
-
   /* classification */
-  ul.classification-nav .btn:hover,
+  ul.classification-nav .btn:hover
+  {
+    background: #2d7130;
+	 color: #fff;
+  }
+  /* classification */
+
   ul.classification-nav li ul li:focus,
   ul.classification-nav li ul li:active,
   ul.classification-nav li ul li:hover {
-    background: #3f9142;
+    background: #2E7D32;
 	 color: #fff;
   }
 
   ul.classification-nav li ul li {
     color: #fff;
-    background: #66BB6A
+    background: #4CAF50
   }
 
   /* validation */
