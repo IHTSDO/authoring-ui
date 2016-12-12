@@ -2313,8 +2313,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // run spellchecker
           spellcheckService.checkSpelling(description.term).then(function (suggestions) {
-            if (suggestions && suggestions.length > 0) {
+              console.log(suggestions);
+            if (suggestions && suggestions != null) {
               description.spellcheckSuggestions = suggestions;
+              
             }
           });
 
