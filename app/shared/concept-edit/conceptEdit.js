@@ -1570,6 +1570,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.computeRelationshipGroups = function () {
 
           // sort relationships to ensure proper sorting
+          // sort relationships to ensure proper sorting
           // sortRelationships();
 
           // clear the relationship groups
@@ -2284,10 +2285,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // run spellchecker
           spellcheckService.checkSpelling(description.term).then(function (suggestions) {
-              console.log(suggestions);
+            console.log(suggestions);
             if (suggestions && Object.keys(suggestions).length !== 0) {
               description.spellcheckSuggestions = suggestions;
-              
+
             }
           });
 
@@ -2352,38 +2353,35 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // clear validation errors
             scope.validation = {};
 
-            snowowlService.getFullConcept(relationship.target.conceptId, scope.branch).then(function (targetConcept) {
 
-              templateService.updateTargetSlot(scope.concept, scope.template, relationship, targetConcept).then(function () {
-                scope.computeRelationshipGroups();
+            templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
+              scope.computeRelationshipGroups();
 
-                // run international dialect automations on target slot update (if appropriate)
-                if (!metadataService.isExtensionSet()) {
+              // run international dialect automations on target slot update (if appropriate)
+              if (!metadataService.isExtensionSet()) {
 
-                  // if all target slots are set
-                  if (scope.concept.relationships.filter(function (r) {
-                      return r.targetSlot && !r.target.conceptId;
-                    }).length === 0) {
+                // if all target slots are set
+                if (scope.concept.relationships.filter(function (r) {
+                    return r.targetSlot && !r.target.conceptId;
+                  }).length === 0) {
 
-                    // run automations with isTemplateConcept flag set to ensure proper behavior
-                    componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
-                      sortDescriptions();
-                      autoSave();
-                    });
-                  } else {
+                  // run automations with isTemplateConcept flag set to ensure proper behavior
+                  componentAuthoringUtil.runInternationalDialectAutomationForConcept(scope.concept, true).then(function () {
+                    sortDescriptions();
                     autoSave();
-                  }
-
-
+                  });
                 } else {
                   autoSave();
                 }
-              }, function (error) {
-                notificationService.sendError('Unexpected template error: ' + error);
-              });
+
+
+              } else {
+                autoSave();
+              }
             }, function (error) {
-              notificationService.sendError('Unexpected error retrieving target concept for template: ' + error);
+              notificationService.sendError('Unexpected template error: ' + error);
             });
+
           }
 
           // otherwise save normally
