@@ -7,14 +7,13 @@ angular.module('singleConceptAuthoringApp')
   .factory('spellcheckService', function ($http, $rootScope, $q) {
 
     // TODO Move this into endpoint-config
-    var endpoint = '../check';
+    var endpoint = '../spellcheck-service/check';
 
     function getSuggestions(tokenizedWords) {
       var deferred = $q.defer();
-      var uri = endpoint + '?' + tokenizedWords.toString();
-      console.debug('uri', uri);
+      var uri = endpoint + '?words=' + tokenizedWords.toString();
       $http.get(uri).then(function (response) {
-        deferred.resolve(response);
+        deferred.resolve(response.data);
       }, function (error) {
         // on errors, simply resolve empty object
         deferred.resolve({});
