@@ -126,10 +126,11 @@
           </button>
 
 
+
           <!-- control buttons -->
           <button type="button" style="vertical-align: bottom"
                   ng-click="toggleConceptActive(concept, true)"
-                  ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released"
+                  ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
                   class="red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
 
             <span ng-if="!isStatic  && !isInactivation">Delete Unpublished Concept</span>
@@ -433,7 +434,7 @@
         <strong>Spelling Errors Detected:</strong>
         <div class="p-b-5" ng-repeat="(word, suggestions) in description.spellcheckSuggestions">
           <div class="col-md-2">{{word}}</div>
-          <div class="col-md-10"><span ng-repeat="suggestion in suggestions">[&nbsp;<a
+          <div class="col-md-10"><span ng-repeat="suggestion in suggestions">[&nbsp;<a class="pointer" 
             ng-click="replaceSuggestion(description, word, suggestion)">{{suggestion}}</a>&nbsp;]&nbsp;&nbsp;</span>
           </div>
         </div>

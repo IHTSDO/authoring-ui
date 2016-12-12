@@ -1,15 +1,19 @@
 <div>
   <div class="row no-padding no-gutter">
     <div class="col-md-12 green classification-header reports-header" style="vertical-align: middle">
-      <div class="p-10">Classification Report: {{statusText}}
-
-        <!-- Only display classification action buttons if results are found -->
+      <div class="col-md-4">
+        <div class="p-10">Classification Report: {{statusText}}</div>
+      </div>
+      <div class="col-md-3">
+          <!-- Only display classification action buttons if results are found -->
         <button
-          ng-if="resultsNotEmpty  && !errorState && classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
-          class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case dark-button  m-l-10 "
-          ng-click="downloadClassification()" style="text-transform: none">
-          <span>Download Classification Results</span>
+            ng-if="resultsNotEmpty  && !errorState && classificationContainer.status === 'COMPLETED' || classificationContainer.status === 'SAVING_IN_PROGRESS' || classificationContainer.status === 'SAVED'"
+            class="btn btn-round btn-default md md-file-download tooltips-right tooltips-light normal-case dark-button  m-l-10 "
+            ng-click="downloadClassification()" style="text-transform: none">
+            <span>Download Classification Results</span>
         </button>
+      </div>
+      <div class="col-md-5">
 
         <button ng-if="resultsNotEmpty && !errorState" ng-init="isCollapsed = false"
                 ng-click="isCollapsed = !isCollapsed" type="button"

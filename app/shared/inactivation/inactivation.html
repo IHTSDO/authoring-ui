@@ -28,83 +28,88 @@
     }
 
     .table-filter {
-      padding: 25px !important;}
-	  
-	 .classification-header{
-		 background-color:#eb5060; color:#fff;
+      padding: 25px !important;
     }
-	
-	.btn-default.cancel-inactivation-btn:disabled,
-	.btn-default.complete-inactivation-btn:disabled {
-    background-color: #d8d8d8;
-    color: #909090;
 
-	
-	
-	}
-	.btn-default.cancel-inactivation-btn {
-		background-color:#e21b3c;
-		color:#fff;
-		border-radius:4px!important;
-	}
-	.btn-default.cancel-inactivation-btn:hover,
-	.btn-default.cancel-inactivation-btn:active{
-		background-color:#a9142d;
-	
-	
-	}
-		 
-	.btn-default.complete-inactivation-btn {
-		background-color:#4cb476;
-		color:#fff;
-		border-radius:4px!important;
-	}
-	.btn-default.complete-inactivation-btn:hover,
-	.btn-default.complete-inactivation-btn:active{
-		background-color:#388457;
-	
-	
-	}
-	
+    .classification-header {
+      background-color: #eb5060;
+      color: #fff;
+    }
+
+    .btn-default.cancel-inactivation-btn:disabled,
+    .btn-default.complete-inactivation-btn:disabled {
+      background-color: #d8d8d8;
+      color: #909090;
+
+    }
+
+    .btn-default.cancel-inactivation-btn {
+      background-color: #e21b3c;
+      color: #fff;
+      border-radius: 4px !important;
+    }
+
+    .btn-default.cancel-inactivation-btn:hover,
+    .btn-default.cancel-inactivation-btn:active {
+      background-color: #a9142d;
+
+    }
+
+    .btn-default.complete-inactivation-btn {
+      background-color: #4cb476;
+      color: #fff;
+      border-radius: 4px !important;
+    }
+
+    .btn-default.complete-inactivation-btn:hover,
+    .btn-default.complete-inactivation-btn:active {
+      background-color: #388457;
+
+    }
+
   </style>
   <div class="row classification-header" style="vertical-align: middle">
     <div class="col-md-12 classification-header">
-        <div class="col-md-6" ng-if="!deletion">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
-        <div class="col-md-6" ng-if="deletion">Deletion: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
+      <div class="col-md-6" ng-if="!deletion">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
+        ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
+      <div class="col-md-6" ng-if="deletion">Deletion: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
+        ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
 
-<button ng-if="!deletion"
-        class="col-md-2 btn btn-default complete-inactivation-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
-       style="text-transform: none"
-        ng-disabled="!isComplete()"
-        ng-click="completeInactivation()">
-     Complete Inactivation
+      <button ng-if="!deletion"
+              class="col-md-2 btn btn-default complete-inactivation-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+              style="text-transform: none"
+              ng-disabled="!isComplete()"
+              ng-click="completeInactivation()">
+        Complete Inactivation
       </button>
       <button ng-if="deletion"
-        class="col-md-2 btn btn-default complete-inactivation-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
-       style="text-transform: none"
-        ng-disabled="!isComplete()"
-        ng-click="completeInactivation()">
-     Complete Deletion
+              class="col-md-2 btn btn-default complete-inactivation-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+              style="text-transform: none"
+              ng-disabled="!isComplete()"
+              ng-click="completeInactivation()">
+        Complete Deletion
       </button>
       <button ng-if="!deletion"
-        class="btn btn-default cancel-inactivation-btn pull-right col-md-2 m-r-5" style="text-transform: none"
-        ng-click="cancelInactivation()">Cancel Inactivation
+              class="btn btn-default cancel-inactivation-btn pull-right col-md-2 m-r-5" style="text-transform: none"
+              ng-click="cancelInactivation()">Cancel Inactivation
       </button>
       <button ng-if="deletion"
-        class="btn btn-default cancel-inactivation-btn pull-right col-md-2 m-r-5" style="text-transform: none"
-        ng-click="cancelInactivation()">Cancel Deletion
+              class="btn btn-default cancel-inactivation-btn pull-right col-md-2 m-r-5" style="text-transform: none"
+              ng-click="cancelInactivation()">Cancel Deletion
       </button>
 
-      
+
     </div>
   </div>
   <div class="card m-10 validation-report">
 
-    <div class="ng-table-no-results" ng-show="!initializing && affectedRelationshipIds.length === 0 && affectedAssocs.length === 0">
+    <div class="ng-table-no-results"
+         ng-show="!initializing && affectedRelationshipIds.length === 0 && affectedConceptAssocs.length === 0 && affectedDescToConceptAssocs.length === 0">
       Inactivation affects no relationships or concepts.
     </div>
 
-    <div ng-show="!initializing && affectedRelationshipIds.length > 0 || affectedAssocs.length > 0">
+    <div
+      ng-show="!initializing && (affectedRelationshipIds.length > 0 || affectedConceptAssocs.length > 0 || affectedDescToConceptAssocs.length > 0)">
 
       <!-- Nav tabs -->
       <div class="row classification-report">
@@ -121,13 +126,14 @@
           </a></li>
           <li role="presentation" class="redundant"><a ng-click="actionTab=3" aria-controls="home" role="tab"
                                                        data-toggle="tab">Historical Associations Affected
-            ({{assocsTableParams.total()}})</a>
+            ({{assocsConceptTableParams.total() + assocsDescToConceptTableParams.total()}})</a>
           </li>
           <li>
-              <button class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left" style="text-transform: none"
-        ng-click="acceptAll()">
-                    <i class="md md-thumb-up"></i>Accept All
-              </button>
+            <button class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+                    style="text-transform: none"
+                    ng-click="acceptAll()">
+              <i class="md md-thumb-up"></i>Accept All
+            </button>
           </li>
           <li>
             <input type="text" ng-model="tableFilter" ng-change="reloadTables()"
@@ -165,7 +171,8 @@
               </button>
             </td>
             <td>
-              <a class="btn btn-round btn-default base" ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]" ng-click="toggleRowAccepted(rel)">
+              <a class="btn btn-round btn-default base" ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                 ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
 
@@ -181,7 +188,7 @@
             </td>
           </tr>
         </table>
-       
+
       </div>
       <div ng-show="actionTab==2" class="table-responsive white" style="margin-right:0px;">
         <table
@@ -211,8 +218,8 @@
             </td>
             <td>
               <a class="btn btn-round btn-default base"
-                      ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
-                      ng-click="toggleRowAccepted(rel)">
+                 ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                 ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
 
@@ -228,31 +235,37 @@
             </td>
           </tr>
         </table>
-   
+
       </div>
       <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
-        <table
-          ng-table="assocsTableParams" template-pagination="utilities/data-table-pager.html"
-          class="table table-full table-full-small">
-          <tr ng-repeat="rel in $data">
+        <div ng-show="affectedConceptAssocs.length > 0">
+          <h4>Concept Historical Associations</h4>
+          <table
+            ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
+            class="table table-full table-full-small">
+            <tr ng-repeat="rel in $data">
 
-            <td data-title="'Concept'" sortable="'sourceFsn'">{{rel.fsn}}
-            </td>
-            <td data-title="'Reason'" sortable="''">
+              <td data-title="'SCTID'" sortable="'id'">{{rel.conceptId}}</td>
 
-              <select ng-model="rel.inactivationIndicator" class="form-control"
-                      ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
+              <td data-title="'Concept FSN'" sortable="'sourceFsn'">{{rel.fsn}}
+              </td>
+              <td data-title="'Reason'" sortable="''">
 
-            </td>
-            <td data-title="'Association'" sortable="'refsetName'">
+                <select ng-model="rel.inactivationIndicator" class=""
+                        ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
 
-              <select ng-model="rel.refsetName" class="form-control" 
-                      ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)" ng-change="updateRefTarget(rel)"></select>
-            </td>
-            <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
+              </td>
+              <td data-title="'Association'" sortable="'refsetName'">
+
+                <select ng-model="rel.refsetName" class=""
+                        ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)"
+                        ng-change="updateRefTarget(rel)"></select>
+              </td>
+              <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
                 <div drag-enter-class="sca-drag-target"
-                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropAssociationTarget(rel, $data)">
-              <textarea type="text" class="form-control" ng-model="rel.newTargetFsn" 
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropAssociationTarget(rel, $data)">
+              <textarea type="text" class="form-control" ng-model="rel.newTargetFsn"
                         typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-loading="typeTypeaheadLoading"
@@ -260,36 +273,135 @@
                         typeahead-on-select="setTargetConcept(rel, $item)"
                         typeahead-editable="false"
                         typeahead-min-length="3"></textarea>
-                    </div>
-            </td>
-            <td>
-              <button type="button"
-                      class="btn btn-round btn-default blue"
-                      ng-click="viewAssociationConcept(rel.conceptId)"
-                      title="View/Edit Concept">
-                <div class="md md-edit"></div>
-              </button>
-            </td>
-            <td>
-              <a class="btn btn-round btn-default base"
-                      ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
-                      ng-click="toggleRowAccepted(rel)">
-                <div
-                  class="md md-thumb-up "></div>
+                </div>
+              </td>
+              <td>
+                <button type="button"
+                        class="btn btn-round btn-default blue"
+                        ng-click="viewAssociationConcept(rel.conceptId)"
+                        title="View/Edit Concept">
+                  <div class="md md-edit"></div>
+                </button>
+              </td>
+              <td>
+                <a class="btn btn-round btn-default base"
+                   ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                   ng-click="toggleRowAccepted(rel)">
+                  <div
+                    class="md md-thumb-up "></div>
 
-              </a>
-            </td>
-            <td>
-              <button ng-disabled="rel.accepted || finalizing" class="btn btn-round btn-default red base"
-                      ng-click="removeAssociation(rel)">
-                <div
-                  class="md fa-sca fa-minus "></div>
+                </a>
+              </td>
+              <td>
+                <button ng-disabled="rel.accepted || finalizing" class="btn btn-round btn-default red base"
+                        ng-click="removeAssociation(rel)">
+                  <div
+                    class="md fa-sca fa-minus "></div>
 
-              </button>
-            </td>
-          </tr>
+                </button>
+              </td>
+            </tr>
 
-        </table>
+          </table>
+        </div>
+        <div ng-show="affectedDescToConceptAssocs.length > 0">
+          <h4>Description Historical Associations Referencing Concepts</h4>
+
+          <table
+            ng-table="assocsDescToConceptTableParams" template-pagination="utilities/data-table-pager.html"
+            class="table table-full table-full-small">
+            <tr ng-repeat="rel in $data">
+
+              <td data-title="'SCTID'" sortable="'id'">{{rel.id}}</td>
+
+
+              <td data-title="'Description Term'" sortable="'term'">{{rel.term}}
+              </td>
+              <td data-title="'Reason'" sortable="''">
+
+                <select ng-model="rel.inactivationIndicator" class=""
+                        ng-options="reason.id as reason.id for reason in inactivationReasons"></select>
+
+              </td>
+              <td data-title="'Association'" sortable="'refsetName'">
+
+                <select ng-model="rel.refsetName" class=""
+                        ng-options="target.id as target.id for target in getAssociationsForReason(rel.inactivationIndicator)"
+                        ng-change="updateRefTarget(rel)"></select>
+              </td>
+              <td data-title="'Value (Proposed)'" sortable="'newTargetFsn'">
+                <div drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropAssociationTarget(rel, $data)">
+              <textarea type="text" class="form-control" ng-model="rel.newTargetFsn"
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setTargetConcept(rel, $item)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3"></textarea>
+                </div>
+              </td>
+              <td>
+                <button type="button"
+                        class="btn btn-round btn-default blue"
+                        ng-click="viewAssociationConcept(rel.conceptId)"
+                        title="View/Edit Concept">
+                  <div class="md md-edit"></div>
+                </button>
+              </td>
+              <td>
+                <a class="btn btn-round btn-default base"
+                   ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                   ng-click="toggleRowAccepted(rel)">
+                  <div
+                    class="md md-thumb-up "></div>
+
+                </a>
+              </td>
+              <td>
+                <button ng-disabled="rel.accepted || finalizing" class="btn btn-round btn-default red base"
+                        ng-click="removeAssociation(rel)">
+                  <div
+                    class="md fa-sca fa-minus "></div>
+
+                </button>
+              </td>
+            </tr>
+
+          </table>
+        </div>
+
+        <!-- Removed pending further discussion
+        <div ng-show="affectedDescToDescAssocs.length > 0">
+          <h4>Description Historical Associations Referencing Descriptions</h4>
+
+          <table
+            ng-table="assocsDescToDescTableParams" template-pagination="utilities/data-table-pager.html"
+            class="table table-full table-full-small">
+            <tr ng-repeat="rel in $data">
+
+              <td data-title="'SCTID'" sortable="'id'">{{rel.id}}</td>
+
+
+              <td data-title="'Description Term'" sortable="'term'">{{rel.term}}
+              </td>
+
+              <td data-title="'Association'" sortable="'refsetName'">
+                {{rel.refsetName}}
+              </td>
+              <td data-title="'Target ID'" sortable="'previousTargetId'">
+                {{rel.previousTargetId}}
+              </td>
+              <td data-title="'Target Term'" sortable="'previousTargetTerm'">
+                {{rel.previousTargetTerm}}
+              </td>
+            </tr>
+
+          </table>
+        </div>-->
+
         </br></br></br>
       </div>
 
@@ -313,5 +425,6 @@
          </div>-->
       </div>
     </div>
+  </div>
 </section>
 
