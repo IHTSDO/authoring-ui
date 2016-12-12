@@ -2285,7 +2285,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           // run spellchecker
           spellcheckService.checkSpelling(description.term).then(function (suggestions) {
               console.log(suggestions);
-            if (suggestions && suggestions != null) {
+            if (suggestions && Object.keys(suggestions).length !== 0) {
               description.spellcheckSuggestions = suggestions;
               
             }
