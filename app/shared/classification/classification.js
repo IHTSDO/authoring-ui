@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval',
-    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, notificationService, $timeout, $interval) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval',
+    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, snowowlService, scaService, notificationService, $timeout, $interval) {
       return {
         restrict: 'A',
         transclude: false,
@@ -15,7 +15,10 @@ angular.module('singleConceptAuthoringApp')
           classificationContainer: '=',
 
           // the branch
-          branch: '=branch'
+          branch: '=branch',
+
+          // the task (optional)
+          task : '=task?'
         },
         templateUrl: 'shared/classification/classification.html',
 
@@ -31,6 +34,7 @@ angular.module('singleConceptAuthoringApp')
           scope.errorState = false;
 
           scope.itemLimit = 1000;
+
 
           // function to get formatted summary tex
           scope.setStatusText = function () {
