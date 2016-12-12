@@ -17,7 +17,10 @@ angular.module('singleConceptAuthoringApp')
           editable: '&',
 
           // branch this report is good for
-          branch: '='
+          branch: '=',
+
+          // the task (optional)
+          task: '=?'
         },
         templateUrl: 'shared/validation/validation.html',
 
