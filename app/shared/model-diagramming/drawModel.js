@@ -28,12 +28,13 @@ angular.module('singleConceptAuthoringApp')
                 }, 100);
         }
         scope.$watch('concept', function (newVal, oldVal) {
+            console.log('Concept changed')
             if(scope.view !== 'snf')
             {
                 setTimeout(function () {
                     element.append($("<div></div>").addClass('modelContainer'));
                     drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
-                }, 100);
+                }, 1000);
             }
         }, true);
         scope.$watch('view', function(newVal, oldVal){
@@ -65,7 +66,7 @@ angular.module('singleConceptAuthoringApp')
           if (scope.view === 'stated') {
             $.each(concept.relationships, function (i, field) {
               if (field.active === true && field.characteristicType === "STATED_RELATIONSHIP") {
-                if (field.type.conceptId === 116680003) {
+                if (field.type.conceptId === '116680003') {
                   svgIsaModel.push(field);
                 } else {
                   svgAttrModel.push(field);
@@ -76,7 +77,7 @@ angular.module('singleConceptAuthoringApp')
             if (concept.relationships) {
               $.each(concept.relationships, function (i, field) {
                 if (field.active === true && field.characteristicType === "INFERRED_RELATIONSHIP") {
-                  if (field.type.conceptId === 116680003) {
+                  if (field.type.conceptId === '116680003') {
                     svgIsaModel.push(field);
                   } else {
                     if(field.groupId > scope.numberOfGroups)
@@ -101,7 +102,7 @@ angular.module('singleConceptAuthoringApp')
                      field.target.definitionStatus = 'FULLY_DEFINED';
                  }
                  field.type = {};
-                 field.type.conceptId = 116680003;
+                 field.type.conceptId = '116680003';
                  field.target.fsn = field.term;
                  field.target.conceptId = field.id;
                  concept.relationships.push(field);
@@ -183,13 +184,15 @@ angular.module('singleConceptAuthoringApp')
                   });
               }
               $.each(concept.relationships, function (i, field) {
-                if (field.type.conceptId === 116680003) {
+                if (field.type.conceptId === '116680003') {
                   svgIsaModel.push(field);
                 } else {
                   svgAttrModel.push(field);
                 }
               });
           }
+            console.log(svgAttrModel);
+            console.log(svgIsaModel);
 
           var parentDiv = div;
           var height = 1250;
@@ -239,6 +242,7 @@ angular.module('singleConceptAuthoringApp')
           // load stated parents
           sctClass = "sct-defined-concept";
           $.each(svgIsaModel, function (i, relationship) {
+              console.log('here');
                 if (relationship.target.definitionStatus === "PRIMITIVE") {
                     sctClass = "sct-primitive-concept";
                 } else {
@@ -679,6 +683,7 @@ angular.module('singleConceptAuthoringApp')
           var img = new Image();
           img.id = 'image-' + id;
           if (element.find('#image-' + id)) {
+              console.log('true');
             element.find('#image-' + id).remove();
           }
           img.src = canvas.toDataURL();
