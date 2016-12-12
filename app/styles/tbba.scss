@@ -129,43 +129,71 @@ padding-bottom:0px
   ul.button-sub-nav {
     padding-left: 0px;
   }
-
   /* classification */
+  
+ 
+  /* classification */
+.navigation-link.green.darken-1
+{background-color:#4CAF50}
+
+  .green.darken-1.iconbase,
   ul.classification-nav .btn:hover,
+.navigation-link.green.darken-1:hover, 
+.navigation-link.green.darken-1:focus, 
+.navigation-link.green.darken-1:active
   ul.classification-nav li ul li:focus,
   ul.classification-nav li ul li:active,
   ul.classification-nav li ul li:hover {
-    background: #3f9142;
+    background: #43A047;
 	 color: #fff;
   }
 
   ul.classification-nav li ul li {
     color: #fff;
-    background: #66BB6A
+    background: #4CAF50
   }
 
   /* validation */
-  ul.validation-nav .btn:hover,
+  
+  .navigation-link.deep-purple.darken-2.validate
+  {background-color:#673ab7;
+	  }
+  .deep-purple.darken-2.validate:hover,
+  .deep-purple.darken-2.validate:focus,
+   .deep-purple.darken-2.validate:active,
+    ul.validation-nav .btn:hover,
+	ul.validation-nav .btn:focus,
+	ul.validation-nav .btn:active,
   ul.validation-nav li ul li:focus,
   ul.validation-nav li ul li:active,
   ul.validation-nav li ul li:hover {
-    background: #37317e;
+    background: #512da8;
 	 color: #fff;
   }
 
   ul.validation-nav li ul li {
     color: #fff;
-    background: #6c549d
+    background: #673ab7
   }
 
   /* review */
   ul.review-nav li ul li,
   div.navigation-link.pink1.darken-2.review > ul > li > ul > li{
     color: #fff;
-    background: #e94281
+    background: #e91e63
   }
 
+  ul.review-nav  li ul li:focus,
+  ul.review-nav li ul li:active,
+  ul.review-nav li ul li:hover,
+ ul.review-nav .btn:hover,
+.navigation-link.pink.darken-2:hover,
+.navigation-link.pink.darken-2:active,
+.navigation-link.pink.darken-2:focus{
+	background-color:#c2185b;
+}
 
+/*templates*/
 	.template-controls{
 	height:19px;
 	width:19px;
@@ -239,12 +267,3 @@ padding-bottom:0px
 {-webkit-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;
 -moz-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;
 box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;}
-
-.popover-content .table-full tbody > tr > td {
-    padding-top: 5px;
-	   padding-bottom: 5px;
-}
-.popover-content .table-full tbody > tr:last-child > td {
- 
-    padding-bottom: 0px;
-}
