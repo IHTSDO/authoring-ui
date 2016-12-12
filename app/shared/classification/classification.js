@@ -18,7 +18,7 @@ angular.module('singleConceptAuthoringApp')
           branch: '=branch',
 
           // the task (optional)
-          task : '=task?'
+          task : '=?'
         },
         templateUrl: 'shared/classification/classification.html',
 
@@ -415,6 +415,13 @@ angular.module('singleConceptAuthoringApp')
               scope.errorState = true;
             });
           };
+
+          scope.role = null;
+          scope.$watch('task', function() {
+            accountService.getRoleForTask(scope.task).then(function(role) {
+              scope.role = role;
+            })
+          })
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
