@@ -4,7 +4,6 @@
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
 
-
     <!-- Create new concept (non-template) -->
     <button
       ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
@@ -60,7 +59,7 @@
             <li ng-if="task.latestClassificationJson.status === 'RUNNING'">
               Classification Running
             </li>
-            <li ng-if="task.latestClassificationJson.status !== 'RUNNING'" ng-click="classify()"
+            <li ng-if="task.latestClassificationJson.status !== 'RUNNING' && role === 'AUTHOR'" ng-click="classify()"
                 ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
               Start New Classification
             </li>
@@ -92,7 +91,7 @@
               View Validation Report
             </li>
             <li
-              ng-if="task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'"
+              ng-if="role === 'AUTHOR' && task.latestValidationStatus !== 'RUNNING' && task.latestValidationStatus !== 'BUILDING' && task.latestValidationStatus !== 'SCHEDULED'"
               ng-click="validate()"
               ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked">
               Start New Validation
