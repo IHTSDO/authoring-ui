@@ -97,10 +97,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return $rootScope.branchLocked;
         }, function () {
 
+          console.debug('branch locked', $rootScope.branchLocked);
+
           if ($rootScope.branchLocked) {
             scope.isStatic = true;
           }
-          else {
+          else if (!scope.static) {
             scope.isStatic = false;
           }
 
