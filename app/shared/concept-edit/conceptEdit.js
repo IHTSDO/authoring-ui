@@ -625,7 +625,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // clean concept of any locally added information
           // store original concept id for CRS integration
-          var originalConceptId = scope.concept.conceptId;
+          var originalConcept = angular.copy(scope.concept);
           snowowlService.cleanConcept(scope.concept);
 
           var saveMessage = scope.concept.conceptId ? 'Saving concept: ' + scope.concept.fsn : 'Saving new concept';
@@ -673,8 +673,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return;
             }
 
-            if (originalConceptId) {
-              scope.concept.conceptId = originalConceptId;
+            if (originalConcept.conceptId) {
+              scope.concept.conceptId = originalConcept.conceptId;
             }
 
             // save concept
@@ -704,13 +704,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               if (error.status === 504) {
 
                 // on timeouts, must save crs concept to ensure termserver retrieval
-                if (crsService.isCrsConcept(originalConceptId)) {
-                  crsService.saveCrsConcept(originalConceptId, scope.concept, 'Save status uncertain; please verify changes via search');
-                  scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConceptId);
+                if (crsService.isCrsConcept(originalConcept.conceptId)) {
+                  crsService.saveCrsConcept(originalConcept.conceptId, scope.concept, 'Save status uncertain; please verify changes via search');
+                  scaService.deleteModifiedConceptForTask($routeParams.projectKey, $routeParams.taskKey, originalConcept.conceptId);
                 }
                 notificationService.sendWarning('Your save operation is taking longer than expected, but will complete. Please use search to verify that your concept has saved and then remove the unsaved version from the edit panel');
               }
               else {
+                scope.concept = originalConcept;
+                scope.isModified = true;
                 notificationService.sendError('Error saving concept: ' + error.statusText);
               }
               scope.reapplyTemplate();
