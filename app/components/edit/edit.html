@@ -112,6 +112,9 @@
             </div>
           </a>
           <ul class="button-sub-nav">
+            <li ng-click="viewReviewFromSidebar()">
+              View Review and Feedback
+            </li>
             <li
               ng-if="role === 'AUTHOR' && (task.status === 'New' || task.status === 'In Progress') && !reviewChecks"
               ng-click="toggleReview()"
@@ -127,9 +130,7 @@
                 ng-click="toggleReview()">
               Unclaim Review
             </li>
-            <li ng-click="viewReviewFromSidebar()">
-              View Review and Feedback
-            </li>
+
           </ul>
         </li>
 
