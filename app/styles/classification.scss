@@ -29,10 +29,12 @@
 .classification-report .nav-tabs li a {
 	padding: 10px 15px;
 }
-.reports-header{ padding-bottom: 8px;
-  
+.reports-header{     padding-bottom: 8px;
     max-height: 48px;
-    line-height: 1;}
+    line-height: 1;
+    padding-top: 6px;
+    width: 100%;
+    display: block;}
 .classification-header {
    
 }

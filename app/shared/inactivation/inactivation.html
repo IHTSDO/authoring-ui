@@ -8,10 +8,18 @@
       vertical-align: top;
       border-top: 1px solid #F0F0F0;
     }
-
-    .validation-report-header {
-    }
-
+	
+	.inactivation-report.classification-report .nav-tabs > li{    width: 21%;}
+.inactivation-report.classification-report .nav-tabs > li:nth-child(5){    width: 15%; float:right;}
+.inactivation-report.classification-report .nav-tabs > li:nth-child(3){    width: 23%;}
+.inactivation-report.classification-report .nav-tabs > li:nth-child(5) .btn-alert.green {width:100%}
+.inactivation-report.classification-report .nav-tabs > li:nth-child(4){    width: 14%;}
+.inactivation-report.classification-report .nav-tabs > li:nth-child(4) input {width:100%;}
+.inactivation-report.classification-report .nav-tabs li a {
+    padding: 5px 15px;
+}
+    .inactivation-header{ line-height:1.6
+		}
     .case-failures, .back-button {
       border-radius: 5px
     }
@@ -68,8 +76,8 @@
     }
 
   </style>
-  <div class="row classification-header" style="vertical-align: middle">
-    <div class="col-md-12 classification-header">
+  <div class="row inactivation-header  grey darken-3 p-t-5" style="vertical-align: middle">
+    <div class="col-md-12 ">
       <div class="col-md-6" ng-if="!deletion">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
         ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
       <div class="col-md-6" ng-if="deletion">Deletion: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
@@ -112,7 +120,7 @@
       ng-show="!initializing && (affectedRelationshipIds.length > 0 || affectedConceptAssocs.length > 0 || affectedDescToConceptAssocs.length > 0)">
 
       <!-- Nav tabs -->
-      <div class="row classification-report">
+      <div class="row inactivation-report classification-report">
         <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
           <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
@@ -128,18 +136,23 @@
                                                        data-toggle="tab">Historical Associations Affected
             ({{assocsConceptTableParams.total() + assocsDescToConceptTableParams.total()}})</a>
           </li>
+             <li>
+             <div class="p-10">
+            <input type="text" ng-model="tableFilter" ng-change="reloadTables()"
+                   ng-model-options="{ debounce: 500 }"
+                   placeholder="Search Results"/>
+                   </div>
+          </li>
           <li>
+               <div class="p-5">
             <button class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
                     style="text-transform: none"
                     ng-click="acceptAll()">
               <i class="md md-thumb-up"></i>Accept All
-            </button>
+              </button>
+            </div>
           </li>
-          <li>
-            <input type="text" ng-model="tableFilter" ng-change="reloadTables()"
-                   ng-model-options="{ debounce: 500 }"
-                   placeholder="Search Results"/>
-          </li>
+       
         </ul>
 
       </div>
