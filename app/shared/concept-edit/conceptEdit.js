@@ -504,7 +504,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               }
             });
             angular.forEach(scope.concept.relationships, function (relationship) {
-              if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime) {
+              if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !relationship.released) {
                 delete relationship.relationshipId;
               }
             });
