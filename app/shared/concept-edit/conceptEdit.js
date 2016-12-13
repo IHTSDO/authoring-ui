@@ -499,7 +499,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // need to delete SCTIDs without effective time on descriptions and relationships
             // otherwise the values revert to termserver version
             angular.forEach(scope.concept.descriptions, function (description) {
-              if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
+              if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime && !description.released) {
                 delete description.descriptionId;
               }
             });
