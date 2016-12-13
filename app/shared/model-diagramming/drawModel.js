@@ -28,7 +28,7 @@ angular.module('singleConceptAuthoringApp')
                 }, 100);
         }
         scope.$watch('concept', function (newVal, oldVal) {
-            console.log('Concept changed')
+            // console.log('Concept changed')
             if(scope.view !== 'snf')
             {
                 setTimeout(function () {
@@ -191,8 +191,8 @@ angular.module('singleConceptAuthoringApp')
                 }
               });
           }
-            console.log(svgAttrModel);
-            console.log(svgIsaModel);
+            // console.log(svgAttrModel);
+            // console.log(svgIsaModel);
 
           var parentDiv = div;
           var height = 1250;
@@ -242,7 +242,7 @@ angular.module('singleConceptAuthoringApp')
           // load stated parents
           sctClass = "sct-defined-concept";
           $.each(svgIsaModel, function (i, relationship) {
-              console.log('here');
+              // console.log('here');
                 if (relationship.target.definitionStatus === "PRIMITIVE") {
                     sctClass = "sct-primitive-concept";
                 } else {
@@ -683,7 +683,7 @@ angular.module('singleConceptAuthoringApp')
           var img = new Image();
           img.id = 'image-' + id;
           if (element.find('#image-' + id)) {
-              console.log('true');
+              // console.log('true');
             element.find('#image-' + id).remove();
           }
           img.src = canvas.toDataURL();
