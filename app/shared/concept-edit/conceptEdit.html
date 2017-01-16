@@ -254,8 +254,8 @@
 
 
     <!-- rows: Concept Descriptions -->
-    <div ng-repeat="description in concept.descriptions | filter : filterDescriptions"
-
+    <div ng-repeat="description in concept.descriptions"
+         ng-show="isDescriptionViewable(description)"
          ng-class="getComponentStyle(description.descriptionId, null, '', description)"
          class="">
 
@@ -300,7 +300,6 @@
             ui-draggable="true" drag="description" drag-channel="descriptionObj"
             drag-image="getDragImageForDescription(description)">
             <span>Drag this row</span>
-          </button>
           </button>
 
 
