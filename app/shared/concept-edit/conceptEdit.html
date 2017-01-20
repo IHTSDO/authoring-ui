@@ -368,14 +368,14 @@
             </select>
           </div>
 
-          <!-- Dialect / Acceptability -- never alterable for FSN -->
+          <!-- Dialect / Acceptability -- never alterable for saved FSN -->
           <div>
 
             <!-- button for each dialect key -->
             <button ng-repeat="dialectId in getDialectIdsForDescription(description)"
                     type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId)) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId))"
+                    ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.descriptionId !== '') || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId))"
                     ng-click="toggleAcceptability(description, dialectId)">
               <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
               </div>
