@@ -199,8 +199,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 //
 // CRS concept initialization
 //
-        if (crsService.isCrsConcept(scope.concept.conceptId)) {
-
+        if (crsService.isCrsConcept(scope.concept.conceptId) && $rootScope.pageTitle !== 'Providing Feedback/') {
 
           scope.hideInactive = false;
 
