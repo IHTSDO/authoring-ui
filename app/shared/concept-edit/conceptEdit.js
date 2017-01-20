@@ -2287,13 +2287,14 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // run spellchecker
-          spellcheckService.checkSpelling(description.term).then(function (suggestions) {
-            console.log(suggestions);
-            if (suggestions && Object.keys(suggestions).length !== 0) {
-              description.spellcheckSuggestions = suggestions;
-
-            }
-          });
+          if(description.term !== null && description.term !== ''){
+              spellcheckService.checkSpelling(description.term).then(function (suggestions) {
+                console.log(suggestions);
+                if (suggestions && Object.keys(suggestions).length !== 0) {
+                  description.spellcheckSuggestions = suggestions;
+                }
+              });
+          }
 
           // if this is a new TEXT_DEFINITION, apply defaults
           // sensitivity is correctly set
