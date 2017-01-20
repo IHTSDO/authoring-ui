@@ -564,9 +564,7 @@ angular.module('singleConceptAuthoringApp')
                 if (hasMatchingWords) {
                   // ensure FSN en-US preferred, do not add matching PT
                   description.acceptabilityMap['900000000000509007'] = 'PREFERRED';
-
-                  // TODO Per discussion 12/13, should this be en-gb PREFERRED?
-                  delete description.acceptabilityMap['900000000000508004'];
+                  description.acceptabilityMap['900000000000508004'] = 'PREFERRED';
 
                   // SYN, en-GB acceptable
                   if (!isTemplateConcept) {
