@@ -119,7 +119,6 @@ angular.module('singleConceptAuthoringApp')
     var descriptionInactivationReasons = [
       //{id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
       //{id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-      {id: 'DUPLICATE', text: 'Duplicate component'},
       {id: 'ERRONEOUS', text: 'Erroneous component'},
       //{id: 'INAPPROPRIATE', text: 'Inappropriate component'},
       //{id: 'LIMITED', text: 'Limited component'},
@@ -230,6 +229,9 @@ angular.module('singleConceptAuthoringApp')
           languages: languages,
           dialects: dialects
         };
+        if(getCurrentModuleId() !== '900000000000207008'){
+            descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component'});
+        }
         $rootScope.$broadcast('setExtensionMetadata');
 
       }
