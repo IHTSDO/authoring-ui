@@ -31,7 +31,8 @@ angular.module('singleConceptAuthoringApp')
       {id: 'LIMITED', text: 'Limited component', display: [9]},
       {id: 'OUTDATED', text: 'Outdated component', display: [6, 9]},
       {id: 'PENDING_MOVE', text: 'Pending move', display: [3]},
-      {id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []}
+      //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
     ];
     // var inactivationParent = '900000000000481005';
 
