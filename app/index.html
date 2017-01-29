@@ -14,6 +14,7 @@
   <link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png"/>
   <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32"/>
   <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16"/>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <meta name="application-name" content="Authoring Platform"/>
   <meta name="msapplication-TileColor" content="#00A4E4"/>
   <meta name="msapplication-TileImage" content="mstile-144x144.png"/>
@@ -40,10 +41,7 @@
 <body ng-app="singleConceptAuthoringApp" scroll-spy id="top"
       class="theme-template-dark theme-blue" style="height:100%;">
 <!--[if lt IE 7]>
-<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-                                                                                                                    your
-                                                                                                                    browser</a>
-                       to improve your experience.</p>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
 <div ng-if="notProd">
@@ -52,6 +50,9 @@
   </div>
   <div ng-if="uat" ng-cloak="">
     <div class="uat"></div>
+  </div>
+  <div ng-if="prod" ng-cloak="">
+    <div class="prod"></div>
   </div>
 </div>
 
