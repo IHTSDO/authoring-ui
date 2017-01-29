@@ -36,7 +36,13 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 
-
+  <style type="text/css">
+    /* Prevent "flash of content" platform banner container div on initial load. */
+    /* JavaScript in last element of body activates after angular has initialised. */
+    div.platformBanner {
+      display: none;
+    }
+  </style>
 </head>
 <body ng-app="singleConceptAuthoringApp" scroll-spy id="top"
       class="theme-template-dark theme-blue" style="height:100%;">
@@ -44,15 +50,12 @@
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<div ng-if="notProd">
+<div ng-if="notProd" class="platformBanner">
   <div ng-if="development" ng-cloak="">
     <div class="development"></div>
   </div>
   <div ng-if="uat" ng-cloak="">
     <div class="uat"></div>
-  </div>
-  <div ng-if="prod" ng-cloak="">
-    <div class="prod"></div>
   </div>
 </div>
 
@@ -67,7 +70,6 @@
     background-color: #2196F3;
     margin: 20px;
     padding: 20px
-
   }
 </style>
 
@@ -243,6 +245,11 @@
 			});
 		}
 	};
+</script>
+<script type="text/javascript">
+  // enable platform banner container (after angular has initialised its content)
+  var platformBanner = document.querySelector("div.platformBanner");
+  platformBanner.style.display = "block";
 </script>
 </body>
 </html>
