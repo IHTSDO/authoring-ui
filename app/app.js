@@ -112,7 +112,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce) {
 
     console.log('Running application');
 
@@ -163,6 +163,8 @@ angular
         console.log(response);
         var accountUrl = endpoints.imsEndpoint + 'api/account';
         var imsUrl = endpoints.imsEndpoint;
+        $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
+        $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
         // don't want either true or false here please!
