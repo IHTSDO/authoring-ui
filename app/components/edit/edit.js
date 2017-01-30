@@ -1327,9 +1327,6 @@ angular.module('singleConceptAuthoringApp.edit', [
       var deferred = $q.defer();
 
       snowowlService.getBranch(branchPath).then(function (response) {
-
-        console.log(response);
-        console.log('here');
         // if not found, create branch
         if (response.status === 404) {
           console.log('Creating branch for new task');

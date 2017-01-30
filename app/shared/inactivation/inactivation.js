@@ -565,12 +565,22 @@ angular.module('singleConceptAuthoringApp')
           // Complete and cancel
           //
           scope.cancelInactivation = function () {
-            modalService.confirm('All changes made during inactivation will be lost, are you sure?').then(function () {
-              inactivationService.cancelInactivation(null);
-              $rootScope.$broadcast('inactivation.cancelInactivation');
-            }, function (error) {
-              // do nothing
-            });
+            if(scope.deletion){
+                modalService.confirm('All changes made during inactivation will be lost, are you sure?').then(function () {
+                    inactivationService.cancelInactivation(null);
+                  $rootScope.$broadcast('inactivation.cancelInactivation');
+                }, function (error) {
+                  // do nothing
+                });
+            }
+            else{
+                modalService.confirm('All changes made during inactivation will be lost, are you sure?').then(function () {
+                  inactivationService.cancelInactivation(null);
+                  $rootScope.$broadcast('inactivation.cancelInactivation');
+                }, function (error) {
+                  // do nothing
+                });
+            }
           };
 
           function getFullConceptsForIds(ids, array) {
