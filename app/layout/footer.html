@@ -23,5 +23,17 @@
     <input class="pull-right" style="margin:5px; padding:5px; font-size:10px;"  drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target" placeholder="drop concept here" ui-on-drop>
     <button class="pull-right" style="margin:5px; padding:5px; font-size:10px;"  drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target" placeholder="drop concept here" ui-on-drop>Drop Concept Here</button>
   -->
-
+    <div ng-if="collectorUrl">
+        <script type="text/javascript">
+            window.ATL_JQ_PAGE_PROPS = {
+                "triggerFunction": function(showCollectorDialog) {
+                    jQuery("#myCustomTrigger").click(function(e) {
+                        e.preventDefault();
+                        console.log('click');
+                        showCollectorDialog();
+                    });
+                }
+            };
+        </script>
+    </div>
 </div>
