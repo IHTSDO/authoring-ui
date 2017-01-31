@@ -134,13 +134,13 @@
         <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             Inbound relationships found - Please suggest a replacement target for any inbound relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items.
         </div>
-        <div class="row p-t-10">
+        <div class="row p-t-10" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <label> Concept</label>
             </div>
           </div>
 
-          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;">
+          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <textarea type="text" class="form-control"
                         ng-model="association.concept"
