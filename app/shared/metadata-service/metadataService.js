@@ -250,7 +250,7 @@ angular.module('singleConceptAuthoringApp')
 //        }
         if(getCurrentModuleId() !== '900000000000207008'){
             for(var i = 0; i < descriptionInactivationReasons.length; i++) {
-                if (vendors[i].id == 'DUPLICATE') {
+                if (descriptionInactivationReasons[i].id == 'DUPLICATE') {
                     found = true;
                 }
                 if(i === descriptionInactivationReasons.length && !found){
