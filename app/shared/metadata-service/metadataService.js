@@ -230,7 +230,14 @@ angular.module('singleConceptAuthoringApp')
           dialects: dialects
         };
         if(getCurrentModuleId() !== '900000000000207008'){
-            descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component'});
+            for(var i = 0; i < descriptionInactivationReasons.length; i++) {
+                if (vendors[i].id == 'DUPLICATE') {
+                    found = true;
+                }
+                if(i === descriptionInactivationReasons.length && !found){
+                    descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component'});
+                }
+            }
         }
         $rootScope.$broadcast('setExtensionMetadata');
 
