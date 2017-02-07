@@ -315,9 +315,9 @@ select.primitive {
     border-color: #2fa94f;
     background-color: #41ca65;
 }
-.editing-form textarea,
-.editing-form input,
-.editing-form select {
+textarea,
+input,
+select {
     resize: none!important;
     min-height: 30px!important;
     max-height: 60px;
@@ -468,7 +468,6 @@ select.primitive {
     text-align: center;
 }
 .editing-form .sourcename .drag-button-width {
-    background-color: #dbdbff !important;
     color: #474747 !important;
     width: 8.75% !important;
     float: left;
@@ -866,6 +865,12 @@ button.fsn-title-button {
     z-index: 1070;
 }
 
+#wrap .popover {
+  margin-top: 1px;
+  min-width: 250px;
+  z-index: 1070;
+}
+
 .pop-edit {
     font-size: 11px;
     margin: 0px !important;
@@ -1112,7 +1117,7 @@ button-link .bluehl .grey.darken-3 {
 }
 .tealhl .p-t-5{
   padding-top:0px!important
-	
+
 }
 .tealhl .grey.darken-4{background-color:transparent!important;}
 

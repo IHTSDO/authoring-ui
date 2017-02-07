@@ -113,7 +113,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if no crsRequest present, treat as Other Request (no attachment content)
         if (!crsRequest) {
-          deferred.resolve({fsn : 'Request without proposed concept'});
+          deferred.resolve({fsn: 'Request without proposed concept'});
         }
 
         // if no concept id specified or NEW_CONCEPT specified, new concept, generate GUID and return
@@ -125,13 +125,13 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, if NEW_CONCEPT specified, simply return the request
         else if (crsRequest.definitionOfChanges && crsRequest.definitionOfChanges.changeType === 'NEW_CONCEPT') {
+
           var copy = angular.copy(crsRequest);
 
           //  if id provided, trim any erroneous whitespace
           if (copy.conceptId) {
             copy.conceptId = copy.conceptId.trim();
           }
-
 
           deferred.resolve(angular.copy(copy));
         }
@@ -172,6 +172,10 @@ angular.module('singleConceptAuthoringApp')
             // the request url
             requestUrl: getRequestUrl(attachment.issueKey),
 
+            // the ticket ids
+            crsId: attachment.issueKey,
+            scaId: attachment.ticketKey,
+
             // the freshly retrieved concept with definition changes appended
             concept: preparedConcept,
 
@@ -182,6 +186,9 @@ angular.module('singleConceptAuthoringApp')
             emptyContent: attachment.emptyContent,
             error: attachment.error,
             saved: false,
+
+            // duplicate flags -- isNewConcept is static, requiresCreation changes
+            isNewConcept: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT',
             requiresCreation: preparedConcept && preparedConcept.definitionOfChanges && preparedConcept.definitionOfChanges.changeType === 'NEW_CONCEPT'
 
           });
@@ -227,8 +234,6 @@ angular.module('singleConceptAuthoringApp')
 
                 // save the initialized state into the UI State
                 saveCrsConceptsUiState();
-
-                console.debug('crs result', currentTaskConcepts);
                 // resolve
                 deferred.resolve(currentTaskConcepts);
               }
@@ -271,11 +276,10 @@ angular.module('singleConceptAuthoringApp')
               // if already initialized, simply return
               if (concepts) {
                 currentTaskConcepts = concepts;
-
-                console.debug('crs result', currentTaskConcepts);
                 deferred.resolve(concepts);
               } else {
                 initializeCrsTask().then(function () {
+
                   deferred.resolve(currentTaskConcepts);
                 }, function () {
                   // NOTE: Must resolve to prevent blocking in edit.js
@@ -295,9 +299,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         for (var i = 0; i < currentTaskConcepts.length; i++) {
-          console.debug('checking ', id, currentTaskConcepts[i].conceptId, currentTaskConcepts[i].requiresCreation)
           if (id === currentTaskConcepts[i].conceptId && currentTaskConcepts[i].requiresCreation) {
-            console.debug('match found');
             return true;
           }
         }
@@ -332,7 +334,7 @@ angular.module('singleConceptAuthoringApp')
         if (!currentTaskConcepts) {
           return [];
         }
-        return currentTaskConcepts.filter(function(concept) {
+        return currentTaskConcepts.filter(function (concept) {
           return !concept.emptyContent;
         });
       }
@@ -341,7 +343,7 @@ angular.module('singleConceptAuthoringApp')
         if (!currentTaskConcepts) {
           return [];
         }
-        return currentTaskConcepts.filter(function(concept) {
+        return currentTaskConcepts.filter(function (concept) {
           return concept.emptyContent;
         });
       }
@@ -362,7 +364,6 @@ angular.module('singleConceptAuthoringApp')
             currentTaskConcepts[i].requiresCreation = false;
             currentTaskConcepts[i].warning = warning;
             currentTaskConcepts[i].isNewConcept = false;
-            console.debug(currentTaskConcepts[i]);
             saveCrsConceptsUiState();
             break;
           }
@@ -440,6 +441,7 @@ angular.module('singleConceptAuthoringApp')
         }
         return deferred.promise;
       }
+
 //
 // Function exposure
 //
@@ -451,6 +453,7 @@ angular.module('singleConceptAuthoringApp')
         getCrsConcepts: getCrsConcepts,
         getCrsEmptyRequests: getCrsEmptyRequests,
         saveCrsConcept: saveCrsConcept,
+        getCrsTaskComment: getCrsTaskComment,
 
         crsFilter: crsFilter
 

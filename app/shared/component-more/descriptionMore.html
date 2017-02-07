@@ -1,13 +1,12 @@
 <div class="edits editing-form">
-  <div class="pop-edit description-more row">
-    <div class="sct-id pull-left">
-      <label class="control-label">SCTID</label>
-      <span class="fields row"> {{description.descriptionId}}</span>
-    </div>
-    <div class="lang-id pull-left">
-      <label class="control-label">Lang.</label>
-      <select name="select-choice2" id="select-choice2" class="dropdowns"
-              ng-disabled="isStatic || isLockedModule(description.moduleId)"
+    <div class="pop-edit description-more row">
+        <div class="sct-id pull-left">
+            <label class="control-label">SCTID</label>
+            <span class="fields row" ng-show="isSctid" ng-init="isSctid = isSctid(description.descriptionId)"> {{description.descriptionId}}</span>
+        </div>
+        <div class="lang-id pull-left">
+            <label class="control-label">Lang.</label>
+            <select name="select-choice2" id="select-choice2" class="dropdowns" ng-disabled="isStatic || isLockedModule(description.moduleId)"
               ng-model="description.lang" ng-change="updateDescription(description)"
               ng-options="language as language for language in getAvailableLanguages(description.moduleId)"></select>
     </div>

@@ -17,7 +17,10 @@ angular.module('singleConceptAuthoringApp')
           editable: '&',
 
           // branch this report is good for
-          branch: '='
+          branch: '=',
+
+          // the task (optional)
+          task: '=?'
         },
         templateUrl: 'shared/validation/validation.html',
 
@@ -715,7 +718,7 @@ angular.module('singleConceptAuthoringApp')
               return viewed.conceptId;
             });
 
-            var failuresToLoad = scope.failures.map(function (failure) {
+            var failuresToLoad = scope.failures.filter(function (failure) {
               return failure.selected && existingIds.indexOf(failure.conceptId.toString()) === -1;
             });
 

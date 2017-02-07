@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.ihtsdo.otf</groupId>
-	<artifactId>sca</artifactId>
-	<version>1.0.188-SNAPSHOT</version>
+	<artifactId>authoring-ui</artifactId>
+	<version>2.0.15-SNAPSHOT</version>
 	<name>IHTSDO Single Concept Authoring Web Front End Angular </name>
 	<description>IHTSDO Single Concept Authoring Web Front End</description>
 	<url>https://test.ihtsdotools.org/</url>

@@ -14,7 +14,7 @@
 	padding-left: 0px;
 }
 .classification-report .editing-form .is_a {
-	width: 25.5%;
+	width: 24%;
 	padding-left: .25%;
 }
 .classification-report .editing-form .sourcename {
@@ -24,16 +24,19 @@
 .classification-report {
 	border-bottom: #ddd solid 2px;
 	background-color: #fafafa;
-	margin-top: 5px;
 	border-top: 1px solid #F0F0F0;
 }
 .classification-report .nav-tabs li a {
 	padding: 10px 15px;
 }
+.reports-header{     padding-bottom: 8px;
+    max-height: 48px;
+    line-height: 1;
+    padding-top: 6px;
+    width: 100%;
+    display: block;}
 .classification-header {
-	padding-bottom: 8px;
-	padding-top: 2px;
-	max-height: 48px;
+   
 }
 .classification-header p {
 	margin: 0px;
@@ -44,10 +47,10 @@
 }
 .classification-header button.md-keyboard-arrow-down:hover, .classification-header button.md-keyboard-arrow-up:hover, .classification-header button.md-keyboard-arrow-down:active, .classification-header button.md-keyboard-arrow-up:active, .classification-header button.md-keyboard-arrow-down:focus, .classification-header button.md-keyboard-arrow-up:focus {
 	background-color: transparent!important;
-	color: #2d7130!important;
+	color: #2fa084!important;
 }
 .classification-report .button-width {
-    width: 3%;}
+    width: 2.5%;}
 	.classification-report .button-width-acceptability {
     width: 5%;}
 	.classification-report .editing-form .description {
@@ -63,8 +66,9 @@
 }
 
 .classification-report .editing-form .is_a {
-    width: 27%;
+    width: 24%;
     padding-left: .25%;
 }
 
-.classification-report .title-text{max-width:100%}
+.green-text {color: #4CAF50;}
+.red-text {color:#fd5252}

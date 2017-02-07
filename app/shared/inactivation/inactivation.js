@@ -2,8 +2,8 @@
 // jshint ignore: start
 angular.module('singleConceptAuthoringApp')
 
-  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal', '$route',
-    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal, $route) {
+  .directive('inactivation', ['$rootScope', '$location', '$filter', '$q', 'ngTableParams', '$routeParams', 'scaService', 'snowowlService', 'metadataService', 'inactivationService', 'notificationService', '$timeout', '$modal', '$route', 'modalService',
+    function ($rootScope, $location, $filter, $q, NgTableParams, $routeParams, scaService, snowowlService, metadataService, inactivationService, notificationService, $timeout, $modal, $route, modalService) {
       return {
         restrict: 'A',
         transclude: false,
@@ -565,9 +565,21 @@ angular.module('singleConceptAuthoringApp')
           // Complete and cancel
           //
           scope.cancelInactivation = function () {
-            if (window.confirm('All changes made during inactivation will be lost, are you sure?')) {
-              inactivationService.cancelInactivation(null);
-              $rootScope.$broadcast('inactivation.cancelInactivation');
+            if(scope.deletion){
+                modalService.confirm('All changes made during inactivation will be lost, are you sure?').then(function () {
+                    inactivationService.cancelInactivation(null);
+                  $rootScope.$broadcast('inactivation.cancelInactivation');
+                }, function (error) {
+                  // do nothing
+                });
+            }
+            else{
+                modalService.confirm('All changes made during inactivation will be lost, are you sure?').then(function () {
+                  inactivationService.cancelInactivation(null);
+                  $rootScope.$broadcast('inactivation.cancelInactivation');
+                }, function (error) {
+                  // do nothing
+                });
             }
           };
 

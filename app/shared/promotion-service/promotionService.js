@@ -5,7 +5,7 @@
  * Provides validation and prerequisite testing for task and project promotion
  */
 angular.module('singleConceptAuthoringApp')
-  .service('promotionService', ['scaService', 'snowowlService', '$q', function (scaService, snowowlService, $q) {
+  .service('promotionService', ['scaService', 'snowowlService', '$q', 'crsService', function (scaService, snowowlService, $q, crsService) {
 
     /**
      * Checks if a branch is eligible for promotion
@@ -347,9 +347,9 @@ angular.module('singleConceptAuthoringApp')
           }
         }, function (error) {
           // do nothing
-        })
+        });
       }, function (error) {
-        defer.reject('Error promoting task: ' + error);
+        deferred.reject('Error promoting task: ' + error);
       });
       return deferred.promise;
     }
@@ -360,9 +360,9 @@ angular.module('singleConceptAuthoringApp')
       // NOTE: No extra steps, simply promote via scaService
 
       scaService.promoteProject(projectKey).then(function (response) {
-        defer.resolve();
+        deferred.resolve();
       }, function (error) {
-        defer.reject('Error promoting project: ' + error);
+        deferred.reject('Error promoting project: ' + error);
       });
       return deferred.promise;
     }

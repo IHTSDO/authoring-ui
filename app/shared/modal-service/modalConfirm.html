@@ -1,0 +1,44 @@
+<div id="confirmModal" class="clearfix">
+
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4 class="modal-title">Confirmation Dialog</h4>
+  </div>
+
+
+  <div class="modal-body">
+
+    <div class="row p-b-10">
+      <div class="col-md-1"></div>
+
+      <div class="col-md-9">
+        <h4>{{message}}</h4>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+  </div>
+
+
+  <div class="modal-footer">
+
+    <div class="row no-padding no-gutter">
+      <!-- If has a key, option to delete task -->
+
+      <!-- Cancel always appears -->
+      <div class="col-md-4">
+        <button type="button" class=" col-md-12 btn btn-warning no-margin"
+                ng-click="cancel()">No
+        </button>
+      </div>
+
+      <div class="col-md-4"></div>
+
+
+      <div class="col-md-4">
+        <button type="button" class="col-md-12 btn btn-info no-margin"
+                ng-click="confirm()">Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -132,25 +132,15 @@
             No inbound relationships found - Concept may be deleted.
         </div>
         <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
-            Inbound relationships found - Please select an alternate target and historical associtaion for these relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items.
+            Inbound relationships found - Please suggest a replacement target for any inbound relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items.
         </div>
-        <div class="row p-t-10">
-            <div class="col-md-4">
-              <label> Association Type </label>
-            </div>
+        <div class="row p-t-10" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <label> Concept</label>
             </div>
           </div>
 
-          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-repeat="association in associations">
-            <div class="col-md-5">
-              <select class="form-control"
-                      ng-options="type as type.text for type in associationTargets"
-                      ng-model="association.type">
-                <option value="disabled">- Select an Association Type (optional) -</option>
-              </select>
-            </div>
+          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <textarea type="text" class="form-control"
                         ng-model="association.concept"
@@ -160,16 +150,6 @@
                         typeahead-editable="false" typeahead-min-length="3"
                         placeholder="Type to select an associated concept..."></textarea>
 
-            </div>
-            <div class="col-md-1">
-              <button type="button" ng-click="addAssociation($index)"
-                      class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case">
-                <span>Add Association</span></button>
-
-
-              <button type="button" ng-click="removeAssociation($index)"
-                      class="btn-default add-buttons md fa fa-minus button-width-minus  tooltips-left tooltips-light normal-case">
-                <span>Remove Association</span></button>
             </div>
           </div>
       </div>

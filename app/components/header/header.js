@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', function ($rootScope, $timeout, $modal, $location, $route, metadataService) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService) {
     return {
       restrict: '',
       transclude: false,
@@ -13,6 +13,12 @@ angular.module('singleConceptAuthoringApp')
 
         // timeout variable for current notification
         var timeout = null;
+
+        // template selection
+        scope.getSelectedTemplate = templateService.getSelectedTemplate;
+        scope.clearTemplate = function() {
+          templateService.clearSelectedTemplate();
+        };
 
         // function to format date to required form
         scope.formatDate = function (date) {
@@ -136,6 +142,26 @@ angular.module('singleConceptAuthoringApp')
             }
           }, function () {
           });
+        };
+
+        scope.gotoMyTasks = function() {
+          $location.url('home');
+        };
+
+        scope.gotoReviewTasks = function() {
+          $location.url('review-tasks');
+        };
+
+        scope.gotoMyProjects = function() {
+          $location.url('my-projects');
+        };
+
+        scope.gotoAllProjects = function() {
+          $location.url('projects');
+        };
+
+        scope.openBrowser = function() {
+          window.open('/browser', '_blank');
         };
       }
     };

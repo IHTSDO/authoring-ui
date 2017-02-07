@@ -764,7 +764,7 @@ pre {
   line-height: 1.846;
   word-break: break-all;
   word-wrap: break-word;
-  color: #212121;
+  color: #201f23;
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -825,7 +825,7 @@ legend {
   display: block;
   width: 100%;
   line-height: inherit;
-  color: #212121;
+  color: #201f23;
   border-bottom: 1px solid #e5e5e5;
 }
 .form-control {
@@ -2910,7 +2910,7 @@ tbody.collapse.in {
   color: #e9e9e9;
 }
 .navbar-default .navbar-nav > .active > a {
-  color: #212121;
+  color: #201f23;
   background-color: transparent;
 }
 .navbar-default .navbar-nav > .active > a:focus,
@@ -2941,25 +2941,25 @@ tbody.collapse.in {
 }
 .navbar-default .navbar-nav > .open > a {
   background-color: transparent;
-  color: #212121;
+  color: #201f23;
 }
 .navbar-default .navbar-nav > .open > a:focus,
 .navbar-default .navbar-nav > .open > a:hover {
   background-color: transparent;
-  color: #212121;
+  color: #201f23;
 }
 .navbar-default .navbar-link {
   color: #666;
 }
 .navbar-default .navbar-link:hover {
-  color: #212121;
+  color: #201f23;
 }
 .navbar-default .btn-link {
   color: #666;
 }
 .navbar-default .btn-link:focus,
 .navbar-default .btn-link:hover {
-  color: #212121;
+  color: #201f23;
 }
 .navbar-default .btn-link[disabled]:focus,
 .navbar-default .btn-link[disabled]:hover {
@@ -5680,7 +5680,7 @@ h5 {
   font-weight: 500;
   line-height: 24px;
   font-size: 15px;
-  color: #212121;
+  color: #201f23;
 }
 .h1,
 .h2,
@@ -6940,7 +6940,7 @@ input[type=radio]:before {
 }
 .page-header h1,
 .theme-text {
-  color: #424242;
+  color: #3e3e42;
 }
 .todo-app .filters .filter {
   color: #009cd7;
@@ -11440,13 +11440,6 @@ aside.sidebar .theme-red a.collapsible-header:after {
 .theme-red .todo-app .filters .filter:focus:hover {
   color: #e92848;
 }
-.todo-app .filters .theme-red .filter {
-  color: #e92848;
-}
-.todo-app .filters .theme-red .filter.active:hover,
-.todo-app .filters .theme-red .filter:focus:hover {
-  color: #e92848;
-}
 .p-5 {
   padding: 5px;
 }
@@ -12664,37 +12657,33 @@ textarea.noresize {
   opacity: 0;
 }
 
-/* ==========================================================================
-Developement Ribbon
-========================================================================== */
-.development {
-	position: absolute;
-width: 40px;
-	height: 39px;
-	top: 0;
-	left: 0;
-	border: 0;
-	z-index: 2000;
-	background-image: url("../images/development_ribbon.png");
-	background-position: center center;
-	background-repeat: no-repeat;
+/* DEV and UAT platform identification */
+
+.development, .uat {
+  display: block;
+  font-size: medium;
+  color: white;
+  font-weight: bold;
+  line-height: 1.3em;
+  transform: rotate(-45deg);
+  position: absolute;
+  top: 7px;
+  left: -27px;
+  opacity: 0.8;
+  z-index: 99999;
 }
 
-/* ==========================================================================
-Uat Ribbon
-========================================================================== */
-.uat {
-	position: absolute;
-	width: 40px;
-	height: 39px;
-	top: 0;
-	left: 0;
-	border: 0;
-	z-index: 2000;
-	background-image: url("../images/uat_ribbon.png");
-	background-position: center center;
-	background-repeat: no-repeat;
+.development::before {
+  content: "DEV";
+  background-color: #d1484a; /* indianred */
+  padding: 0px 30px;
 }
+.uat::before {
+  content: "UAT";
+  padding: 0px 30px;
+  background-color: #0365c0; /* darkcyan */
+}
+
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
 	margin-left: -26px;
 }

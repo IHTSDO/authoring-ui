@@ -19,63 +19,30 @@
               class="md md-edit"></span>
     </button>
   </script>
-  <style>
-
-    .table > tbody > tr > td,
-    .table > tbody > tr > th {
-      padding: 0px;
-      line-height: 1.846;
-      vertical-align: top;
-      border-top: 1px solid #F0F0F0;
-    }
-
-    .validation-report-header {
-    }
-
-    .case-failures, .back-button {
-      border-radius: 5px
-    }
-
-    .back-button {
-      background-color: transparent !important;
-      border: 1px solid #00a6e5 !important;
-      color: #00a6e5
-    }
-
-    .back-button:hover {
-      background-color: #00a6e5 !important;
-      border: 1px solid #00a6e5 !important;
-    }
-
-   
-
-    .table-full thead tr > th input[type=checkbox] {
-      width: 16px;
-      height: 16px;
-      margin: 0;
-      background: transparent;
-      padding-top: 10px;
-    }
-
-   
-    .validation-report .table-full-small tbody > tr > td:first-child, .validation-report .table-full-small thead tr > th:first-child {
-      padding-left: 10px;
-    }
-
-    .validation-report title {
-      display: none !important
-    }
-
-    .validation-report .table-full-small thead tr > th:first-child {
-      padding-left: 10px;
-    }
-  </style>
-  <div class="row purple deep-purple lighten-1" style="vertical-align: middle">
-    <div class="col-md-4 classification-header">Validation Report: {{getStatusText()}}
+ 
+  <div class="row validation-header reports-header" style="vertical-align: middle">
+    <div class="col-md-4 "> <div class="p-t-10 p-l-5">Validation Report: {{getStatusText()}}</div>
     </div>
-    <div class="col-md-1 classification-header">
-      <button ng-show="!isCollapsed" ng-click="toggleFullReport()"
-              class="btn btn-default deep-purple pull-right tooltips-left small-size-tooltip offset-tooltip-left">
+    <div class="col-md-3 ">
+ 
+    </div>
+    <div class="col-md-5 ">
+          <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+              class="btn btn-default btn-round deep-purple pull-right"
+              ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+
+  <button ng-show="!isCollapsed" ng-click="toggleViewExclusions()"
+              class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip m-l-10 ">
+        <div>{{viewExclusions ?
+          'Hide'
+          : 'Show'}} Whitelist
+        </div>
+        <span ng-if="viewExclusions">Hide whitelisted validation errors</span>
+        <span ng-if="!viewExclusions">Display whitelisted validation errors</span>
+
+      </button>
+         <button ng-show="!isCollapsed" ng-click="toggleFullReport()"
+              class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip offset-tooltip-left">
         <div>{{viewFullReport ?
           'Show ' + (taskKey ? 'Task' : 'Project')
           + ' Report' : 'Show Full Report'}}
@@ -85,30 +52,13 @@
 
       </button>
 
-    </div>
-    <div class="col-md-1 classification-header">
-      <button ng-show="!isCollapsed" ng-click="toggleViewExclusions()"
-              class="btn btn-default deep-purple pull-right tooltips-right small-size-tooltip offset-tooltip-left">
-        <div>{{viewExclusions ?
-          'Hide'
-          : 'Show'}} Whitelist
-        </div>
-        <span ng-if="viewExclusions">Hide whitelisted validation errors</span>
-        <span ng-if="!viewExclusions">Display whitelisted validation errors</span>
-
-      </button>
-    </div>
-    <div class="col-md-4"></div>
-    <div class="col-md-2 classification-header">
-      <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
-              class="btn btn-default btn-round deep-purple pull-right"
-              ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
+    
     </div>
   </div>
   <!--
   <div class="row validation-report-header "><div class="col-md-6"><div class="p-t-15 "><strong>Validation Report: </strong> {{getStatusText()}}</div></div><div class="col-md-6 p-t-10 "><button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right" ng-click="viewTop = true"><i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
       </button></div></div>-->
-  <div class="card m-10 validation-report" ng-show="!isCollapsed">
+  <div class="validation-report" ng-show="!isCollapsed">
     <div role="tabpanel" class="">
       <div class="ng-table-no-results"
            ng-if="viewTop && validationContainer.report && topTableParams.total() === 0">

@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval',
-    function ($rootScope, $filter, NgTableParams, $routeParams, snowowlService, scaService, notificationService, $timeout, $interval) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval',
+    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, snowowlService, scaService, notificationService, $timeout, $interval) {
       return {
         restrict: 'A',
         transclude: false,
@@ -15,7 +15,10 @@ angular.module('singleConceptAuthoringApp')
           classificationContainer: '=',
 
           // the branch
-          branch: '=branch'
+          branch: '=branch',
+
+          // the task (optional)
+          task : '=?'
         },
         templateUrl: 'shared/classification/classification.html',
 
@@ -31,6 +34,7 @@ angular.module('singleConceptAuthoringApp')
           scope.errorState = false;
 
           scope.itemLimit = 1000;
+
 
           // function to get formatted summary tex
           scope.setStatusText = function () {
@@ -373,7 +377,7 @@ angular.module('singleConceptAuthoringApp')
             return scope.relationshipChanges && scope.redundantStatedRelationships && scope.inferredNotPreviouslyStated && scope.equivalentConcepts;
           };
 
-          scope.loadRelationshipChanges = function(limit) {
+          scope.loadRelationshipChanges = function (limit) {
             scope.statusText = 'Loading...';
             scope.relationshipChanges = null;
             // get relationship changes
@@ -406,11 +410,18 @@ angular.module('singleConceptAuthoringApp')
               }
 
               scope.setStatusText();
-            }, function(error) {
+            }, function (error) {
               notificationService.sendError('Unexpected error: ' + error);
               scope.errorState = true;
             });
-          }
+          };
+
+          scope.role = null;
+          scope.$watch('task', function() {
+            accountService.getRoleForTask(scope.task).then(function(role) {
+              scope.role = role;
+            })
+          })
 
           // process the classification object on any changes
           scope.$watch('classificationContainer', function () {
@@ -471,7 +482,7 @@ angular.module('singleConceptAuthoringApp')
                   }
                 });
                 console.log(scope.equivalentConcepts);
-              }, function(error) {
+              }, function (error) {
                 notificationService.sendError('Unexpected error: ' + error);
                 scope.errorState = true;
 
