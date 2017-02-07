@@ -54,6 +54,7 @@ angular.module('singleConceptAuthoringApp')
     function checkSpelling(term) {
       var deferred = $q.defer();
       var suggestions = null;
+      term = term.replace(/[()]/g, "");
       var tokenizedWords = term ? term.toLowerCase().split(' ') : [];
       getSuggestions(tokenizedWords).then(function (suggestions) {
         angular.forEach(tokenizedWords, function (word) {

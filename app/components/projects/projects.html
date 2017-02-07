@@ -1,4 +1,3 @@
-
 <div class="row no-gutter sca-container">
   <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
@@ -29,19 +28,20 @@
             <tr ng-repeat="project in $data" class="clickable-row">
 
               <td data-title="'Project Name'" sortable="'title'" filter="{ 'title': 'text' }"><a class="tooltips-right"
-                ng-href="#/project/{{project.key}}">{{project.title}} <span>View Project Details</span> </a>
+                                                                                                 ng-href="#/project/{{project.key}}">{{project.title}}
+                <span>View Project Details</span> </a>
               </td>
-                <td data-title="'Project Key'" sortable="'key'" filter="{ 'project': 'text' }">
+              <td data-title="'Project Key'" sortable="'key'" filter="{ 'project': 'text' }">
                 {{project.key}}
               </td>
               <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
-               {{project.projectLead.displayName}}
+                {{project.projectLead.displayName}}
               </td>
 
               <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
+
                 <a ng-href="#/project/{{project.key}}">
-          
-            <button ng-show="project.latestClassificationJson !== null"
+                  <button ng-show="project.latestClassificationJson"
                           type="button"
                           ng-class="[
                           {indicator_green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
@@ -52,19 +52,22 @@
                             {indicator_grey : project.latestClassificationJson.status === 'STALE'},
                            {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.status !== 'STALE'},
                            ]"
-  class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                    <div class="md md-notifications "></div> 
-                                        <span > <div class="message_classification_{{project.latestClassificationJson.status}}"><div ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
+                          class="btn btn-round btn-default pull-left tooltips-right normalcase ">
+                    <div class="md md-notifications "></div>
+                    <span> <div class="message_classification_{{project.latestClassificationJson.status}}"><div
+                      ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div
+                      ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div
+                      ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
                   </button>
                 </a>
-               
+
 
               </td>
               <td data-title="'Validation Results'" sortable="'validationStatus'">
                 <a ng-href="#/project/{{project.key}}">
-             
-                  <button ng-show="project.validationStatus !== null"
-                       type="button"
+
+                  <button ng-show="project.validationStatus && project.validationStatus !== 'Failed-to-retrieve'"
+                          type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
                           {indicator_blue : project.validationStatus === 'SCHEDULED'},
                           {indicator_blue : project.validationStatus === 'VALIDATING'},
@@ -72,17 +75,18 @@
                           {indicator_green : project.validationStatus === 'COMPLETED'},
                           {indicator_red : project.validationStatus === 'FAILED'}]"
                           class="btn btn-round btn-default pull-left lighten-1 tooltips-right">
-                      <div class="md md-school "></div>
-                    <span > <div class="message_validation_{{project.validationStatus}}"> </div></span>
+                    <div class="md md-school "></div>
+                    <span> <div class="message_validation_{{project.validationStatus}}"> </div></span>
                   </button>
-                 
+
                 </a>
-            
+
 
               </td>
 
               <td data-title="'Status'" sortable="'branchState'">
-                <span class="badge {{getBranchStateText(project)}}" ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span>
+                <span class="badge {{getBranchStateText(project)}}"
+                      ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span>
               </td>
 
             </tr>

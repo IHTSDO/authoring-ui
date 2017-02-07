@@ -11,7 +11,7 @@ angular.module('singleConceptAuthoringApp')
       if (!properties) {
         $http.get('/config/endpointConfig.json').then(function (response) {
           properties = response.data;
-          $http.get('/sca/validationConfig/validationConfig.json').then(function (validationResponse) {
+          $http.get('/validationConfig/validationConfig.json').then(function (validationResponse) {
               validationProperties = validationResponse.data;
               deferred.resolve(properties, validationProperties);
             }, function() {

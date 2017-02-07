@@ -365,7 +365,6 @@ angular.module('singleConceptAuthoringApp')
               }
             }
             else {
-              console.debug('!view');
               if (scope.concept.hasOwnProperty('isLeafInferred')) {
                 scope.getAndSetChildren(scope.concept);
                 scope.getAndSetParents(scope.concept, false).then(function (array) {
@@ -403,7 +402,7 @@ angular.module('singleConceptAuthoringApp')
               // add as root tree
               scope.terminologyTree.push(parent);
 
-            })
+            });
           }
         }
 

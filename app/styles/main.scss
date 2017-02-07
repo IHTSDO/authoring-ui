@@ -7,7 +7,6 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "notification.scss";
 @import "header.scss";
 @import "home.scss";
-@import "about.scss";
 @import "ihtsdo.scss";
 @import "fonts.scss";
 @import "edit.scss";
@@ -28,6 +27,8 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "classification.scss";
 @import "badge.scss";
 @import "button.scss";
+@import "tbba.scss";
+@import "validation.scss";
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -100,7 +101,7 @@ html{ height: 100%;}
 }
 
 .navbar-default {
-  background-color: #303030;
+  background-color: #2e2d30;
   border: none;
   border-radius: 0px;
   text-shadow: none;
@@ -108,7 +109,7 @@ html{ height: 100%;}
     color: #fff;
   }
   .navbar-toggle {
-    background-color: #303030;
+    background-color: #2e2d30;
     .icon-bar {
       background-color: #888;
     }

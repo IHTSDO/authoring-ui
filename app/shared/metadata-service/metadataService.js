@@ -31,7 +31,8 @@ angular.module('singleConceptAuthoringApp')
       {id: 'LIMITED', text: 'Limited component', display: [9]},
       {id: 'OUTDATED', text: 'Outdated component', display: [6, 9]},
       {id: 'PENDING_MOVE', text: 'Pending move', display: [3]},
-      {id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []}
+      //{id: 'RETIRED', text: 'Reason not stated', display: [6, 9]}
     ];
     // var inactivationParent = '900000000000481005';
 
@@ -116,15 +117,15 @@ angular.module('singleConceptAuthoringApp')
 
     // description inactivation metadata
     var descriptionInactivationReasons = [
-      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
-      {id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-      {id: 'DUPLICATE', text: 'Duplicate component'},
+      //{id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
+      //{id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
       {id: 'ERRONEOUS', text: 'Erroneous component'},
-      {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
-      {id: 'LIMITED', text: 'Limited component'},
+      //{id: 'INAPPROPRIATE', text: 'Inappropriate component'},
+      //{id: 'LIMITED', text: 'Limited component'},
       {id: 'OUTDATED', text: 'Outdated component'},
-      {id: 'PENDING_MOVE', text: 'Pending move'},
-      {id: 'RETIRED', text: 'Reason not stated'}
+      //{id: 'PENDING_MOVE', text: 'Pending move'},
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy'},
+      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent'}
 
     ];
 
@@ -228,6 +229,16 @@ angular.module('singleConceptAuthoringApp')
           languages: languages,
           dialects: dialects
         };
+        if(getCurrentModuleId() !== '900000000000207008'){
+            for(var i = 0; i < descriptionInactivationReasons.length; i++) {
+                if (descriptionInactivationReasons[i].id == 'DUPLICATE') {
+                    found = true;
+                }
+                if(i === descriptionInactivationReasons.length && !found){
+                    descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component'});
+                }
+            }
+        }
         $rootScope.$broadcast('setExtensionMetadata');
 
       }

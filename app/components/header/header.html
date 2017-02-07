@@ -5,7 +5,7 @@
 
         <div class="brand-logo pull-left">
           <div id="logo">
-            <img class="img-responsive" src="images/small_logo.png" alt="IHTSDO" width="40" height="40">
+            <img class="img-responsive" src="images/small_logo.png" alt="SNOMED International" width="40" height="40">
           </div>
           <span>Single Concept Authoring</span>
         </div>
@@ -19,11 +19,16 @@
               Dashboard</a>
 
             <ul>
-              <li><a ng-href="#/home">My Tasks</a>
+              <li ng-click="gotoMyTasks()">My Tasks
               </li>
-              <li><a ng-href="#/review-tasks">Review Tasks</a>
+              <li ng-click="gotoReviewTasks()">Review Tasks
               </li>
-
+              <li ng-click="gotoMyProjects()">My Projects
+              </li>
+              <li ng-click="gotoAllProjects()">All Projects
+              </li>
+              <li ng-click="openBrowser()">TS Browser
+              </li>
             </ul>
           </li>
 
@@ -52,8 +57,37 @@
           <span>Classification Running </span>
         </button>
       </li>
-    </ul>
 
+
+
+    </ul>
+    <style>
+
+
+	</style>
+    <!-- Hiding this pending discussion I think it appears as a duplicate and may cause confusion
+    <div ng-if="getSelectedTemplate() != null"  class="pull-left header-alerts col-md-3 pull-left">
+
+      <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
+
+        <div class="alert saved tbba-notification"
+
+             style="padding-right: 8px;">
+
+
+          <button type="button" class=" fa-sca fa-close "
+
+                  ng-click="clearTemplate()"></button>
+
+
+
+
+          <p>Template selected: {{getSelectedTemplate().name}}
+          </p>
+        </div>
+      </div>
+    </div>
+-->
     <div ng-show="notification" class="pull-left header-alerts col-md-3 pull-left">
 
       <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
@@ -68,7 +102,7 @@
                   ng-click="clearNotification()"></button>
 
           <!-- if a link is provided, show it -->
-        
+
 
           <p>{{notification.time | date: 'short'}} <strong class="green-save">{{notification.message}} </strong>  <a ng-if="notification.url" ng-click="gotoNotificationLink()">
             <span ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]">

@@ -80,7 +80,76 @@ angular.module('singleConceptAuthoringApp')
       }
 
       function isSctid(id) {
-        return id && id.match(/^[0-9]+$/);
+        if (!id) {
+          return false;
+        }
+        var match = id.match(/^[0-9]+$/);
+        return match ? true : false;
+      }
+
+      function cleanRelationship(relationship) {
+
+        var allowableRelationshipProperties = [
+          'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
+        ];
+
+        // if a locally assigned UUID, strip
+        if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
+          delete relationship.relationshipId;
+        }
+
+        for (var key in relationship) {
+          if (allowableRelationshipProperties.indexOf(key) === -1) {
+            delete relationship[key];
+          }
+        }
+      }
+
+      function cleanDescription(description) {
+        var allowableDescriptionProperties = [
+          'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap', 'inactivationIndicator', 'associationTargets',
+        ];
+
+        // if a locally assigned UUID, strip
+        if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
+          delete description.descriptionId;
+        }
+        if (description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated') {
+          delete description.inactivationIndicator;
+        }
+        for (var key in description) {
+          if (allowableDescriptionProperties.indexOf(key) === -1) {
+            delete description[key];
+          }
+        }
+
+        if (description.term) {
+          // strip invalid characters from term
+          description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
+
+          //replace any non-space whitespace characters (tab, newline, etc.)
+          description.term = description.term.replace(/[^\S ]/g, ' ');
+
+          // replace any 2+ sequences of space with single space
+          description.term = description.term.replace(/[ ]{2,}/g, ' ');
+        }
+      }
+
+      function removeInvalidCharacters(term) {
+        if (term) {
+          // strip invalid characters from term
+          term = term.replace(/[@|$|#|\\]/g, ' ');
+
+          //replace any non-space whitespace characters (tab, newline, etc.)
+          term = term.replace(/[^\S ]/g, ' ');
+
+          // replace any 2+ sequences of space with single space
+          term = term.replace(/[ ]{2,}/g, ' ');
+
+          // replace any leading or trailing whitespace
+          term = term.trim();
+        }
+        return term;
       }
 
       function cleanRelationship(relationship) {
@@ -707,7 +776,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       //Function to bulk get concepts
-      function bulkGetConcept(conceptIdList, branch) {
+      function bulkGetConcept(conceptIdList, branch, expandPt) {
         var deferred = $q.defer();
         var queryString = '';
         angular.forEach(conceptIdList, function (concept, key) {
@@ -718,7 +787,7 @@ angular.module('singleConceptAuthoringApp')
             queryString += concept;
           }
         });
-        $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()&escg=' + queryString).then(function (response) {
+        $http.get(apiEndpoint + branch + '/concepts?offset=0&limit=200&expand=fsn()' + (expandPt ? ',pt()' : '') + '&escg=' + queryString).then(function (response) {
           deferred.resolve(response.data);
         }, function (error) {
           deferred.reject(error);
@@ -788,7 +857,7 @@ angular.module('singleConceptAuthoringApp')
 
         // set preferred description type to synonym if indicated (note: blank defaults to FSN)
         if (synonymFlag) {
-          descTypeStr = '&preferredDescriptionType=SYNONYM'
+          descTypeStr = '&preferredDescriptionType=SYNONYM';
         }
 
         // ensure & not present in search string, to prevent bad requests
@@ -1319,7 +1388,7 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var wordsStr = '';
         for (var i = 0; i < words.length; i++) {
-          wordsStr += words[i] + (i == words.length - 1 ? '' : '%2C');
+          wordsStr += words[i] + (i === words.length - 1 ? '' : '%2C');
         }
         $http.get(apiEndpoint + 'browser/dialect/matches?tokenizedWords=' + wordsStr).then(function (response) {
           deferred.resolve(response.data);
@@ -1342,6 +1411,32 @@ angular.module('singleConceptAuthoringApp')
       function isRelationshipId(id) {
         var idStr = String(id);
         return isSctid(idStr) && idStr.substring(idStr.length - 2, idStr.length - 1) === '2';
+      }
+
+      // search concepts by branch, filter, and escgExpr
+      function searchConcepts(branch, termFilter, escgExpr, offset, limit) {
+        var deferred = $q.defer();
+
+        // paging/filtering/sorting with defaults applied
+        var params = {
+          offset: offset ? offset : '0',
+          limit: limit ? limit : '50',
+          expand: 'fsn()'
+        };
+        if (termFilter) {
+          params.termFilter = termFilter;
+        }
+        if (escgExpr) {
+          params.escgFilter = escgExpr;
+        }
+
+        $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
+          deferred.resolve(response.data.items ? response.data.items : []);
+        }, function (error) {
+          deferred.reject(error);
+        });
+
+        return deferred.promise;
       }
 
       ////////////////////////////////////////////
@@ -1389,6 +1484,7 @@ angular.module('singleConceptAuthoringApp')
         getDialects: getDialects,
         downloadClassification: downloadClassification,
         findConceptsForQuery: findConceptsForQuery,
+        searchConcepts: searchConcepts,
         getReview: getReview,
         getMembersByTargetComponent: getMembersByTargetComponent,
 

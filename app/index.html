@@ -2,8 +2,8 @@
 <html class="no-js" style="height:100%">
 <head>
   <meta charset="utf-8">
-  <title>IHTSDO SCA (Single Concept Authoring)</title>
-  <meta name="description" content="IHTSDO Tools Single Concept Authoring Services for SNOMED CT">
+  <title>SNOMED International Authoring Platform</title>
+  <meta name="description" content="SNOMED International Authoring Platform for SNOMED CT">
   <meta name="viewport" content="width=device-width">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
   <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-57x57.png"/>
@@ -14,7 +14,8 @@
   <link rel="apple-touch-icon-precomposed" sizes="152x152" href="apple-touch-icon-152x152.png"/>
   <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32"/>
   <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16"/>
-  <meta name="application-name" content="Single Concept Authoring"/>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <meta name="application-name" content="Authoring Platform"/>
   <meta name="msapplication-TileColor" content="#00A4E4"/>
   <meta name="msapplication-TileImage" content="mstile-144x144.png"/>
   <!-- build:css(.) styles/vendor.css -->
@@ -27,24 +28,29 @@
   <link rel="stylesheet" href="bower_components/c3/c3.css" />
   <link rel="stylesheet" href="bower_components/bootstrap-additions/dist/bootstrap-additions.css" />
   <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css" />
+  <link rel="stylesheet" href="bower_components/pikaday/css/pikaday.css" />
+  <link rel="stylesheet" href="bower_components/handsontable/dist/handsontable.css" />
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 
-
+  <style type="text/css">
+    /* Prevent "flash of content" platform banner container div on initial load. */
+    /* JavaScript in last element of body activates after angular has initialised. */
+    div.platformBanner {
+      display: none;
+    }
+  </style>
 </head>
 <body ng-app="singleConceptAuthoringApp" scroll-spy id="top"
       class="theme-template-dark theme-blue" style="height:100%;">
 <!--[if lt IE 7]>
-<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
-                                                                                                                    your
-                                                                                                                    browser</a>
-                       to improve your experience.</p>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<div ng-if="notProd">
+<div ng-if="notProd" class="platformBanner">
   <div ng-if="development" ng-cloak="">
     <div class="development"></div>
   </div>
@@ -64,7 +70,6 @@
     background-color: #2196F3;
     margin: 20px;
     padding: 20px
-
   }
 </style>
 
@@ -129,6 +134,11 @@
 <script src="bower_components/angular-elastic/elastic.js"></script>
 <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
 <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
+<script src="bower_components/moment/moment.js"></script>
+<script src="bower_components/pikaday/pikaday.js"></script>
+<script src="bower_components/handsontable/dist/handsontable.js"></script>
+<script src="bower_components/ngHandsontable/dist/ngHandsontable.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
@@ -146,9 +156,11 @@
 <script src="shared/promotion-service/promotionService.js"></script>
 <script src="shared/inactivation/inactivationService.js"></script>
 <script src="shared/validation/validationService.js"></script>
+<script src="shared/review-service/reviewService.js"></script>
 <script src="shared/crs-service/crsService.js"></script>
-<script src="shared/language-service/languageService.js"></script>
-<script src="shared/language-service/sca-spellcheck.js"></script>
+<script src="shared/constraint-service/constraintService.js"></script>
+<script src="shared/template-service/templateService.js"></script>
+<script src="shared/template-service/templateUtility.js"></script>
 <script src="shared/spellcheck/spellcheckService.js"></script>
 
 <!-- SCA Components / Views -->
@@ -162,6 +174,7 @@
 <script src="components/project/project.js"></script>
 <script src="components/edit/edit.js"></script>
 <script src="components/test/test.js"></script>
+<script src="components/batch/batch.js"></script>
 
 <!-- SCA Shared Elements -->
 <script src="shared/sidebar/sidebar.js"></script>
@@ -170,7 +183,6 @@
 <script src="shared/taxonomy/taxonomy.js"></script>
 <script src="shared/search/searchPlugin.js"></script>
 <script src="shared/search/search.js"></script>
-<script src="shared/search-modal/searchModal.js"></script>
 <script src="shared/savedList/savedList.js"></script>
 <script src="shared/task-detail/taskDetail.js"></script>
 <script src="shared/concept-edit/conceptEdit.js"></script>
@@ -181,6 +193,8 @@
 <script src="shared/classification-report/classificationReport.js"></script>
 <script src="shared/feedback/feedback.js"></script>
 <script src="shared/inactivate-component-modal/inactivateComponentModal.js"></script>
+<script src="shared/review-check-modal/reviewCheckModal.js"></script>
+<script src="shared/modal-service/modalService.js"></script>
 <script src="shared/model-diagramming/drawModel.js"></script>
 <script src="shared/model-diagramming/drawModelSca.js"></script>
 <script src="shared/task/task.js"></script>
@@ -221,16 +235,11 @@
 
 
 <!-- endbuild -->
-<script type="text/javascript" src="https://jira.ihtsdotools.org/s/f890da76f5b668bf7eb9dc26a2170e6e-T/en_US-je3gdv/64027/28/1.4.27/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=248feca3"></script>
-    <script type="text/javascript">
-	window.ATL_JQ_PAGE_PROPS = {
-		"triggerFunction": function(showCollectorDialog) {
-			jQuery("#myCustomTrigger").click(function(e) {
-				e.preventDefault();
-				showCollectorDialog();
-			});
-		}
-	};
+
+<script type="text/javascript">
+  // enable platform banner container (after angular has initialised its content)
+  var platformBanner = document.querySelector("div.platformBanner");
+  platformBanner.style.display = "block";
 </script>
 </body>
 </html>

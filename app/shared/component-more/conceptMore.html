@@ -2,7 +2,7 @@
   <div class="pop-edit concept-more description-popover row">
         <div class="concept-id pull-left">
             <label class="control-label">Concept ID</label>
-            <span class="fields row "> {{concept.conceptId}}</span>
+            <span class="fields row " ng-show="isSctid" ng-init="isSctid = isSctid(concept.conceptId)"> {{concept.conceptId}}</span>
         </div>
         <!--
         <div ng-if="concept.fsn === null" class="concept-id pull-left" ><label class="control-label">Concept ID</label><input ng-model="concept.conceptId" type="text" class="fields row" style="background-color:#fff"></input></div>

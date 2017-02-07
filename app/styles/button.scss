@@ -108,9 +108,9 @@
  }
  .button-nav .review.btn-default[disabled],
  .button-nav .btn-default[disabled] {
-     background-color: #494949!important;
-     color: #7c7c7c;
-     border-bottom: 1px #7c7c7c solid;
+     background-color: #424249!important;
+     color: #76747c;
+     border-bottom: 1px #76747c solid;
  }
  .Classify.btn-default[disabled] {
      background-color: rgb(76, 175, 80);
@@ -118,6 +118,7 @@
  .validate.btn-default[disabled] {
      background-color: rgb(103, 58, 183);
  }
+
  .validate.btn-default:hover {
      background-color: #512da8;
      color: #fff;
@@ -135,6 +136,12 @@
      float: left;
      font-weight: 500
  }
+  .md-forum.pink.darken-3.iconbase:hover,
+  .md-forum.pink.darken-3.iconbase:focus
+ {background-color: #ad1457;}
+ .md-forum.pink.darken-3.iconbase:hover,
+  .md-forum.pink.darken-3.iconbase:focus
+ {background-color: #ad1457;}
  .btn-default .iconbase[disabled] {
      background-color: #d8d8d8 !important;
      border-color: #d8d8d8 !important;
@@ -147,11 +154,11 @@
      height: auto;
      word-wrap: break-word!important;
  }
- <!--.review-columns {
+.review-columns {
      background-color: #f2f2f2;
      border-top-color: #e3e3e3!important;
  }
- --> .indicator_grey {
+.indicator_grey {
      background-color: #f2f2f2!important;
      color: #666!important;
  }
@@ -160,7 +167,7 @@
      color: #666!important;
  }
  .indicator_green {
-     background-color: #81C784!important;
+     background-color: #4CAF50!important;
      color: #fff!important;
  }
  .indicator_green:hover {
@@ -326,7 +333,7 @@
  }
  .btn-default.pink.lighten-2:hover,
  .btn-default.pink.lighten-2:active {
-     background-color: #e91e63;
+     background-color: #e94281;
      color: #fff;
  }
  .btn-round.pink.darken-1:hover {
@@ -358,3 +365,50 @@
      background-color: transparent!important;
      box-shadow: none!important
  }
+
+  .sca-light .navigation-link.green.darken-1.classify {
+    color: #d33c75
+  }
+
+
+  ul.review-nav li ul li {
+    color: #fff;
+    background: #e94281
+  }
+
+
+
+ 
+.sub-navigation-link-list .btn:hover {
+   
+    color: #fff;
+}
+
+
+
+
+    .new-concept .concept-headers:first-child {
+      padding-top: 3px !important
+    }
+
+    .template-term {
+      background-color: red !important;
+    }
+
+    .template-slot {
+      background-color: red !important;
+    }
+/*left nav */
+
+.snodragon-templates{    padding: 4px 0px;
+    font-size: 13px;
+	background-color:#009cd7;
+	color:#fff;
+}
+.snodragon-templates:hover, 
+.snodragon-templates:active  {background:#0082b3; color:#fff}
+
+
+.dark-button {background-color: rgba(0, 0, 0, 0.2)!important; color:#fff!important;}
+.dark-button:hover,
+.dark-button:active {background-color: rgba(0, 0, 0, 0.3) !important; color:#fff!important;}

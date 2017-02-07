@@ -53,7 +53,7 @@
 
           </div>
           <div class="col-md-2 promoted-check-box">
-            <button class="btn btn-default form-control"
+            <button class="btn btn-default form-control dark-fix"
                     ng-class="[{'md-check-box' : showPromotedTasks}, {'md-check-box-outline-blank' : !showPromotedTasks}]"
                     ng-click="toggleShowPromotedTasks()" style="background: transparent">
               <span class="promoted-check-box">Show Promoted</span></button>
@@ -93,11 +93,10 @@
                   header-title="'Click to sort'" filter="{ 'summary': 'text' }"><a class="tooltips-right"
                                                                                    ng-click="goToTask(task)">
                 {{task.summary}}<span> Click to open editing view</span></a>
-              </td>
-
-              <td data-title="'Task Id'" sortable="'taskKey'" header-title="'Click to sort'" filter="{ 'key': 'text' }">
+             <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }">
                 {{task.key}}
               </td>
+          
               <td data-title="'Modified'" sortable="'updated'" header-title="'Click to sort'">
                 {{task.updated | date: "yyyy-MM-dd"}}
               </td>
@@ -138,7 +137,7 @@
               </td>
               <td data-title="'Validation'" sortable="'latestValidationStatus'">
                 <a class="tooltips-left" ng-href="#/tasks/task/{{task.projectKey}}/{{task.key}}/validate">
-                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED'"
+                  <button ng-show="task.latestValidationStatus && task.latestValidationStatus !== 'NOT_TRIGGERED' && task.latestValidationStatus !== 'Failed-to-retrieve'"
                           type="button"
                           ng-class="[{indicator_blue : task.latestValidationStatus === 'SCHEDULED'},
                           {indicator_red : task.latestValidationStatus === 'FAILED'},

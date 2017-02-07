@@ -13,37 +13,67 @@ angular.module('singleConceptAuthoringApp.test', [
       });
   })
 
-  .controller('TestCtrl', function TestCtrl($scope, $rootScope, $interval, notificationService, languageService) {
+  .controller('TestCtrl', function TestCtrl($scope, $rootScope, templateService, notificationService) {
 
       $rootScope.pageTitle = 'Test Management';
+      $scope.name = 'Guided CT of X';
+      $scope.templateMode = 'Get';
+      $scope.templateRaw = null;
+
+      function getTemplates() {
+        templateService.getTemplates().then(function (response) {
+          $scope.templates = response;
+        });
+      }
+
+      getTemplates();
 
       console.log('Entered TestCtrl');
 
-      // spellcheck testing variables
-      $scope.getTestSpellingWords = languageService.getTestSpellings;
-      $scope.term = 'Hey! You mispelled whiskee!';
-      $scope.term2 = 'You mispelled this one too. Is it the whiskee?';
-
-
-      // notification testing variables
-      $scope.notificationType = 'Message';
-      $scope.notificationText = 'Validation completed for task WRPSII-86';
-      $scope.notificationUrl = '#/tasks/task/WRPSII/WRPSII-86/validate';
-      $scope.notificationDuration = 0;
-
-      $scope.sendNotification = function () {
-        switch ($scope.notificationType) {
-          case 'Message':
-            notificationService.sendMessage($scope.notificationText, $scope.notificationDuration, $scope.notificationUrl);
-            break;
-          case 'Warning':
-            notificationService.sendWarning($scope.notificationText, $scope.notificationDuration, $scope.notificationUrl);
-            break;
-          case 'Error':
-            notificationService.sendError($scope.notificationText, $scope.notificationDuration, $scope.notificationUrl);
-            break;
+      function prettyPrint() {
+        if ($scope.templateRaw) {
+          var ugly = $scope.templateRaw;
+          var obj = JSON.parse(ugly);
+          var pretty = JSON.stringify(obj, undefined, 4);
+          if (pretty && pretty !== 'null') {
+            document.getElementById('prettyJson').value = pretty;
+          }
         }
       }
+
+      $scope.$watch('templateRaw', function () {
+        prettyPrint();
+      });
+
+
+      $scope.performAction = function () {
+        switch ($scope.templateMode) {
+          case 'Get':
+            templateService.getTemplateForName($scope.name).then(function (response) {
+              $scope.templateRaw = JSON.stringify(response);
+              getTemplates();
+            }, function (error) {
+              notificationService.sendError('Error: ' + error);
+            });
+            break;
+          case 'Create':
+            templateService.createTemplate(JSON.parse($scope.templateRaw)).then(function (response) {
+              $scope.templateRaw = JSON.stringify(response);
+              getTemplates();
+            }, function (error) {
+              notificationService.sendError('Error: ' + error);
+            });
+            break;
+          case 'Update':
+            templateService.updateTemplate(JSON.parse($scope.templateRaw)).then(function (response) {
+              $scope.templateRaw = JSON.stringify(response);
+              getTemplates();
+            }, function (error) {
+              notificationService.sendError('Error: ' + error);
+            });
+            break;
+        }
+      };
 
 
     }

@@ -194,7 +194,7 @@ angular.module('singleConceptAuthoringApp')
           }
         },
 
-        // Where an active fully specified name includes the word “pre-filled”
+        // Where an active fully specified name includes the word ï¿½pre-filledï¿½
         // change to prefilled
 
         // WRP-1546	Active FSNs must end in closing parentheses
@@ -695,9 +695,7 @@ angular.module('singleConceptAuthoringApp')
               // replace unicode characters
               receivedError.message = receivedError.message.replace(/\u2019/g, '\'').replace(/[\u201C\u201d]/g, '"');
 
-              console.debug(test.name, receivedError.message, test.expectedError, receivedError.message === test.expectedError);
-
-              /*      console.debug('comparing errors');
+                            /*      console.debug('comparing errors');
                console.debug(test.expectedError);
                console.debug(receivedError.message);*/
               if (test.expectedError === receivedError.message) {
@@ -721,7 +719,6 @@ angular.module('singleConceptAuthoringApp')
             test.status = 'PASSED';
           }
 
-          console.debug('Test complete', test.status);
 
           // run next test
           return runHelper(tests, ++index);
@@ -743,7 +740,6 @@ angular.module('singleConceptAuthoringApp')
             testFound = true;
             test.status = 'Pending';
             runHelper([test], 0).then(function () {
-              console.debug('test complete', test);
               deferred.resolve(test);
             });
           }

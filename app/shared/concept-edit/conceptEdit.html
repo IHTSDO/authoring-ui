@@ -20,24 +20,24 @@
     </div>
   </div>
 
+  <div class="alert alert-dismissible validation" ng-show="concept.templateMessages.length > 0"
+       ng-repeat="message in concept.templateMessages"
+       ng-class="[{ 'alert-warning' : message.type === 'Warning'}, { 'alert-danger' : message.type === 'Error' }, { 'alert-info' : message.type === 'Message'}]">
+    <button class="btn btn-default md md-close pull-right white" ng-click="concept.templateMessages = []"
+            style="background: transparent"
+            tabindex="0"></button>
+    <h4 ng-bind="message.message"></h4>
+
+  </div>
 
   <!-- end validation error -->
   <!-- The concept itself -->
   <style>
 
-    .new-concept .grey.darken-4 {
-      background-color: #ffcadc !important;
-      color: #212121 !important
-    }
-
-    .new-concept .concept-headers:first-child {
-      padding-top: 3px !important
-    }
   </style>
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
-    <div class="row">
-      {{scope.validation}}
-    </div>
+
+
     <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
 
       <div class="pull-left col-md-1 no-padding">
@@ -52,26 +52,68 @@
           <span>More details</span>
         </button>
 
+
+        <div class="template-controls " ng-if="template">
+
+          <ul class="sub-navigation-link-list ">
+            <li>
+              <a>
+                <div class="pointer btn tooltips-right tooltips-light normal-case" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
+                <span>Detach Template {{template.name}} v {{template.version}}</span>
+                </div>
+              </a>
+
+            </li>
+
+          </ul>
+
+        </div>
+        <!--
+                <div id="wrap">
+
+                  <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+                          popover-container="wrap"
+                          popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
+                          popover-placement="right"
+                          popover-trigger="click: click"
+                          popover-append-to-body="true"
+                          type="button"
+                          id="template-control-btn"
+                          ng-if="template"
+                          class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
+                    <span>Template Controls</span>
+                  </button>
+                </div>-->
       </div>
 
       <!-- concept name -->
-      <div class="col-md-6 no-padding title-text" style="margin-left:-25px;">
+      <div class="col-md-6 no-padding title-text">
 
-        <button type="button" class="btn-default grey darken-4 title-text fsn-title-button">
+
+        <button type="button" class="btn-default grey darken-4 title-text fsn-title-button pull-right">
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
           <span ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey" class="fsn">Unsaved Concept</span>
+
         </button>
+
+
       </div>
 
       <div class="  no-margin edits concept-title col-md-5 pull-right no-padding">
         <div class=" p-t-3  ">
+
+
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
-                  ng-click="saveConcept()" ng-if="!isMerge && isModified && !isStatic" ng-disabled="saving">
+                  ng-click="saveConcept()"
+                  ng-if="!isMerge && isModified && !isStatic"
+                  ng-disabled="saving">
             <span> Save Concept </span>
           </button>
+
+
           <button type="button"
                   class="btn-default save-button small-buttons red lighten-2 md md-assignment-turned-in tooltips-bottom tooltips-light normal-case "
                   ng-click="saveConcept()" ng-if="isMerge" style="margin-bottom: -2px;">
@@ -82,10 +124,12 @@
             Revert
           </button>
 
+
+
           <!-- control buttons -->
           <button type="button" style="vertical-align: bottom"
                   ng-click="toggleConceptActive(concept, true)"
-                  ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released"
+                  ng-if="isInactivation  || !isLockedModule(concept.moduleId) && !concept.released && isSctid(concept.conceptId)"
                   class="red small-buttons tooltips-bottom status-concept tooltips-light normal-case editbuttons fa-sca fa-minus">
 
             <span ng-if="!isStatic  && !isInactivation">Delete Unpublished Concept</span>
@@ -123,12 +167,6 @@
                   class="btn-default editbuttons small-buttons deep-purple lighten-2 md md-history tooltips-bottom tooltips-light"
                   ng-click="undoAll()" ng-if="!isStatic" ng-disabled="!isModified">
             <span>Revert to Saved</span>
-          </button>
-          <button type="button"
-                  class="btn-default editbuttons small-buttons blue tooltips-bottom tooltips-light small-size-tooltip normal-case md fa-sca fa-sitemap"
-                  ng-if="!isStatic" ng-click="showModel(concept)">
-            <span ng-if="modelVisible"> Hide Model </span>
-            <span ng-if="!modelVisible"> Show Model </span>
           </button>
 
           <button type="button"
@@ -262,7 +300,6 @@
             drag-image="getDragImageForDescription(description)">
             <span>Drag this row</span>
           </button>
-          </button>
 
 
           <!-- Active/Inactive -->
@@ -290,24 +327,24 @@
           <!-- Term -->
           <div class="pull-left description no-padding"
                ng-class="getComponentStyle(description.descriptionId, 'term', null)">
-
-
-
-                        <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description, true)"
-                                  ng-model-options="{updateOn: 'blur'}"
-                                  ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
-                                  maxlength="255"
-                                  ng-model="description.term"
-                                  class="color_{{relationship.groupId}} form-control msd-elastic: \n;" type="text"
-                                  placeholder="Description">
-                        </textarea>
+              <textarea ng-if="description.type === 'FSN'" ng-change="updateDescription(description)"
+                        ng-model-options="{updateOn: 'blur'}"
+                        ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
+                        maxlength="255"
+                        ng-model="description.term"
+                        class="form-control msd-elastic: \n;"
+                        ng-class="[{'template-editable' : description.template}]"
+                        type="text"
+                        placeholder="Description">
+              </textarea>
 
             <textarea autofocus ng-if="description.type === 'SYNONYM'"
                       ng-change="updateDescription(description, true)" ng-model-options="{updateOn: 'blur'}"
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       maxlength="255"
                       ng-model="description.term"
-                      class="color_{{relationship.groupId}} form-control  msd-elastic: \n;" type="text"
+                      ng-class="[{'template-editable' : description.template}]"
+                      class="form-control  msd-elastic: \n;" type="text"
                       placeholder="Description">
                         </textarea>
             <textarea ng-if="description.type === 'TEXT_DEFINITION'"
@@ -316,7 +353,8 @@
                       ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
-                      class="color_{{relationship.groupId}} form-control msd-elastic: \n;" autofocus>
+                      ng-class="[{'template-editable' : description.template}]"
+                      class="form-control msd-elastic: \n;" autofocus>
                         </textarea>
           </div>
 
@@ -329,14 +367,14 @@
             </select>
           </div>
 
-          <!-- Dialect / Acceptability -- never alterable for FSN -->
+          <!-- Dialect / Acceptability -- never alterable for saved FSN -->
           <div>
 
             <!-- button for each dialect key -->
             <button ng-repeat="dialectId in getDialectIdsForDescription(description)"
                     type="button"
                     class=" blue accent-2 button-width-acceptability custom-button tooltips-bottom small-size-tooltip"
-                    ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId)) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId))"
+                    ng-disabled="isStatic || (description.type === 'FSN' && !isExtensionDialect(dialectId) && description.effectiveTime) || (isLockedModule(description.moduleId) && !isExtensionDialect(dialectId))"
                     ng-click="toggleAcceptability(description, dialectId)">
               <div class="md col-md-12 no-padding text-center">{{getAcceptabilityDisplayText(description, dialectId)}}
               </div>
@@ -382,19 +420,19 @@
           <div ng-bind="warning"></div>
         </div>
       </div>
-      <div ng-show="description.spellcheckSuggestions" class="m-b-10">
-        <div class="row no-padding no-gutter">
-          <div class="col-md-1" style="padding-right: 5px;"></div>
-          <div class="col-md-11">
-            <strong>Spelling Errors Detected:</strong>
-          </div>
+      <div class="row">
+        <div class="validation darken-1 p-5"
+             ng-class="[{ 'orange' : message.type === 'Warning'}, { 'red' : message.type === 'Error' }, { 'blue' : message.type === 'Message'}]"
+             ng-repeat="message in description.templateMessages">
+          <strong>Template {{message.type}}:</strong>
+          <div ng-bind="message.message"></div>
         </div>
       </div>
       <div class="row p-10" ng-show="description.spellcheckSuggestions">
-        <strong>Spelling Errors Detected:</strong>
+        <strong>Spelling Check Suggestions:</strong>
         <div class="p-b-5" ng-repeat="(word, suggestions) in description.spellcheckSuggestions">
           <div class="col-md-2">{{word}}</div>
-          <div class="col-md-10"><span ng-repeat="suggestion in suggestions">[&nbsp;<a class="pointer" 
+          <div class="col-md-10"><span ng-repeat="suggestion in suggestions">[&nbsp;<a class="pointer"
             ng-click="replaceSuggestion(description, word, suggestion)">{{suggestion}}</a>&nbsp;]&nbsp;&nbsp;</span>
           </div>
         </div>
@@ -460,7 +498,7 @@
                 <button type="button"
                         class="tooltips-bottom small-size-tooltip"
                         style="vertical-align: bottom"
-                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId)"
+                        ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
                   <span ng-if="isStatic">Active/Inactive</span>
@@ -470,11 +508,12 @@
 
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
-                                    <textarea ng-readonly="isStatic  || isLockedModule(relationship.moduleId)"
-                                              ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
-                                              ng-change="updateRelationship(relationship, true)"
-                                              class="form-control rg msd-elastic: \n;"
-                                              type="text" placeholder="#" ui-on-drop="dropNullOp()">
+                  <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
+                  <textarea ng-readonly="isStatic  || isLockedModule(relationship.moduleId)"
+                            ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
+                            ng-change="updateRelationship(relationship, true)"
+                            class="form-control rg msd-elastic: \n;"
+                            type="text" placeholder="#" ui-on-drop="dropNullOp()">
                                     </textarea>
                   <span>Role Group</span>
                 </div>
@@ -488,13 +527,14 @@
                      drop-validate="!relationship.effectiveTime && !isStatic">
 
                                     <textarea type="text" ng-model="relationship.type.fsn"
-                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId)"
+                                              ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
                                               class="resizable-text form-control msd-elastic: \n;"
+
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
                                               typeahead-loading="typeTypeaheadLoading"
                                               typeahead-wait-ms="700"
-                                              typeahead-on-select="setRelationshipTypeConceptFromMrcm(relationship, $item)"
+                                              typeahead-on-select="setRelationshipTypeConcept(relationship, $item)"
                                               typeahead-editable="false"
                                               typeahead-min-length="0">
 
@@ -514,16 +554,23 @@
                 <div class="pull-left sourcename" drag-enter-class="sca-drag-target"
                      drag-hover-class="sca-drag-hover"
                      drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(relationship, $data)"
-                     drop-validate="!relationship.effectiveTime && !isStatic">
+                     drop-validate="!relationship.effectiveTime && !isStatic"
+                     ng-class="getTargetSlotStyle(relationship)">
+
+
 
                   <textarea type="text" ng-model="relationship.target.fsn"
-                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId)"
+                            ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
                             class="resizable-text relationship msd-elastic: \n;"
-                            typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue)"
+                            ng-class="[{'template-slot' : relationship.targetSlot.slotName}]"
+                            typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
-                            typeahead-on-select="setRelationshipTargetConceptFromMrcm(relationship, $item)"
+                            typeahead-on-select="setRelationshipTargetConcept(relationship, $item)"
                             typeahead-editable="false" typeahead-min-length="3"></textarea>
+
+
+
                   <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom "
                        ng-class="[{'md-open-with' : !targetTypeaheadLoading}, {'md-cached' : targetTypeaheadLoading}]"
                        ui-draggable="true" drag="getConceptIdNamePairFromRelationshipTarget(relationship)"
@@ -545,21 +592,21 @@
                 </div>
 
 
-                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId)">
+                <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template" )>
 
-                  <button type="button" ng-click="addRelationship(groupId, relationship)"
+                  <button ng-if="!template" type="button" ng-click="addRelationship(groupId, relationship)"
                           class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Add New Relationship</span>
                   </button>
 
-                  <button type="button" ng-click="removeRelationship(relationship)" ng-if="!relationship.released"
+                  <button type="button" ng-click="removeRelationship(relationship)"
+                          ng-if="!relationship.released && (!template || !relationshipInLogicalModel(relationship, template))"
                           class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
                     <span>Remove Relationship</span>
                   </button>
 
 
                 </div>
-
 
               </div>
               <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
@@ -579,7 +626,7 @@
                 <span>Drag Relationship Group</span>
               </button>
 
-              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId)"
+              <button ng-if="!isStatic &&  !isLockedModule(relationship.moduleId) && !template"
                       class="btn-default md-exposure-plus-1 role-group-buttons tooltips-bottom medium-size-tooltip offset-tooltip-right "
                       ng-click="addRelationshipGroup()"><span>Add Relationship Group</span>
               </button>
@@ -601,6 +648,16 @@
             </div>
           </div>
 
+          <div class="row">
+            <div class="validation darken-1 p-5"
+                 ng-class="[{ 'orange' : message.type === 'Warning'}, { 'red' : message.type === 'Error' }, { 'blue' : message.type === 'Message'}]"
+                 ng-repeat="message in relationship.templateMessages">
+              <strong>Template {{message.type}}:</strong>
+              <div ng-bind="message.message">
+              </div>
+            </div>
+          </div>
+
 
         </div>
         <div class="role_group_divider_bottom_{{groupId}}"></div>
@@ -609,3 +666,4 @@
     <div class="clearfix"></div>
   </div>
 </div>
+

@@ -30,6 +30,7 @@ angular
     'textAngular',
     'ui.tree',
     'ui.tinymce',
+    'ngHandsontable',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
@@ -40,12 +41,12 @@ angular
     'singleConceptAuthoringApp.projectMerge',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
+    'singleConceptAuthoringApp.batch',
     'singleConceptAuthoringApp.test',
     'singleConceptAuthoringApp.sidebar',
     'singleConceptAuthoringApp.sidebarEdit',
     'singleConceptAuthoringApp.taxonomyPanel',
     'singleConceptAuthoringApp.searchPanel',
-    'singleConceptAuthoringApp.searchModal',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail',
     'singleConceptAuthoringApp.conceptInformationModal'
@@ -111,7 +112,7 @@ angular
 
   })
 
-  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window) {
+  .run(function ($routeProvider, $rootScope, configService, scaService, snowowlService, notificationService, accountService, metadataService, $cookies, $timeout, $location, $window, $sce) {
 
     console.log('Running application');
 
@@ -162,6 +163,8 @@ angular
         console.log(response);
         var accountUrl = endpoints.imsEndpoint + 'api/account';
         var imsUrl = endpoints.imsEndpoint;
+        $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
+        $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
         var imsUrlParams = '?serviceReferer=' + window.location.href;
 
         // don't want either true or false here please!
