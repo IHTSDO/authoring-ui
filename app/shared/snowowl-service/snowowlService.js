@@ -201,7 +201,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // function to remove disallowed elements from a concept
-      function cleanConcept(concept) {
+      function cleanConcept(concept, keepTempIds) {
 
         // strip unknown tags
         var allowableProperties = [
@@ -210,7 +210,7 @@ angular.module('singleConceptAuthoringApp')
           'preferredSynonym', 'relationships', 'inactivationIndicator', 'associationTargets'];
 
         // if a locally assigned UUID, strip
-        if (!isSctid(concept.conceptId)) {
+        if (!isSctid(concept.conceptId) && !keepTempIds) {
           concept.conceptId = null;
         }
 
@@ -1341,9 +1341,10 @@ angular.module('singleConceptAuthoringApp')
         });
       }
 
-      function validateConcept(projectKey, taskKey, concept) {
+      function validateConcept(projectKey, taskKey, concept, keepTempIds) {
 
-        cleanConcept(concept);
+
+        cleanConcept(concept, keepTempIds);
 
         // assign UUIDs to elements without an SCTID
         if (!concept.conceptId) {
@@ -1359,6 +1360,7 @@ angular.module('singleConceptAuthoringApp')
             relationship.relationshipId = createGuid();
           }
         });
+
 
         var deferred = $q.defer();
         $http.post(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + (taskKey ? '/' + taskKey : '') + '/validate/concept', concept).then(function (response) {
@@ -1431,7 +1433,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
-          deferred.resolve(response.data.items ? response.data.items : []);
+          deferred.resolve(response.data ? response.data : {items: [], total: 0});
         }, function (error) {
           deferred.reject(error);
         });

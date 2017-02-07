@@ -10,7 +10,7 @@ angular.module('singleConceptAuthoringApp')
         replace: true,
         scope: {
 
-          // the classification container
+          // the classifihcation container
           // {equivalentConcepts : {...}, relationshipChanges: {...}, ...}
           classificationContainer: '=',
 

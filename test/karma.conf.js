@@ -62,7 +62,6 @@ module.exports = function(config) {
       'bower_components/moment/moment.js',
       'bower_components/pikaday/pikaday.js',
       'bower_components/handsontable/dist/handsontable.js',
-      'bower_components/ngHandsontable/dist/ngHandsontable.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/components/*.js",

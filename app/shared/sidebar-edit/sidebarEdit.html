@@ -1,4 +1,4 @@
-<div ng-class="getLayoutWidths('sidebar')" class="fixed-height ">
+<div ng-class="getLayoutWidths('sidebar')" class="fixed-height " style="width:465px !important;">
 <aside class="sidebar-bg col-md-12 no-padding  " ng-controller="sidebarEditCtrl">
 
   <!-- show if sidebar not hidden -->
@@ -23,22 +23,22 @@
         <span>Saved List</span></a></li>
          <li role="presentation"  ><a    ng-hide="task.status === 'New'"
                                                ng-click="viewReview()"  class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
-                                                
+
         <div class="fa fa-envelope"></div>
         <span>Switch to Feedback View</span></a><a    ng-show="task.status === 'New'"
                                                  class="tooltips-bottom tooltips-light normal-case">
-                                                
+
         <div class="fa fa-envelope"></div>
         <span>Review Not Available </span></a></li>
       <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-bottom tooltips-light normal-case">
         <div class="fa fa-info-circle"></div>
         <span>Task Details</span></a></li>
-        
-         
-        
-         
-        
+
+
+
+
+
     </ul>
     <!-- Tab panes -->
     <div class="tab-content col-md-12 no-padding  ">
@@ -57,7 +57,7 @@
       <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===5}">
         <div ng-include="'shared/feedback/feedback-list.html'"></div>
       </div>
-      
+
     </div>
   </div>
 
