@@ -22,7 +22,7 @@ angular.module('singleConceptAuthoringApp.batch', [
         $scope.templates = response;
       });
 
-      $scope.selectTemplate = function (template) {
+      $scope.selectBatchTemplate = function (template) {
         templateService.selectTemplate(template).then(function () {
           $scope.createConcept();
         });

@@ -934,6 +934,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.createConcept = function (isBlank) {
 
       var selectedTemplate = templateService.getSelectedTemplate();
+        console.log(selectedTemplate);
 
       if (!selectedTemplate || isBlank) {
         var concept = componentAuthoringUtil.getNewConcept();
@@ -941,7 +942,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.updateEditListUiState();
         $scope.clearTemplate();
       } else {
-        templateService.createTemplateConcept(templateService.getSelectedTemplate()).then(function (concept) {
+        templateService.createTemplateConcept(templateService.getSelectedTemplate(), null).then(function (concept) {
           $scope.concepts.unshift(concept);
           $scope.updateEditListUiState();
 
@@ -1374,7 +1375,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.selectTemplate = function (template) {
       templateService.selectTemplate(template).then(function () {
         document.getElementById('templateCreateBtn').click();
-        $scope.createConcept(true);
+        $scope.createConcept(false);
       });
     };
     $scope.clearTemplate = function () {
