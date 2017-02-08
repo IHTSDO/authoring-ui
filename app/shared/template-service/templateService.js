@@ -609,6 +609,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function selectTemplate(template) {
+        console.log(template);
       var deferred = $q.defer();
       if (!template) {
         selectedTemplate = null;
