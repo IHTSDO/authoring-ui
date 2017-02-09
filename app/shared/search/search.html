@@ -68,35 +68,6 @@
       </button>
     </div>
 
-    <div class="col-md-6" ng-show="templateOptions.selectedTemplate">
-      <button type="button" class="btn btn-default btn-primary col-md-12 text-center custom-button ng-click-active search-type"
-              title="Search Mode"
-              ng-click="templateOptions.selectedTemplate = ''; selectTemplate('')">
-        <div class="md col-md-12 no-padding text-center ng-binding">
-          Template Mode
-        </div>
-      </button>
-    </div>
-  </div>
-
-  <div class="row no-padding m-t-15" ng-if="templates.length > 0">
-    <div class="col-md-6">Select Template</div>
-    <div class="col-md-6">
-
-      <select ng-options="template as template.name for template in templates" class="full-width" ng-model="templateOptions.selectedTemplate"
-              ng-change="updateTemplateOptions()">
-        <option value="">(none)</option>
-      </select>
-    </div>
-  </div>
-  <div class="row no-padding m-t-15" ng-if="templateOptions.selectedTemplate">
-    <div class="col-md-6">Select Template Slot</div>
-    <div class="col-md-6">
-      <select class="full-width" ng-options="slot as slot.slotName for slot in templateOptions.availableSlots" ng-model="templateOptions.selectedSlot"
-              ng-change="updateTemplateOptions()">
-        <option value="" selected hidden/>
-      </select>
-    </div>
   </div>
   <div class="col-md-12 p-t-10  text-center" ng-if="searchStatus">{{searchStatus}}</div>
 
@@ -106,17 +77,6 @@
 
     <div class="col-md-6">
       <h4 ng-show="isEscgMode">{{searchTotal}} concepts found</h4>
-    </div>
-    <div class="col-md-6">
-      <button
-        type="button" class=" btn btn-default btn-primary col-md-12 text-center custom-button ng-click-active search-type"
-        title="Create batch from search results"
-        ng-show="templateOptions.selectedTemplate"
-        ng-click="addBatchConceptsFromResults(templateOptions.selectedTemplate)">
-        <div class="text-center ng-binding">
-          Create Batch Concepts
-        </div>
-      </button>
     </div>
   </div>
 
