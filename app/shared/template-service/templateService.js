@@ -834,9 +834,9 @@ angular.module('singleConceptAuthoringApp')
     function downloadTemplateCsv(branch, template) {
         return $http({
           'method': 'GET',
-          'url': apiEndpoint + 'MAIN' + '/templates/' + window.encodeURIComponent(template) + '/empty-input-file',
+          'url': apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template) + '/empty-input-file',
           'headers': {
-            'Accept': 'text/tab-separated-values'
+            'Accept': 'text/csv'
           }
           
         }).then(function (response) {

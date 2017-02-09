@@ -47,7 +47,8 @@ angular
     'singleConceptAuthoringApp.searchPanel',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail',
-    'singleConceptAuthoringApp.conceptInformationModal'
+    'singleConceptAuthoringApp.conceptInformationModal',
+    'singleConceptAuthoringApp.uploadBatch'
   ])
   .factory('httpRequestInterceptor', function () {
     return {

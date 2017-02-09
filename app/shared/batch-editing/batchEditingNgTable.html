@@ -20,13 +20,15 @@
   <div class="row no-padding no-gutter">
     <div class="col-md-8">
       <select ng-options="template as template.name for template in templateOptions.availableTemplates" ng-model="templateOptions.selectedTemplate" class="template-name"></select>
+<!--
       <input ng-model="batchSize" ng-init="batchSize = 5;" >
       <button class="btn btn-default btn-primary" ng-disabled="!templateOptions.selectedTemplate || !batchSize"
               ng-click="addBatchConceptsFromTemplate(templateOptions.selectedTemplate, batchSize)">Add Concepts to Batch
       </button>
+-->
       <button class="btn btn-default btn-danger" ng-click="clearConcepts()" ng-show="batchHasData">Clear Batch</button>
-        <button class="btn btn-default btn-primary"
-          ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download CSV for Template
+        <button class="btn btn-default btn-primary" ng-disabled="!templateOptions.selectedTemplate"
+          ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download .TSV for Template
   </button>
     </div>
 

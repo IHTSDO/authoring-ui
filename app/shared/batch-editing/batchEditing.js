@@ -695,7 +695,6 @@ angular.module('singleConceptAuthoringApp')
 
               scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
               scope.batchTableParams.reload();
-              console.debug('selected template', scope.templateOptions.selectedTemplate);
 
             })
           }
