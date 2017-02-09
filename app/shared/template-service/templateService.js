@@ -830,6 +830,19 @@ angular.module('singleConceptAuthoringApp')
     function setTask(task) {
       currentTask = task;
     }
+    
+    function downloadTemplateCsv(branch, template) {
+        return $http({
+          'method': 'GET',
+          'url': apiEndpoint + 'MAIN' + '/templates/' + window.encodeURIComponent(template) + '/empty-input-file',
+          'headers': {
+            'Accept': 'text/tab-separated-values'
+          }
+          
+        }).then(function (response) {
+          return response;
+        });
+      }
 
 
     return {
@@ -864,7 +877,10 @@ angular.module('singleConceptAuthoringApp')
       storeTemplateForConcept: storeTemplateForConcept,
       removeStoredTemplateForConcept: removeStoredTemplateForConcept,
       getStoredTemplateForConcept: getStoredTemplateForConcept,
-      logTemplateConceptSave: logTemplateConceptSave
+      logTemplateConceptSave: logTemplateConceptSave,
+        
+      // batch functions
+      downloadTemplateCsv: downloadTemplateCsv
     };
 
   })
