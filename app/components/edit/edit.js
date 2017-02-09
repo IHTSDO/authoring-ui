@@ -1263,6 +1263,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.viewReview = function () {
       $scope.setView('feedback');
     };
+    
+    $scope.viewBatch = function () {
+      $scope.setView('batch');
+    };
 
     function loadProject() {
 
