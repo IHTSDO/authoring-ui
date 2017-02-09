@@ -40,11 +40,6 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 templateService.uploadTemplateCsv('MAIN', $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
                     console.log(data);
                 });
-                $http.post(uploadUrl, fd, {
-                    withCredentials: true,
-                    headers: {'Content-Type': undefined },
-                    transformRequest: angular.identity
-                });
 
             };
         

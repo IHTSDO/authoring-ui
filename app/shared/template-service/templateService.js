@@ -853,6 +853,7 @@ angular.module('singleConceptAuthoringApp')
         }, function (error) {
           deferred.reject('Failed to update template: ' + error.message);
         });
+        return deferred.promise;
       }
 
 
