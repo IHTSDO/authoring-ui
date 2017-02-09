@@ -1,3 +1,8 @@
 <div ng-controller="uploadBatchCtrl">
-    <input type="file" name="file" onchange="angular.element(this).scope().uploadFile(this.files)"/>
+    <select ng-options="template as template.name for template in templateOptions.availableTemplates" ng-model="templateOptions.selectedTemplate" class="template-name"></select>
+      <button class="btn btn-default btn-danger" ng-click="clearConcepts()" ng-show="batchHasData">Clear Batch</button>
+        <button class="btn btn-default btn-primary" ng-disabled="!templateOptions.selectedTemplate"
+          ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download .TSV for Template
+  </button>
+    <input type="file" name="tsvFile" onchange="angular.element(this).scope().uploadFile(this.files)"/>
 </div>

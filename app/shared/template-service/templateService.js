@@ -834,13 +834,24 @@ angular.module('singleConceptAuthoringApp')
     function downloadTemplateCsv(branch, template) {
         return $http({
           'method': 'GET',
-          'url': apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template) + '/empty-input-file',
-          'headers': {
-            'Accept': 'text/csv'
-          }
+            //replace with task level branch path - working around BE bug
+          'url': apiEndpoint + 'MAIN' + '/templates/' + window.encodeURIComponent(template) + '/empty-input-file'
           
         }).then(function (response) {
           return response;
+        });
+      }
+    
+    function uploadTemplateCsv(branch, template, file) {
+        var deferred = $q.defer();
+        $http.post(apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template) + '/generate', file, {
+        withCredentials: true,
+        headers: {'Content-Type': undefined },
+        transformRequest: angular.identity
+        }).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject('Failed to update template: ' + error.message);
         });
       }
 
@@ -880,7 +891,8 @@ angular.module('singleConceptAuthoringApp')
       logTemplateConceptSave: logTemplateConceptSave,
         
       // batch functions
-      downloadTemplateCsv: downloadTemplateCsv
+      downloadTemplateCsv: downloadTemplateCsv,
+      uploadTemplateCsv: uploadTemplateCsv
     };
 
   })

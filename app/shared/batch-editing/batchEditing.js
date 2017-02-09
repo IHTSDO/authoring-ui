@@ -246,32 +246,6 @@ angular.module('singleConceptAuthoringApp')
 
 
           }
-        
-          scope.dlcDialog = (function (data, fileName) {
-
-            // create the hidden element
-            var a = document.createElement('a');
-            document.body.appendChild(a);
-
-            return function (data, fileName) {
-              var
-                blob = new Blob([data], {type: 'text/tab-separated-values'}),
-                url = window.URL.createObjectURL(blob);
-              a.href = url;
-              a.download = fileName;
-              a.click();
-              window.URL.revokeObjectURL(url);
-            };
-          }());
-            
-          scope.downloadTemplate = function(template){
-              console.log(scope.branch);
-            templateService.downloadTemplateCsv(scope.branch, template).then(function (data) {
-              var fileName = 'batch_' + template;
-              scope.dlcDialog(data.data, fileName);
-            });
-          }
-
 
           scope.addBatchConceptsFromTemplate = function (template, batchSize) {
 
