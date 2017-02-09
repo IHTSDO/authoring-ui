@@ -25,6 +25,9 @@
               ng-click="addBatchConceptsFromTemplate(templateOptions.selectedTemplate, batchSize)">Add Concepts to Batch
       </button>
       <button class="btn btn-default btn-danger" ng-click="clearConcepts()" ng-show="batchHasData">Clear Batch</button>
+        <button class="btn btn-default btn-primary"
+          ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download CSV for Template
+  </button>
     </div>
 
     <div class="col-md-4" ng-show="batchHasData">
