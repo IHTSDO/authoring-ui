@@ -509,7 +509,6 @@
                 <!-- relationship group -->
                 <div class="pull-left rolegroup tooltips-bottom small-size-tooltip">
                   <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
-                  <textarea ng-readonly="isStatic  || isLockedModule(relationship.moduleId)"
                             ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
                             ng-change="updateRelationship(relationship, true)"
                             class="form-control rg msd-elastic: \n;"
