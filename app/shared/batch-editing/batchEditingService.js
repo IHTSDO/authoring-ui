@@ -16,7 +16,6 @@ angular.module('singleConceptAuthoringApp')
       var currentTask;
       var currentTemplate;
       var batchConcepts;
-      var hotDebounce; // debounce timer used for async operations
       var fsnToIdMap = {};       // map of fsn to SCTID used by target slots
 
 
@@ -95,171 +94,9 @@ angular.module('singleConceptAuthoringApp')
 
       }
 
-      //
-      // HandsOnTable renderers and utility functions
-      //
-
-      function compileCell(td, elements) {
-        // clear children so that re-renders don't cause duplication
-        while (td.firstChild) {
-          td.removeChild(td.firstChild);
-        }
-        angular.forEach(elements, function (el) {
-          var compiled = $compile(el)(currentScope);
-          td.appendChild(compiled[0]);
-        });
-      }
-
-      // NOTE: Full method signature with unused parameters left for reference
-      var deleteControl = function (hotInstance, td, row, col, prop, value) {
-        var els = ['<a class="glyphicon glyphicon-trash" title="Remove from Batch" ng-click="removeConcept(' + row + ')">' + '</a>'];
-        return compileCell(td, els);
-      };
-
-      var relationshipTarget = function (hotInstance, td, row, col, prop, value) {
-        var els = ['<div contenteditable="true" style="width: 100%;" class="pull-left sourcename" drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj" ui-on-drop="dropRelationshipTarget(row, prop, $data)"></div>'];
-        return compileCell(td, els);
-      };
-
-      var userControls = function (hotInstance, td, row, col, prop, value) {
-        var els = [
-          '<a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(' + row + ')">' + '</a>',
-          '<a class="md md-save" title="Save Concept" ng-click="saveConcept(' + row + ')">' + '</a>',
-          '<a class="md md-school" title="Validate Concept" ng-click="validateConcept(' + row + ')">' + '</a>'
-        ];
-        return compileCell(td, els);
-      };
-
       function getConceptIdForFsn(fsn) {
         return fsnToIdMap[fsn];
       }
-
-      function getHotColumns(scope) {
-        var columns = [];
-
-        // push delete control
-        columns.push(
-          {
-            title: ' ', // null/empty values render as Excel-style alphabetic title
-            renderer: deleteControl,
-            readOnly: true
-          });
-
-        // push SCTID and FSN
-        columns.push({data: 'sctid', title: 'SCTID', readOnly: true});
-        columns.push({data: 'fsn', title: 'FSN'});
-
-        // cycle over templates and push target slots
-        angular.forEach(currentTemplate.conceptOutline.relationships, function (relationship) {
-
-          if (relationship.targetSlot && relationship.targetSlot.slotName) {
-
-            var sourceFn = function (query, process) {
-
-              // TODO Figure out better use than $rootScope
-              $timeout.cancel(hotDebounce);
-              if (query && query.length > 2) {
-                hotDebounce = $timeout(function () {
-                  constraintService.getConceptsForValueTypeahead(
-                    relationship.type.conceptId, query, currentTask.branchPath,
-                    relationship.targetSlot.allowableRangeECL)
-                    .then(function (concepts) {
-                      console.debug(hotDebounce, currentTask, fsnToIdMap)
-                      // TODO Ideally would store only one fsn (on select), but haven't found HoT hook yet
-                      angular.forEach(concepts, function (c) {
-                        fsnToIdMap[c.fsn.term] = c.id;
-                      });
-                      process(concepts.map(function (c) {
-                        return c.fsn.term
-                      }));
-                    }, function (error) {
-                      console.error('error getting typeahead values', error);
-                    })
-                }, 500)
-              }
-            }
-
-            columns.push({
-              data: 'targetSlot_' + relationship.targetSlot.slotName + '.target.fsn',
-              title: relationship.targetSlot.slotName,
-              type: 'autocomplete',
-              strict: true,
-              source: sourceFn
-            });
-
-          }
-        });
-
-        // push right hand user controls
-        columns.push({
-          title: ' ', // null/empty values render as Excel-style alphabetic title
-          renderer: userControls,
-          readOnly: true
-        });
-
-        console.debug('HOT Columns', columns);
-
-        return columns;
-      }
-
-      function getHotRowForConcept(concept) {
-
-        // get the slot type
-        var row = {
-          sctid: snowowlService.isSctid(concept.conceptId) ? concept.conceptId : '',
-          conceptId: concept.conceptId,
-          fsn: componentAuthoringUtil.getFsnForConcept(concept)
-        };
-
-        // get the target slots
-        angular.forEach(concept.relationships, function (r) {
-          if (r.targetSlot && r.targetSlot.slotName) {
-            row['targetSlot_' + r.targetSlot.slotName] = {
-              'groupId': r.groupId,
-              'type': r.type,
-              'slotName': r.targetSlot.slotName,
-              'target': r.target,
-              'dataType': r.targetSlot ? 'text' : 'autocomplete',
-              'allowableECL': r.targetSlot.allowableRangeECL
-            };
-
-          }
-        });
-
-        // detach object references
-        return angular.copy(row);
-      }
-
-      function updateConceptFromHotRow(row) {
-        var deferred = $q.defer();
-        var concept = getBatchConcept(row.conceptId);
-
-        // apply the target slots
-        var slotKeys = Object.keys(row).filter(function (key) {
-          return key.indexOf('targetSlot') !== -1;
-        });
-
-        var updatePromises = [];
-        angular.forEach(slotKeys, function (slotKey) {
-          var targetSlot = row[slotKey];
-          angular.forEach(concept.relationships, function (r) {
-            if (r.groupId === targetSlot.groupId && r.type.conceptId === targetSlot.type.conceptId) {
-              r.target = targetSlot.target;
-              updatePromises.push(templateService.updateTargetSlot(concept, concept.template, r));
-            }
-          });
-        });
-
-        $q.all(updatePromises).then(function () {
-          var revisedConcept = getHotRowForConcept(concept);
-          deferred.resolve(revisedConcept);
-        }, function (error) {
-          deferred.reject(error);
-        });
-
-        return deferred.promise;
-      }
-
 
       //
       // CRUD operations
@@ -376,11 +213,6 @@ angular.module('singleConceptAuthoringApp')
 
         // initialization
         initializeFromScope : initializeFromScope,
-
-        // HOT functions
-        getHotColumns: getHotColumns,
-        getHotRowForConcept: getHotRowForConcept,
-        updateConceptFromHotRow: updateConceptFromHotRow,
 
         // Utility functions
         getConceptIdForFsn : getConceptIdForFsn,
