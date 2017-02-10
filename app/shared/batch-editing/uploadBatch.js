@@ -53,7 +53,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                       notificationService.sendError('Unexpected error: ' + error);
                     })
                 }, function(error) {
-                    $scope.errorMessage = error.data.message;
+                    $scope.errorMessage = error.data.messages;
                     notificationService.sendError('Error with file.');
                 });
 
