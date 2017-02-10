@@ -169,7 +169,7 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       var conceptIds = [];
       angular.forEach(concept.relationships, function (r) {
-        if (r.targetSlot && r.target.conceptId) {
+        if (r.targetSlot && r.target !== undefined && r.target.conceptId) {
           conceptIds.push(r.target.conceptId);
         }
       });
@@ -398,6 +398,7 @@ angular.module('singleConceptAuthoringApp')
      */
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
+        console.log(concept);
 
       // reset all template variables
       concept.templateMessages = [];

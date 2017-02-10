@@ -36,7 +36,7 @@ angular.module('singleConceptAuthoringApp')
     };
   });
 
-angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService) {
+angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($rootScope, $timeout, $modal, $q, $interval, scaService, snowowlService, validationService, inactivationService, componentAuthoringUtil, notificationService, $routeParams, metadataService, crsService, constraintService, templateService, modalService, spellcheckService, ngTableParams, $filter) {
     return {
       restrict: 'A',
       transclude: false,
@@ -121,6 +121,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           console.error('Branch not specified for concept-edit');
           return;
         }
+        templateService.getTemplates().then(function (templates) {
+              scope.templates = templates;
+            });
+          
+        scope.templateTableParams = new ngTableParams({
+        page: 1,
+        count: 10,
+        sorting: {name: 'asc'}
+          },
+          {
+            filterDelay: 50,
+            total: scope.templates ? scope.templates.length : 0, // length of data
+            getData: function ($defer, params) {
+              // TODO support paging and filtering
+              var data = params.sorting() ? $filter('orderBy')(scope.templates, params.orderBy()) : scope.templates;
+              $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+            }
+          }
+        );
 
 
         //////////////////////////////////////////////////////////////
@@ -193,6 +212,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           if (scope.template) {
             templateService.applyTemplateToConcept(scope.concept, scope.template);
           }
+        };
+          
+        scope.applyTemplate = function (template) {
+            templateService.applyTemplateToConcept(scope.concept, template, true);
         };
 
         scope.removeTemplate = function () {
