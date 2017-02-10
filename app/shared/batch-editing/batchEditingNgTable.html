@@ -23,9 +23,6 @@
       <button class="btn btn-default btn-primary  pull-right m-r-15"
               ng-click="saveAll()">Save All
       </button>
-      <button class="btn btn-default btn-primary  pull-right m-r-10"
-              ng-click="validateAll()">Validate All
-      </button>
     </div>
   </div>
 
@@ -133,23 +130,6 @@
         </td>
       </tr>
     </table>
-
-    <!--
-        <td style="padding:1px;" ng-repeat="column in batchTableColumns" show-filter="true">
-          <div ng-show="!column.editable">
-            {{concept[column.field]}}
-          </div>
-          <div ng-show="column.editable && !column.targetSlot">
-            <textarea type="text" ng-model="concept[column.field]" ng-change="updateFsn(concept)"
-                      class="editable-input form-control input-sm" required/>
-          </div>
-          <div ng-show="column.editable && column.targetSlot">
-
-          </div>
-        </td>
-
-        </tr>
-        </table>-->
   </div>
 
   <div class="row no-padding no-gutter" ng-repeat="concept in viewedConcepts">
