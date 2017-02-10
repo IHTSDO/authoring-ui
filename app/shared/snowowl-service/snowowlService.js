@@ -392,6 +392,15 @@ angular.module('singleConceptAuthoringApp')
         });
 
       }
+        
+      function getConceptFsn(conceptId, branch, count) {
+        return $http.get(apiEndpoint + branch + '/concepts/' + conceptId + '/fsn').then(function (response) {
+          return {data : response.data, count: count};
+        }, function (error) {
+          return {term: 'Could not determine preferred term'};
+        });
+
+      }
 
       // Retrieve parents of a concept
       // GET /{path}/concepts/{conceptId}/parents
@@ -1452,6 +1461,7 @@ angular.module('singleConceptAuthoringApp')
         getDescriptionProperties: getDescriptionProperties,
         getRelationshipProperties: getRelationshipProperties,
         getConceptPreferredTerm: getConceptPreferredTerm,
+        getConceptFsn: getConceptFsn,
         updateConcept: updateConcept,
         bulkUpdateConcept: bulkUpdateConcept,
         createConcept: createConcept,

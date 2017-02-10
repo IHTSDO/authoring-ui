@@ -1,13 +1,16 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
-  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService',
-    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService) {
+  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService',
+    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService) {
          
          $scope.templateOptions = {
             availableTemplates : [],
             selectedTemplate: null
           };
+        
+         var conceptPromises = [];
+        
          $scope.dlcDialog = (function (data, fileName) {
             var a = document.createElement('a');
             document.body.appendChild(a);
@@ -38,7 +41,16 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 //Take the first selected file
                 fd.append("tsvFile", files[0]);
                 templateService.uploadTemplateCsv('MAIN', $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
-                    console.log(data);
+                    angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
+                    });
+
+                    $q.all(conceptPromises).then(function (concepts) {
+                      batchEditingService.addBatchConcepts(concepts);
+                      notificationService.sendMessage('Successfully added batch concepts', 3000);
+                      $rootScope.$broadcast('batchConcept.change');
+                    }, function (error) {
+                      notificationService.sendError('Unexpected error: ' + error);
+                    })
                 });
 
             };

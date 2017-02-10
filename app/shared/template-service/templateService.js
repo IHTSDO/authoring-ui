@@ -283,7 +283,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function createTemplateConcept(template, targetSlotMap) {
+    function createTemplateConcept(template, targetSlotMap, relAndDescMap) {
       var deferred = $q.defer();
 
       console.debug('create template concept', template, targetSlotMap);
@@ -324,6 +324,15 @@ angular.module('singleConceptAuthoringApp')
 
           // by default, template concepts are Fully Defined
           tc.definitionStatus = 'FULLY_DEFINED';
+          if(relAndDescMap !== null && relAndDescMap !== undefined){
+              for(var i = 0; i < tc.relationships.length; i++)
+                  {
+                      tc.relationships[i].target = relAndDescMap.relationships[i].target;
+                      snowowlService.getConceptFsn(tc.relationships[i].target.conceptId, currentTask.branchPath, i).then(function(item){
+                          tc.relationships[item.count].target.fsn = item.data.term;
+                      });
+                  }
+          }
 
           // assign sctids
           angular.forEach(tc.descriptions, function (d) {
