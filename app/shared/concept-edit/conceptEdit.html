@@ -41,49 +41,52 @@
     <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
 
       <div class="pull-left col-md-1 no-padding">
+            <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
+                    class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
+                    popover-template="'shared/component-more/conceptMore.html'"
+                    popover-placement="{{popoverDirection}}"
+                    popover-trigger="click: click"
+                    popover-append-to-body="true">
+              <span>More details</span>
+            </button>
+            <div class="template-controls " ng-if="template">
+              <ul class="sub-navigation-link-list ">
+                <li>
+                  <a>
+                    <div class="pointer btn tooltips-right tooltips-light normal-case" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
+                    <span>Detach Template {{template.name}} v {{template.version}}</span>
+                    </div>
+                  </a>
 
+                </li>
 
-        <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
-                class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
-                popover-template="'shared/component-more/conceptMore.html'"
-                popover-placement="{{popoverDirection}}"
-                popover-trigger="click: click"
-                popover-append-to-body="true">
-          <span>More details</span>
-        </button>
+              </ul>
 
-
-        <div class="template-controls " ng-if="template">
-
-          <ul class="sub-navigation-link-list ">
-            <li>
-              <a>
-                <div class="pointer btn tooltips-right tooltips-light normal-case" ng-click="removeTemplate()"><i class=" fa fa-magic md "></i>
-                <span>Detach Template {{template.name}} v {{template.version}}</span>
-                </div>
-              </a>
-
-            </li>
-
-          </ul>
-
-        </div>
-        <!--
-                <div id="wrap">
-
-                  <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
-                          popover-container="wrap"
-                          popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
-                          popover-placement="right"
-                          popover-trigger="click: click"
-                          popover-append-to-body="true"
-                          type="button"
-                          id="template-control-btn"
-                          ng-if="template"
-                          class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
-                    <span>Template Controls</span>
-                  </button>
-                </div>-->
+            </div>
+            <div id="wrap">
+                <div
+                    popover-template="'shared/concept-edit/selectTemplate.html'"
+                    popover-placement="left"
+                    popover-trigger="click: click"
+                    popover-append-to-body="true"
+                    ng-if="templates.length > 0 && concept.definitionOfChanges && !template"
+                    class="pointer btn tooltips-right tooltips-light normal-case">
+      <i class="md fa fa-magic"></i><span>Attach Template</span></div>
+<!--
+              <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
+                      popover-container="wrap"
+                      popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
+                      popover-placement="right"
+                      popover-trigger="click: click"
+                      popover-append-to-body="true"
+                      type="button"
+                      id="template-control-btn"
+                      ng-if="!template"
+                      class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
+                <span>Template Controls</span>
+              </button>
+-->
+            </div>
       </div>
 
       <!-- concept name -->
