@@ -37,6 +37,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
         });
 
         $scope.uploadFile = function(files) {
+                notificationService.sendMessage('Uploading and generating Batch...', 3000);
                 var fd = new FormData();
                 //Take the first selected file
                 fd.append("tsvFile", files[0]);
@@ -51,6 +52,9 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                     }, function (error) {
                       notificationService.sendError('Unexpected error: ' + error);
                     })
+                }, function(error) {
+                    $scope.errorMessage = error.data.message;
+                    notificationService.sendError('Error with file.');
                 });
 
             };

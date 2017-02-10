@@ -5,4 +5,5 @@
           ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download .TSV for Template
   </button>
     <input type="file" name="tsvFile" onchange="angular.element(this).scope().uploadFile(this.files)"/>
+    <div ng-if="errorMessage">{{errorMessage}}</div>
 </div>
