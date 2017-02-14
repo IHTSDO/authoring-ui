@@ -58,11 +58,6 @@ module.exports = function(config) {
       'bower_components/angular-elastic/elastic.js',
       'bower_components/angular-ui-tree/dist/angular-ui-tree.js',
       'bower_components/angular-cookies/angular-cookies.js',
-      'bower_components/zeroclipboard/dist/ZeroClipboard.js',
-      'bower_components/moment/moment.js',
-      'bower_components/pikaday/pikaday.js',
-      'bower_components/handsontable/dist/handsontable.js',
-      'bower_components/ngHandsontable/dist/ngHandsontable.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/components/*.js",

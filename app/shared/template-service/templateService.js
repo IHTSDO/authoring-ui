@@ -26,6 +26,7 @@ angular.module('singleConceptAuthoringApp')
 
     function getSlotValue(slotName, template, nameValueMap) {
 
+      console.debug('getSlotValue', slotName, template, nameValueMap);
       // find the lexical template for this slot
       var lt;
       try {
@@ -80,8 +81,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     // triggers replacement of logical values given a changed relationship
-    function replaceLogicalValues(concept, relationship) {
-      console.debug('replace logcial values', concept);
+    function replaceLogicalValuesForRelationship(concept, relationship) {
       // placeholder promise in anticipation of asynchronous operations
       var deferred = $q.defer();
 
@@ -96,8 +96,25 @@ angular.module('singleConceptAuthoringApp')
             r.target.fsn = relationship.target.fsn;
           }
         }
-        deferred.resolve();
+        deferred.resolve(relationship);
       }
+      return deferred.promise;
+    }
+
+    function replaceLogicalValues(concept) {
+     var deferred = $q.defer();
+      var promises = [];
+      angular.forEach(concept.relationships, function (relationship) {
+        if (relationship.template && relationship.template.targetSlot && relationship.template.targetSlot.slotName) {
+          promises.push(replaceLogicalValuesForRelationship(concept, relationship));
+       }
+      });
+      $q.all(promises).then(function (relationships) {
+        deferred.resolve(concept);
+      }, function (error) {
+        deferred.reject(error);
+      });
+
       return deferred.promise;
     }
 
@@ -131,12 +148,14 @@ angular.module('singleConceptAuthoringApp')
       return deferred.promise;
     }
 
-    function updateTargetSlot(concept, template, relationship, targetConcept) {
+    function updateTargetSlot(concept, template, relationship) {
       var deferred = $q.defer();
 
-      replaceLogicalValues(concept, relationship).then(function () {
+      console.debug('updatetargetslot', concept, relationship);
+
+      replaceLogicalValuesForRelationship(concept, relationship).then(function () {
         replaceLexicalValues(concept, template).then(function () {
-          deferred.resolve();
+          deferred.resolve(concept);
         }, function (error) {
           deferred.reject(error);
         });
@@ -150,7 +169,7 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       var conceptIds = [];
       angular.forEach(concept.relationships, function (r) {
-        if (r.targetSlot && r.target.conceptId) {
+        if (r.targetSlot && r.target !== undefined && r.target.conceptId) {
           conceptIds.push(r.target.conceptId);
         }
       });
@@ -264,9 +283,10 @@ angular.module('singleConceptAuthoringApp')
     }
 
 
-    function createTemplateConcept(template) {
+    function createTemplateConcept(template, targetSlotMap, relAndDescMap) {
       var deferred = $q.defer();
 
+      console.debug('create template concept', template, targetSlotMap);
       // check required arguments
       if (!template) {
         deferred.reject('Template error: invalid arguments');
@@ -286,6 +306,12 @@ angular.module('singleConceptAuthoringApp')
           });
           angular.forEach(tc.relationships, function (r) {
             r.template = angular.copy(r);
+
+            // if slot map provided, fill in target values
+            if (r.targetSlot && targetSlotMap && targetSlotMap.hasOwnProperty(r.targetSlot.slotName)) {
+              r.target.conceptId = targetSlotMap[r.targetSlot.slotName].conceptId;
+              r.target.fsn = targetSlotMap[r.targetSlot.slotName].fsn;
+            }
           });
 
           // ensure all required fields are set
@@ -298,7 +324,17 @@ angular.module('singleConceptAuthoringApp')
 
           // by default, template concepts are Fully Defined
           tc.definitionStatus = 'FULLY_DEFINED';
+          if(relAndDescMap !== null && relAndDescMap !== undefined){
+              for(var i = 0; i < tc.relationships.length; i++)
+                  {
+                      tc.relationships[i].target = relAndDescMap.relationships[i].target;
+                      snowowlService.getConceptFsn(tc.relationships[i].target.conceptId, currentTask.branchPath, i).then(function(item){
+                          tc.relationships[item.count].target.fsn = item.data.term;
+                      });
+                  }
+          }
 
+          // assign sctids
           angular.forEach(tc.descriptions, function (d) {
             d.descriptionId = snowowlService.createGuid();
           });
@@ -306,11 +342,17 @@ angular.module('singleConceptAuthoringApp')
             r.relationshipId = snowowlService.createGuid();
           });
 
-          // replace template values (i.e. to replace display $term-x with x
-          replaceLexicalValues(tc, template);
-
-          deferred.resolve(tc);
-
+          // replace logical values
+          replaceLogicalValues(tc).then(function () {
+            // replace template values (i.e. to replace display $term-x with x
+            replaceLexicalValues(tc, template).then(function () {
+              deferred.resolve(tc);
+            }, function (error) {
+              deferred.reject(error);
+            })
+          }, function (error) {
+            deferred.reject(error);
+          })
         }, function (error) {
           deferred.reject('Error initializing template: ' + error);
         });
@@ -356,12 +398,14 @@ angular.module('singleConceptAuthoringApp')
      */
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
+        console.log(concept);
 
       // reset all template variables
       concept.templateMessages = [];
       if (!concept.conceptId) {
         concept.conceptId = snowowlService.createGuid();
       }
+      concept.template = template;
       angular.forEach(concept.descriptions, function (d) {
         d.template = null;
         d.templateStyle = null;
@@ -454,7 +498,7 @@ angular.module('singleConceptAuthoringApp')
 
 
             // check by active/type/en-us acceptability
-            if (d.active && d.type === dt.type && d.acceptabilityMap && dt.acceptabilityMap &&  d.acceptabilityMap['900000000000509007'] === dt.acceptabilityMap['900000000000509007']) {
+            if (d.active && d.type === dt.type && d.acceptabilityMap && dt.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === dt.acceptabilityMap['900000000000509007']) {
               // if term matches initial term, match found
               if (d.term === dt.initialTerm) {
                 matchFound = true;
@@ -575,6 +619,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function selectTemplate(template) {
+        console.log(template);
       var deferred = $q.defer();
       if (!template) {
         selectedTemplate = null;
@@ -795,6 +840,31 @@ angular.module('singleConceptAuthoringApp')
     function setTask(task) {
       currentTask = task;
     }
+    
+    function downloadTemplateCsv(branch, template) {
+        return $http({
+          'method': 'GET',
+            //replace with task level branch path - working around BE bug
+          'url': apiEndpoint + 'MAIN' + '/templates/' + window.encodeURIComponent(template) + '/empty-input-file'
+          
+        }).then(function (response) {
+          return response;
+        });
+      }
+    
+    function uploadTemplateCsv(branch, template, file) {
+        var deferred = $q.defer();
+        $http.post(apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template) + '/generate', file, {
+        withCredentials: true,
+        headers: {'Content-Type': undefined },
+        transformRequest: angular.identity
+        }).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      }
 
 
     return {
@@ -829,7 +899,11 @@ angular.module('singleConceptAuthoringApp')
       storeTemplateForConcept: storeTemplateForConcept,
       removeStoredTemplateForConcept: removeStoredTemplateForConcept,
       getStoredTemplateForConcept: getStoredTemplateForConcept,
-      logTemplateConceptSave: logTemplateConceptSave
+      logTemplateConceptSave: logTemplateConceptSave,
+        
+      // batch functions
+      downloadTemplateCsv: downloadTemplateCsv,
+      uploadTemplateCsv: uploadTemplateCsv
     };
 
   })
