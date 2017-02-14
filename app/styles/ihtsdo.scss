@@ -12677,11 +12677,13 @@ textarea.noresize {
   content: "DEV";
   background-color: #d1484a; /* indianred */
   padding: 0px 30px;
+  border: 1px solid yellow;
 }
 .uat::before {
   content: "UAT";
   padding: 0px 30px;
   background-color: #0365c0; /* darkcyan */
+  border: 1px solid yellow;
 }
 
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], label input[type=checkbox] {
