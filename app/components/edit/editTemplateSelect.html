@@ -5,7 +5,7 @@
     <tr ng-repeat="template in $data" class="clickable-row">
       <td data-title="'Name'" sortable="'name'" header-class="'header-tooltips'"
           header-title="'Click to sort'" filter="{ 'name': 'text' }"><a class="tooltips-right"
-                                                                        ng-click="applyTemplate(template)">
+                                                                        ng-click="selectTemplate(template, createOnSelectTemplate)">
         {{template.name}}<span> Click to select template</span></a>
       </td>
       <td data-title="'Version'" sortable="'version'" header-class="'header-tooltips'"
