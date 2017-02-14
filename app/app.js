@@ -30,7 +30,6 @@ angular
     'textAngular',
     'ui.tree',
     'ui.tinymce',
-    'ngHandsontable',
 
     //Insert any created modules here. Ideally one per major feature.,
     'singleConceptAuthoringApp.home',
@@ -41,7 +40,6 @@ angular
     'singleConceptAuthoringApp.projectMerge',
     'singleConceptAuthoringApp.about',
     'singleConceptAuthoringApp.edit',
-    'singleConceptAuthoringApp.batch',
     'singleConceptAuthoringApp.test',
     'singleConceptAuthoringApp.sidebar',
     'singleConceptAuthoringApp.sidebarEdit',
@@ -49,7 +47,8 @@ angular
     'singleConceptAuthoringApp.searchPanel',
     'singleConceptAuthoringApp.savedList',
     'singleConceptAuthoringApp.taskDetail',
-    'singleConceptAuthoringApp.conceptInformationModal'
+    'singleConceptAuthoringApp.conceptInformationModal',
+    'singleConceptAuthoringApp.uploadBatch'
   ])
   .factory('httpRequestInterceptor', function () {
     return {
@@ -161,7 +160,7 @@ angular
       function (response) {
         var endpoints = response;
         console.log(response);
-        var accountUrl = endpoints.imsEndpoint + 'api/account';
+        var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
@@ -209,7 +208,7 @@ angular
           })
           .when('/settings', {
             redirectTo: function () {
-              window.location = imsUrl + 'settings' + imsUrlParams;
+              window.location = imsUrl + '/settings' + imsUrlParams;
             }
           })
           .when('/register', {

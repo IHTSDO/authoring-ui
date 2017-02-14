@@ -18,7 +18,7 @@ angular.module('singleConceptAuthoringApp')
         deferred.resolve(accountDetails);
       }
       else {
-        $http.get('/ims-api/account', {withCredentials: true}).
+        $http.get('/auth', {withCredentials: true}).
           success(function (data, status) {
 
             console.log('Account details retrieved');

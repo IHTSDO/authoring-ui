@@ -59,8 +59,8 @@ http {
 			proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
 		}
         
-        location /ims-api {
-			proxy_pass https://dev-ims.ihtsdotools.org/api;
+        location /auth {
+			proxy_pass https://dev-ims.ihtsdotools.org/api/account;
 		}
 	}
 	server {
@@ -78,8 +78,8 @@ http {
 			proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
 		}
         
-        location /ims-api {
-			proxy_pass https://dev-ims.ihtsdotools.org/api;
+        location /auth {
+			proxy_pass https://dev-ims.ihtsdotools.org/api/account;
 		}
         
         location /traceability-service {

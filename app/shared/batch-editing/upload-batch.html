@@ -1,0 +1,25 @@
+<div ng-controller="uploadBatchCtrl" class="row column-md-12">
+    <div class="row column-md-12 p-15">
+        <div>
+            Please Select a template:
+        </div>
+        <select ng-options="template as template.name for template in templateOptions.availableTemplates" ng-model="templateOptions.selectedTemplate" class="template-name button-link"></select>
+    </div>
+    <div class="row column-md-12 p-15">
+        <button class="btn btn-default btn-primary button-link" ng-disabled="!templateOptions.selectedTemplate"
+              ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download .TSV for Template
+        </button>
+    </div>
+    <div class="row column-md-12 p-15">
+        <label class="btn btn-default btn-file column-md-4 btn-primary button-link"> Upload a File to create a Batch.
+            <input ng-disabled="!templateOptions.selectedTemplate" type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this.files)" style="display: none;">
+        </label>
+    </div>
+    <div class="row column-md-12 p-15">
+        <div ng-if="errorMessage">
+            <div class="row " ng-repeat="message in errorMessage">
+                <div class="validation red mx-auto p-5">{{message}}</div>
+            </div>
+        </div>
+    </div>
+</div>
