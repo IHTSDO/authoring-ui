@@ -160,7 +160,7 @@ angular
       function (response) {
         var endpoints = response;
         console.log(response);
-        var accountUrl = endpoints.imsEndpoint + 'api/account';
+        var accountUrl = endpoints.imsEndpoint + '/auth';
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
@@ -208,7 +208,7 @@ angular
           })
           .when('/settings', {
             redirectTo: function () {
-              window.location = imsUrl + 'settings' + imsUrlParams;
+              window.location = imsUrl + '/settings' + imsUrlParams;
             }
           })
           .when('/register', {
