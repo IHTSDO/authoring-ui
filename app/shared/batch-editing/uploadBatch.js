@@ -67,7 +67,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                   $scope.templateOptions.availableTemplates = templates;
                 });
             }
-            else{scope.templates = null};
+            else{$scope.templates = null};
 
             batchEditingService.initializeFromScope($scope).then(function () {
 

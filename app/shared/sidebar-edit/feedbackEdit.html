@@ -28,7 +28,7 @@
                                                 
         <div class="fa fa-envelope"></div>
         <span>Feedback list</span></a></li>
-        <li role="presentation"  ng-class="{'active' : actionTab === 5}"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab"
+        <li ng-if="!hideBatch" role="presentation"  ng-class="{'active' : actionTab === 5}"><a ng-click="actionTab=5" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-file-excel-o"></div>
@@ -53,7 +53,7 @@
             <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===4}">
         <div ng-include="'shared/feedback/feedback-list.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===5}">
+      <div role="tabpanel" class="tab-pane" ng-if="!hideBatch"  ng-class="{active: actionTab===5}">
         <div ng-include="'shared/batch-editing/upload-batch.html'"></div>
       </div>
 

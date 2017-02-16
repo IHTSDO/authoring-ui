@@ -121,7 +121,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           console.error('Branch not specified for concept-edit');
           return;
         }
-        
         if(!metadataService.isTemplatesEnabled()){
             templateService.getTemplates().then(function (templates) {
               scope.templates = templates;
