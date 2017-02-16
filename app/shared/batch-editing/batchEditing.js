@@ -660,7 +660,7 @@ angular.module('singleConceptAuthoringApp')
 
             // get templates for dropdown
               
-            if(!metadataService.isTemplatesEnabled){
+            if(!metadataService.isTemplatesEnabled()){
                 templateService.getTemplates().then(function (response) {
                     scope.templateOptions.availableTemplates = response;
                 });

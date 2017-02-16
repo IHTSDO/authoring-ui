@@ -1553,7 +1553,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       notificationService.sendMessage('Loading task details...');
 
       // retrieve available templates
-      if(!metadataService.isTemplatesEnabled){
+      if(metadataService.isTemplatesEnabled){
           templateService.getTemplates().then(function (templates) {
             $scope.templates = templates;
             angular.forEach($scope.templates, function (template) {

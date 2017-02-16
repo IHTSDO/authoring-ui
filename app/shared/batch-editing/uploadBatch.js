@@ -31,7 +31,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
               $scope.dlcDialog(data.data, fileName);
             });
           }
-        if(!metadataService.isTemplatesEnabled){
+        if(!metadataService.isTemplatesEnabled()){
             templateService.getTemplates().then(function (response) {
                 $scope.templates = response;
             });
