@@ -21,9 +21,12 @@ angular.module('singleConceptAuthoringApp.test', [
       $scope.templateRaw = null;
 
       function getTemplates() {
-        templateService.getTemplates().then(function (response) {
-          $scope.templates = response;
-        });
+        if(!metadataService.isTemplatesEnabled){
+            templateService.getTemplates().then(function (response) {
+                $scope.templates = response;
+            });
+        }
+        else{$scope.templates = null;}
       }
 
       getTemplates();

@@ -659,9 +659,13 @@ angular.module('singleConceptAuthoringApp')
           function initialize() {
 
             // get templates for dropdown
-            templateService.getTemplates().then(function (templates) {
-              scope.templateOptions.availableTemplates = templates;
-            });
+              
+            if(!metadataService.isTemplatesEnabled){
+                templateService.getTemplates().then(function (response) {
+                    scope.templateOptions.availableTemplates = response;
+                });
+            }
+            else{$scope.templates = null;}
 
 
             // initialize from scope

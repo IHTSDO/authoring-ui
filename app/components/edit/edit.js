@@ -1553,14 +1553,18 @@ angular.module('singleConceptAuthoringApp.edit', [
       notificationService.sendMessage('Loading task details...');
 
       // retrieve available templates
-      templateService.getTemplates().then(function (templates) {
-        $scope.templates = templates;
-        angular.forEach($scope.templates, function (template) {
-          template.name = template.name;
-          template.version = template.version;
-        });
-        $scope.templateTableParams.reload();
-      });
+      if(!metadataService.isTemplatesEnabled){
+          templateService.getTemplates().then(function (templates) {
+            $scope.templates = templates;
+            angular.forEach($scope.templates, function (template) {
+              template.name = template.name;
+              template.version = template.version;
+            });
+            $scope.templateTableParams.reload();
+          });
+      }
+      
+      else{$scope.templates = null}
 
       // start monitoring of task
       scaService.monitorTask($routeParams.projectKey, $routeParams.taskKey);
@@ -1576,6 +1580,9 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // set any project-level metadata flags
         metadataService.setMrcmEnabled(!$scope.project.projectMrcmDisabled);
+          
+        //set any project-level template flags
+        metadataService.setTemplatesEnabled(!$scope.project.projectTemplatesDisabled);
 
         // initialize the CRS service
         // NOTE: Must be done before loading initial view
