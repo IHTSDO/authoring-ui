@@ -392,9 +392,10 @@ angular.module('singleConceptAuthoringApp')
     
     function applyTemplateToExistingConcept(concept, template){
         var deferred = $q.defer();
-        concept.templateMessages = [];
-        if (!concept.conceptId) {
-            concept.conceptId = snowowlService.createGuid();
+        var conceptCopy = angular.copy(concept);
+        conceptCopy.templateMessages = [];
+        if (!conceptCopy.conceptId) {
+            conceptCopy.conceptId = snowowlService.createGuid();
         }
         initializeTemplate(template).then(function () {
             concept.template = template;
@@ -402,7 +403,7 @@ angular.module('singleConceptAuthoringApp')
             angular.forEach(template.conceptOutline.relationships, function (rt) {
 
               var matchFound = false;
-              angular.forEach(concept.relationships, function (r) {
+              angular.forEach(conceptCopy.relationships, function (r) {
 
                 // check for target slot
               if (rt.targetSlot && r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
@@ -415,16 +416,16 @@ angular.module('singleConceptAuthoringApp')
               if (!matchFound) {
                 var newRel = angular.copy(rt);
                 newRel = rt;
-                concept.relationships.push(newRel);
+                conceptCopy.relationships.push(newRel);
               }
             });
-            angular.forEach(concept.relationships, function (rel) {
+            angular.forEach(conceptCopy.relationships, function (rel) {
                 if(!rel.template){
-                    delete concept.relationships[rel];
+                    delete conceptCopy.relationships[rel];
                 }
             });
             var nameValueMap;
-          getTemplateValues(concept, template).then(function (map) {
+          getTemplateValues(conceptCopy, template).then(function (map) {
             nameValueMap = map;
             angular.forEach(template.conceptOutline.descriptions, function (dt) {
               var matchFound = false;
@@ -472,25 +473,33 @@ angular.module('singleConceptAuthoringApp')
                 newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
                 newDesc.template = dt;
                 newDesc.templateMessages = [];
-                concept.descriptions.push(newDesc);
+                conceptCopy.descriptions.push(newDesc);
               }
             });
 
         // cycle over all descriptions -- no style flag means not in template
 
         // otherwise, flag as outside template
-            angular.forEach(concept.descriptions, function (d) {
+            angular.forEach(conceptCopy.descriptions, function (d) {
               if (d.active && d.type === 'FSN') {
                   concept.fsn = d.term;
               }
             });
+            angular.forEach(conceptCopy.descriptions, function (d) {
+                d.descriptionId = snowowlService.createGuid();
+            });
+            angular.forEach(conceptCopy.relationships, function (r) {
+                r.relationshipId = snowowlService.createGuid();
+            });
 
-            componentAuthoringUtil.setDefaultFields(concept);
-            replaceLexicalValues(concept, template).then(function () {
-                  deferred.resolve(concept);
-                }, function (error) {
-                  deferred.reject(error);
-                });
+            componentAuthoringUtil.setDefaultFields(conceptCopy);
+            replaceLogicalValues(conceptCopy).then(function () {
+                replaceLexicalValues(conceptCopy, template).then(function () {
+                      deferred.resolve(conceptCopy);
+                    }, function (error) {
+                      deferred.reject(error);
+                    });
+             });
 
           }, function (error) {
             deferred.reject('Could not compute target slot values: ' + error);
