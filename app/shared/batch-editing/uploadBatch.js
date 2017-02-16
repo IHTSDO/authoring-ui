@@ -31,10 +31,12 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
               $scope.dlcDialog(data.data, fileName);
             });
           }
-        
-        templateService.getTemplates().then(function (response) {
-            $scope.templates = response;
-        });
+        if(!metadataService.isTemplatesEnabled){
+            templateService.getTemplates().then(function (response) {
+                $scope.templates = response;
+            });
+        }
+        else{$scope.templates = null;}
 
         $scope.uploadFile = function(files) {
                 notificationService.sendMessage('Uploading and generating Batch...', 3000);
@@ -60,10 +62,12 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             };
         
         function initialize() {
-
-            templateService.getTemplates().then(function (templates) {
-              $scope.templateOptions.availableTemplates = templates;
-            });
+            if(!metadataService.isTemplatesEnabled()){
+                templateService.getTemplates().then(function (templates) {
+                  $scope.templateOptions.availableTemplates = templates;
+                });
+            }
+            else{scope.templates = null};
 
             batchEditingService.initializeFromScope($scope).then(function () {
 

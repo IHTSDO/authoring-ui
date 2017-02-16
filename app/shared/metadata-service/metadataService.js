@@ -11,6 +11,8 @@ angular.module('singleConceptAuthoringApp')
 
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
+      
+    var templatesEnabled = true;
 
     // relationship metadata
     var isaRelationshipId = '116680003';
@@ -453,9 +455,17 @@ angular.module('singleConceptAuthoringApp')
       console.log('MRCM validation enforced', value);
       mrcmEnabled = value;
     }
+    
+    function setTemplatesEnabled(value){
+        templatesEnabled = value;
+    }
 
     function isMrcmEnabled() {
       return mrcmEnabled;
+    }
+      
+    function isTemplatesEnabled() {
+      return templatesEnabled;
     }
 
     return {
@@ -480,6 +490,7 @@ angular.module('singleConceptAuthoringApp')
       isGbDialect: isGbDialect,
       isExtensionDialect: isExtensionDialect,
       isMrcmEnabled: isMrcmEnabled,
+      isTemplatesEnabled: isTemplatesEnabled,
 
       // extension module-dependent retrieval functions
 
@@ -500,6 +511,7 @@ angular.module('singleConceptAuthoringApp')
       setBranchMetadata: setBranchMetadata,
       clearBranchMetadata: clearBranchMetadata,
       setMrcmEnabled: setMrcmEnabled,
+      setTemplatesEnabled: setTemplatesEnabled,
       setModuleName: setModuleName,
 
       // branch/task fupath retrieval functions
