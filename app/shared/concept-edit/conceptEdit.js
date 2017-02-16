@@ -215,7 +215,11 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         };
           
         scope.applyTemplate = function (template) {
-            templateService.applyTemplateToConcept(scope.concept, template, true);
+            templateService.applyTemplateToExistingConcept(scope.concept, template).then(function(concept){
+                $timeout(function () {
+                    autoSave();
+                  }, 3000);
+            });
         };
 
         scope.removeTemplate = function () {
