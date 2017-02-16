@@ -30,7 +30,7 @@
 
         <div class="fa fa-envelope"></div>
         <span>Review Not Available </span></a></li>
-        <li role="presentation"  ng-class="{'active' : actionTab === 5}"><a ng-click="viewBatch()" aria-controls="home" role="tab" data-toggle="tab"
+        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-if="!hideBatch"><a ng-click="viewBatch()" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-file-excel-o"></div>
@@ -59,7 +59,7 @@
       <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}">
         <div ng-include="'shared/task-detail/taskDetail.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===5}">
+      <div role="tabpanel" ng-if="!hideBatch" class="tab-pane" ng-class="{active: actionTab===5}">
         <div ng-include="'shared/batch-editing/upload-batch.html'"></div>
       </div>
       <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===6}">

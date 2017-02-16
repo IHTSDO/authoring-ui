@@ -12,7 +12,7 @@ angular.module('singleConceptAuthoringApp')
     // whether mrcm is currently enabled (default true)
     var mrcmEnabled = true;
       
-    var templatesEnabled = true;
+    var templatesEnabled = false;
 
     // relationship metadata
     var isaRelationshipId = '116680003';
