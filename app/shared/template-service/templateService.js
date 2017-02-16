@@ -417,7 +417,7 @@ angular.module('singleConceptAuthoringApp')
               });
               if (!matchFound) {
                 var newRel = angular.copy(rt);
-                newRel = rt;
+                newRel.template = rt;
                 conceptCopy.relationships.push(newRel);
               }
             });
