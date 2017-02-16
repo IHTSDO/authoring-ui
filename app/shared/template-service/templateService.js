@@ -400,6 +400,9 @@ angular.module('singleConceptAuthoringApp')
         initializeTemplate(template).then(function () {
             concept.template = template;
             componentAuthoringUtil.setDefaultFields(template);
+            angular.forEach(conceptCopy.relationships, function (r) {
+                r.relationshipId = snowowlService.createGuid();
+            });
             angular.forEach(template.conceptOutline.relationships, function (rt) {
 
               var matchFound = false;
@@ -411,7 +414,6 @@ angular.module('singleConceptAuthoringApp')
                   r.template = rt;
                   r.targetSlot = rt.targetSlot;
                 }
-
               });
               if (!matchFound) {
                 var newRel = angular.copy(rt);
@@ -419,11 +421,11 @@ angular.module('singleConceptAuthoringApp')
                 conceptCopy.relationships.push(newRel);
               }
             });
-            angular.forEach(conceptCopy.relationships, function (rel) {
-                if(!rel.template){
-                    delete conceptCopy.relationships[rel];
+            for (var i = conceptCopy.relationships.length - 1; i >= 0; i--) {
+                if (!conceptCopy.relationships[i].targetSlot && conceptCopy.relationships[i].relationshipId !== null) {
+                    conceptCopy.relationships.splice(i, 1);
                 }
-            });
+            }
             var nameValueMap;
           getTemplateValues(conceptCopy, template).then(function (map) {
             nameValueMap = map;
