@@ -389,7 +389,116 @@ angular.module('singleConceptAuthoringApp')
         delete r.targetSlot;
       });
     }
+    
+    function applyTemplateToExistingConcept(concept, template){
+        var deferred = $q.defer();
+        concept.templateMessages = [];
+        if (!concept.conceptId) {
+            concept.conceptId = snowowlService.createGuid();
+        }
+        initializeTemplate(template).then(function () {
+            concept.template = template;
+            componentAuthoringUtil.setDefaultFields(template);
+            angular.forEach(template.conceptOutline.relationships, function (rt) {
 
+              var matchFound = false;
+              angular.forEach(concept.relationships, function (r) {
+
+                // check for target slot
+              if (rt.targetSlot && r.active && r.groupId === rt.groupId && r.type.conceptId === rt.type.conceptId) {
+                  matchFound = true;
+                  r.template = rt;
+                  r.targetSlot = rt.targetSlot;
+                }
+
+              });
+              if (!matchFound) {
+                var newRel = angular.copy(rt);
+                newRel = rt;
+                concept.relationships.push(newRel);
+              }
+            });
+            angular.forEach(concept.relationships, function (rel) {
+                if(!rel.template){
+                    delete concept.relationships[rel];
+                }
+            });
+            var nameValueMap;
+          getTemplateValues(concept, template).then(function (map) {
+            nameValueMap = map;
+            angular.forEach(template.conceptOutline.descriptions, function (dt) {
+              var matchFound = false;
+              angular.forEach(concept.descriptions, function (d) {
+                // check by active/type/en-us acceptability
+                if (d.active && d.type === dt.type && d.acceptabilityMap && dt.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === dt.acceptabilityMap['900000000000509007']) {
+                  // if term matches initial term, match found
+                  if (d.term === dt.initialTerm) {
+                    matchFound = true;
+                    d.template = dt;
+                  }
+
+                  // otherwise, check for value match via pattern matching
+                  else {
+                    // replace slots with .*, escape special characters, and start/end terminate
+                    var exp = dt.termTemplate.replace(/\$.*\$/, '.*');
+                    exp = '^' + exp.replace(/([()[{$^\\|?])/g, '\\$1') + '$';
+
+
+                    // if match found
+                    if (d.term && d.term.match(exp)) {
+                      matchFound = true;
+                      d.template = dt;
+                      var templateTerm = getDescriptionTemplateTermValue(dt, template, nameValueMap);
+                      if (d.term !== templateTerm) {
+                          d.term = templateTerm;
+
+                      }
+                    }
+                      else{
+                          if(d.type !== 'DEFINITION'){
+                              d.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
+                              d.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
+                              d.type = 'SYNONYM';
+                          }
+                      }
+                  }
+                }
+              });
+
+              if (!matchFound) {
+                
+                var newDesc = angular.copy(dt);
+                newDesc.descriptionId = snowowlService.createGuid();
+                newDesc.term = getDescriptionTemplateTermValue(dt, template, nameValueMap);
+                newDesc.template = dt;
+                newDesc.templateMessages = [];
+                concept.descriptions.push(newDesc);
+              }
+            });
+
+        // cycle over all descriptions -- no style flag means not in template
+
+        // otherwise, flag as outside template
+            angular.forEach(concept.descriptions, function (d) {
+              if (d.active && d.type === 'FSN') {
+                  concept.fsn = d.term;
+              }
+            });
+
+            componentAuthoringUtil.setDefaultFields(concept);
+            replaceLexicalValues(concept, template).then(function () {
+                  deferred.resolve(concept);
+                }, function (error) {
+                  deferred.reject(error);
+                });
+
+          }, function (error) {
+            deferred.reject('Could not compute target slot values: ' + error);
+          });
+        });
+        
+        return deferred.promise;
+    }
 
     /**
      * Main Functionality -- take a concept and apply a template to it
@@ -885,6 +994,7 @@ angular.module('singleConceptAuthoringApp')
 
       // Template application functions
       createTemplateConcept: createTemplateConcept,
+      applyTemplateToExistingConcept: applyTemplateToExistingConcept,
       applyTemplateToConcept: applyTemplateToConcept,
       removeTemplateFromConcept: removeTemplateFromConcept,
       clearTemplateStylesAndMessages: clearTemplateStylesAndMessages,
