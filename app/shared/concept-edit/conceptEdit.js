@@ -182,7 +182,6 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           scope.hideInactive = true;
         }
 
-        console.debug('Concept validatoin', scope.concept.validation);
         if (scope.concept.validation) {
           scope.validation = scope.concept.validation;
         }
@@ -217,8 +216,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.applyTemplate = function (template) {
             templateService.applyTemplateToExistingConcept(scope.concept, template).then(function(concept){
                 $timeout(function () {
-                    autoSave();
-                  }, 3000);
+                    scope.concept = concept;
+                    console.log(scope.concept);
+                    scope.computeRelationshipGroups();
+                    sortDescriptions();
+                    sortRelationships();
+                  }, 200);
             });
         };
 
