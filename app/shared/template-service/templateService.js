@@ -422,7 +422,7 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             for (var i = conceptCopy.relationships.length - 1; i >= 0; i--) {
-                if (!conceptCopy.relationships[i].targetSlot && conceptCopy.relationships[i].relationshipId !== null) {
+                if (conceptCopy.relationships[i].relationshipId !== null && conceptCopy.relationships[i].relationshipId !== undefined) {
                     conceptCopy.relationships.splice(i, 1);
                 }
             }
