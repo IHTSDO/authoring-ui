@@ -149,6 +149,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function updateTargetSlot(concept, template, relationship) {
+    console.log(template);
       var deferred = $q.defer();
 
       console.debug('updatetargetslot', concept, relationship);
@@ -394,9 +395,6 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var conceptCopy = angular.copy(concept);
         conceptCopy.templateMessages = [];
-        if (!conceptCopy.conceptId) {
-            conceptCopy.conceptId = snowowlService.createGuid();
-        }
         initializeTemplate(template).then(function () {
             concept.template = template;
             componentAuthoringUtil.setDefaultFields(template);

@@ -144,6 +144,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
         );
+          
+        var originalConceptId = null;
 
 
         //////////////////////////////////////////////////////////////
@@ -220,6 +222,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         scope.applyTemplate = function (template) {
             templateService.applyTemplateToExistingConcept(scope.concept, template).then(function(concept){
                 $timeout(function () {
+                    scope.template = template;
                     scope.concept = concept;
                     console.log(scope.concept);
                     scope.computeRelationshipGroups();
