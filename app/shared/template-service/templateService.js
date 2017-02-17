@@ -324,7 +324,13 @@ angular.module('singleConceptAuthoringApp')
           tc.templateComplete = false;
 
           // by default, template concepts are Fully Defined
-          tc.definitionStatus = 'FULLY_DEFINED';
+          if(template.conceptOutline.definitionStatus !== undefined)
+              {
+                  tc.definitionStatus = template.conceptOutline.definitionStatus;
+              }
+          else{
+              tc.definitionStatus = 'PRIMITIVE';
+          }
           if(relAndDescMap !== null && relAndDescMap !== undefined){
               for(var i = 0; i < tc.relationships.length; i++)
                   {
@@ -395,6 +401,13 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         var conceptCopy = angular.copy(concept);
         conceptCopy.templateMessages = [];
+        if(template.conceptOutline.definitionStatus !== undefined)
+              {
+                  conceptCopy.definitionStatus = template.conceptOutline.definitionStatus;
+              }
+          else{
+              conceptCopy.definitionStatus = 'PRIMITIVE';
+          }
         initializeTemplate(template).then(function () {
             concept.template = template;
             componentAuthoringUtil.setDefaultFields(template);
