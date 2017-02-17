@@ -431,7 +431,7 @@ angular.module('singleConceptAuthoringApp')
             nameValueMap = map;
             angular.forEach(template.conceptOutline.descriptions, function (dt) {
               var matchFound = false;
-              angular.forEach(concept.descriptions, function (d) {
+              angular.forEach(conceptCopy.descriptions, function (d) {
                 // check by active/type/en-us acceptability
                 if (d.active && d.type === dt.type && d.acceptabilityMap && dt.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === dt.acceptabilityMap['900000000000509007']) {
                   // if term matches initial term, match found
@@ -458,6 +458,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                       else{
+                          console.log(d);
                           if(d.type !== 'DEFINITION'){
                               d.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                               d.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
