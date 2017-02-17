@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService', 'layoutHandler',
-    function userPreferencesCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService, layoutHandler) {
+  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService', 'layoutHandler', 'configService',
+    function userPreferencesCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService, layoutHandler, configService) {
 
 
       /////////////////////////////////////////
@@ -11,6 +11,9 @@ angular.module('singleConceptAuthoringApp')
       // on load, retrieve the user preferences
       accountService.getUserPreferences().then(function (response) {
         $scope.userPreferences = response;
+        configService.getVersions().then(function(versions){
+            $scope.versions = versions;
+        });
       });
 
       // revert settings to original
