@@ -5,6 +5,7 @@ angular.module('singleConceptAuthoringApp')
 
     var properties = null;
     var validationProperties = null;
+    var versions = null;
 
     function getConfigProperties() {
       var deferred = $q.defer();
@@ -12,8 +13,13 @@ angular.module('singleConceptAuthoringApp')
         $http.get('/config/endpointConfig.json').then(function (response) {
           properties = response.data;
           $http.get('/validationConfig/validationConfig.json').then(function (validationResponse) {
-              validationProperties = validationResponse.data;
-              deferred.resolve(properties, validationProperties);
+              $http.get('/config/versions.json').then(function (confResponse) {
+                  versions = confResponse.data;
+                  deferred.resolve(properties, validationProperties, versions);
+                }, function(error) {
+                  console.log(error);
+                  deferred.reject('Failed to retrieve version configuration properties');
+                });
             }, function() {
               deferred.reject('Failed to retrieve validation configuration properties');
             });
@@ -32,6 +38,16 @@ angular.module('singleConceptAuthoringApp')
         var deferred = $q.defer();
         getConfigProperties().then(function() {
           deferred.resolve(properties.endpoints);
+        }, function(error) {
+          deferred.reject(error);
+        });
+        return deferred.promise;
+      },
+      getVersions: function () {
+        var deferred = $q.defer();
+        getConfigProperties().then(function() {
+            console.log(versions)
+          deferred.resolve(versions.versions);
         }, function(error) {
           deferred.reject(error);
         });
