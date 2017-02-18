@@ -1,0 +1,681 @@
+.has-feedback {
+  position: relative;
+}
+.has-feedback .form-control {
+  padding-right: 46.25px;
+}
+
+.form-control-feedback {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  display: block;
+  width: 37px;
+  height: 37px;
+  line-height: 37px;
+  text-align: center;
+  pointer-events: none;
+}
+.feedback-report .checkbox input[type=checkbox]:after,
+.feedback-report .checkbox-inline input[type=checkbox]:after,
+.feedback-report input[type=checkbox]:after {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-top: -2px;
+    margin-right: 5px;
+    border: 1px solid #DBDBDB;
+    border-radius: 2px;
+    transition: 240ms;
+}
+/* new concept */
+.new-concept .grey.darken-4{background-color: #ffcadc!important; color:#201f23!important}
+  .new-concept .concept-headers:first-child{padding-top:3px!important}
+/*feedback window filter */
+
+.concept-filter {
+    padding-bottom: 5px!important;
+    margin-left: -5px;
+}
+.concept-filter input {
+    min-height: 23px !important;
+}
+.concept-filter input {
+    font-weight: normal!important;
+    font-kerning: auto;
+    font-size: 12px;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-variant-ligatures: normal;
+    font-weight: normal;
+}
+.concept-filter input[placeholder] {
+    color: #666!important;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+::-webkit-input-placeholder {
+    /* WebKit, Blink, Edge */
+    
+    color: #666;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    
+    color: #666;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    opacity: 1;
+}
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    
+    color: #666;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    opacity: 1;
+}
+/*feedback window spacing */
+
+.feedback-window.col-md-6 {
+    width: 49.5%;
+    margin-left: .5%;
+}
+/* Send feedback button */
+
+.send-feedback-icon {
+    padding: 3px;
+    padding: 0px 4px;
+}
+/*follow up checkboxes */
+
+.follow-up {
+    font-size: 12px;
+    padding-top: 3px;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+.follow-up-right .btn {
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+}
+.follow-up-right .btn:hover,
+.follow-up-right .btn:focus {
+    background-color: transparent!important;
+    color: #009cd7!important;
+}
+.follow-up input[type=checkbox] {
+    position: absolute;
+}
+.follow-up input[type=checkbox]:after {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    margin-right: 5px;
+    margin-left: 5px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    -webkit-transition: 240ms;
+    -o-transition: 240ms;
+    transition: 240ms;
+    color: #fff!important
+}
+.follow-up input[type=checkbox]:checked:before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 10px;
+    display: table;
+    width: 6px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-top-width: 0;
+    border-left-width: 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.numbers.badge {
+    padding: 3px 5px!important;
+}
+.feedback-lists .btn-round {
+    width: 17px;
+    height: 17px;
+    font-size: 12px;
+    line-height: 17px;
+    text-align: center;
+}
+.checkbox input[type=checkbox],
+.checkbox-inline input[type=checkbox],
+label input[type=checkbox] {
+    margin-left: -33px;
+}
+.feedback .col-checkbox {
+    width: 10%;
+}
+.feedback .col-concept {
+    width: 70%;
+}
+.feedback .col-controls {
+    width: 10%;
+    padding-right: 0px;
+}
+.h-45 {
+    height: 45px;
+}
+.review-term {
+    padding: 5px 5px;
+    display: block;
+}
+ul.sidebar-tabs {
+    background-color: #d1d1d1;
+}
+.add-shadow {
+    box-shadow: 0 4px 5px -2px rgba(0, 0, 0, 0.2), 0 2px 16px 1px rgba(0, 0, 0, 0.10);
+    background-color: #fff;
+    padding: 5px !important;
+    display: inline-block;
+    height: 100%;
+    min-height: 500px;
+}
+input.feedback-search {
+    margin: 0px 4%;
+    padding: 5px 0px;
+    width: 92%;
+}
+.feedback .btn-group,
+.feedback .btn-toolbar {
+    margin-left: 0px;
+}
+.feedback .ta-scroll-window {
+    margin-left: 0px;
+}
+.feedback-tabs {
+    background-color: #fafafa;
+}
+.feedback-tabs .nav-tabs ul {
+    padding: 0px;
+    box-shadow: inset 0 -2px 0 #dcdcdc!important;
+    width: 100%;
+}
+.feedback-window {
+    background-color: #E7E7E7;
+    height: 100%;
+}
+section thead input {
+    background-color: #fff;
+}
+.feedback-view .nav-tabs a {
+    font-size: 12px!important;
+}
+.feedback-view .btn-round {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+    line-height: 23px;
+    position: relative;
+}
+.feedback-view input[type=checkbox]:after,
+.feedback-view.table-full thead tr > th input[type=checkbox]:after {
+    width: 16px!important;
+    height: 16px!important;
+    margin: 0px!important;
+    font-size: 14px!important;
+}
+.feedback.table-full thead tr > th input[type=checkbox] {
+    margin-top: 5px!important;
+    margin-left: 3px!important;
+    margin-right: 0px!important;
+    margin-bottom: 0px!important;
+}
+.feedback .table-full thead tr > th input[type=checkbox]:after {
+    width: 16px;
+    height: 16px;
+    margin: 0px!important;
+    font-size: 14px!important;
+}
+.feedback .table > thead > tr > th {
+    padding: 4px 2px!important;
+    vertical-align: middle !important;
+    line-height: 12px
+}
+.feedback-view .table > thead > tr > th,
+.feedback-view .table > thead > tr > td {
+    padding: 5px;
+    line-height: 12px;
+    border-top: 1px solid #F0F0F0;
+    vertical-align: middle !important;
+    border-bottom: 2px solid #F0F0F0;
+    margin: 5px;
+}
+.feedback-view .table > tbody > tr > td {
+    line-height: 14px;
+    font-size: 12px;
+    vertical-align: middle;
+    padding: 5px;
+}
+.feedback-table input[type="checkbox"] {
+    height: auto!important;
+    margin: 5px;
+    font-size: 14px!important;
+    min-height: 15px!important
+}
+.ta-scroll-window > .ta-bind {
+    min-height: 250px;
+}
+.ta-editor.ta-html,
+.ta-scroll-window.form-control {
+    min-height: 250px;
+}
+.btn-default.green.darken-4:hover {
+    background-color: #2E7D32;
+}
+.feedback-chat {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 175px;
+}
+.feedback-chat p {
+    width: 100%;
+    float: left;
+}
+.feedback-chat::-webkit-scrollbar,
+.ta-scroll-window.form-control::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+    background-color: #fff
+}
+.feedback-chat::-webkit-scrollbar-button,
+.ta-scroll-window.form-control::-webkit-scrollbar-button {
+    width: 7px;
+    height: 7px;
+}
+.feedback-chat::-webkit-scrollbar-thumb,
+.ta-scroll-window.form-control::-webkit-scrollbar-thumb {
+    background: #e1e1e1;
+    border: 0px none #ffffff;
+    border-radius: 62px;
+}
+.feedback-chat::-webkit-scrollbar-thumb:hover,
+.ta-scroll-window.form-control::-webkit-scrollbar-thumb:hover {
+    background: #57a5cc;
+}
+.feedback-chat::-webkit-scrollbar-thumb:active,
+.ta-scroll-window.form-control::-webkit-scrollbar-thumb:active {
+    background: #e7e7e7;
+}
+.feedback-chat::-webkit-scrollbar-track,
+.ta-scroll-window.form-control::-webkit-scrollbar-track {
+    background: #edecee;
+    border: 0px none #ffffff;
+    border-radius: 50px;
+}
+.feedback-chat::-webkit-scrollbar-track:hover,
+.ta-scroll-window.form-control::-webkit-scrollbar-track:hover {
+    background: #e5e6e8;
+}
+.feedback-chat::-webkit-scrollbar-track:active,
+.ta-scroll-window.form-control::-webkit-scrollbar-track:active {
+    background: #d8d7d9;
+}
+.feedback-chat::-webkit-scrollbar-corner,
+.ta-scroll-window.form-control::-webkit-scrollbar-corner {
+    background: transparent;
+}
+.feedback-lists .table > tbody > tr > td,
+.feedback-lists .table > tbody > tr > th {
+    padding: 0px!important;
+    line-height: 14px!important
+}
+.feedback-chat {
+    padding: 10px 10px 10px 0px!important
+}
+.white {
+    background-color: #fff;
+}
+.report-header-main {
+    color: #fff;
+    height: 33px;
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    background-color: #2d2d2d;
+    line-height: 30px;
+}
+.report-header-main label {
+    color: #fff!important;
+    font-weight: 400;
+    margin-top: -5px;
+}
+.report-header-main input {
+    height: 24px!important
+}
+.report-header-main .btn {
+    padding: 0px 12px!important;
+background-color: rgba(0, 0, 0, .5);
+
+}
+.review-button-list {
+    background-color: #880e4f;
+    border-radius: 2px
+}
+.review-button-list[disabled],
+.review-button-list[disabled]:hover {
+    background-color: #880e4f;
+    border-radius: 2px
+}
+.review-button-list:hover {
+    background-color: #ad1457
+}
+.feedback-window {
+    border: 1px #eaeaea solid!important;
+    border-radius: 3px;
+}
+.feedback-window .btn-group .btn {
+    padding: 3px 10px;
+}
+.ta-root.focussed .ta-scroll-window.form-control {
+    border-color: transparent;
+    outline: 0;
+    -webkit-box-shadow: none!important;
+}
+.ta-editor ul {
+    -webkit-margin-before: 0em;
+    -webkit-margin-after: 0em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 8px;
+}
+.ta-toolbar.form-control {
+    box-shadow: none;
+}
+.transparent,
+.transparent:hover,
+.transparent:active,
+.transparent:focus {
+    background-color: transparent!important;
+    color: #fff;
+    background: none!important;
+}
+.feedback-table tbody > tr > td:last-child {
+    overflow: visible;
+}
+.feedback-view .table > tbody > tr > td {
+    padding: 5px;
+}
+.feedback-view tbody > tr > td:first-child {
+    padding-left: 5px
+}
+.feedback-table tbody > tr {
+    height: auto;
+}
+.new-edits {
+    background-color: #f5f5f5;
+    color: #666;
+    border: solid 1px #e0e0e0;
+    border-radius: 3px;
+    /* add in vendor rules */
+    /* add in vendor rules */
+    
+    float: left;
+    font-size: 10px;
+    font-weight: 500;
+    margin-right: 10px;
+    padding: 4px 5px;
+    position: relative;
+    text-align: center;
+}
+.share_size_large > .new-edits {
+    display: block;
+    float: none;
+    font-size: 18px;
+    margin-right: 0;
+    margin-bottom: 12px;
+    padding: 10px 0;
+}
+.new-edits:before,
+.new-edits:after {
+    content: '';
+    display: block;
+    height: 0;
+    top: 50%;
+    position: absolute;
+    right: -14px;
+    width: 0;
+    margin-top: -6px;
+}
+.share_size_large > .new-edits:before,
+.share_size_large > .new-edits:after {
+    content: '';
+    display: block;
+    height: 0;
+    left: 50%;
+    position: absolute;
+    top: auto;
+    width: 0;
+}
+.new-edits:before {
+    border: solid 7px transparent;
+    border-color: transparent transparent transparent #e0e0e0;
+}
+.new-edits:after {
+    border: solid 6px transparent;
+    border-color: transparent transparent transparent #f5f5f5;
+    right: -12px;
+    margin-top: -5px;
+}
+.feedback-header {
+    left: 25px;
+    float: left;
+    padding-right: 10px;
+    background-color: transparent;
+    border: none;
+    color: #474747
+}
+.feedback-window {
+    border: 1px #ececec solid;
+}
+.feedback-window {
+    border: 1px #eaeaea solid!important;
+    border-radius: 3px;
+    background-color: #fff;
+}
+.feedback-window .btn-group .btn {
+    padding: 3px 10px;
+}
+.ta-root.focussed .ta-scroll-window.form-control {
+    border-color: transparent!important;
+    outline: 0!important;
+    -webkit-box-shadow: none!important;
+}
+.pink-links a,
+a.pink-links {
+    color: #d53072
+}
+.ta-editor.form-control {
+    box-shadow: none;
+}
+.feedback-header .username {
+    font-weight: 500;
+    margin-left: 10px;
+}
+.feedback-header .date {
+    font-weight: 400;
+    font-size: 11px;
+}
+.tab-content > .active {
+    height: auto;
+}
+.feedback-initial {
+    min-height: 480px!important;
+}
+.feedback-initial .text {
+    padding-right: 100px;
+    padding-left: 100px;
+    font-weight: 300;
+    text-align: center;
+    font-size: 18px;
+    font-family: Roboto, sans-serif;
+    color: #d81b60;
+}
+.feedback-initial .icon-alert {
+    margin: 0 auto!important;
+    padding-top: 70px;
+    font-size: 86px;
+    width: 86px;
+    color: #f06292;
+}
+.ta-editor.form-control.myform2-height,
+.ta-scroll-window.form-control.myform2-height {
+    height: 100px;
+    min-height: 100px;
+    overflow: auto;
+    width: 99%;
+    float: right;
+    font-family: inherit;
+    font-size: 100%;
+    display: block;
+}
+.form-control.myform2-height > .ta-bind {
+    min-height: 95px;
+    padding: 6px 12px;
+}
+strong {
+    font-weight: 700;
+}
+.clear-button {
+    background-color: transparent
+}
+.clear-button:hover {
+    background-color: transparent
+}
+.pull_right {
+    float: right;
+    right: 15px;
+}
+.reviewer-feedback-chat p {
+    margin: 0 0 0em;
+    color: #474747;
+    font-size: 12px;
+}
+.reviewer-feedback-chat {
+    padding-left: 10px!important;
+    padding-right: 10px!important;
+    margin: 1em 0 3em;
+    color: #000;
+    background-color: #ececec;
+    height: auto;
+    width: 100%;
+}
+.author_feedback_chat {
+    padding-left: 10px!important;
+    padding-right: 10px!important;
+    margin: 1em 0 3em;
+    color: #000;
+    background-color: #ffe7f0;
+    height: auto;
+    width: 100%;
+}
+.reviewer-feedback-chat:after {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: 0px;
+    right: auto;
+    top: auto;
+    bottom: -10px;
+    border: 12px solid;
+    border-color: transparent transparent transparent #ececec!important;
+}
+.author_feedback_chat:after {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: auto;
+    right: 0px;
+    bottom: -10px;
+    border: 12px solid;
+    border-color: #ffe7f0 #ffe7f0 transparent transparent!important;
+}
+.numbers.badge {
+    padding: 3px 5px!important;
+    font-size: 10px!important;
+}
+.light_greys {
+    background-color: #ececec;
+}
+.feedback .pager .btn {
+    padding: 1px 6px;
+}
+@media screen and (min-width: 1844px) {
+    .feedback .pager .btn {
+        padding: 1px 6.5px;
+    }
+}
+.checkbox input[type=checkbox]:checked:before,
+.checkbox-inline input[type=checkbox]:checked:before,
+input[type=checkbox]:checked:before {
+    content: "";
+    position: relative;
+    top: 10px;
+    left: 6px;
+    display: block;
+    width: 6px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-top-width: 0;
+    border-left-width: 0;
+    transform: rotate(45deg);
+    margin-top: -9px;
+    padding-top: -5px;
+}
+.worklist {
+    background-color: #fff;
+    border: #f5f5f5 1px solid
+}
+.work-list-tabs {
+    margin: 5px!important;
+    border: 1px #ddd solid!important;
+    background-color: #fff;
+    display: block;
+}
+.border-right {
+    border-right: #ddd 1px solid!important
+}
+.work-list-tabs .nav > li {
+    width: 33.33%;
+}
+.work-list-tabs .nav > li > a {
+    line-height: 19px;
+    background-color: #eeeeee;
+    border-radius: 0px!important;
+    font-size: 11px;
+}
+.work-list-tabs .nav-tabs > li.active > a {
+    box-shadow: none;
+    background-color: #fff;
+    color: #d53072;
+}
+.work-list-tabs .nav-tabs > li > a:hover {
+    box-shadow: none;
+    color: #d53072;
+    background-color: #fff
+}
+.feedback-lists .btn-round.btn[disabled]:hover {
+    color: #76747c!important;
+    background-color: #424249!important;
+}
+.feedback-table {
+    width: 98%;
+    margin: 1%
+}
+.tab-content {
+    font-size: 12px;
+}
