@@ -5,10 +5,12 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 // endbower
 @import url(https://fonts.googleapis.com/css?family=Cabin+Condensed);
 @import "notification.scss";
+@import "colors.scss";
 @import "header.scss";
 @import "home.scss";
 @import "ihtsdo.scss";
 @import "fonts.scss";
+@import "icons.scss";
 @import "edit.scss";
 @import "compact.scss";
 @import "editpanel.scss";
@@ -19,17 +21,17 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "grid.scss";
 @import "globals.scss";
 @import "models.scss";
+@import "form_fields.scss";
 @import "tables.scss";
 @import "ta.scss";
 @import "tooltips.scss";
+@import "typography.scss";
 @import "conflicts.scss";
 @import "responsive.scss";
 @import "classification.scss";
 @import "badge.scss";
 @import "button.scss";
 @import "tbba.scss";
-@import "validation.scss";
-@import "batch.scss";
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
