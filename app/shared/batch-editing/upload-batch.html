@@ -1,9 +1,14 @@
 <div ng-controller="uploadBatchCtrl" class="row column-md-12">
     <div class="row column-md-12 p-15">
-        <div>
-            Please Select a template:
+        <div
+                        id="batchTemplateSelectBtn"
+                        popover-template="'components/edit/editTemplateSelect.html'"
+                        popover-placement="right"
+                        popover-trigger="click: click"
+                        popover-append-to-body="true"
+                        class="pointer btn btn-primary button-link tooltips-right tooltips-light normal-case">Template Selector<span ng-if="!templateOptions.selectedTemplate">Please Select a template</span>
+            <span ng-if="templateOptions.selectedTemplate">Selected: {{templateOptions.selectedTemplate.name}}</span>
         </div>
-        <select ng-options="template as template.name for template in templateOptions.availableTemplates" ng-model="templateOptions.selectedTemplate" class="template-name button-link"></select>
     </div>
     <div class="row column-md-12 p-15">
         <button class="btn btn-default btn-primary button-link" ng-disabled="!templateOptions.selectedTemplate"
@@ -11,7 +16,7 @@
         </button>
     </div>
     <div class="row column-md-12 p-15">
-        <label class="btn btn-default btn-file column-md-4 btn-primary button-link"> Upload a File to create a Batch.
+        <label class="btn btn-default btn-file column-md-4 btn-primary button-link"> Upload a File to create a Batch
             <input ng-disabled="!templateOptions.selectedTemplate" type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this.files)" style="display: none;">
         </label>
     </div>

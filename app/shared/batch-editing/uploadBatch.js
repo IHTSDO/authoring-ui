@@ -37,6 +37,11 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             });
         }
         else{$scope.templates = null;}
+        
+        $scope.selectBatchTemplate = function(template){
+            $scope.templateOptions.selectedTemplate = template;
+            document.getElementById('batchTemplateSelectBtn').click();
+        }
 
         $scope.uploadFile = function(files) {
                 notificationService.sendMessage('Uploading and generating Batch...', 3000);
