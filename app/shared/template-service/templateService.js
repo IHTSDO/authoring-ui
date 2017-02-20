@@ -878,15 +878,27 @@ angular.module('singleConceptAuthoringApp')
 //
 // Exposed functions
 //
-    function getTemplates(refreshCache) {
+    function getTemplates(refreshCache, parentIds, branch) {
       var deferred = $q.defer();
+      console.log(parentIds);
       if (!templateCache || refreshCache) {
-        $http.get(apiEndpoint + 'templates').then(function (response) {
-          templateCache = response.data;
-          deferred.resolve(templateCache);
-        }, function (error) {
-          deferred.reject('Failed to retrieve templates: ' + error.message);
-        });
+        if(!parentIds || typeof parentIds === 'undefined' || parentIds.length === 0)
+            {
+                $http.get(apiEndpoint + 'templates').then(function (response) {
+                  templateCache = response.data;
+                  deferred.resolve(templateCache);
+                }, function (error) {
+                  deferred.reject('Failed to retrieve templates: ' + error.message);
+                });
+            }
+        else{
+            $http.get(apiEndpoint + branch + '/templates?descendantOf=' + parentIds + '&ancestorOf=' + parentIds).then(function (response) {
+              deferred.resolve(response.data);
+            }, function (error) {
+              deferred.reject('Failed to retrieve templates: ' + error.message);
+            });
+        }
+        
       } else {
         deferred.resolve(templateCache);
       }

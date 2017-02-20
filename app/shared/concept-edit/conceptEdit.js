@@ -122,7 +122,13 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           return;
         }
         if(!metadataService.isTemplatesEnabled()){
-            templateService.getTemplates().then(function (templates) {
+            var parentIds = [];
+            angular.forEach(scope.concept.relationships, function(rel){
+                if(rel.active && rel.characteristicType === 'STATED_RELATIONSHIP' && rel.type.conceptId === '116680003'){
+                    parentIds.push(rel.target.conceptId);
+                }
+            });
+            templateService.getTemplates(true, parentIds || undefined, scope.branch).then(function (templates) {
               scope.templates = templates;
             });
         }
