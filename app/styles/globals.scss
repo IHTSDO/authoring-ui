@@ -36,11 +36,15 @@ html {
 .m-r-2 {
     margin-righ: 2px;
 }
-.promoted-check-box,
+
+
 .project-subtitle {
     font-family: Roboto, sans-serif ;
     color: #666 ;
 }
+.promoted-check-box .md-check-box-outline-blank:before,
+.promoted-check-box .md-check-box:before
+{color: #666 ;}
 .table-full thead tr > th {
     font-size: 11px;
 }
@@ -166,6 +170,7 @@ td select {
     top: 64px;
     height: 100%;
     width: 21%;
+	margin-top:-64px;
 }
 .alert-warning {
     color: #fff;
