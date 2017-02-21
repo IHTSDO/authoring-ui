@@ -1,5 +1,17 @@
 <div class="select-template">
   <h3 class="p-5">Select Template</h3>
+  <div class="col-md-12">
+              <textarea type="text" class="form-control"
+                        ng-model="focusConcept"
+                        typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-wait-ms="500"
+                        typeahead-editable="false" typeahead-min-length="3"
+                        typeahead-on-select="selectFocusForTemplate($item)"
+                        placeholder="Type to select a focus concept..."
+                        on></textarea>
+
+            </div>
   <table ng-table="templateTableParams" template-pagination="utilities/data-table-pager.html"
          class="table table-full p-5">
     <tr ng-repeat="template in $data" class="clickable-row">
