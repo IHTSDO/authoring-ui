@@ -53,14 +53,14 @@ padding-bottom:0px
     padding-left: 0px;
     position: relative;
     width: 300px;
-    font-size: 13px !important;
+    font-size: 13px ;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
     display: none;
     opacity: 0;
     visibility: hidden;
-    color: #fff !important;
+    color: #fff ;
   }
 
   ul.sub-navigation-link-list li ul li {
@@ -264,9 +264,9 @@ padding-bottom:0px
 /* template slots */
  .editing-form .template-editable,
  .editing-form .template-slot
-{-webkit-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;
--moz-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;
-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;}
+{-webkit-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) ;
+-moz-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) ;
+box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) ;}
 
 .select-template .table-full tbody > tr > td {
   padding-top: 5px;

@@ -10,9 +10,9 @@ lightest bg #525463
 */
 /* scolll bars */
 h4.timeline-title {
-    overflow-x: auto!important;
+    overflow-x: auto;
 }
-.hideme{display:none!important}
+.hideme{display:none}
 .sca-dark .navbar .dashboard-link-list li:hover .btn-link {
     background-color: #525463
 }
@@ -20,12 +20,12 @@ h4.timeline-title {
 .ta-scroll-window.form-control::-webkit-scrollbar-thumb:hover {
     background: #57a5cc;
 }
-.sca-dark input.form-control,
+.sca-dark input.form-control
  {
     box-shadow: inset 0 -1px 0 #1f2731;
 }
 .sca-dark .border-right {
-    border-right: #1f2731 1px solid !important;
+    border-right: #1f2731 1px solid ;
 }
 .sca-dark .sca-container::-webkit-scrollbar-thumb:active,
 .ta-scroll-window.form-control::-webkit-scrollbar-thumb:active {
@@ -52,17 +52,17 @@ h4.timeline-title {
 .sca-dark .add-shadow,
 .sca-dark input.feedback-search,
 .sca-dark .feedback .btn-group button {
-    background-color: transparent!important
+    background-color: transparent
 }
 .sca-dark .feedback .btn-group button {
-    color: #fff!important
+    color: #fff
 }
 .sca-dark .project-page {
     background-color: #525463
 }
 .sca-dark {
     background-color: #525463;
-    text-shadow: none!important;
+    text-shadow: none;
     border-color: #414548
 }
 .sca-dark .saved-list,
@@ -72,18 +72,18 @@ h4.timeline-title {
     color: #eee
 }
 .sca-dark .button-nav .btn-default[disabled] {
-    color: #bdbdbd!important;
-    border-top: 1px #1f2731 solid !important;
+    color: #bdbdbd;
+    border-top: 1px #1f2731 solid ;
 }
 .sca-dark .create-new-concept {
-    background-color: #262e39!important;
-    color: #56b8e7!important;
+    background-color: #262e39;
+    color: #56b8e7;
 }
 .sca-dark .create-new-concept:hover {
-    color: #eee!important;
+    color: #eee;
 }
 .sca-dark .editpanel {
-    color: #eee!important;
+    color: #eee;
 }
 .sca-dark .page-header h1,
 .theme-text {
@@ -100,22 +100,22 @@ h4.timeline-title {
     margin-bottom: 0px;
     color: #fff;
     border-color: #4F4F4F;
-    box-shadow: none!important;
+    box-shadow: none;
 }
 .sca-dark .promoted-check-box,
 .sca-dark .project-subtitle {
-    color: #fff!important;
+    color: #fff;
 }
 .sca-dark .project-buttons {
-    color: #fff!important
+    color: #fff
 }
 .sca-dark .saved-list-buttons {
-    color: #bdbdbd!important
+    color: #bdbdbd
 }
 .sca-dark .editing-form button:active,
-.sca-dark .editing-form button:focus,
+.sca-dark .editing-form button:focus
 {
-    background-color: transparent!important;
+    background-color: transparent;
 }
 .sca-dark .small-buttons.btn-default[disabled],
 .sca-dark .small-buttons.btn-default[disabled]:hover {
@@ -127,11 +127,11 @@ h4.timeline-title {
 .sca-dark .paging .btn {
     background: #1f2731;
     color: #9B9B9B;
-    box-shadow: 1px 1px 2px #000 !important;
+    box-shadow: 1px 1px 2px #000 ;
 }
 .sca-dark button[disabled] .project-icon {
-    background-color: #262e39!important;
-    color: #828396 !important;
+    background-color: #262e39;
+    color: #828396 ;
 }
 /*button colors */
 
@@ -149,11 +149,11 @@ a {
 }
 .sca-dark .table > thead > tr > th {
     border-bottom: 2px solid #262e39;
-    text-shadow: none!important
+    text-shadow: none
 }
 .sca-dark .white {
-    color: #FFF !important;
-    background: #262e39!important;
+    color: #FFF ;
+    background: #262e39;
 }
 .sca-light .saved,
 .sca-light .fa-close {
@@ -184,16 +184,16 @@ a {
     color: #fff;
 }
 .sca-dark .project-main-buttons button {
-    background-color: #1f2731 !important;
-    border: 1px solid #1f2731 !important;
+    background-color: #1f2731 ;
+    border: 1px solid #1f2731 ;
     color: #fff;
 }
 .sca-dark .project-main-buttons button:disabled {
-    background-color: #383a48 !important;
-    border: 1px solid #383a48 !important;
+    background-color: #383a48 ;
+    border: 1px solid #383a48 ;
     border-radius: 4px;
     text-transform: none;
-    color: #828396 !important;
+    color: #828396 ;
 }
 .sca-dark .table-full {
     background: #2d3743
@@ -216,7 +216,7 @@ a {
     text-align: left
 }
 .sca-dark .dashboard-sidebar {
-    background-color: #262e39!important;
+    background-color: #262e39;
     border-right: 1px rgba(0, 0, 0, .07)solid;
 }
 .sca-dark .dashboard-sidebar button {
@@ -228,9 +228,9 @@ a {
     color: #737373;
 }
 .sca-dark .dashboard-sidebar button:hover,
-.sca-dark .dashboard-sidebar button:active,
+.sca-dark .dashboard-sidebar button:active
 {
-    background: #1f2731!important;
+    background: #1f2731;
 }
 /*button colors */
 
@@ -296,22 +296,22 @@ a {
 /* Edit View */
 
 .sca-dark .button-nav {
-    border-right: 1px #1f2731 solid!important;
+    border-right: 1px #1f2731 solid;
     background-color: #262e39;
 }
 .sca-dark .button-nav .blue.darken-2,
 .sca-dark .button-nav .yellow.darken-2 {
-    border-bottom: 1px #1f2731 solid!important;
-    border-top: 1px #1f2731 solid!important;
-    border-right: 1px #1f2731 solid!important
+    border-bottom: 1px #1f2731 solid;
+    border-top: 1px #1f2731 solid;
+    border-right: 1px #1f2731 solid
 }
 .sca-dark .button-nav .blue.darken-3,
 .sca-dark .button-nav .blue.darken-4,
 .sca-dark .button-nav .pink1,
 .sca-dark .button-nav .deep-purple.lighten-1,
 .sca-dark .button-nav .green.darken-1 {
-    border-top: 1px #1f2731 solid!important;
-    border-right: 1px #1f2731 solid!important
+    border-top: 1px #1f2731 solid;
+    border-right: 1px #1f2731 solid
 }
 .sca-dark .blue.darken-2 {
     color: #1976D2;
@@ -320,29 +320,29 @@ a {
 /*widget buttons */
 
 .sca-dark .widget-toolbar:hover {
-    background-color: transparent!important;
-    color: #eee!important
+    background-color: transparent;
+    color: #eee
 }
 .sca-dark .classification-btn .btn-default:hover,
 .sca-dark .classification-btn .btn-default span:hover {
-    color: #eee!important
+    color: #eee
 }
 .sca-dark .task-details .green {
     background-color: #262e39;
 }
 .sca-dark .classification-btn .btn-default {
-    border: 1px #262e39 solid !important;
+    border: 1px #262e39 solid ;
 }
 .sca-dark .classification-btn .btn-default:hover {
     color: #eee;
     background-color: transparent;
-    border: 1px #1f2731 solid!important;
+    border: 1px #1f2731 solid;
 }
 /*edit buttons */
 
 .sca-dark .small-buttons:hover {
-    color: #fff !important;
-    background-color: transparent !important;
+    color: #fff ;
+    background-color: transparent ;
 }
 .sca-dark .morebuttons {
     color: #00a6e5;
@@ -409,10 +409,10 @@ a {
     background-color: #525463;
 }
 .sca-dark .task-details button {
-    background-color: #262e39!important;
+    background-color: #262e39;
 }
 .sca-dark .task-details button:hover {
-    background-color: #1f2731!important;
+    background-color: #1f2731;
 }
 /*nav Tabs*/
 
@@ -421,7 +421,7 @@ a {
 }
 .sca-dark .nav-tabs > li > a {
     margin-right: 0;
-    background-color: #262e39!important;
+    background-color: #262e39;
     border: none;
     color: #eee;
     box-shadow: inset 0 -1px 0 #414548;
@@ -429,20 +429,20 @@ a {
 }
 .sca-dark .sidebar-tabs.nav > li.active > a,
 .sca-dark .sidebar-tabs.nav > li > a:hover {
-    background-color: #2d3743!important;
+    background-color: #2d3743;
     color: #bebebe;
     box-shadow: none;
     color: #00a6e5;
 }
 .sca-dark .control-label {
     color: #babec1;
-    box-shadow: inset 0 -1px 0 #2d3743 !important;
+    box-shadow: inset 0 -1px 0 #2d3743 ;
 }
 .sca-dark .timeline-title {
-    color: #eee!important;
+    color: #eee;
 }
 .sca-dark .timeline-title p {
-    color: #eee!important;
+    color: #eee;
 }
 .sca-dark .classification-report,
 .sca-dark .feedback-header {
@@ -450,13 +450,13 @@ a {
     border-top: 1px solid #262e39;
 }
 .sca-dark .classification-btn .btn-default[disabled] span {
-    color: #262e39 !important;
-    background-color: #525463!important;
+    color: #262e39 ;
+    background-color: #525463;
 }
 .sca-dark .classification-btn .btn-default[disabled] {
-    border-color: #525463 !important;
-    color: #262e39 !important;
-    background-color: #525463!important;
+    border-color: #525463 ;
+    color: #262e39 ;
+    background-color: #525463;
 }
 /*model box*/
 
@@ -480,37 +480,37 @@ a {
     color: #fff;
 }
 .sca-dark .sidebar-bg .sidebar-grey {
-    background-color: #2d3743 !important;
+    background-color: #2d3743 ;
 }
 .sca-dark .sidebar-bg .control-label {
     color: #fff;
 }
-.sca-dark .green.btn-round,
+.sca-dark .green.btn-round
 {
-    background-color: transparent!important;
+    background-color: transparent;
     color: #4CAF50
 }
 .sca-dark .green.btn-round:hover {
-    color: #fff!important;
-    background-color: #4CAF50!important
+    color: #fff;
+    background-color: #4CAF50
 }
-.sca-dark .blue.btn-round,
+.sca-dark .blue.btn-round
 {
-    background-color: transparent!important;
+    background-color: transparent;
     color: #42A5F5
 }
 .sca-dark .blue.btn-round:hover {
-    color: #fff!important;
-    background-color: #42A5F5!important
+    color: #fff;
+    background-color: #42A5F5
 }
-.sca-dark .blue.green.btn-round,
+.sca-dark .blue.green.btn-round
 {
-    background-color: transparent!important;
+    background-color: transparent;
     color: #42A5F5
 }
 .sca-dark .blue.green.btn-round:hover {
-    color: #fff!important;
-    background-color: #42A5F5!important
+    color: #fff;
+    background-color: #42A5F5
 }
 .sca-dark .red.btn-round {
     background-color: transparent;
@@ -572,7 +572,7 @@ a {
     color: #eee;
 }
 .sca-dark section thead input {
-    background-color: transparent!important;
+    background-color: transparent;
 }
 .sca-dark .highlight {
     color: #474747
@@ -581,7 +581,7 @@ a {
     color: #fff;
 }
 .sca-dark .work-list-tabs {
-    border: 1px #1f2731 solid !important;
+    border: 1px #1f2731 solid ;
     background-color: #262e39;
 }
 .sca-dark .light_greys {
@@ -640,7 +640,7 @@ a {
     background-color: #1f2731;
 }
 .sca-dark .bluehl {
-    background-color: #01579b !important;
+    background-color: #01579b ;
     border-top: 2px solid #01579b;
     border-bottom: 5px solid #01579b;
 }
@@ -660,7 +660,7 @@ a {
     background-color: #25444a
 }
 .sca-dark .tealhl {
-    background-color: #25444a !important;
+    background-color: #25444a ;
     border-top: 2px solid #25444a;
     border-bottom: 5px solid #25444a;
 }
@@ -668,31 +668,31 @@ a {
     background-color: #B71C1C
 }
 .sca-dark .redlhl {
-    background-color: #B71C1C !important;
+    background-color: #B71C1C ;
     border-top: 2px solid #B71C1C;
     border-bottom: 2px solid #B71C1C;
 }
 .sca-dark .morebuttons {
     color: #00a6e5;
-    background-color: transparent!important;
+    background-color: transparent;
 }
 .sca-dark .ta-toolbar .btn-group button,
 sca-dark .pull-left.follow-up {
-    color: #3c3d48!important
+    color: #3c3d48
 }
 .sca-dark .cyan.darken-2.iconbase {
-    background-color: transparent!important;
+    background-color: transparent;
     color: #0097a7;
 }
 .sca-dark .cyan.darken-2.iconbase:hover {
-    background-color: transparent!important;
+    background-color: transparent;
     color: #fff;
 }
 .sca-dark .table tr.clickable-row:hover {
-    background-color: #262e39 !important;
+    background-color: #262e39 ;
 }
 .sca-dark .table tr.clickable-row td {
-    border-top: 1px solid #262e39 !important
+    border-top: 1px solid #262e39 
 }
 .sca-dark .table-title {
     color: #eee
@@ -723,9 +723,9 @@ sca-dark .pull-left.follow-up {
     color: #3f51b5;
     background-color: transparent;
 }
-.sca-dark .loading-merges.blue.darken-1 {background-color:#00a6e5!important}
-.sca-dark .loading-merges.green {background-color:rgb(50, 174, 26)!important}
-.sca-dark .loading-merges.amber {background-color:rgb(255, 202, 40)!important; color:#fff!important}
+.sca-dark .loading-merges.blue.darken-1 {background-color:#00a6e5}
+.sca-dark .loading-merges.green {background-color:rgb(50, 174, 26)}
+.sca-dark .loading-merges.amber {background-color:rgb(255, 202, 40); color:#fff}
 
 .sca-dark .scroll-if-height::-webkit-scrollbar{
     width: 7px;
@@ -762,7 +762,7 @@ sca-dark .pull-left.follow-up {
 .sca-dark .scroll-if-height::-webkit-scrollbar-corner{
     background: transparent;
 }
-.sca-dark .task-detail div{color:#fff!important}
+.sca-dark .task-detail div{color:#fff}
 
 
 /* header alert fix */
@@ -802,8 +802,8 @@ sca-dark .pull-left.follow-up {
 .sca-dark .navigation-link.green.darken-1.classify,
 .sca-dark .navigation-link.pink1.darken-2.review,
 .sca-dark .create-new-concept{
-    border-top: 1px #1f2731 solid !important;
-    border-right: 1px #1f2731 solid !important;
+    border-top: 1px #1f2731 solid ;
+    border-right: 1px #1f2731 solid ;
 }
 .sca-dark .widget-toolbar.review.btn,
 .sca-dark .sub-navigation-link-list.review-nav .btn   {
@@ -881,7 +881,7 @@ background-color: #262e39;}
    /* review */
    
     .sca-dark .navigation-link.pink.darken-2.review > ul > li > a > div{
-		border-top: 1px #1f2731 solid !important;}
+		border-top: 1px #1f2731 solid ;}
  .sca-dark  ul.review-nav li ul li,
  .sca-dark  div.navigation-link.pink1.darken-2.review > ul > li > ul > li,
  .sca-dark .pink1.darken-2 .sub-navigation-link-list .btn,

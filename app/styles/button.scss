@@ -1,3 +1,86 @@
+.btn-link {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background-size: 200%;
+  transition: all .2s;
+}
+.btn-link:focus {
+  text-decoration: none;
+}
+.btn-link:hover {
+  text-decoration: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background-color: #eee;
+}
+
+.btn-default.disabled {
+  border: 1px solid #eee;
+}
+.btn-default:hover {
+  background-color: #f2f2f2;
+}
+.btn-default:active {
+  background-size: 1000%;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background-color: #ededed;
+}
+.btn-success {
+  background-size: 200%;
+}
+.btn-success:hover {
+  background-color: #4a944e;
+}
+.btn-success:active {
+  background-size: 1000%;
+  box-shadow: none;
+  background-color: #008cc1;
+}
+.btn-info:active,
+.btn-success:active {
+  -webkit-box-shadow: none;
+}
+.btn-info {
+  background-size: 200%;
+}
+.btn-info:hover {
+  background-color: #0d8aee;
+}
+.btn-info:active {
+  background-size: 1000%;
+  box-shadow: none;
+  background-color: #0c84e4;
+}
+.btn-warning {
+  background-size: 200%;
+  background-color: #ffab40;
+}
+.btn-warning:hover {
+  background-color: #ffa026;
+}
+.btn-warning:active {
+  background-size: 1000%;
+  box-shadow: none;
+  background-color: #ff9b1c;
+}
+.btn-danger:active,
+.btn-warning:active {
+  -webkit-box-shadow: none;
+}
+.btn-danger {
+  background-size: 200%;
+  background-color: #e92848;
+}
+.btn-danger:hover {
+  background-color: #f32c1e;
+}
+.btn-danger:active {
+  background-size: 1000%;
+  box-shadow: none;
+  background-color: #f22314;
+}
+
 .btn-group-vertical > .btn-group:after,
 .btn-toolbar:after,
 .card .card-header {
@@ -438,7 +521,7 @@ textarea {
  .addButton.btn-round {
      width: 20px;
      height: 20px;
-     font-size: 14px !important;
+     font-size: 14px ;
      line-height: 20px;
      position: relative;
  }
@@ -461,24 +544,24 @@ textarea {
  .primitive-buttons[disabled],
  .primitive-buttons:focus,
  .primitive-buttons:active {
-     padding: 0px!important;
-     background-color: transparent!important;
+     padding: 0px;
+     background-color: transparent;
  }
  button.fsn-title-button {
      width: 100%;
-     padding-top: 7px!important;
+     padding-top: 7px;
  }
  .editpanel .darkbuttons {
      font-size: 20px;
-     padding: 10px 10px 5px 3px !important;
-     box-shadow: none !important;
-     line-height: 1.8 !important;
+     padding: 10px 10px 5px 3px ;
+     box-shadow: none ;
+     line-height: 1.8 ;
  }
  .editpanel .icon-color {
      width: 35px;
      height: 35px;
-     font-size: 20px !important;
-     line-height: 35px !important;
+     font-size: 20px ;
+     line-height: 35px ;
  }
  .editpanel .btn:hover {
      box-shadow: none;
@@ -486,17 +569,17 @@ textarea {
  .editbuttons {
      font-size: 14px;
      padding: 0px 2px;
-     box-shadow: none !important;
+     box-shadow: none ;
  }
  .edits button {
      font-size: 14px;
      padding: 5px 4px;
-     box-shadow: none !important;
+     box-shadow: none ;
  }
  .morebuttons {
      font-size: 20px;
-     box-shadow: none !important;
-     margin-right: 0px!important;
+     box-shadow: none ;
+     margin-right: 0px;
  }
  .task-details .btn {
      padding: 0px;
@@ -512,7 +595,7 @@ textarea {
      margin-bottom: 10px;
      text-transform: none;
      color: #fff;
-     text-align: center!important;
+     text-align: center;
  }
  .task-details .iconbase,
  .inactivation-button-modal .iconbase {
@@ -541,7 +624,7 @@ textarea {
  }
  .button-nav .review.btn-default[disabled],
  .button-nav .btn-default[disabled] {
-     background-color: #424249!important;
+     background-color: #424249;
      color: #76747c;
      border-bottom: 1px #76747c solid;
  }
@@ -569,84 +652,84 @@ textarea {
      font-weight: 500
  }
  .btn-default .iconbase[disabled] {
-     background-color: #d8d8d8 !important;
-     border-color: #d8d8d8 !important;
-     color: #737373 !important;
+     background-color: #d8d8d8 ;
+     border-color: #d8d8d8 ;
+     color: #737373 ;
  }
  .description .form-control[disabled] {
-     cursor: default!important;
-     overflow: hidden!important;
+     cursor: default;
+     overflow: hidden;
      max-height: 60px;
      height: auto;
-     word-wrap: break-word!important;
+     word-wrap: break-word;
  }
- <!--.review-columns {
+.review-columns {
      background-color: #f2f2f2;
-     border-top-color: #e3e3e3!important;
+     border-top-color: #e3e3e3;
  }
- --> .indicator_grey {
-     background-color: #f2f2f2!important;
-     color: #666!important;
+.indicator_grey {
+     background-color: #f2f2f2;
+     color: #666;
  }
  .indicator_grey:hover {
-     background-color: #dddddd!important;
-     color: #666!important;
+     background-color: #dddddd;
+     color: #666;
  }
  .indicator_green {
-     background-color: #03b18a!important;
-     color: #fff!important;
+     background-color: #03b18a;
+     color: #fff;
  }
  .indicator_green:hover {
-     background-color: #66BB6A!important;
-     color: #fff!important;
+     background-color: #66BB6A;
+     color: #fff;
  }
  .indicator_red {
-     background-color: #EF5350!important;
+     background-color: #EF5350;
      color: #fff;
  }
  .indicator_red:hover {
-     background-color: #d44a47!important;
+     background-color: #d44a47;
      color: #fff;
  }
  .indicator_grey.indicator_grey {
-     background-color: #f2f2f2!important;
-     color: #666!important;
+     background-color: #f2f2f2;
+     color: #666;
  }
  .indicator_grey.indicator_grey:hover {
-     background-color: #dddddd!important;
-     color: #666!important;
+     background-color: #dddddd;
+     color: #666;
  }
  .indicator_grey.indicator_red {
-     background-color: #f2f2f2!important;
-     color: #666!important;
+     background-color: #f2f2f2;
+     color: #666;
  }
  .indicator_grey.indicator_red:hover {
-     background-color: #dddddd!important;
-     color: #666!important;
+     background-color: #dddddd;
+     color: #666;
  }
  .indicator_grey.indicator_grey {
-     background-color: #f2f2f2!important;
-     color: #666!important;
+     background-color: #f2f2f2;
+     color: #666;
  }
  .indicator_grey.indicator_grey:hover {
-     background-color: #dddddd!important;
-     color: #666!important;
+     background-color: #dddddd;
+     color: #666;
  }
  .indicator_grey.indicator_amber {
-     background-color: #f2f2f2!important;
-     color: #666!important;
+     background-color: #f2f2f2;
+     color: #666;
  }
  .indicator_grey.indicator_amber:hover {
-     background-color: #dddddd!important;
-     color: #666!important;
+     background-color: #dddddd;
+     color: #666;
  }
  .indicator_blue {
-     background-color: #00a4e4!important;
-     color: #fff!important;
+     background-color: #00a4e4;
+     color: #fff;
  }
  .indicator_blue:hover {
-     background-color: #0d8aee!important;
-     color: #fff!important;
+     background-color: #0d8aee;
+     color: #fff;
  }
  .indicator_amber {
      background-color: #ffca28;
@@ -657,8 +740,8 @@ textarea {
      color: #fff;
  }
  .tasks-bubble {
-     background-color: #00a4e4!important;
-     color: #fff!important;
+     background-color: #00a4e4;
+     color: #fff;
  }
  .message_validation_COMPLETED::before {
      content: "Validation successfully completed";
@@ -739,8 +822,8 @@ textarea {
  .btn-default:hover,
  .btn-default:visited,
  .btn-default {
-     outline-offset: 0px!important;
-     box-shadow: none!important;
+     outline-offset: 0px;
+     box-shadow: none;
  }
  .btn-default.blue:hover,
  .btn-default.blue:active {
@@ -768,10 +851,10 @@ textarea {
  }
  button.tooltips-left.normal-case span,
  button.tooltips-right.normal-case span {
-     text-transform: none!important
+     text-transform: none
  }
  .tab-pane .btn-round.btn[disabled] {
-     pointer-events: visibleFill!important;
+     pointer-events: visibleFill;
      opacity: 1.0;
  }
  .tab-pane .btn-round.btn[disabled] {
@@ -788,8 +871,8 @@ textarea {
  .more-pager:hover,
  .more-pager:focus,
  .more-pager:active {
-     background-color: transparent!important;
-     box-shadow: none!important
+     background-color: transparent;
+     box-shadow: none
  }
 
 
