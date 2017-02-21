@@ -457,6 +457,8 @@ select {
 .editing-form .sourcename textarea {
     width: 80% ;
     float: left;
+	height:30px;
+	line-height:1.2;
 }
 .is_a .drag-button-width {
     background-color: #ffffdb ;
@@ -1199,7 +1201,7 @@ button-link .bluehl .grey.darken-3 {
 .def_PRIMITIVE [type=text].form-control[disabled], 
 .def_PRIMITIVE [type=text].form-control[readonly]
  {     font-size: 11px;
-
+height:30px;
     background-color: #b7dbff ;
     color: #474747 ;
 	    box-shadow: none;
@@ -1214,6 +1216,7 @@ button-link .bluehl .grey.darken-3 {
     background-color: #dbdbff ;
     color: #474747 ;
 	font-size: 11px;
+	height:30px;
 }
 .sidebar-tabs.nav > li > a {
     line-height: 35px;

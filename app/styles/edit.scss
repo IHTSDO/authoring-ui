@@ -104,10 +104,7 @@ button.widget-toolbar {
     margin: 0;
     padding: 0;
 }
-.model-buttons-toggle {
-    padding: 2px 4px;
-    font-size: 11px
-}
+
 /*disabled buttons*/
 
 .classification-btn .btn-default[disabled] {
@@ -300,8 +297,8 @@ h1 {
     .editing-form button,
     .editing-form .btn {
         border: 0px;
-        font-size: 15px;
-        padding: 1px 4px;
+        font-size: 14px;
+        padding: 1px 1px;
         line-height: 1.346;
     }
     .editing-form input,

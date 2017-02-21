@@ -1938,13 +1938,15 @@ textarea {
 [type=password].form-control,
 [type=tel].form-control,
 [type=text].form-control {
-  padding: 0;
+  padding: 2px 4px;
   border: none;
   border-radius: 0;
   -webkit-appearance: none;
   -webkit-box-shadow: inset 0 -1px 0 #ddd;
   box-shadow: inset 0 -1px 0 #ddd;
-  font-size: 13px;
+  font-size: 11px;
+  line-height:1.2;
+  font-weight:normal;
 }
 input.form-control,
 input[type=email],

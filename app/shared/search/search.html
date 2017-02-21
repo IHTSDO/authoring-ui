@@ -23,7 +23,7 @@
              ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button ng-show="searchStr" class="btn btn-default md md-close dark-fix" ng-click="clearSearch()"
+      <button ng-show="searchStr" class="btn btn-default md md-close light-button" ng-click="clearSearch()"
               style="background: transparent"></button>
     </div>
     <!--  Removed pending design and reuqirements discussion
@@ -31,13 +31,13 @@
           <select ng-options="id as name for (id, name) in dialects" ng-model="selectedDialect"></select>
       </div>-->
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right dark-fix "
+      <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right light-button "
               ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0"
               style="background: transparent">
         <span>View Matching Terms</span>
       </button>
       <button
-        class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right dark-fix"
+        class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right light-button"
         ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0"
         style="background: transparent">
         <span>Group by Concept</span>
@@ -108,7 +108,7 @@
     <div ng-repeat="result in results">
       <div class="row">
         <div class="col-md-4 no-padding text-muted" ng-if="!userOptions.groupByConcept">
-          <div class="p-5 white-text wordbreak">{{result.term}}</div>
+          <div class="p-5 white-text light-button wordbreak">{{result.term}}</div>
         </div>
         <div class=" col-md-1 no-padding">
           <div class="p-t-5">
@@ -169,7 +169,7 @@
   </div>
   <!-- load more button -->
   <div class="col-md-12 m-t-10">
-    <button ng-show="loadPerformed" class="btn btn-default classify col-md-12" ng-click="loadMore()"
+    <button ng-show="loadPerformed" class="btn btn-default classify light-button col-md-12" ng-click="loadMore()"
             ng-disabled="!loadMoreEnabled">
       <span ng-if="loadMoreEnabled" class="button-link ">Load Next {{resultsSize}}</span>
       <span ng-if="!loadMoreEnabled ">End of Results</span>
