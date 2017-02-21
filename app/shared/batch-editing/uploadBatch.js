@@ -11,6 +11,8 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
         
          var conceptPromises = [];
         
+         $scope.isBatchPopulated = batchEditingService.getBatchConcepts().length === 0;
+        
          $scope.dlcDialog = (function (data, fileName) {
             var a = document.createElement('a');
             document.body.appendChild(a);
