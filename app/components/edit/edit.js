@@ -1366,10 +1366,10 @@ angular.module('singleConceptAuthoringApp.edit', [
       },
       {
         filterDelay: 50,
-        total: $scope.templates ? $scope.templates.length : 0, // length of data
+        total: $scope.innerTemplates ? $scope.innerTemplates.length : 0, // length of data
         getData: function ($defer, params) {
           // TODO support paging and filtering
-          var data = params.sorting() ? $filter('orderBy')($scope.templates, params.orderBy()) : $scope.templates;
+          var data = params.sorting() ? $filter('orderBy')($scope.innerTemplates, params.orderBy()) : $scope.innerTemplates;
           $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         }
       }
@@ -1382,9 +1382,35 @@ angular.module('singleConceptAuthoringApp.edit', [
         $scope.createConcept(false);
       });
     };
+    
+    $scope.selectFocusForTemplate = function(concept){
+        console.log(concept.concept);
+        templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
+              $scope.innerTemplates = templates;
+              $scope.templateTableParams.reload();
+            });
+        }
+    
     $scope.clearTemplate = function () {
       templateService.selectTemplate(null);
     };
+    
+    $scope.getConceptsForTypeahead = function (searchStr) {
+            return snowowlService.findConceptsForQuery($routeParams.projectKey, $routeParams.taskKey, searchStr, 0, 20, null).then(function (response) {
+
+              // remove duplicates
+              for (var i = 0; i < response.length; i++) {
+                for (var j = response.length - 1; j > i; j--) {
+                  if (response[j].concept.conceptId === response[i].concept.conceptId) {
+                    response.splice(j, 1);
+                    j--;
+                  }
+                }
+              }
+
+              return response;
+            });
+          };
 
     /////////////////////////////
     // Sidebar Menu Controls
@@ -1574,6 +1600,7 @@ angular.module('singleConceptAuthoringApp.edit', [
         if(!metadataService.isTemplatesEnabled()){
           templateService.getTemplates().then(function (templates) {
             $scope.templates = templates;
+            $scope.innerTemplates = $scope.templates
             angular.forEach($scope.templates, function (template) {
               template.name = template.name;
               template.version = template.version;
