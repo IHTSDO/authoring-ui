@@ -293,20 +293,20 @@ h6 {
   font-size: 60px;
 }
 .size-small {
-  font-size: 75% !important;
+  font-size: 75% ;
 }
 .size-normal {
-  font-size: 100% !important;
+  font-size: 100% ;
 }
 .size-medium {
-  font-size: 125% !important;
+  font-size: 125% ;
 }
 .size-big,
 .size-large {
-  font-size: 150% !important;
+  font-size: 150% ;
 }
 .size-huge {
-  font-size: 200% !important;
+  font-size: 200% ;
 }
 .inherit {
   font: inherit;
@@ -743,28 +743,28 @@ strong {
 .pad-b-only,
 .pad-l-only,
 .pad-t-only {
-  padding-right: 0 !important;
+  padding-right: 0 ;
 }
 .no-pad-bt,
 .no-pad-tb,
 .pad-l-only,
 .pad-r-only,
 .pad-t-only {
-  padding-bottom: 0 !important;
+  padding-bottom: 0 ;
 }
 .no-pad-bt,
 .no-pad-tb,
 .pad-b-only,
 .pad-l-only,
 .pad-r-only {
-  padding-top: 0 !important;
+  padding-top: 0 ;
 }
 .no-pad-lr,
 .no-pad-rl,
 .pad-b-only,
 .pad-r-only,
 .pad-t-only {
-  padding-left: 0 !important;
+  padding-left: 0 ;
 }
 .m-5 {
   margin: 5px;
@@ -1124,38 +1124,38 @@ strong {
 .m-t-only,
 .no-m-lr,
 .no-m-rl {
-  margin-right: 0 !important;
+  margin-right: 0 ;
 }
 .m-l-only,
 .m-r-only,
 .m-t-only,
 .no-m-bt,
 .no-m-tb {
-  margin-bottom: 0 !important;
+  margin-bottom: 0 ;
 }
 .m-b-only,
 .m-l-only,
 .m-r-only,
 .no-m-bt,
 .no-m-tb {
-  margin-top: 0 !important;
+  margin-top: 0 ;
 }
 .m-b-only,
 .m-r-only,
 .m-t-only,
 .no-m-lr,
 .no-m-rl {
-  margin-left: 0 !important;
+  margin-left: 0 ;
 }
 .no-margin {
-  margin: 0 !important;
+  margin: 0 ;
 }
 .m-auto {
   margin-left: auto;
   margin-right: auto;
 }
 .no-padding {
-  padding: 0 !important;
+  padding: 0 ;
 }
 
 /* end margins and padding */
@@ -1163,33 +1163,33 @@ strong {
 /*borders */
 
 .no-border {
-  border: none !important;
+  border: none ;
 }
 .no-border-t {
-  border-top: none !important;
+  border-top: none ;
 }
 .no-border-l,
 .no-border-lr,
 .no-border-rl {
-  border-left: none !important;
+  border-left: none ;
 }
 .no-border-bt,
 .no-border-tb {
-  border-top: none !important;
+  border-top: none ;
 }
 .no-border-lt,
 .no-border-tl {
-  border-top: none !important;
-  border-left: none !important;
+  border-top: none ;
+  border-left: none ;
 }
 .no-border-rt,
 .no-border-tr {
-  border-top: none !important;
+  border-top: none ;
 }
 
 .border-dashed,
 .border-dotted {
-  border-style: dashed !important;
+  border-style: dashed ;
 }
 .border-black {
   border-color: #000;

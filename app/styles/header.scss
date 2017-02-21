@@ -40,7 +40,7 @@
      background-color: #5e5e5e
  }
  ul.dashboard-link-list li ul li a {
-     color: #fff!important;
+     color: #fff;
  }
  ul.dashboard-link-list li ul {
      padding: 0;
@@ -48,14 +48,14 @@
      top: 40px;
     left: -29px;
      width: 120px;
-     font-size: 13px!important;
+     font-size: 13px;
      -webkit-box-shadow: none;
      -moz-box-shadow: none;
      box-shadow: none;
      display: none;
      opacity: 0;
      visibility: hidden;
-     color: #fff!important;
+     color: #fff;
      -webkit-transiton: opacity 0.2s;
      -moz-transition: opacity 0.2s;
      -ms-transition: opacity 0.2s;
@@ -89,28 +89,25 @@
      visibility: visible;
  }
  a.home-link {
-     color: #4fc3f7!important;
+     color: #4fc3f7;
  }
  .alert-danger .md-warning {
-     background-color: transparent!important;
+     background-color: transparent;
      font-size: 32px;
  }
  .header-nav-button {
-    width: 30px!important;
-    height: 30px!important;
-    line-height: 30px!important;
-    font-size: 18px!important;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 18px;
     margin-top: 15px;
 	margin-left:5px;
 }
-.header-nav-button.purple.lighten-1{background-color:8c7ab8!important}
-
-.header-nav-button.purple.lighten-1:hover{background-color:57447e!important}
 .header-nav-button.indicator_green {
-    background-color: #4CAF50 !important;
-    color: #fff !important;
+    background-color: #4CAF50 ;
+    color: #fff ;
 }
 .header-nav-button.indicator_green:hover {
-    background-color: #409dc7!important;
-    color: #fff !important;
+    background-color: #409dc7;
+    color: #fff ;
 }

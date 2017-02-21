@@ -9,7 +9,7 @@
 }
 
  .alert-danger .md-warning {
-     background-color: transparent!important;
+     background-color: transparent;
      font-size: 32px;
  }
 /* notifications */
@@ -19,7 +19,7 @@
   }
 .modal-dialog {
 
-    top: 63px!important;
+    top: 63px;
 }
   .loader {
     font-size: 10px;
@@ -108,28 +108,28 @@
   }
 
   .sca-drag-target, .sca-drag-hover {
-    background-color: transparent !important;
-    border: none !important;
+    background-color: transparent ;
+    border: none ;
   }
 
   .sca-drag-hover textarea {
 
-    border: 1px dashed #fff !important;
-    background: #00a6e5 !important;
-    color: #fff !important;
+    border: 1px dashed #fff ;
+    background: #00a6e5 ;
+    color: #fff ;
   }
 
   .sca-drag-target textarea {
 
-    border: 1px dashed #9f9f9f !important;
-    background: #dedede !important;
+    border: 1px dashed #9f9f9f ;
+    background: #dedede ;
   }
 
   .sca-relgroup-drag-target, .sca-relgroup-drag-hover {
 
-    border: 1px dashed #fff !important;
-    background: #00a6e5 !important;
-    color: #fff !important;
+    border: 1px dashed #fff ;
+    background: #00a6e5 ;
+    color: #fff ;
   }
 
   .sca-drag-handle {
@@ -142,7 +142,6 @@
 
   .wordbreak {
     word-wrap: break-word;
-	display:block!important;
 	line-height:13px;
   }
   
@@ -158,7 +157,7 @@
 /* warnings */
 .text-center, .text-center p {text-align:center; margin-bottom:0px; }
 .alert.alert-danger .alert-text {font-size:13px; font-weight:400; margin-top:10px;}
-.alert-danger .md-warning{background-color:transparent!important; font-size:32px;}
+.alert-danger .md-warning{background-color:transparent; font-size:32px;}
 
 /* CRS Translations */
 .fa.CHANGE_RETIRE_CONCEPT:before,

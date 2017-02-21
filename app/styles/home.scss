@@ -1,89 +1,121 @@
-  .feedback-icon-link{min-width:150px;}
- .feedback-message-date {letter-spacing:-.5px;}
-.blue.green{background-color: #42A5F5!important;}
+.feedback-icon-link {
+	min-width: 150px;
+}
+
+.feedback-message-date {
+	letter-spacing: -.5px;
+}
+
+.blue.green {
+	background-color: #42A5F5 ;
+}
+
 .dashboard-links {
-  font-family: 'Roboto', sans-serif;
-  box-shadow: none;
-  text-align: left;
-  border: none;
-  box-shadow: none;
-  i {
-    font-size: 20px;
-    line-height: 23px;
-    margin-right: 5px;
-    color: #BEBEBE;
-  }
-  &:hover {
-    box-shadow: none;
-    background-color: #3b3b3b;
-  }
-  &:after {
-    
-    color: #4fc3f7;
-    display: inline-block;
-    font: normal normal normal 14px/1 'Material Design Iconic Font';
-    speak: none;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    position: absolute;
-    right: 5px;
-    top: 18px;
-    font-size: 22px;
-  }
+	font-family: 'Roboto', sans-serif;
+	box-shadow: none;
+	text-align: left;
+	border: none;
+	box-shadow: none;
+}
+
+.dashboard-links i {
+	font-size: 20px;
+	line-height: 23px;
+	margin-right: 5px;
+	color: #BEBEBE;
+}
+
+.dashboard-links:hover {
+	box-shadow: none;
+	background-color: #3b3b3b;
+}
+
+.dashboard-links:after {
+	color: #4fc3f7;
+	display: inline-block;
+	font: normal normal normal 14px/1 'Material Design Iconic Font';
+	speak: none;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	position: absolute;
+	right: 5px;
+	top: 18px;
+	font-size: 22px;
 }
 
 .btn-reg {
-  display: inline-block;
-  margin-bottom: 0;
-  font-weight: 400;
-  text-align: center;
-  vertical-align: middle;
-  touch-action: manipulation;
-  cursor: pointer;
-  white-space: nowrap;
-  padding: 6px 12px;
-  line-height: 1.846;
-  border-radius: 0px;
-  -webkit-user-select: none;
+	display: inline-block;
+	margin-bottom: 0;
+	font-weight: 400;
+	text-align: center;
+	vertical-align: middle;
+	touch-action: manipulation;
+	cursor: pointer;
+	white-space: nowrap;
+	padding: 6px 12px;
+	line-height: 1.846;
+	border-radius: 0px;
+	-webkit-user-select: none;
 }
 
-.modal-body .ta-scroll-window .ta-bind{min-height:150px;max-height:150px;box-shadow:none!important; outline:none; border: 1px #ddd solid}
-.timeline-heading ol{
-    margin-top: 0;
-    margin-bottom: 10px;
-	-webkit-padding-start: 0px;
-	       margin-left: 20px;
+.modal-body .ta-scroll-window .ta-bind {
+	min-height: 150px;
+	max-height: 150px;
+	box-shadow: none ;
+	outline: none;
+	border: 1px #ddd solid;
 }
-.feedback ol
-{
-    margin-top: 0;
-    margin-bottom: 10px;
+
+.timeline-heading ol {
+	margin-top: 0;
+	margin-bottom: 10px;
 	-webkit-padding-start: 0px;
-	       margin-left: 15px;
+	margin-left: 20px;
 }
+
+.feedback ol {
+	margin-top: 0;
+	margin-bottom: 10px;
+	-webkit-padding-start: 0px;
+	margin-left: 15px;
+}
+
 .timeline-heading ul, .feedback-chat ul {
-    list-style: none; /* Remove list bullets */
-    padding: 0;
-    margin: 0;
-	    margin-left: 0px;
+	list-style: none;
+  /* Remove list bullets */
+	padding: 0;
+	margin: 0;
+	margin-left: 0px;
 }
 
-.timeline-heading ul li:before, .feedback-chat ul li:before, {
-   content: "•"; /* Insert content that looks like bullets */
-    padding-right: 4px;
-    color: #009cd7; 
-	    font-size: 28px;
-   line-height:14px;
-    vertical-align: middle;/* Or a color you prefer */}
+.timeline-heading ul li:before, .feedback-chat ul li:before {
+	content: "•";
+  /* Insert content that looks like bullets */
+	padding-right: 4px;
+	color: #009cd7;
+	font-size: 28px;
+	line-height: 14px;
+	vertical-align: middle;
+  /* Or a color you prefer */;
+}
+
 .timeline-heading li, .feedback-chat li {
-    display: list-item;
-    text-align: -webkit-match-parent;
-	  line-height:14px;
+	display: list-item;
+	text-align: -webkit-match-parent;
+	line-height: 14px;
 }
 
-.timeline-heading ul ul, 
+.timeline-heading ul ul,
 .timeline-heading ol ul {
-    list-style-type: circle;
+	list-style-type: circle;
 }
-.no-shadows:focus, .modal-body .ta-scroll-window .ta-bind:focus, .modal-body .ta-scroll-window .ng-touched{box-shadow:none!important; outline:none!important; border: 1px #fff solid !important;}
-.sca-colours .dashboard-links:hover{background-color:#121212!important}
+
+.no-shadows:focus, .modal-body .ta-scroll-window .ta-bind:focus, .modal-body .ta-scroll-window .ng-touched {
+	box-shadow: none ;
+	outline: none ;
+	border: 1px #fff solid ;
+}
+
+.sca-colours .dashboard-links:hover {
+	background-color: #121212 ;
+}
