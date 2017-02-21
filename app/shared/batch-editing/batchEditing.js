@@ -549,32 +549,39 @@ angular.module('singleConceptAuthoringApp')
                     // revalidate for newly introduced warnings or new concept id reassignment
                     getValidationResultForConcept(savedConcept).then(function (newValidation) {
                       savedConcept.validation = newValidation;
+                      if(newValidation.hasWarnings){
+                          // replace the original concept to ensure table update
+                          applyNgTableSortingParams(savedConcept);
 
-                      // replace the original concept to ensure table update
-                      applyNgTableSortingParams(savedConcept);
+                          templateService.applyTemplateToConcept(savedConcept, template).then(function () {
 
-                      templateService.applyTemplateToConcept(savedConcept, template).then(function () {
+                            templateService.storeTemplateForConcept(scope.task.projectKey, savedConcept.conceptId, template);
+                            templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, originalConcept.fsn, template);
 
-                        templateService.storeTemplateForConcept(scope.task.projectKey, savedConcept.conceptId, template);
-                        templateService.logTemplateConceptSave(scope.task.projectKey, savedConcept.conceptId, originalConcept.fsn, template);
-
-                        $rootScope.$broadcast('batchEditing.conceptChange', {
-                          concept: originalConcept,
-                          isModified: false,
-                          previousConceptId: originalConceptId
-                        });
-                        batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
-                          savedConcept.tableAction = null;
-                          scope.batchTableParams.reload();
+                            $rootScope.$broadcast('batchEditing.conceptChange', {
+                              concept: originalConcept,
+                              isModified: false,
+                              previousConceptId: originalConceptId
+                            });
+                            batchEditingService.updateBatchConcept(savedConcept, originalConceptId).then(function () {
+                              savedConcept.tableAction = null;
+                              scope.batchTableParams.reload();
+                              deferred.resolve(savedConcept);
+                            }, function (error) {
+                              notificationService.sendWarning('Concept saved, but batch failed to update: ' + error);
+                              deferred.resolve(savedConcept);
+                            })
+                          }, function (error) {
+                            notificationService.sendError('Failed to apply template: ' + error);
+                            deferred.resolve(savedConcept);
+                          })
+                      }
+                      else{
+                          scope.removeConcept(originalConcept);
                           deferred.resolve(savedConcept);
-                        }, function (error) {
-                          notificationService.sendWarning('Concept saved, but batch failed to update: ' + error);
-                          deferred.resolve(savedConcept);
-                        })
-                      }, function (error) {
-                        notificationService.sendError('Failed to apply template: ' + error);
-                        deferred.resolve(savedConcept);
-                      })
+                      }
+
+                      
 
                     }, function (error) {
                       notificationService.sendError('Error saving concept: ' + error);
