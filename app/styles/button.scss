@@ -440,10 +440,10 @@ fieldset[disabled] .btn-primary {
   background-image: none;
 }
 .btn-round {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   font-size: 14px;
-  line-height: 30px;
+  line-height: 24px;
   position: relative;
 }
 .btn-round-sm {
@@ -576,11 +576,7 @@ textarea {
      padding: 0px 2px;
      box-shadow: none ;
  }
- .edits button {
-     font-size: 14px;
-     padding: 5px 4px;
-     box-shadow: none ;
- }
+
  .morebuttons {
      font-size: 20px;
      box-shadow: none ;
@@ -893,4 +889,20 @@ textarea {
 
 /*button classes*/
 
+.dark-button {background-color: rgba(0, 0, 0, 0.2); }
+.dark-button:hover,
+.dark-button:active,
+.dark-button:focus
+ {background-color: rgba(0, 0, 0, 0.4); }
+ 
+ .light-button[disabled],
+.light-button:hover,
+.light-button:active,
+.light-button:focus,
+.light-button
+{color:#666}
 
+.model-buttons-toggle {
+    padding: 2px 4px;
+    font-size: 11px
+}
