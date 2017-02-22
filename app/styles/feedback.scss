@@ -12,8 +12,14 @@
     transition: 240ms;
 }
 /* new concept */
-.new-concept .grey.darken-4{background-color: #b3e5fc; color:#201f23}
-  .new-concept .concept-headers:first-child{padding-top:3px}
+
+.new-concept .grey.darken-4 {
+    background-color: #b3e5fc;
+    color: #201f23
+}
+.new-concept .concept-headers:first-child {
+    padding-top: 3px
+}
 /*feedback window filter */
 
 .concept-filter {
@@ -21,7 +27,7 @@
     margin-left: -5px;
 }
 .concept-filter input {
-    min-height: 23px ;
+    min-height: 23px;
 }
 .concept-filter input {
     font-weight: normal;
@@ -35,26 +41,26 @@
 }
 .concept-filter input[placeholder] {
     color: #666;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif ;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 ::-webkit-input-placeholder {
     /* WebKit, Blink, Edge */
     
     color: #666;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif ;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 :-moz-placeholder {
     /* Mozilla Firefox 4 to 18 */
     
     color: #666;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif ;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     opacity: 1;
 }
 ::-moz-placeholder {
     /* Mozilla Firefox 19+ */
     
     color: #666;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif ;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     opacity: 1;
 }
 /*feedback window spacing */
@@ -74,7 +80,7 @@
 .follow-up {
     font-size: 12px;
     padding-top: 3px;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif ;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .follow-up-right .btn {
     padding: 3px 8px;
@@ -131,7 +137,6 @@
     line-height: 17px;
     text-align: center;
 }
-
 .feedback .col-checkbox {
     width: 10%;
 }
@@ -155,7 +160,7 @@ ul.sidebar-tabs {
 .add-shadow {
     box-shadow: 0 4px 5px -2px rgba(0, 0, 0, 0.2), 0 2px 16px 1px rgba(0, 0, 0, 0.10);
     background-color: #fff;
-    padding: 5px ;
+    padding: 5px;
     display: inline-block;
     height: 100%;
     min-height: 500px;
@@ -218,7 +223,7 @@ section thead input {
 }
 .feedback .table > thead > tr > th {
     padding: 4px 2px;
-    vertical-align: middle ;
+    vertical-align: middle;
     line-height: 12px
 }
 .feedback-view .table > thead > tr > th,
@@ -226,7 +231,7 @@ section thead input {
     padding: 5px;
     line-height: 12px;
     border-top: 1px solid #F0F0F0;
-    vertical-align: middle ;
+    vertical-align: middle;
     border-bottom: 2px solid #F0F0F0;
     margin: 5px;
 }
@@ -236,7 +241,6 @@ section thead input {
     vertical-align: middle;
     padding: 5px;
 }
-
 .ta-scroll-window > .ta-bind {
     min-height: 250px;
 }
@@ -589,7 +593,6 @@ strong {
         padding: 1px 6.5px;
     }
 }
-
 .worklist {
     background-color: #fff;
     border: #f5f5f5 1px solid
@@ -632,4 +635,32 @@ strong {
 }
 .tab-content {
     font-size: 12px;
+}
+.col-md-12.feedback-area {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 25px;
+}
+.feedback ol {
+    margin-top: 0;
+    margin-bottom: 1px;
+    -webkit-padding-start: 0px;
+    margin-left: 11px;
+}
+.switch input {
+    min-height: 25px !important;
+}
+.feedback-window .btn-default {
+    color: #666
+}
+.theme-blue .feedback-window .ta-bind {
+    box-shadow: none;
+}
+.feedback-window input[type=checkbox]:focus,
+.feedback-window input[type=radio]:focus,
+.feedback-window input[type=file]:focus {
+    outline: none;
+    outline: none;
+    outline-offset: 0;
+    box-shadow: none;
 }
