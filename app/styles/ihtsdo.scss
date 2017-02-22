@@ -3706,3 +3706,31 @@ input[type=checkbox]:after {
     right: 0;
     z-index: 1070;
 }
+  .promoted-check-box {
+    color: #9B9B9B;
+    padding-top: 15px;
+  }
+
+  .Available.badge {
+    margin: 3px 3px 3px 3px;
+  }
+
+  .not_in_review {
+    background-color: #e5e5e5;
+    color: #a3a3a3;
+  }
+
+  .sca-light .not_in_review {
+    background-color: #fff;
+    color: #a3a3a3;
+  }
+
+  .not_in_review.btn-round {
+    background-color: #eeeeee;
+    color: #cdcdcd;
+  }
+
+  .btn-center {
+    margin: 0 auto;
+    list-style: none;
+  }

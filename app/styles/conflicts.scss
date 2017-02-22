@@ -1,213 +1,257 @@
- .loading{background-color:#f5f5f5; border-radius:3px;color:#1565C0; text-align:center}
-    .conflict-concept-column {
-      background-color: #3e3e42
-    }
-	.loading-merges svg {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto;
- 
-}
-.loading-merges .all-done{margin: 0 auto; width:102px; font-size:72px; font-weight:300; text-align:center}
-.loading-merges .clock{  margin: 0 auto; width:102px}
-.loading-merges{height:100vh; width:100%;  padding-top:15vh; }
-.loading-merges .successful-merge{margin: 0 auto; width:250px; font-weight:300; text-align:center;padding-top:25px}
-.loading-merges h3{text-align:center; color:#fff; font-weight:300}
-.successful-merge button{text-transform:none;font-size:18px; font-weight:300; border-radius:10px}
-.conflicts .editbuttons.fa-sitemap, 
-.conflicts .concept-headers .drag-button-width {display:none;}
-.btn[disabled].btn-round.lighten-2{color:#76747c;background-color:#424249}
-
-
-.conflicts .small-buttons {
-	padding: .45% ;
-	font-size: 13px ;
-	line-height: 13px;
-}
-.conflicts .text-center {
-	text-align: center;
-	font-size: 10px;
-	font-family: 'Roboto', sans-serif;
-}
-.conflicts-report-header {
-}
-.conflicts .small-buttons {
-	padding: 0% ;
-}
-.conflicts .button-width-plus, .conflicts .add-buttons {
-	width: 12px;
-	padding: 0px;
-	float: left;
-	height: 100%;
-	min-height: 30px;
-	font-size: 10px ;
-	margin-left: 0px;
-	margin-right: 1px;
-	color: #fff
-}
-.conflicts .editing-form .description {
-	width: 46%;
-}
-.conflicts #select-primitive-choice {
-	width: 25px
-}
-.conflicts concept-headers.col-md-6 {
-	width: 58.33333%;
-}
-.merged-version .col-md-6 {
-	width: 45%;
-}
-.conflicts .concept-title.col-md-4 {
-	width: 16.66667%;
-}
-.merged-version .concept-title.col-md-4 {
-	width: 31.33333%;
-}
-.conflicts .col-md-1.filled {
-	width: 16.66667%;
-}
-.merged-version .col-md-1.filled {
-	width: 11%;
-}
-.merged-version, .task-version {
-	border-left: 1px solid #474747;
-	-webkit-box-shadow: -5px 0px 5px -3px #3a3840;
-	box-shadow: -5px 0px 5px -3px #3a3840;
-}
-.conflicts-report .checkbox input[type=checkbox]:after, .conflicts-report .checkbox-inline input[type=checkbox]:after, .conflicts-report input[type=checkbox]:after {
-	content: "";
-	display: block;
-	width: 20px;
-	height: 20px;
-	margin-top: -2px;
-	margin-right: 5px;
-	border: 1px solid #DBDBDB;
-	border-radius: 2px;
-	transition: 240ms;
-}
-
-.conflicts .col-checkbox {
-	width: 10%;
-}
-.conflicts .col-concept {
-	width: 80%;
-}
-.conflicts .col-controls {
-	width: 10%;
-	padding-right: 0px;
-}
-.h-45 {
-	height: 45px;
-}
-.conflicts table {
-	min-height: 300px;
-}
-
-input.conflicts-search {
-	margin: 0px 4%;
-	padding: 5px 0px;
-	width: 92%;
-}
-.conflicts .btn-group, .conflicts .btn-toolbar {
-	margin-left: 0px;
-}
-.conflicts .ta-scroll-window {
-	margin-left: 0px;
-}
-.conflicts-header {
-	background-color: #fbfbfb;
-	border-top: solid 1px #ececec;
-	border-bottom: solid 1px #ececec;
-}
-.conflicts-tabs {
-	background-color: #fafafa;
-}
-.conflicts-tabs .nav-tabs ul {
-	padding: 0px;
-	box-shadow: inset 0 -2px 0 #dcdcdc ;
-	width: 100%;
-}
-.conflicts-window {
-	background-color: #E7E7E7;
-	height: 100%;
-}
-section thead input {
-	background-color: #fff;
-}
-.conflicts .col-md-9 .fsn,  .conflicts .col-md-9 .is_a textarea,  .conflicts .col-md-9 .editing-form textarea,  .conflicts .col-md-9 .description input,  .conflicts .col-md-9 .description textarea {
-	font-size: 10px
-}
-.conflicts .more-button-width {
-	width: 9px;
-	margin: 0px ;
-	padding: 0px 0px ;
-	float: left;
-	height: 100%;
-	min-height: 30px;
-	font-size: 12px ;
-	line-height: 30px;
-}
-.conflicts .drag-button-width {
-	width: 17px;
-	padding: 0% ;
-	float: left;
-	height: 100%;
-	min-height: 30px;
-	font-size: 11px ;
-	line-height: 30px;
-}
-.conflicts .fa.fa-power-off.green, .conflicts .fa.fa-power-off.red {
-	font-size: 12px
-}
-.col-xs-12.col-sm-12.col-md-12.col-lg-12.col-xl-12 {
-	padding-left: 0px;
-	padding-right: 0px;
-}
-.merged-header {
-	background-color: #ff6755
-}
-.merged-header h4, .project-header h4, .task-header h4, .conflicts-list-header h4 {
-	color: #fff;
-	font-size: 13px;
-}
-.project-header {
-	background-color: #0091d7
-}
-.task-header {
-	background-color: #00a39b
-}
-.conflicts-list-header {
-	background-color: #253a4e
-}
-.conflicts .table-full input[type=checkbox] {
-	margin: 2px 0 0;
-}
-.conflicts-list-header button {
-	background-color: transparent;
-	color: #0091d7;
-	font-size: 16px;
-	margin-top: 0px;
-	margin-right: 10px;
-	line-height: 14px;
-}
-.show-conflict-list {
-	background-color: transparent;
-	color: #fff;
-	font-size: 16px;
-	margin-top: 0px;
-	margin-right: 10px;
-	line-height: 14px;
-}
-.conflist-list-check input[type=checkbox]:after {
-	height: 18px;
-	width: 18px;
-}
-.concepts-in-conflict {
-	font-size: 12px
-}
-.concepts-in-conflict.table-full .btn-round {
-	width: 21px;
-	height: 21px;
-	font-size: 15px;
-	line-height: 21px;
-}
+ .loading {
+     background-color: #f5f5f5;
+     border-radius: 3px;
+     color: #1565C0;
+     text-align: center
+ }
+ .conflict-concept-column {
+     background-color: #3e3e42
+ }
+ .loading-merges svg {
+     width: 100px;
+     height: 100px;
+     margin: 0 auto;
+ }
+ .loading-merges .all-done {
+     margin: 0 auto;
+     width: 102px;
+     font-size: 72px;
+     font-weight: 300;
+     text-align: center
+ }
+ .loading-merges .clock {
+     margin: 0 auto;
+     width: 102px
+ }
+ .loading-merges {
+     height: 100vh;
+     width: 100%;
+     padding-top: 15vh;
+ }
+ .loading-merges .successful-merge {
+     margin: 0 auto;
+     width: 250px;
+     font-weight: 300;
+     text-align: center;
+     padding-top: 25px
+ }
+ .loading-merges h3 {
+     text-align: center;
+     color: #fff;
+     font-weight: 300
+ }
+ .successful-merge button {
+     text-transform: none;
+     font-size: 18px;
+     font-weight: 300;
+     border-radius: 10px
+ }
+ .conflicts .editbuttons.fa-sitemap,
+ .conflicts .concept-headers .drag-button-width {
+     display: none;
+ }
+ .btn[disabled].btn-round.lighten-2 {
+     color: #76747c;
+     background-color: #424249
+ }
+ .conflicts .small-buttons {
+     padding: .45%;
+     font-size: 13px;
+     line-height: 13px;
+ }
+ .conflicts .text-center {
+     text-align: center;
+     font-size: 10px;
+     font-family: 'Roboto', sans-serif;
+ }
+ .conflicts-report-header {} .conflicts .small-buttons {
+     padding: 0%;
+ }
+ .conflicts .button-width-plus,
+ .conflicts .add-buttons {
+     width: 12px;
+     padding: 0px;
+     float: left;
+     height: 100%;
+     min-height: 30px;
+     font-size: 10px;
+     margin-left: 0px;
+     margin-right: 1px;
+     color: #fff
+ }
+ .conflicts .editing-form .description {
+     width: 46%;
+ }
+ .conflicts #select-primitive-choice {
+     width: 25px
+ }
+ .conflicts concept-headers.col-md-6 {
+     width: 58.33333%;
+ }
+ .merged-version .col-md-6 {
+     width: 45%;
+ }
+ .conflicts .concept-title.col-md-4 {
+     width: 16.66667%;
+ }
+ .merged-version .concept-title.col-md-4 {
+     width: 31.33333%;
+ }
+ .conflicts .col-md-1.filled {
+     width: 16.66667%;
+ }
+ .merged-version .col-md-1.filled {
+     width: 11%;
+ }
+ .merged-version,
+ .task-version {
+     border-left: 1px solid #474747;
+     -webkit-box-shadow: -5px 0px 5px -3px #3a3840;
+     box-shadow: -5px 0px 5px -3px #3a3840;
+ }
+ .conflicts-report .checkbox input[type=checkbox]:after,
+ .conflicts-report .checkbox-inline input[type=checkbox]:after,
+ .conflicts-report input[type=checkbox]:after {
+     content: "";
+     display: block;
+     width: 20px;
+     height: 20px;
+     margin-top: -2px;
+     margin-right: 5px;
+     border: 1px solid #DBDBDB;
+     border-radius: 2px;
+     transition: 240ms;
+ }
+ .conflicts .col-checkbox {
+     width: 10%;
+ }
+ .conflicts .col-concept {
+     width: 80%;
+ }
+ .conflicts .col-controls {
+     width: 10%;
+     padding-right: 0px;
+ }
+ .h-45 {
+     height: 45px;
+ }
+ .conflicts table {
+     min-height: 300px;
+ }
+ input.conflicts-search {
+     margin: 0px 4%;
+     padding: 5px 0px;
+     width: 92%;
+ }
+ .conflicts .btn-group,
+ .conflicts .btn-toolbar {
+     margin-left: 0px;
+ }
+ .conflicts .ta-scroll-window {
+     margin-left: 0px;
+ }
+ .conflicts-header {
+     background-color: #fbfbfb;
+     border-top: solid 1px #ececec;
+     border-bottom: solid 1px #ececec;
+ }
+ .conflicts-tabs {
+     background-color: #fafafa;
+ }
+ .conflicts-tabs .nav-tabs ul {
+     padding: 0px;
+     box-shadow: inset 0 -2px 0 #dcdcdc;
+     width: 100%;
+ }
+ .conflicts-window {
+     background-color: #E7E7E7;
+     height: 100%;
+ }
+ section thead input {
+     background-color: #fff;
+ }
+ .conflicts .col-md-9 .fsn,
+ .conflicts .col-md-9 .is_a textarea,
+ .conflicts .col-md-9 .editing-form textarea,
+ .conflicts .col-md-9 .description input,
+ .conflicts .col-md-9 .description textarea {
+     font-size: 10px
+ }
+ .conflicts .more-button-width {
+     width: 9px;
+     margin: 0px;
+     padding: 0px 0px;
+     float: left;
+     height: 100%;
+     min-height: 30px;
+     font-size: 12px;
+     line-height: 30px;
+ }
+ .conflicts .drag-button-width {
+     width: 17px;
+     padding: 0%;
+     float: left;
+     height: 100%;
+     min-height: 30px;
+     font-size: 11px;
+     line-height: 30px;
+ }
+ .conflicts .fa.fa-power-off.green,
+ .conflicts .fa.fa-power-off.red {
+     font-size: 12px
+ }
+ .col-xs-12.col-sm-12.col-md-12.col-lg-12.col-xl-12 {
+     padding-left: 0px;
+     padding-right: 0px;
+ }
+ .merged-header {
+     background-color: #ff6755
+ }
+ .merged-header h4,
+ .project-header h4,
+ .task-header h4,
+ .conflicts-list-header h4 {
+     color: #fff;
+     font-size: 13px;
+ }
+ .project-header {
+     background-color: #0091d7
+ }
+ .task-header {
+     background-color: #00a39b
+ }
+ .conflicts-list-header {
+     background-color: #253a4e
+ }
+ .conflicts .table-full input[type=checkbox] {
+     margin: 2px 0 0;
+ }
+ .conflicts-list-header button {
+     background-color: transparent;
+     color: #0091d7;
+     font-size: 16px;
+     margin-top: 0px;
+     margin-right: 10px;
+     line-height: 14px;
+ }
+ .show-conflict-list {
+     background-color: transparent;
+     color: #fff;
+     font-size: 16px;
+     margin-top: 0px;
+     margin-right: 10px;
+     line-height: 14px;
+ }
+ .conflist-list-check input[type=checkbox]:after {
+     height: 18px;
+     width: 18px;
+ }
+ .concepts-in-conflict {
+     font-size: 12px
+ }
+ .concepts-in-conflict.table-full .btn-round {
+     width: 21px;
+     height: 21px;
+     font-size: 15px;
+     line-height: 21px;
+ }
