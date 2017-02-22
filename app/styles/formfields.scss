@@ -1,177 +1,169 @@
 textarea {
-  overflow: auto;
-}select {
-  text-transform: none;
+    overflow: auto;
 }
-
-
+select {
+    text-transform: none;
+}
 input[type=reset],
 input[type=submit] {
-  -webkit-appearance: button;
-  cursor: pointer;
+    -webkit-appearance: button;
+    cursor: pointer;
 }
 input[type=search] {
-  box-sizing: border-box;
-  -webkit-appearance: none;
+    box-sizing: border-box;
+    -webkit-appearance: none;
 }
-
-
 .form-control {
-  width: 100%;
-  height: 37px;
-  padding: 6px 16px;
-  border-radius: 3px;
+    width: 100%;
+    height: 37px;
+    padding: 6px 16px;
+    border-radius: 3px;
     border: 1px solid transparent;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 .form-control:focus {
-  border-color: #66afe9;
-  outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
-  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(102,175,233,0.6);
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
 .form-control::-moz-placeholder {
-  color: #bbb;
-  opacity: 1;
+    color: #bbb;
+    opacity: 1;
 }
 .form-control:-ms-input-placeholder,
 .form-control::-webkit-input-placeholder {
-  color: #bbb;
+    color: #bbb;
 }
-
 .form-control[disabled],
 .form-control[readonly] {
-  background-color: transparent;
-  opacity: 1;
+    background-color: transparent;
+    opacity: 1;
 }
 fieldset[disabled] .form-control {
-  background-color: transparent;
-  opacity: 1;
+    background-color: transparent;
+    opacity: 1;
 }
 .form-control[disabled],
 fieldset[disabled] .form-control {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 textarea.form-control {
-  height: auto;
+    height: auto;
 }
 label {
-  display: inline-block;
-  margin-bottom: 5px;
+    display: inline-block;
+    margin-bottom: 5px;
 }
-
-
 input[type=search] {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 input[type=checkbox],
 input[type=radio] {
-  margin: 4px 0 0;
-  margin-top: 1px \9;
-  line-height: normal;
+    margin: 4px 0 0;
+    margin-top: 1px \9;
+    line-height: normal;
 }
-
 input[type=file] {
-  display: block;
+    display: block;
 }
 input[type=range] {
-  display: block;
-  width: 100%;
+    display: block;
+    width: 100%;
 }
 select[multiple],
 select[size] {
-  height: auto;
+    height: auto;
 }
 input[type=checkbox]:focus,
 input[type=radio]:focus,
 input[type=file]:focus {
-  outline: dotted thin;
-  outline: -webkit-focus-ring-color auto 5px;
-  outline-offset: -2px;
+    outline: dotted thin;
+    outline: -webkit-focus-ring-color auto 5px;
+    outline-offset: -2px;
 }
-
 .form-group {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 .checkbox,
 .radio {
-  position: relative;
-  display: block;
-  margin-top: 10px;
-  margin-bottom: 10px;
+    position: relative;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .checkbox label,
 .radio label {
-  min-height: 23px;
-  font-weight: 400;
+    min-height: 23px;
+    font-weight: 400;
 }
 .checkbox input[type=checkbox],
 .checkbox-inline input[type=checkbox],
 .radio input[type=radio],
 .radio-inline input[type=radio] {
-  position: absolute;
-  margin-left: -20px;
-  margin-top: 4px \9;
+    position: absolute;
+    margin-left: -20px;
+    margin-top: 4px \9;
 }
 .checkbox + .checkbox,
 .radio + .radio {
-  margin-top: -5px;
+    margin-top: -5px;
 }
 .checkbox-inline,
 .radio-inline {
-  position: relative;
-  display: inline-block;
-  padding-left: 20px;
-  margin-bottom: 0;
-  vertical-align: middle;
-  font-weight: 400;
-  cursor: pointer;
+    position: relative;
+    display: inline-block;
+    padding-left: 20px;
+    margin-bottom: 0;
+    vertical-align: middle;
+    font-weight: 400;
+    cursor: pointer;
 }
 .checkbox-inline + .checkbox-inline,
 .radio-inline + .radio-inline {
-  margin-top: 0;
-  margin-left: 10px;
+    margin-top: 0;
+    margin-left: 10px;
 }
 .checkbox-inline.disabled,
 .checkbox.disabled label,
 .radio-inline.disabled,
 .radio.disabled label {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 fieldset[disabled] .checkbox label,
 fieldset[disabled] .checkbox-inline,
 fieldset[disabled] .radio label,
 fieldset[disabled] .radio-inline {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 fieldset[disabled] input[type=checkbox],
 fieldset[disabled] input[type=radio] {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 input[type=checkbox].disabled,
 input[type=checkbox][disabled] {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 input[type=radio].disabled,
 input[type=radio][disabled] {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 input[type=button].btn-block,
 input[type=reset].btn-block,
 input[type=submit].btn-block {
-  width: 100%;
+    width: 100%;
 }
 input::-moz-focus-inner {
-  border: 0;
-  padding: 0;
+    border: 0;
+    padding: 0;
 }
 input[type=checkbox],
 input[type=radio] {
-  box-sizing: border-box;
-  padding: 0;
+    box-sizing: border-box;
+    padding: 0;
 }

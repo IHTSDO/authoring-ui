@@ -11,9 +11,6 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "fonts.scss";
 @import "icons.scss";
 @import "edit.scss";
-@import "compact.scss";
-@import "light.scss";
-@import "dark.scss";
 @import "feedback.scss";
 @import "glphicons.scss";
 @import "grid.scss";
@@ -32,6 +29,9 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "validation.scss";
 @import "tbba.scss";
 @import "responsive.scss";
+@import "compact.scss";
+@import "light.scss";
+@import "dark.scss";
 
 .browsehappy {
   margin: 0.2em 0;

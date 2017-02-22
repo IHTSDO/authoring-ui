@@ -1,4 +1,3 @@
-
 .modal-header {
     padding: 10px 15px;
     border-bottom: 1px solid transparent;
@@ -7,21 +6,20 @@
     width: 100%;
     float: left;
 }
-
- .alert-danger .md-warning {
-     background-color: transparent;
-     font-size: 32px;
- }
+.alert-danger .md-warning {
+    background-color: transparent;
+    font-size: 32px;
+}
 /* notifications */
- .no-gutter {
+
+.no-gutter {
     padding-left: 0px;
     padding-right: 0px;
-  }
+}
 .modal-dialog {
-
     top: 63px;
 }
-  .loader {
+.loader {
     font-size: 10px;
     margin: 50px auto;
     text-indent: -9999em;
@@ -40,9 +38,8 @@
     -webkit-transform: translateZ(0);
     -ms-transform: translateZ(0);
     transform: translateZ(0);
-  }
-
-  .loader:before {
+}
+.loader:before {
     width: 50%;
     height: 50%;
     background: #ffffff;
@@ -51,9 +48,8 @@
     top: 0;
     left: 0;
     content: '';
-  }
-
-  .loader:after {
+}
+.loader:after {
     background: #0dc5c1;
     width: 75%;
     height: 75%;
@@ -65,101 +61,99 @@
     left: 0;
     bottom: 0;
     right: 0;
-  }
-
-  @-webkit-keyframes load3 {
+}
+@-webkit-keyframes load3 {
     0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-
-  @keyframes load3 {
+}
+@keyframes load3 {
     0% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
     }
     100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
     }
-  }
-
-  .last {
+}
+.last {
     /*    margin-bottom:37px;*/
+    
     height: auto;
-  }
-
-  .sca-resizable {
+}
+.sca-resizable {
     margin-right: 10px;
     display: inline-block;
-  }
-
-  .sca-resize {
+}
+.sca-resize {
     position: relative;
     left: -50px;
     height: 100vh;
     width: 5px;
     background-color: red;
-  }
-
-  .sca-drag-target, .sca-drag-hover {
-    background-color: transparent ;
-    border: none ;
-  }
-
-  .sca-drag-hover textarea {
-
-    border: 1px dashed #fff ;
-    background: #00a6e5 ;
-    color: #fff ;
-  }
-
-  .sca-drag-target textarea {
-
-    border: 1px dashed #9f9f9f ;
-    background: #dedede ;
-  }
-
-  .sca-relgroup-drag-target, .sca-relgroup-drag-hover {
-
-    border: 1px dashed #fff ;
-    background: #00a6e5 ;
-    color: #fff ;
-  }
-
-  .sca-drag-handle {
-    background-color: red;
-  }
-
-  .transparent {
+}
+.sca-drag-target,
+.sca-drag-hover {
     background-color: transparent;
-  }
-
-  .wordbreak {
+    border: none;
+}
+.sca-drag-hover textarea {
+    border: 1px dashed #fff;
+    background: #00a6e5;
+    color: #fff;
+}
+.sca-drag-target textarea {
+    border: 1px dashed #9f9f9f;
+    background: #dedede;
+}
+.sca-relgroup-drag-target,
+.sca-relgroup-drag-hover {
+    border: 1px dashed #fff;
+    background: #00a6e5;
+    color: #fff;
+}
+.sca-drag-handle {
+    background-color: red;
+}
+.transparent {
+    background-color: transparent;
+}
+.wordbreak {
     word-wrap: break-word;
-	line-height:13px;
-  }
-  
-  .m-3 {
+    line-height: 13px;
+}
+.m-3 {
     padding-top: 2px;
     padding-bottom: 2px;
     display: inline-block;
     /* width: 100%; */
+    
     float: right;
 }
-
-
 /* warnings */
-.text-center, .text-center p {text-align:center; margin-bottom:0px; }
-.alert.alert-danger .alert-text {font-size:13px; font-weight:400; margin-top:10px;}
-.alert-danger .md-warning{background-color:transparent; font-size:32px;}
 
+.text-center,
+.text-center p {
+    text-align: center;
+    margin-bottom: 0px;
+}
+.alert.alert-danger .alert-text {
+    font-size: 13px;
+    font-weight: 400;
+    margin-top: 10px;
+}
+.alert-danger .md-warning {
+    background-color: transparent;
+    font-size: 32px;
+}
 /* CRS Translations */
+
 .fa.CHANGE_RETIRE_CONCEPT:before,
 .fa.CHANGE_RETIRE_DESCRIPTION:before,
 .fa.CHANGE_RETIRE_RELATIONSHIP:before,
@@ -167,72 +161,66 @@
 .fa.RETIRE_DESCRIPTION:before,
 .fa.RETIRE_RELATIONSHIP:before,
 .fa.CHANGE_DESCRIPTION:before,
-.fa.CHANGE_RELATIONSHIP{
+.fa.CHANGE_RELATIONSHIP {
     content: "\f040";
-color:#009cd7;
-} 
-
+    color: #009cd7;
+}
 .fa.CHANGE_NEW_DESCRIPTION:before,
 .fa.CHANGE_NEW_RELATIONSHIP:before,
 .fa.CHANGE_NEW_CONCEPT:before,
 .fa.NEW_DESCRIPTION:before,
 .fa.NEW_RELATIONSHIP:before,
 .fa.NEW_CONCEPT:before {
-content: "\f055";
-color:#009cd7;
+    content: "\f055";
+    color: #009cd7;
 }
-
 .change_type_NEW_CONCEPT:before {
-content:"Requested Change(s): Add new Concept";
+    content: "Requested Change(s): Add new Concept";
 }
-
 .change_type_NEW_DESCRIPTION:before {
-content:"Requested Change(s): Add new Description";
+    content: "Requested Change(s): Add new Description";
 }
-
-.change_type_NEW_RELATIONSHIP:before, .change_type_CHANGE_RELATIONSHIP:before {
-content:"Requested Change(s): Add new Relationship";
+.change_type_NEW_RELATIONSHIP:before,
+.change_type_CHANGE_RELATIONSHIP:before {
+    content: "Requested Change(s): Add new Relationship";
 }
 .change_type_RETIRE_CONCEPT:before {
-content:"Requested Change(s):Retire this Concept";
+    content: "Requested Change(s):Retire this Concept";
 }
 .change_type_CHANGE_RETIRE_CONCEPT:before {
-content:"Requested Change(s):Change or retire this Concept";
+    content: "Requested Change(s):Change or retire this Concept";
 }
-
-.change_type_RETIRE_DESCRIPTION:before, .change_type_CHANGE_DESCRIPTION:before {
-content:"Requested Change(s): Change or retire this Description";
+.change_type_RETIRE_DESCRIPTION:before,
+.change_type_CHANGE_DESCRIPTION:before {
+    content: "Requested Change(s): Change or retire this Description";
 }
-
-.change_type_RETIRE_RELATIONSHIP:before, .change_type_CHANGE_RELATIONSHIP:before  {
-content:"Requested Change(s): Change or retire this Relationship";
+.change_type_RETIRE_RELATIONSHIP:before,
+.change_type_CHANGE_RELATIONSHIP:before {
+    content: "Requested Change(s): Change or retire this Relationship";
 }
-
 .change_type_OTHER:before {
-content:"Other Request:";
+    content: "Other Request:";
 }
-
 .change_request_container {
-background:rgba(0,0,0,0.3);
-border-top-left-radius:4px;
-border-top-right-radius:4px;
-border-bottom-right-radius:4px;
-border-bottom-left-radius:0;
-width:98%;
-margin-left:1%;
-margin-right:1%;
-margin-top:3px;
+    background: rgba(0, 0, 0, 0.3);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 0;
+    width: 98%;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 3px;
 }
-
 .change_request_container:after {
-content:'';
-position:absolute;
-left:5%;
-margin-left:-21px;
-margin-top:23px;
-width:0;
-height:0;
-border-top:8px solid rgba(0,0,0,0.3);
-border-right:8px solid transparent;
-border-left:0 solid transparent;
+    content: '';
+    position: absolute;
+    left: 5%;
+    margin-left: -21px;
+    margin-top: 23px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid rgba(0, 0, 0, 0.3);
+    border-right: 8px solid transparent;
+    border-left: 0 solid transparent;
 }
