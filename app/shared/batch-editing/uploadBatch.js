@@ -58,6 +58,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                       batchEditingService.addBatchConcepts(concepts);
                       notificationService.sendMessage('Successfully added batch concepts', 3000);
                       $rootScope.$broadcast('batchConcept.change');
+                      $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
                     }, function (error) {
                       notificationService.sendError('Unexpected error: ' + error);
                     })

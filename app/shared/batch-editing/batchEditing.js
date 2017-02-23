@@ -20,6 +20,8 @@ angular.module('singleConceptAuthoringApp')
         link: function (scope, element, attrs, linkCtrl) {
 
           scope.viewedConcepts = [];  // concepts opened for editing by user
+            
+          scope.templateSlots = [];
 
           // template options
           scope.templateOptions = {
@@ -53,21 +55,20 @@ angular.module('singleConceptAuthoringApp')
 
           function initNgTableSlots(template) {
 
-            scope.hasProcSite = false;
-            scope.hasAction = false;
-
             if (template) {
               angular.forEach(template.conceptOutline.relationships, function (r) {
                 if (r.targetSlot && r.targetSlot.slotName) {
-                  switch (r.targetSlot.slotName) {
-                    case 'procSite':
-                      scope.hasProcSite = true;
-                      break;
-                    case 'action':
-                      scope.hasAction = true;
-                      break;
-                    default:
-                      break;
+                  var add = true;
+                  if(scope.templateSlots.length !== 0)
+                      {
+                          angular.forEach(scope.templateSlots, function (newR) {
+                            if (r.targetSlot.slotName === newR.slotName) {
+                              add = false;
+                            }
+                          });
+                      }
+                  if(add){
+                      scope.templateSlots.push(r.targetSlot);
                   }
                 }
               });
@@ -101,7 +102,7 @@ angular.module('singleConceptAuthoringApp')
 
                 // initialize columns from template
                 initNgTableSlots(batchEditingService.getCurrentTemplate());
-
+                console.log(scope.templateSlots);
                 // get the current batch concepts
                 var bcs = batchEditingService.getBatchConcepts();
 
@@ -176,6 +177,20 @@ angular.module('singleConceptAuthoringApp')
               }
             });
             return dragObj;
+          };
+            
+          scope.getTableCellValue = function (concept, slotName) {
+            var fsn = '';
+            angular.forEach(concept.relationships, function (relationship) {
+              if (relationship.targetSlot && relationship.targetSlot.slotName === slotName) {
+                fsn = relationship.target.fsn;
+              }
+            });
+            return fsn;
+          };
+            
+          scope.getTableHeaderValue = function (slot) {
+            return slot.slotName;
           };
 
           scope.dropRelationshipTarget = function (concept, slotName, data) {
@@ -279,6 +294,7 @@ angular.module('singleConceptAuthoringApp')
               }).length === 0) {
               console.debug('edit concept', concept);
               scope.viewedConcepts.push(concept);
+              scope.batchTableParams.reload();
             } else {
               notificationService.sendWarning('Concept already added', 3000);
             }
@@ -679,7 +695,10 @@ angular.module('singleConceptAuthoringApp')
             batchEditingService.initializeFromScope(scope).then(function () {
 
               scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
-              scope.batchTableParams.reload();
+              $timeout(function () {
+                    scope.batchTableParams.reload();
+                  }, 1000);
+              
 
             })
           }
@@ -693,6 +712,7 @@ angular.module('singleConceptAuthoringApp')
 
           scope.$on('batchConcept.change', function () {
             scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
+            
             scope.batchTableParams.reload();
           });
 
