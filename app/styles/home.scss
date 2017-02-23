@@ -119,3 +119,46 @@
 .sca-colours .dashboard-links:hover {
 	background-color: #121212 ;
 }
+/* dashboard and review section title classes */
+.card-title .table-search input{font-size:14px; font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;}
+.card-title .promoted-check-box{font-family: Roboto;}
+.card-title .promoted-check-box .btn-default,
+.card-title .promoted-check-box .btn-default:active,
+.card-title .promoted-check-box .btn-default:focus
+ {border-color:transparent;}
+ 
+ /* review badges */
+   .promoted-check-box {
+    color: #9B9B9B;
+    padding-top: 15px;
+  }
+
+  .Available.badge {
+    margin: 3px 3px 3px 3px;
+  }
+
+  .not_in_review {
+    background-color: #e5e5e5;
+    color: #a3a3a3;
+  }
+
+  .sca-light .not_in_review {
+    background-color: #fff;
+    color: #a3a3a3;
+  }
+
+  .not_in_review.btn-round {
+    background-color: #eeeeee;
+    color: #cdcdcd;
+  }
+
+  .btn-center {
+    margin: 0 auto;
+    list-style: none;
+  }
+
+  .review-checkbox {
+    text-align: center;
+  }
+  /* forms in dialog boxes */
+  .modal-body .input.form-control {font-size:13px;}
