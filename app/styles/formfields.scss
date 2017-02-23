@@ -167,3 +167,21 @@ input[type=radio] {
     box-sizing: border-box;
     padding: 0;
 }
+.has-success .form-control,
+.has-success .form-control:active, 
+.has-success .form-control:focus  {
+    border-color: transparent;
+		box-shadow:none;
+}
+
+.modal-body [type=text].form-control{font-size:13px;}
+
+.focussed .theme-blue .ta-bind, .theme-blue .focussed .ta-bind, .theme-blue .nav-tabs>li.active>a, .theme-blue .nav-tabs>li>a:hover, .theme-blue .theme-box-inset, .theme-blue .todo-app .filters .filter.active, .theme-blue .todo-app .filters .filter:hover, .theme-blue [contenteditable].form-control:focus, .theme-blue [type=email].form-control:focus, .theme-blue [type=password].form-control:focus, .theme-blue [type=tel].form-control:focus, .theme-blue [type=text].form-control:focus, .theme-blue input.form-control:focus, .theme-blue input[type=email]:focus, .theme-blue input[type=number]:focus, .theme-blue input[type=password]:focus, .theme-blue input[type=text]:focus, .theme-blue select:focus, .theme-blue textarea:focus, .todo-app .filters .theme-blue .filter.active, .todo-app .filters .theme-blue .filter:hover {
+    box-shadow: none;
+
+}
+.ta-root.focussed > .ta-scroll-window.form-control {
+    border-color: transparent;
+    outline: 0;
+    box-shadow:none;
+}
