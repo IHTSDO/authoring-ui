@@ -66,26 +66,12 @@
             <div id="wrap">
                 <div
                     popover-template="'components/edit/editTemplateSelect.html'"
-                    popover-placement="left"
+                    popover-placement="left-bottom"
                     popover-trigger="click: click"
                     popover-append-to-body="true"
                     ng-if="templates.length > 0 && !concept.released && !template"
                     class="pointer btn tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i><span>Attach Template</span></div>
-<!--
-              <button ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
-                      popover-container="wrap"
-                      popover-template="'shared/concept-edit/conceptEditTemplateControl.html'"
-                      popover-placement="right"
-                      popover-trigger="click: click"
-                      popover-append-to-body="true"
-                      type="button"
-                      id="template-control-btn"
-                      ng-if="!template"
-                      class="btn btn-default blue editbuttons tooltips-light normal-case small-buttons fa fa-magic md tooltips-bottom">
-                <span>Template Controls</span>
-              </button>
--->
             </div>
       </div>
 

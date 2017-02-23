@@ -1,19 +1,4 @@
-
 <div>
-  <script id="ngHeader" type="text/ng-template">
-    <tr>
-      <th ng-repeat="column in batchTableColumns" ng-show="column.visible"
-          class="text-left sortable" ng-class="{
-              'sort-asc': tableParams.isSortBy(column.field, 'asc'),
-              'sort-desc': tableParams.isSortBy(column.field, 'desc')
-            }"
-          ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
-        {{column.title}}
-      </th>
-    </tr>
-  </script>
-
-
   <div class="row no-padding no-gutter">
     <div class="col-md-8">
       
@@ -46,67 +31,16 @@
                       type="text" ng-model="concept.fsn" ng-change="updateFsn(concept)"></textarea>
           </div>
         </td>
-        <td sortable="'procSite'" title="'Procedure Site'" ng-show="hasProcSite" style="width:25%;  height: 40px;; max-height:40px;"
-            ui-on-drop="dropRelationshipTarget(concept, 'procSite', $data)" drag-hover-class="sca-drag-hover"
-            drop-channel="conceptPropertiesObj">
-          <div class="pull-left" style="width:80%; height: 40px;; max-height:40px;">
-           <textarea style="width:100%" type="text" ng-model="concept.procSite"
-                     typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, 'procSite', $viewValue)"
+        <td ng-repeat='slot in templateSlots' ng-attr-title="{{slot.slotName}}" ng-attr-sortable="{{slot.slotName}}">
+          <div>
+           <textarea type="text" ng-model="concept[slot.slotName]"
+                     typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, slot.slotName, $viewValue)"
                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                      typeahead-wait-ms="700"
-                     typeahead-on-select="setTargetSlot(concept, 'procSite', $item)"
+                     typeahead-on-select="setTargetSlot(concept, slot.slotName, $item)"
                      typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm m-t-10"
-                     ng-blur="cleanTargetSlot(concept, 'procSite')"
-                     required></textarea>
-
-            <br>
-
+                     ng-blur="cleanTargetSlot(concept, slot.slotName)"></textarea>
           </div>
-          <div class="pull-right" style="width:20%">
-            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-open-with "
-                 ng-show="concept.procSite && !targetTypeaheadLoading"
-                 ui-draggable="true" drag="getRelationshipTargetDragObject(concept, 'procSite')"
-                 drag-channel="conceptPropertiesObj"
-                 drag-image="getDragImageForConcept(concept.procSite)">
-              <span>Drag This Component</span>
-            </div>
-            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-cached "
-                 ng-show="targetTypeaheadLoading">
-              <span>Loading...</span>
-            </div>
-          </div>
-
-        </td>
-        <td sortable="'action'" title="'Action'" ng-show="hasAction" style="width:25%;  height: 40px;; max-height:40px;"
-            ui-on-drop="dropRelationshipTarget(concept, 'action', $data)" drag-hover-class="sca-drag-hover"
-            drop-channel="conceptPropertiesObj">
-          <div class="pull-left m-t-5" style="width:80%; height: 40px;; max-height:40px;">
-           <textarea style="width:100%" type="text" ng-model="concept.action"
-                     typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, 'action', $viewValue)"
-                     typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
-                     typeahead-wait-ms="700"
-                     typeahead-on-select="setTargetSlot(concept, 'action', $item)"
-                     typeahead-editable="false" typeahead-min-length="3" class="editable-input form-control input-sm"
-                     ng-blur="cleanTargetSlot(concept, 'action')"
-                     required></textarea>
-
-            <br>
-
-          </div>
-          <div class="pull-right" style="width:20%">
-            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-open-with "
-                 ng-show="concept.action && !targetTypeaheadLoading"
-                 ui-draggable="true" drag="getRelationshipTargetDragObject(concept, 'action')"
-                 drag-channel="conceptPropertiesObj"
-                 drag-image="getDragImageForConcept(concept.action)">
-              <span>Drag This Component</span>
-            </div>
-            <div class="pull-left drag-button-width small-size-tooltip tooltips-bottom md md-cached "
-                 ng-show="targetTypeaheadLoading">
-              <span>Loading...</span>
-            </div>
-          </div>
-
         </td>
         <td>
           <button class="m-r-5 alert-danger" ng-show="concept.errorMsg">{{concept.errorMsg}}</button>
