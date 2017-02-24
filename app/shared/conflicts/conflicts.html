@@ -1,121 +1,71 @@
-<section class="tables-data conflicts">
-
-  <!-- for ng-table checkboxes -->
-
-  <style>
-
-    .conflict-concept-column {
-      background-color: #424242
-    }
-
-    .conflicts .iconbase {
-      width: 40px;
-      height: 40px;
-      padding: 6px 8px;
-      float: left;
-      font-size: 18px;
-    }
-
-    .merges-button {
-      padding: 0px !important;
-      margin: 0px !important;
-      width: 100% !important;
-      margin-bottom: 10px;
-    }
-
-    .merges-button .button-link {
-      padding: 8px 15px;
-      float: left;
-      font-weight: 500;
-      text-transform: none;
-    }
-
-    .merges-button[disabled]:hover {
-      background-color: #bdbdbd;
-      color: #fff;
-    }
-
-  </style>
-
-
+<section class="tables-data conflicts"> 
   <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
     <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)"
            id="select_all_to_review"
            name="filter-checkbox" value=""/>
   </script>
-
-  <div class="row no-gutter no-padding">
-
+  <div class="row no-gutter no-padding"> 
+    
     <!-- if merge review is not current (out of date, stale, etc), prompt user -->
     <div ng-if="badStateDetected" class="loading-merges blue darken-1">
-      <h3>{{badStateText}}
-      </h3>
+      <h3>{{badStateText}} </h3>
       <div style="width: 100%; text-align: center">
-      <button ng-click="reloadRoute()"
+        <button ng-click="reloadRoute()"
               class="btn btn-default blue lighten-2 "><span
-        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Regenerate Merge Review</span>
-      </button>
+        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Regenerate Merge Review</span> </button>
       </div>
     </div>
-
     <div ng-if="!badStateDetected && !conflicts && !rebaseRunning && !rebaseComplete && !warning && !fiveOFour" class="loading-merges blue darken-1">
-
-
-        <div class="clock">
-          <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      <div class="clock">
+        <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-<circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
-<line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
-  <animatetransform attributeName="transform"
+          <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
+            <animatetransform attributeName="transform"
        dur="2s"
        type="rotate"
        from="0 50 50"
        to="360 50 50"
        repeatCount="indefinite" />
-</line>
-<line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
-  <animatetransform attributeName="transform"
+          </line>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
+            <animatetransform attributeName="transform"
        dur="15s"
        type="rotate"
        from="0 50 50"
        to="360 50 50"
        repeatCount="indefinite" />
-</line>
-</svg>
-        </div>
-        <h3>{{comparingText}}</h3>
-
-
-
+          </line>
+        </svg>
+      </div>
+      <h3>{{comparingText}}</h3>
     </div>
     <div ng-if="!badStateDetected && !conflicts && rebaseRunning && !warning" class="loading-merges green">
-
-
-        <div class="clock">
-          <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+      <div class="clock">
+        <svg version="1.1" id="L2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
   viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-<circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
-<line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
-  <animatetransform attributeName="transform"
+          <circle fill="none" stroke="#fff" stroke-width="4" stroke-miterlimit="10" cx="50" cy="50" r="48"/>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="85" y2="50.5">
+            <animatetransform attributeName="transform"
        dur="2s"
        type="rotate"
        from="0 50 50"
        to="360 50 50"
        repeatCount="indefinite" />
-</line>
-<line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
-  <animatetransform attributeName="transform"
+          </line>
+          <line fill="none" stroke-linecap="round" stroke="#fff" stroke-width="4" stroke-miterlimit="10" x1="50" y1="50" x2="49.5" y2="74">
+            <animatetransform attributeName="transform"
        dur="15s"
        type="rotate"
        from="0 50 50"
        to="360 50 50"
        repeatCount="indefinite" />
-</line>
-</svg>
-        </div>
-        <h3>{{rebasingText}}</h3>
+          </line>
+        </svg>
       </div>
-
+      <h3>{{rebasingText}}</h3>
+    </div>
+    
     <!-- Displayed after merges complete -->
     <div ng-if="fiveOFour" class="loading-merges amber">
       <div class="all-done">
@@ -123,19 +73,16 @@
       </div>
       <h3>Your merge will complete successfully but is taking longer than usual. Please navigate away and continue working on other tasks. The dashboard will update when your merge completes.</h3>
     </div>
-
     <div ng-if="warning" class="loading-merges amber">
       <div class="all-done">
         <div class="md md-sync"></div>
       </div>
       <h3>Your merge cannot be completed at this time as there is another operation in progress.</h3>
       <div style="width: 100%; text-align: center">
-      <button ng-click="reloadRoute()"
+        <button ng-click="reloadRoute()"
               class="btn btn-default blue lighten-2 "><span
-        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Try Again</span>
-      </button>
+        class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Try Again</span> </button>
       </div>
-
     </div>
     <div class="loading-merges green" ng-if="!badStateDetected && rebaseComplete && !warning">
       <div class="all-done">
@@ -145,35 +92,32 @@
         ng-if="rebaseWithMerges">Resolved merges applied</span></h3>
       <h3>Switching to {{taskKey ? 'task' : 'project'}} view in five seconds...</h3>
     </div>
-
+    
     <!-- Only displayed if something horribly wrong (i.e. conflicts detected, but rebasing status also detected -- ILLEGAL) -->
     <div ng-if="!badStateDetected && conflicts && rebaseRunning && !warning" class="loading-merges amber">
       <div class="all-done">
         <div class="md md-sync"></div>
       </div>
       <h3>Unexpected error: Attempt to pull in changes while merges remain unresolved. Contact the administrator.</h3>
-
     </div>
     <!-- Displayed before merges complete, or during rebasing -->
-    <div class="col-md-12 no-padding no-gutter" ng-if="!badStateDetected && !rebaseComplete">
-
+    <div class="col-md-12 no-padding no-gutter" ng-if="!badStateDetected && !rebaseComplete"> 
+      
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
-
-
         <div ng-if="conflicts && !rebasing">
           <div class="row no-padding no-gutter" style="text-align: center">
-            <div class="col-md-12 conflicts-list-header no-padding">
-
+            <div class="col-md-12 conflicts-list-header no-padding"> 
+              
               <!-- Hide sidebar control -->
-
+              
               <h4>Concept Merges
                 <button type="button" ng-click="toggleSidebar()" class="md md-keyboard-arrow-left pull-right "
                         ng-if="viewedMerges.length > 0"
                         title="Hide Sidebar"></button>
               </h4>
             </div>
-
+            
             <!-- Nav tabs -->
             <div class="row classification-report ">
               <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
@@ -183,122 +127,100 @@
                   data-toggle="tab">Merges To Review</a></li>
                 <li role="presentation" class="classification" ng-class="{'active' : actionTab === 2}"><a
                   ng-click="actionTab=2" aria-controls="home" role="tab"
-                  data-toggle="tab">Merges Accepted</a>
-                </li>
+                  data-toggle="tab">Merges Accepted</a> </li>
               </ul>
             </div>
-
-
+            
             <!-- Tab panes -->
-            <div class="tab-content row m-t-10 col-sm-12 no-padding">
-
+            <div class="tab-content row m-t-10 col-sm-12 no-padding"> 
+              
               <!-- Merges to Review -->
               <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==1}">
                 <table show-filter="false" ng-table="conflictsToReviewTableParams"
                        template-pagination="utilities/data-table-pager.html"
                        class="table table-full table-full-small concepts-in-conflict">
-
-                  <tr ng-repeat="conflict in $data" style="height: auto">
-
+                  <tr ng-repeat="conflict in $data" style="height: auto"> 
+                    
                     <!-- Fsn -->
                     <td class="col-concept col-md-10" style="text-align: left" data-title="'Concept'"
-                        sortable="'fsn'">
-                      {{conflict.fsn}}
-                    </td>
-
+                        sortable="'fsn'"> {{conflict.fsn}} </td>
+                    
                     <!-- Controls -->
-                    <td class="col-controls col-md-1">
-                      <button class="btn btn-round btn-default blue lighten-2 " title=""
+                    <td class="col-controls col-md-1"><button class="btn btn-round btn-default blue lighten-2 " title=""
                               ng-disabled="conflict.viewed"
                               ng-click="viewConflict(conflict)">
-                        <div
+                      <div
                           class="md md-edit "></div>
-                      </button>
-                    </td>
-
-
+                      </button></td>
                   </tr>
                 </table>
-
+                
                 <!-- buttons trigger off whether all merges are complete
                NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
                 <div class="col-md-12">
-
                   <button ng-if="mergesComplete" ng-click="finalizeMerges()"
                           class="btn btn-default red lighten-2 merges-button"><span
-                    class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span>
-                  </button>
+                    class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span> </button>
                   <button ng-if="!mergesComplete" disabled
                           class="btn btn-default grey lighten-1 normal-case merges-button"><span
-                    class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span>
-                  </button>
+                    class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span> </button>
                 </div>
               </div>
-
+              
               <!-- Merges Accepted -->
               <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab==2}">
                 <table show-filter="false" ng-table="conflictsAcceptedTableParams"
                        template-pagination="utilities/data-table-pager.html"
                        class="table table-full table-full-small concepts-in-conflict">
-
-
-                  <tr ng-repeat="conflict in $data">
-
+                  <tr ng-repeat="conflict in $data"> 
+                    
                     <!-- Fsn -->
                     <td class="col-concept col-md-10" style="text-align: left" data-title="'Concept'"
-                        sortable="'fsn'">
-                      {{conflict.fsn}}
-                    </td>
-
+                        sortable="'fsn'"> {{conflict.fsn}} </td>
+                    
                     <!-- Controls -->
-                    <td class="col-controls col-md-1">
-                      <button class="btn btn-round btn-default blue lighten-2 " title=""
+                    <td class="col-controls col-md-1"><button class="btn btn-round btn-default blue lighten-2 " title=""
                               ng-disabled="conflict.viewed"
                               ng-click="viewConflict(conflict)">
-                        <div
+                      <div
                           class="md md-edit "></div>
-                      </button>
-                    </td>
+                      </button></td>
                   </tr>
                 </table>
-                <div class="col-md-12">
+                <div class="col-md-12"> 
                   <!-- buttons trigger off whether all merges are complete
                   NOTE: Separated due to some weird behavior I don't want to deal with right now :D -->
                   <button ng-if="mergesComplete" ng-click="finalizeMerges()"
                           class="btn btn-default red lighten-2 merges-button"><span
-                    class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span>
-                  </button>
+                    class="md md-assignment-turned-in darken-1 iconbase"></span> <span class="button-link">Finalize Merges</span> </button>
                   <button ng-if="!mergesComplete" disabled
                           class="btn btn-default grey lighten-1 normal-case merges-button"><span
-                    class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span>
-                  </button>
+                    class="md md-assignment-turned-in darken-1 iconbase"> </span><span class="button-link">All merges must be accepted to continue</span> </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
+      
       <!-- Conflicts Report: Content -->
       <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]"
            ng-show="viewedMerges.length > 0">
-
         <div class="row no-padding no-gutter" style="text-align: center">
           <div class="col-md-4 project-header">
             <h4>
               <button ng-show="hideSidebar" ng-click="toggleSidebar()" type="button"
                       class="md md-keyboard-arrow-right pull-left show-conflict-list " title="Show Sidebar"></button>
-              {{isTask ? 'Project' : 'Mainline'}} Version
-            </h4>
+              {{isTask ? 'Project' : 'Mainline'}} Version </h4>
           </div>
-          <div class="col-md-4 merged-header"><h4>Merged Version</h4></div>
-          <div class="col-md-4 task-header"><h4>{{isTask ? 'Task' : 'Project'}} Version</h4></div>
+          <div class="col-md-4 merged-header">
+            <h4>Merged Version</h4>
+          </div>
+          <div class="col-md-4 task-header">
+            <h4>{{isTask ? 'Task' : 'Project'}} Version</h4>
+          </div>
         </div>
-
-
-
         <div class="row no-padding no-gutter" ng-repeat="merge in viewedMerges">
-
           <div class="col-md-4 conflict-concept-column">
             <div concept-edit
                  concept="merge.sourceConcept"
@@ -307,10 +229,8 @@
                  merge="true"
                  autosave="false"
                  show-inactive="false"
-                 component-styles="merge.styles.source">
-            </div>
+                 component-styles="merge.styles.source"> </div>
           </div>
-
           <div class="col-md-4 merged-version conflict-concept-column">
             <div concept-edit
                  concept="merge.autoMergedConcept"
@@ -321,7 +241,6 @@
                  show-inactive="false"
                  component-styles="merge.styles.merged"
                  save-function="conceptUpdateFunction(project, task, concept)"></div>
-
           </div>
           <div class="col-md-4 task-version conflict-concept-column">
             <div concept-edit
@@ -331,13 +250,10 @@
                  static="true"
                  autosave="false"
                  show-inactive="false"
-                 component-styles="merge.styles.target">
-            </div>
+                 component-styles="merge.styles.target"> </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-
 </section>

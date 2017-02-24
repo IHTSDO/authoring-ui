@@ -1,103 +1,69 @@
 <div id="userPreferencesModal" class="clearfix">
-
-
   <div class="modal-header">
     <button type="button" class="close" ng-click="close()">&times;</button>
     <h4 class="modal-title">Settings and Preferences</h4>
   </div>
-
-
   <div class="modal-body">
-
     <div class="col-md-12">
-
-    <form class="form-floating">
-
-      <div class="form-group">
-        <label for="colourSchemeSelect">Colour Scheme</label>
-        <select id="colourSchemeSelect" name="select-colour-scheme" class="form-control"
+      <form class="form-floating">
+        <div class="form-group">
+          <label for="colourSchemeSelect">Colour Scheme</label>
+          <select id="colourSchemeSelect" name="select-colour-scheme" class="form-control"
                 ng-model="userPreferences.colourScheme"
                 ng-change="clearMessages()">
-          <option value="sca-colours">Colours</option>
-          <option value="sca-light">Light</option>
-          <option value="sca-dark">Dark</option>
-        </select>
-
-        <br>
-        <label for="appViewSelect">Application View</label>
-        <select id="appViewSelect" name="select-app-view" class="form-control"
+            <option value="sca-colours">Colours</option>
+            <option value="sca-light">Light</option>
+            <option value="sca-dark">Dark</option>
+          </select>
+          <br>
+          <label for="appViewSelect">Application View</label>
+          <select id="appViewSelect" name="select-app-view" class="form-control"
                 ng-model="userPreferences.appView"
                 ng-change="clearMessages()">
-          <option value="sca-default">Default</option>
-          <option value="sca-comfy">Comfy</option>
-          <option value="sca-compact">Compact</option>
-        </select>
-
-        <br>
-
-        <hr>
-        <label for="layoutGrid">Page Layout</label>
-       
-        <div id="layoutGrid" class="row no-gutter no-padding">
-     
-          <div ng-repeat="col1 in layout.children" class="sca-layout-elem" ng-class="getLayoutWidths(col1.name)">
-           
-
-            <div ng-if="$index !== layout.children.length -1" class="pull-right sca-layout-elem layout-slider {{col1.name}}">
-              <span class="pull-left slider-title">{{col1.name}}</span>
+            <option value="sca-default">Default</option>
+            <option value="sca-comfy">Comfy</option>
+            <option value="sca-compact">Compact</option>
+          </select>
+          <br>
+          <hr>
+          <label for="layoutGrid">Page Layout</label>
+          <div id="layoutGrid" class="row no-gutter no-padding">
+            <div ng-repeat="col1 in layout.children" class="sca-layout-elem" ng-class="getLayoutWidths(col1.name)">
+              <div ng-if="$index !== layout.children.length -1" class="pull-right sca-layout-elem layout-slider {{col1.name}}"> <span class="pull-left slider-title">{{col1.name}}</span>
                 <button class="btn btn-default plus" ng-click="resizeLayoutElement(col1.name, 1)">+</button>
-              <button class="btn btn-default minus" ng-click="resizeLayoutElement(col1.name, -1)">-</button>
-            
-            </div>
-            <div class="row no-gutter no-padding">
-              <div ng-repeat="col2 in col1.children" class="sca-layout-elem {{col2.name}} pull-left" ng-class="getLayoutWidths(col2.name)">
-                <span class="pull-left slider-title">{{col2.name}}</span>
-
-                <div ng-if="$index !== col1.children.length -1" class="pull-right">
-                   <button class="btn btn-default plus" ng-click="resizeLayoutElement(col2.name, 1)">+</button>
-                  <button class="btn btn-default minus" ng-click="resizeLayoutElement(col2.name, -1)">-</button>
-               
+                <button class="btn btn-default minus" ng-click="resizeLayoutElement(col1.name, -1)">-</button>
+              </div>
+              <div class="row no-gutter no-padding">
+                <div ng-repeat="col2 in col1.children" class="sca-layout-elem {{col2.name}} pull-left" ng-class="getLayoutWidths(col2.name)"> <span class="pull-left slider-title">{{col2.name}}</span>
+                  <div ng-if="$index !== col1.children.length -1" class="pull-right">
+                    <button class="btn btn-default plus" ng-click="resizeLayoutElement(col2.name, 1)">+</button>
+                    <button class="btn btn-default minus" ng-click="resizeLayoutElement(col2.name, -1)">-</button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div ng-if="!layout.name"> Customizable layout not yet implemented for this view. </div>
         </div>
-
-        <div ng-if="!layout.name">
-          Customizable layout not yet implemented for this view.
-        </div>
-
-
-      </div>
-    </form>
+      </form>
+    </div>
+   
+    <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
+    <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
   </div>
-  </form>
-
-
-
-  <div class="alert alert-success" ng-show="msgSuccess">{{msgSuccess}}</div>
-  <div class="alert alert-danger" ng-show="msgError">{{msgError}}</div>
-</div>
-
-<div class="modal-footer">
-  <div class="col-md-4">
-    <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin "
-            ng-click="save()">Save
-    </button>
-  </div>
-  <div class="col-md-4">
-    <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-warning no-margin"
-            ng-click="revert()">Revert
-    </button>
-  </div>
-  <div class="col-md-4">
-    <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-danger no-margin "
-            ng-click="close()">Cancel
-    </button>
+  <div class="modal-footer">
+    <div class="col-md-4">
+      <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-info no-margin "
+            ng-click="save()">Save </button>
+    </div>
+    <div class="col-md-4">
+      <button type="button" ng-disabled="disabled" class="col-md-12 btn btn-warning no-margin"
+            ng-click="revert()">Revert </button>
+    </div>
+    <div class="col-md-4">
+      <button type="button" ng-disabled="disabled" class=" col-md-12 btn btn-danger no-margin "
+            ng-click="close()">Cancel </button>
+    </div>
   </div>
 </div>
 
-</div>
-
-
-</div>

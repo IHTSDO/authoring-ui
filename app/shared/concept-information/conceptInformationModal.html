@@ -1,52 +1,17 @@
 <!-- Simple wrapper modal for the concept information directive -->
-<style>
-  .conceptInformationModal .modal-header {
-    padding-bottom: 0px;
-  }
 
-  .modal-header .sidebar-tabs.nav > li {
-    width: 50%
-  }
-
-  .grey-rounded {
-    background-color: #f5f5f5;
-    border-radius: 5px;
-    width: 100%;
-    float: left;
-    margin-bottom: 10px
-  }
-
-  .grey-rounded h4 {
-    font-size: 14px;
-    padding-bottom: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px #eee solid;
-  }
-
-  .concept-lists {
-    line-height: 12px;
-    padding-bottom: 10px;
-  }
-
-  .grey-rounded th, .grey-rounded tr {
-    padding: 0px 0px 4px 8px
-  }
-
-</style>
 <div id="conceptInformationModal" class="clearfix">
-
   <div class="modal-header">
     <div class="col-md-8">
-
       <h4 class="modal-title">{{fullConcept.fsn}}
         <div ng-show="!loadComplete">Loading...</div>
       </h4>
       <p ng-show="loadComplete">SCTID: {{fullConcept.conceptId}}, {{fullConcept.definitionStatus === 'PRIMITIVE' ?
-                                'Primitive' : 'Fully
-                                Defined'}},
-                                {{fullConcept.active
-                                ? 'Active' : 'Inactive'}} </p>
-      <!-- Nav tabs -->
+        'Primitive' : 'Fully
+        Defined'}},
+        {{fullConcept.active
+        ? 'Active' : 'Inactive'}} </p>
+      <!-- Nav tabs --> 
     </div>
     <div class="col-md-4">
       <ul style="display: inline; border-bottom: 0px; z-index:100" class="nav nav-tabs sidebar-tabs col-md-8 no-padding"
@@ -55,38 +20,26 @@
                                                   role="tab"
                                                   data-toggle="tab" class="tooltips-bottom tooltips-light normal-case">
           <div class=" fa fa-info"></div>
-          <span>Details</span>
-        </a></li>
+          <span>Details</span> </a></li>
         <li role="presentation" class="" ng-click="actionTab=2" ><a ng-click="actionTab=2" aria-controls="home" role="tab" data-toggle="tab"
                                             class="tooltips-bottom tooltips-light normal-case">
           <div class="md md-my-library-books"></div>
           <span>Taxonomy</span></a></li>
-          
       </ul>
-  
-        
-                <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
+      <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
-
   </div>
-
-
   <div class="modal-body" style="z-index:0">
-
-    <div class="col-md-12">
-
-
+    <div class="col-md-12"> 
+      
       <!-- Don't render until load complete -->
-      <div ng-if="loadComplete">
-
-
+      <div ng-if="loadComplete"> 
+        
         <!-- Tab panes -->
         <div class="tab-content col-md-12 no-padding m-t-10 ">
           <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}">
             <div class="row grey-rounded p-l-10 p-r-10 p-b-10">
-
               <h4>Hierarchy</h4>
-
               <div class="col-md-6 no-padding concept-lists">
                 <div class="col-md-3 no-padding">Parents ({{parents.length}})</div>
                 <div class="col-md-9">
@@ -94,10 +47,8 @@
                     <p ng-click="loadConcept(parent.conceptId)"><a >{{parent.fsn}}</a></p>
                   </div>
                 </div>
-
               </div>
               <div class="col-md-6 no-padding concept-lists">
-
                 <div class="row">
                   <div class="col-md-3 no-padding">Children ({{children.length}})</div>
                   <div class="col-md-9">
@@ -108,28 +59,26 @@
                 </div>
               </div>
               <div class="clearfix"></div>
-
-
             </div>
             <div class="row grey-rounded p-l-10 p-r-10 p-b-10">
               <h4>Descriptions</h4>
               <table class="table">
                 <thead>
                 <th>Type</th>
-                <th>Term</th>
-                <th>ACPT (US)</th>
-                 <th>ACPT (GB)</th>
-                </thead>
+                  <th>Term</th>
+                  <th>ACPT (US)</th>
+                  <th>ACPT (GB)</th>
+                    </thead>
                 <tbody>
-                <!-- TODO sorting on acceptability map second not working -->
-                <tr
+                  <!-- TODO sorting on acceptability map second not working -->
+                  <tr
                   ng-repeat="description in fullConcept.descriptions | orderBy: ['-active', 'type', '-description.acceptabilityMap[900000000000509007]', '-description.acceptabilityMap[900000000000508004]']"
                   ng-class="[{'text-muted': !description.active}]">
-                  <td>{{description.type}}</td>
-                  <td>{{description.term}}</td>
-                  <td>{{description.acceptabilityMap['900000000000509007']}}</td>
-                   <td>{{description.acceptabilityMap['900000000000508004']}}</td>
-                </tr>
+                    <td>{{description.type}}</td>
+                    <td>{{description.term}}</td>
+                    <td>{{description.acceptabilityMap['900000000000509007']}}</td>
+                    <td>{{description.acceptabilityMap['900000000000508004']}}</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -138,40 +87,35 @@
               <table class="table">
                 <thead>
                 <th>Group</th>
-                <th>Type</th>
-                <th>Target</th>
-                <th>CharType</th>
-                </thead>
+                  <th>Type</th>
+                  <th>Target</th>
+                  <th>CharType</th>
+                    </thead>
                 <tbody>
-                <tr
+                  <tr
                   ng-repeat="relationship in fullConcept.relationships | filter:{characteristicType : 'STATED_RELATIONSHIP'} | orderBy: ['-active', 'groupId', '-characteristicType', 'type.fsn']"
                   ng-class="[{'text-muted': !relationship.active}]">
-                  <td style="text-align: center">{{relationship.groupId}}</td>
-                  <td>{{relationship.type.fsn}}</td>
-                  <td><a ng-click="loadConcept(relationship.target.conceptId)">{{relationship.target.fsn}}</a></td>
-                  <td>{{relationship.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}</td>
-                </tr>
+                    <td style="text-align: center">{{relationship.groupId}}</td>
+                    <td>{{relationship.type.fsn}}</td>
+                    <td><a ng-click="loadConcept(relationship.target.conceptId)">{{relationship.target.fsn}}</a></td>
+                    <td>{{relationship.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}</td>
+                  </tr>
                 </tbody>
               </table>
-
             </div>
           </div>
           <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
-            <div class=" col-md-12 no-padding">
-
+            <div class=" col-md-12 no-padding"> 
+              
               <!-- don't render the directive until the concept has been loaded (handled above) -->
               <div taxonomy-tree branch="branch" concept="fullConcept"></div>
             </div>
-
           </div>
         </div>
       </div>
-
     </div>
   </div>
-
-
-  <div class="modal-footer">
-    <!-- Intentionally left blank -->
+  <div class="modal-footer"> 
+    <!-- Intentionally left blank --> 
   </div>
 </div>
