@@ -104,6 +104,7 @@ select.primitive {
     background-color: #66bbfd;
     border-color: transparent;
 }
+ .editbuttons.deep-purple.btn-default:active{background-color:transparent; color:#fff;}
 .editing-form button:focus,
 .editing-form button:active {
     background-color: transparent;
@@ -116,7 +117,7 @@ select.primitive {
     border-color: transparent;
 }
 .editing-form button:active {
-    color: #66bbfd;
+    color: #fff;
     background-color: transparent;
     border-color: transparent;
 }
@@ -1140,11 +1141,11 @@ button-link .bluehl .grey.darken-3 {
 }
 .editing-form button.red:focus,
 .editing-form button.red:active {
-    background-color: #e92848;
+    background-color:transparent;
 }
 .editing-form button.green:focus,
 .editing-form button.green:active {
-    background-color: #4CAF50;
+    background-color: transparent;
 }
 .color_ .custom-button:focus {
     background-color: #b7dbff;

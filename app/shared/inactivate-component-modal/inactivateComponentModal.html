@@ -1,5 +1,5 @@
-<div id="inactivateComponentModal" class="clearfix">
 
+<div id="inactivateComponentModal" class="clearfix">
   <div ng-if="!deletion" class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4 class="modal-title">Select Reason For Inactivating {{componentType}}</h4>
@@ -8,138 +8,97 @@
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4 class="modal-title">Deleting: {{concept.fsn}}</h4>
   </div>
-
   <div class="modal-body">
-
     <div class="row classification-report">
-
       <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
-
-      <li role="presentation" ng-class="{active : actionTab === 1}" class="">
-      <a style="margin: 0px"
+        <li role="presentation" ng-class="{active : actionTab === 1}" class=""> <a style="margin: 0px"
                                                                                 ng-click="actionTab=1"
                                                                                 aria-controls="home" role="tab"
                                                                                 data-toggle="tab"> Inactivation
-                                                                                                   Reason</a>
-                                                                                                   </li>
-
-      <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 2}" class=""><a
+          Reason</a> </li>
+        <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 2}" class=""><a
         ng-click="actionTab=2" aria-controls="home"
         role="tab"
         data-toggle="tab">Children
-                          ({{!inboundRelationshipsLoading ?
-                          children.length : 'Loading'}})</a>
-      </li>
-
-      <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 3}" class=""><a
+          ({{!inboundRelationshipsLoading ?
+          children.length : 'Loading'}})</a> </li>
+        <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 3}" class=""><a
         ng-click="actionTab=3" aria-controls="home"
         role="tab"
         data-toggle="tab">Descendants ({{!descendantsLoading
-                          ? descendants.total :
-                          'Loading'}})</a>
-      </li>
-
-      <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 4}" class=""><a
+          ? descendants.total :
+          'Loading'}})</a> </li>
+        <li role="presentation" ng-show="conceptId" ng-class="{active : actionTab === 4}" class=""><a
         ng-click="actionTab=4" aria-controls="home"
         role="tab"
         data-toggle="tab">All Incoming
-                          ({{!inboundRelationshipsLoading
-                          ? inboundRelationshipsTotal :
-                          'Loading'}})</a>
-      </li>
+          ({{!inboundRelationshipsLoading
+          ? inboundRelationshipsTotal :
+          'Loading'}})</a> </li>
       </ul>
     </div>
-
-
-
-
+    
     <!-- Tab panes -->
     <div class="tab-content row m-t-10 col-sm-12 no-padding">
-
-        <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 1}">
-      <!-- reasons select -->
-      <div ng-show="!deletion" >
-
-        <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
-
-
-          <div class="col-md-12 ">
-            <label> Select Inactivation Reason </label>
-          </div>
-
-
-          <div class="col-md-12">
-            <select id="taskProject" name="select-reason" class="form-control"
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 1}"> 
+        <!-- reasons select -->
+        <div ng-show="!deletion" >
+          <div class="row col-md-12 no-padding top-modal add-triangles-bottom">
+            <div class="col-md-12 ">
+              <label> Select Inactivation Reason </label>
+            </div>
+            <div class="col-md-12 no-padding">
+              <select id="taskProject" name="select-reason" class="form-control"
                     ng-options="reason as reason.text for reason in reasons"
                     ng-model="inactivationReason" ng-change="updateAssociations()">
-              <option value="disabled">- Select a reason (required) -</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="col-sm-12 no-padding  add-color" ng-if="componentType === 'Concept'">
-
-
-          <div class="row p-t-10">
-            <div class="col-md-4">
-              <label> Association Type </label>
-            </div>
-            <div class="col-md-6">
-              <label> Concept</label>
-            </div>
-          </div>
-
-          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-repeat="association in associations">
-            <div class="col-md-5">
-              <select class="form-control"
-                      ng-options="type as type.text for type in associationTargets"
-                      ng-model="association.type">
-                <option value="disabled">- Select an Association Type (optional) -</option>
+                <option value="disabled">- Select a reason (required) -</option>
               </select>
             </div>
-            <div class="col-md-6">
-              <textarea type="text" class="form-control"
+          </div>
+          <div class="col-sm-12 no-padding  add-color" ng-if="componentType === 'Concept'">
+            <div class="row p-t-10">
+              <div class="col-md-4">
+                <label> Association Type </label>
+              </div>
+              <div class="col-md-6">
+                <label> Concept</label>
+              </div>
+            </div>
+            <div class="row" ng-repeat="association in associations">
+              <div class="col-md-5">
+                <select class="form-control"
+                      ng-options="type as type.text for type in associationTargets"
+                      ng-model="association.type">
+                  <option value="disabled">- Select an Association Type (optional) -</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <textarea type="text" class="form-control"
                         ng-model="association.concept"
                         typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue)"
                         typeahead-focus-first="false"
                         typeahead-wait-ms="500"
                         typeahead-editable="false" typeahead-min-length="3"
                         placeholder="Type to select an associated concept..."></textarea>
-
-            </div>
-            <div class="col-md-1">
-              <button type="button" ng-click="addAssociation($index)"
-                      class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case">
-                <span>Add Association</span></button>
-
-
-              <button type="button" ng-click="removeAssociation($index)"
-                      class="btn-default add-buttons md fa fa-minus button-width-minus  tooltips-left tooltips-light normal-case">
-                <span>Remove Association</span></button>
+              </div>
+              <div class="col-md-1">
+                <button type="button" ng-click="addAssociation($index)"
+                      class="btn-default add-buttons md fa fa-plus button-width-plus tooltips-left tooltips-light normal-case"> <span>Add Association</span></button>
+                <button type="button" ng-click="removeAssociation($index)"
+                      class="btn-default add-buttons md fa fa-minus button-width-minus  tooltips-left tooltips-light normal-case"> <span>Remove Association</span></button>
+              </div>
             </div>
           </div>
         </div>
-
-
-
-      </div>
-
-      <div ng-show="deletion">
-        <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading">
-            Checking inbound relationships...
-        </div>
-        <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsTotal === 0">
-            No inbound relationships found - Concept may be deleted.
-        </div>
-        <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
-            Inbound relationships found - Please suggest a replacement target for any inbound relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items.
-        </div>
-        <div class="row p-t-10" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
+        <div ng-show="deletion">
+          <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsLoading"> Checking inbound relationships... </div>
+          <div class="col-sm-12 no-padding  add-color" ng-show="inboundRelationshipsTotal === 0"> No inbound relationships found - Concept may be deleted. </div>
+          <div class="col-sm-12 no-padding  add-color" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0"> Inbound relationships found - Please suggest a replacement target for any inbound relationships - note this will not affect the concept to be deleted but will be used to re-target existing inbound items. </div>
+          <div class="row p-t-10" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <label> Concept</label>
             </div>
           </div>
-
           <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <textarea type="text" class="form-control"
@@ -149,126 +108,87 @@
                         typeahead-wait-ms="500"
                         typeahead-editable="false" typeahead-min-length="3"
                         placeholder="Type to select an associated concept..."></textarea>
-
             </div>
           </div>
+        </div>
       </div>
-
-</div>
       <!-- children -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 2}">
         <table ng-table="tableParamsChildren" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
-            <td data-title="'Characteristic Type'" sortable="'characteristicType'">
-              {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}
-            </td>
-            <td data-title="'FSN'" sortable="'sourceFsn'">
-              {{item.sourceFsn}}
-            </td>
-
+            <td data-title="'Characteristic Type'" sortable="'characteristicType'"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
+            <td data-title="'FSN'" sortable="'sourceFsn'"> {{item.sourceFsn}} </td>
           </tr>
         </table>
       </div>
-
+      
       <!-- descendants -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 3}">
         <div ng-show="descendants.total > 200" class="alert alert-info">Limiting displayed results to {{tableLimit}}
-                                                                        items
-        </div>
+          items </div>
         <table ng-table="tableParamsDescendants" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
             <td data-title="'ID'" sortable="'id'">{{item.id}}</td>
-            <td data-title="'FSN'" sortable="'sortableName'">
-              {{item.sortableName}}
-            </td>
+            <td data-title="'FSN'" sortable="'sortableName'"> {{item.sortableName}} </td>
           </tr>
         </table>
       </div>
-
+      
       <!-- all inbound relationships -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 4}">
         <div ng-show="inboundRelationshipsTotal > 200" class="alert alert-info">Limiting displayed results to
-                                                                                {{tableLimit}} items
-        </div>
+          {{tableLimit}} items </div>
         <table ng-table="tableParamsInboundRelationships" template-pagination="utilities/data-table-pager.html"
                class="table table-full-small">
           <tr ng-repeat="item in $data">
-            <td data-title="'Characteristic Type'" sortable="'characteristicType'">
-              {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}
-            </td>
-            <td data-title="'Type'" sortable="'typeFsn'">
-              {{item.typeFsn}}
-            </td>
-            <td data-title="'FSN'" sortable="'sourceFsn'">
-              {{item.sourceFsn}}
-            </td>
+            <td data-title="'Characteristic Type'" sortable="'characteristicType'"> {{item.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}} </td>
+            <td data-title="'Type'" sortable="'typeFsn'"> {{item.typeFsn}} </td>
+            <td data-title="'FSN'" sortable="'sourceFsn'"> {{item.sourceFsn}} </td>
           </tr>
         </table>
-
         <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
-
       </div>
-
     </div>
-
   </div>
-
   <div class="modal-footer" ng-if="!deletion">
     <div class="row col-md-12 no-padding top-modal">
-        <style>
+      <style>
 		.top-modal .col-md-6.left-button{padding-left:0px}
 		.top-modal .col-md-6.right-button{padding-right:0px}
 		</style>
-         <div class=" col-md-6 left-button ">
-          <button type="button"
+      <div class=" col-md-6 left-button ">
+        <button type="button"
                   class="btn btn-default red p-10 inactivation-button-modal m-t-20"
-                  ng-click="cancel()">
-Cancel {{componentType}} Inactivation
-          </button>
-</div>
-          <div class=" col-md-6 right-button">
-          <button type="button"
+                  ng-click="cancel()"> Cancel {{componentType}} Inactivation </button>
+      </div>
+      <div class=" col-md-6 right-button">
+        <button type="button"
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
-                  ng-click="selectReason(inactivationReason)">
-Continue with {{componentType}} Inactivation
-          </button>
-</div>
-
-        </div>
+                  ng-click="selectReason(inactivationReason)"> Continue with {{componentType}} Inactivation </button>
+      </div>
+    </div>
   </div>
-    <div class="modal-footer" ng-if="deletion">
+  <div class="modal-footer" ng-if="deletion">
     <div class="row col-md-12 no-padding top-modal">
-        <style>
-		.top-modal .col-md-6.left-button{padding-left:0px}
-		.top-modal .col-md-6.right-button{padding-right:0px}
-		</style>
-         <div class=" col-md-6 left-button ">
-          <button type="button"
+      <div class=" col-md-6 left-button ">
+        <button type="button"
                   class="btn btn-default red p-10 inactivation-button-modal m-t-20"
-                  ng-click="cancel()">
-Cancel Deletion
-          </button>
-</div>
-          <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0">
-          <button type="button"
+                  ng-click="cancel()"> Cancel Deletion </button>
+      </div>
+      <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0">
+        <button type="button"
 
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
-                  ng-click="delete()">
-Confirm Deletion
-          </button>
-</div>
-        <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
-          <button type="button"
+                  ng-click="delete()"> Confirm Deletion </button>
+      </div>
+      <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
+        <button type="button"
 
                   class="btn btn-default green p-10 inactivation-button-modal m-t-20"
-                  ng-click="selectReason(inactivationReason)">
-Continue with Deletion
-          </button>
-</div>
-
-        </div>
+                  ng-click="selectReason(inactivationReason)"> Continue with Deletion </button>
+      </div>
+    </div>
   </div>
-
 </div>

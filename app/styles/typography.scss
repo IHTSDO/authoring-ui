@@ -160,7 +160,7 @@ h6 small {
 }
 .h1,
 h1 {
-  font-size: 33px;
+  font-size: 18px;
 }
 .h2,
 h2 {
@@ -1211,3 +1211,11 @@ strong {
   border-color: #fff;
 }
 /* end borders */
+.base-class {
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.base-class.my-class {
+  color: red;
+  font-size:3em;
+}
