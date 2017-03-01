@@ -565,7 +565,7 @@
     background-color: transparent;
 }
 .sca-light .indicator_red {
-    color: #EF5350;
+    color: #db5760;
     background-color: transparent;
 }
 .sca-light .indicator_red:hover {
@@ -857,4 +857,20 @@
 .sca-light .classification-btn .btn-default {
     border: 1px #e6e6e6 solid;
 	background-color:#fff;
+}
+
+.sca-light .search-scroll .btn-default{color:#fff;}
+
+def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .def_PRIMITIVE .form-control[disabled], .def_PRIMITIVE [type=text].form-control[disabled], .def_PRIMITIVE [type=text].form-control[readonly] {
+    font-size: 11px;
+    height: 30px;
+    background-color: #b7dbff;
+    color: #474747;
+    box-shadow: none;
+}
+.def_FULLY_DEFINED textarea, .def_FULLY_DEFINED select, .def_FULLY_DEFINED .custom-button, .def_FULLY_DEFINED .form-control[disabled], .def_FULLY_DEFINED [type=text].form-control[disabled], .def_FULLY_DEFINED [type=text].form-control[readonly] {
+    background-color: #dbdbff;
+    color: #474747;
+    font-size: 11px;
+    height: 30px;
 }
