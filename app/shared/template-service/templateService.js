@@ -314,14 +314,14 @@ angular.module('singleConceptAuthoringApp')
               r.target.fsn = targetSlotMap[r.targetSlot.slotName].fsn;
             }
           });
-            
-          angular.forEach(relAndDescMap.descriptions, function (d) {
-            // if description has a term then add to concept
-            if (d.term) {
-                tc.descriptions.push(d);
-            }
-          });
-
+          if(relAndDescMap && relAndDescMap !== undefined && relAndDescMap !== null){
+              angular.forEach(relAndDescMap.descriptions, function (d) {
+                // if description has a term then add to concept
+                if (d.term) {
+                    tc.descriptions.push(d);
+                }
+              });
+          }
           // ensure all required fields are set
           componentAuthoringUtil.setDefaultFields(tc);
 
