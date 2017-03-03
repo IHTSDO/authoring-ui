@@ -1378,7 +1378,9 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.getSelectedTemplate = templateService.getSelectedTemplate;
     $scope.selectTemplate = function (template) {
       templateService.selectTemplate(template).then(function () {
-        document.getElementById('templateCreateBtn').click();
+        $timeout(function(){
+                document.getElementById('templateCreateBtn').click();
+            });
         $scope.createConcept(false);
       });
     };
