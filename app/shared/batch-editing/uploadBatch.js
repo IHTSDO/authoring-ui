@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
-  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService',
-    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService) {
+  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout',
+    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout) {
          
          $scope.templateOptions = {
             availableTemplates : [],
@@ -42,7 +42,9 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
         
         $scope.selectBatchTemplate = function(template){
             $scope.templateOptions.selectedTemplate = template;
-            document.getElementById('batchTemplateSelectBtn').click();
+            $timeout(function(){
+                document.getElementById('batchTemplateSelectBtn').click();
+            });
         }
 
         $scope.uploadFile = function(files) {
