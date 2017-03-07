@@ -1156,6 +1156,14 @@ angular.module('singleConceptAuthoringApp')
           return null;
         });
       }
+        
+      function getAttributeValuesFromEcl(branch, ecl, searchStr) {
+        return $http.get(apiEndpoint + '/mrcm/' + branch + '/concepts?active=true&expand=pt()&term=' + searchStr + '&ecl=' + ecl).then(function (response) {
+          return response.data.items ? response.data.items : [];
+        }, function (error) {
+          return null;
+        });
+      }
 
       //////////////////////////////////////////////////////////
       // Merge Review functions
@@ -1504,6 +1512,7 @@ angular.module('singleConceptAuthoringApp')
         getDomainAttributes: getDomainAttributes,
         getAttributeValues: getAttributeValues,
         getAttributeValuesByConcept: getAttributeValuesByConcept,
+        getAttributeValuesFromEcl: getAttributeValuesFromEcl,
 
         // branch functionality
         getBranch: getBranch,
