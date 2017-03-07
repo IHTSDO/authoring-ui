@@ -73,6 +73,16 @@ angular.module('singleConceptAuthoringApp')
           deferred.reject(error);
         });
         return deferred.promise;
-      }
+      },
+      checkInstantiated: function () {
+          if(properties.endpoints)
+          {
+              return true;
+          }
+          else{
+              return false;
+          }
+          
+      },
     };
   }]);
