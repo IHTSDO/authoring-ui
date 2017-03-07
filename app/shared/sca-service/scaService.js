@@ -4,10 +4,10 @@ angular.module('singleConceptAuthoringApp')
   .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService', 'configService',
     function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService, configService) {
 
-      var apiEndpoint = '';
+      var apiEndpoint = '../' + $rootScope.authoringEndpoint;
+        
       configService.getEndpoints().then(function (response) {
-        var endpoints = response;
-        var apiEndpoint = response.authoringEndpoint;
+        apiEndpoint = response.authoringEndpoint;
       });
       //
       // Modified concept list utility functions
