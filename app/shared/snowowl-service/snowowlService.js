@@ -1157,7 +1157,7 @@ angular.module('singleConceptAuthoringApp')
         });
       }
         
-      function getAttributeValuesFromEcl(branch, ecl, searchStr) {
+      function getAttributeValuesFromEcl(branch, searchStr, ecl) {
         return $http.get(apiEndpoint + '/mrcm/' + branch + '/concepts?active=true&expand=pt()&term=' + searchStr + '&ecl=' + ecl).then(function (response) {
           return response.data.items ? response.data.items : [];
         }, function (error) {
