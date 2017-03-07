@@ -160,8 +160,8 @@ angular
       function (response) {
         var endpoints = response;
         var accountUrl = endpoints.imsEndpoint + '/auth';
-        var authoringEndpoint = endpoints.authoringEndpoint;
-        var snowowlEndpoint = endpoints.snowOwlEndpoint;
+        $rootScope.authoringEndpoint = endpoints.authoringEndpoint;
+        $rootScope.snowowlEndpoint = endpoints.snowOwlEndpoint;
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");

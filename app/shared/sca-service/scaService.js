@@ -1,14 +1,34 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService', 'configService',
-    function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService, configService) {
+  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService', 'configService', '$timeout',
+    function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService, configService, $timeout) {
 
-      var apiEndpoint = '../' + $rootScope.authoringEndpoint;
+      var apiEndpoint = '';
         
-      configService.getEndpoints().then(function (response) {
-        apiEndpoint = response.authoringEndpoint;
-      });
+      function pollForInstantiation() {
+
+            var deferred = $q.defer();
+
+            $timeout(function () {
+                  if(configService.checkInstantiated)
+                    {
+                        deferred.resolve();
+                    }
+                else{
+                    pollForInstantiation().then(function () {
+                        deferred.resolve();
+                      });
+                }
+            }, 400);
+
+            return deferred.promise;
+          };
+        pollForInstantiation().then(function(){
+            configService.getEndpoints().then(function (response) {
+                apiEndpoint = response.authoringEndpoint;
+              });
+        });
       //
       // Modified concept list utility functions
       //
