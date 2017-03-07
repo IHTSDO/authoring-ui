@@ -1,12 +1,14 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService',
-    function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService) {
+  .service('scaService', ['$http', '$rootScope', '$location', '$q', '$interval', 'notificationService', 'snowowlService', 'configService',
+    function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService, configService) {
 
-      // TODO Wire this to endpoint service, endpoint config
-      var apiEndpoint = '../snowowl/ihtsdo-sca/';
-
+      var apiEndpoint = '';
+      configService.getEndpoints().then(function (response) {
+        var endpoints = response;
+        var apiEndpoint = response.authoringEndpoint;
+      });
       //
       // Modified concept list utility functions
       //
