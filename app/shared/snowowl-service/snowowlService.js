@@ -1,16 +1,9 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', 'configService',
-    function ($http, $q, $timeout, notificationService, metadataService, configService) {
-      
-      var apiEndpoint = '';
-        
-      configService.getEndpoints().then(function (response) {
-        var endpoints = response;
-        console.log(response);
-        var apiEndpoint = response.snowowlEndpoint;
-      });
+  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService',
+    function ($http, $q, $timeout, notificationService, metadataService) {
+      var apiEndpoint = '../snowowl/snomed-ct/v2/';
 
       /////////////////////////////////////
       // Snowowl Concept Retrieval Methods
