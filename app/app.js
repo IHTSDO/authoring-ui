@@ -159,9 +159,8 @@ angular
       // Success block -- config properties retrieved
       function (response) {
         var endpoints = response;
+        console.log(response);
         var accountUrl = endpoints.imsEndpoint + '/auth';
-        var authoringEndpoint = endpoints.authoringEndpoint;
-        var snowowlEndpoint = endpoints.snowOwlEndpoint;
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
@@ -192,20 +191,6 @@ angular
           accountService.applyUserPreferences(preferences).then(function (appliedPreferences) {
 
           })
-        });
-        
-        // TODO Move these into the configuration success block once fully wired
-        // Moved outside to prevent irritating issue on dev where projects and polling fail to instantiate due to
-        // grunt not serving the config properties file
-
-        // begin polling the sca endpoint at 10s intervals
-        scaService.startPolling(10000);
-
-        ///////////////////////////////////////////
-        // Cache local data
-        ///////////////////////////////////////////
-        scaService.getProjects().then(function (response) {
-          metadataService.setProjects(response);
         });
 
 
@@ -238,7 +223,19 @@ angular
         notificationService.sendError('Fatal error: ' + error);
       });
 
-    
+    // TODO Move these into the configuration success block once fully wired
+    // Moved outside to prevent irritating issue on dev where projects and polling fail to instantiate due to
+    // grunt not serving the config properties file
+
+    // begin polling the sca endpoint at 10s intervals
+    scaService.startPolling(10000);
+
+    ///////////////////////////////////////////
+    // Cache local data
+    ///////////////////////////////////////////
+    scaService.getProjects().then(function (response) {
+      metadataService.setProjects(response);
+    });
 
 
 
