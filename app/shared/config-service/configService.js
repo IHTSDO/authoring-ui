@@ -75,7 +75,7 @@ angular.module('singleConceptAuthoringApp')
         return deferred.promise;
       },
       checkInstantiated: function () {
-          if(properties.endpoints !== null && properties.endpoints !== undefined)
+          if(properties.endpoints)
           {
               return true;
           }
