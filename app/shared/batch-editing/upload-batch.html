@@ -1,4 +1,13 @@
-<div ng-controller="uploadBatchCtrl" class="row column-md-12">
+<style>
+.sca-batch-editing .btn-default{width:100%;white-space:normal;}
+.sca-batch-editing .upload-button {border:2px solid #009cd7!important; color:#009cd7;background-color:transparent;}
+.sca-batch-editing .upload-button:active, .sca-batch-editing .upload-button:hover{background-color:#009cd7; color:#fff;}
+.sca-batch-editing .btn-default[disabled] {    background-color: #d8d8d8 !important;
+    border-color: #d8d8d8 !important;
+    color: #737373 !important;
+} 
+</style>
+<div ng-controller="uploadBatchCtrl" class="row column-md-12 sca-batch-editing">
     <div class="row column-md-12 p-15">
         <div
                         id="batchTemplateSelectBtn"
@@ -6,19 +15,21 @@
                         popover-placement="bottom-left"
                         popover-trigger="click: click"
                         popover-append-to-body="true"
-                        class="pointer btn btn-primary button-link tooltips-right tooltips-light normal-case">Template Selector<span ng-if="!templateOptions.selectedTemplate">Please Select a template</span>
+                        class="pointer btn btn-default btn-primary "><span ng-if="!templateOptions.selectedTemplate">Please Select a template</span>
             <span ng-if="templateOptions.selectedTemplate">Selected: {{templateOptions.selectedTemplate.name}}</span>
         </div>
     </div>
+   
     <div class="row column-md-12 p-15">
-        <button class="btn btn-default btn-primary button-link" ng-disabled="!templateOptions.selectedTemplate"
-              ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download Empty .TSV for Template
-        </button>
-    </div>
-    <div class="row column-md-12 p-15">
-        <label class="btn btn-default btn-file column-md-4 btn-primary button-link"> Upload a File to create a Batch
+        <label class="btn btn-default btn-file column-md-4 btn-primary button-link" ng-disabled="!templateOptions.selectedTemplate || isBatchPopulated"> Upload a File to create a Batch
             <input ng-disabled="!templateOptions.selectedTemplate || isBatchPopulated" type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this.files)" style="display: none;">
         </label>
+    </div>
+    
+     <div class="row column-md-12 p-15">
+        <button class="btn btn-default upload-button" ng-disabled="!templateOptions.selectedTemplate"
+              ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download Empty .TSV for Template
+        </button>
     </div>
     <div class="row column-md-12 p-15">
         <div ng-if="errorMessage">
