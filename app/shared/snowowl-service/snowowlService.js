@@ -26,7 +26,7 @@ angular.module('singleConceptAuthoringApp')
           };
         pollForInstantiation().then(function(){
             configService.getEndpoints().then(function (response) {
-                apiEndpoint = response.snowOwlEndpoint;
+                apiEndpoint = response.snowowlEndpoint;
               });
         });
 
