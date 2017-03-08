@@ -160,6 +160,8 @@ angular
       function (response) {
         var endpoints = response;
         var accountUrl = endpoints.imsEndpoint + '/auth';
+        $rootScope.authoringEndpoint = endpoints.authoringEndpoint;
+        $rootScope.snowowlEndpoint = endpoints.snowOwlEndpoint;
         var imsUrl = endpoints.imsEndpoint;
         $rootScope.collectorUrl = $sce.trustAsResourceUrl(endpoints.collectorEndpoint);
         $("<script>").attr({src: $rootScope.collectorUrl}).appendTo("body");
@@ -197,35 +199,14 @@ angular
         // grunt not serving the config properties file
 
         // begin polling the sca endpoint at 10s intervals
-        function pollForInstantiation() {
+        scaService.startPolling(10000);
 
-                    var deferred = $q.defer();
-
-                    $timeout(function () {
-                          if(configService.checkInstantiated)
-                            {
-                                deferred.resolve();
-                            }
-                        else{
-                            pollForInstantiation().then(function () {
-                                deferred.resolve();
-                              });
-                        }
-                    }, 400);
-
-                    return deferred.promise;
-                  };
-                pollForInstantiation().then(function(){
-                    scaService.startPolling(10000);
-
-                    ///////////////////////////////////////////
-                    // Cache local data
-                    ///////////////////////////////////////////
-                    scaService.getProjects().then(function (response) {
-                      metadataService.setProjects(response);
-                    });
-                });
-        
+        ///////////////////////////////////////////
+        // Cache local data
+        ///////////////////////////////////////////
+        scaService.getProjects().then(function (response) {
+          metadataService.setProjects(response);
+        });
 
 
         // add required endpoints to route provider
