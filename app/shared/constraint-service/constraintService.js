@@ -104,7 +104,7 @@ angular.module('singleConceptAuthoringApp')
         // if expression specified, perform direct retrieval
         if (escgExpr) {
           snowowlService.getAttributeValuesFromEcl(branch, termFilter, escgExpr).then(function (response) {
-            var concepts = getConceptsForValueTypeaheadHelper(response.items);
+            var concepts = getConceptsForValueTypeaheadHelper(response);
             deferred.resolve(concepts);
           }, function (error) {
             deferred.reject(error.message);

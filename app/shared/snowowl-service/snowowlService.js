@@ -1158,7 +1158,7 @@ angular.module('singleConceptAuthoringApp')
       }
         
       function getAttributeValuesFromEcl(branch, searchStr, ecl) {
-        return $http.get(apiEndpoint + '/mrcm/' + branch + '/concepts?active=true&expand=pt()&term=' + searchStr + '&ecl=' + ecl).then(function (response) {
+        return $http.get(apiEndpoint + branch + '/concepts?active=true&expand=fsn()&term=' + searchStr + '&ecl=' + ecl).then(function (response) {
           return response.data.items ? response.data.items : [];
         }, function (error) {
           return null;
