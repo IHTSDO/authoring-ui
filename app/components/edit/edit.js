@@ -1368,10 +1368,24 @@ angular.module('singleConceptAuthoringApp.edit', [
         filterDelay: 50,
         total: $scope.innerTemplates ? $scope.innerTemplates.length : 0, // length of data
         getData: function ($defer, params) {
-          // TODO support paging and filtering
-          var data = params.sorting() ? $filter('orderBy')($scope.innerTemplates, params.orderBy()) : $scope.innerTemplates;
-          $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-        }
+                var searchStr = params.filter().search;
+                var mydata = [];
+                if (!$scope.innerTemplates || $scope.innerTemplates.length === 0) {
+                  $defer.resolve([]);
+                } else {
+                    if (searchStr) {
+                      mydata = $scope.innerTemplates.filter(function (item) {
+                        return item.name.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                      });
+                    }
+                    else {
+                      mydata = $scope.innerTemplates;
+                    }
+              // TODO support paging and filtering
+              var data = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
+              $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+            }
+          }
       }
     );
 

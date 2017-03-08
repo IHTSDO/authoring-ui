@@ -268,10 +268,19 @@ padding-bottom:0px
 -moz-box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;
 box-shadow: inset 0px -2px 0px 0px rgba(1,168,223,1) !important;}
 
-.select-template{
-    max-height:60%;
-    overflow-x: scroll;
+.select-template .table-container{
+    max-height: 600px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
+
+.select-template .table-container::-webkit-scrollbar {
+    width: 0px;
+    background-color: transparent;
+    border-top: 0px solid transparent;
+    border-bottom: 0px solid transparent;
+}
+
 .select-template .table-full tbody > tr > td {
   padding-top: 5px;
   padding-bottom: 5px;
