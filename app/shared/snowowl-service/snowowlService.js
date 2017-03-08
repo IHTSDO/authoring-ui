@@ -1,34 +1,10 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('snowowlService', ['$http', '$q', '$timeout', 'notificationService', 'metadataService', 'configService',
-    function ($http, $q, $timeout, notificationService, metadataService, configService) {
+  .service('snowowlService', ['$http', '$q', '$rootScope', '$timeout', 'notificationService', 'metadataService', 'configService',
+    function ($http, $q, $rootScope, $timeout, notificationService, metadataService, configService) {
       
-      var apiEndpoint = '';
-        
-      function pollForInstantiation() {
-
-            var deferred = $q.defer();
-
-            $timeout(function () {
-                  if(configService.checkInstantiated)
-                    {
-                        deferred.resolve();
-                    }
-                else{
-                    pollForInstantiation().then(function () {
-                        deferred.resolve();
-                      });
-                }
-            }, 400);
-
-            return deferred.promise;
-          };
-        pollForInstantiation().then(function(){
-            configService.getEndpoints().then(function (response) {
-                apiEndpoint = response.snowowlEndpoint;
-              });
-        });
+      var apiEndpoint = '../' + $rootScope.snowowlEndpoint;
 
       /////////////////////////////////////
       // Snowowl Concept Retrieval Methods
