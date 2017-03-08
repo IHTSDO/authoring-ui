@@ -14,7 +14,7 @@ angular.module('singleConceptAuthoringApp.home', [
             });
     })
 
-    .controller('HomeCtrl', function HomeCtrl($scope, $q, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService, configService) {
+    .controller('HomeCtrl', function HomeCtrl($scope, $rootScope, $timeout, ngTableParams, $filter, $modal, $location, scaService, snowowlService, notificationService, metadataService) {
 
         // clear task-related i nformation
         $rootScope.validationRunning = false;
@@ -169,33 +169,15 @@ angular.module('singleConceptAuthoringApp.home', [
         $scope.$on('reloadTasks', function (event, data) {
             loadTasks();
         });
-        
 
 // Initialization:  get tasks and classifications
         function initialize() {
-                $scope.tasks = [];
-                function pollForInstantiation() {
+            $scope.tasks = [];
 
-                    var deferred = $q.defer();
 
-                    $timeout(function () {
-                          if(configService.checkInstantiated)
-                            {
-                                deferred.resolve();
-                            }
-                        else{
-                            pollForInstantiation().then(function () {
-                                deferred.resolve();
-                              });
-                        }
-                    }, 400);
+            loadTasks();
 
-                    return deferred.promise;
-                  };
-                pollForInstantiation().then(function(){
-                    loadTasks();
-                });
-            }
+        }
 
         initialize();
     })
