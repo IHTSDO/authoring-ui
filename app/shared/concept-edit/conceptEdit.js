@@ -144,12 +144,25 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             filterDelay: 50,
             total: scope.templates ? scope.templates.length : 0, // length of data
             getData: function ($defer, params) {
+                var searchStr = params.filter().search;
+                var mydata = [];
+                if (!scope.templates || scope.templates.length === 0) {
+                  $defer.resolve([]);
+                } else {
+                    if (searchStr) {
+                      mydata = scope.items.filter(function (item) {
+                        return item.name.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                      });
+                    }
+                    else {
+                      mydata = scope.templates;
+                    }
               // TODO support paging and filtering
               var data = params.sorting() ? $filter('orderBy')(scope.templates, params.orderBy()) : scope.templates;
               $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
             }
           }
-        );
+        });
           
         var originalConceptId = null;
 
