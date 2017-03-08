@@ -318,6 +318,11 @@ angular.module('singleConceptAuthoringApp')
               angular.forEach(relAndDescMap.descriptions, function (d) {
                 // if description has a term then add to concept
                 if (d.term) {
+                    for(var i = tc.descriptions.length - 1; i >= 0; i--){
+                        if(tc.descriptions[i].initialTerm === d.initialTerm){
+                            tc.descriptions.splice(i, 1);
+                        }
+                    }
                     tc.descriptions.push(d);
                 }
               });
@@ -357,6 +362,7 @@ angular.module('singleConceptAuthoringApp')
           });
 
           // replace logical values
+          console.log(tc);
           replaceLogicalValues(tc).then(function () {
             // replace template values (i.e. to replace display $term-x with x
             replaceLexicalValues(tc, template).then(function () {
