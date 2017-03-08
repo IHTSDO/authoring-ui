@@ -78,6 +78,10 @@ http {
 			proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
 		}
         
+        location /authoring-services {
+            proxy_pass https://dev-authoring.ihtsdotools.org/authoring-services;
+        }
+        
         location /auth {
 			proxy_pass https://dev-ims.ihtsdotools.org/api/account;
 		}
