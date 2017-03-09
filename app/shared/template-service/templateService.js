@@ -893,7 +893,6 @@ angular.module('singleConceptAuthoringApp')
 //
     function getTemplates(refreshCache, parentIds, branch) {
       var deferred = $q.defer();
-      console.log(parentIds);
       if (!templateCache || refreshCache) {
         if(!parentIds || typeof parentIds === 'undefined' || parentIds.length === 0)
             {
