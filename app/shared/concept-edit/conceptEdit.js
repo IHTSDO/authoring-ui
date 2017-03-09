@@ -129,6 +129,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 }
             });
             templateService.getTemplates(true, parentIds || undefined, scope.branch).then(function (templates) {
+              for(var i = templates.length -1; i >= 0; i--){
+                  if(templates[i].additionalSlots.length > 0)
+                      {
+                          templates.splice(i, 1);
+                      }
+              };
               scope.templates = templates;
             });
         }

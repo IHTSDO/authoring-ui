@@ -1402,6 +1402,14 @@ angular.module('singleConceptAuthoringApp.edit', [
     $scope.selectFocusForTemplate = function(concept){
         console.log(concept.concept);
         templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
+              for(var i = templates.length -1; i >= 0; i--){
+                  console.log(templates[i]);
+                  console.log(templates[i].additionalSlots.length);
+                  if(templates[i].additionalSlots.length > 0)
+                      {
+                          templates.splice(i, 1);
+                      }
+              };
               $scope.innerTemplates = templates;
               $scope.templateTableParams.reload();
             });
@@ -1615,6 +1623,14 @@ angular.module('singleConceptAuthoringApp.edit', [
         // retrieve available templates
         if(!metadataService.isTemplatesEnabled()){
           templateService.getTemplates().then(function (templates) {
+            for(var i = templates.length -1; i >= 0; i--){
+                console.log(templates[i]);
+                  console.log(templates[i].additionalSlots.length);
+                  if(templates[i].additionalSlots.length > 0)
+                      {
+                          templates.splice(i, 1);
+                      }
+              };
             $scope.templates = templates;
             $scope.innerTemplates = $scope.templates
             angular.forEach($scope.templates, function (template) {

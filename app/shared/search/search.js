@@ -27,6 +27,14 @@ angular.module('singleConceptAuthoringApp.searchPanel', [])
       // on load, get templates
       if(!metadataService.isTemplatesEnabled()){
           templateService.getTemplates().then(function (response) {
+              for(var i = response.length -1; i <= 0; i--){
+                console.log(response[i]);
+                  console.log(response[i].additionalSlots.length);
+                  if(response[i].additionalSlots.length > 0)
+                      {
+                          response.splice(i, 1);
+                      }
+              };
             $scope.templates = response;
           });
       }
