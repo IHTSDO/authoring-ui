@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
-  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout',
-    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout) {
+  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout', 'ngTableParams', '$filter',
+    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout, ngTableParams, $filter) {
          
          $scope.templateOptions = {
             availableTemplates : [],
@@ -12,6 +12,35 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
          var conceptPromises = [];
         
          $scope.isBatchPopulated = batchEditingService.getBatchConcepts() && batchEditingService.getBatchConcepts().length !== 0;
+        
+         $scope.templateTableParams = new ngTableParams({
+            page: 1,
+            count: 100,
+            sorting: {name: 'asc'}
+              },
+              {
+                filterDelay: 50,
+                total: $scope.templates ? $scope.templates.length : 0, // length of data
+                getData: function ($defer, params) {
+                    var searchStr = params.filter().search;
+                    var mydata = [];
+                    if (!$scope.templates || $scope.templates.length === 0) {
+                      $defer.resolve([]);
+                    } else {
+                        if (searchStr) {
+                          mydata = $scope.items.filter(function (item) {
+                            return item.name.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
+                          });
+                        }
+                        else {
+                          mydata = $scope.templates;
+                        }
+                  // TODO support paging and filtering
+                  var data = params.sorting() ? $filter('orderBy')($scope.templates, params.orderBy()) : $scope.templates;
+                  $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                }
+              }
+            });
         
          $scope.dlcDialog = (function (data, fileName) {
             var a = document.createElement('a');
