@@ -6,9 +6,6 @@
     border-color: #d8d8d8 !important;
     color: #737373 !important;
 } 
-
-.sca-batch-editing textarea{overflow:visible!important;max-height:150px!important;}
-
 </style>
 <div ng-controller="uploadBatchCtrl" class="row column-md-12 sca-batch-editing">
     <div class="row column-md-12 p-15">
@@ -34,10 +31,10 @@
               ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download Empty .TSV for Template
         </button>
     </div>
-    <div class="row column-md-12 p-t-15">
+    <div class="row column-md-12 p-15">
         <div ng-if="errorMessage">
             <div class="row " ng-repeat="message in errorMessage">
-                <div class="validation red mx-auto p-10">{{message}}</div>
+                <div class="validation red mx-auto p-5">{{message}}</div>
             </div>
         </div>
     </div>
