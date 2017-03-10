@@ -1,4 +1,5 @@
-<div>
+
+<div class="sca-batch-editing ">
   <div class="row no-padding no-gutter">
     <div class="col-md-8">
       
@@ -11,7 +12,7 @@
     </div>
   </div>
 
-  <div style="width:99%; "class="m-t-10" ng-show="batchHasData">
+  <div class="m-t-10" ng-show="batchHasData">
 
     <table ng-table="batchTableParams"
            template-pagination="utilities/data-table-pager.html"
@@ -25,9 +26,9 @@
           {{concept.sctid}}
         </td>
         <td sortable="'fsn'" title="'FSN'"
-            style="color: transparent !important; background-color: transparent !important; height: 40px;; max-height:40px;">
-          <div style="width:100%; color: transparent !important; height: 40px;; max-height:40px;">
-            <textarea class="editable-input form-control input-sm m-t-10" style="width:90%;"
+            style="color: transparent !important; background-color: transparent !important; ">
+          <div style="width:100%; color: transparent !important; ">
+            <textarea class="editable-input form-control  input-sm m-t-10" style="width:90%;"
                       type="text" ng-model="concept.fsn" ng-change="updateFsn(concept)"></textarea>
           </div>
         </td>
