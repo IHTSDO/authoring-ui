@@ -1403,8 +1403,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         console.log(concept.concept);
         templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
               for(var i = templates.length -1; i >= 0; i--){
-                  console.log(templates[i]);
-                  console.log(templates[i].additionalSlots.length);
                   if(templates[i].additionalSlots.length > 0)
                       {
                           templates.splice(i, 1);
@@ -1624,8 +1622,6 @@ angular.module('singleConceptAuthoringApp.edit', [
         if(!metadataService.isTemplatesEnabled()){
           templateService.getTemplates().then(function (templates) {
             for(var i = templates.length -1; i >= 0; i--){
-                console.log(templates[i]);
-                  console.log(templates[i].additionalSlots.length);
                   if(templates[i].additionalSlots.length > 0)
                       {
                           templates.splice(i, 1);

@@ -17,15 +17,28 @@
               <input type="text" ng-model="templateTableParams.filter()['search']" class="form-control"
                      placeholder="Filter by name" autofocus/>
       </div>
-      <div class="col-md-12 table-container">
+      <div class="col-md-12 table-container" ng-if="templateOptions">
+          <table ng-table="templateTableParams" template-pagination="utilities/data-table-pager.html"
+                 class="table table-full p-5">
+            <tr ng-repeat="template in $data" class="clickable-row">
+              <td data-title="'Name'" sortable="'name'" header-class="'header-tooltips'"
+                  header-title="'Click to sort'" filter="{ 'name': 'text' }">
+                <a ng-if="templateOptions" class="tooltips-right"ng-click="selectBatchTemplate(template)">
+                {{template.name}}<span> Click to select template </span></a>
+              </td>
+              <td data-title="'Version'" sortable="'version'" header-class="'header-tooltips'"
+                  header-title="'Click to sort'" filter="{ 'version': 'number' }">
+                {{template.version}}
+              </td>
+            </tr>
+          </table>
+      </div>
+      <div class="col-md-12 table-container" ng-if="!templateOptions">
           <table ng-table="templateTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full p-5">
             <tr ng-repeat="template in $data" class="clickable-row">
               <td data-title="'Name'" sortable="'name'" header-class="'header-tooltips'"
                   header-title="'Click to sort'" filter="{ 'name': 'text' }"><a ng-if="!concept && !templateOptions" class="tooltips-right"ng-click="selectTemplate(template, createOnSelectTemplate)">
-                {{template.name}}<span> Click to select template </span></a>
-
-                <a ng-if="templateOptions" class="tooltips-right"ng-click="selectBatchTemplate(template)">
                 {{template.name}}<span> Click to select template </span></a>
 
                 <a class="tooltips-right" ng-if="concept" ng-click="applyTemplate(template)">
