@@ -117,6 +117,36 @@ angular.module('singleConceptAuthoringApp')
 
       return deferred.promise;
     }
+    
+    function getConceptNames(relationships, currentTask) {
+            var deferred = $q.defer();
+            var conceptIds = [];
+        
+             angular.forEach(relationships, function(rel) {
+                conceptIds.push(rel.target.conceptId);                                
+             });
+             
+               // skip if no concept ids
+              if (conceptIds.length > 0) {
+
+                // bulk call for concept ids
+                snowowlService.bulkGetConcept(conceptIds, currentTask.branchPath).then(function (concepts) {
+                  angular.forEach(concepts.items, function (concept) {
+                    angular.forEach(relationships, function(rel){
+                        if(concept.id === rel.target.conceptId){
+                            rel.target.fsn = concept.fsn.term;
+                        }
+                    });
+                  });
+
+                  deferred.resolve(relationships);
+                });
+              } else {
+                deferred.resolve();
+              }
+
+            return deferred.promise;
+          }
 
     function replaceLexicalValues(concept, template) {
       var deferred = $q.defer();
@@ -347,9 +377,6 @@ angular.module('singleConceptAuthoringApp')
               for(var i = 0; i < tc.relationships.length; i++)
                   {
                       tc.relationships[i].target = relAndDescMap.relationships[i].target;
-                      snowowlService.getConceptFsn(tc.relationships[i].target.conceptId, currentTask.branchPath, i).then(function(item){
-                          tc.relationships[item.count].target.fsn = item.data.term;
-                      });
                   }
           }
 
@@ -366,7 +393,10 @@ angular.module('singleConceptAuthoringApp')
           replaceLogicalValues(tc).then(function () {
             // replace template values (i.e. to replace display $term-x with x
             replaceLexicalValues(tc, template).then(function () {
-              deferred.resolve(tc);
+                getConceptNames(tc.relationships, currentTask).then(function(rels){
+                    tc.relationships = rels;
+                    deferred.resolve(tc);
+                })
             }, function (error) {
               deferred.reject(error);
             })
