@@ -110,10 +110,10 @@ input[type=checkbox]:after {
     border-radius: 2px;
     transition: 240ms;
 }
-td textarea,
+
 td input,
 td select {
-    height: 14px !important;
+    height: 14px;
 }
 .validation {
     margin-left: 20px;
