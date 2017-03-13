@@ -527,7 +527,11 @@ angular.module('singleConceptAuthoringApp')
                 if (validation.hasErrors) {
                   originalConcept.validation = validation;
                   originalConcept.tableAction = null;
-                  deferred.reject('Validation returned errors');
+                  batchEditingService.updateBatchConcept(originalConcept, originalConceptId).then(function () {
+                              originalConcept.tableAction = null;
+                              scope.batchTableParams.reload();
+                              deferred.reject('Validation returned errors');
+                            })
                 } else {
 
                   originalConcept.tableAction = 'Saving...';

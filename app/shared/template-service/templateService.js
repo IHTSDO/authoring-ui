@@ -123,7 +123,10 @@ angular.module('singleConceptAuthoringApp')
             var conceptIds = [];
         
              angular.forEach(relationships, function(rel) {
-                conceptIds.push(rel.target.conceptId);                                
+                if(rel.target.conceptId !== null)
+                    {
+                        conceptIds.push(rel.target.conceptId);
+                    }                   
              });
              
                // skip if no concept ids
