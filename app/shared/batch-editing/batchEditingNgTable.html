@@ -31,7 +31,7 @@
                       type="text" ng-model="concept.fsn" ng-change="updateFsn(concept)"></textarea>
           </div>
         </td>
-        <td ng-repeat="slot in templateSlots" ng-attr-title="{{slot.slotName}}" ng-attr-sortable="{{slot.slotName}}">
+        <td ng-repeat="slot in templateSlots">
           <div>
            <textarea type="text" ng-model="concept[slot.slotName]"
                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, slot.slotName, $viewValue)"

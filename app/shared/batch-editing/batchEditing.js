@@ -102,7 +102,6 @@ angular.module('singleConceptAuthoringApp')
 
                 // initialize columns from template
                 initNgTableSlots(batchEditingService.getCurrentTemplate());
-                console.log(scope.templateSlots);
                 // get the current batch concepts
                 var bcs = batchEditingService.getBatchConcepts();
 
@@ -278,6 +277,13 @@ angular.module('singleConceptAuthoringApp')
               });
             });
           };
+            
+          scope.getTitle = function(slot){
+              console.log(slot);
+              if(slot){
+                  return slot.slotName;
+              }
+          }
 
           scope.clearConcepts = function () {
 
@@ -702,6 +708,35 @@ angular.module('singleConceptAuthoringApp')
               $timeout(function () {
                     scope.batchTableParams.reload();
                   }, 1000);
+              $timeout(function () {
+                  
+                  (function($) {
+                      var count = 0;
+                      var i = 0;
+                      var panel = {};
+                      for(var j = 0; j < scope.templateSlots.length; j++){
+                          var item = $(".sca-batch-table table thead tr th:nth-of-type(4)");
+                          console.log(item);
+                          var clone = item.clone();
+                          item.after(clone);
+                      }
+                        $(".sca-batch-table table thead tr th").each(function(){
+                            console.log(jQuery(this).text());
+                            if(i > 2){
+                                if(scope.templateSlots[count] !== undefined)
+                                    {
+                                        jQuery(this).text(scope.templateSlots[count].slotName);
+                                        count++;
+                                    }
+                            }
+                            console.log(jQuery(this).text());
+                            i++;
+//                            console.log(scope.templateSlots);
+                        });
+                    }(jQuery));
+                    
+                  }, 1500);
+                
               
 
             })
