@@ -63,7 +63,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             });
           }
         if(!metadataService.isTemplatesEnabled()){
-            templateService.getTemplates().then(function (response) {
+            templateService.getTemplates(true).then(function (response) {
                 $scope.templates = response;
             });
         }
