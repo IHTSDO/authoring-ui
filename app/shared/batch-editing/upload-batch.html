@@ -19,6 +19,12 @@
             <span ng-if="templateOptions.selectedTemplate">Selected: {{templateOptions.selectedTemplate.name}}</span>
         </div>
     </div>
+    
+    <div class="row column-md-12 p-15">
+        <button class="btn btn-default upload-button" ng-disabled="!templateOptions.selectedTemplate"
+              ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download Empty .TSV for Template
+        </button>
+    </div>
    
     <div class="row column-md-12 p-15">
         <label class="btn btn-default btn-file column-md-4 btn-primary button-link" ng-disabled="!templateOptions.selectedTemplate || isBatchPopulated"> Upload a File to create a Batch
@@ -26,11 +32,7 @@
         </label>
     </div>
     
-     <div class="row column-md-12 p-15">
-        <button class="btn btn-default upload-button" ng-disabled="!templateOptions.selectedTemplate"
-              ng-click="downloadTemplate(templateOptions.selectedTemplate.name)">Download Empty .TSV for Template
-        </button>
-    </div>
+     
     <div class="row column-md-12 p-15">
         <div ng-if="errorMessage">
             <div class="row " ng-repeat="message in errorMessage">
