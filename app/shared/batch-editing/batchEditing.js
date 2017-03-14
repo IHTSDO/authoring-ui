@@ -637,6 +637,13 @@ angular.module('singleConceptAuthoringApp')
             })
 
           };
+            
+          scope.removeAll = function () {
+              batchEditingService.setBatchConcepts([]).then(function(){
+                  scope.batchTableParams.reload();
+                  $rootScope.$broadcast('batchEditing.refresh');
+              });
+          };
 
 
           function removeViewedConcept(conceptId) {
@@ -716,12 +723,10 @@ angular.module('singleConceptAuthoringApp')
                       var panel = {};
                       for(var j = 0; j < scope.templateSlots.length; j++){
                           var item = $(".sca-batch-table table thead tr th:nth-of-type(4)");
-                          console.log(item);
                           var clone = item.clone();
                           item.after(clone);
                       }
                         $(".sca-batch-table table thead tr th").each(function(){
-                            console.log(jQuery(this).text());
                             if(i > 2){
                                 if(scope.templateSlots[count] !== undefined)
                                     {
@@ -729,9 +734,7 @@ angular.module('singleConceptAuthoringApp')
                                         count++;
                                     }
                             }
-                            console.log(jQuery(this).text());
                             i++;
-//                            console.log(scope.templateSlots);
                         });
                     }(jQuery));
                     

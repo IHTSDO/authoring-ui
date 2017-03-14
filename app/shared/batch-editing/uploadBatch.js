@@ -11,8 +11,6 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
         
          var conceptPromises = [];
         
-         $scope.isBatchPopulated = batchEditingService.getBatchConcepts() && batchEditingService.getBatchConcepts().length !== 0;
-        
          $scope.templateTableParams = new ngTableParams({
             page: 1,
             count: 100,
@@ -78,10 +76,11 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
         $scope.uploadFile = function(files) {
                 notificationService.sendMessage('Uploading and generating Batch...', 3000);
+                $scope.errorMessage = [];
                 var fd = new FormData();
                 //Take the first selected file
                 fd.append("tsvFile", files[0]);
-                templateService.uploadTemplateCsv('MAIN', $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
+                templateService.uploadTemplateCsv($scope.branch, $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
                     angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
                     });
 
@@ -100,7 +99,12 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
             };
         
+        $scope.$on('batchEditing.refresh', function (event, data) {
+            initialize();
+          });
+        
         function initialize() {
+            conceptPromises = [];
             if(!metadataService.isTemplatesEnabled()){
                 templateService.getTemplates().then(function (templates) {
                   $scope.templateOptions.availableTemplates = templates;
@@ -108,11 +112,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             }
             else{$scope.templates = null};
 
-            batchEditingService.initializeFromScope($scope).then(function () {
-
-              $scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
-
-            })
+            $scope.isBatchPopulated = batchEditingService.getBatchConcepts() && batchEditingService.getBatchConcepts().length !== 0;
           }
         initialize();
     }]);

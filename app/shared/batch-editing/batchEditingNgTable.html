@@ -1,15 +1,21 @@
 <div>
   <div class="row no-padding no-gutter">
-    <div class="col-md-8">
-      
-    </div>
+    <div class="col-md-2 pull-right">
+        <div class="col-md-4" ng-show="batchHasData">
+          <button class="btn btn-default btn-primary red pull-right m-r-15"
+                  ng-click="removeAll()">Discard All
+          </button>
+        </div>
 
-    <div class="col-md-4" ng-show="batchHasData">
-      <button class="btn btn-default btn-primary  pull-right m-r-15"
-              ng-click="saveAll()">Save All
-      </button>
+        <div class="col-md-4" ng-show="batchHasData">
+          <button class="btn btn-default btn-primary  pull-right m-r-15"
+                  ng-click="saveAll()">Save All
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
+      
+    
 
   <div class="m-t-10 sca-batch-table" style="width:99%;" ng-show="batchHasData">
 
