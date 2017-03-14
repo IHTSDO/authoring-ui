@@ -409,7 +409,8 @@ angular.module('singleConceptAuthoringApp')
         var queryParams = '';
 
         // construct header values
-        if (acceptLanguageValue) {
+        console.log(acceptLanguageValue);
+        if (acceptLanguageValue && !acceptLanguageValue.contains('null')) {
           // declare headers if not specified
           if (!config.headers) {
             config.headers = {};
@@ -454,6 +455,7 @@ angular.module('singleConceptAuthoringApp')
         var queryParams = '';
 
         // construct header values
+          console.log(acceptLanguageValue);
         if (acceptLanguageValue) {
           // declare headers if not specified
           if (!config.headers) {
@@ -739,6 +741,7 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
         var config = {};
+          console.log(acceptLanguageValue);
         if (acceptLanguageValue) {
           config.headers = {'Accept-Language': acceptLanguageValue};
         }

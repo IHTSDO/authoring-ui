@@ -277,6 +277,10 @@ angular.module('singleConceptAuthoringApp')
           return module.id === moduleId;
         }).length > 0;
     }
+      
+    function hasLanguageSpecified(){
+        
+    }
 
     function isUsDialect(dialectId) {
       return dialectId === '900000000000509007';
@@ -374,7 +378,7 @@ angular.module('singleConceptAuthoringApp')
     // get available dialects from extension metadata
     // NOTE: Return international dialects for FSNs
     function getDialectsForModuleId(moduleId, FSN) {
-      if (extensionMetadata && !FSN) {
+      if (extensionMetadata && !FSN && extensionMetadata.dialects !== null) {
         return extensionMetadata.dialects;
       } else {
         return internationalMetadata.dialects;
@@ -382,7 +386,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getLanguagesForModuleId(moduleId) {
-      if (isExtensionModule(moduleId)) {
+      if (isExtensionModule(moduleId) && extensionMetadata.languages !== null) {
         return extensionMetadata.languages;
       } else {
         return internationalMetadata.languages;
@@ -390,7 +394,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getDefaultLanguageForModuleId(moduleId) {
-      if (isExtensionModule(moduleId)) {
+      if (isExtensionModule(moduleId) && extensionMetadata.defaultLanguage  !== null) {
         return extensionMetadata.defaultLanguage ? extensionMetadata.defaultLanguage : extensionMetadata.languages[0];
       } else {
         return internationalMetadata.defaultLanguage ? internationalMetadata.defaultLanguage : internationalMetadata.languages[0];
@@ -398,7 +402,8 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function getAcceptLanguageValueForModuleId(moduleId) {
-      if (isExtensionModule(moduleId)) {
+        
+      if (isExtensionModule(moduleId) && extensionMetadata.defaultLanguage !== null) {
         return extensionMetadata.acceptLanguageMap;
       } else {
         return internationalMetadata.acceptLanguageMap;
