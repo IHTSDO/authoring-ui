@@ -298,7 +298,7 @@ angular.module('singleConceptAuthoringApp')
             if (scope.viewedConcepts.filter(function (c) {
                 return c.conceptId === concept.conceptId;
               }).length === 0) {
-              console.debug('edit concept', concept);
+              scope.viewedConcepts = [];
               scope.viewedConcepts.push(concept);
               scope.batchTableParams.reload();
             } else {
