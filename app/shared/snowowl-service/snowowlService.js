@@ -198,13 +198,14 @@ angular.module('singleConceptAuthoringApp')
         }
       }
 
-      function cleanDescription(description) {
+      function cleanDescription(description, keepTempIds) {
         var allowableDescriptionProperties = [
           'conceptId', 'released', 'active', 'moduleId', 'term', 'lang', 'caseSignificance', 'effectiveTime', 'descriptionId', 'type', 'acceptabilityMap', 'inactivationIndicator', 'associationTargets',
         ];
 
         // if a locally assigned UUID, strip
-        if (description.descriptionId && description.descriptionId.indexOf('-') !== -1) {
+        if (description.descriptionId && description.descriptionId.indexOf('-') !== -1 && !keepTempIds) {
+            console.log('here');
           delete description.descriptionId;
         }
         if (description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated') {
@@ -249,7 +250,7 @@ angular.module('singleConceptAuthoringApp')
         }
 
         angular.forEach(concept.descriptions, function (description) {
-          cleanDescription(description);
+          cleanDescription(description, keepTempIds);
         });
 
         angular.forEach(concept.relationships, function (relationship) {

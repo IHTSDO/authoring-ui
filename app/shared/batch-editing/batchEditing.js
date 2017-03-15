@@ -368,7 +368,7 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
 
             var conceptCopy = angular.copy(concept);
-            console.debug('validating', conceptCopy);
+            console.debug('validating', concept);
 
             if (!componentAuthoringUtil.checkConceptComplete(concept)) {
               concept.errorMsg = 'Incomplete';
@@ -376,7 +376,7 @@ angular.module('singleConceptAuthoringApp')
 
               snowowlService.validateConcept(scope.task.projectKey,
                 scope.task.key,
-                conceptCopy,
+                concept,
                 true // retain temporary ids
               ).then(function (validationResults) {
                 console.debug(concept)
@@ -513,6 +513,14 @@ angular.module('singleConceptAuthoringApp')
             } else {
 
               var concept = angular.copy(originalConcept);
+              angular.forEach(originalConcept.descriptions, function(desc){
+                  angular.forEach(concept.descriptions, function(newDesc){
+                          if(desc.term === newDesc.term){
+                              newDesc.descriptionId = desc.descriptionId;
+                          }
+                      })
+                  });
+                
 
               // store template
               var template = concept.template;
