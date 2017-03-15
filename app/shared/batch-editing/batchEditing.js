@@ -551,18 +551,18 @@ angular.module('singleConceptAuthoringApp')
                   originalConcept.tableAction = 'Saving...';
 
                   // clean concept again, this time stripping temp ids
-                  snowowlService.cleanConcept(concept);
+                  snowowlService.cleanConcept(concept, false);
 
                   // In order to ensure proper term-server behavior,
                   // need to delete SCTIDs without effective time on descriptions and relationships
                   // otherwise the values revert to termserver version
                   angular.forEach(concept.descriptions, function (description) {
-                    if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime) {
+                    if (!description.effectiveTime) {
                       delete description.descriptionId;
                     }
                   });
                   angular.forEach(concept.relationships, function (relationship) {
-                    if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime) {
+                    if (!relationship.effectiveTime) {
                       delete relationship.relationshipId;
                     }
                   });
