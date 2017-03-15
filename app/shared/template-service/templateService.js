@@ -38,7 +38,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // if no value, return display name in brackets
-      if (!nameValueMap[slotName]) {
+      if (!nameValueMap[slotName] && lt.displayName) {
         return '[' + lt.displayName + ']';
       }
       // replace specified parts and extraneous whitespace
