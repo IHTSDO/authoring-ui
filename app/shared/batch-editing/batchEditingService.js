@@ -24,6 +24,8 @@ angular.module('singleConceptAuthoringApp')
       //
 
       function initializeFromScope(scope) {
+        batchConcepts = [];
+        currentTemplate = [];
         var deferred = $q.defer();
         currentScope = scope;
         initializeFromTask(scope.task).then(function() {
