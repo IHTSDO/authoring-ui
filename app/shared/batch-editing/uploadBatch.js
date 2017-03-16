@@ -26,7 +26,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                       $defer.resolve([]);
                     } else {
                         if (searchStr) {
-                          mydata = $scope.items.filter(function (item) {
+                          mydata = $scope.templates.filter(function (item) {
                             return item.name.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                           });
                         }
@@ -34,7 +34,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                           mydata = $scope.templates;
                         }
                   // TODO support paging and filtering
-                  var data = params.sorting() ? $filter('orderBy')($scope.templates, params.orderBy()) : $scope.templates;
+                  var data = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
                   $defer.resolve(data.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
               }
