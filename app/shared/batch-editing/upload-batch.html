@@ -10,12 +10,13 @@
 <div ng-controller="uploadBatchCtrl" class="row column-md-12 sca-batch-editing">
     <div class="row column-md-12 p-15">
         <div
+                        ng-disabled="templatesLoading"
                         id="batchTemplateSelectBtn"
                         popover-template="'components/edit/editTemplateSelect.html'"
                         popover-placement="bottom-left"
                         popover-trigger="click: click"
                         popover-append-to-body="true"
-                        class="pointer btn btn-default btn-primary "><span ng-if="!templateOptions.selectedTemplate">Please Select a template</span>
+                        class="pointer btn btn-default btn-primary"><span ng-if="!templateOptions.selectedTemplate">Please Select a template</span>
             <span ng-if="templateOptions.selectedTemplate">Selected: {{templateOptions.selectedTemplate.name}}</span>
         </div>
     </div>

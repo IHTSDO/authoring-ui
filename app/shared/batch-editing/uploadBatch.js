@@ -8,6 +8,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             availableTemplates : [],
             selectedTemplate: null
           };
+         $scope.templatesLoading = true;
         
          var conceptPromises = [];
         
@@ -18,20 +19,20 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
               },
               {
                 filterDelay: 50,
-                total: $scope.templates ? $scope.templates.length : 0, // length of data
+                total: $scope.templateOptions.availableTemplates ? $scope.templateOptions.availableTemplates.length : 0, // length of data
                 getData: function ($defer, params) {
                     var searchStr = params.filter().search;
                     var mydata = [];
-                    if (!$scope.templates || $scope.templates.length === 0) {
+                    if (!$scope.templateOptions.availableTemplates || $scope.templateOptions.availableTemplates.length === 0) {
                       $defer.resolve([]);
                     } else {
                         if (searchStr) {
-                          mydata = $scope.templates.filter(function (item) {
+                          mydata = $scope.templateOptions.availableTemplates.filter(function (item) {
                             return item.name.toLowerCase().indexOf(searchStr.toLowerCase()) > -1;
                           });
                         }
                         else {
-                          mydata = $scope.templates;
+                          mydata = $scope.templateOptions.availableTemplates;
                         }
                   // TODO support paging and filtering
                   var data = params.sorting() ? $filter('orderBy')(mydata, params.orderBy()) : mydata;
@@ -104,10 +105,13 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
           });
         
         function initialize() {
+            $scope.templatesLoading = true;
             conceptPromises = [];
+            $scope.templateOptions.availableTemplates = [];
             if(!metadataService.isTemplatesEnabled()){
                 templateService.getTemplates().then(function (templates) {
                   $scope.templateOptions.availableTemplates = templates;
+                    $scope.templatesLoading = false;
                 });
             }
             else{$scope.templates = null};
