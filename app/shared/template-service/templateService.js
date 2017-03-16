@@ -25,7 +25,9 @@ angular.module('singleConceptAuthoringApp')
     var PATTERN_SLOT = /\$([^$]+)\$/g;
 
     function getSlotValue(slotName, template, nameValueMap) {
-
+      if(template.additionalSlots && template.additionalSlots.indexOf(slotName) !== -1){
+          return ''
+      }
       console.debug('getSlotValue', slotName, template, nameValueMap);
       // find the lexical template for this slot
       var lt;
@@ -38,7 +40,7 @@ angular.module('singleConceptAuthoringApp')
       }
 
       // if no value, return display name in brackets
-      if (!nameValueMap[slotName] && lt.displayName) {
+      if (!nameValueMap[slotName] && lt && lt !== undefined) {
         return '[' + lt.displayName + ']';
       }
       // replace specified parts and extraneous whitespace
