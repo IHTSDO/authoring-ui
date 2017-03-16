@@ -205,7 +205,6 @@ angular.module('singleConceptAuthoringApp')
 
         // if a locally assigned UUID, strip
         if (description.descriptionId && description.descriptionId.indexOf('-') !== -1 && !keepTempIds) {
-            console.log('here');
           delete description.descriptionId;
         }
         if (description.inactivationIndicator && description.inactivationIndicator === 'Reason not stated') {
