@@ -56,7 +56,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
           }());
 
           $scope.downloadTemplate = function(template){
-            templateService.downloadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey, $routeParams.taskKey, template).then(function (data) {
+            templateService.downloadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, template).then(function (data) {
               var fileName = 'batch_' + template;
               $scope.dlcDialog(data.data, fileName);
             });
@@ -81,7 +81,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 var fd = new FormData();
                 //Take the first selected file
                 fd.append("tsvFile", files[0]);
-                templateService.uploadTemplateCsv('MAIN', $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
+                templateService.uploadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
                     angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
                     });
 
