@@ -55,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
 
           function initNgTableSlots(template) {
 
-            if (template) {
+            if (template && template.conceptOutline) {
               angular.forEach(template.conceptOutline.relationships, function (r) {
                 if (r.targetSlot && r.targetSlot.slotName) {
                   var add = true;
@@ -98,8 +98,6 @@ angular.module('singleConceptAuthoringApp')
               total: batchEditingService.getBatchConcepts() ? batchEditingService.getBatchConcepts().length : 0,
               getData: function ($defer, params) {
 
-                console.debug(scope.batchTableParams);
-
                 // initialize columns from template
                 initNgTableSlots(batchEditingService.getCurrentTemplate());
                 // get the current batch concepts
@@ -114,7 +112,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // ensure stored concepts are sorted according to current view
                   // i.e. apply sorting outside of current page to ensure batch action matching
-                  bcs.sort(batchTableSort);
+                  //bcs.sort(batchTableSort);
 
                   var searchStr = params.filter().search;
                   var concepts = [];
@@ -542,10 +540,20 @@ angular.module('singleConceptAuthoringApp')
                   originalConcept.validation = validation;
                   originalConcept.tableAction = null;
                   batchEditingService.updateBatchConcept(originalConcept, originalConceptId).then(function () {
-                              originalConcept.tableAction = null;
-                              scope.batchTableParams.reload();
-                              deferred.reject('Validation returned errors');
-                            })
+                        originalConcept.tableAction = null;
+                        var index = scope.viewedConcepts.map(function (c) {
+                            console.log(c.conceptId);
+                            return c.conceptId
+                        }).indexOf(originalConcept.conceptId);
+                      console.log(originalConcept.conceptId);
+                        if (index !== -1) {
+                          console.log('here');
+                          removeViewedConcept(originalConcept.conceptId);
+                          scope.editConcept(originalConcept);
+                        }
+                        scope.batchTableParams.reload();
+                        deferred.reject('Validation returned errors');
+                  })
                 } else {
 
                   originalConcept.tableAction = 'Saving...';
@@ -612,6 +620,7 @@ angular.module('singleConceptAuthoringApp')
                       }
                       else{
                           scope.removeConcept(originalConcept);
+                          removeViewedConcept(originalConcept.conceptId);
                           deferred.resolve(savedConcept);
                       }
 
