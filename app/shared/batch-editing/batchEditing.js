@@ -137,7 +137,6 @@ angular.module('singleConceptAuthoringApp')
 
                   concepts = concepts.slice((params.page() - 1) * params.count(), params.page() * params.count());
 
-                  console.debug('CONCEPTS', concepts);
                   $defer.resolve(concepts);
                 }
 
@@ -197,7 +196,6 @@ angular.module('singleConceptAuthoringApp')
                   relationship.template && relationship.template.targetSlot ? relationship.template.targetSlot.allowableRangeECL : null).then(function () {
                   relationship.target.conceptId = data.id;
                   relationship.target.fsn = data.name;
-                  console.debug('scope.templateOptions', scope.templateOptions);
                   templateService.updateTargetSlot(concept, scope.templateOptions.selectedTemplate, relationship).then(function () {
                     scope.batchTableParams.reload();
                   })
@@ -277,7 +275,6 @@ angular.module('singleConceptAuthoringApp')
           };
             
           scope.getTitle = function(slot){
-              console.log(slot);
               if(slot){
                   return slot.slotName;
               }
@@ -313,8 +310,6 @@ angular.module('singleConceptAuthoringApp')
             if (!concepts || concepts.length === 0) {
               return;
             }
-
-            console.debug('Validating ', concepts[0].fsn);
 
             var concept = concepts[0];
 
@@ -366,7 +361,6 @@ angular.module('singleConceptAuthoringApp')
             var deferred = $q.defer();
 
             var conceptCopy = angular.copy(concept);
-            console.debug('validating', concept);
 
             if (!componentAuthoringUtil.checkConceptComplete(concept)) {
               concept.errorMsg = 'Incomplete';
@@ -377,7 +371,6 @@ angular.module('singleConceptAuthoringApp')
                 concept,
                 true // retain temporary ids
               ).then(function (validationResults) {
-                console.debug(concept)
                 var results = {
                   hasWarnings: false,
                   hasErrors: false,
@@ -421,8 +414,6 @@ angular.module('singleConceptAuthoringApp')
             concept.validation = null;
 
             var template = concept.template;
-
-            console.debug('validateConcept', concept);
 
             concept.tableAction = 'Validating...';
             concept.validation = null;
@@ -468,19 +459,26 @@ angular.module('singleConceptAuthoringApp')
             }
 
 
-            scope.saveConcept(tableConcept ? tableConcept : concept, true).then(function () {
-              console.log('saveConceptResponse');
+            scope.saveConcept(tableConcept ? tableConcept : concept, true).then(function (response) {
               if (tableConcept) {
                 tableConcept.tableAction = null;
                 scope.batchTableParams.reload();
               }
-              saveAllHelper(concepts.slice(1));
+              var temp = concepts.slice(1);
+                if(!response.validation.hasErrors && !response.validation.hasWarnings){
+                    tableConcept.tableAction = 'Saved...';
+                    $timeout(function () {
+                        scope.removeConcept(concept);
+                        scope.batchTableParams.reload();
+                      }, 2500);
+                }
+              saveAllHelper(temp);
 
             }, function (error) {
               if (tableConcept) {
                 tableConcept.tableAction = null;
               }
-              saveAllHelper(concepts.slice(-1));
+              saveAllHelper(concepts.slice(1));
             });
           }
 
@@ -500,8 +498,6 @@ angular.module('singleConceptAuthoringApp')
             originalConcept.validation = null;
 
             var deferred = $q.defer();
-
-            console.debug('saving concept', originalConcept);
 
             // check for completion
             var completionErrors = componentAuthoringUtil.checkConceptComplete(originalConcept);
@@ -543,12 +539,9 @@ angular.module('singleConceptAuthoringApp')
                   batchEditingService.updateBatchConcept(originalConcept, originalConceptId).then(function () {
                         originalConcept.tableAction = null;
                         var index = scope.viewedConcepts.map(function (c) {
-                            console.log(c.conceptId);
                             return c.conceptId
                         }).indexOf(originalConcept.conceptId);
-                      console.log(originalConcept.conceptId);
                         if (index !== -1) {
-                          console.log('here');
                           removeViewedConcept(originalConcept.conceptId);
                           scope.editConcept(originalConcept);
                         }
@@ -587,8 +580,6 @@ angular.module('singleConceptAuthoringApp')
                     concept
                   ).then(function (savedConcept) {
 
-                    console.debug('concept saved', template, savedConcept);
-
                     // revalidate for newly introduced warnings or new concept id reassignment
                     getValidationResultForConcept(savedConcept).then(function (newValidation) {
                       savedConcept.validation = newValidation;
@@ -620,7 +611,6 @@ angular.module('singleConceptAuthoringApp')
                           })
                       }
                       else{
-                          scope.removeConcept(originalConcept);
                           removeViewedConcept(originalConcept.conceptId);
                           deferred.resolve(savedConcept);
                       }
@@ -674,11 +664,9 @@ angular.module('singleConceptAuthoringApp')
           }
 
           scope.updateFsn = function(concept) {
-            console.debug('updateFSN', concept);
             var fsnDesc = componentAuthoringUtil.getFsnDescriptionForConcept(concept);
             fsnDesc.term = concept.fsn;
             batchEditingService.updateBatchConcept(concept).then(function() {
-              console.debug('concept after update', concept);
             })
           };
 
@@ -697,8 +685,6 @@ angular.module('singleConceptAuthoringApp')
             if (!data || !data.concept) {
               return;
             }
-
-            console.debug('conceptEdit.conceptChange', data);
 
             // if validation result returned, apply to concept for storage
             if (data.validation) {
