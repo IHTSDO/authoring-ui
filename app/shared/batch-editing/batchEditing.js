@@ -469,6 +469,7 @@ angular.module('singleConceptAuthoringApp')
 
 
             scope.saveConcept(tableConcept ? tableConcept : concept, true).then(function () {
+              console.log('saveConceptResponse');
               if (tableConcept) {
                 tableConcept.tableAction = null;
                 scope.batchTableParams.reload();
@@ -479,7 +480,7 @@ angular.module('singleConceptAuthoringApp')
               if (tableConcept) {
                 tableConcept.tableAction = null;
               }
-              saveAllHelper(concepts.slice(1));
+              saveAllHelper(concepts.slice(-1));
             });
           }
 
