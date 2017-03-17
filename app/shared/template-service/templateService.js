@@ -28,7 +28,6 @@ angular.module('singleConceptAuthoringApp')
       if(template.additionalSlots && template.additionalSlots.indexOf(slotName) !== -1){
           return ''
       }
-      console.debug('getSlotValue', slotName, template, nameValueMap);
       // find the lexical template for this slot
       var lt;
       try {
@@ -184,10 +183,7 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function updateTargetSlot(concept, template, relationship) {
-    console.log(template);
       var deferred = $q.defer();
-
-      console.debug('updatetargetslot', concept, relationship);
 
       replaceLogicalValuesForRelationship(concept, relationship).then(function () {
         replaceLexicalValues(concept, template).then(function () {
@@ -321,8 +317,6 @@ angular.module('singleConceptAuthoringApp')
 
     function createTemplateConcept(template, targetSlotMap, relAndDescMap) {
       var deferred = $q.defer();
-
-      console.debug('create template concept', template, targetSlotMap);
       // check required arguments
       if (!template) {
         deferred.reject('Template error: invalid arguments');
@@ -394,7 +388,6 @@ angular.module('singleConceptAuthoringApp')
           });
 
           // replace logical values
-          console.log(tc);
           replaceLogicalValues(tc).then(function () {
             // replace template values (i.e. to replace display $term-x with x
             replaceLexicalValues(tc, template).then(function () {
@@ -517,7 +510,6 @@ angular.module('singleConceptAuthoringApp')
                       }
                     }
                       else{
-                          console.log(d);
                           if(d.type !== 'DEFINITION'){
                               d.acceptabilityMap['900000000000509007'] = 'ACCEPTABLE';
                               d.acceptabilityMap['900000000000508004'] = 'ACCEPTABLE';
@@ -578,7 +570,6 @@ angular.module('singleConceptAuthoringApp')
      */
     function applyTemplateToConcept(concept, template, applyValues, applyMessages, applyStyles) {
       var deferred = $q.defer();
-        console.log(concept);
 
       // reset all template variables
       concept.templateMessages = [];
@@ -799,7 +790,6 @@ angular.module('singleConceptAuthoringApp')
     }
 
     function selectTemplate(template) {
-        console.log(template);
       var deferred = $q.defer();
       if (!template) {
         selectedTemplate = null;
