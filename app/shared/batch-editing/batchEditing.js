@@ -649,6 +649,7 @@ angular.module('singleConceptAuthoringApp')
           scope.removeAll = function () {
               batchEditingService.setBatchConcepts([]).then(function(){
                   scope.batchTableParams.reload();
+                  removeViewedConcepts();
                   $rootScope.$broadcast('batchEditing.refresh');
               });
           };
@@ -661,6 +662,10 @@ angular.module('singleConceptAuthoringApp')
             if (index !== -1) {
               scope.viewedConcepts.splice(index, 1);
             }
+          }
+            
+          function removeViewedConcepts() {
+              scope.viewedConcepts = [];
           }
 
           scope.updateFsn = function(concept) {
