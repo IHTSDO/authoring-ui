@@ -21,6 +21,7 @@
                                  class="tooltips-bottom tooltips-bottom normal-case">
         <div class="fa fa-list-ol"></div>
         <span>Saved List</span></a></li>
+          
          <li role="presentation"  ><a    ng-hide="task.status === 'New'"
                                                ng-click="viewReview()"  class="tooltips-bottom tooltips-light large-size-tooltip normal-case">
 
@@ -30,12 +31,14 @@
 
         <div class="fa fa-envelope"></div>
         <span>Review Not Available </span></a></li>
-        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-if="!hideBatch"><a ng-click="viewBatch()" aria-controls="home" role="tab" data-toggle="tab"
+          
+        <li role="presentation"  ng-class="{'active' : actionTab === 5}" ng-if="!hideBatch"><a ng-click="viewBatch(); actionTab=5;" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-btm tooltips-light normal-case">
                                                 
         <div class="fa fa-file-excel-o"></div>
         <span>Create Batch</span></a></li>
-      <li role="presentation" ng-class="{'active' : actionTab === 6}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
+          
+      <li role="presentation" ng-class="{'active' : actionTab === 4}"><a ng-click="actionTab=4" aria-controls="home" role="tab" data-toggle="tab"
                                                 class="tooltips-bottom tooltips-light normal-case">
         <div class="fa fa-info-circle"></div>
         <span>Task Details</span></a></li>
@@ -47,22 +50,22 @@
     </ul>
     <!-- Tab panes -->
     <div class="tab-content col-md-12 no-padding  ">
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===1}" ng-show="actionTab === 1">
         <div ng-include="'shared/taxonomy/taxonomy.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===2}" ng-show="actionTab === 2">
         <div ng-include="'shared/search/search.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}">
+      <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab===3}" ng-show="actionTab === 3">
         <div ng-include="'shared/savedList/savedList.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}">
+      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===4}" ng-show="actionTab === 4">
         <div ng-include="'shared/task-detail/taskDetail.html'"></div>
       </div>
-      <div role="tabpanel" ng-if="!hideBatch" class="tab-pane" ng-class="{active: actionTab===5}">
+      <div role="tabpanel" class="tab-pane " ng-class="{active: actionTab===5}" ng-show="actionTab === 5">
         <div ng-include="'shared/batch-editing/upload-batch.html'"></div>
       </div>
-      <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===6}">
+      <div role="tabpanel" class="tab-pane"  ng-class="{active: actionTab===6}" ng-show="actionTab === 6">
         <div ng-include="'shared/feedback/feedback-list.html'"></div>
       </div>
 

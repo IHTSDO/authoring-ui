@@ -1265,7 +1265,10 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     
     $scope.viewBatch = function () {
-      $scope.setView('batch');
+      $scope.setView('edit-default');
+      $timeout(function () {
+          $scope.setView('batch');
+      }, 10);
     };
 
     function loadProject() {
@@ -1324,6 +1327,10 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     $scope.$on('reloadTask', function (event, data) {
       loadTask();
+    });
+    
+    $scope.$on('swapToBatch', function (event, data) {
+      $scope.viewBatch();
     });
 
 
