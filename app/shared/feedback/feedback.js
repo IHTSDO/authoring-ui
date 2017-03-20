@@ -39,6 +39,10 @@ angular.module('singleConceptAuthoringApp')
           scope.editable = attrs.editable === 'true';
           scope.showTitle = attrs.showTitle === 'true';
           scope.displayStatus = '';
+            
+          scope.viewBatch = function () {
+              $rootScope.$broadcast('swapToBatch');
+            };
 
           // the editor scope variables
           scope.htmlVariable = '';
