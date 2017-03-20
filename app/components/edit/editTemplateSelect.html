@@ -23,7 +23,7 @@
             <tr ng-repeat="template in $data" class="clickable-row">
               <td data-title="'Name'" sortable="'name'" header-class="'header-tooltips'"
                   header-title="'Click to sort'" filter="{ 'name': 'text' }">
-                <a ng-if="templateOptions" class="tooltips-right"ng-click="selectBatchTemplate(template)">
+                <a ng-if="templateOptions" class="tooltips-right batch-template-selector" ng-click="selectBatchTemplate(template)">
                 {{template.name}}<span> Click to select template </span></a>
               </td>
               <td data-title="'Version'" sortable="'version'" header-class="'header-tooltips'"
@@ -38,10 +38,10 @@
                  class="table table-full p-5">
             <tr ng-repeat="template in $data" class="clickable-row">
               <td data-title="'Name'" sortable="'name'" header-class="'header-tooltips'"
-                  header-title="'Click to sort'" filter="{ 'name': 'text' }"><a ng-if="!concept && !templateOptions" class="tooltips-right"ng-click="selectTemplate(template, createOnSelectTemplate)">
+                  header-title="'Click to sort'" filter="{ 'name': 'text' }"><a ng-if="!concept && !templateOptions" class="tooltips-right edit-template-selector"ng-click="selectTemplate(template, createOnSelectTemplate)">
                 {{template.name}}<span> Click to select template </span></a>
 
-                <a class="tooltips-right" ng-if="concept" ng-click="applyTemplate(template)">
+                <a class="tooltips-right concept-template-selector" ng-if="concept" ng-click="applyTemplate(template)">
                 {{template.name}}<span> Click to select template </span></a>
               </td>
               <td data-title="'Version'" sortable="'version'" header-class="'header-tooltips'"

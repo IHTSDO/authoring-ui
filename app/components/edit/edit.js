@@ -1604,6 +1604,20 @@ angular.module('singleConceptAuthoringApp.edit', [
 //////////////////////////////////////////
 
     function initialize() {
+        
+      $('html').on('mouseup', function(e) {
+            if(!$(e.target).closest('.popover').length) {
+                console.log('here');
+                $('.popover').each(function(){
+                    if($(this).find('.edit-template-selector').length != 0){
+                        document.getElementById('templateCreateBtn').click();
+                    }
+                    else if($(this).find('.batch-template-selector').length != 0){
+                        document.getElementById('batchTemplateSelectBtn').click();
+                    }
+                });
+            }
+        });
 
       notificationService.sendMessage('Loading task details...');
         
