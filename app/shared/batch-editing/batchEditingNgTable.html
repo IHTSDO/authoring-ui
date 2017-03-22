@@ -39,7 +39,7 @@
         </td>
         <td ng-repeat="slot in templateSlots">
           <div>
-           <textarea type="text"  ng-model="concept[slot.slotName]"
+           <textarea ng-disabled="true" type="text"  ng-model="concept[slot.slotName]"
                      typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(concept, slot.slotName, $viewValue)"
                      typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                      typeahead-wait-ms="700"
@@ -79,7 +79,7 @@
       <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
     </div>
     <div class="col-md-6">
-      <div concept-edit concept="concept" branch="branch" static="false"></div>
+      <div concept-edit concept="concept" branch="branch" static="true"></div>
     </div>
   </div>
 </div>
