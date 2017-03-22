@@ -1,8 +1,8 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
-  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout', 'ngTableParams', '$filter',
-    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout, ngTableParams, $filter) {
+  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout', 'ngTableParams', '$filter', '$route',
+    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout, ngTableParams, $filter, $route) {
          
          $scope.templateOptions = {
             availableTemplates : [],
@@ -97,7 +97,13 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                       $rootScope.$broadcast('batchConcept.change');
                       fd = new FormData();
                       files = [];
-                      $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
+                        if(window.location.href.indexOf('batch') > -1){
+                            $route.reload();
+                        }
+                        else{
+                            $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
+                        }
+                      
                     }, function (error) {
                       notificationService.sendError('Unexpected error: ' + error);
                     })
@@ -118,13 +124,17 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             $scope.templatesLoading = true;
             conceptPromises = [];
             $scope.templateOptions.availableTemplates = [];
-            if(!metadataService.isTemplatesEnabled()){
-                templateService.getTemplates().then(function (templates) {
-                  $scope.templateOptions.availableTemplates = templates;
-                    $scope.templatesLoading = false;
-                });
-            }
-            else{$scope.templates = null};
+            
+            batchEditingService.initializeFromScope($scope).then(function () {
+                $scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
+                if(!metadataService.isTemplatesEnabled()){
+                    templateService.getTemplates().then(function (templates) {
+                      $scope.templateOptions.availableTemplates = templates;
+                        $scope.templatesLoading = false;
+                    });
+                }
+                else{$scope.templates = null};
+            })
           }
         initialize();
     }]);
