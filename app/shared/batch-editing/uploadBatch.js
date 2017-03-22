@@ -11,6 +11,10 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
          $scope.templatesLoading = true;
         
          var conceptPromises = [];
+    
+         $scope.isBatchPopulated = (function(){
+             return(batchEditingService.getBatchConcepts() && batchEditingService.getBatchConcepts().length !== 0);
+         });
         
          $scope.templateTableParams = new ngTableParams({
             page: 1,
@@ -70,12 +74,14 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
         
         $scope.selectBatchTemplate = function(template){
             $scope.templateOptions.selectedTemplate = template;
+            $scope.errorMessage = [];
             $timeout(function(){
                 document.getElementById('batchTemplateSelectBtn').click();
             });
         }
 
         $scope.uploadFile = function(files) {
+            console.log(files);
                 notificationService.sendMessage('Uploading and generating Batch...', 3000);
                 $scope.errorMessage = [];
                 var fd = new FormData();
@@ -89,12 +95,14 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                       batchEditingService.addBatchConcepts(concepts);
                       notificationService.sendMessage('Successfully added batch concepts', 3000);
                       $rootScope.$broadcast('batchConcept.change');
+                      fd = new FormData();
                       files = [];
                       $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
                     }, function (error) {
                       notificationService.sendError('Unexpected error: ' + error);
                     })
                 }, function(error) {
+                    fd = new FormData();
                     files = [];
                     $scope.errorMessage = error.data.messages;
                     notificationService.sendError('Error with file.');
@@ -117,8 +125,6 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 });
             }
             else{$scope.templates = null};
-
-            $scope.isBatchPopulated = batchEditingService.getBatchConcepts() && batchEditingService.getBatchConcepts().length !== 0;
           }
         initialize();
     }]);
