@@ -410,7 +410,7 @@ angular.module('singleConceptAuthoringApp')
 
         // construct header values
         console.log(acceptLanguageValue);
-        if (acceptLanguageValue && !acceptLanguageValue.contains('null')) {
+        if (acceptLanguageValue && !acceptLanguageValue.includes('null')) {
           // declare headers if not specified
           if (!config.headers) {
             config.headers = {};
