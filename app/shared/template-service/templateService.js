@@ -1026,7 +1026,7 @@ angular.module('singleConceptAuthoringApp')
         return $http({
           'method': 'GET',
             //replace with task level branch path - working around BE bug
-          'url': apiEndpoint + 'MAIN' + '/templates/' + window.encodeURIComponent(template) + '/empty-input-file'
+          'url': apiEndpoint + 'MAIN' + '/templates/' + window.encodeURIComponent(template).replace('%2F', '%252F') + '/empty-input-file'
           
         }).then(function (response) {
           return response;
@@ -1035,7 +1035,7 @@ angular.module('singleConceptAuthoringApp')
     
     function uploadTemplateCsv(branch, template, file) {
         var deferred = $q.defer();
-        $http.post(apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template) + '/generate', file, {
+        $http.post(apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template).replace('%2F', '%252F') + '/generate', file, {
         withCredentials: true,
         headers: {'Content-Type': undefined },
         transformRequest: angular.identity
