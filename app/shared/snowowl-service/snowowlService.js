@@ -1449,7 +1449,7 @@ angular.module('singleConceptAuthoringApp')
           params.termFilter = termFilter;
         }
         if (escgExpr) {
-          params.escgFilter = escgExpr;
+          params.eclFilter = escgExpr;
         }
 
         $http.post(apiEndpoint + branch + '/concepts/search', params).then(function (response) {
