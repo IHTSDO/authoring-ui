@@ -87,7 +87,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 var fd = new FormData();
                 //Take the first selected file
                 fd.append("tsvFile", files[0]);
-                templateService.uploadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, $scope.templateOptions.selectedTemplate.name.replace('/', '%252F'), fd).then(function (data) {
+                templateService.uploadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
                     angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
                     });
 
