@@ -1026,7 +1026,7 @@ angular.module('singleConceptAuthoringApp')
         return $http({
           'method': 'GET',
             //replace with task level branch path - working around BE bug
-          'url': apiEndpoint + 'MAIN' + '/templates/' + window.encodeURIComponent(template).replace('%2F', '%252F') + '/empty-input-file'
+          'url': apiEndpoint + branch + '/templates/' + window.encodeURIComponent(template).replace('%2F', '%252F') + '/empty-input-file'
           
         }).then(function (response) {
           return response;
