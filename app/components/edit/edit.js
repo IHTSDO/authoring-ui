@@ -1605,7 +1605,7 @@ angular.module('singleConceptAuthoringApp.edit', [
 
     function initialize() {
         
-      $('html').on('mouseup', function(e) {
+      $('body').on('mouseup', function(e) {
             if(!$(e.target).closest('.popover').length) {
                 console.log('here');
                 $('.popover').each(function(){
