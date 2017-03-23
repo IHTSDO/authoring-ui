@@ -80,14 +80,14 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             });
         }
 
-        $scope.uploadFile = function(files) {
-            console.log(files);
+        $scope.uploadFile = function(input) {
+                var files = input.files
                 notificationService.sendMessage('Uploading and generating Batch...', 3000);
                 $scope.errorMessage = [];
                 var fd = new FormData();
                 //Take the first selected file
                 fd.append("tsvFile", files[0]);
-                templateService.uploadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
+                templateService.uploadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, $scope.templateOptions.selectedTemplate.name.replace('/', '%252F'), fd).then(function (data) {
                     angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
                     });
 
