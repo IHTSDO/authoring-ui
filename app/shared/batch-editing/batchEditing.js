@@ -484,12 +484,17 @@ angular.module('singleConceptAuthoringApp')
 
 
           scope.saveAll = function () {
-            angular.forEach(scope.batchTableParams.data, function (c) {
-              c.errorMsg = null;
-              c.tableAction = 'Waiting...'
-            });
-            var concepts = batchEditingService.getBatchConcepts().sort(batchTableSort);
-            saveAllHelper(concepts);
+            scope.batchTableParams.count(50);
+            scope.batchTableParams.reload();
+            $timeout(function () {
+                angular.forEach(scope.batchTableParams.data, function (c) {
+                  c.errorMsg = null;
+                  c.tableAction = 'Waiting...'
+                });
+                var concepts = batchEditingService.getBatchConcepts().sort(batchTableSort);
+                saveAllHelper(concepts);
+              }, 1000);
+            
           };
 
           scope.saveConcept = function (originalConcept) {

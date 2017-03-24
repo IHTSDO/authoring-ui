@@ -82,7 +82,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
         $scope.uploadFile = function(input) {
                 var files = input.files
-                notificationService.sendMessage('Uploading and generating Batch...', 3000);
+                notificationService.sendMessage('Uploading and generating Batch...');
                 $scope.errorMessage = [];
                 var fd = new FormData();
                 //Take the first selected file
@@ -92,17 +92,18 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                     });
 
                     $q.all(conceptPromises).then(function (concepts) {
-                      batchEditingService.addBatchConcepts(concepts);
-                      notificationService.sendMessage('Successfully added batch concepts', 3000);
-                      $rootScope.$broadcast('batchConcept.change');
-                      fd = new FormData();
-                      files = [];
-                        if(window.location.href.indexOf('batch') > -1){
-                            $route.reload();
-                        }
-                        else{
-                            $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
-                        }
+                      batchEditingService.addBatchConcepts(concepts).then(function(){
+                          notificationService.sendMessage('Successfully added batch concepts', 3000);
+                          $rootScope.$broadcast('batchConcept.change');
+                          fd = new FormData();
+                          files = [];
+                            if(window.location.href.indexOf('batch') > -1){
+                                $route.reload();
+                            }
+                            else{
+                                $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
+                            }
+                      });
                       
                     }, function (error) {
                       notificationService.sendError('Unexpected error: ' + error);
