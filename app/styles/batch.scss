@@ -1,4 +1,17 @@
 select.full-width{width:100%}
 
 select.template-name{min-width:180px;}
-.stest{}
+
+.sca-batch-table .table-full tbody>tr>td:first-child, .sca-batch-table .table-full thead tr>th:first-child {
+    padding-left: 10px;
+}
+
+.sca-batch-table .table-full tbody > tr > td:last-child {
+    padding-right: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.batch-editing .col-md-9{width:74.5%!important;}
+
+.sca-batch-table .table-full textarea {width:97%!important; margin-left:1.5%!important}
