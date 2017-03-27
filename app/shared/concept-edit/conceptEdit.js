@@ -143,7 +143,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           
         scope.templateTableParams = new ngTableParams({
         page: 1,
-        count: 100,
+        count: 200,
         sorting: {name: 'asc'}
           },
           {
