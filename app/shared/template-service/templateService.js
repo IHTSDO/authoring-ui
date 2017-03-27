@@ -372,6 +372,10 @@ angular.module('singleConceptAuthoringApp')
           else{
               tc.definitionStatus = 'PRIMITIVE';
           }
+          if(template.conceptOutline.moduleId !== undefined)
+              {
+                  tc.moduleId = template.conceptOutline.moduleId;
+              }
           if(relAndDescMap !== null && relAndDescMap !== undefined){
               for(var i = 0; i < tc.relationships.length; i++)
                   {
@@ -382,9 +386,17 @@ angular.module('singleConceptAuthoringApp')
           // assign sctids
           angular.forEach(tc.descriptions, function (d) {
             d.descriptionId = snowowlService.createGuid();
+            if(template.conceptOutline.moduleId !== undefined)
+              {
+                  d.moduleId = template.conceptOutline.moduleId;
+              }
           });
           angular.forEach(tc.relationships, function (r) {
             r.relationshipId = snowowlService.createGuid();
+              if(template.conceptOutline.moduleId !== undefined)
+              {
+                  r.moduleId = template.conceptOutline.moduleId;
+              }
           });
 
           // replace logical values
