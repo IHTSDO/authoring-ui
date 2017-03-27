@@ -1,0 +1,32 @@
+<div id="saveModal" class="clearfix">
+
+  <div class="modal-header">
+    <h4 class="modal-title">Saving Batch - Please do not navigate away or refresh the page.</h4>
+  </div>
+
+
+  <div class="modal-body">
+      <div ng-if="!complete">
+          Saving concept {{saving}} of {{total}}
+      </div>
+      <div ng-if="complete">
+          {{warning + saved}} Concepts saved, {{warning}} with warnings. 
+      </div>
+      <div ng-if="complete && errors > 0">
+          {{errors}} Concepts were not saved due to validation errors. 
+      </div>
+  </div>
+
+
+  <div class="modal-footer">
+
+    <div class="row no-padding no-gutter">
+      <!-- Cancel always appears -->
+      <div ng-if="complete" class="col-md-4">
+        <button type="button" class=" col-md-12 btn btn-info no-margin"
+                ng-click="cancel()">Return to Task
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
