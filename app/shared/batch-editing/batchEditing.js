@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('batchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'modalService', 'componentAuthoringUtil', 'templateService', 'batchEditingService', 'scaService', 'snowowlService', 'constraintService', 'notificationService', 'metadataService',
-    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, modalService, componentAuthoringUtil, templateService, batchEditingService, scaService, snowowlService, constraintService, notificationService, metadataService) {
+  .directive('batchEditing', ['$rootScope', '$compile', '$filter', '$timeout', '$q', 'ngTableParams', 'modalService', 'componentAuthoringUtil', 'templateService', 'batchEditingService', 'scaService', 'snowowlService', 'constraintService', 'notificationService', 'metadataService', '$modal',
+    function ($rootScope, $compile, $filter, $timeout, $q, ngTableParams, modalService, componentAuthoringUtil, templateService, batchEditingService, scaService, snowowlService, constraintService, notificationService, metadataService, $modal) {
       return {
         restrict: 'A',
         transclude: false,
@@ -444,6 +444,7 @@ angular.module('singleConceptAuthoringApp')
           function saveAllHelper(concepts) {
 
             if (concepts.length === 0) {
+              $rootScope.$broadcast('batchEditing.batchSaveComplete');
               return;
             }
             var concept = concepts[0];
@@ -466,17 +467,25 @@ angular.module('singleConceptAuthoringApp')
               }
               var temp = concepts.slice(1);
                 if(!response.validation.hasErrors && !response.validation.hasWarnings){
+                    $rootScope.$broadcast('batchEditing.conceptSaved');
                     tableConcept.tableAction = 'Saved...';
                     $timeout(function () {
                         scope.removeConcept(concept);
                         scope.batchTableParams.reload();
                       }, 2500);
                 }
+                else if(response.validation.hasErrors){
+                    $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
+                }
+                else {
+                    $rootScope.$broadcast('batchEditing.conceptSavedWithWarnings');
+                }
               saveAllHelper(temp);
 
             }, function (error) {
               if (tableConcept) {
                 tableConcept.tableAction = null;
+                $rootScope.$broadcast('batchEditing.conceptSavedWithErrors');
               }
               saveAllHelper(concepts.slice(1));
             });
@@ -490,6 +499,15 @@ angular.module('singleConceptAuthoringApp')
                 angular.forEach(scope.batchTableParams.data, function (c) {
                   c.errorMsg = null;
                   c.tableAction = 'Waiting...'
+                });
+                var modalInstance = $modal.open({
+                  templateUrl: 'shared/batch-editing/saveModal.html',
+                  controller: 'saveModalCtrl',
+                  resolve: {
+                    concepts: function () {
+                      return scope.batchTableParams.data;
+                    }
+                  }
                 });
                 var concepts = batchEditingService.getBatchConcepts().sort(batchTableSort);
                 saveAllHelper(concepts);
