@@ -89,9 +89,11 @@ angular.module('singleConceptAuthoringApp')
             for (var i = list.length - 1; i >= 0; i--) {
 
               console.debug('parsing component', list[i].referencedComponent);
+                
+              if(list[i].active === false){}
 
               // check if referenced concept
-              if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
+              else if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
 
                 // retrieve the referenced concept
                 snowowlService.getFullConcept(list[i].referencedComponent.id, scope.branch).then(function (concept) {
