@@ -460,6 +460,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
         var inactivateConceptReasons = metadataService.getConceptInactivationReasons();
         var inactivateAssociationReasons = metadataService.getAssociationInactivationReasons();
         var inactivateDescriptionReasons = metadataService.getDescriptionInactivationReasons();
+        var inactivateDescriptionAssociationReasons = metadataService.getDescriptionAssociationInactivationReasons();
 
         scope.removeConcept = function (concept) {
 
@@ -1476,7 +1477,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               // reactivate the description before selecting a reason
               description.active = true;
 
-              selectInactivationReason('Description', inactivateDescriptionReasons, null, null, null, null).then(function (results) {
+              selectInactivationReason('Description', inactivateDescriptionReasons, inactivateDescriptionAssociationReasons, null, null, null).then(function (results) {
 
                 notificationService.sendMessage('Inactivating description (' + results.reason.text + ')');
 

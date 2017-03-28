@@ -121,15 +121,28 @@ angular.module('singleConceptAuthoringApp')
     var descriptionInactivationReasons = [
       //{id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
       //{id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-      {id: 'ERRONEOUS', text: 'Erroneous component'},
+      {id: 'ERRONEOUS', text: 'Erroneous component', display: []},
       //{id: 'INAPPROPRIATE', text: 'Inappropriate component'},
       //{id: 'LIMITED', text: 'Limited component'},
-      {id: 'OUTDATED', text: 'Outdated component'},
+      {id: 'OUTDATED', text: 'Outdated component', display: []},
       //{id: 'PENDING_MOVE', text: 'Pending move'},
-      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy'},
-      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent'}
+      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []},
+      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent', display: [5]}
 
     ];
+      
+    var descriptionAssociationInactivationReasons =
+      [
+        {
+          id: 'REFERS_TO',
+          conceptId: '900000000000531004',
+          text: 'REFERS TO concept association reference set',
+          display: 5,
+          restrict: {
+            type: 'DESCRIPTION'
+          }
+        }
+      ];
 
     //
     // International SNOMEDCT metadata
@@ -434,6 +447,10 @@ angular.module('singleConceptAuthoringApp')
     function getDescriptionInactivationReasons() {
       return descriptionInactivationReasons;
     }
+      
+    function getDescriptionAssociationInactivationReasons() {
+      return descriptionAssociationInactivationReasons;
+    }
 
     //
     // Cached project retrieval functions
@@ -488,6 +505,7 @@ angular.module('singleConceptAuthoringApp')
       getConceptInactivationReasons: getConceptInactivationReasons,
       getDescriptionInactivationReasons: getDescriptionInactivationReasons,
       getAssociationInactivationReasons: getAssociationInactivationReasons,
+      getDescriptionAssociationInactivationReasons: getDescriptionAssociationInactivationReasons,
 
       // boolean checks exposed for use
       isLockedModule: isLockedModule,
