@@ -85,6 +85,7 @@ angular.module('singleConceptAuthoringApp')
               descriptionsWithDescriptionTarget: [],
               other: []
             };
+            var count = 0;
 
             for (var i = list.length - 1; i >= 0; i--) {
 
@@ -94,7 +95,7 @@ angular.module('singleConceptAuthoringApp')
 
               // check if referenced concept
               else if (snowowlService.isConceptId(list[i].referencedComponent.id)) {
-
+                count++;
                 // retrieve the referenced concept
                 snowowlService.getFullConcept(list[i].referencedComponent.id, scope.branch).then(function (concept) {
 
@@ -140,7 +141,7 @@ angular.module('singleConceptAuthoringApp')
                   }
 
                   console.debug('check', parsedComponents, list.length);
-                  if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === list.length) {
+                  if (parsedComponents.concepts.length + parsedComponents.descriptionsWithConceptTarget.length + parsedComponents.descriptionsWithDescriptionTarget.length + parsedComponents.other.length === count) {
                     deferred.resolve(parsedComponents);
                   }
                 });
