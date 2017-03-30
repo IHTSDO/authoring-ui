@@ -671,6 +671,7 @@ angular.module('singleConceptAuthoringApp')
             
           scope.removeAll = function () {
               batchEditingService.setBatchConcepts([]).then(function(){
+                  batchEditingService.setCurrentTemplate(scope.templateOptions.selectedTemplate);
                   scope.batchTableParams.reload();
                   removeViewedConcepts();
                   $rootScope.$broadcast('batchEditing.refresh');

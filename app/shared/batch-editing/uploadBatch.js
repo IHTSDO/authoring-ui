@@ -127,7 +127,9 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             $scope.templateOptions.availableTemplates = [];
             
             batchEditingService.initializeFromScope($scope).then(function () {
-                $scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
+                if($scope.templateOptions.selectedTemplate === null){
+                    $scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
+                }
                 if(!metadataService.isTemplatesEnabled()){
                     templateService.getTemplates().then(function (templates) {
                       $scope.templateOptions.availableTemplates = templates;
