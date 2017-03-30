@@ -533,7 +533,7 @@ angular.module('singleConceptAuthoringApp.edit', [
       var width = $rootScope.layoutWidths[name];
       var colClasses = [
         'col-xs-12',
-        'col-sm-12',
+        'col-sm-' + width,
         'col-md-' + width,
         'col-lg-' + width,
         'col-xl-' + width
