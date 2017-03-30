@@ -362,7 +362,7 @@ angular.module('singleConceptAuthoringApp')
           var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
           var pt = null;
           angular.forEach(concept.descriptions, function (d) {
-            if (d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
+            if (d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === 'PREFERRED' && d.released === false) {
               if (d.term && d.term !== '' && d.term !== null) {
                 pt = d;
               }
