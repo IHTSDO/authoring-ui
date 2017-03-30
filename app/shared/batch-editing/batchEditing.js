@@ -538,7 +538,13 @@ angular.module('singleConceptAuthoringApp')
                           }
                       })
                   });
-                
+              angular.forEach(originalConcept.relationships, function(rel){
+                  angular.forEach(concept.relationships, function(newRel){
+                          if(rel.groupId === newRel.groupId && rel.target.conceptId === newRel.target.conceptId && rel.type.conceptId === newRel.type.conceptId){
+                              newRel.relationshipId = rel.relationshipId;
+                          }
+                      })
+                  });
 
               // store template
               var template = concept.template;
