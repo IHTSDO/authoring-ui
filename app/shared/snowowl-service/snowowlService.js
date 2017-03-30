@@ -152,14 +152,14 @@ angular.module('singleConceptAuthoringApp')
         return term;
       }
 
-      function cleanRelationship(relationship) {
+      function cleanRelationship(relationship, keepTempIds) {
 
         var allowableRelationshipProperties = [
           'active', 'released', 'moduleId', 'target', 'relationshipId', 'effectiveTime', 'characteristicType', 'sourceId', 'modifier', 'type', 'groupId'
         ];
 
         // if a locally assigned UUID, strip
-        if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1) {
+        if (relationship.relationshipId && relationship.relationshipId.indexOf('-') !== -1 && !keepTempIds) {
           delete relationship.relationshipId;
         }
 
@@ -225,7 +225,7 @@ angular.module('singleConceptAuthoringApp')
         });
 
         angular.forEach(concept.relationships, function (relationship) {
-          cleanRelationship(relationship, concept);
+          cleanRelationship(relationship, keepTempIds);
 
           // snowowl require source id set
           relationship.sourceId = concept.conceptId;
