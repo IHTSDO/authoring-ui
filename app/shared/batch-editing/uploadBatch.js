@@ -88,6 +88,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 //Take the first selected file
                 fd.append("tsvFile", files[0]);
                 templateService.uploadTemplateCsv(metadataService.getBranchRoot() + '/' + $routeParams.projectKey + '/' + $routeParams.taskKey, $scope.templateOptions.selectedTemplate.name, fd).then(function (data) {
+                    $("#batchFileUpload").val("");
                     angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
                     });
 
@@ -109,6 +110,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                       notificationService.sendError('Unexpected error: ' + error);
                     })
                 }, function(error) {
+                    $("#batchFileUpload").val("");
                     fd = new FormData();
                     files = [];
                     $scope.errorMessage = error.data.messages;
