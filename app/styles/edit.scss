@@ -621,6 +621,19 @@ select.primitive {
     width: 16.66%;
     margin-bottom: -5px;
 }
+
+/* 5 tabs displayed (templates disabled) - Lea Verou method described at http://lea.verou.me/2011/01/styling-children-based-on-their-number-with-css3/*/
+.sidebar-tabs.nav > li:first-child:nth-last-child(5),
+.sidebar-tabs.nav > li:first-child:nth-last-child(5) ~ li {
+    width: 20%;
+}
+
+/* 6 tabs displayed (templates enabled) */
+.sidebar-tabs.nav > li:first-child:nth-last-child(6),
+.sidebar-tabs.nav > li:first-child:nth-last-child(6) ~ li {
+    width: 16.66%;
+}
+
 .sidebar-tabs.nav-tabs > li > a {
     border-radius: 0px;
 }
