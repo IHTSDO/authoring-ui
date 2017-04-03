@@ -1407,7 +1407,7 @@ angular.module('singleConceptAuthoringApp.edit', [
     };
     
     $scope.selectFocusForTemplate = function(concept){
-        console.log(concept.concept);
+        var initialTemplates = $scope.innerTemplates;
         templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
               for(var i = templates.length -1; i >= 0; i--){
                   if(templates[i].additionalSlots.length > 0)
@@ -1417,6 +1417,7 @@ angular.module('singleConceptAuthoringApp.edit', [
               };
               $scope.innerTemplates = templates;
               $scope.templateTableParams.reload();
+              $scope.innerTemplates = initialTemplates;
             });
         }
     

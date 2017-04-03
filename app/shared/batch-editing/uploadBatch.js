@@ -16,6 +16,15 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
              return(batchEditingService.getBatchConcepts() && batchEditingService.getBatchConcepts().length !== 0);
          });
         
+         $scope.selectFocusForTemplate = function(concept){
+            var initialTemplates = $scope.templateOptions.availableTemplates;
+            templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
+                  $scope.templateOptions.availableTemplates = templates;
+                  $scope.templateTableParams.reload();
+                  $scope.templateOptions.availableTemplates = initialTemplates;
+                });
+        }
+        
          $scope.templateTableParams = new ngTableParams({
             page: 1,
             count: 200,
