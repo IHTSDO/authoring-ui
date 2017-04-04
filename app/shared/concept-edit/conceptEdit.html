@@ -49,7 +49,7 @@
                     popover-append-to-body="true">
               <span>More details</span>
             </button>
-            <div class="template-controls " ng-if="template">
+            <div class="template-controls " ng-if="template && !isStatic">
               <ul class="sub-navigation-link-list ">
                 <li>
                   <a>
@@ -69,7 +69,7 @@
                     popover-placement="left-bottom"
                     popover-trigger="click: click"
                     popover-append-to-body="true"
-                    ng-if="templates.length > 0 && !concept.released && !template && !isMerge"
+                    ng-if="templates.length > 0 && !concept.released && !template && !isMerge && !isStatic"
                     class="pointer btn tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i><span>Attach Template</span></div>
             </div>
