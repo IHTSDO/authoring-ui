@@ -13,6 +13,7 @@ angular.module('singleConceptAuthoringApp')
         $http.get('/config/endpointConfig.json').then(function (response) {
           properties = response.data;
           $http.get('/validationConfig/validationConfig.json').then(function (validationResponse) {
+              validationProperties = validationResponse.data;
               $http.get('/config/versions.json').then(function (confResponse) {
                   versions = confResponse.data;
                   deferred.resolve(properties, validationProperties, versions);
