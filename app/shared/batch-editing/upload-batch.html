@@ -10,7 +10,8 @@
     color: #666;
 }
 </style>
-<div ng-controller="uploadBatchCtrl" class="row column-md-12 sca-batch-editing" style="max-width:inherit">
+<div ng-controller="uploadBatchCtrl" class="row column-md-12 sca-batch-editing" style="max-width:inherit">chCtrl" class="row column-md-12 sca-batch-editing">
+>>>>>>> feature_cssRefactor
     <div class="row column-md-12 p-15">
         <div
                         ng-disabled="templatesLoading"
@@ -40,7 +41,7 @@
     <div class="row column-md-12 p-15">
         <div ng-if="errorMessage">
             <div class="row " ng-repeat="message in errorMessage">
-                <div class="validation red mx-auto p-5">{{message}}</div>
+                <div class="red mx-auto p-5">{{message}}</div>
             </div>
         </div>
     </div>

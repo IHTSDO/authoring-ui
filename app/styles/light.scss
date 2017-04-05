@@ -1,3 +1,7 @@
+.sca-light .btn-default, 
+.sca-light .pager .btn-default.blue {
+    color: #474747;
+}
 
 .sca-light .navbar .dashboard-link-list li:hover .btn-link {
     background-color: #eee
@@ -54,14 +58,11 @@
 .sca-light .edits-row.color_7 {
     background-color: #eee;
 }
-
 .sca-light .grey.darken-4,
 .sca-light .model-header-sca {
-    background-color: #f0f0f0!important;
+    background-color: #f0f0f0;
 }
-.sca-light .classification-btn .btn-default {
-    border: 1px #e6e6e6 solid !important;
-}
+
 .sca-light .cyan.darken-1 {
     color: #00acc1;
     background-color: #fff;
@@ -71,29 +72,25 @@
     background-color: #fff;
 }
 .sca-light .classification-btn .btn-default[disabled] span {
-    background-color: transparent !important;
+    background-color: transparent;
 }
 .sca-light .role-group-buttons {
-    color: #474747!important
+    color: #474747
 }
 .sca-light .dashboard-sidebar {
-    background-color: #fff!important;
+    background-color: #fff;
     border-right: 1px rgba(0, 0, 0, .07)solid;
 }
 .sca-light .dashboard-sidebar button {
-  
     color: #474747;
-   
     background: #fff;
 }
 .sca-light .dashboard-sidebar button a {
-   
     color: #474747;
 }
 .sca-light .dashboard-sidebar button:hover,
-.sca-light .dashboard-sidebar button:active,
-{
-    background: #e6e6e6!important;
+.sca-light .dashboard-sidebar button:active {
+    background: #e6e6e6;
 }
 /*navbar*/
 
@@ -106,8 +103,6 @@
 .sca-light .navbar-default .navbar-nav li a {
     color: #00a6e5;
 }
-
-
 .sca-light .green.classification-header {
     background-color: #4CAF50;
     color: #fff;
@@ -118,10 +113,11 @@
 }
 .sca-light .button-nav .review.btn-default[disabled],
 .sca-light .button-nav .btn-default[disabled] {
-    background-color: #d1d1d1 !important;
-    color: #474747!important;
-    border-bottom: 1px #474747 solid;
+    background-color: #d1d1d1;
+    color: #474747;
+    border-bottom: 1px #e6e6e6 solid;
 }
+
 /*button colors */
 
 .sca-light .green.lighten-2 {
@@ -175,22 +171,22 @@
 /* Edit View */
 
 .sca-light .button-nav {
-    border-right: 1px #e6e6e6 solid!important;
+    border-right: 1px #e6e6e6 solid;
     background-color: transparent;
 }
 .sca-light .button-nav .blue.darken-2,
 .sca-light .button-nav .yellow.darken-2 {
-    border-bottom: 1px #e6e6e6 solid!important;
-    border-top: 1px #e6e6e6 solid!important;
-    border-right: 1px #e6e6e6 solid!important
+    border-bottom: 1px #e6e6e6 solid;
+    border-top: 1px #e6e6e6 solid;
+    border-right: 1px #e6e6e6 solid
 }
 .sca-light .button-nav .blue.darken-3,
 .sca-light .button-nav .blue.darken-4,
 .sca-light .button-nav .pink1,
 .sca-light .button-nav .deep-purple.lighten-1,
 .sca-light .button-nav .green.darken-1 {
-    border-top: 1px #e6e6e6 solid!important;
-    border-right: 1px #e6e6e6 solid!important
+    border-top: 1px #e6e6e6 solid;
+    border-right: 1px #e6e6e6 solid
 }
 .sca-light .blue.darken-2 {
     color: #1976D2;
@@ -275,7 +271,7 @@
     color: #3F3F3F
 }
 .sca-light .editing-form .concept-headers select {
-    color: #3F3F3F !important;
+    color: #3F3F3F;
 }
 .sca-light .task-details .green {
     background-color: transparent;
@@ -283,40 +279,40 @@
 .sca-light .classification-btn .btn-default:hover {
     color: #474747;
     background-color: transparent;
-    border: 1px #e6e6e6 solid!important;
+    border: 1px #e6e6e6 solid;
 }
 .sca-light .pink.darken-2 {
     color: #c2185b;
     background-color: transparent;
 }
 .sca-light .task-details button {
-    background-color: #fff!important;
+    background-color: #fff;
 }
 .sca-light .task-details button:hover {
-    background-color: #f8f8f8!important;
+    background-color: #f8f8f8;
 }
 .sca-light .add-buttons {
-    background-color: transparent !important;
-    color: #474747 !important;
+    background-color: transparent;
+    color: #474747;
 }
 .sca-light .toggle-buttons {
-    background-color: transparent !important;
+    background-color: transparent;
 }
 /*widget buttons */
 
 .sca-light .widget-toolbar:hover {
-    background-color: #fff!important;
-    color: #474747!important
+    background-color: #fff;
+    color: #474747
 }
 .sca-light .classification-btn .btn-default:hover,
 .sca-light .classification-btn .btn-default span:hover {
-    color: #474747!important
+    color: #474747
 }
 /*edit buttons */
 
 .sca-light .small-buttons:hover {
-    color: #474747 !important;
-    background-color: transparent !important;
+    color: #474747;
+    background-color: transparent;
 }
 .sca-light .morebuttons {
     color: #00a6e5;
@@ -417,62 +413,55 @@
     background-color: transparent;
 }
 .sca-light .saved.green {
-    background-color: #C8E6C9!important;
+    background-color: #C8E6C9;
 }
 .sca-light .saved.blue {
-    background-color: #e1f5fe!important;
+    background-color: #e1f5fe;
 }
 .sca-light .saved.orange {
-    background-color: #ffecb3!important;
+    background-color: #ffecb3;
 }
 .sca-light .saved.red {
-    background-color: #FFCDD2!important;
-}
-.sca-light .saved,
-.sca-light .fa-close {
-    color: #474747!important;
+    background-color: #FFCDD2;
 }
 .sca-light .btn-round {
     background-color: transparent
 }
-.sca-light .green.btn-round,
-{
-    background-color: transparent!important;
+.sca-light .green.btn-round {
+    background-color: transparent;
     color: #4CAF50
 }
 .sca-light .green.btn-round:hover {
-    color: #2fa084!important;
-    background-color: transparent!important
+    color: #2fa084;
+    background-color: transparent
 }
-.sca-light .blue.btn-round,
-{
-    background-color: transparent!important;
+.sca-light .blue.btn-round {
+    background-color: transparent;
     color: #42A5F5
 }
 .sca-light .blue.btn-round:hover {
-    color: #2a6a9d!important;
-    background-color: transparent!important
+    color: #2a6a9d;
+    background-color: transparent
 }
-.sca-light .blue.green.btn-round,
-{
-    background-color: transparent!important;
+.sca-light .blue.green.btn-round {
+    background-color: transparent;
     color: #42A5F5
 }
 .sca-light .blue.green.btn-round:hover {
-    color: #2a6a9d!important;
-    background-color: transparent!important
+    color: #2a6a9d;
+    background-color: transparent
 }
 .sca-light .red.btn-round {
     background-color: transparent;
-    color: #e92848!important
+    color: #e92848
 }
 .sca-light .red.btn-round:hover {
-    color: #8c182b!important;
+    color: #8c182b;
     background-color: transparent;
 }
 .sca-light .amber.btn-round {
     background-color: transparent;
-    color: #ffca28!important
+    color: #ffca28
 }
 .sca-light .amber.btn-round:hover {
     color: #d87900;
@@ -528,91 +517,91 @@
     color: #3f51b5;
 }
 .sca-light .btn.black {
-    background-color: #fff !important;
+    background-color: #fff;
     color: #000;
 }
 .sca-light .btn.black:hover {
-    color: #000 !important;
+    color: #000;
     background-color: transparent;
 }
 .sca-light .review-button-list {
-    background-color: #f8bbd0!important;
+    background-color: #f8bbd0;
 }
 .sca-light .sca-footer {
     background-color: #fff;
 }
 .sca-light .indicator_grey {
-    color: #666!important;
-    background-color: transparent!important;
+    color: #666;
+    background-color: transparent;
 }
 .sca-light .indicator_grey:hover {
-    color: #3a3a3a!important;
-    background-color: transparent!important;
+    color: #3a3a3a;
+    background-color: transparent;
 }
 .sca-light .indicator_green {
-    color: #4CAF50!important;
-    background-color: transparent!important;
+    color: #4CAF50;
+    background-color: transparent;
 }
 .sca-light .indicator_green:hover {
-    color: #2fa084!important;
-    background-color: transparent!important;
+    color: #2fa084;
+    background-color: transparent;
 }
 .sca-light .indicator_blue {
-    color: #00a4e4!important;
-    background-color: transparent!important;
+    color: #00a4e4;
+    background-color: transparent;
 }
 .sca-light .indicator_blue:hover {
-    color: #2a6a9d!important;
-    background-color: transparent!important;
+    color: #2a6a9d;
+    background-color: transparent;
 }
 .sca-light .indicator_amber {
-    color: #ffca28!important;
+    color: #ffca28;
     ;
-    background-color: transparent!important;
+    background-color: transparent;
 }
 .sca-light .indicator_amber:hover {
-    color: #d87900!important;
+    color: #d87900;
     ;
-    background-color: transparent!important;
+    background-color: transparent;
 }
 .sca-light .indicator_red {
-    color: #EF5350!important;
-    background-color: transparent!important;
+    color: #db5760;
+    background-color: transparent;
 }
 .sca-light .indicator_red:hover {
-    color: #8c182b!important;
-    background-color: transparent!important;
+    color: #8c182b;
+    background-color: transparent;
 }
 .sca-light .indicator_grey.indicator_grey {
-    color: #666!important;
-    background-color: transparent!important;
+    color: #666;
+    background-color: transparent;
 }
 .sca-light .indicator_grey.indicator_grey:hover {
-    color: #3a3a3a!important;
-    background-color: transparent!important;
+    color: #3a3a3a;
+    background-color: transparent;
 }
 .sca-light .indicator_grey.indicator_red {
-    color: #666!important;
-    background-color: transparent!important;
+    color: #666;
+    background-color: transparent;
 }
 .sca-light .indicator_grey.indicator_red:hover {
-    color: #3a3a3a!important;
-    background-color: transparent!important;
+    color: #3a3a3a;
+    background-color: transparent;
 }
 .sca-light .indicator_grey.indicator_amber {
-    color: #666!important;
-    background-color: transparent!important;
+    color: #666;
+    background-color: transparent;
 }
 .sca-light .indicator_grey.indicator_amber:hover {
-    color: #3a3a3a!important;
-    background-color: transparent!important;
+    color: #3a3a3a;
+    background-color: transparent;
 }
 .sca-light button[disabled] .project-icon {
-    background-color: #e7e7e7!important;
-    color: #333!important
+    background-color: #e7e7e7;
+    color: #333
 }
 .sca-light .feedback .switch {
-    color: #424242!important
+    color: #424242
 }
 .sca-light .edits-row.color_0 .add-buttons,
 .sca-light .edits-row.color_1 .add-buttons,
@@ -621,18 +610,17 @@
 .sca-light .edits-row.color_4 .add-buttons,
 .sca-light .edits-row.color_5 .add-buttons,
 .sca-light .edits-row.color_6 .add-buttons {
-    color: #4d4d4d!important
+    color: #4d4d4d
 }
 .sca-light .md-playlist-add.btn-round[disabled],
 .sca-light .md-playlist-add.btn-round[disabled]:hover {
-    color: #666!important;
-    background-color: transparent!important;
+    color: #666;
+    background-color: transparent;
 }
 .sca-light .nav-tabs .badge.pink.darken-1 {
     color: #fff;
     background-color: #d81b60;
 }
-
 /*tooltips */
 
 .sca-light .tooltips-bottom span,
@@ -640,12 +628,12 @@
 .sca-light .tooltips-left span,
 .sca-light .tooltips-right span,
 .sca-light .tooltips-top span {
- color: #474747;
-  text-shadow: 0px 1px 0px #EEEEEE;
-  background: #CCCCCC;
- -webkit-box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
--moz-box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
-box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
+    color: #474747;
+    text-shadow: 0px 1px 0px #EEEEEE;
+    background: #CCCCCC;
+    -webkit-box-shadow: -1px 1px 15px -1px rgba(0, 0, 0, 0.11);
+    -moz-box-shadow: -1px 1px 15px -1px rgba(0, 0, 0, 0.11);
+    box-shadow: -1px 1px 15px -1px rgba(0, 0, 0, 0.11);
 }
 .sca-light .tooltips-bottom span:after {
     border-bottom: 6px solid #CCCCCC;
@@ -665,186 +653,224 @@ box-shadow: -1px 1px 15px -1px rgba(0,0,0,0.11);
 /*tooltip offsets */
 
 .header-nav-button.indicator_green {
-    background-color: #4CAF50 !important;
-    color: #fff !important;
+    background-color: #4CAF50;
+    color: #fff;
 }
 .header-nav-button.indicator_green:hover {
-    background-color: #409dc7!important;
-    color: #fff !important;
+    background-color: #409dc7;
+    color: #fff;
 }
 /* bottom */
+
 .sca-light .tealhl .grey.darken-4.title-text,
-.sca-light .tealhl .grey.darken-4.btn-default{
-	  background-color: transparent !important;
+.sca-light .tealhl .grey.darken-4.btn-default {
+    background-color: transparent;
 }
 .sca-light .bluehl {
-    background-color: #e1f5fe !important;
-    border-top: 2px solid #e1f5fe!important;
-    border-bottom: 5px solid #e1f5fe!important;
+    background-color: #e1f5fe;
+    border-top: 2px solid #e1f5fe;
+    border-bottom: 5px solid #e1f5fe;
 }
 .sca-light .bluehl .grey.darken-3 {
-    background-color: #e1f5fe!important;
+    background-color: #e1f5fe;
 }
 .sca-light .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #e1f5fe!important;
+    border-bottom: 5px solid #e1f5fe;
 }
 .sca-light .bluehl .grey.darken-3 {
-    background-color: #e1f5fe!important;
+    background-color: #e1f5fe;
 }
 .sca-light .bluehl .grey.darken-3 {
-    border-bottom: 5px solid #e1f5fe!important
+    border-bottom: 5px solid #e1f5fe
 }
 .sca-light .tealhl .grey.darken-3 {
-    background-color: #b2e3e1!important
+    background-color: #b2e3e1
 }
-.sca-light .ng-scope.tealhl{
-    background-color: #b2e3e1!important;
-    border-top: 2px solid #b2e3e1!important;
-    border-bottom: 2px solid #b2e3e1!important;
-	margin-top:3px;
+.sca-light .ng-scope.tealhl {
+    background-color: #b2e3e1;
+    border-top: 2px solid #b2e3e1;
+    border-bottom: 2px solid #b2e3e1;
+    margin-top: 3px;
 }
 .sca-light .grey.darken-4.tealhl {
-    background-color: #b2e3e1!important;
-    border-top: 2px solid #b2e3e1!important;
-    border-bottom: 2px solid #b2e3e1!important;
-	padding-top:2px!important;
+    background-color: #b2e3e1;
+    border-top: 2px solid #b2e3e1;
+    border-bottom: 2px solid #b2e3e1;
+    padding-top: 2px;
 }
-
-.sca-light .tealhl .grey.darken-3:before{border-top: 1px solid #b2e3e1!important;}
+.sca-light .tealhl .grey.darken-3:before {
+    border-top: 1px solid #b2e3e1;
+}
 .sca-light .redhl .grey.darken-3 {
-    background-color: #FFEBEE!important
+    background-color: #FFEBEE
 }
 .sca-light .redlhl {
-    border-top: 2px solid #FFEBEE!important;
-    border-bottom: 2px solid #FFEBEE!important;
+    border-top: 2px solid #FFEBEE;
+    border-bottom: 2px solid #FFEBEE;
 }
 /*left nav */
 
-.sca-light .snodragon-templates:hover{color :#fff}
-.sca-light .snodragon-templates:active, 
-.sca-light .snodragon-templates:hover
-
-{background:#0082b3}
-
-.sca-light .navigation-link.deep-purple.darken-2 .btn {color :#8b72b7}
-.sca-light .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
-.sca-light .navigation-link.pink1.darken-2.review .btn {color :#e94281}
-.sca-light .snodragon-templates{background-color:transparent; color:#009cd7}
-
+.sca-light .snodragon-templates:hover {
+    color: #fff
+}
+.sca-light .snodragon-templates:active,
+.sca-light .snodragon-templates:hover {
+    background: #0082b3
+}
+.sca-light .navigation-link.deep-purple.darken-2 .btn {
+    color: #8b72b7
+}
+.sca-light .navigation-link.green.darken-1.classify .btn {
+    color: #4CAF50
+}
+.sca-light .navigation-link.pink1.darken-2.review .btn {
+    color: #e94281
+}
+.sca-light .snodragon-templates {
+    background-color: transparent;
+    color: #009cd7
+}
 .sca-light .snodragon-templates,
 .sca-light .navigation-link.deep-purple.darken-2,
-.sca-light .navigation-link.green.darken-1.classify ,
+.sca-light .navigation-link.green.darken-1.classify,
 .sca-light .navigation-link.pink1.darken-2.review,
-.sca-light .create-new-concept{
-    border-top: 1px #e6e6e6 solid !important;
-    border-right: 1px #e6e6e6 solid !important;
+.sca-light .create-new-concept {
+    border-top: 1px #e6e6e6 solid;
+    border-right: 1px #e6e6e6 solid;
 }
-
-
 /*left nav */
 
 .sca-light .navigation-link.deep-purple.darken-2 .btn:hover,
 .sca-light .navigation-link.green.darken-1.classify .btn:hover,
 .sca-light .navigation-link.pink1.darken-2.review .btn:hover,
-.sca-light .snodragon-templates:hover{color :#474747}
-.sca-light .snodragon-templates:active, 
-.sca-light .snodragon-templates:hover
-
-{background:#0082b3}
-
-.sca-light .navigation-link.deep-purple.darken-2 .btn {color :#8b72b7}
-.sca-light .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
-.sca-light .navigation-link.pink1.darken-2.review .btn {color :#e94281}
-.sca-light .snodragon-templates{background-color:transparent; color:#009cd7}
-
+.sca-light .snodragon-templates:hover {
+    color: #474747
+}
+.sca-light .snodragon-templates:active,
+.sca-light .snodragon-templates:hover {
+    background: #0082b3
+}
+.sca-light .navigation-link.deep-purple.darken-2 .btn {
+    color: #8b72b7
+}
+.sca-light .navigation-link.green.darken-1.classify .btn {
+    color: #4CAF50
+}
+.sca-light .navigation-link.pink1.darken-2.review .btn {
+    color: #e94281
+}
+.sca-light .snodragon-templates {
+    background-color: transparent;
+    color: #009cd7
+}
 .sca-light .snodragon-templates,
 .sca-light .navigation-link.deep-purple.darken-2,
-.sca-light .navigation-link.green.darken-1.classify ,
+.sca-light .navigation-link.green.darken-1.classify,
 .sca-light .navigation-link.pink1.darken-2.review,
-.sca-light .create-new-concept{
-    border-top: 1px #e6e6e6 solid !important;
-    border-right: 1px #e6e6e6 solid !important;
-}
-
 .sca-light .create-new-concept {
-    background-color: transparent!important;
-    color: #56b8e7 !important;
+    border-top: 1px #e6e6e6 solid;
+    border-right: 1px #e6e6e6 solid;
+}
+.sca-light .create-new-concept {
+    background-color: transparent;
+    color: #56b8e7;
 }
 .sca-light .report-header-main {
     color: #2d2d2d;
-border: 1px #ddd solid ;
+    border: 1px #ddd solid;
     background-color: #fff;
- 
 }
-
 /*tbba*/
+/* classification */
 
-  /* classification */
-.sca-light .navigation-link.green.darken-1
-{color:#4CAF50;
-background-color: #fff;}
-.sca-light .navigation-link.green.darken-1:hover
-{color:#474747;
-background-color: #fff;}
- .sca-light  .green.darken-1.iconbase,
- .sca-light  ul.classification-nav .btn:hover,
-.sca-light .navigation-link.green.darken-1:hover, 
-.sca-light .navigation-link.green.darken-1:focus, 
-.sca-light .navigation-link.green.darken-1:active
- .sca-light  ul.classification-nav li ul li:focus,
- .sca-light  ul.classification-nav li ul li:active,
- .sca-light  ul.classification-nav li ul li:hover {
+.sca-light .navigation-link.green.darken-1 {
+    color: #4CAF50;
+    background-color: #fff;
+}
+.sca-light .navigation-link.green.darken-1:hover {
     color: #474747;
-	  background-color: #fff;
-  }
-
- .sca-light  ul.classification-nav li ul li {
-   background-color: #fff;
+    background-color: #fff;
+}
+.sca-light .green.darken-1.iconbase,
+.sca-light ul.classification-nav .btn:hover,
+.sca-light .navigation-link.green.darken-1:hover,
+.sca-light .navigation-link.green.darken-1:focus,
+.sca-light .navigation-link.green.darken-1:active .sca-light ul.classification-nav li ul li:focus,
+.sca-light ul.classification-nav li ul li:active,
+.sca-light ul.classification-nav li ul li:hover {
+    color: #474747;
+    background-color: #fff;
+}
+.sca-light ul.classification-nav li ul li {
+    background-color: #fff;
     color: #4CAF50
-  }
-  /*validation*/
-   .sca-light  .navigation-link.deep-purple.darken-2.validate
-  {color:#673ab7;
-  background-color: #fff;
-	  }
-  .sca-light .deep-purple.darken-2.validate:hover,
-  .sca-light .deep-purple.darken-2.validate:focus,
-  .sca-light  .deep-purple.darken-2.validate:active,
-   .sca-light  ul.validation-nav .btn:hover,
-	.sca-light ul.validation-nav .btn:focus,
-	.sca-light ul.validation-nav .btn:active,
-  .sca-light ul.validation-nav li ul li:focus,
-  .sca-light ul.validation-nav li ul li:active,
-  .sca-light ul.validation-nav li ul li:hover {
-    color: #474747;
-	 background-color: #fff;
-  }
+}
+/*validation*/
 
-  .sca-light ul.validation-nav li ul li {
-     background-color:  #fff;
+.sca-light .navigation-link.deep-purple.darken-2.validate {
+    color: #673ab7;
+    background-color: #fff;
+}
+.sca-light .deep-purple.darken-2.validate:hover,
+.sca-light .deep-purple.darken-2.validate:focus,
+.sca-light .deep-purple.darken-2.validate:active,
+.sca-light ul.validation-nav .btn:hover,
+.sca-light ul.validation-nav .btn:focus,
+.sca-light ul.validation-nav .btn:active,
+.sca-light ul.validation-nav li ul li:focus,
+.sca-light ul.validation-nav li ul li:active,
+.sca-light ul.validation-nav li ul li:hover {
+    color: #474747;
+    background-color: #fff;
+}
+.sca-light ul.validation-nav li ul li {
+    background-color: #fff;
     color: #673ab7
-  }
-  
-   /* review */
-   
-    .sca-light .navigation-link.pink.darken-2.review > ul > li > a > div{
-		border-top: 1px #e6e6e6 solid !important;}
- .sca-light  ul.review-nav li ul li,
- .sca-light  div.navigation-link.pink1.darken-2.review > ul > li > ul > li,
- .sca-light .pink1.darken-2 .sub-navigation-link-list .btn,
- .sca-light .navigation-link.pink.darken-2.review > ul > li > a > div
- {
+}
+/* review */
+
+.sca-light .navigation-link.pink.darken-2.review > ul > li > a > div {
+    border-top: 1px #e6e6e6 solid;
+}
+.sca-light ul.review-nav li ul li,
+.sca-light div.navigation-link.pink1.darken-2.review > ul > li > ul > li,
+.sca-light .pink1.darken-2 .sub-navigation-link-list .btn,
+.sca-light .navigation-link.pink.darken-2.review > ul > li > a > div {
     background-color: transparent;
     color: #e91e63;
-  }
-.sca-light .navigation-link.pink.darken-2.review > ul > li > a  > div:hover,
-  .sca-light ul.review-nav  li ul li:focus,
-  .sca-light ul.review-nav li ul li:active,
-  .sca-light ul.review-nav li ul li:hover,
- .sca-light ul.review-nav .btn:hover,
+}
+.sca-light .navigation-link.pink.darken-2.review > ul > li > a > div:hover,
+.sca-light ul.review-nav li ul li:focus,
+.sca-light ul.review-nav li ul li:active,
+.sca-light ul.review-nav li ul li:hover,
+.sca-light ul.review-nav .btn:hover,
 .sca-light .navigation-link.pink.darken-2:hover,
 .sca-light .navigation-link.pink.darken-2:active,
-.sca-light .navigation-link.pink.darken-2:focus{
+.sca-light .navigation-link.pink.darken-2:focus {
+    background-color: #fff;
+    color: #474747
+}
+.sca-light .alert.saved,
+.sca-light .alert.saved .fa-close {
+    color: #474747;
+}
+.sca-light .classification-btn .btn-default {
+    border: 1px #e6e6e6 solid;
 	background-color:#fff;
-	color:#474747
+}
+
+.sca-light .search-scroll .btn-default{color:#fff;}
+
+def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .def_PRIMITIVE .form-control[disabled], .def_PRIMITIVE [type=text].form-control[disabled], .def_PRIMITIVE [type=text].form-control[readonly] {
+    font-size: 11px;
+    height: 30px;
+    background-color: #b7dbff;
+    color: #474747;
+    box-shadow: none;
+}
+.def_FULLY_DEFINED textarea, .def_FULLY_DEFINED select, .def_FULLY_DEFINED .custom-button, .def_FULLY_DEFINED .form-control[disabled], .def_FULLY_DEFINED [type=text].form-control[disabled], .def_FULLY_DEFINED [type=text].form-control[readonly] {
+    background-color: #dbdbff;
+    color: #474747;
+    font-size: 11px;
+    height: 30px;
 }

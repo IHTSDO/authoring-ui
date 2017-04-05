@@ -1,55 +1,46 @@
 <div class="edits editing-form">
   <div class="pop-edit concept-more description-popover row">
-        <div class="concept-id pull-left">
-            <label class="control-label">Concept ID</label>
-            <span class="fields row " ng-show="isSctid" ng-init="isSctid = isSctid(concept.conceptId)"> {{concept.conceptId}}</span>
-        </div>
-        <!--
+    <div class="concept-id pull-left">
+      <label class="control-label">Concept ID</label>
+      <span class="fields row " ng-show="isSctid" ng-init="isSctid = isSctid(concept.conceptId)"> {{concept.conceptId}}</span> </div>
+    <!--
         <div ng-if="concept.fsn === null" class="concept-id pull-left" ><label class="control-label">Concept ID</label><input ng-model="concept.conceptId" type="text" class="fields row" style="background-color:#fff"></input></div>
     -->
-        <div class="time pull-left">
-            <label class="control-label">Eff. Time</label>
-            <span class="fields row">{{concept.effectiveTime }}</span>
-        </div>
-        <div class="module pull-left">
-            <label class="control-label">Module Id</label>
-            <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
+    <div class="time pull-left">
+      <label class="control-label">Eff. Time</label>
+      <span class="fields row">{{concept.effectiveTime }}</span> </div>
+    <div class="module pull-left">
+      <label class="control-label">Module Id</label>
+      <select class="col-md-12 no-padding dropdowns" name="select-choice" id="select-choice1"
                     ng-disabled="isLockedModule(concept.moduleId)"
               ng-model="concept.moduleId" ng-disabled="isStatic"
-              ng-change="setConceptModule(concept)" ng-options="module.id as (module.name) for module in getAvailableModules(concept.moduleId)"></select>
-        </div>
-
-  </div>
-        <div ng-if="!concept.active" class="pop-edit concept-more description-popover row">
-            <div class="col-md-12 no-padding pull-left">
-                <label class="control-label">Inactivation Reason
-<!--ng-if="isLockedModule(concept.moduleId)"-->
-                    <button
-                      ng-if="!isStatic && !isLockedModule(concept.moduleId)"
-                      type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editConceptInactivationReason(concept)" aria-disabled="false">
-                        <i class="md fa-sca fa-pencil"></i>
-                        <span>Edit</span>
-                    </button>
-                </label>
-                <span class="fields row" ng-if="concept.inactivationIndicator">{{formatComponentMoreText(concept.inactivationIndicator)}}</span>
-                <span class="fields row" ng-if="!concept.inactivationIndicator || concept.inactivationIndicator.length === 0">Reason not stated</span>
-            </div>
-            <div class="col-md-12 no-padding pull-left m-t-20">
-                <label class="control-label">Association Targets</label>
-                <div ng-show="!concept.associationTargets">None</div>
-                <div ng-repeat="(key, value) in concept.associationTargets" class="p-b-10">
-                    <div class="row no-gutter col-md-12 no-padding">
-                        <div class="col-md-4">
-            {{formatComponentMoreText(key)}}
-          </div>
-                        <div class="col-md-8">
-                            <div class="row  p-b-5" ng-repeat="target in value">
-                                <div class="col-md-4">{{target}}</div>
-                                <div class="col-md-8">{{getTerm(target)}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+              ng-change="setConceptModule(concept)" ng-options="module.id as (module.name) for module in getAvailableModules(concept.moduleId)">
+      </select>
     </div>
+  </div>
+  <div ng-if="!concept.active" class="pop-edit concept-more description-popover row">
+    <div class="col-md-12 no-padding pull-left">
+      <label class="control-label">Inactivation Reason 
+        <!--ng-if="isLockedModule(concept.moduleId)"-->
+        <button
+                      ng-if="!isStatic && !isLockedModule(concept.moduleId)"
+                      type="button" class="btn btn-default saved-list-buttons pull-right tooltips-bottom medium-size-tooltip ng-click-active" title="Edit" ng-click="editConceptInactivationReason(concept)" aria-disabled="false"> <i class="md fa-sca fa-pencil"></i> <span>Edit</span> </button>
+      </label>
+      <span class="fields row" ng-if="concept.inactivationIndicator">{{formatComponentMoreText(concept.inactivationIndicator)}}</span> <span class="fields row" ng-if="!concept.inactivationIndicator || concept.inactivationIndicator.length === 0">Reason not stated</span> </div>
+    <div class="col-md-12 no-padding pull-left m-t-20">
+      <label class="control-label">Association Targets</label>
+      <div ng-show="!concept.associationTargets">None</div>
+      <div ng-repeat="(key, value) in concept.associationTargets" class="p-b-10">
+        <div class="row no-gutter col-md-12 no-padding">
+          <div class="col-md-4"> {{formatComponentMoreText(key)}} </div>
+          <div class="col-md-8">
+            <div class="row  p-b-5" ng-repeat="target in value">
+              <div class="col-md-4">{{target}}</div>
+              <div class="col-md-8">{{getTerm(target)}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
