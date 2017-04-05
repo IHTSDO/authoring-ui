@@ -35,9 +35,7 @@
     padding-top: 6px;
     width: 100%;
     display: block;}
-.classification-header {
-   
-}
+
 .classification-header p {
 	margin: 0px;
 }
@@ -46,8 +44,8 @@
 	text-align: center;
 }
 .classification-header button.md-keyboard-arrow-down:hover, .classification-header button.md-keyboard-arrow-up:hover, .classification-header button.md-keyboard-arrow-down:active, .classification-header button.md-keyboard-arrow-up:active, .classification-header button.md-keyboard-arrow-down:focus, .classification-header button.md-keyboard-arrow-up:focus {
-	background-color: transparent!important;
-	color: #2fa084!important;
+	background-color: transparent;
+	color: #2fa084;
 }
 .classification-report .button-width {
     width: 2.5%;}

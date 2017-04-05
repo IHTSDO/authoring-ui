@@ -1,0 +1,205 @@
+
+textarea {
+	overflow: auto;
+}
+select {
+	text-transform: none;
+}
+input[type=reset], input[type=submit] {
+	-webkit-appearance: button;
+	cursor: pointer;
+}
+input[type=search] {
+	box-sizing: border-box;
+	-webkit-appearance: none;
+}
+.form-control {
+	width: 100%;
+	height: 37px;
+	padding: 6px 16px;
+	border-radius: 3px;
+	border: 1px solid transparent;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.form-control:focus {
+	border-color: #66afe9;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.form-control::-moz-placeholder {
+ color: #bbb;
+ opacity: 1;
+}
+.form-control:-ms-input-placeholder, .form-control::-webkit-input-placeholder {
+ color: #bbb;
+}
+.form-control[disabled], .form-control[readonly] {
+	background-color: transparent;
+	opacity: 1;
+}
+fieldset[disabled] .form-control {
+	background-color: transparent;
+	opacity: 1;
+}
+.form-control[disabled], fieldset[disabled] .form-control {
+	cursor: not-allowed;
+}
+textarea.form-control {
+	height: auto;
+}
+label {
+	display: inline-block;
+	margin-bottom: 5px;
+}
+input[type=search] {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+input[type=checkbox], input[type=radio] {
+	margin: 4px 0 0;
+	margin-top: 1px \9;
+	line-height: normal;
+}
+input[type=file] {
+	display: block;
+}
+input[type=range] {
+	display: block;
+	width: 100%;
+}
+select[multiple], select[size] {
+	height: auto;
+}
+input[type=checkbox]:focus, input[type=radio]:focus, input[type=file]:focus {
+	outline: dotted thin;
+	outline: -webkit-focus-ring-color auto 5px;
+	outline-offset: -2px;
+}
+.form-group {
+	margin-bottom: 15px;
+}
+.checkbox, .radio {
+	position: relative;
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.checkbox label, .radio label {
+	min-height: 23px;
+	font-weight: 400;
+}
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
+	position: absolute;
+	margin-left: -20px;
+	margin-top: 4px \9;
+}
+.checkbox + .checkbox, .radio + .radio {
+	margin-top: -5px;
+}
+.checkbox-inline, .radio-inline {
+	position: relative;
+	display: inline-block;
+	padding-left: 20px;
+	margin-bottom: 0;
+	vertical-align: middle;
+	font-weight: 400;
+	cursor: pointer;
+}
+.checkbox-inline + .checkbox-inline, .radio-inline + .radio-inline {
+	margin-top: 0;
+	margin-left: 10px;
+}
+.checkbox-inline.disabled, .checkbox.disabled label, .radio-inline.disabled, .radio.disabled label {
+	cursor: not-allowed;
+}
+fieldset[disabled] .checkbox label, fieldset[disabled] .checkbox-inline, fieldset[disabled] .radio label, fieldset[disabled] .radio-inline {
+	cursor: not-allowed;
+}
+fieldset[disabled] input[type=checkbox], fieldset[disabled] input[type=radio] {
+	cursor: not-allowed;
+}
+input[type=checkbox].disabled, input[type=checkbox][disabled] {
+	cursor: not-allowed;
+}
+input[type=radio].disabled, input[type=radio][disabled] {
+	cursor: not-allowed;
+}
+input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].btn-block {
+	width: 100%;
+}
+input::-moz-focus-inner {
+ border: 0;
+ padding: 0;
+}
+input[type=checkbox], input[type=radio] {
+	box-sizing: border-box;
+	padding: 0;
+}
+.has-success .form-control, .has-success .form-control:active, .has-success .form-control:focus {
+	border-color: transparent;
+	box-shadow: none;
+}
+.modal-body [type=text].form-control {
+	font-size: 13px;
+}
+.focussed .theme-blue .ta-bind, .theme-blue .focussed .ta-bind, .theme-blue .theme-box-inset, .theme-blue .todo-app .filters .filter.active, .theme-blue [contenteditable].form-control:focus, .theme-blue [type=email].form-control:focus, .theme-blue [type=password].form-control:focus, .theme-blue [type=tel].form-control:focus, .theme-blue [type=text].form-control:focus, .theme-blue input.form-control:focus, .theme-blue input[type=email]:focus, .theme-blue input[type=number]:focus, .theme-blue input[type=password]:focus, .theme-blue input[type=text]:focus, .theme-blue select:focus, .theme-blue textarea:focus, .todo-app .filters .theme-blue .filter.active, .todo-app .filters .theme-blue .filter:hover {
+	box-shadow: none;
+}
+.ta-root.focussed > .ta-scroll-window.form-control {
+	border-color: transparent;
+	outline: 0;
+	box-shadow: none;
+}
+/* task properties */
+.auto-grow-textarea {
+	overflow: hidden;
+	padding: 4px;
+}
+.task-color-black {
+	color: black;
+}
+.modal-footer .btn-danger:disabled, .modal-footer .btn-info:disabled {
+	background-color: #fff;
+	border: 1px solid #eee;
+	background-color: #eee;
+	color: #7c7c7c;
+}
+.conceptInformationModal .modal-header {
+	padding-bottom: 0px;
+}
+.modal-header .sidebar-tabs.nav > li {
+	width: 50%
+}
+/* concept information modal*/
+
+.grey-rounded {
+	background-color: #f5f5f5;
+	border-radius: 5px;
+	width: 100%;
+	float: left;
+	margin-bottom: 10px
+}
+.grey-rounded h4 {
+	font-size: 14px;
+	padding-bottom: 8px;
+	padding-bottom: 8px;
+	border-bottom: 1px #eee solid;
+}
+.concept-lists {
+	line-height: 12px;
+	padding-bottom: 10px;
+}
+.grey-rounded th, .grey-rounded tr {
+	padding: 0px 0px 4px 8px
+}
+.top-modal .col-md-6.left-button {
+	padding-left: 0px
+}
+.top-modal .col-md-6.right-button {
+	padding-right: 0px
+}

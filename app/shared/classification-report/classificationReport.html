@@ -1,20 +1,6 @@
-<section class="tables-data">
-
-  <style>
-    .table > tbody > tr > td,
-    .table > tbody > tr > th {
-      padding: 0px;
-      line-height: 1.846;
-      vertical-align: top;
-      border-top: 1px solid #F0F0F0;
-    }
-  </style>
-
+<section class="tables-data"> 
   <!-- No results display banner -->
-  <div class="ng-table-no-results dark-centured-text" ng-if="items && items.length === 0">
-    No results.
-  </div>
-
+  <div class="ng-table-no-results dark-centured-text" ng-if="items && items.length === 0"> No results. </div>
   <div ng-if="type !== 'equivalence' && items.length > 0" class="table-responsive white">
     <div class="table-search">
       <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
@@ -23,37 +9,20 @@
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
-        <td header-title="'Click to sort'" data-title="'Differences'" sortable="'changeNature'">
-          <span ng-show="result.changeNature === 'INFERRED'" class="green-text">Added</span>
-          <span ng-show="result.changeNature === 'REDUNDANT'" class="red-text">Removed</span>
-        </td>
+        <td header-title="'Click to sort'" data-title="'Differences'" sortable="'changeNature'"><span ng-show="result.changeNature === 'INFERRED'" class="green-text">Added</span> <span ng-show="result.changeNature === 'REDUNDANT'" class="red-text">Removed</span></td>
         <td header-title="'Click to sort'" data-title="'Source'" sortable="'sourceName'"
-            ng-click="editSourceConcept(result)">
-          {{result.source.fsn}}
-        </td>
-        <td header-title="'Click to sort'" data-title="'Type'" sortable="'typeName'">
-          {{result.type.fsn}}
-        </td>
-        <td header-title="'Click to sort'" data-title="'Destination'" sortable="'destinationName'">
-          {{result.destination.fsn}}
-        </td>
-        <td header-title="'Click to sort'" data-title="'Group'" sortable="'group'">
-          {{result.group}}
-        </td>
-
-        <td>
-          <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
+            ng-click="editSourceConcept(result)"> {{result.source.fsn}} </td>
+        <td header-title="'Click to sort'" data-title="'Type'" sortable="'typeName'"> {{result.type.fsn}} </td>
+        <td header-title="'Click to sort'" data-title="'Destination'" sortable="'destinationName'"> {{result.destination.fsn}} </td>
+        <td header-title="'Click to sort'" data-title="'Group'" sortable="'group'"> {{result.group}} </td>
+        <td><button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                   title="Edit"><span class="md md-edit " ng-click="editSourceConcept(result)"></span>
-
-            <div class="ripple-wrapper"></div>
-          </button>
-        </td>
+          <div class="ripple-wrapper"></div>
+          </button></td>
       </tr>
     </table>
-
   </div>
-
   <div ng-if="type === 'equivalence' && items.length > 0" class="table-responsive white">
     <div class="table-search">
       <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
@@ -62,32 +31,20 @@
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
-
-
-        <td header-title="'Click to sort'" data-title="'Concept'" sortable="'leftConceptLabel'">
-          {{result[0].label}}
-        </td>
-        <td style="padding: 0">
-          <button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left"
+        <td header-title="'Click to sort'" data-title="'Concept'" sortable="'leftConceptLabel'"> {{result[0].label}} </td>
+        <td style="padding: 0"><button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left"
                   tooltip=""
                   title="Edit"><span class="md md-edit "
                                      ng-click="editEquivalentConcept(result[0].id)"></span>
-
-            <div class="ripple-wrapper"></div>
-          </button>
-        </td>
-        <td header-title="'Click to sort'" data-title="'Equivalence'" sortable="'rightConceptLabel'">
-          {{result[1].label}}
-        </td>
-        <td style="padding: 0">
-          <button ng-if="editable" ng-disabled="result.isLoaded" type="button"
+          <div class="ripple-wrapper"></div>
+          </button></td>
+        <td header-title="'Click to sort'" data-title="'Equivalence'" sortable="'rightConceptLabel'"> {{result[1].label}} </td>
+        <td style="padding: 0"><button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                   title="Edit"><span class="md md-edit "
                                      ng-click="editEquivalentConcept(result[1].id)"></span>
-
-            <div class="ripple-wrapper"></div>
-          </button>
-        </td>
+          <div class="ripple-wrapper"></div>
+          </button></td>
       </tr>
     </table>
   </div>

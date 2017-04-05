@@ -1,81 +1,5 @@
 <section class="tables-data">
-  <style>
-
-    .table > tbody > tr > td,
-    .table > tbody > tr > th {
-      padding: 0px;
-      line-height: 1.846;
-      vertical-align: top;
-      border-top: 1px solid #F0F0F0;
-    }
-	
-	.inactivation-report.classification-report .nav-tabs > li{    width: 21%;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(5){    width: 15%; float:right;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(3){    width: 23%;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(5) .btn-alert.green {width:100%}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(4){    width: 14%;}
-.inactivation-report.classification-report .nav-tabs > li:nth-child(4) input {width:100%;}
-.inactivation-report.classification-report .nav-tabs li a {
-    padding: 5px 15px;
-}
-    .inactivation-header{ line-height:1.6
-		}
-    .case-failures, .back-button {
-      border-radius: 5px
-    }
-
-    .back-button {
-      background-color: transparent !important;
-      border: 1px solid #00a6e5 !important;
-      color: #00a6e5
-    }
-
-    .back-button:hover {
-      background-color: #00a6e5 !important;
-      border: 1px solid #00a6e5 !important;
-    }
-
-    .table-filter {
-      padding: 25px !important;
-    }
-
-    .classification-header {
-      background-color: #eb5060;
-      color: #fff;
-    }
-
-    .btn-default.cancel-inactivation-btn:disabled,
-    .btn-default.complete-inactivation-btn:disabled {
-      background-color: #d8d8d8;
-      color: #909090;
-
-    }
-
-    .btn-default.cancel-inactivation-btn {
-      background-color: #e21b3c;
-      color: #fff;
-      border-radius: 4px !important;
-    }
-
-    .btn-default.cancel-inactivation-btn:hover,
-    .btn-default.cancel-inactivation-btn:active {
-      background-color: #a9142d;
-
-    }
-
-    .btn-default.complete-inactivation-btn {
-      background-color: #4cb476;
-      color: #fff;
-      border-radius: 4px !important;
-    }
-
-    .btn-default.complete-inactivation-btn:hover,
-    .btn-default.complete-inactivation-btn:active {
-      background-color: #388457;
-
-    }
-
-  </style>
+ 
   <div class="row inactivation-header  grey darken-3 p-t-5" style="vertical-align: middle">
     <div class="col-md-12 ">
       <div class="col-md-6" ng-if="!deletion">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
@@ -184,7 +108,7 @@
               </button>
             </td>
             <td>
-              <a class="btn btn-round btn-default base" ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+              <a class="btn btn-round btn-default base approve-button" ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
                  ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
@@ -230,7 +154,7 @@
               </button>
             </td>
             <td>
-              <a class="btn btn-round btn-default base"
+              <a class="btn btn-round btn-default base approve-button"
                  ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
                  ng-click="toggleRowAccepted(rel)">
                 <div
@@ -297,7 +221,7 @@
                 </button>
               </td>
               <td>
-                <a class="btn btn-round btn-default base"
+                <a class="btn btn-round btn-default base approve-button"
                    ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
                    ng-click="toggleRowAccepted(rel)">
                   <div
@@ -365,7 +289,7 @@
                 </button>
               </td>
               <td>
-                <a class="btn btn-round btn-default base"
+                <a class="btn btn-round btn-default base approve-button"
                    ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
                    ng-click="toggleRowAccepted(rel)">
                   <div

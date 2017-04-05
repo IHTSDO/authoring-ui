@@ -1,55 +1,36 @@
 <div id="promoteModal" class="clearfix">
-
   <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4 class="modal-title">Promote {{isTask ? 'Task' : 'Project'}}</h4>
   </div>
-
-
   <div class="modal-body">
-
     <div class="row p-b-10" ng-repeat="flag in flags">
       <div class="col-md-1"></div>
       <div class="col-md-1">
-        <h4>
-          <span class="md md-warning orange p-5" ng-if="flag.checkWarning && !flag.blocksPromotion"></span>
-          <span class="md md-close red p-5" ng-if="flag.checkWarning && flag.blocksPromotion"></span>
-          <span class="md md-done green p-5" ng-if="!flag.checkWarning"></span>
-        </h4>
-
-
+        <h4> <span class="md md-warning orange p-5" ng-if="flag.checkWarning && !flag.blocksPromotion"></span> <span class="md md-close red p-5" ng-if="flag.checkWarning && flag.blocksPromotion"></span> <span class="md md-done green p-5" ng-if="!flag.checkWarning"></span> </h4>
       </div>
       <div class="col-md-9">
-
         <div class="col-md-12">
-          <h4>
-            {{flag.checkTitle}}
-          </h4>
+          <h4> {{flag.checkTitle}} </h4>
         </div>
         <div class="col-md-12" ng-if="!flag.value">{{flag.checkWarning}}</div>
       </div>
       <div class="col-md-1"></div>
     </div>
   </div>
-
-
   <div class="modal-footer">
-
-    <div class="row no-padding no-gutter">
+    <div class="row no-padding no-gutter"> 
       <!-- If has a key, option to delete task -->
       <div class="col-md-4">
         <button type="button" class="col-md-12 btn btn-warning no-margin" ng-if="isTask && !blockPromotion"
-                ng-click="promote()">Promote Anyway
-        </button>
+                ng-click="promote()">Promote Anyway </button>
       </div>
       <div class="col-md-4"></div>
-
-
+      
       <!-- Cancel always appears -->
       <div class="col-md-4">
         <button type="button" class=" col-md-12 btn btn-info no-margin"
-                ng-click="cancel()">Return to {{isTask ? 'Task' : 'Project'}}
-        </button>
+                ng-click="cancel()">Return to {{isTask ? 'Task' : 'Project'}} </button>
       </div>
     </div>
   </div>
