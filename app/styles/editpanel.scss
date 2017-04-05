@@ -1224,52 +1224,6 @@ button-link .bluehl .grey.darken-3 {
 .sidebar-tabs.nav > li > a {
     line-height: 35px;
 }
-<<<<<<< HEAD
-.ng-table textarea, .ng-table input, .ng-table select {
-    resize: none !important;
-    min-height: 40px !important;
-  
-    line-height: 1.0!important;
-    font-weight: 400 !important;
-    -webkit-font-smoothing: antialiased;
-    letter-spacing: .1px;
-    text-rendering: optimizeLegibility;
-}
-
-.ng-table ::-webkit-scrollbar {
-  width: 2px;
-  height: 2px;
-}
-.ng-table ::-webkit-scrollbar-button {
-  width: 0px;
-  height: 0px;
-}
-.ng-table ::-webkit-scrollbar-thumb {
-  background: #d8d8d8;
-  border: 0px none #ffffff;
-  border-radius: 50px;
-}
-.ng-table ::-webkit-scrollbar-thumb:hover {
-  background: #009cd7;
-}
-.ng-table ::-webkit-scrollbar-thumb:active {
-  background: #009cd7;
-}
-.ng-table ::-webkit-scrollbar-track {
-  background: #eee;
-  border: 0px none #ffffff;
-  border-radius: 50px;
-}
-.ng-table ::-webkit-scrollbar-track:hover {
-  background: #eee;
-}
-.ng-table ::-webkit-scrollbar-track:active {
-  background: #eee;
-}
-.ng-table ::-webkit-scrollbar-corner {
-  background: transparent;
-}
-=======
 .rolegroup [type=text].form-control,
 .rolegroup [type=text].form-control[disabled],
 .rolegroup [type=text].form-control[readonly] {
@@ -1278,4 +1232,3 @@ button-link .bluehl .grey.darken-3 {
 }
 .morebuttons.more-button-width,
 .morebuttons.drag-button-width{background-color:transparent}
->>>>>>> feature_cssRefactor
