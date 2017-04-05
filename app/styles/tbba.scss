@@ -237,7 +237,6 @@ ul.review-nav .btn:hover,
 }
 /* template slots */
 
-<<<<<<< HEAD
 .select-template .table-container{
     max-height: 600px;
     overflow-y: scroll;
@@ -250,15 +249,6 @@ ul.review-nav .btn:hover,
     border-top: 0px solid transparent;
     border-bottom: 0px solid transparent;
 }
-
-=======
-.editing-form .template-editable,
-.editing-form .template-slot {
-    -webkit-box-shadow: inset 0px -2px 0px 0px rgba(1, 168, 223, 1);
-    -moz-box-shadow: inset 0px -2px 0px 0px rgba(1, 168, 223, 1);
-    box-shadow: inset 0px -2px 0px 0px rgba(1, 168, 223, 1);
-}
->>>>>>> feature_cssRefactor
 .select-template .table-full tbody > tr > td {
     padding-top: 5px;
     padding-bottom: 5px;
