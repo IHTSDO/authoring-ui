@@ -207,4 +207,18 @@ input[type=checkbox], input[type=radio] {
     line-height: 12px;
     min-height: 24px;
     margin-bottom: 7px;
+	font-size:12px;
 }
+
+.modal-body input[type=text]{padding: 0;
+    border: none;
+    border-radius: 0;
+    -webkit-appearance: none;
+    box-shadow: inset 0 -1px 0 #ddd;
+    font-size: 13px;}
+	
+	.theme-blue .modal-body input[type=text]:focus{box-shadow: inset 0 -2px 0 #009cd7;}
+	
+	
+	.theme-blue .modal-body .has-success .form-control {
+   box-shadow: inset 0 -1px 0 #009cd7;}
