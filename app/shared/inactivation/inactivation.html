@@ -1,32 +1,32 @@
 <section class="tables-data">
  
-  <div class="row inactivation-header  grey darken-3 p-t-5" style="vertical-align: middle">
-    <div class="col-md-12 ">
+  <div class="row no-padding no-gutter ">
+    <div class="col-md-12 m-t-10 ">
       <div class="col-md-6" ng-if="!deletion">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
         ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
       <div class="col-md-6" ng-if="deletion">Deletion - Replacement: {{inactivationConcept.fsn}}<span
         ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
 
       <button ng-if="!deletion"
-              class="col-md-2 btn btn-default complete-inactivation-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+              class="col-md-2 btn btn-default complete-action-btn pull-right tooltips-bottom m-r-10 large-size-tooltip offset-tooltip-left"
               style="text-transform: none"
               ng-disabled="!isComplete()"
               ng-click="completeInactivation()">
         Complete Inactivation
       </button>
       <button ng-if="deletion"
-              class="col-md-2 btn btn-default complete-inactivation-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+              class="col-md-2 btn btn-default complete-action-btn pull-right tooltips-bottom m-r-10 large-size-tooltip offset-tooltip-left"
               style="text-transform: none"
               ng-disabled="!isComplete()"
               ng-click="completeInactivation()">
         Complete Deletion
       </button>
       <button ng-if="!deletion"
-              class="btn btn-default cancel-inactivation-btn pull-right col-md-2 m-r-5" style="text-transform: none"
+              class="btn btn-default cancel-action-btn pull-right col-md-2 m-r-10" style="text-transform: none"
               ng-click="cancelInactivation()">Cancel Inactivation
       </button>
       <button ng-if="deletion"
-              class="btn btn-default cancel-inactivation-btn pull-right col-md-2 m-r-5" style="text-transform: none"
+              class="btn btn-default cancel-action-btn pull-right col-md-2 m-r-10" style="text-transform: none"
               ng-click="cancelInactivation()">Cancel Deletion
       </button>
 

@@ -10,7 +10,10 @@
     color: #666;
 }
 
+
+.btn-default.rounded-button{border-radius: 4px!important;}
 </style>
+
 <div ng-controller="uploadBatchCtrl" class="row column-md-12 sca-batch-editing" style="max-width:inherit">
     <div class="row column-md-12 p-15">
         <div
@@ -20,7 +23,7 @@
                         popover-placement="bottom-left"
                         popover-trigger="click: click"
                         popover-append-to-body="true"
-                        class="pointer btn btn-default btn-primary"><span ng-if="!templateOptions.selectedTemplate">Please Select a template</span>
+                        class="pointer btn btn-default btn-primary sca-light-text"><span ng-if="!templateOptions.selectedTemplate">Please Select a template</span>
             <span ng-if="templateOptions.selectedTemplate">Selected: {{templateOptions.selectedTemplate.name}}</span>
         </div>
     </div>
