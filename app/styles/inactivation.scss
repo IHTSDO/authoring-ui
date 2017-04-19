@@ -32,33 +32,33 @@
 
    
 
-    .btn-default.cancel-inactivation-btn:disabled,
-    .btn-default.complete-inactivation-btn:disabled {
+    .btn-default.cancel-action-btn:disabled,
+    .btn-default.complete-action-btn:disabled {
       background-color: #d8d8d8;
       color: #909090;
 
     }
 
-    .btn-default.cancel-inactivation-btn {
+    .btn-default.cancel-action-btn {
       background-color: #db5760;
       color: #fff;
       border-radius: 4px !important;
     }
 
-    .btn-default.cancel-inactivation-btn:hover,
-    .btn-default.cancel-inactivation-btn:active {
+    .btn-default.cancel-action-btn:hover,
+    .btn-default.cancel-action-btn:active {
       background-color: #a9142d;
 
     }
 
-    .btn-default.complete-inactivation-btn {
+    .btn-default.complete-action-btn {
       background-color: #4cb476;
       color: #fff;
       border-radius: 4px !important;
     }
 
-    .btn-default.complete-inactivation-btn:hover,
-    .btn-default.complete-inactivation-btn:active {
+    .btn-default.complete-action-btn:hover,
+    .btn-default.complete-action-btn:active {
       background-color: #388457;
 
     }

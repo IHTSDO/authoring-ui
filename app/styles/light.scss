@@ -881,3 +881,20 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 .sca-light .search-scroll .md-close,
 .sca-light .search-scroll .md-check-box
  {color:#666;}
+ 
+ .sca-light .sca-batch-editing .btn-default.sca-light-text,
+  .sca-light .sca-batch-editing .btn-default.sca-light-text:hover,
+  .sca-light .btn-default.complete-action-btn,
+   .sca-light .btn-default.complete-action-btn:hover,
+     .sca-light .btn-default.cancel-action-btn,
+   .sca-light .btn-default.cancel-action-btn:hover
+   {color:#fff;}
+
+  .sca-light .btn-default.cancel-action-btn:disabled, 
+  .sca-light .btn-default.complete-action-btn:disabled
+   {
+    background-color: #d8d8d8;
+    color: #909090;
+	    pointer-events: none;
+		    cursor: not-allowed;
+}
