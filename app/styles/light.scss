@@ -2,7 +2,9 @@
 .sca-light .pager .btn-default.blue {
     color: #474747;
 }
-
+.sca-light .reports-header .btn-default,
+.sca-light .reports-header .btn-default:hover
+{color:#fff}
 .sca-light .navbar .dashboard-link-list li:hover .btn-link {
     background-color: #eee
 }
@@ -874,3 +876,8 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
     font-size: 11px;
     height: 30px;
 }
+
+.sca-light .search-scroll .btn-default.load-more,
+.sca-light .search-scroll .md-close,
+.sca-light .search-scroll .md-check-box
+ {color:#666;}
