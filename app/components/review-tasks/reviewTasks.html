@@ -1,6 +1,6 @@
 
-<div class="row no-gutter sca-container ">
-  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
+<div class="row no-gutter sca-container review-tasks ">
+  <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
   <div class="sca-content dash-tables col-lg-9 col-md-9 col-sm-9 pull-right"> 
     <!-- Reviewer Tasks -->
@@ -41,18 +41,19 @@
         </div>
         <!--          Left in as a placeholder for reviewer role functionality--> 
         <!--        <div class="table-responsive white" style="margin-right:0px;" ng-if="isReviewer()">-->
-        <div class="table-responsive white" style="margin-right:0px;">
+              <div class="table-responsive white" style="margin-right:0px;">
           <table ng-table="reviewTableParams" template-pagination="utilities/data-table-pager.html"
-                 class="table table-full table-full-small col-md-12 no-padding">
+                 class="table table-full table-full-small">
             <tr ng-repeat="task in $data" class="clickable-row">
-              <td class="review-checkbox no-padding " ng-show="hasUnclaimedTasks()"><div class="checkbox">
+              <td class="review-checkbox no-padding " ng-show="hasUnclaimedTasks()">
+              <div class="checkbox">
                   <label class="filled">
                     <input type="checkbox" ng-model="task.selectedUnclaimed"
                                                                    ui-on-drop=""
                                                                    ng-show="isUnclaimedTask(task)">
                   </label>
                 </div></td>
-              <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'"
+              <td header-title="'Click to sort'" data-title="'Name'" sortable="'summary'" header-class="'header-tooltips'"
                   filter="{ 'summary': 'text' }"><a class="tooltips-right"
                    ng-click="viewReviewTask(task)"> {{task.summary}}<span> Click to open reviewer view</span></a></td>
               <td header-title="'Click to sort'" data-title="'Task ID'" sortable="'key'" filter="{ 'key': 'text' }"> {{task.key}} </td>

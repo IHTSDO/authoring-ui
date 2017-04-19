@@ -664,3 +664,5 @@ strong {
     outline-offset: 0;
     box-shadow: none;
 }
+.review-tasks .table-full-small tbody > tr > td:nth-child(2), 
+.review-tasks .table-full-small thead tr > th:nth-child(2){padding-left:20px;}
