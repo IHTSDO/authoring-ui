@@ -59,17 +59,9 @@
         <div class="col-sm-12 no-padding  add-color" ng-if="componentType === 'Concept' || componentType === 'Description' && inactivationReason.id === 'NOT_SEMANTICALLY_EQUIVALENT'">
 
 
-          <div class="row p-t-10">
-            <div class="col-md-4">
-              <label> Association Type </label>
-            </div>
-            <div class="col-md-6">
-              <label> Concept</label>
-            </div>
-          </div>
           <div class="col-sm-12 no-padding  add-color" ng-if="componentType === 'Concept'">
             <div class="row p-t-10">
-              <div class="col-md-4">
+              <div class="col-md-5">
                 <label> Association Type </label>
               </div>
               <div class="col-md-6">
@@ -85,6 +77,7 @@
                 </select>
               </div>
               <div class="col-md-6">
+              
                 <textarea type="text" class="form-control"
                         ng-model="association.concept"
                         typeahead="suggestion as (suggestion.concept.fsn + ' (' + suggestion.concept.conceptId + ')') for suggestion in getConceptsForTypeahead($viewValue)"
@@ -124,6 +117,7 @@
           </div>
         </div>
       </div>
+       </div>
       <!-- children -->
       <div role="tabpanel" class="tab-pane" ng-class="{active: actionTab === 2}">
         <table ng-table="tableParamsChildren" template-pagination="utilities/data-table-pager.html"
@@ -162,7 +156,7 @@
         </table>
         <div class="p-20">Note: Inactive relationships are not shown, but are included in the total count.</div>
       </div>
-    </div>
+   
   </div>
   <div class="modal-footer" ng-if="!deletion">
     <div class="row col-md-12 no-padding top-modal">
@@ -203,4 +197,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>
