@@ -69,7 +69,7 @@
           </li>
           <li>
                <div class="p-5">
-            <button class="btn btn-alert green  pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
+            <button class="btn btn-default complete-action-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
                     style="text-transform: none"
                     ng-click="acceptAll()">
               <i class="md md-thumb-up"></i>Accept All
@@ -108,7 +108,7 @@
               </button>
             </td>
             <td>
-              <a class="btn btn-round btn-default base approve-button" ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+              <a class="btn btn-round btn-default base approve-button" ng-class="[{'green' : rel.accepted}, {'blue' : !rel.accepted}]"
                  ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
@@ -155,7 +155,7 @@
             </td>
             <td>
               <a class="btn btn-round btn-default base approve-button"
-                 ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                 ng-class="[{'green' : rel.accepted}, {'blue' : !rel.accepted}]"
                  ng-click="toggleRowAccepted(rel)">
                 <div
                   class="md md-thumb-up "></div>
@@ -176,7 +176,7 @@
       </div>
       <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
         <div ng-show="affectedConceptAssocs.length > 0">
-          <h4>Concept Historical Associations</h4>
+        
           <table
             ng-table="assocsConceptTableParams" template-pagination="utilities/data-table-pager.html"
             class="table table-full table-full-small">
@@ -222,7 +222,7 @@
               </td>
               <td>
                 <a class="btn btn-round btn-default base approve-button"
-                   ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                   ng-class="[{'green' : rel.accepted}, {'blue' : !rel.accepted}]"
                    ng-click="toggleRowAccepted(rel)">
                   <div
                     class="md md-thumb-up "></div>
@@ -290,7 +290,7 @@
               </td>
               <td>
                 <a class="btn btn-round btn-default base approve-button"
-                   ng-class="[{'green' : rel.accepted}, {'grey' : !rel.accepted}]"
+                   ng-class="[{'green' : rel.accepted}, {'blue' : !rel.accepted}]"
                    ng-click="toggleRowAccepted(rel)">
                   <div
                     class="md md-thumb-up "></div>

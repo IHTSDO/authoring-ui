@@ -32,36 +32,6 @@
 
    
 
-    .btn-default.cancel-action-btn:disabled,
-    .btn-default.complete-action-btn:disabled {
-      background-color: #d8d8d8;
-      color: #909090;
-
-    }
-
-    .btn-default.cancel-action-btn {
-      background-color: #db5760;
-      color: #fff;
-      border-radius: 4px !important;
-    }
-
-    .btn-default.cancel-action-btn:hover,
-    .btn-default.cancel-action-btn:active {
-      background-color: #a9142d;
-
-    }
-
-    .btn-default.complete-action-btn {
-      background-color: #4cb476;
-      color: #fff;
-      border-radius: 4px !important;
-    }
-
-    .btn-default.complete-action-btn:hover,
-    .btn-default.complete-action-btn:active {
-      background-color: #388457;
-
-    }
  .inactivation-report a.base.grey{color:#fff;    background-color: #9e9e9e;}
 #inactivateComponentModal  select.form-control {margin-bottom:10px;}
 .modal-body .add-buttons{color:#666;}

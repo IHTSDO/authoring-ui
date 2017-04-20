@@ -887,14 +887,17 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
   .sca-light .btn-default.complete-action-btn,
    .sca-light .btn-default.complete-action-btn:hover,
      .sca-light .btn-default.cancel-action-btn,
-   .sca-light .btn-default.cancel-action-btn:hover
+   .sca-light .btn-default.cancel-action-btn:hover,
+        .sca-light .btn-default.primary-action-btn,
+   .sca-light .btn-default.primary-action-btn:hover
    {color:#fff;}
 
   .sca-light .btn-default.cancel-action-btn:disabled, 
-  .sca-light .btn-default.complete-action-btn:disabled
+  .sca-light .btn-default.complete-action-btn:disabled,
+  .sca-light .btn-default.primary-action-btn:disabled
+  
    {
     background-color: #d8d8d8;
     color: #909090;
-	    pointer-events: none;
-		    cursor: not-allowed;
+	 
 }
