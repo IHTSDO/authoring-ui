@@ -166,12 +166,12 @@
 		</style>
       <div class=" col-md-6 left-button ">
         <button type="button"
-                  class="btn btn-default red p-10 inactivation-button-modal m-t-20"
+                  class="btn btn-default col-md-12  cancel-action-btn  no-padding"
                   ng-click="cancel()"> Cancel {{componentType}} Inactivation </button>
       </div>
       <div class=" col-md-6 right-button">
         <button type="button"
-                  class="btn btn-default green p-10 inactivation-button-modal m-t-20"
+                  class="btn btn-default  col-md-12  p-10 complete-action-btn no-padding"
                   ng-click="selectReason(inactivationReason)"> Continue with {{componentType}} Inactivation </button>
       </div>
     </div>
@@ -180,19 +180,19 @@
     <div class="row col-md-12 no-padding top-modal">
       <div class=" col-md-6 left-button ">
         <button type="button"
-                  class="btn btn-default red p-10 inactivation-button-modal m-t-20"
+                  class="btn btn-default  p-10 cancel-action-btn m-t-20"
                   ng-click="cancel()"> Cancel Deletion </button>
       </div>
       <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal === 0">
         <button type="button"
 
-                  class="btn btn-default green p-10 inactivation-button-modal m-t-20"
+                  class="btn btn-default  p-10 complete-action-btn m-t-20"
                   ng-click="delete()"> Confirm Deletion </button>
       </div>
       <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
         <button type="button"
 
-                  class="btn btn-default green p-10 inactivation-button-modal m-t-20"
+                  class="btn btn-default green p-10 complete-action-btn m-t-20"
                   ng-click="selectReason(inactivationReason)"> Continue with Deletion </button>
       </div>
     </div>

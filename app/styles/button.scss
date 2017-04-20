@@ -905,3 +905,50 @@ button.tooltips-right.normal-case span {
     background-color: transparent;
     color: rgba(0, 0, 0, 0.4)
 }
+
+
+    .btn-default.cancel-action-btn:disabled,
+    .btn-default.complete-action-btn:disabled,
+	.btn-default.primary-action-btn:disabled {
+      background-color: #d8d8d8;
+      color: #909090;
+	     pointer-events: none;
+		    cursor: not-allowed;
+
+    }
+
+    .btn-default.cancel-action-btn {
+      background-color: #db5760;
+      color: #fff;
+      border-radius: 4px !important;
+    }
+
+    .btn-default.cancel-action-btn:hover,
+    .btn-default.cancel-action-btn:active {
+      background-color: #a9142d;
+
+    }
+
+    .btn-default.complete-action-btn {
+      background-color: #4cb476;
+      color: #fff;
+      border-radius: 4px !important;
+    }
+
+    .btn-default.complete-action-btn:hover,
+    .btn-default.complete-action-btn:active {
+      background-color: #388457;
+
+    }
+	
+	   .btn-default.primary-action-btn {
+      background-color: #00a6e5;
+      color: #fff;
+      border-radius: 4px !important;
+    }
+
+    .btn-default.primary-action-btn:hover,
+    .btn-default.primary-action-btn:active {
+      background-color: #0090c6;
+
+    }
