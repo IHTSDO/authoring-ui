@@ -915,3 +915,14 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
     height: 30px;
 }
 .sca-dark .sca-batch-table .table-full{background-color:#fff;}
+
+.sca-dark .header-alerts div .saved.red {
+   background-color: #db5760;
+}
+.sca-dark .header-alerts div .saved.blue {
+   background-color: #00a6e5;
+}
+
+.sca-dark .header-alerts div .saved.orange {
+   background-color: #ff9800;
+}
