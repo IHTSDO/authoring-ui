@@ -17,7 +17,7 @@
                 class="btn btn-default green pull-right"
                 ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'COMPLETED' && (!task || task && role && role === 'AUTHOR')"
-                class="btn btn-default green darken-4 pull-right dark-button" style="text-transform: none"
+                class="btn btn-default pull-right complete-action-btn" style="text-transform: none"
                 ng-hide="classificationContainer.status === 'SAVED'" ng-click="saveClassification()"><i
           class="md md-check m-r-10 "></i>Accept Classification Results </button>
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'COMPLETED' && (task && role && role !== 'AUTHOR')"
@@ -29,7 +29,7 @@
                 ng-click="saveClassification()"><i class="md md-check m-r-10"></i>Saving Classification... </button>
         <button ng-if="resultsNotEmpty && !errorState && classificationContainer.status === 'SAVED'"
                 disabled
-                class="btn btn-default green darken-4 dark-button pull-right" style="text-transform: none"><i class="md md-check m-r-10"></i>Classification Saved </button>
+                class="btn btn-default pull-right complete-action-btn" style="text-transform: none"><i class="md md-check m-r-10"></i>Classification Saved </button>
       </div>
     </div>
   </div>
