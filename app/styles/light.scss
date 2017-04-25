@@ -402,12 +402,9 @@
 .ta-scroll-window.form-control::-webkit-scrollbar-corner {
     background: transparent;
 }
-.sca-light .validation.red {
-    background-color: #FFCDD2;
-    color: #474747;
-}
+.sca-light .validation.red,
 .sca-light .validation.orange {
-    background-color: #ffecb3;
+    background-color: #f0f0f0;
     color: #474747;
 }
 .sca-light .btn-round.purple.lighten-1 {
