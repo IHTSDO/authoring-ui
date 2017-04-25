@@ -338,16 +338,7 @@ a {
     background-color: transparent;
     border: 1px #1f2731 solid;
 }
-/*edit buttons */
 
-.sca-dark .small-buttons:hover {
-    color: #fff ;
-    background-color: transparent ;
-}
-.sca-dark .morebuttons {
-    color: #00a6e5;
-    background-color: transparent
-}
 /*colors */
 
 .sca-dark .blue {
@@ -934,5 +925,26 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
   
     color: #7c7c7c;
     pointer-events: none;
+
+}
+/*edit buttons */
+
+.sca-dark .small-buttons:hover {
+    color: #fff ;
+    background-color: transparent ;
+}
+.sca-dark .morebuttons {
+    color: #fff;
+    background-color: transparent
+}
+
+.sca-dark .morebuttons:hover{color:#00a6e5}
+
+
+
+.sca-dark .validation.red,
+.sca-dark .validation.orange{
+background-color:#f9f8ff;
+color:#474747
 
 }

@@ -958,3 +958,17 @@ button.tooltips-right.normal-case span {
     height: 30px;
     line-height: 30px;
 }
+
+.validation.red,
+.validation.orange{
+background-color:#f9f9f9;
+color:#474747;
+width:95%;
+margin:5px;
+padding:5px;
+border-radius:4px;
+}
+
+.validation.red strong{color:#db5760}
+.validation.orange strong{color:#e98401}
+
