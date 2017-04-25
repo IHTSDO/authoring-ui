@@ -164,7 +164,7 @@ a {
     color: #fff;
 }
 .sca-dark .project-icon.green {
-    background-color: #4CAF50;
+    background-color: #4db46a;
     color: #fff;
 }
 .sca-dark .project-icon.yellow.darken-2 {
@@ -247,7 +247,7 @@ a {
 }
 .sca-dark .green.lighten-2 {
     background-color: transparent;
-    color: #4CAF50;
+    color: #4db46a;
 }
 .sca-dark .pink.darken-2 {
     background-color: transparent;
@@ -383,7 +383,7 @@ a {
     background-color: transparent;
 }
 .sca-dark .green.darken-1 {
-    color: #4CAF50;
+    color: #4db46a;
     background-color: transparent;
 }
 .sca-dark .editpanel {
@@ -391,7 +391,7 @@ a {
     color: #aeb2b5;
 }
 .sca-dark .green {
-    color: #4CAF50;
+    color: #4db46a;
     background-color: transparent;
 }
 .sca-dark .blue.darken-1 {
@@ -488,11 +488,11 @@ a {
 .sca-dark .green.btn-round
 {
     background-color: transparent;
-    color: #4CAF50
+    color: #4db46a
 }
 .sca-dark .green.btn-round:hover {
     color: #fff;
-    background-color: #4CAF50
+    background-color: #4db46a
 }
 .sca-dark .blue.btn-round
 {
@@ -791,7 +791,7 @@ sca-dark .pull-left.follow-up {
 .sca-dark .blue.search-type{background-color:#00a6e5; color:#fff;}
 .sca-dark .blue.search-type:hover{background-color:#448AFF; color:#fff;}
 .sca-dark .navigation-link.deep-purple.darken-2.validate .btn {color :#8b72b7}
-.sca-dark .navigation-link.green.darken-1.classify .btn {color :#4CAF50}
+.sca-dark .navigation-link.green.darken-1.classify .btn {color :#4db46a}
 .sca-dark .widget-toolbar.review.btn {color :#e94281}
 .sca-dark .amber.conflicts.btn {color:#ffc107;}
 .sca-dark .widget-toolbar.blue.btn{color:#5fc1e6}
@@ -819,25 +819,26 @@ sca-dark .pull-left.follow-up {
 
 .sca-dark .classification-header {
     color: #fff;
-    background-color: #33691e;
+    background-color: #4cb476;
 }
 .sca-dark  .green-text {
-    color: #8bc34a;
+    color: #4cb476;
 }
-
+.sca-dark .classification-report {
+    border-bottom: #262e39 solid 2px;}
 .sca-dark .validation-header{background-color:#4527a0}
 
 /*tbba*/
 
   /* classification */
 .sca-dark .navigation-link.green.darken-1
-{color:#4CAF50;
+{color:#4db46a;
 background-color: #262e39;}
 .sca-dark .navigation-link.green.darken-1:hover
 {color:#fff;
 background-color: #262e39;}
  .sca-dark  .green.darken-1.iconbase{
-    color:#4CAF50;
+    color:#4db46a;
 	  background-color: #262e39;
   }
  .sca-dark  ul.classification-nav .btn:hover,
@@ -853,7 +854,7 @@ background-color: #262e39;}
 
  .sca-dark  ul.classification-nav li ul li {
    background-color: #262e39;
-    color: #4CAF50
+    color: #4db46a
   }
   /*validation*/
    .sca-dark  .navigation-link.deep-purple.darken-2.validate
@@ -925,4 +926,13 @@ def_PRIMITIVE textarea, .def_PRIMITIVE select, .def_PRIMITIVE .custom-button, .d
 
 .sca-dark .header-alerts div .saved.orange {
    background-color: #ff9800;
+}
+
+.sca-dark .btn-default.cancel-action-btn:disabled, 
+.sca-dark .btn-default.complete-action-btn:disabled, 
+.sca-dark .btn-default.primary-action-btn:disabled {
+  
+    color: #7c7c7c;
+    pointer-events: none;
+
 }
