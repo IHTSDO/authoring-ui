@@ -5,7 +5,7 @@ angular.module('singleConceptAuthoringApp')
     function ($http, $rootScope, $location, $q, $interval, notificationService, snowowlService) {
 
       // TODO Wire this to endpoint service, endpoint config
-      var apiEndpoint = '../authoring-services/';
+      var apiEndpoint = '../snowowl/ihtsdo-sca/';
 
       //
       // Modified concept list utility functions
