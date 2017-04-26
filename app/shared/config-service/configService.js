@@ -19,7 +19,7 @@ angular.module('singleConceptAuthoringApp')
                   deferred.resolve(properties, validationProperties, versions);
                 }, function(error) {
                   console.log(error);
-                  deferred.reject('Failed to retrieve version configuration properties');
+                  deferred.resolve(properties, validationProperties, versions);
                 });
             }, function() {
               deferred.reject('Failed to retrieve validation configuration properties');
