@@ -111,7 +111,7 @@
           No validation results to display
         </div>
         <table ng-show="failureTableParams.total() > 0"
-               ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
+               ng-table="failureTableParams" template-pagination="utilities/data-table-pager-count.html"
                class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">
             <td  header-title="'Click to select all'"
