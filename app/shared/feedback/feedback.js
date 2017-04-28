@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'accountService', 'notificationService', '$location', '$interval',
-    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, accountService, notificationService, $location, $interval) {
+  .directive('feedback', ['$rootScope', 'ngTableParams', '$q', '$routeParams', '$filter', '$timeout', '$modal', '$compile', '$sce', 'snowowlService', 'scaService', 'modalService', 'accountService', 'notificationService', '$location', '$interval',
+    function ($rootScope, NgTableParams, $q, $routeParams, $filter, $timeout, $modal, $compile, $sce, snowowlService, scaService, modalService, accountService, notificationService, $location, $interval) {
       return {
         restrict: 'A',
         transclude: false,
@@ -269,31 +269,34 @@ angular.module('singleConceptAuthoringApp')
 
           // cancel review
           scope.cancelReview = function () {
-            var taskObj = {
-              'status': 'IN_PROGRESS',
-              'reviewer': {
-                'username': ''
-              }
-            };
-            scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
-              notificationService.sendMessage('Review Cancelled', 2000);
-              $rootScope.$broadcast('reloadTask');
-              scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
-                if (task) {
-                  scope.task = task;
-                  scope.reviewComplete = task.status !== 'In Review';
-                  accountService.getRoleForTask(task).then(function (role) {
-                    scope.role = role;
+            modalService.confirm('Cancelling review will clear the Reviewed List. Alternatively you can Unclaim the review to allow another author to pick up where you have left off.  Continue and clear review?').then(function () {
+                var taskObj = {
+                    'status': 'IN_PROGRESS',
+                    'reviewer': {
+                    'username': ''
+                    }
+                };
+                scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
+                  notificationService.sendMessage('Review Cancelled', 2000);
+                  $rootScope.$broadcast('reloadTask');
+                  scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+                    if (task) {
+                      scope.task = task;
+                      scope.reviewComplete = task.status !== 'In Review';
+                      accountService.getRoleForTask(task).then(function (role) {
+                        scope.role = role;
+                      });
+
+
+                      if (scope.role === 'UNDEFINED') {
+                        notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
+                      }
+                    }
                   });
-
-
-                  if (scope.role === 'UNDEFINED') {
-                    notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
-                  }
-                }
-              });
+                });
+                }, function () {
+                  // do nothing
             });
-
           };
 
           // controls to allow author to view only concepts with feedeback
