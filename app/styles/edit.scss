@@ -844,7 +844,8 @@ button[disabled] .project-icon {
 }
 .switch label input[type=checkbox][disabled]+.lever:after,
 .switch label input[type=checkbox][disabled]:checked+.lever:after {
-    background-color: #4CAF50;
+    cursor:not-allowed;
+    background-color: #e0e0e0;
 }
 .close {
     font-size: 28px!important;
