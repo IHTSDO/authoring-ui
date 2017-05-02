@@ -460,7 +460,11 @@ angular.module('singleConceptAuthoringApp')
             // get equivalent concepts
 
             if (scope.classificationContainer.equivalentConceptsFound) {
-
+              scope.actionTab = 4;
+              (function($) {
+                     $('.classification').removeClass('active');
+                     $('.equivalency').addClass('active');
+                }(jQuery));
               snowowlService.getEquivalentConcepts(scope.classificationContainer.id, scope.branch).then(function (equivalentConcepts) {
                 var equivalentConceptsArray = [];
                 equivalentConcepts = equivalentConcepts ? equivalentConcepts : {};
