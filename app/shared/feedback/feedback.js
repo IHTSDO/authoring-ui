@@ -269,7 +269,7 @@ angular.module('singleConceptAuthoringApp')
 
           // cancel review
           scope.cancelReview = function () {
-            modalService.confirm('Cancelling review will clear the Reviewed List. Alternatively you can Unclaim the review to allow another author to pick up where you have left off.  Continue and clear review?').then(function () {
+            modalService.confirm('Cancelling review will clear the Reviewed List. Alternatively you can Unclaim the review to allow another author to pick up from where you have left off. Continue and clear review?').then(function () {
                 var taskObj = {
                     'status': 'IN_PROGRESS',
                     'reviewer': {
