@@ -16,7 +16,7 @@
     <br/>
     <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
   </script> 
-  
+
   <!-- sidebar -->
   <div
     ng-include src="'shared/sidebar-edit/feedbackEdit.html'"></div>
@@ -30,14 +30,14 @@
       <div class="p-l-20 col-md-8">
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
-          <button class="btn btn-default pink darken-2 review-button-list " style="text-transform: none"
+          <button class="btn btn-default pink darken-2 review-button-list  " style="text-transform: none"
                   ng-if="task.status === 'In Review'"
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
         <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}</div>
         <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
-          <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
+          <button class="btn btn-default primary-action-btn" style="text-transform: none"
                   ng-click="unclaimReview()">Unclaim Review </button>
         </div>
         <div class="switch pull-right p-l-10"> </div>
@@ -51,7 +51,7 @@
         
         <!-- Review In Progress / Review Complete toggle -->
         <div ng-if="role === 'REVIEWER'"
-             class="switch pull-right">
+             class="switch pull-right white-text">
           <label class="switch"> Review in Progress
             <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
                    ng-change="toggleReviewStatus()">
@@ -90,7 +90,7 @@
       <div class="col-md-12 light_greys no-padding" ng-show="subjectConcepts.length > 0"> <strong>{{viewedFeedback.length}}</strong> Total Comments for <span
         ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}
         &nbsp;&nbsp;
-        <button class="m-5" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button>
+        <button class="btn-default m-5 primary-action-btn" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button>
         </span> </div>
       <div class="col-md-12 feedback-area">
         <div class="col-md-6 no-padding feedback-chat " ng-show="subjectConcepts.length > 0">
