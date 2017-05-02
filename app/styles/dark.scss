@@ -983,3 +983,32 @@ color:#474747
     color: #fff;
 }
 
+  .sca-dark .feedback-chat::-webkit-scrollbar-thumb,
+.sca-dark .ta-scroll-window.form-control::-webkit-scrollbar-thumb {
+    background: #e1e1e1;
+    border: 0px none #ffffff;
+    border-radius: 62px;
+}
+
+.sca-dark feedback-chat::-webkit-scrollbar-thumb:active,
+.sca-dark .ta-scroll-window.form-control::-webkit-scrollbar-thumb:active {
+    background: #3e3e42;
+}
+.sca-dark .feedback-chat::-webkit-scrollbar-track,
+.sca-dark .ta-scroll-window.form-control::-webkit-scrollbar-track {
+    background: #3e3e42;
+    border: 0px none #3e3e42;
+    border-radius: 50px;
+}
+.sca-dark .feedback-chat::-webkit-scrollbar-track:hover,
+.sca-dark .ta-scroll-window.form-control::-webkit-scrollbar-track:hover {
+    background: #3e3e42;
+}
+.sca-dark .feedback-chat::-webkit-scrollbar-track:active,
+.sca-dark .ta-scroll-window.form-control::-webkit-scrollbar-track:active {
+    background: #3e3e42;
+}
+  .sca-dark .feedback-header {
+
+    color: #fff;
+}
