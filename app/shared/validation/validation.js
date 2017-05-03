@@ -124,21 +124,23 @@ angular.module('singleConceptAuthoringApp')
 
                   // cycle over each failed assertion to get count / display status
                   angular.forEach(scope.assertionsFailed, function (assertionFailed) {
-                    var filteredInstances = assertionFailed.firstNInstances.filter(function (instance) {
+                    if(assertion.failureCount !== -1){
+                        var filteredInstances = assertionFailed.firstNInstances.filter(function (instance) {
 
-                      // if viewing task report and instance is not user modified, return false
-                      if (!scope.viewFullReport && !instance.isBranchModification) {
-                        return false;
-                      }
-                      // if validation failure is excluded, return false
-                      if (validationService.isValidationFailureExcluded(assertionFailed.assertionUuid, instance.conceptId, instance.detail)) {
-                        return false;
-                      }
+                          // if viewing task report and instance is not user modified, return false
+                          if (!scope.viewFullReport && !instance.isBranchModification) {
+                            return false;
+                          }
+                          // if validation failure is excluded, return false
+                          if (validationService.isValidationFailureExcluded(assertionFailed.assertionUuid, instance.conceptId, instance.detail)) {
+                            return false;
+                          }
 
-                      // otherwise return true
-                      return true;
-                    });
-                    assertionFailed.filteredCount = filteredInstances.length;
+                          // otherwise return true
+                          return true;
+                        });
+                        assertionFailed.filteredCount = filteredInstances.length;
+                    }
                   });
 
 
@@ -463,24 +465,26 @@ angular.module('singleConceptAuthoringApp')
 
               // set the viewable flags for all returned failure instances
               angular.forEach(scope.assertionsFailed, function (assertion) {
-                assertion.isBranchModification = false;
-                assertion.hasUserExclusions = false;
-                angular.forEach(assertion.firstNInstances, function (instance) {
+                if(assertion.failureCount !== -1){
+                    assertion.isBranchModification = false;
+                    assertion.hasUserExclusions = false;
+                    angular.forEach(assertion.firstNInstances, function (instance) {
 
-                  // store the unmodified text to preserve original data
-                  instance.detailUnmodified = instance.detail;
+                      // store the unmodified text to preserve original data
+                      instance.detailUnmodified = instance.detail;
 
-                  // detect if instance references user modified concepts
-                  if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
-                    instance.isBranchModification = true;
-                    assertion.isBranchModification = true;
-                  }
+                      // detect if instance references user modified concepts
+                      if (scope.userModifiedConceptIds.indexOf(String(instance.conceptId)) !== -1) {
+                        instance.isBranchModification = true;
+                        assertion.isBranchModification = true;
+                      }
 
-                  if (validationService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail)) {
-                    instance.isUserExclusion = true;
-                    instance.hasUserExclusions = true;
-                  }
-                });
+                      if (validationService.isValidationFailureExcluded(assertion.assertionUuid, instance.conceptId, instance.detail)) {
+                        instance.isUserExclusion = true;
+                        instance.hasUserExclusions = true;
+                      }
+                    });
+                }
               });
 
               // load the tables
