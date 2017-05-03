@@ -34,7 +34,16 @@
         </select>
 
         <br>
+          
+        <label for="browserViewSelect">TS Browser Default</label>
+        <select id="browserViewSelect" name="select-browser-view" class="form-control"
+                ng-options="project.key as project.title for project in projects | orderBy: 'title'"
+                ng-model="userPreferences.browserView"
+                ng-change="updatePath()">
+        </select>
 
+        <br>
+          
         <hr>
         <label for="layoutGrid">Page Layout</label>
        

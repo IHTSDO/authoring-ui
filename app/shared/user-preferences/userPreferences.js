@@ -1,7 +1,7 @@
 'use strict';
 angular.module('singleConceptAuthoringApp')
-  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService', 'layoutHandler', 'configService',
-    function userPreferencesCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService, layoutHandler, configService) {
+  .controller('userPreferencesCtrl', ['$rootScope', '$scope', '$modalInstance', 'accountService', 'scaService', 'notificationService', 'layoutHandler', 'configService', 'metadataService',
+    function userPreferencesCtrl($rootScope, $scope, $modalInstance, accountService, scaService, notificationService, layoutHandler, configService, metadataService) {
 
 
       /////////////////////////////////////////
@@ -15,6 +15,8 @@ angular.module('singleConceptAuthoringApp')
             $scope.versions = versions;
         });
       });
+        
+      $scope.projects = metadataService.getProjects();
 
       // revert settings to original
       $scope.revert = function () {
@@ -59,6 +61,14 @@ angular.module('singleConceptAuthoringApp')
         ];
         return colClasses;
       };
+        
+      $scope.updatePath = function(project){
+          for(var i = 0; i < $scope.projects.length; i++){
+              if($scope.projects[i].key === $scope.userPreferences.browserView){
+                  $scope.userPreferences.branchPath = $scope.projects[i].branchPath;
+              }
+          }
+      }
 
 
 
