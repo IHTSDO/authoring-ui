@@ -245,12 +245,14 @@ angular.module('singleConceptAuthoringApp')
           dialects: dialects
         };
         if(getCurrentModuleId() !== '900000000000207008'){
+            var found = false;
             for(var i = 0; i < descriptionInactivationReasons.length; i++) {
                 if (descriptionInactivationReasons[i].id == 'DUPLICATE') {
                     found = true;
                 }
-                if(i === descriptionInactivationReasons.length && !found){
-                    descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component'});
+                if(i === descriptionInactivationReasons.length -1 && !found){
+                    console.log('here');
+                    descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component', display: []});
                 }
             }
         }
