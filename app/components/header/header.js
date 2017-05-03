@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', '$routeParams', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService, $routeParams) {
     return {
       restrict: '',
       transclude: false,
@@ -157,11 +157,23 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.gotoAllProjects = function() {
+            
           $location.url('projects');
         };
 
         scope.openBrowser = function() {
-          window.open('/browser', '_blank');
+          if(window.location.href.indexOf("task") > -1) {
+              window.open('/browser/?branch=' + $rootScope.currentTask.branchPath, '_blank');
+            }
+          else if(window.location.href.indexOf("project") > -1) {
+              window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
+            }
+//          else if(){
+//            }
+          else{
+              window.open('/browser', '_blank');
+          }
+          
         };
       }
     };
