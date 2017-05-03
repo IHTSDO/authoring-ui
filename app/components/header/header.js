@@ -2,7 +2,7 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', '$routeParams', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService, $routeParams) {
+  .directive('scaHeader', ['$rootScope', '$timeout', '$modal', '$location', '$route', 'metadataService', 'templateService', '$routeParams', 'accountService', function ($rootScope, $timeout, $modal, $location, $route, metadataService, templateService, $routeParams, accountService) {
     return {
       restrict: '',
       transclude: false,
@@ -162,18 +162,21 @@ angular.module('singleConceptAuthoringApp')
         };
 
         scope.openBrowser = function() {
-          if(window.location.href.indexOf("task") > -1) {
-              window.open('/browser/?branch=' + $rootScope.currentTask.branchPath, '_blank');
-            }
-          else if(window.location.href.indexOf("project") > -1) {
-              window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
-            }
-//          else if(){
-//            }
-          else{
-              window.open('/browser', '_blank');
-          }
-          
+          accountService.getUserPreferences().then(function (response) {
+              scope.userPreferences = response;
+              if(window.location.href.indexOf("task") > -1) {
+                  window.open('/browser/?branch=' + $rootScope.currentTask.branchPath, '_blank');
+                }
+              else if(window.location.href.indexOf("project") > -1) {
+                  window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
+                }
+              else if(scope.userPreferences && scope.userPreferences.branchPath){
+                  window.open('/browser/?branch=' + scope.userPreferences.branchPath, '_blank');
+                }
+              else{
+                  window.open('/browser', '_blank');
+              }
+          });
         };
       }
     };
