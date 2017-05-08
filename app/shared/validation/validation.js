@@ -124,7 +124,7 @@ angular.module('singleConceptAuthoringApp')
 
                   // cycle over each failed assertion to get count / display status
                   angular.forEach(scope.assertionsFailed, function (assertionFailed) {
-                    if(assertion.failureCount !== -1){
+                    if(assertionFailed.failureCount !== -1){
                         var filteredInstances = assertionFailed.firstNInstances.filter(function (instance) {
 
                           // if viewing task report and instance is not user modified, return false
