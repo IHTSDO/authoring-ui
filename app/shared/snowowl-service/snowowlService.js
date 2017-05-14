@@ -741,7 +741,6 @@ angular.module('singleConceptAuthoringApp')
 
         var deferred = $q.defer();
         var config = {};
-          console.log(acceptLanguageValue);
         if (acceptLanguageValue) {
           config.headers = {'Accept-Language': acceptLanguageValue};
         }

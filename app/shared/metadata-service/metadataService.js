@@ -239,11 +239,14 @@ angular.module('singleConceptAuthoringApp')
             }
           ],
 
-          acceptLanguageMap: metadata.languageSearch,
+          acceptLanguageMap: defaultLanguage + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
           defaultLanguage: defaultLanguage,
           languages: languages,
           dialects: dialects
         };
+        if(metadata.languageSearch){
+            extensionMetadata.acceptLanguageMap = metadata.languageSearch;
+        }
         if(getCurrentModuleId() !== '900000000000207008'){
             var found = false;
             for(var i = 0; i < descriptionInactivationReasons.length; i++) {
@@ -256,6 +259,12 @@ angular.module('singleConceptAuthoringApp')
                 }
             }
         }
+//        if(metadata.languageDisplay){
+//            angular.forEach(metadata.languageDisplay, function(lan){
+////                var obj = {lan}
+////                dialects.push(lan)
+//            })
+//        }
         $rootScope.$broadcast('setExtensionMetadata');
 
       }
