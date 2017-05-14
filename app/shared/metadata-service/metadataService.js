@@ -239,7 +239,7 @@ angular.module('singleConceptAuthoringApp')
             }
           ],
 
-          acceptLanguageMap: defaultLanguage + '-' + (metadata.shortname ? metadata.shortname.toUpperCase() : 'XX') + '-x-' + defaultLanguageRefsetId + ';q=0.8,en-US;q=0.5',
+          acceptLanguageMap: metadata.languageSearch,
           defaultLanguage: defaultLanguage,
           languages: languages,
           dialects: dialects
@@ -418,7 +418,7 @@ angular.module('singleConceptAuthoringApp')
 
     function getAcceptLanguageValueForModuleId(moduleId) {
         
-      if (isExtensionModule(moduleId) && extensionMetadata.defaultLanguage !== null) {
+      if (isExtensionModule(moduleId) && extensionMetadata.acceptLanguageMap !== null) {
         return extensionMetadata.acceptLanguageMap;
       } else {
         return internationalMetadata.acceptLanguageMap;
