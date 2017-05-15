@@ -23,6 +23,9 @@ angular.module('singleConceptAuthoringApp')
             if (dialects[key] === metadataService.getDefaultLanguageForModuleId(moduleId)) {
               acceptabilityMap[key] = 'PREFERRED';
             }
+            else if (dialects[key].indexOf(metadataService.getDefaultLanguageForModuleId(moduleId)) !== -1) {
+              acceptabilityMap[key] = 'ACCEPTABLE';
+            }
           }
           else if (initial && dialects[key] === metadataService.getDefaultLanguageForModuleId(moduleId)) {
 
@@ -157,7 +160,7 @@ angular.module('singleConceptAuthoringApp')
         concept.descriptions.push(getNewPt(moduleId, true));
 
         // if extension is set, add a Synonym
-        if (metadataService.isExtensionSet()) {
+        if (metadataService.isExtensionSet() && Object.keys(metadataService.getDialectsForModuleId(moduleId)).length > 1) {
           concept.descriptions.push(getNewDescription(moduleId, true));
         }
 
