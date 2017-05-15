@@ -200,6 +200,7 @@ angular.module('singleConceptAuthoringApp')
           if (metadata.hasOwnProperty(key)) {
             var match = key.match(/requiredLanguageRefset\.(.+)/);
             if (match && match[1]) {
+                console.log(match[1]);
               languages.push(match[1]);
               dialects[metadata[key]] = match[1];
 
@@ -223,7 +224,8 @@ angular.module('singleConceptAuthoringApp')
           console.warn('No country code (shortname) supplied for extension metadata');
         }
         if (languages.length === 1) {
-          console.error('Error setting extension metadata: module was specified but no languages/dialects found');
+          console.error('Error setting extension metadata: module was specified but no languages/dialects found, defaulting');
+          defaultLanguage = languages[0];
         }
         if (!defaultLanguageRefsetId) {
           console.error('Could not determine language refset for extension metadata');
@@ -246,7 +248,12 @@ angular.module('singleConceptAuthoringApp')
         };
         if(metadata.languageSearch){
             extensionMetadata.acceptLanguageMap = metadata.languageSearch;
-        }
+        };
+        if(metadata.languageEdit){
+            console.log(metadata.languageEdit);
+            
+        };
+          console.log(extensionMetadata);
         if(getCurrentModuleId() !== '900000000000207008'){
             var found = false;
             for(var i = 0; i < descriptionInactivationReasons.length; i++) {
