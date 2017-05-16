@@ -119,35 +119,17 @@ angular.module('singleConceptAuthoringApp')
 
     // description inactivation metadata
     var descriptionInactivationReasons = [
-      //{id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
-      //{id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
-<<<<<<< HEAD
-      {id: 'ERRONEOUS', text: 'Erroneous component', display: []},
-=======
+      {id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
+      {id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
       {id: 'DUPLICATE', text: 'Duplicate component'},
       {id: 'ERRONEOUS', text: 'Erroneous component'},
->>>>>>> parent of 34bb28a... APDS-18 - Addition of duplicate as a description inactivation reason if editing outside of international
-      //{id: 'INAPPROPRIATE', text: 'Inappropriate component'},
-      //{id: 'LIMITED', text: 'Limited component'},
-      {id: 'OUTDATED', text: 'Outdated component', display: []},
-      //{id: 'PENDING_MOVE', text: 'Pending move'},
-      {id: 'NONCONFORMANCE_TO_EDITORIAL_POLICY', text: 'Non-conformance to editorial policy', display: []},
-      {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent', display: [5]}
+      {id: 'INAPPROPRIATE', text: 'Inappropriate component'},
+      {id: 'LIMITED', text: 'Limited component'},
+      {id: 'OUTDATED', text: 'Outdated component'},
+      {id: 'PENDING_MOVE', text: 'Pending move'},
+      {id: 'RETIRED', text: 'Reason not stated'}
 
     ];
-      
-    var descriptionAssociationInactivationReasons =
-      [
-        {
-          id: 'REFERS_TO',
-          conceptId: '900000000000531004',
-          text: 'REFERS TO concept association reference set',
-          display: 5,
-          restrict: {
-            type: 'DESCRIPTION'
-          }
-        }
-      ];
 
     //
     // International SNOMEDCT metadata
