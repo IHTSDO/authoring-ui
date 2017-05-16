@@ -74,7 +74,7 @@
               {{assertion.assertionText}}
             </td>
             <td header-title="'Click to sort'" data-title="'# of Cases'" sortable="'filteredCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.filteredCount}}
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.filteredCount}}<div ng-if="assertion.total > 100"> / {{assertion.total}}</div>
                 <span># of cases with errors</span>
               </div>
             </td>
@@ -111,7 +111,7 @@
           No validation results to display
         </div>
         <table ng-show="failureTableParams.total() > 0"
-               ng-table="failureTableParams" template-pagination="utilities/data-table-pager-count.html"
+               ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">
             <td  header-title="'Click to select all'"
@@ -225,7 +225,7 @@
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
         </div>
         <div class="col-md-6">
-          <div concept-edit concept="concept" branch="branch" static="false"
+          <div concept-edit concept="concept" branch="branch" static="isProject()"
                component-styles="styles[concept.conceptId]"
                autosave="autosaveEnabled"
                save-function="conceptUpdateFunction(project, task, concept)"></div>
