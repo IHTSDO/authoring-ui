@@ -164,10 +164,10 @@ angular.module('singleConceptAuthoringApp')
         scope.openBrowser = function() {
           accountService.getUserPreferences().then(function (response) {
               scope.userPreferences = response;
-              if(window.location.href.indexOf("task") > -1) {
+              if(window.location.href.indexOf("task/") > -1) {
                   window.open('/browser/?branch=' + $rootScope.currentTask.branchPath, '_blank');
                 }
-              else if(window.location.href.indexOf("project") > -1) {
+              else if(window.location.href.indexOf("project/") > -1) {
                   window.open('/browser/?branch=' + metadataService.getBranchRoot() + '/' + $routeParams.projectKey, '_blank');
                 }
               else if(scope.userPreferences && scope.userPreferences.branchPath){
