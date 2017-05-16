@@ -74,7 +74,7 @@
               {{assertion.assertionText}}
             </td>
             <td header-title="'Click to sort'" data-title="'# of Cases'" sortable="'filteredCount'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.filteredCount}}<div ng-if="assertion.total > 100"> / {{assertion.total}}</div>
+              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{assertion.filteredCount}}<abbr ng-show="assertion.total > 100"> / {{assertion.total}}</abbr>
                 <span># of cases with errors</span>
               </div>
             </td>
