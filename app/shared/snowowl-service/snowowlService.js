@@ -125,7 +125,7 @@ angular.module('singleConceptAuthoringApp')
 
         if (description.term) {
           // strip invalid characters from term
-          description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
+          //description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
 
           //replace any non-space whitespace characters (tab, newline, etc.)
           description.term = description.term.replace(/[^\S ]/g, ' ');
