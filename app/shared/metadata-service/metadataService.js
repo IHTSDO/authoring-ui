@@ -249,8 +249,7 @@ angular.module('singleConceptAuthoringApp')
 //        }
         $rootScope.$broadcast('setExtensionMetadata');
 
-      }
-    }
+      };
 
     // Set the branch metadata from project or task
     function setBranchMetadata(branchMetadataObj) {
