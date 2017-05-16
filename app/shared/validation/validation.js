@@ -104,6 +104,12 @@ angular.module('singleConceptAuthoringApp')
 
             return status;
           };
+          scope.isProject = function(){
+              if(scope.taskKey){
+                  return false
+              }
+              else{return true}
+          }
 
           // declare table parameters
           scope.topTableParams = new NgTableParams({
@@ -140,6 +146,7 @@ angular.module('singleConceptAuthoringApp')
                           return true;
                         });
                         assertionFailed.filteredCount = filteredInstances.length;
+                        assertionFailed.total = assertionFailed.failureCount;
                     }
                   });
 
