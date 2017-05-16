@@ -121,7 +121,12 @@ angular.module('singleConceptAuthoringApp')
     var descriptionInactivationReasons = [
       //{id: 'MOVED_ELSEWHERE', text: 'Component moved elsewhere'},
       //{id: 'CONCEPT_NON_CURRENT', text: 'Concept non-current'},
+<<<<<<< HEAD
       {id: 'ERRONEOUS', text: 'Erroneous component', display: []},
+=======
+      {id: 'DUPLICATE', text: 'Duplicate component'},
+      {id: 'ERRONEOUS', text: 'Erroneous component'},
+>>>>>>> parent of 34bb28a... APDS-18 - Addition of duplicate as a description inactivation reason if editing outside of international
       //{id: 'INAPPROPRIATE', text: 'Inappropriate component'},
       //{id: 'LIMITED', text: 'Limited component'},
       {id: 'OUTDATED', text: 'Outdated component', display: []},
@@ -254,21 +259,6 @@ angular.module('singleConceptAuthoringApp')
             
         };
           console.log(extensionMetadata);
-        if(getCurrentModuleId() !== '900000000000207008'){
-<<<<<<< HEAD
-            var found = false;
-            for(var i = 0; i < descriptionInactivationReasons.length; i++) {
-                if (vendors[i].id == 'DUPLICATE') {
-                    found = true;
-                }
-                if(i === descriptionInactivationReasons.length -1 && !found){
-                    console.log('here');
-                    descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component', display: []});
-                }
-            }
-=======
-            descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component'});
->>>>>>> parent of b788968... APDS-18 - tweak for MS inclusion of DUPLICATE as a description inactivation reason
         }
 //        if(metadata.languageDisplay){
 //            angular.forEach(metadata.languageDisplay, function(lan){
