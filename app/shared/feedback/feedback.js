@@ -269,35 +269,63 @@ angular.module('singleConceptAuthoringApp')
 
           // cancel review
           scope.cancelReview = function () {
-            modalService.confirm('Cancelling review will clear the Reviewed List. Alternatively you can Unclaim the review to allow another author to pick up from where you have left off. Continue and clear review?').then(function () {
-                var taskObj = {
-                    'status': 'IN_PROGRESS',
-                    'reviewer': {
-                    'username': ''
-                    }
-                };
-                scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
-                  notificationService.sendMessage('Review Cancelled', 2000);
-                  $rootScope.$broadcast('reloadTask');
-                  scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
-                    if (task) {
-                      scope.task = task;
-                      scope.reviewComplete = task.status !== 'In Review';
-                      accountService.getRoleForTask(task).then(function (role) {
-                        scope.role = role;
+              if(scope.feedbackContainer.review.conceptsReviewed.length > 0){
+                  modalService.confirm('There are ' + scope.feedbackContainer.review.conceptsReviewed.length + ' concepts in the review. Cancelling will reset all concepts to unapproved and will require all concepts to be (re-)approved in a new review. To keep the approved work, please ask the reviewer to unclaim the review.').then(function () {
+                    var taskObj = {
+                        'status': 'IN_PROGRESS',
+                        'reviewer': {
+                        'username': ''
+                        }
+                    };
+                    scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
+                      notificationService.sendMessage('Review Cancelled', 2000);
+                      $rootScope.$broadcast('reloadTask');
+                      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+                        if (task) {
+                          scope.task = task;
+                          scope.reviewComplete = task.status !== 'In Review';
+                          accountService.getRoleForTask(task).then(function (role) {
+                            scope.role = role;
+                          });
+
+
+                          if (scope.role === 'UNDEFINED') {
+                            notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
+                          }
+                        }
                       });
-
-
-                      if (scope.role === 'UNDEFINED') {
-                        notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
-                      }
-                    }
-                  });
+                    });
+                    }, function () {
+                      // do nothing
                 });
-                }, function () {
-                  // do nothing
-            });
-          };
+              }
+                else{
+                    var taskObj = {
+                        'status': 'IN_PROGRESS',
+                        'reviewer': {
+                        'username': ''
+                        }
+                    };
+                    scaService.updateTask($routeParams.projectKey, $routeParams.taskKey, taskObj).then(function (response) {
+                      notificationService.sendMessage('Review Cancelled', 2000);
+                      $rootScope.$broadcast('reloadTask');
+                      scaService.getTaskForProject($routeParams.projectKey, $routeParams.taskKey).then(function (task) {
+                        if (task) {
+                          scope.task = task;
+                          scope.reviewComplete = task.status !== 'In Review';
+                          accountService.getRoleForTask(task).then(function (role) {
+                            scope.role = role;
+                          });
+
+
+                          if (scope.role === 'UNDEFINED') {
+                            notificationService.sendError('Could not determine role for task ' + $routeParams.taskKey);
+                          }
+                        }
+                      });
+                    });
+                }
+              };
 
           // controls to allow author to view only concepts with feedeback
           scope.viewOnlyConceptsWithFeedback = true;
