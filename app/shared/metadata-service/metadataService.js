@@ -255,6 +255,7 @@ angular.module('singleConceptAuthoringApp')
         };
           console.log(extensionMetadata);
         if(getCurrentModuleId() !== '900000000000207008'){
+<<<<<<< HEAD
             var found = false;
             for(var i = 0; i < descriptionInactivationReasons.length; i++) {
                 if (vendors[i].id == 'DUPLICATE') {
@@ -265,6 +266,9 @@ angular.module('singleConceptAuthoringApp')
                     descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component', display: []});
                 }
             }
+=======
+            descriptionInactivationReasons.push({id: 'DUPLICATE', text: 'Duplicate component'});
+>>>>>>> parent of b788968... APDS-18 - tweak for MS inclusion of DUPLICATE as a description inactivation reason
         }
 //        if(metadata.languageDisplay){
 //            angular.forEach(metadata.languageDisplay, function(lan){
