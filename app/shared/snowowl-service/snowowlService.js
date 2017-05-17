@@ -849,7 +849,6 @@ angular.module('singleConceptAuthoringApp')
        * @returns {*|promise} a single result or list of results
        */
       function findConceptsForQuery(projectKey, taskKey, searchStr, offset, maxResults, acceptLanguageValue, synonymFlag) {
-
         var deferred = $q.defer();
 
         // construct headers based on options
@@ -881,7 +880,7 @@ angular.module('singleConceptAuthoringApp')
 
         // if a numeric value, search by component id
         else if (!isNaN(parseFloat(searchStr)) && isFinite(searchStr)) {
-
+            
           // if concept id
           if (searchStr.substr(-2, 1) === '0') {
 
@@ -1015,6 +1014,7 @@ angular.module('singleConceptAuthoringApp')
 
         // otherwise, a text value, search by query
         else {
+            searchStr = encodeURIComponent(searchStr);
 
           // use browser/{path}/descriptions?{options} call
           $http.get(apiEndpoint + 'browser/' + metadataService.getBranchRoot() + '/' + projectKey + '/' + taskKey + '/descriptions?query=' + searchStr + '&limit=' + maxResults + '&offset=' + offset + descTypeStr, config).then(function (response) {
