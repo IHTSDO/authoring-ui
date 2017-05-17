@@ -138,7 +138,7 @@ angular.module('singleConceptAuthoringApp')
       function removeInvalidCharacters(term) {
         if (term) {
           // strip invalid characters from term
-          term = term.replace(/[@|$|#|\\]/g, ' ');
+          //term = term.replace(/[@|$|#|\\]/g, ' ');
 
           //replace any non-space whitespace characters (tab, newline, etc.)
           term = term.replace(/[^\S ]/g, ' ');
@@ -190,7 +190,7 @@ angular.module('singleConceptAuthoringApp')
 
         if (description.term) {
           // strip invalid characters from term
-          description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
+          //description.term = description.term.replace(/[@|$|#|\\]/g, ' ');
 
           //replace any non-space whitespace characters (tab, newline, etc.)
           description.term = description.term.replace(/[^\S ]/g, ' ');
