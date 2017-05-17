@@ -440,9 +440,9 @@ angular.module('singleConceptAuthoringApp')
       return descriptionInactivationReasons;
     }
       
-    function getDescriptionAssociationInactivationReasons() {
-      return descriptionAssociationInactivationReasons;
-    }
+//    function getDescriptionAssociationInactivationReasons() {
+//      return descriptionAssociationInactivationReasons;
+//    }
 
     //
     // Cached project retrieval functions
@@ -497,7 +497,7 @@ angular.module('singleConceptAuthoringApp')
       getConceptInactivationReasons: getConceptInactivationReasons,
       getDescriptionInactivationReasons: getDescriptionInactivationReasons,
       getAssociationInactivationReasons: getAssociationInactivationReasons,
-      getDescriptionAssociationInactivationReasons: getDescriptionAssociationInactivationReasons,
+      //getDescriptionAssociationInactivationReasons: getDescriptionAssociationInactivationReasons,
 
       // boolean checks exposed for use
       isLockedModule: isLockedModule,
