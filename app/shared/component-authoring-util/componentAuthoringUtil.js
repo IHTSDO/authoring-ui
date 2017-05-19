@@ -365,16 +365,19 @@ angular.module('singleConceptAuthoringApp')
           var ptText = description.term.substr(0, description.term.lastIndexOf('(')).trim();
           var pt = null;
           angular.forEach(concept.descriptions, function (d) {
-            if (d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === 'PREFERRED' && (d.released === undefined || d.released === false)) {
+            if (d.type === 'SYNONYM' && d.acceptabilityMap && d.acceptabilityMap['900000000000509007'] === 'PREFERRED') {
               if (d.term && d.term !== '' && d.term !== null) {
                 pt = d;
               }
               else {
-                d.term = ptText;
-                pt = d;
-                pt.automationFlag = true;
-                delete pt.descriptionId;
-                return concept;
+                if(d.released === undefined || d.released === false){
+                    d.term = ptText;
+                    pt = d;
+                    pt.automationFlag = true;
+                    delete pt.descriptionId;
+                    return concept;
+                }
+                
               }
 
             }
