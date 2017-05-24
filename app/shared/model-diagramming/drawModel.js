@@ -41,21 +41,28 @@ angular.module('singleConceptAuthoringApp')
 
             if(scope.view !== 'snf')
             {
-                element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
+                setTimeout(function () {
+                    element.append($("<div></div>").addClass('modelContainer'));
+                    drawConceptDiagram(scope.concept, element.find('.modelContainer'), {}, {});
+                }, 100);
             }
             else if(scope.conceptSnf && scope.conceptSnf.concepts){
-                scope.conceptToModify = angular.copy(scope.concept);
-                element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
+                setTimeout(function () {
+                    scope.conceptToModify = angular.copy(scope.concept);
+                    element.append($("<div></div>").addClass('modelContainer'));
+                    drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
+                }, 100);
+                
             }
         }, true);
         scope.$watch('conceptSnf', function(newVal, oldVal){
             if(scope.conceptSnf && scope.conceptSnf.concepts)
             {
-                scope.conceptToModify = angular.copy(scope.concept);
-                element.append($("<div></div>").addClass('modelContainer'));
-                drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
+                setTimeout(function () {
+                    scope.conceptToModify = angular.copy(scope.concept);
+                    element.append($("<div></div>").addClass('modelContainer'));
+                    drawConceptDiagram(scope.conceptToModify, element.find('.modelContainer'), {}, scope.conceptSnf);
+                }, 100);
             }
         }, true);
 
@@ -206,6 +213,8 @@ angular.module('singleConceptAuthoringApp')
               width = width + 60;
             }
           });
+          scope.height = height;
+          scope.width = width;
 //          if(scope.numberOfGroups)
 //              {
 //                  var i = scope.numberOfGroups;
@@ -678,13 +687,13 @@ angular.module('singleConceptAuthoringApp')
           element.find('*').not('.keep').remove();
           var canvas = document.createElement('canvas');
           canvas.id = "canvas-" + id;
-          canvas.width = 2000;
-          canvas.height = 1000;
+          canvas.height = scope.height;
+          canvas.width = scope.width;
           element.append(canvas);
 
           var c = document.getElementById('canvas-' + id);
           var ctx = c.getContext('2d');
-          ctx.drawSvg(svg, 0, 0, 2000, 1000);
+          ctx.drawSvg(svg, 0, 0, scope.width, scope.height);
           cropImageFromCanvas(ctx, document.getElementById('canvas-' + id));
 
           element.find('#svg-' + id).remove();
