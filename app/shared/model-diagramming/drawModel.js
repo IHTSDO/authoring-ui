@@ -195,16 +195,25 @@ angular.module('singleConceptAuthoringApp')
             // console.log(svgIsaModel);
 
           var parentDiv = div;
-          var height = 1250;
-          var width  = 2500;
-          if(scope.numberOfGroups > 6)
-              {
-                  var i = scope.numberOfGroups - 6;
-                  for(i > 0; i--;)
-                      {
-                          height = height + 200;
-                      }
-              }
+          var height = 150;
+          var width  = 300;
+          $.each(concept.relationships, function (i, field) {
+            if (field.type.conceptId === '116680003') {
+              height = height + 20;
+              width = width + 40
+            } else {
+              height = height + 30;
+              width = width + 60;
+            }
+          });
+//          if(scope.numberOfGroups)
+//              {
+//                  var i = scope.numberOfGroups;
+//                  for(i > 0; i--;)
+//                      {
+//                          
+//                      }
+//              }
           parentDiv.svg({
             settings: {
               height: height + 'px',
