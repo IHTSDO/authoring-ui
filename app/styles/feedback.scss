@@ -533,6 +533,19 @@ strong {
     color: #474747;
     font-size: 12px;
 }
+
+.reviewer-feedback-chat, .reviewer-feedback-chat * {
+  -ms-word-break: break-all;
+  word-break: break-all;
+
+  /* Non standard for WebKit */
+  word-break: break-word;
+
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
 .reviewer-feedback-chat {
     padding-left: 10px!important;
     padding-right: 10px!important;
