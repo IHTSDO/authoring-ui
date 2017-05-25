@@ -541,9 +541,9 @@ strong {
   /* Non standard for WebKit */
   word-break: break-word;
 
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  hyphens: auto;
+  -webkit-hyphens: manual;
+  -moz-hyphens: manual;
+  hyphens: manual;
 }
 
 .reviewer-feedback-chat {
