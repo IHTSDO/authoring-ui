@@ -589,16 +589,16 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             // In order to ensure proper term-server behavior,
             // need to delete SCTIDs without effective time on descriptions and relationships
             // otherwise the values revert to termserver version
-            angular.forEach(scope.concept.descriptions, function (description) {
-              if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime && !description.released) {
-                delete description.descriptionId;
-              }
-            });
-            angular.forEach(scope.concept.relationships, function (relationship) {
-              if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !relationship.released) {
-                delete relationship.relationshipId;
-              }
-            });
+//            angular.forEach(scope.concept.descriptions, function (description) {
+//              if (snowowlService.isSctid(description.descriptionId) && !description.effectiveTime && !description.released) {
+//                delete description.descriptionId;
+//              }
+//            });
+//            angular.forEach(scope.concept.relationships, function (relationship) {
+//              if (snowowlService.isSctid(relationship.relationshipId) && !relationship.effectiveTime && !relationship.released) {
+//                delete relationship.relationshipId;
+//              }
+//            });
 
 
             saveFn(
@@ -2303,6 +2303,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to update description and autoSave if indicated
         scope.updateDescription = function (description, applySpellcheck) {
+          delete description.descriptionId;
           if (!description) {
             return;
           }
@@ -2365,6 +2366,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
 // function to update relationship and autoSave if indicated
         scope.updateRelationship = function (relationship, roleGroupOnly) {
+          delete relationship.relationshipId;
 
           if (!relationship) {
             return;
