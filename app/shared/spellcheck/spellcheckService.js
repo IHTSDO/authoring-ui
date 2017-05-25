@@ -7,11 +7,11 @@ angular.module('singleConceptAuthoringApp')
   .factory('spellcheckService', function ($http, $rootScope, $q) {
 
     // TODO Move this into endpoint-config
-    var endpoint = '../spellcheck-service/check';
+    var endpoint = '/authoring-services/spelling/check';
 
     function getSuggestions(tokenizedWords) {
       var deferred = $q.defer();
-      var uri = endpoint + '?words=' + tokenizedWords.toString();
+      var uri = endpoint + '?words=' + encodeURIComponent(tokenizedWords.toString());
       $http.get(uri).then(function (response) {
         deferred.resolve(response.data);
       }, function (error) {
@@ -55,7 +55,7 @@ angular.module('singleConceptAuthoringApp')
       var deferred = $q.defer();
       var suggestions = null;
       term = term.replace(/[()]/g, "");
-      var tokenizedWords = term ? term.toLowerCase().split(' ') : [];
+      var tokenizedWords = term ? term.toLowerCase().split(/[\s/]+/) : [];
       getSuggestions(tokenizedWords).then(function (suggestions) {
         angular.forEach(tokenizedWords, function (word) {
           if (suggestions.hasOwnProperty(word)) {
