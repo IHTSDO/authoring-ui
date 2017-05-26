@@ -967,9 +967,11 @@ angular.module('singleConceptAuthoringApp')
 
             var assocs = [];
             angular.forEach(scope.associationTargets, function (target) {
-              if (reasonArr[0].display.indexOf(target.display) !== -1) {
-                assocs.push(target);
-              }
+                if(reasonArr.length > 0){
+                    if (reasonArr[0].display.indexOf(target.display) !== -1) {
+                        assocs.push(target);
+                    }
+                }
             });
 
             return assocs;
