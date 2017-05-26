@@ -1286,6 +1286,15 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
               return 1;
             }
             if (a.groupId === b.groupId) {
+              angular.forEach(metadataService.getdrugsModelOrdering(), function(item){
+                  if(a.type.conceptId === item.id){
+                      angular.forEach(metadataService.getdrugsModelOrdering(), function(secondItem){
+                          if(b.type.conceptId === secondItem.id){
+                              return item.sort > secondItem.sort;
+                          }
+                      })
+                  }
+              });
               if (a.type.fsn === b.type.fsn) {
                 return a.target.fsn > b.target.fsn;
               } else {

@@ -130,6 +130,15 @@ angular.module('singleConceptAuthoringApp')
       {id: 'NOT_SEMANTICALLY_EQUIVALENT', text: 'Not Semantically Equivalent'}
 
     ];
+      
+    var drugsModelOrdering = [
+      {id: '127489000', display: '1'},
+      {id: '732943007', display: '2'},
+      {id: '732944001', display: '3'},
+      {id: '732945000', display: '4'},
+      {id: '732946004', display: '5'},
+      {id: '732947008', display: '6'},
+    ];
 
     //
     // International SNOMEDCT metadata
@@ -441,6 +450,10 @@ angular.module('singleConceptAuthoringApp')
     function getConceptInactivationReasons() {
       return conceptInactivationReasons;
     }
+      
+    function getdrugsModelOrdering() {
+      return getdrugsModelOrdering;
+    }
 
 
     function getAssociationInactivationReasons() {
@@ -508,6 +521,7 @@ angular.module('singleConceptAuthoringApp')
       getConceptInactivationReasons: getConceptInactivationReasons,
       getDescriptionInactivationReasons: getDescriptionInactivationReasons,
       getAssociationInactivationReasons: getAssociationInactivationReasons,
+      getdrugsModelOrdering: getdrugsModelOrdering,
       //getDescriptionAssociationInactivationReasons: getDescriptionAssociationInactivationReasons,
 
       // boolean checks exposed for use
