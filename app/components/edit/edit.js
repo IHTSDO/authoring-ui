@@ -1636,9 +1636,8 @@ angular.module('singleConceptAuthoringApp.edit', [
 
         // set any project-level metadata flags
         metadataService.setMrcmEnabled(!$scope.project.projectMrcmDisabled);
-          
-        //set any project-level template flags
         metadataService.setTemplatesEnabled($scope.project.projectTemplatesDisabled);
+        metadataService.setSpellcheckDisabled($scope.project.projectSpellCheckDisabled);
           
         // retrieve available templates
         if(!metadataService.isTemplatesEnabled()){

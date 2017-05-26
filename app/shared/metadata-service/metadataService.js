@@ -13,6 +13,8 @@ angular.module('singleConceptAuthoringApp')
     var mrcmEnabled = true;
       
     var templatesEnabled = false;
+      
+    var spellcheckDisabled = false;
 
     // relationship metadata
     var isaRelationshipId = '116680003';
@@ -497,6 +499,10 @@ angular.module('singleConceptAuthoringApp')
     function setTemplatesEnabled(value){
         templatesEnabled = value;
     }
+      
+    function setSpellcheckDisabled(value){
+        spellcheckDisabled = value;
+    }
 
     function isMrcmEnabled() {
       return mrcmEnabled;
@@ -504,6 +510,10 @@ angular.module('singleConceptAuthoringApp')
       
     function isTemplatesEnabled() {
       return templatesEnabled;
+    }
+    
+    function isSpellcheckDisabled() {
+      return spellcheckDisabled;
     }
 
     return {
@@ -531,6 +541,7 @@ angular.module('singleConceptAuthoringApp')
       isExtensionDialect: isExtensionDialect,
       isMrcmEnabled: isMrcmEnabled,
       isTemplatesEnabled: isTemplatesEnabled,
+      isSpellcheckDisabled: isSpellcheckDisabled, 
 
       // extension module-dependent retrieval functions
 
@@ -552,6 +563,7 @@ angular.module('singleConceptAuthoringApp')
       clearBranchMetadata: clearBranchMetadata,
       setMrcmEnabled: setMrcmEnabled,
       setTemplatesEnabled: setTemplatesEnabled,
+      setSpellcheckDisabled: setSpellcheckDisabled,
       setModuleName: setModuleName,
 
       // branch/task fupath retrieval functions
