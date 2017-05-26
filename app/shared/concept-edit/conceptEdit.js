@@ -112,6 +112,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
         }, true);
         scope.saving = false;
+        scope.drugsOrdering = metadataService.getdrugsModelOrdering();
         if (!scope.concept) {
           console.error('Concept not specified for concept-edit');
           return;
@@ -1279,32 +1280,24 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           });
 
           attrRels.sort(function (a, b) {
-            if (!a.groupId && b.groupId) {
-              return -1;
-            }
-            if (!b.groupId && a.groupId) {
-              return 1;
-            }
             if (a.groupId === b.groupId) {
-              angular.forEach(metadataService.getdrugsModelOrdering(), function(item){
+              angular.forEach(scope.drugsOrdering, function(item){
                   if(a.type.conceptId === item.id){
-                      angular.forEach(metadataService.getdrugsModelOrdering(), function(secondItem){
+                      a.display = item.display;
+                      angular.forEach(scope.drugsOrdering, function(secondItem){
                           if(b.type.conceptId === secondItem.id){
-                              return item.sort > secondItem.sort;
+                              b.display = secondItem.display;
+                              return item.display > secondItem.display;
                           }
                       })
                   }
               });
-              if (a.type.fsn === b.type.fsn) {
-                return a.target.fsn > b.target.fsn;
-              } else {
-                return a.type.fsn > b.type.fsn;
-              }
+              
             } else {
               return a.groupId - b.groupId;
             }
           });
-
+          attrRels  = $filter('orderBy')(attrRels, 'display')
           scope.concept.relationships = isaRels.concat(attrRels);
         }
 
