@@ -2311,7 +2311,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
           // run spellchecker
-          if(description.term !== null && description.term !== ''){
+          if(description.term !== null && description.term !== '' && metadataService.isSpellcheckDisabled){
               spellcheckService.checkSpelling(description.term).then(function (suggestions) {
                 console.log(suggestions);
                 if (suggestions && Object.keys(suggestions).length !== 0) {
