@@ -202,8 +202,8 @@ angular.module('singleConceptAuthoringApp')
             // console.log(svgIsaModel);
 
           var parentDiv = div;
-          var height = 150;
-          var width  = 300;
+          var height = 250;
+          var width  = 500;
           $.each(concept.relationships, function (i, field) {
             if (field.type.conceptId === '116680003') {
               height = height + 20;
