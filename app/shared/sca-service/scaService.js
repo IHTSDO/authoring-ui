@@ -134,9 +134,25 @@ angular.module('singleConceptAuthoringApp')
         });
         return deferred.promise;
       }
+        
+      function getDialectMatches(words) {
+        var deferred = $q.defer();
+        var wordsStr = '';
+        for (var i = 0; i < words.length; i++) {
+          wordsStr += words[i] + (i === words.length - 1 ? '' : '%2C');
+        }
+        $http.get(apiEndpoint + 'dialect/en-us/map/en-gb?words=' + wordsStr).then(function (response) {
+          deferred.resolve(response.data);
+        }, function (error) {
+          deferred.reject(error.message);
+        });
+        return deferred.promise;
+      }
 
 
       return {
+          
+        getDialectMatches: getDialectMatches,
 
         /////////////////////////////////////
         // authoring-projects calls

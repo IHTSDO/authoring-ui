@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('singleConceptAuthoringApp')
-  .service('componentAuthoringUtil', function (metadataService, snowowlService, $q) {
+  .service('componentAuthoringUtil', function (metadataService, snowowlService, $q, scaService) {
 
       /////////////////////////////////////
       // calls to return JSON objects
@@ -517,7 +517,7 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // retrieve the matches
-          snowowlService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
+          scaService.getDialectMatches(tokenizedWords).then(function (matchingWords) {
 
             // do not run any automation for MS content
             if (metadataService.isExtensionSet()) {
