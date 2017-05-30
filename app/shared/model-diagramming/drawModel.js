@@ -204,14 +204,14 @@ angular.module('singleConceptAuthoringApp')
           var parentDiv = div;
           var height = 350;
           var width  = 700;
-          $.each(concept.relationships, function (i, field) {
-            if (field.type.conceptId === '116680003') {
-              height = height + 20;
-              width = width + 40
-            } else {
-              height = height + 30;
-              width = width + 60;
-            }
+          $.each(svgIsaModel, function (i, field) {
+              height = height + 40;
+              width = width + 80;
+          });
+            
+           $.each(svgAttrModel, function (i, field) {
+              height = height + 55;
+              width = width + 110;
           });
           scope.height = height;
           scope.width = width;
