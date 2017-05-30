@@ -80,7 +80,7 @@
     <div class="col-md-12 ">
       <div class="col-md-6" ng-if="!deletion">Inactivation: {{inactivationConcept.fsn}}, Reason: {{reasonId}} -<span
         ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
-      <div class="col-md-6" ng-if="deletion">Deletion - Replacement: {{inactivationConcept.fsn}}<span
+      <div class="col-md-6" ng-if="deletion">Deletion of {{inactivationConcept.fsn}} - Replacement: <span
         ng-repeat="concept in histAssocTargets.concepts"> {{concept.assocName}} {{concept.fsn}} </span></div>
 
       <button ng-if="!deletion"

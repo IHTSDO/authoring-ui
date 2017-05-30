@@ -1024,6 +1024,7 @@ angular.module('singleConceptAuthoringApp')
             scope.inactivationConcept = inactivationService.getConcept();
             scope.reasonId = inactivationService.getReasonId();
             scope.assocs = inactivationService.getAssocs();
+            console.log(scope.assocs);
             scope.associationTargets = metadataService.getAssociationInactivationReasons();
             scope.inactivationReasons = metadataService.getConceptInactivationReasons();
             scope.assocName = null;
