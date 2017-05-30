@@ -161,6 +161,7 @@ angular.module('singleConceptAuthoringApp')
         // FORMAT: associationTargets: {MOVED_FROM: ["139569002"]}
         // validate and convert association targets
         for (var i = 0; i < $scope.associations.length; i++) {
+            console.log($scope.associations);
           // extract association for convenience
           var association = $scope.associations[i];
 
@@ -170,13 +171,25 @@ angular.module('singleConceptAuthoringApp')
           }
 
           // if either field is blank, alert and return
-          else if (!association.type || !association.concept) {
-            window.alert('You must specify both the association type and target');
-            return;
-          }
+//          else if (!association.type || !association.concept) {
+//            window.alert('You must specify both the association type and target');
+//            return;
+//          }
 
           // add the association type/target
           else {
+              
+            if(!association.type || association.type === null){
+                association.type = {
+                                      id: 'REPLACED_BY',
+                                      conceptId: '900000000000526001',
+                                      text: 'REPLACED BY association reference set',
+                                      display: 6,
+                                      restrict: {
+                                        activeOnly: true
+                                      }
+                                    }
+            }
 
             // if this type already specified, add to array
             if (associationTarget.hasOwnProperty(association.type.id)) {
