@@ -1004,6 +1004,15 @@ angular.module('singleConceptAuthoringApp')
             rel.newTargetId = concept.concept.conceptId;
             rel.newTargetFsn = concept.concept.fsn;
           }
+          
+          scope.setRelTargetConcept = function (rel, concept) {
+            rel.target.conceptId = concept.concept.conceptId;
+            rel.target.fsn = concept.concept.fsn;
+            rel.target.released = concept.concept.released;
+            rel.target.active = concept.concept.active;
+            rel.target.definitionStatus = concept.concept.definitionStatus;
+          }
+          
           scope.updateRefTarget = function (rel) {
             console.log('updating');
             for (var j = 0; j < scope.associationTargets.length; j++) {
