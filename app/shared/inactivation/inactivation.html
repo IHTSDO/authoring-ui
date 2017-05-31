@@ -171,8 +171,17 @@
               </div>
             </td>
             <td data-title="'Value (Proposed)'" sortable="'target'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left">{{rel.target.fsn}}
-                <span>Proposed Value</span>
+              <div drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropAssociationTarget(rel, $data)">
+                  <textarea type="text" class="form-control" ng-model="rel.target.fsn"
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setTargetConcept(rel, $item)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3"></textarea>
               </div>
             </td>
             <td>
@@ -217,8 +226,17 @@
               </div>
             </td>
             <td data-title="'Value (Proposed)'" sortable="'target'">
-              <div class="tooltips-bottom small-size-tooltip offset-tooltip-left"> {{rel.target.fsn}}
-                <span>Proposed Value</span>
+              <div drag-enter-class="sca-drag-target"
+                     drag-hover-class="sca-drag-hover" drop-channel="conceptPropertiesObj"
+                     ui-on-drop="dropAssociationTarget(rel, $data)">
+                <textarea type="text" class="form-control" ng-model="rel.target.fsn"
+                        typeahead="suggestion as suggestion.concept.fsn for suggestion in getTargetConceptSuggestions($viewValue)"
+                        typeahead-focus-first="false"
+                        typeahead-loading="typeTypeaheadLoading"
+                        typeahead-wait-ms="700"
+                        typeahead-on-select="setTargetConcept(rel, $item)"
+                        typeahead-editable="false"
+                        typeahead-min-length="3"></textarea>
               </div>
             </td>
             <td>

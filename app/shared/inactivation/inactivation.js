@@ -761,8 +761,11 @@ angular.module('singleConceptAuthoringApp')
 
               function next() {
                 if (cntr < list.length) {
-                  list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
-                  cntr++;
+                if(list[cntr].newTargetId)
+                    {
+                      list[cntr].associationTargets[list[cntr].refsetName] = [list[cntr].newTargetId];
+                      cntr++;
+                    }
                   next();
                 }
                 else {
@@ -1024,7 +1027,6 @@ angular.module('singleConceptAuthoringApp')
             scope.inactivationConcept = inactivationService.getConcept();
             scope.reasonId = inactivationService.getReasonId();
             scope.assocs = inactivationService.getAssocs();
-            console.log(scope.assocs);
             scope.associationTargets = metadataService.getAssociationInactivationReasons();
             scope.inactivationReasons = metadataService.getConceptInactivationReasons();
             scope.assocName = null;

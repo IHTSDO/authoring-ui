@@ -180,15 +180,7 @@ angular.module('singleConceptAuthoringApp')
           else {
               
             if(!association.type || association.type === null){
-                association.type = {
-                                      id: 'REPLACED_BY',
-                                      conceptId: '900000000000526001',
-                                      text: 'REPLACED BY association reference set',
-                                      display: 6,
-                                      restrict: {
-                                        activeOnly: true
-                                      }
-                                    }
+                association.type = {}
             }
 
             // if this type already specified, add to array
@@ -198,7 +190,7 @@ angular.module('singleConceptAuthoringApp')
 
             // otherwise, set this type to a single-element array containing
             // this concept
-            else {
+            else if(association.type.id){
               associationTarget[association.type.id] = [association.concept.concept.conceptId];
             }
           }

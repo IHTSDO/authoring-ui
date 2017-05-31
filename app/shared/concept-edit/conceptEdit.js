@@ -2382,6 +2382,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
             templateService.updateTargetSlot(scope.concept, scope.template, relationship).then(function () {
               scope.computeRelationshipGroups();
+              sortRelationships();
 
               // run international dialect automations on target slot update (if appropriate)
               if (!metadataService.isExtensionSet()) {
@@ -2412,6 +2413,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
 
           // otherwise save normally
           else {
+            sortRelationships();
             scope.computeRelationshipGroups();
             autoSave();
           }
