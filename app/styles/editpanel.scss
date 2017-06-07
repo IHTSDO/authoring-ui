@@ -6,14 +6,14 @@
     padding-left: 3px;
 }
 .keep.switch {
-    width: 100%!important;
+    width: 100%;
 }
 .fsn,
 .title-text {
     width: 100%;
 }
 .editpanel {
-    color: #737373 !important;
+    color: #737373;
 }
 .model-header label {
     margin-bottom: 0px;
@@ -33,7 +33,7 @@ tab-pane.active .no-padding.col-md-9 {
     font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 .angular-ui-tree.p-10 {
-    padding: 0px 5px!important;
+    padding: 0px 5px;
 }
 .saved-list {
     font-size: 12px;
@@ -43,7 +43,7 @@ tab-pane.active .no-padding.col-md-9 {
 }
 aside.editpanel ul a {
     padding: 12px;
-    color: #737373 !important;
+    color: #737373;
 }
 .editing-form {
     -webkit-text-size-adjust: 100%;
@@ -64,9 +64,9 @@ aside.editpanel ul a {
     -ms-box-sizing: border-box;
     -o-box-sizing: border-box;
     box-sizing: border-box;
-    color: #474747 !important;
+    color: #474747;
     margin-bottom: 0px;
-    padding: 2px 4px !important;
+    padding: 2px 4px;
     background-color: #e0f7fa;
     border: none;
     -webkit-appearance: none;
@@ -77,10 +77,10 @@ aside.editpanel ul a {
     border-radius: 0px;
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
-    box-shadow: none !important;
+    box-shadow: none;
 }
 select.primitive {
-    color: #fff !important;
+    color: #fff;
 }
 .editing-form input:focus,
 .editing-form textarea:focus,
@@ -104,9 +104,10 @@ select.primitive {
     background-color: #66bbfd;
     border-color: transparent;
 }
+ .editbuttons.deep-purple.btn-default:active{background-color:transparent; color:#fff;}
 .editing-form button:focus,
 .editing-form button:active {
-    background-color: transparent!important;
+    background-color: transparent;
     border-color: transparent;
 }
 .editing-form input[type=button]:active,
@@ -116,8 +117,8 @@ select.primitive {
     border-color: transparent;
 }
 .editing-form button:active {
-    color: #66bbfd;
-    background-color: transparent!important;
+    color: #fff;
+    background-color: transparent;
     border-color: transparent;
 }
 .editing-form input[type=submit] {
@@ -318,11 +319,11 @@ select.primitive {
 textarea,
 input,
 select {
-    resize: none!important;
-    min-height: 30px!important;
+    resize: none;
+    min-height: 30px;
     max-height: 60px;
-    line-height: 1.1!important;
-    font-weight: 400!important;
+    line-height: 1.1;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     letter-spacing: .1px;
     text-rendering: optimizeLegibility;
@@ -330,11 +331,11 @@ select {
 .button-width {
     width: 4.5%;
     margin-right: .5%;
-    padding: 0% .5%!important;
+    padding: 0% .5%;
     float: left;
     height: 100%;
     min-height: 30px;
-    font-size: 14px!important;
+    font-size: 14px;
 }
 /* Global form widths */
 
@@ -378,18 +379,18 @@ select {
 .button-width-acceptability {
     width: 7%;
     margin-left: 0.5%;
-    padding: 0% 0.5% !important;
+    padding: 0% 0.5%;
     float: left;
     height: 100%;
     min-height: 30px;
-    font-size: 14px !important;
+    font-size: 14px;
 }
 .small-buttons:hover {
-    background: transparent !important;
-    color: #eee !important;
+    background: transparent;
+    color: #eee;
 }
 .small-buttons.green {
-    color: #4CAF50;
+    color: #4db46a;
     background-color: transparent;
 }
 .small-buttons.orange.darken-3 {
@@ -414,7 +415,7 @@ select {
 }
 .small-buttons.save-button {
     height: 20px;
-    font-size: 15px !important;
+    font-size: 15px;
 }
 .small-buttons.amber {
     color: #ffc107;
@@ -422,71 +423,73 @@ select {
 }
 .more-button-width {
     width: 13px;
-    margin: 0px !important;
-    padding: 0px 3px !important;
+    margin: 0px;
+    padding: 0px 3px;
     float: left;
     height: 100%;
     min-height: 30px;
-    background-color: transparent!important;
-    font-size: 13px !important;
+    background-color: transparent;
+    font-size: 13px;
 }
 .drag-button-width {
     width: 16px;
-    background-color: transparent!important;
-    padding: 0% !important;
+    background-color: transparent;
+    padding: 0%;
     float: left;
     height: 100%;
     min-height: 30px;
-    font-size: 13px !important;
+    font-size: 13px;
 }
 .button-width-plus {
     width: 12px;
-    padding: 5px 3px !important;
+    padding: 5px 3px;
     float: left;
     height: 100%;
     min-height: 30px;
-    font-size: 12px !important;
+    font-size: 12px;
 }
 .button-width-minus {
     min-height: 30px;
 }
 .editing-form .is_a textarea {
-    width: 80% !important;
+    width: 80%;
     float: left;
 }
 .editing-form .sourcename textarea {
-    width: 80% !important;
+    width: 80%;
     float: left;
+    height: 30px;
+    line-height: 1.2;
 }
 .is_a .drag-button-width {
-    background-color: #ffffdb !important;
+    background-color: #ffffdb;
     color: #474747;
-    width: 18% !important;
+    width: 18%;
     float: left;
-    padding: 0% 1% !important;
-    margin: 0% !important;
+    padding: 0% 1%;
+    margin: 0%;
     text-align: center;
 }
 .editing-form .sourcename .drag-button-width {
-    color: #474747 !important;
-    width: 8.75% !important;
+    color: #474747;
+    width: 8.75%;
     float: left;
-    padding: 0% 0.25% !important;
-    margin: 0% !important;
+    padding: 0% 0.25%;
+    margin: 0%;
     text-align: center;
     line-height: 25px;
 }
 .editing-form .sourcename textarea {
-    width: 90.5% !important;
+    width: 90.5%;
     float: left;
 }
 @media (max-width: 1380px) {
     .title-text {
-        font-size: 11px !important;
+        font-size: 11px;
     }
     .small-buttons {
-        padding: .75% !important;
-        font-size: 15px !important;
+        padding: .75%;
+        font-size: 15px;
     }
     .snomed-clear {
         margin-top: 5px;
@@ -501,8 +504,8 @@ select {
         margin-top: 5px;
     }
     select.primitive {
-        font-size: 10px !important;
-        height: 24px !important;
+        font-size: 10px;
+        height: 24px;
     }
     .editing-form .col-md-9 {
         width: 77%;
@@ -511,7 +514,7 @@ select {
         width: 23%;
     }
     .editing-form select {
-        font-size: 10px !important;
+        font-size: 10px;
     }
     .editing-form .typeid {
         width: 12%;
@@ -533,8 +536,8 @@ select {
         padding: 10px 5px;
     }
     .small-buttons {
-        padding: .75% !important;
-        font-size: 15px !important;
+        padding: .75%;
+        font-size: 15px;
     }
     .concept-headers {
         padding-bottom: 0px;
@@ -568,7 +571,7 @@ select {
         width: 80%;
     }
     /* form widths */
-
+    
     .editing-form .rolegroup {
         width: 3.0%;
         padding-left: 0px;
@@ -600,7 +603,7 @@ select.form-control {
     background-size: 10px;
 }
 button.fsn-title-button {
-    padding: 0px!important;
+    padding: 0px;
     color: #eee;
     font-size: 11.5px;
 }
@@ -611,80 +614,79 @@ button.fsn-title-button {
 .color_ textarea,
 .color_ select,
 .color_ .custom-button {
-    background-color: #b7dbff !important;
-    color: #474747 !important;
+    background-color: #b7dbff;
+    color: #474747;
 }
 .color_0 input,
 .color_0 textarea,
 .color_0 select,
 .color_0 .custom-button,
-.PRIMITIVE .color_0 .sourcename,
 .color_0 .sourcename {
     background-color: #dbdbff;
-    color: #474747 !important;
+    color: #474747;
 }
 .color_1 input,
 .color_1 textarea,
 .color_1 select,
 .color_1 .custom-button,
 .color_1 .sourcename {
-    background-color: #dbdbff !important;
-    color: #474747 !important;
+    background-color: #dbdbff;
+    color: #474747;
 }
 .color_2 input,
 .color_2 textarea,
 .color_2 select,
 .color_2 .custom-button,
 .color_2 .sourcename {
-    background-color: #dbdbff !important;
-    color: #474747 !important;
+    background-color: #dbdbff;
+    color: #474747;
 }
 .color_3 input,
 .color_3 textarea,
 .color_3 select,
 .color_3 .sourcename {
-    background-color: #dbdbff !important;
-    color: #474747 !important;
+    background-color: #dbdbff;
+    color: #474747;
 }
 .color_4 input,
 .color_4 textarea,
 .color_4 select,
 .color_4 .sourcename {
-    background-color: #dbdbff !important;
+    background-color: #dbdbff;
 }
 .color_5 input,
 .color_5 textarea,
 .color_5 select,
 .color_5 .sourcename {
-    background-color: #dbdbff !important;
-    color: #474747 !important;
+    background-color: #dbdbff;
+    color: #474747;
 }
 .color_6 {
-    background-color: #f1f8e9 !important;
-    color: #474747 !important;
+    background-color: #f1f8e9;
+    color: #474747;
 }
 .color_7 {
-    background-color: #e0f2f1 !important;
+    background-color: #e0f2f1;
 }
 .color_8 {
-    background-color: #FFEBEE !important;
+    background-color: #FFEBEE;
 }
 .color_9 {
-    background-color: #e8eaf6 !important;
+    background-color: #e8eaf6;
 }
 .is_a input,
 .is_a textarea,
 .is_a select,
 .is_a_bg {
-    background-color: #ffffdb !important;
+    background-color: #ffffdb;
 }
 .is_a_bg {
-    margin-left: .5% !important;
+    margin-left: .5%;
 }
 .attr input,
 .attr textarea,
 .attr select {
-    background-color: #ffffdb !important;
+    background-color: #ffffdb;
 }
 /* edit panel buttons */
 
@@ -756,35 +758,35 @@ button.fsn-title-button {
 
 
 .color_ input, .color_ textarea, .color_ select {
-    background-color: #303030 !important;  color: #b7dbff !important;
+    background-color: #303030 ;  color: #b7dbff ;
 }
 
 .color_0 input, .color_0 textarea, .color_0 select {
-    background-color: #303030 !important;  color: #dbdbff !important;
+    background-color: #303030 ;  color: #dbdbff ;
 }
 .color_1 input, .color_1 textarea, .color_1 select{
-    background-color: #303030 !important;  color: #dbdbff !important;
+    background-color: #303030 ;  color: #dbdbff ;
 }
 
 .color_2 input, .color_2 textarea, .color_2 select{
-    background-color: #303030 !important;  color: #dbdbff !important;
+    background-color: #303030 ;  color: #dbdbff ;
 }
 .color_3 input, .color_3 textarea, .color_3 select{
-    background-color: #303030 !important; color: #dbdbff !important;
+    background-color: #303030 ; color: #dbdbff ;
 }
 .is_a input, .is_a textarea, .is_a select{
-    background-color: #303030 !important; color: #ffffdb !important;
+    background-color: #303030 ; color: #ffffdb ;
 }
 .attr input, .attr textarea, .attr select{
-    background-color: #303030 !important; color: #ffffdb !important;
+    background-color: #303030 ; color: #ffffdb ;
 }
 .green {
-    background-color: #303030 !important;
-    color: #4CAF50 !important;
+    background-color: #303030 ;
+    color: #4db46a ;
 }
 .blue {
-    background-color: #303030 !important;
-    color: #00a6e5 !important;
+    background-color: #303030 ;
+    color: #00a6e5 ;
 }
 */
 
@@ -820,14 +822,14 @@ button.fsn-title-button {
 }
 .dropdown-menu > li {
     width: 100%;
-    word-wrap: normal!important;
-    white-space: normal!important
+    word-wrap: normal;
+    white-space: normal
 }
 .dropdown-menu > li > a {
     padding: 3px 5px;
     color: #474747;
-    word-wrap: normal!important;
-    white-space: normal!important
+    word-wrap: normal;
+    white-space: normal
 }
 /* popover */
 
@@ -840,7 +842,7 @@ button.fsn-title-button {
     border-radius: 0px;
 }
 .popover .dropdowns {
-    background-color: #fff !important;
+    background-color: #fff;
 }
 .popover .fields {
     font-size: 10px;
@@ -864,22 +866,20 @@ button.fsn-title-button {
     min-width: 650px;
     z-index: 1070;
 }
-
 #wrap .popover {
-  margin-top: 1px;
-  min-width: 250px;
-  z-index: 1070;
+    margin-top: 1px;
+    min-width: 250px;
+    z-index: 1070;
 }
-
 .pop-edit {
     font-size: 11px;
-    margin: 0px !important;
+    margin: 0px;
 }
 .popover select {
-    margin-bottom: 0px!important;
-    padding: 0px!important;
-    min-height: 11px!important;
-    color: #474747!important;
+    margin-bottom: 0px;
+    padding: 0px;
+    min-height: 11px;
+    color: #474747;
 }
 .task-details hr {
     margin-top: 1px;
@@ -895,15 +895,15 @@ button.fsn-title-button {
     -webkit-transition: all .2s ease-out;
     -o-transition: all .2s ease-out;
     transition: all .2s ease-out;
-    box-shadow: inset 0 -1px 0 #ddd!important;
+    box-shadow: inset 0 -1px 0 #ddd;
 }
 /* Concept level */
 
 .popover select {
-    height: 10px !important;
+    height: 10px;
 }
 .popover-content {
-    padding: 0px 3px !important;
+    padding: 0px 3px;
 }
 button.fsn-title-button {
     width: 100%;
@@ -916,11 +916,9 @@ button.fsn-title-button {
     min-height: 11px;
     max-width: 98%;
 }
-
 .popover .editing-form {
-  padding-bottom: 0;
+    padding-bottom: 0;
 }
-
 /* slider*/
 
 .sca-layout-elem {
@@ -962,14 +960,14 @@ button.fsn-title-button {
     margin-bottom: 15px;
 }
 .role-group-drag {
-    min-height: 35px!important;
+    min-height: 35px;
     padding: 0px
 }
 .role-group-buttons {
     height: 100%;
     width: 80%;
-    background-color: transparent!important;
-    color: #fff!important;
+    background-color: transparent;
+    color: #fff;
     pading-left: 20%;
 }
 .fa.pull-right {
@@ -980,7 +978,7 @@ button.fsn-title-button {
 }
 .left-of-edit.col-md-11 {
     width: 94.66667%;
-    padding: 2px 0px!important;
+    padding: 2px 0px;
 }
 .edits-row .col-md-1 {
     width: 4.33333%;
@@ -1080,10 +1078,10 @@ button.fsn-title-button {
 }
 .bluehl .grey.darken-3,
 .bluehl .edits-row {
-    background-color: #0091d7!important
+    background-color: #0091d7
 }
 .conflicts .nav-tabs > li {
-    width: 50%!important;
+    width: 50%;
     text-align: center;
 }
 .conflicts .edits button {
@@ -1091,44 +1089,42 @@ button.fsn-title-button {
     text-align: left;
 }
 button-link .bluehl .grey.darken-3 {
-    background-color: #0091d7!important;
-    border-top: 2px solid #0091d7!important;
-    border-bottom: 2px solid #0091d7!important;
+    background-color: #0091d7;
+    border-top: 2px solid #0091d7;
+    border-bottom: 2px solid #0091d7;
 }
 .merges-button .button-link {
     font-size: 12px;
 }
 .tealhl .grey.darken-3 {
-    background-color: #00a39b!important
+    background-color: #00a39b
 }
-
-.ng-scope.tealhl{
-    background-color: #00a39b!important;
-    border-top: 2px solid #00a39b!important;
-    border-bottom: 2px solid #00a39b!important;
-	margin-top:3px;
+.ng-scope.tealhl {
+    background-color: #00a39b;
+    border-top: 2px solid #00a39b;
+    border-bottom: 2px solid #00a39b;
+    margin-top: 3px;
 }
-.row.tealhl
-{
-    background-color: #00a39b!important;
-    border-top: 1px solid #00a39b!important;
-    border-bottom: 0px solid #00a39b!important;
-	margin-top:0px;
+.row.tealhl {
+    background-color: #00a39b;
+    border-top: 1px solid #00a39b;
+    border-bottom: 0px solid #00a39b;
+    margin-top: 0px;
 }
-.tealhl .p-t-5{
-  padding-top:0px!important
-
+.tealhl .p-t-5 {
+    padding-top: 0px
 }
-.tealhl .grey.darken-4{background-color:transparent!important;}
-
+.tealhl .grey.darken-4 {
+    background-color: transparent;
+}
 .redhl .grey.darken-3,
-.redhl .grey.darken-3 .redhlrow, {
-    background-color: #ff6755!important
+.redhl .grey.darken-3 .redhlrow {
+    background-color: #ff6755
 }
 .tealh1 .redhlrow,
 .redlhl {
-    border-top: 2px solid #ff6755!important;
-    border-bottom: 2px solid #ff6755!important;
+    border-top: 2px solid #ff6755;
+    border-bottom: 2px solid #ff6755;
 }
 .p-4 {
     padding: 4px;
@@ -1140,18 +1136,18 @@ button-link .bluehl .grey.darken-3 {
     line-height: 24px;
 }
 .model-header-sca {
-    min-height: 32px!important;
+    min-height: 32px;
 }
 .editing-form button.red:focus,
 .editing-form button.red:active {
-    background-color: #e92848;
+    background-color:transparent;
 }
 .editing-form button.green:focus,
 .editing-form button.green:active {
-    background-color: #4CAF50;
+    background-color: transparent;
 }
 .color_ .custom-button:focus {
-    background-color: #b7dbff !important;
+    background-color: #b7dbff;
 }
 .PRIMITIVE .color_0 input,
 .PRIMITIVE .color_0 textarea,
@@ -1160,17 +1156,17 @@ button-link .bluehl .grey.darken-3 {
     background-color: #b7dbff;
 }
 .p-t-3 {
-    padding-top: 3px!important;
+    padding-top: 3px;
 }
 .editing-form .PRIMITIVE .sourcename .drag-button-width {
-    background-color: #b7dbff !important;
+    background-color: #b7dbff;
 }
 .FULLY_DEFINED .color_ input,
 .FULLY_DEFINED .color_ textarea,
 .FULLY_DEFINED .color_ select,
 .FULLY_DEFINED .color_ .custom-button .FULLY_DEFINED .sourcename {
-    background-color: #dbdbff !important;
-    color: #474747 !important;
+    background-color: #dbdbff;
+    color: #474747;
 }
 .sourcename {
     margin-left: .5%
@@ -1180,29 +1176,62 @@ button-link .bluehl .grey.darken-3 {
 .PRIMITIVE select,
 .PRIMITIVE .custom-button,
 .PRIMITIVE .sourcename {
-    background-color: #b7dbff !important;
-    color: #474747 !important;
-}
-.is_a input,
-.is_a textarea,
-.is_a select {
-    background-color: #ffffdb !important;
+    background-color: #b7dbff;
+    color: #474747;
 }
 .def_PRIMITIVE textarea,
 .def_PRIMITIVE select,
-.def_PRIMITIVE .custom-button {
-    background-color: #b7dbff !important;
-    color: #474747 !important;
+.def_PRIMITIVE .custom-button,
+.def_PRIMITIVE .form-control[disabled],
+.def_PRIMITIVE [type=text].form-control[disabled],
+.def_PRIMITIVE [type=text].form-control[readonly] {
+    font-size: 11px;
+    height: 30px;
+    background-color: #b7dbff;
+    color: #474747;
+    box-shadow: none;
 }
 .def_FULLY_DEFINED textarea,
 .def_FULLY_DEFINED select,
-.def_FULLY_DEFINED .custom-button {
-    background-color: #dbdbff !important;
-    color: #474747 !important;
+.def_FULLY_DEFINED .custom-button,
+.def_FULLY_DEFINED .form-control[disabled],
+.def_FULLY_DEFINED [type=text].form-control[disabled],
+.def_FULLY_DEFINED [type=text].form-control[readonly] {
+    background-color: #dbdbff;
+    color: #474747;
+    font-size: 11px;
+    height: 30px;
+}
+.is_a input,
+.is_a textarea,
+.is_a select,
+.is_a [type=text].form-control[disabled],
+.is_a [type=text].form-control[readonly] {
+    font-size: 11px;
+    background-color: #ffffdb;
+    box-shadow: none;
+    height: 30px;
+}
+.PRIMITIVE .is_a input,
+.PRIMITIVE .is_a textarea,
+.PRIMITIVE .is_a [type=text].form-control[disabled],
+.PRIMITIVE .is_a [type=text].form-control[readonly] {
+    font-size: 11px;
+    background-color: #ffffdb;
+    box-shadow: none;
 }
 .sidebar-tabs.nav > li > a {
     line-height: 35px;
 }
+.rolegroup [type=text].form-control,
+.rolegroup [type=text].form-control[disabled],
+.rolegroup [type=text].form-control[readonly] {
+    max-height: 30px;
+	    overflow: hidden;
+}
+.morebuttons.more-button-width,
+.morebuttons.drag-button-width{background-color:transparent}
+
 .ng-table textarea, .ng-table input, .ng-table select {
     resize: none !important;
     min-height: 40px !important;

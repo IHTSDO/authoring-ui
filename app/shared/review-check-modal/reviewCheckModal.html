@@ -1,90 +1,49 @@
 <div id="reviewCheckModal" class="clearfix">
-
   <div ng-if="!deletion" class="modal-header">
     <button type="button" class="close" ng-click="cancelSubmitForReview()">&times;</button>
     <h4 class="modal-title">Submit For Review Checks</h4>
   </div>
-
   <div class="modal-body">
-
     <div class="row p-b-10" ng-show="!reviewChecks.hasChangedContent">
-
       <div class="col-md-1"></div>
       <div class="col-md-1">
-        <h4>
-          <span class="md md-warning orange p-5"></span>
-        </h4>
+        <h4> <span class="md md-warning orange p-5"></span> </h4>
       </div>
       <div class="col-md-9">
         <h4>No Concepts Saved on Task</h4>
       </div>
-      <div class="col-md-1">
-
-      </div>
+      <div class="col-md-1"> </div>
     </div>
-
     <div class="row" ng-show="reviewChecks.unsavedConcepts.length > 0">
-
-      <div class="col-md-1">
-
-      </div>
-      <div class="col-md-1">
-        <h4>
-          <span class="md md-warning orange p-5"></span>
-        </h4>
-      </div>
-      <div class="col-md-9">
+  
+      <div class="col-md-12">
         <h4>Unsaved Concepts Detected</h4>
-        
         <table ng-table="unsavedConceptsTableParams" class="table table-full p-5 m-t-15"
                template-pagination="utilities/data-table-pager.html">
           <tr ng-repeat="concept in $data" class="clickable-row" ng-click="addToEditPanel(concept)">
             <td data-title="'ID'" sortable="'conceptId'" header-class="'header-tooltips'"
-                header-title="'Click to sort'" filter="{ 'ID': 'number' }">{{concept.conceptId}}
-            </td>
+                header-title="'Click to sort'" filter="{ 'ID': 'number' }">{{concept.conceptId}} </td>
             <td data-title="'FSN'" sortable="'fsn'" header-class="'header-tooltips'"
-                header-title="'Click to sort'" filter="{ 'fsn': 'text' }">{{concept.fsn}}
-            </td>
+                header-title="'Click to sort'" filter="{ 'fsn': 'text' }">{{concept.fsn}} </td>
           </tr>
         </table>
       </div>
-      <div class="col-md-1">
-
-      </div>
+  
     </div>
-
-
   </div>
-
   <div class="modal-footer">
     <div class="row col-md-12 no-padding top-modal">
-      <style>
-        .top-modal .col-md-6.left-button {
-          padding-left: 0px
-        }
-
-        .top-modal .col-md-6.right-button {
-          padding-right: 0px
-        }
-      </style>
       <div class=" col-md-6 left-button ">
         <button type="button"
-                class="btn btn-default red p-10 inactivation-button-modal m-t-20"
-                ng-click="cancelSubmitForReview()">
-          Cancel Submit For Review
-        </button>
+                class="btn btn-default col-md-12 cancel-action-btn m-t-20"
+                ng-click="cancelSubmitForReview()"> Cancel Submit For Review </button>
       </div>
-
       <div class=" col-md-6 right-button" ng-if="inboundRelationshipsTotal !== 0">
         <button type="button"
 
-                class="btn btn-default green p-10 inactivation-button-modal m-t-20"
-                ng-click="submitAnyway()">
-          Submit Anyway
-        </button>
+                class="btn btn-default col-md-12  complete-action-btn m-t-20"
+                ng-click="submitAnyway()"> Submit Anyway </button>
       </div>
-
     </div>
   </div>
-
 </div>

@@ -1,15 +1,11 @@
-<div id="task-detail"  class="sidebar-grey" ng-controller="taskDetailCtrl">
-
+<div id="task-detail"  class="sidebar-grey" ng-controller="taskDetailCtrl"> 
+  
   <!-- Timeline formatter and concept ids.extension input -->
   <div class="row">
-
     <div class="col col-md-12 sidebar-grey">
-
       <ul class="timeline">
         <li>
-          <div class="timeline-badge">
-            <i class="icon-circle theme-border"></i>
-          </div>
+          <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
               <label class="control-label">Task Title:</label>
@@ -17,48 +13,24 @@
             </div>
           </div>
         </li>
-
         <li>
-          <div class="timeline-badge">
-            <i class="icon-circle theme-border"></i>
-          </div>
+          <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
               <label class="control-label">Task Details:</label>
               <h4 compile-html="task.description" class="timeline-title"></h4>
             </div>
-
-
           </div>
-
-
         </li>
-
-       
       </ul>
     </div>
-
-
   </div>
-
-
-
-
   <hr style="width:93%; border-color:#ddd">
-
-
   <div class="task-details ">
-
-   
     <div style="padding: 15px; width: 100%" class="classification-btn">
-     
- <button class="btn btn-default cyan darken-1 editingtask"
+      <button class="btn btn-default cyan darken-1 editingtask"
                         ng-click="updateTask()" style="text-transform: none"
-                        ng-disabled="task.status === 'Promoted'">
-                   <span class="md md-settings cyan darken-2 iconbase"></span>
-        <span class="button-link">Edit Task Details</span>
-                </button>
-
+                        ng-disabled="task.status === 'Promoted'"> <span class="md md-settings cyan darken-2 iconbase"></span> <span class="button-link">Edit Task Details</span> </button>
     </div>
   </div>
 </div>

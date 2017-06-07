@@ -12,19 +12,25 @@
     transition: 240ms;
 }
 /* new concept */
-.new-concept .grey.darken-4{background-color: #b3e5fc!important; color:#201f23!important}
-  .new-concept .concept-headers:first-child{padding-top:3px!important}
+
+.new-concept .grey.darken-4 {
+    background-color: #b3e5fc;
+    color: #201f23
+}
+.new-concept .concept-headers:first-child {
+    padding-top: 3px
+}
 /*feedback window filter */
 
 .concept-filter {
-    padding-bottom: 5px!important;
+    padding-bottom: 5px;
     margin-left: -5px;
 }
 .concept-filter input {
-    min-height: 23px !important;
+    min-height: 23px;
 }
 .concept-filter input {
-    font-weight: normal!important;
+    font-weight: normal;
     font-kerning: auto;
     font-size: 12px;
     font-stretch: normal;
@@ -34,27 +40,27 @@
     font-weight: normal;
 }
 .concept-filter input[placeholder] {
-    color: #666!important;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    color: #666;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 ::-webkit-input-placeholder {
     /* WebKit, Blink, Edge */
     
     color: #666;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 :-moz-placeholder {
     /* Mozilla Firefox 4 to 18 */
     
     color: #666;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     opacity: 1;
 }
 ::-moz-placeholder {
     /* Mozilla Firefox 19+ */
     
     color: #666;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     opacity: 1;
 }
 /*feedback window spacing */
@@ -74,7 +80,8 @@
 .follow-up {
     font-size: 12px;
     padding-top: 3px;
-    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color:#474747
 }
 .follow-up-right .btn {
     padding: 3px 8px;
@@ -84,8 +91,8 @@
 }
 .follow-up-right .btn:hover,
 .follow-up-right .btn:focus {
-    background-color: transparent!important;
-    color: #009cd7!important;
+    background-color: transparent;
+    color: #009cd7;
 }
 .follow-up input[type=checkbox] {
     position: absolute;
@@ -103,7 +110,7 @@
     -webkit-transition: 240ms;
     -o-transition: 240ms;
     transition: 240ms;
-    color: #fff!important
+    color: #fff
 }
 .follow-up input[type=checkbox]:checked:before {
     content: "";
@@ -122,7 +129,7 @@
     transform: rotate(45deg);
 }
 .numbers.badge {
-    padding: 3px 5px!important;
+    padding: 3px 5px;
 }
 .feedback-lists .btn-round {
     width: 17px;
@@ -131,7 +138,6 @@
     line-height: 17px;
     text-align: center;
 }
-
 .feedback .col-checkbox {
     width: 10%;
 }
@@ -155,7 +161,7 @@ ul.sidebar-tabs {
 .add-shadow {
     box-shadow: 0 4px 5px -2px rgba(0, 0, 0, 0.2), 0 2px 16px 1px rgba(0, 0, 0, 0.10);
     background-color: #fff;
-    padding: 5px !important;
+    padding: 5px;
     display: inline-block;
     height: 100%;
     min-height: 500px;
@@ -177,7 +183,7 @@ input.feedback-search {
 }
 .feedback-tabs .nav-tabs ul {
     padding: 0px;
-    box-shadow: inset 0 -2px 0 #dcdcdc!important;
+    box-shadow: inset 0 -2px 0 #dcdcdc;
     width: 100%;
 }
 .feedback-window {
@@ -188,7 +194,7 @@ section thead input {
     background-color: #fff;
 }
 .feedback-view .nav-tabs a {
-    font-size: 12px!important;
+    font-size: 12px;
 }
 .feedback-view .btn-round {
     width: 25px;
@@ -199,26 +205,26 @@ section thead input {
 }
 .feedback-view input[type=checkbox]:after,
 .feedback-view.table-full thead tr > th input[type=checkbox]:after {
-    width: 16px!important;
-    height: 16px!important;
-    margin: 0px!important;
-    font-size: 14px!important;
+    width: 16px;
+    height: 16px;
+    margin: 0px;
+    font-size: 14px;
 }
 .feedback.table-full thead tr > th input[type=checkbox] {
-    margin-top: 5px!important;
-    margin-left: 3px!important;
-    margin-right: 0px!important;
-    margin-bottom: 0px!important;
+    margin-top: 5px;
+    margin-left: 3px;
+    margin-right: 0px;
+    margin-bottom: 0px;
 }
 .feedback .table-full thead tr > th input[type=checkbox]:after {
     width: 16px;
     height: 16px;
-    margin: 0px!important;
-    font-size: 14px!important;
+    margin: 0px;
+    font-size: 14px;
 }
 .feedback .table > thead > tr > th {
-    padding: 4px 2px!important;
-    vertical-align: middle !important;
+    padding: 4px 2px;
+    vertical-align: middle;
     line-height: 12px
 }
 .feedback-view .table > thead > tr > th,
@@ -226,7 +232,7 @@ section thead input {
     padding: 5px;
     line-height: 12px;
     border-top: 1px solid #F0F0F0;
-    vertical-align: middle !important;
+    vertical-align: middle;
     border-bottom: 2px solid #F0F0F0;
     margin: 5px;
 }
@@ -236,7 +242,6 @@ section thead input {
     vertical-align: middle;
     padding: 5px;
 }
-
 .ta-scroll-window > .ta-bind {
     min-height: 250px;
 }
@@ -301,11 +306,11 @@ section thead input {
 }
 .feedback-lists .table > tbody > tr > td,
 .feedback-lists .table > tbody > tr > th {
-    padding: 0px!important;
-    line-height: 14px!important
+    padding: 0px;
+    line-height: 14px
 }
 .feedback-chat {
-    padding: 10px 10px 10px 0px!important
+    padding: 10px 10px 10px 0px
 }
 .white {
     background-color: #fff;
@@ -320,15 +325,15 @@ section thead input {
     line-height: 30px;
 }
 .feedback-header-main label {
-    color: #fff!important;
+    color: #fff;
     font-weight: 400;
     margin-top: -5px;
 }
 .feedback-header-main input {
-    height: 24px!important
+    height: 24px
 }
 .feedback-header-main .btn {
-    padding: 0px 12px!important;
+    padding: 0px 12px;
 }
 .review-button-list {
     background-color: #880e4f;
@@ -343,7 +348,7 @@ section thead input {
     background-color: #ad1457
 }
 .feedback-window {
-    border: 1px #eaeaea solid!important;
+    border: 1px #eaeaea solid;
     border-radius: 3px;
 }
 .feedback-window .btn-group .btn {
@@ -352,7 +357,7 @@ section thead input {
 .ta-root.focussed .ta-scroll-window.form-control {
     border-color: transparent;
     outline: 0;
-    -webkit-box-shadow: none!important;
+    -webkit-box-shadow: none;
 }
 .ta-editor ul {
     -webkit-margin-before: 0em;
@@ -368,9 +373,9 @@ section thead input {
 .transparent:hover,
 .transparent:active,
 .transparent:focus {
-    background-color: transparent!important;
+    background-color: transparent;
     color: #fff;
-    background: none!important;
+    background: none;
 }
 .feedback-table tbody > tr > td:last-child {
     overflow: visible;
@@ -451,7 +456,7 @@ section thead input {
     border: 1px #ececec solid;
 }
 .feedback-window {
-    border: 1px #eaeaea solid!important;
+    border: 1px #eaeaea solid;
     border-radius: 3px;
     background-color: #fff;
 }
@@ -459,9 +464,9 @@ section thead input {
     padding: 3px 10px;
 }
 .ta-root.focussed .ta-scroll-window.form-control {
-    border-color: transparent!important;
-    outline: 0!important;
-    -webkit-box-shadow: none!important;
+    border-color: transparent;
+    outline: 0;
+    -webkit-box-shadow: none;
 }
 .pink-links a,
 a.pink-links {
@@ -482,7 +487,7 @@ a.pink-links {
     height: auto;
 }
 .feedback-initial {
-    min-height: 480px!important;
+    min-height: 480px;
 }
 .feedback-initial .text {
     padding-right: 100px;
@@ -494,7 +499,7 @@ a.pink-links {
     color: #d81b60;
 }
 .feedback-initial .icon-alert {
-    margin: 0 auto!important;
+    margin: 0 auto;
     padding-top: 70px;
     font-size: 86px;
     width: 86px;
@@ -516,7 +521,7 @@ a.pink-links {
     padding: 6px 12px;
 }
 strong {
-    font-weight: 700;
+    font-weight: 500;
 }
 .clear-button {
     background-color: transparent
@@ -547,8 +552,8 @@ strong {
 }
 
 .reviewer-feedback-chat {
-    padding-left: 10px!important;
-    padding-right: 10px!important;
+    padding-left: 10px;
+    padding-right: 10px;
     margin: 1em 0 3em;
     color: #000;
     background-color: #ececec;
@@ -556,8 +561,8 @@ strong {
     width: 100%;
 }
 .author_feedback_chat {
-    padding-left: 10px!important;
-    padding-right: 10px!important;
+    padding-left: 10px;
+    padding-right: 10px;
     margin: 1em 0 3em;
     color: #000;
     background-color: #ffe7f0;
@@ -574,7 +579,7 @@ strong {
     top: auto;
     bottom: -10px;
     border: 12px solid;
-    border-color: transparent transparent transparent #ececec!important;
+    border-color: transparent transparent transparent #ececec;
 }
 .author_feedback_chat:after {
     content: ' ';
@@ -585,11 +590,11 @@ strong {
     right: 0px;
     bottom: -10px;
     border: 12px solid;
-    border-color: #ffe7f0 #ffe7f0 transparent transparent!important;
+    border-color: #ffe7f0 #ffe7f0 transparent transparent;
 }
 .numbers.badge {
-    padding: 3px 5px!important;
-    font-size: 10px!important;
+    padding: 3px 5px;
+    font-size: 10px;
 }
 .light_greys {
     background-color: #ececec;
@@ -602,19 +607,18 @@ strong {
         padding: 1px 6.5px;
     }
 }
-
 .worklist {
     background-color: #fff;
     border: #f5f5f5 1px solid
 }
 .work-list-tabs {
-    margin: 5px!important;
-    border: 1px #ddd solid!important;
+    margin: 5px;
+    border: 1px #ddd solid;
     background-color: #fff;
     display: block;
 }
 .border-right {
-    border-right: #ddd 1px solid!important
+    border-right: #ddd 1px solid
 }
 .work-list-tabs .nav > li {
     width: 33.33%;
@@ -622,7 +626,7 @@ strong {
 .work-list-tabs .nav > li > a {
     line-height: 19px;
     background-color: #eeeeee;
-    border-radius: 0px!important;
+    border-radius: 0px;
     font-size: 11px;
 }
 .work-list-tabs .nav-tabs > li.active > a {
@@ -636,8 +640,8 @@ strong {
     background-color: #fff
 }
 .feedback-lists .btn-round.btn[disabled]:hover {
-    color: #76747c!important;
-    background-color: #424249!important;
+    color: #76747c;
+    background-color: #424249;
 }
 .feedback-table {
     width: 98%;
@@ -646,3 +650,33 @@ strong {
 .tab-content {
     font-size: 12px;
 }
+.col-md-12.feedback-area {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 25px;
+}
+.feedback ol {
+    margin-top: 0;
+    margin-bottom: 1px;
+    -webkit-padding-start: 0px;
+    margin-left: 11px;
+}
+.switch input {
+    min-height: 25px !important;
+}
+.feedback-window .btn-default {
+    color: #666
+}
+.theme-blue .feedback-window .ta-bind {
+    box-shadow: none;
+}
+.feedback-window input[type=checkbox]:focus,
+.feedback-window input[type=radio]:focus,
+.feedback-window input[type=file]:focus {
+    outline: none;
+    outline: none;
+    outline-offset: 0;
+    box-shadow: none;
+}
+.review-tasks .table-full-small tbody > tr > td:nth-child(2), 
+.review-tasks .table-full-small thead tr > th:nth-child(2){padding-left:20px;}
