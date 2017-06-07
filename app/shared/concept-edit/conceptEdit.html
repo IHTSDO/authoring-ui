@@ -1,3 +1,4 @@
+
 <div class="edits editing-form darken-3 grey">
 
   <!-- begin validation error -->
@@ -42,7 +43,7 @@
 
       <div class="pull-left col-md-1 no-padding">
             <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
-                    class="btn btn-default morebuttons grey darken-4 md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
+                    class="btn btn-default morebuttons transparent md fa-sca fa-ellipsis-v more-button-width tooltips-bottom tooltips-light small-size-tooltip normal-case"
                     popover-template="'shared/component-more/conceptMore.html'"
                     popover-placement="{{popoverDirection}}"
                     popover-trigger="click: click"
@@ -277,14 +278,14 @@
              drag-enter-class="sca-drag-target" drag-hover-class="sca-drag-hover">
 
           <button id="myTextArea" name="myTextArea" ng-click="setDescriptionProperties(description, $event)"
-                  class="btn-default grey darken-3 md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
+                  class="btn-default transparent md morebuttons fa-sca fa-ellipsis-v more-button-width small-size-tooltip tooltips-bottom tooltips-light normal-case"
                   popover-template="'shared/component-more/descriptionMore.html'"
                   popover-placement="{{popoverDirection}}"
                   popover-append-to-body="true">
             <span>More details</span>
           </button>
           <button
-            class="btn-default grey darken-3 md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom "
+            class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom "
             ui-draggable="true" drag="description" drag-channel="descriptionObj"
             drag-image="getDragImageForDescription(description)">
             <span>Drag this row</span>
@@ -468,7 +469,7 @@
 
               <div class="">
                 <button
-                  class="btn-default grey darken-3 md morebuttons more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
+                  class="btn-default  md morebuttons transparent more-button-width small-size-tooltip fa-sca fa-ellipsis-v button-width tooltips-bottom tooltips-light normal-case"
                   ng-click="setRelationshipProperties(relationship, $event)"
                   popover-template="'shared/component-more/relationshipMore.html'"
                   popover-placement="{{popoverDirection}}"
@@ -477,7 +478,7 @@
                 </button>
 
                 <button
-                  class="btn-default grey darken-3 md morebuttons pull-left md-open-with drag-button-width small-size-tooltip tooltips-bottom"
+                  class="btn-default md morebuttons pull-left md-open-with drag-button-width small-size-tooltip tooltips-bottom"
                   ui-draggable="true" drag="relationship" drag-channel="relationshipObj"
                   drag-image="getDragImageForRelationship(relationship)">
                   <span>Drag This Row</span>
@@ -500,7 +501,7 @@
                   <textarea ng-disabled="isStatic  || isLockedModule(relationship.moduleId) || template"
                             ng-model="relationship.groupId" ng-model-options="{updateOn: 'blur'}"
                             ng-change="updateRelationship(relationship, true)"
-                            class="form-control rg msd-elastic: \n;"
+                            class="form-control rg "
                             type="text" placeholder="#" ui-on-drop="dropNullOp()">
                                     </textarea>
                   <span>Role Group</span>

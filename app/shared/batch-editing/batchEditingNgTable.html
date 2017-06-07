@@ -1,25 +1,25 @@
 
-
-
 <div>
-  <div class="row no-padding no-gutter">
-    <div class="col-md-4 pull-right">
+  <div class="row no-padding no-gutter p-t-5">
+    <div class="col-md-10 pull-right m-t-10">
+    
+      <div ng-show="batchHasData">
+          <button class="col-md-2 btn btn-default complete-action-btn pull-right m-r-15"
+                  ng-click="saveAll()">Save All
+          </button>
+        </div>
         <div ng-show="batchHasData">
-          <button class="btn btn-default btn-primary red pull-right m-r-15"
+          <button class="btn btn-default cancel-action-btn pull-right col-md-2 m-r-15"
                   ng-click="removeAll()">Discard All
           </button>
         </div>
 
-        <div ng-show="batchHasData">
-          <button class="btn btn-default btn-primary  pull-right m-r-15"
-                  ng-click="saveAll()">Save All
-          </button>
-        </div>
+      
       </div>
     </div>
       
     
-
+  <div class="card m-10">
   <div class="m-t-10 sca-batch-table" style="width:99%;" ng-show="batchHasData">
 
     <table ng-table="batchTableParams"
@@ -85,4 +85,5 @@
       <div concept-edit concept="concept" branch="branch" static="true"></div>
     </div>
   </div>
+</div>
 </div>

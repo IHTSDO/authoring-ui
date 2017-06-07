@@ -1,17 +1,17 @@
-<section class="tables-data">
-  <!-- for ng-table checkboxes -->
+<section class="tables-data"> 
+  <!-- for ng-table checkboxes --> 
   <script type="text/ng-template" id="ng-table/headers/checkboxHeader.html">
     <input type="checkbox" ng-model="checkAll" ng-change="selectAll(checkAll)" title="Select Concepts"
            id="select_all_failures"
            name="filter-checkbox" value=""/>
-  </script>
+  </script> 
   <script type="text/ng-template" id="excludeheader.html">
     <button type="button" ng-click="excludeSelectedFailures()"
             class="btn btn-round btn-default red" title="Add all selected failures to exclusion list">
             <span
               class="md md-block"></span>
     </button>
-  </script>
+  </script> 
   <script type="text/ng-template" id="editheader.html">
     <button ng-if="editable" type="button" ng-click="editSelectedConcepts()"
             class="btn btn-round btn-default blue" title="View/Edit Selected Concepts">
@@ -19,40 +19,27 @@
               class="md md-edit"></span>
     </button>
   </script>
- 
   <div class="row validation-header reports-header" style="vertical-align: middle">
-    <div class="col-md-4 "> <div class="p-t-10 p-l-5">Validation Report: {{getStatusText()}}</div>
+    <div class="col-md-4 ">
+      <div class="p-t-10 p-l-5">Validation Report: {{getStatusText()}}</div>
     </div>
-    <div class="col-md-3 ">
- 
-    </div>
+    <div class="col-md-3 "> </div>
     <div class="col-md-5 ">
-          <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
+      <button ng-init="isCollapsed = false" ng-click="isCollapsed = !isCollapsed" type="button"
               class="btn btn-default btn-round deep-purple pull-right"
               ng-class="[{'md-keyboard-arrow-up' : isCollapsed, 'md-keyboard-arrow-down' : !isCollapsed}]"></button>
-
-  <button ng-show="!isCollapsed" ng-click="toggleViewExclusions()"
+      <button ng-show="!isCollapsed" ng-click="toggleViewExclusions()"
               class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip m-l-10 ">
-        <div>{{viewExclusions ?
-          'Hide'
-          : 'Show'}} Whitelist
-        </div>
-        <span ng-if="viewExclusions">Hide whitelisted validation errors</span>
-        <span ng-if="!viewExclusions">Display whitelisted validation errors</span>
-
-      </button>
-         <button ng-show="!isCollapsed" ng-click="toggleFullReport()"
+      <div>{{viewExclusions ?
+        'Hide'
+        : 'Show'}} Whitelist </div>
+      <span ng-if="viewExclusions">Hide whitelisted validation errors</span> <span ng-if="!viewExclusions">Display whitelisted validation errors</span> </button>
+      <button ng-show="!isCollapsed" ng-click="toggleFullReport()"
               class="btn btn-default dark-button pull-right tooltips-left small-size-tooltip offset-tooltip-left">
-        <div>{{viewFullReport ?
-          'Show ' + (taskKey ? 'Task' : 'Project')
-          + ' Report' : 'Show Full Report'}}
-        </div>
-        <span ng-if="viewFullReport">View only concepts modified in {{taskKey ? 'task' : 'project'}}</span>
-        <span ng-if="!viewFullReport">View all validation errors in {{taskKey ? 'task' : 'project'}}</span>
-
-      </button>
-
-    
+      <div>{{viewFullReport ?
+        'Show ' + (taskKey ? 'Task' : 'Project')
+        + ' Report' : 'Show Full Report'}} </div>
+      <span ng-if="viewFullReport">View only concepts modified in {{taskKey ? 'task' : 'project'}}</span> <span ng-if="!viewFullReport">View all validation errors in {{taskKey ? 'task' : 'project'}}</span> </button>
     </div>
   </div>
   <!--
@@ -61,10 +48,7 @@
   <div class="validation-report" ng-show="!isCollapsed">
     <div role="tabpanel" class="">
       <div class="ng-table-no-results"
-           ng-if="viewTop && validationContainer.report && topTableParams.total() === 0">
-        No validation results to display
-      </div>
-
+           ng-if="viewTop && validationContainer.report && topTableParams.total() === 0"> No validation results to display </div>
       <div class="table-responsive white" style="margin-right:0px;" ng-show="viewTop && topTableParams.total() > 0">
         <table
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
@@ -81,138 +65,86 @@
             <td>
               <button
                 title="View These Failures" type="button" ng-click="viewFailures(assertion)"
-                class="btn btn-default blue case-failures">Load Cases
-                <i
-                  class="glyphicon glyphicon-chevron-right treeButton"></i>
-              </button>
-              <div class="ripple-wrapper"></div>
-            </td>
+                class="btn btn-default blue case-failures">Load Cases <i
+                  class="glyphicon glyphicon-chevron-right treeButton"></i> </button>
+              <div class="ripple-wrapper"></div></td>
           </tr>
         </table>
       </div>
       <div class="table-responsive white" style="margin-right:0px;" ng-if="!viewTop">
         <div class="row">
-          <div class="col-md-10 p-10">
-            <strong>Assertion Failure</strong>: {{assertionFailureViewed.assertionText}}
-
-          </div>
+          <div class="col-md-10 p-10"> <strong>Assertion Failure</strong>: {{assertionFailureViewed.assertionText}} </div>
           <div class="col-md-2 p-10">
             <button ng-show="viewTop === false" class="btn btn-default blue back-button pull-right"
-                    ng-click="setViewTop()">
-              <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report
-            </button>
+                    ng-click="setViewTop()"> <i class="glyphicon glyphicon-chevron-left treeButton"></i> Back to Report </button>
           </div>
-          <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
-            Create Task From Failures
-         </button></div>-->
         </div>
         <div class="ng-table-no-results"
-             ng-if="!viewTop && failureTableParams.total() === 0">
-          No validation results to display
-        </div>
+             ng-if="!viewTop && failureTableParams.total() === 0"> No validation results to display </div>
         <table ng-show="failureTableParams.total() > 0"
                ng-table="failureTableParams" template-pagination="utilities/data-table-pager.html"
                class="table table-full table-full-small">
           <tr ng-repeat="failure in $data">
             <td  header-title="'Click to select all'"
-                header="'ng-table/headers/checkboxHeader.html'">
-                 <div class="checkbox">
-                            <label class="filled">
-                            <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
-                            </label>
-            </div> 
-             
-            </td>
+                header="'ng-table/headers/checkboxHeader.html'"><div class="checkbox">
+                <label class="filled">
+                  <input type="checkbox" ng-model="failure.selected" ui-on-drop="">
+                </label>
+              </div></td>
             <!-- other columns here -->
-            <td header-title="'Click to sort'" data-title="'Concept Id'" sortable="'conceptId'">
-             {{failure.conceptId}} <span class="tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="failure.referencedComponentId"> ({{failure.referencedComponentId}}) <span>{{failure.referencedComponentType}}</span></span>
-
-            </td>
+            <td header-title="'Click to sort'" data-title="'Concept Id'" sortable="'conceptId'"> {{failure.conceptId}} <span class="tooltips-bottom small-size-tooltip offset-tooltip-left" ng-show="failure.referencedComponentId"> ({{failure.referencedComponentId}}) <span>{{failure.referencedComponentType}}</span></span></td>
             <td header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
-                ng-click="editConcept(failure)">{{failure.conceptFsn}}
-            </td>
-            <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'">
-              {{failure.detail}}
-            </td>
-            <td ng-if="whitelistEnabled">
-              <button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
-                Whitelist
-              </button>
-            </td>
-
-            <td ng-if="editable" data-header="'editheader.html'">
-
-              <button type="button" class="btn btn-round btn-default blue"
+                ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
+            <td header-title="'Click to sort'" data-title="'Error Message'" sortable="'detail'"> {{failure.detail}} </td>
+            <td ng-if="whitelistEnabled"><button type="button" class="btn btn-default back-button" ng-click="excludeFailure(failure)">Add to
+              Whitelist </button></td>
+            <td ng-if="editable" data-header="'editheader.html'"><button type="button" class="btn btn-round btn-default blue"
                       ng-click="editConcept(failure)"
-                      title="View/Edit Concept">
-                <span class="md md-edit"></span>
-              </button>
-            </td>
+                      title="View/Edit Concept"> <span class="md md-edit"></span> </button></td>
           </tr>
         </table>
       </div>
     </div>
   </div>
-
+  
   <!-- Exclusions table -->
   <div class="row m-t-15 no-gutter" ng-show="viewExclusions">
     <div class="row">
-      <div class="col-md-10 p-10">
-        <strong>Whitelisted Errors</strong>: {{exclusionsTableParams.total()}}
-
-      </div>
+      <div class="col-md-10 p-10"> <strong>Whitelisted Errors</strong>: {{exclusionsTableParams.total()}} </div>
       <div class="col-md-2 p-10">
         <button class="btn btn-default blue back-button pull-right"
-                ng-click="toggleViewExclusions()">
-          <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Whitelist
-        </button>
+                ng-click="toggleViewExclusions()"> <i class="glyphicon glyphicon-chevron-left treeButton"></i> Hide Whitelist </button>
       </div>
       <!--       <div class="col-md-6 p-10"><button ng-if="!taskKey" class="btn btn-default blue pull-right" ng-click="createTaskFromFailures()">
         Create Task From Failures
-     </button></div>-->
+     </button></div>--> 
     </div>
     <table ng-table="exclusionsTableParams" template-pagination="utilities/data-table-pager.html"
            class="table table-full table-full-small">
-      <tr ng-repeat="failure in $data">
-
-        <!-- Removed due to space considerations -->
+      <tr ng-repeat="failure in $data"> 
+        
+        <!-- Removed due to space considerations --> 
         <!-- <td class="col-md-3" header-title="'Click to sort'" data-title="'Assertion Failure'" sortable="'assertionText'">
            {{failure.assertionText}}
          </td>-->
-        <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'">
-          {{failure.conceptId}}
-        </td>
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Concept'" sortable="'conceptId'"> {{failure.conceptId}} </td>
         <td class="col-md-3" header-title="'Click to sort'" data-title="'FSN'" sortable="'conceptFsn'"
-            ng-click="editConcept(failure)">{{failure.conceptFsn}}
-        </td>
-        <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'">
-          {{failure.failureText}}
-        </td>
-
-        <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'">
-          {{failure.timestamp | date:'medium'}}
-        </td>
-        <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'">
-          {{failure.user}}
-        </td>
-        <td>
-          <button
+            ng-click="editConcept(failure)">{{failure.conceptFsn}} </td>
+        <td class="col-md-6" header-title="'Click to sort'" data-title="'Error Message'" sortable="'failureText'"> {{failure.failureText}} </td>
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'Date Added'" sortable="'timestamp'"> {{failure.timestamp | date:'medium'}} </td>
+        <td class="col-md-1" header-title="'Click to sort'" data-title="'User'" sortable="'user'"> {{failure.user}} </td>
+        <td><button
             title="Remove failure from whitelist" ng-click="removeUserExclusionFromTable(failure)"
-            type="button" class="btn btn-round btn-default blue">
-            <i
+            type="button" class="btn btn-round btn-default blue"> <i
               class="md md-close"></i>
-            <div class="ripple-wrapper"></div>
-          </button>
-
-
-        </td>
-
+          <div class="ripple-wrapper"></div>
+          </button></td>
       </tr>
     </table>
   </div>
-
+  
   <!-- Taxonomy, models, and concepts -->
-  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0">
+  <div class="row m-t-15 no-gutter" ng-show="viewedConcepts.length > 0"> 
     <!-- Taxonomy -->
     <div class="col-md-4">
       <div>
@@ -234,4 +166,3 @@
     </div>
   </div>
 </section>
-

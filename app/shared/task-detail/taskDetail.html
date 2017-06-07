@@ -1,16 +1,11 @@
-<div class="col-md-12 scroll-if-height  no-padding" ng-controller="taskDetailCtrl">
-
+<div class="col-md-12 scroll-if-height  no-padding" ng-controller="taskDetailCtrl"> 
+  
   <!-- Timeline formatter and concept ids.extension input -->
   <div class="row no-padding clearfix">
-
-
     <div class="col col-md-12">
-
       <ul class="timeline">
         <li>
-          <div class="timeline-badge">
-            <i class="icon-circle theme-border"></i>
-          </div>
+          <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
               <label class="control-label">Task Title:</label>
@@ -18,11 +13,8 @@
             </div>
           </div>
         </li>
-
         <li>
-          <div class="timeline-badge">
-            <i class="icon-circle theme-border"></i>
-          </div>
+          <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
               <label class="control-label">Task Details:</label>
@@ -30,11 +22,8 @@
             </div>
           </div>
         </li>
-
         <li ng-show="isCrsTask">
-          <div class="timeline-badge">
-            <i class="icon-circle theme-border"></i>
-          </div>
+          <div class="timeline-badge"> <i class="icon-circle theme-border"></i> </div>
           <div class="timeline-panel">
             <div class="timeline-heading">
               <label class="control-label">CRS Requests:</label>
@@ -43,51 +32,16 @@
             </div>
           </div>
         </li>
-        <!--
-                <li ng-show="task.issueLinks.length > 0">
-                  <div class="timeline-badge">
-                    <i class="icon-circle theme-border"></i>
-                  </div>
-                  <div class="timeline-panel">
-                    <label class="control-label">Linked Issues</label>
-                    <div class="row no-gutter no-padding" ng-repeat="issueLink in task.issueLinks | filter: issueLinkFilter">
-                      <div class="col-md-3" ng-click="gotoLinkedIssue(issueLink)">
-
-                        <img ng-src="{{issueLink.outwardIssue.issueType.iconUrl}}"
-                             alt="{{issueLink.outwardIssue.issueType.summary}}"/>
-                        {{issueLink.outwardIssue.key}}
-                      </div>
-                      <div class="col-md-5" ng-click="gotoLinkedIssue(issueLink)">
-                        {{issueLink.outwardIssue.summary}}
-                      </div>
-                      <div class="col-md-4">
-                        <img ng-src="{{issueLink.outwardIssue.priority.iconUrl}}"/>
-                        {{issueLink.outwardIssue.status.name}}
-                      </div>
-                    </div>
-
-                  </div>
-                </li>-->
-
-
+       
       </ul>
     </div>
-
-
   </div>
   <div class="task-details">
     <div style="width: 100%" class="classification-btn p-l-15 p-r-15">
       <button class="btn btn-default cyan darken-1 editingtask" ng-click="updateTask()" style="text-transform: none"
-              ng-disabled="task.status === 'Promoted'">
-        <span class="md md-settings cyan darken-2 iconbase"></span>
-        <span class="button-link">Edit Task Details</span>
-      </button>
-
+              ng-disabled="task.status === 'Promoted'"> <span class="md md-settings cyan darken-2 iconbase"></span> <span class="button-link">Edit Task Details</span> </button>
     </div>
-
     <hr style="width:93%; border-color:#ddd">
-
-
     <div class="p-l-15 p-r-15" ng-if="role === 'UNDEFINED'">
       <div class="alert alert-danger text-center">
         <div class="row no-padding">
@@ -105,46 +59,21 @@
       <div class="alert alert-warning">Task branch is locked due to an ongoing rebase, promotion or classification</div>
     </div>
     <div style="padding: 15px; width: 100%" class="classification-btn">
-
       <button class="btn btn-default green classify" ng-click="classify()"
-              ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked">
-        <span class="md md-notifications green darken-1 iconbase"></span>
-        <span class="button-link">Classify</span>
-      </button>
+              ng-disabled="task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked"> <span class="md md-notifications green darken-1 iconbase"></span> <span class="button-link">Classify</span> </button>
       <button ng-if="editable !== 'false'" class="btn btn-default deep-purple validate"
               ng-disabled="task.latestValidationStatus === 'SCHEDULED' || task.status === 'Promoted' || task.latestValidationStatus === 'VALIDATING' || task.latestValidationStatus === 'RUNNING' || task.latestValidationStatus === 'BUILDING' || role === 'REVIEWER' || branchLocked"
-              ng-click="startValidation()" style="text-transform: none">
-        <span class="md md-school deep-purple darken-2 iconbase"></span>
-        <span class="button-link">Validate</span>
-      </button>
-
-
+              ng-click="startValidation()" style="text-transform: none"> <span class="md md-school deep-purple darken-2 iconbase"></span> <span class="button-link">Validate</span> </button>
       <div ng-show="task.status !== 'In Review' && role === 'AUTHOR'" ng-if="!reviewChecks">
         <button ng-disabled="task.status !== 'In Progress' || role === 'REVIEWER'" class="btn btn-default pink1 review"
-                style="text-transform: none" ng-click="toggleReview()">
-          <span class="md md-forum pink darken-2 iconbase"></span>
-          <span class="button-link" ng-if="!unsavedConcepts">Submit For Review</span>
-
-
-        </button>
+                style="text-transform: none" ng-click="toggleReview()"> <span class="md md-forum pink darken-2 iconbase"></span> <span class="button-link" ng-if="!unsavedConcepts">Submit For Review</span> </button>
       </div>
-
-
       <button ng-show="task.status === 'In Review' && role === 'AUTHOR'" class="btn btn-default pink1 review"
               style="text-transform: none" ng-click="toggleReview()"><span
-        class="md md-forum pink darken-2 iconbase"></span>
-        <span class="button-link">Cancel This Review</span>
-      </button>
-
-
-
+        class="md md-forum pink darken-2 iconbase"></span> <span class="button-link">Cancel This Review</span> </button>
       <button ng-if="editable !== 'false'"
               ng-disabled="task.status === 'New' || task.status === 'Promoted' || task.latestClassificationJson.status === 'RUNNING' || role === 'REVIEWER' || branchLocked"
-              class="btn btn-default blue darken-1 promote" ng-click="promote()" style="text-transform: none">
-        <span class="md md-call-merge blue darken-2 iconbase"></span>
-        <span class="button-link">Promote This Task to the Project</span>
-      </button>
+              class="btn btn-default blue darken-1 promote" ng-click="promote()" style="text-transform: none"> <span class="md md-call-merge blue darken-2 iconbase"></span> <span class="button-link">Promote This Task to the Project</span> </button>
     </div>
   </div>
-
 </div>

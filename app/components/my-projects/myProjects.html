@@ -1,16 +1,12 @@
-
-
-
 <div class="row no-gutter sca-container">
-  <div style="background-color:#474747" class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
+  <div class="sca-column col-lg-3 col-md-3 col-sm-3 dashboard-sidebar" ng-include
        src="'shared/sidebar/sidebar.html'"></div>
-
+  
   <!---->
   <div class="sca-content col-lg-9 col-md-9 col-sm-9 dash-tables pull-right">
     <section class="tables-data">
       <div class="card">
-
-        <div class="row" style="margin-right:0px;">
+        <div class="row card-title" style="margin-right:0px;">
           <div class="col-md-6">
             <h3 class="table-title p-t-20">My Projects</h3>
           </div>
@@ -20,30 +16,17 @@
                      placeholder="Search My Projects" autofocus/>
             </div>
           </div>
-
         </div>
-
         <div class="table-responsive white" style="margin-right:0px;">
-
-
           <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="project in $data" class="clickable-row">
-
               <td data-title="'Project Name'" sortable="'title'" filter="{ 'title': 'text' }"><a class="tooltips-right"
-                ng-href="#/project/{{project.key}}">{{project.title}} <span>View Project Details</span></a>
-              </td>
-
-              <td data-title="'Project Key'" sortable="'key'" filter="{ 'project': 'text' }">
-                {{project.key}}
-              </td>
-
-              <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }">
-               {{project.projectLead.displayName}}
-              </td>
-           <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'">
-                <a ng-href="#/project/{{project.key}}">
-             <button ng-show="project.latestClassificationJson"
+                ng-href="#/project/{{project.key}}">{{project.title}} <span>View Project Details</span></a></td>
+              <td data-title="'Project Key'" sortable="'key'" filter="{ 'project': 'text' }"> {{project.key}} </td>
+              <td data-title="'Project Lead'" sortable="'lead'" filter="{ 'lead': 'text' }"> {{project.projectLead.displayName}} </td>
+              <td data-title="'Classification Results'" sortable="'latestClassificationJson.status'"><a ng-href="#/project/{{project.key}}">
+                <button ng-show="project.latestClassificationJson"
                           type="button"
                           ng-class="[
                           {indicator_green : project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'},
@@ -55,18 +38,17 @@
                            {indicator_amber : project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.status !== 'STALE'},
                            ]"
   class="btn btn-round btn-default pull-left tooltips-right normalcase ">
-                    <div class="md md-notifications "></div>
-                                        <span > <div class="message_classification_{{project.latestClassificationJson.status}}"><div ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div><div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div> </div></span>
-                  </button>
-
-                </a>
-
-
-              </td>
-              <td data-title="'Validation Results'" sortable="'validationStatus'">
-                <a ng-href="#/project/{{project.key}}">
-
-                  <button ng-show="project.validationStatus && project.validationStatus !== 'Failed-to-retrieve'"
+                <div class="md md-notifications "></div>
+                <span >
+                <div class="message_classification_{{project.latestClassificationJson.status}}">
+                  <div ng-if="project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.redundantStatedRelationshipsFound === false && project.latestClassificationJson.status !== 'STALE'"> but equivalent relationships were found </div>
+                  <div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === false && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships were found </div>
+                  <div ng-if="project.latestClassificationJson.redundantStatedRelationshipsFound === true && project.latestClassificationJson.equivalentConceptsFound === true && project.latestClassificationJson.status !== 'STALE'"> but redundant stated relationships and equivalency errors were found </div>
+                </div>
+                </span> </button>
+                </a></td>
+              <td data-title="'Validation Results'" sortable="'validationStatus'"><a ng-href="#/project/{{project.key}}">
+                <button ng-show="project.validationStatus && project.validationStatus !== 'Failed-to-retrieve'"
                        type="button"
                           ng-class="[{hidden : project.validationStatus === 'NOT_TRIGGERED'},
                           {indicator_blue : project.validationStatus === 'SCHEDULED'},
@@ -75,102 +57,16 @@
                           {indicator_green : project.validationStatus === 'COMPLETED'},
                           {indicator_red : project.validationStatus === 'FAILED'}]"
                           class="btn btn-round btn-default pull-left lighten-1 tooltips-right">
-                      <div class="md md-school "></div>
-                    <span > <div class="message_validation_{{project.validationStatus}}"> </div></span>
-                  </button>
-
-                </a>
-
-
-              </td>
-              <!--
-              As a project lead, I want to be able to see the status of all my projects in relationship to the MAIN release line and its tasks (child branches).
-
-This information will enable project leads to make the decision on when to rebase and/or promote.
-
-The status' are:
-UP_TO_DATE - the branch is up-to-date with its parent there are no changes neither on the branch or on its parent
-FORWARD - the branch has at least one commit while the parent is still unchanged. Merging a branch requires this state, otherwise it will return a HTTP 409 Conflict.
-BEHIND - the parent of the branch has at least one commit while the branch is still unchanged. The branch can be safely rebased with its parent.
-DIVERGED - both parent and branch have at least one commit. The branch must be rebased first before it can be safely merged back to its parent.
-STALE - the branch is no longer in relation with its former parent, and should be deleted. -->
-              <td data-title="'Status'" sortable="'branchState'">
-         <span class="badge {{getBranchStateText(project)}}" ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span>
-              </td>
-
+                <div class="md md-school "></div>
+                <span >
+                <div class="message_validation_{{project.validationStatus}}"> </div>
+                </span> </button>
+                </a></td>
+              <td data-title="'Status'" sortable="'branchState'"><span class="badge {{getBranchStateText(project)}}" ng-class="[{hideme : getBranchStateText(project) === '??'}]">{{getBranchStateText(project)}}</span></td>
             </tr>
           </table>
         </div>
-
       </div>
     </section>
   </div>
-
-</div>
-
-
-<!-- Removed by PG until Review Tasks are functional
-<section class="tables-data" ng-controller="HomeCtrl">
-  <div class="card">
-
-   <div class="row">
-     <div class="col-md-4">
-       <h3 class="table-title p-20">My Review Tasks</h3>
-     </div>
-     <div class="col-md-7">
-       <div class="table-search">
-         <input type="text" ng-model="tableParams.filter()['search']" class="form-control" placeholder="Search My Tasks" autofocus />
-       </div>
-     </div>
-        <div class="col-md-1">
-     <span class="pull-left p-t-20 ">
-                 <button type="button" class="btn btn-round btn-info ng-scope " bs-tooltip="" title="Total Task Count">{{reviewTasks.length}}<div class="ripple-wrapper"></div></button>
-              <button type="button" class="btn btn-round btn-default " title="Create New Task" data-template="shared/project/project.html" bs-modal="modal"><span class="md md-add"></span><div class="ripple-wrapper"></div>   </button> </span>
-   </div>
-   </div>
-
-   <div class="table-responsive white">
-
-     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
-            class="table table-full table-full-small">
-       <tr ng-repeat="project in reviewTasks">
-
-         <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }" sortable="'name'"><a href="#/edit">{{project.name}}</a>
-         </td>
-         <td data-title="'Project'" sortable="'project'" filter="{ 'project': 'text' }" sortable="'project'">
-           {{project.project}}
-         </td>
-         <td data-title="'Last Modified'" sortable="'modified'">
-           {{project.modified | date: "yyyy-MM-dd"}}
-         </td>
-         <td data-title="'Classification Results'" sortable="'classification'">
-           <button type="button" class="btn btn-round btn-default cyan lighten-2" bs-tooltip=""
-                   title="Classification Results"><span class="md md-notifications "></span>
-             <div class="ripple-wrapper"></div>
-           </button>
-
-         </td>
-
-         <td data-title="'Feedback'" sortable="'feedback'">
-           <button type="button" class="btn btn-round btn-default blue darken-2" bs-tooltip=""
-                   title="Feedback Available"><span class="md md-mail "></span>
-             <div class="ripple-wrapper"></div>
-           </button>
-         </td>
-         <td data-title="'Status'" sortable="'status'">
-           {{project.status}}
-         </td>
-       </tr>
-     </table>
-
-   </div>
-
- </div>
-
- </div>
-
-
-
-</section>
--->
 </div>

@@ -1,164 +1,101 @@
-<section class="tables-data feedback">
-
-  <!-- for ng-table checkboxes -->
+<section class="tables-data feedback"> 
+  
+  <!-- for ng-table checkboxes --> 
   <!-- TODO:  Weird styling issues where nav navbar nav-header classes are getting drawn in
   resulting in elements being placed outside of the table (i.e. position: fixed)
-  -->
+  --> 
   <script type="text/ng-template" id="checkboxheader.html">
     <input type="checkbox" ng-model="selectAllActive" ng-click="selectAll(selectAllActive)">
-  </script>
-
+  </script> 
   <script type="text/ng-template" id="filterHeader.html">
     <input type="text" ng-model="filter">
 
-  </script>
-
+  </script> 
   <script type="text/ng-template" id="ng-table/filters/hasFeedback.html">
     <input type="checkbox" ng-model="params.filter()[messages]" name="filter-age" value=""/> None
     <br/>
     <input type="radio" ng-model="params.filter()[name]" name="filter-age" value="50"/> 50 years
-  </script>
-  <style>
-    .col-md-12.feedback-area {
-      padding-left: 10px;
-      padding-right: 10px
-    }
-
-    /*
-    .angular-ui-tree-nodes .angular-ui-tree-nodes {
-        padding-left: 0px;
-    }
-    */
-    .feedback ol {
-      margin-top: 0;
-      margin-bottom: 1px;
-      -webkit-padding-start: 0px;
-      margin-left: 11px;
-    }
-
-    .switch input {
-      min-height: 25px !important;
-    }
-  </style>
+  </script> 
 
   <!-- sidebar -->
   <div
     ng-include src="'shared/sidebar-edit/feedbackEdit.html'"></div>
-
-
+  
   <!-- Report, feedback editor, and concept feedback -->
   <div class="col-md-9 no-padding pull-right white no-gutter">
-    <div class="col-md-12 feedback-header-main" style="vertical-align: middle">
-
+    <div class="col-md-12 feedback-header-main" style="vertical-align: middle"> 
+      
       <!-- Title section -->
-
+      
       <div class="p-l-20 col-md-8">
-
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
-          <button class="btn btn-default pink darken-2 review-button-list " style="text-transform: none"
+          <button class="btn btn-default pink darken-2 review-button-list  " style="text-transform: none"
                   ng-if="task.status === 'In Review'"
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
-                  ng-click="cancelReview()">Cancel Review
-          </button>
+                  ng-click="cancelReview()">Cancel Review </button>
         </div>
-
         <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}</div>
         <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
-          <button class="btn btn-default pink darken-2 review-button-list" style="text-transform: none"
-                  ng-click="unclaimReview()">Unclaim Review
-          </button>
+          <button class="btn btn-default primary-action-btn" style="text-transform: none"
+                  ng-click="unclaimReview()">Unclaim Review </button>
         </div>
-
-        <div class="switch pull-right p-l-10">
-
-
-        </div>
-
+        <div class="switch pull-right p-l-10"> </div>
         <div ng-show="role === 'AUTHOR' && !task.reviewer && task.status === 'In Review'"> &nbsp;Task not claimed by a
-          reviewer
-        </div>
+          reviewer </div>
         <div ng-show="!task.reviewer && task.status !== 'In Review'"> &nbsp;Task not submitted for
-          review
-        </div>
+          review </div>
       </div>
-
-
-      <div class="col-md-4">
-        <!-- Cancel/Unclaim Review button -->
-
-
+      <div class="col-md-4"> 
+        <!-- Cancel/Unclaim Review button --> 
+        
         <!-- Review In Progress / Review Complete toggle -->
         <div ng-if="role === 'REVIEWER'"
-             class="switch pull-right">
-          <label class="switch">
-            Review in Progress
+             class="switch pull-right white-text">
+          <label class="switch"> Review in Progress
             <input type="checkbox" ng-checked="task.status==='Review Completed'" ng-model="reviewComplete" ng-disabled="conceptsToReviewViewed.length !== 0"
                    ng-change="toggleReviewStatus()">
-            <span class="lever"></span>
-            Review Complete
-          </label>
+            <span class="lever"></span> Review Complete </label>
         </div>
-
       </div>
-
-
     </div>
   </div>
-
+  
   <!-- Taxonomy, models, and concepts -->
   <div class="col-md-9 no-padding pull-right">
-
     <div ng-if="viewedConcepts.length > 0">
-
       <div class="row no-padding no-gutter white" ng-repeat="concept in viewedConcepts">
         <div class="col-md-6">
-
           <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
-
-
         </div>
         <div class="col-md-6">
-
           <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
                autosave="role !== 'AUTHOR'"></div>
         </div>
         <div class="col-md-12 row-fluid no-padding no-gutter" style="display: flex;" ng-show="!isCollapsed">
-          <div class="col-md-6 no-padding no-gutter">
-            <!-- Loading placeholder -->
-
-
+          <div class="col-md-6 no-padding no-gutter"> 
+            <!-- Loading placeholder --> 
+            
             <!-- Main report and feedback content (once loaded) -->
-            <div class="row m-l-10 no-gutter" ng-if="feedbackContainer.review">
-
-              <!-- Review report (concept list) -->
-
-
-              <!-- Feedback messages -->
+            <div class="row m-l-10 no-gutter" ng-if="feedbackContainer.review"> 
+              
+              <!-- Review report (concept list) --> 
+              
+              <!-- Feedback messages --> 
             </div>
           </div>
           <div class="col-md-6 no-gutter no-padding darken-3 grey"></div>
         </div>
-
       </div>
-
-      <div class="col-md-12 light_greys no-padding" ng-show="subjectConcepts.length > 0">
-        <strong>{{viewedFeedback.length}}</strong> Total Comments for <span
+      <div class="col-md-12 light_greys no-padding" ng-show="subjectConcepts.length > 0"> <strong>{{viewedFeedback.length}}</strong> Total Comments for <span
         ng-repeat="subjectConcept in subjectConcepts">{{subjectConcept.term}}
         &nbsp;&nbsp;
-        <button class="m-5" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button></span>
-      </div>
-
+        <button class="btn-default m-5 primary-action-btn" ng-click="toggleFeedbackUnreadStatus(subjectConcept)">Mark Feedback {{subjectConcept.read ? 'Unread' : 'Read'}}</button>
+        </span> </div>
       <div class="col-md-12 feedback-area">
         <div class="col-md-6 no-padding feedback-chat " ng-show="subjectConcepts.length > 0">
-
-          <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0">
-            No Feedback added yet...
-          </div>
-
+          <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0"> No Feedback added yet... </div>
           <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
-
-
             <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 "
                style="word-break: break-all; margin: 0px"
                ng-class="[{
@@ -168,31 +105,21 @@
             ></p>
             <button class="btn btn-round btn-default purple lighten-2 tooltips-left tooltips-light normal-case"
                     ng-show="feedback.feedbackRequested">
-              <div
+            <div
                 class="md md-flag"></div>
-              <span>Reviewer requested follow-up</span></button>
+            <span>Reviewer requested follow-up</span></button>
             <div class="feedback-header" ng-class="[{
                           pull_right : task.assignee.username  === feedback.fromUsername
-                          }]">
-              <span class="username">{{feedback.fromUsername}} </span>
-              <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span>
-              <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span>
-            </div>
-
-
+                          }]"> <span class="username">{{feedback.fromUsername}} </span> <span class="date">{{feedback.creationDate | date:"MM/dd 'at' h:mma"}}</span> <span class="username" ng-show="subjectConcepts.length > 1">On concept {{feedback.conceptName}}</span> </div>
           </div>
-
         </div>
-
         <div class="feedback-window col-md-6 no-padding m-t-10" ng-show="subjectConcepts.length > 0">
-
           <text-angular ui-on-drop="dropConceptIntoEditor($data)" drop-channel="feedbackConcept"
                         ng-model="$parent.htmlVariable"
                         ta-text-editor-class="form-control myform2-height"
                         ta-html-editor-class="form-control myform2-height"
                         ta-toolbar="[['bold','italics', 'ul', 'ol', 'createLink']]"></text-angular>
           <div class="col-md-12 no-padding">
-
             <div class="col-md-6 no-padding concept-filter ">
               <input type="text" class="feedback-search m-b-5  " placeholder="Search concepts..."
                      ui-on-drop=""
@@ -206,28 +133,21 @@
             <div class="col-md-6 no-padding">
               <div class="pull-left follow-up" ng-show="role === 'REVIEWER'"><span
                 class="pull-left "> Request follow-up </span><span
-                class="pull-left p-5"><input type="checkbox" ng-model="requestFollowup"></span>
-              </div>
-
+                class="pull-left p-5">
+                <input type="checkbox" ng-model="requestFollowup">
+                </span> </div>
               <div class="pull-right follow-up-right ">
                 <button class="pull-right btn btn-default  m-r-5"
                         ng-click="submitFeedback(requestFollowup)"
-                        style="text-transform: none"><span class="md md-forum send-feedback-icon "></span>Send Feedback
-                </button>
-
+                        style="text-transform: none"><span class="md md-forum send-feedback-icon "></span>Send Feedback </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-
     </div>
-
-
   </div>
-
+  
   <!-- Extra padding just in case -->
   <div class="m-b-50">&nbsp;</div>
-
 </section>

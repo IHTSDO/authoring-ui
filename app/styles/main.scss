@@ -3,33 +3,37 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 @import "font-awesome/scss/font-awesome.scss";
 // endbower
-@import url(https://fonts.googleapis.com/css?family=Cabin+Condensed);
 @import "notification.scss";
+@import "ihtsdo.scss";
 @import "header.scss";
 @import "home.scss";
-@import "ihtsdo.scss";
+@import "colors.scss";
 @import "fonts.scss";
+@import "icons.scss";
 @import "edit.scss";
-@import "compact.scss";
-@import "editpanel.scss";
-@import "light.scss";
-@import "dark.scss";
 @import "feedback.scss";
 @import "glphicons.scss";
 @import "grid.scss";
+@import "editpanel.scss";
 @import "globals.scss";
 @import "models.scss";
+@import "formfields.scss";
 @import "tables.scss";
 @import "ta.scss";
 @import "tooltips.scss";
+@import "typography.scss";
 @import "conflicts.scss";
-@import "responsive.scss";
 @import "classification.scss";
 @import "badge.scss";
 @import "button.scss";
-@import "tbba.scss";
 @import "validation.scss";
-@import "batch.scss";
+@import "tbba.scss";
+@import "responsive.scss";
+@import "compact.scss";
+@import "inactivation.scss";
+@import "light.scss";
+@import "dark.scss";
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -42,7 +46,7 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif!important;
+  font-family: Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
 
 	font-style: normal
 }
@@ -60,14 +64,6 @@ html{ height: 100%;}
 .header {
   border-bottom: 1px solid #e5e5e5;
   margin-bottom: 10px;
-
-  /* Make the masthead heading the same height as the navigation */
-  h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
-  }
 }
 
 /* Custom page footer */
@@ -81,41 +77,22 @@ html{ height: 100%;}
   margin: 30px 0;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
 
-  .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-  }
-}
-
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-
-  p + h4 {
-    margin-top: 28px;
-  }
-}
 
 .navbar-default {
   background-color: #2e2d30;
   border: none;
   border-radius: 0px;
-  text-shadow: none;
+  text-shadow: none;}
   .navbar-brand {
     color: #fff;
   }
   .navbar-toggle {
-    background-color: #2e2d30;
+    background-color: #2e2d30;}
     .icon-bar {
       background-color: #888;
     }
-  }
-}
+
 
 .navbar-brand {
   float: left;
@@ -123,7 +100,6 @@ html{ height: 100%;}
   padding: 5px;
   font-size: 14px;
   line-height: 32px;
-  span {
     float: left;
   }
   .navbar-version {
@@ -131,31 +107,9 @@ html{ height: 100%;}
     font-size: 14px;
     line-height: 32px;
   }
-}
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  .container {
-    max-width: 730px;
-  }
 
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
 
-}
 
 /* Added by PWG to work around fixed sidebar */
 .sca-container {

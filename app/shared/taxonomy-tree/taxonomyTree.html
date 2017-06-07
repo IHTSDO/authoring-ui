@@ -1,9 +1,7 @@
 
-<div class="no-padding col-md-12 sidebar-grey p-b-40">
-
-
-
-  <!-- Nested node template -->
+<div class="no-padding col-md-12 sidebar-grey p-b-40"> 
+  
+  <!-- Nested node template --> 
   <script type="text/ng-template" id="nodes_renderer.html">
 
     <div class="clearfix"> </div>
@@ -39,20 +37,14 @@
       </ol>
     </div>
 
-  </script>
-
+  </script> 
+  
   <!-- Loading progress bar -->
-  <div ng-if="terminologyTree.length === 0 && !loadComplete" class="m-10">
-    Loading hierarchy...
-    <div progressbar value="getProgress()" type="success" >
-    </div>
+  <div ng-if="terminologyTree.length === 0 && !loadComplete" class="m-10"> Loading hierarchy...
+    <div progressbar value="getProgress()" type="success" > </div>
   </div>
-
-  <div ng-if="terminologyTree.length === 0 && loadComplete" class="m-10">
-    No hierarchy to display.
-  </div>
-
-
+  <div ng-if="terminologyTree.length === 0 && loadComplete" class="m-10"> No hierarchy to display. </div>
+  
   <!-- instantiate the tree -->
   <div ui-tree class="col-md-12 p-10 m-b-40" ng-if="terminologyTree.length > 0">
     <div class="clearfix"> </div>

@@ -5,104 +5,65 @@
         <label class="control-label">CRS Concept List</label>
       </div>
     </div>
-
-
     <div class="row saved-list no-padding  " ng-repeat="item in getCrsConcepts()" style="margin-bottom: 15px;">
-
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
         <button ng-if="item.concept.conceptId && item.concept.definitionStatus === 'PRIMITIVE'"
                 ng-disabled="isStatic"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
-          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
-          <span>Primitive</span>
-        </button>
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">&nbsp; </div>
+        <span>Primitive</span> </button>
         <button ng-if="item.concept.conceptId && item.concept.definitionStatus !== 'PRIMITIVE'"
                 ng-disabled="isStatic"
                 class=" p-t-5 p-l-3 primitive-buttons white-text  tooltips-bottom small-size-tooltip offset-tooltip-left">
-          <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
-          <span>Fully Defined</span>
-        </button>
+        <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
+        <span>Fully Defined</span> </button>
       </div>
-
       <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
            style="word-wrap: break-word" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
-
-        {{item.concept.fsn}}
-
-
-      </div>
-      <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs">
-
-        <a ng-href="{{item.requestUrl}}" target="_blank">
-          <button
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> {{item.concept.fsn}} </div>
+      <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs"> <a ng-href="{{item.requestUrl}}" target="_blank">
+        <button
             class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right">
-            <div class="fa fa-folder-open-o"></div>
-            <span>View Content Request</span>
-          </button>
+        <div class="fa fa-folder-open-o"></div>
+        <span>View Content Request</span> </button>
         </a>
-
         <button ng-show="item.saved && !item.warning"
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right ">
-          <div class="fa fa-check"></div>
-          <span>Concept Saved</span>
-        </button>
+        <div class="fa fa-check"></div>
+        <span>Concept Saved</span> </button>
         <button ng-show="item.warning"
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom offset-tooltip-right ">
-          <div class="md md-warning"></div>
-          <span>Save Status Uncertain</span>
-        </button>
+        <div class="md md-warning"></div>
+        <span>Save Status Uncertain</span> </button>
       </div>
     </div>
   </div>
-
   <div ng-show="getCrsEmptyRequests().length > 0">
-
     <div class="row">
       <div class="p-l-5 m-t-10 m-b-10">
         <label class="control-label">CRS Requests Without Proposed Concept</label>
       </div>
     </div>
-
-
     <div class="row saved-list no-padding  " ng-repeat="item in getCrsEmptyRequests()" style="margin-bottom: 15px;">
-
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
-
-      </div>
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> </div>
       <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
            style="word-wrap: break-word" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
-
-        <a ng-href="{{item.requestUrl}}" target="_blank">
-          Content Request #{{item.conceptJson.issueKey}}
-        </a>
-
-
-      </div>
-      <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs">
-
-        <a ng-href="{{item.requestUrl}}" target="_blank">
-          <button
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> <a ng-href="{{item.requestUrl}}" target="_blank"> Content Request #{{item.conceptJson.issueKey}} </a> </div>
+      <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs"> <a ng-href="{{item.requestUrl}}" target="_blank">
+        <button
             class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right">
-            <div class="fa fa-folder-open-o"></div>
-            <span>View Content Request</span>
-          </button>
+        <div class="fa fa-folder-open-o"></div>
+        <span>View Content Request</span> </button>
         </a>
-
         <button ng-show="item.saved && !item.warning"
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right ">
-          <div class="fa fa-check"></div>
-          <span>Concept Saved</span>
-        </button>
+        <div class="fa fa-check"></div>
+        <span>Concept Saved</span> </button>
         <button ng-show="item.warning"
                 class="btn btn-default saved-list-buttons pull-left tooltips-bottom medium-size-tooltip offset-tooltip-right ">
-          <div class="md md-warning"></div>
-          <span>Save Status Uncertain</span>
-        </button>
-
-        {{item.saved}}, {{item.warning}}
-      </div>
+        <div class="md md-warning"></div>
+        <span>Save Status Uncertain</span> </button>
+        {{item.saved}}, {{item.warning}} </div>
     </div>
   </div>
 </div>
