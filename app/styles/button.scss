@@ -959,16 +959,24 @@ button.tooltips-right.normal-case span {
     line-height: 30px;
 }
 
-.validation.red,
-.validation.orange{
-background-color:#f9f9f9;
-color:#474747;
-width:95%;
-margin:5px;
-padding:5px;
-border-radius:4px;
+.validation.red{
+    background-color:#db5760;
+    color:#FFF;
+    width:95%;
+    margin:5px;
+    padding:5px;
+    border-radius:4px;
 }
 
-.validation.red strong{color:#db5760}
-.validation.orange strong{color:#e98401}
+.validation.orange{
+    background-color:#ff9800;
+    color:#FFF;
+    width:95%;
+    margin:5px;
+    padding:5px;
+    border-radius:4px;
+}
+
+//.validation.red strong{color:#db5760}
+//.validation.orange strong{color:#e98401}
 
