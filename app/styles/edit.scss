@@ -288,7 +288,7 @@ h1 {
     display: none;
 }
 @media screen and (max-width: 1850px) {
-    .editing-form button,
+    .editing-form button:not(.add-buttons),
     .editing-form .btn {
         border: 0px;
         font-size: 14px;
