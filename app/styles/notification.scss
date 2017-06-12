@@ -103,6 +103,13 @@
     background-color: transparent;
     border: none;
 }
+
+.sca-drag-target {
+    border: 1px dashed #9f9f9f;
+    background: #dedede;
+    color: #fff;
+}
+
 .sca-drag-hover textarea {
     border: 1px dashed #fff;
     background: #00a6e5;
