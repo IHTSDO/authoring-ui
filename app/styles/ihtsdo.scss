@@ -62,6 +62,7 @@ body {
 a:focus,
 a:hover {
     text-decoration: none;
+    cursor:pointer;
 }
 a:focus {
     outline: dotted thin;
