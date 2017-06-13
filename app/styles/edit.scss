@@ -208,11 +208,10 @@ h1 {
     padding: 13px ;
     line-height: 1 ;
 }
-.create-new-concept:hover {
-    background-color: #039be5 ;
-    text-align: center ;
-    color: #fff ;
-    font-size: 14px ;
+.create-new-concept:hover,
+.create-new-concept:active {
+    background: #0082b3;
+    color: #fff
 }
 .create-new-concept i {
     font-size: 17px ;
