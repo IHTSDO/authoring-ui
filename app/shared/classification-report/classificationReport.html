@@ -32,14 +32,14 @@
            class="table table-full table-full-small">
       <tr ng-repeat="result in $data">
         <td header-title="'Click to sort'" data-title="'Concept'" sortable="'leftConceptLabel'"> {{result[0].label}} </td>
-        <td style="padding: 0"><button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left"
+        <td><button ng-disabled="result.isLoaded" type="button" class="btn btn-round btn-default blue lighten-2 pull-left"
                   tooltip=""
                   title="Edit"><span class="md md-edit "
                                      ng-click="editEquivalentConcept(result[0].id)"></span>
           <div class="ripple-wrapper"></div>
           </button></td>
         <td header-title="'Click to sort'" data-title="'Equivalence'" sortable="'rightConceptLabel'"> {{result[1].label}} </td>
-        <td style="padding: 0"><button ng-if="editable" ng-disabled="result.isLoaded" type="button"
+        <td><button ng-if="editable" ng-disabled="result.isLoaded" type="button"
                   class="btn btn-round btn-default blue lighten-2 pull-left" tooltip=""
                   title="Edit"><span class="md md-edit "
                                      ng-click="editEquivalentConcept(result[1].id)"></span>
