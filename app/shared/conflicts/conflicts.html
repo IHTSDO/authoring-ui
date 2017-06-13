@@ -9,7 +9,7 @@
     <!-- if merge review is not current (out of date, stale, etc), prompt user -->
     <div ng-if="badStateDetected" class="loading-merges blue darken-1">
       <h3>{{badStateText}} </h3>
-      <div style="width: 100%; text-align: center">
+      <div>
         <button ng-click="reloadRoute()"
               class="btn btn-default blue lighten-2 "><span
         class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Regenerate Merge Review</span> </button>
@@ -78,7 +78,7 @@
         <div class="md md-sync"></div>
       </div>
       <h3>Your merge cannot be completed at this time as there is another operation in progress.</h3>
-      <div style="width: 100%; text-align: center">
+      <div>
         <button ng-click="reloadRoute()"
               class="btn btn-default blue lighten-2 "><span
         class="md md-assignment-turned-in darken-1"></span> <span class="button-link">Try Again</span> </button>
@@ -106,7 +106,7 @@
       <!-- Conflicts Report: Sidebar -->
       <div ng-if="!hideSidebar" class="col-md-3 no-padding no-gutter">
         <div ng-if="conflicts && !rebasing">
-          <div class="row no-padding no-gutter" style="text-align: center">
+          <div class="row no-padding no-gutter">
             <div class="col-md-12 conflicts-list-header no-padding"> 
               
               <!-- Hide sidebar control -->
@@ -120,9 +120,9 @@
             
             <!-- Nav tabs -->
             <div class="row classification-report ">
-              <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
+              <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="classification" ng-class="{'active' : actionTab === 1}"><a
-                  style="margin: 0px" ng-click="actionTab=1"
+                  ng-click="actionTab=1"
                   aria-controls="home" role="tab"
                   data-toggle="tab">Merges To Review</a></li>
                 <li role="presentation" class="classification" ng-class="{'active' : actionTab === 2}"><a
@@ -139,10 +139,10 @@
                 <table show-filter="false" ng-table="conflictsToReviewTableParams"
                        template-pagination="utilities/data-table-pager.html"
                        class="table table-full table-full-small concepts-in-conflict">
-                  <tr ng-repeat="conflict in $data" style="height: auto"> 
+                  <tr ng-repeat="conflict in $data"> 
                     
                     <!-- Fsn -->
-                    <td class="col-concept col-md-10" style="text-align: left" data-title="'Concept'"
+                    <td class="col-concept col-md-10" data-title="'Concept'"
                         sortable="'fsn'"> {{conflict.fsn}} </td>
                     
                     <!-- Controls -->
@@ -175,7 +175,7 @@
                   <tr ng-repeat="conflict in $data"> 
                     
                     <!-- Fsn -->
-                    <td class="col-concept col-md-10" style="text-align: left" data-title="'Concept'"
+                    <td class="col-concept col-md-10" data-title="'Concept'"
                         sortable="'fsn'"> {{conflict.fsn}} </td>
                     
                     <!-- Controls -->
@@ -206,7 +206,7 @@
       <!-- Conflicts Report: Content -->
       <div class="no-padding no-gutter" ng-class="[{'col-md-12' : hideSidebar}, {'col-md-9' : !hideSidebar}]"
            ng-show="viewedMerges.length > 0">
-        <div class="row no-padding no-gutter" style="text-align: center">
+        <div class="row no-padding no-gutter">
           <div class="col-md-4 project-header">
             <h4>
               <button ng-show="hideSidebar" ng-click="toggleSidebar()" type="button"

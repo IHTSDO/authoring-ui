@@ -39,7 +39,7 @@
   <div ng-class="[{'new-concept' : componentStyles.isNew}]">
 
 
-    <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()" style="margin-right:0px;">
+    <div class="row grey darken-4 concept-headers" ng-class="getConceptStyle()">
 
       <div class="pull-left col-md-1 no-padding">
             <button ng-click="setConceptProperties(concept, $event)" type="button" id="conceptMoreButton"
@@ -84,7 +84,7 @@
           <span ng-hide="!concept.fsn && !concept.effectiveTime" class="fsn">{{concept.fsn}}   <span
             ng-show="componentStyles.isNew "><strong>-New Concept</strong></span></span>
 
-          <span ng-show="!concept.fsn && !concept.effectiveTime" style="color:grey" class="fsn">Unsaved Concept</span>
+          <span ng-show="!concept.fsn && !concept.effectiveTime" class="fsn">Unsaved Concept</span>
 
         </button>
 

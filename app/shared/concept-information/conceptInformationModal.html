@@ -14,7 +14,7 @@
       <!-- Nav tabs --> 
     </div>
     <div class="col-md-4">
-      <ul style="display: inline; border-bottom: 0px; z-index:100" class="nav nav-tabs sidebar-tabs col-md-8 no-padding"
+      <ul class="nav nav-tabs sidebar-tabs col-md-8 no-padding"
           role="tablist" ng-init="actionTab=1">
         <li role="presentation" class="active" ng-click="actionTab=1" ><a aria-controls="home"
                                                   role="tab"
@@ -29,7 +29,7 @@
       <button type="button" class="close btn" ng-click="close()" ><i class="md md-close"></i></button>
     </div>
   </div>
-  <div class="modal-body" style="z-index:0">
+  <div class="modal-body">
     <div class="col-md-12"> 
       
       <!-- Don't render until load complete -->
@@ -95,7 +95,7 @@
                   <tr
                   ng-repeat="relationship in fullConcept.relationships | filter:{characteristicType : 'STATED_RELATIONSHIP'} | orderBy: ['-active', 'groupId', '-characteristicType', 'type.fsn']"
                   ng-class="[{'text-muted': !relationship.active}]">
-                    <td style="text-align: center">{{relationship.groupId}}</td>
+                    <td>{{relationship.groupId}}</td>
                     <td>{{relationship.type.fsn}}</td>
                     <td><a ng-click="loadConcept(relationship.target.conceptId)">{{relationship.target.fsn}}</a></td>
                     <td>{{relationship.characteristicType === 'STATED_RELATIONSHIP' ? 'Stated' : 'Inferred'}}</td>
