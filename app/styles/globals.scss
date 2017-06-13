@@ -48,6 +48,9 @@ html {
 .table-full thead tr > th {
     font-size: 11px;
 }
+form-control hover-fix:hover{
+    background:transparent; 
+}
 .classification-header .btn[disabled],
 .tab-content .btn[disabled] {
     cursor: not-allowed ;

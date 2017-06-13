@@ -36,7 +36,7 @@
       </li>
       <li>
 
-        <ul class="breadcrumb" style="line-height: 2em;">
+        <ul class="breadcrumb">
 
           <li ng-repeat="titleSection in titleSections" class="tooltips-bottom tooltips-light normal-case"
               title="{{parseTitleSection(titleSection)}}">{{titleSection}}
@@ -61,41 +61,13 @@
 
 
     </ul>
-    <style>
-
-
-	</style>
-    <!-- Hiding this pending discussion I think it appears as a duplicate and may cause confusion
-    <div ng-if="getSelectedTemplate() != null"  class="pull-left header-alerts col-md-3 pull-left">
-
-      <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
-
-        <div class="alert saved tbba-notification"
-
-             style="padding-right: 8px;">
-
-
-          <button type="button" class=" fa-sca fa-close "
-
-                  ng-click="clearTemplate()"></button>
-
-
-
-
-          <p>Template selected: {{getSelectedTemplate().name}}
-          </p>
-        </div>
-      </div>
-    </div>
--->
 
     <div ng-show="notification" class="pull-left header-alerts col-md-3 pull-left">
 
-      <div class="bs-component pull-left col-md-12 no-padding" style="margin-left:0px; margin-right:0px">
+      <div class="bs-component pull-left col-md-12 no-padding">
 
         <div class="alert saved"
-             ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]"
-             style="padding-right: 8px;">
+             ng-class="[{'blue' : notification.type === 'MESSAGE'}, {'orange': notification.type ==='WARNING'}, {'red' : notification.type === 'ERROR'}]">
 
           <!-- NOTE: currently ::before 'x' icon is included on this button -->
           <button type="button" class=" fa-sca fa-close"
