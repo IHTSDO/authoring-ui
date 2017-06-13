@@ -39,9 +39,7 @@
                           class="btn btn-round   tasks-bubble btn-info ng-scope tooltips-left tooltips-light "> {{reviewTasks.length}} <span> {{reviewTasks.length}} reviews are in progress</span> </button>
             </span> </div>
         </div>
-        <!--          Left in as a placeholder for reviewer role functionality--> 
-        <!--        <div class="table-responsive white" style="margin-right:0px;" ng-if="isReviewer()">-->
-              <div class="table-responsive white" style="margin-right:0px;">
+              <div class="table-responsive white">
           <table ng-table="reviewTableParams" template-pagination="utilities/data-table-pager.html"
                  class="table table-full table-full-small">
             <tr ng-repeat="task in $data" class="clickable-row">
