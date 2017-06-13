@@ -346,6 +346,14 @@ h1 {
 .editform .row {
     margin: 0px;
 }
+
+.edit-row {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
 .formcontrol {
     font-size: 12px;
 }
