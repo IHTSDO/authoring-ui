@@ -1,6 +1,6 @@
 
 <!-- Hide container until view is selected -->
-<div class="sca-container" ng-if="thisView" style="">
+<div class="sca-container" ng-if="thisView">
 
   <!-- Control panel appears when elements are hidden -->
   <div class="button-nav">
@@ -213,22 +213,18 @@
 
 
           <!-- model & concept data-->
-          <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex;"
+          <div class="row-fluid no-gutter edit-row"
                ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
                ng-class="isLast($last)"
                repeat-complete callback="renderingComplete()">
 
             <!-- model -->
-            <div class="no-gutter " style="height: 100%" ng-class="getLayoutWidths('models')">
+            <div class="no-gutter" ng-class="getLayoutWidths('models')">
               <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
             </div>
 
             <!-- concept -->
-            <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')"
-                 style="margin-right:0px;">
+            <div class="no-gutter grey darken-3 panel-height" ng-class="getLayoutWidths('concepts')">
 
               <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
                    branch="targetBranch" static="branchLocked || !isOwnTask"
@@ -237,17 +233,13 @@
             </div>
 
           </div>
-          <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+          <div class="row-fluid no-gutter" ng-if="$last" ng-repeat-end>
             <div class="no-gutter" ng-class="getLayoutWidths('models')">
               <div class="modelScrollBox"></div>
             </div>
 
             <!-- concept -->
-            <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')"
-                 style="margin-right:0px;">
+            <div class="no-gutter grey darken-3" fill-height ng-class="getLayoutWidths('concepts')">
             </div>
           </div>
 
@@ -270,22 +262,18 @@
 
 
           <!-- model & concept data-->
-          <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex;"
+          <div class="row-fluid no-gutter edit-row"
                ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
                ng-class="isLast($last)"
                repeat-complete callback="renderingComplete()">
 
             <!-- model -->
-            <div class="no-gutter col-md-7" style="height: 100%">
+            <div class="no-gutter col-md-7">
               <div draw-model-sca concept="concept" snf-function="getSNF(concept.conceptId)" display-snf="true"></div>
             </div>
 
             <!-- concept -->
-            <div class="no-gutter grey darken-3 panel-height col-md-5"
-                 style="margin-right:0px;">
+            <div class="no-gutter grey darken-3 panel-height col-md-5">
               <div concept-edit concept="concepts[$index]" id="'height-{{concept.conceptId}}'"
                    branch="targetBranch" static="branchLocked || !isOwnTask"
                    ui-state-update-fn="updateEditListUiState()"
@@ -294,30 +282,23 @@
             </div>
 
           </div>
-          <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+          <div class="row-fluid no-gutter edit-row" ng-if="$last" ng-repeat-end>
             <div class="no-gutter col-md-7">
               <div class="modelScrollBox"></div>
             </div>
 
             <!-- concept -->
-            <div class="no-gutter grey darken-3 col-md-5" fill-height
-                 style="margin-right:0px;">
+            <div class="no-gutter grey darken-3 col-md-5" fill-height>
             </div>
 
           </div>
-          <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+          <div class="row-fluid no-gutter edit-row" ng-if="$last" ng-repeat-end>
             <div class="no-gutter col-sm-7 col-md-7 col-lg-7">
               <div class="modelScrollBox"></div>
             </div>
 
             <!-- concept -->
-            <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3" fill-height style="margin-right:0px;">
+            <div class="no-gutter col-sm-5 col-md-5 col-lg-5 grey darken-3" fill-height>
             </div>
           </div>
         </div>
@@ -341,18 +322,14 @@
 
 
         <!-- concept data-->
-        <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex;"
+        <div class="row-fluid no-gutter edit-row"
              ng-repeat-start="concept in concepts | limitTo: conceptsDisplayed track by concept.conceptId"
              ng-class="isLast($last)"
              repeat-complete callback="renderingComplete()">
 
 
           <!-- concept -->
-          <div class="no-gutter grey darken-3 panel-height col-md-12"
-               style="margin-right:0px;">
+          <div class="no-gutter grey darken-3 panel-height col-md-12">
             <div concept-edit concept="concepts[$index]" id="height-{{concept.conceptId}}'"
                  branch="targetBranch" static="branchLocked || !isOwnTask" ui-state-update-fn="updateEditListUiState()"
             >
@@ -360,13 +337,9 @@
           </div>
 
         </div>
-        <div class="row-fluid no-gutter" style="display: -webkit-box;
-          display: -webkit-flex;
-          display: -ms-flexbox;
-          display: flex; overflow:none;" ng-if="$last" ng-repeat-end>
+        <div class="row-fluid no-gutter edit-row" ng-if="$last" ng-repeat-end>
           <!-- concept -->
-          <div class="no-gutter grey darken-3 col-md-12" fill-height
-               style="margin-right:0px;">
+          <div class="no-gutter grey darken-3 col-md-12" fill-height>
           </div>
         </div>
 
