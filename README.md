@@ -64,38 +64,45 @@ http {
 		}
 	}
 	server {
-		listen		8081;
-		server_name	localhost;
- 
-		location / {
-			proxy_pass http://127.0.0.1:9000;
-		}
+        listen      8081;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://127.0.0.1:9000;
+        }
         location /config {
-			alias /FileLocation/authoring-ui;
-		}
- 
-		location /snowowl {
-			proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
-		}
+            proxy_pass https://dev-authoring.ihtsdotools.org/config;
+        }
+        
+        location /snowowl/ihtsdo-sca {
+            proxy_pass https://dev-authoring.ihtsdotools.org/snowowl/ihtsdo-sca;
+        }
+
+        location /snowowl {
+            proxy_pass https://dev-authoring.ihtsdotools.org/snowowl;
+        }
         
         location /authoring-services {
             proxy_pass https://dev-authoring.ihtsdotools.org/authoring-services;
         }
         
-        location /auth {
-			proxy_pass https://dev-ims.ihtsdotools.org/api/account;
-		}
+        location /template-service {
+            proxy_pass https://dev-authoring.ihtsdotools.org/template-service;
+        }
         
+        location /spellcheck-service {
+            proxy_pass https://dev-authoring.ihtsdotools.org/spellcheck-service;
+        }
+
+        location /auth {
+            proxy_pass https://dev-ims.ihtsdotools.org/api/account;
+            proxy_set_header Accept "application/json";
+        }
+
         location /traceability-service {
-			proxy_pass https://dev-authoring.ihtsdotools.org/traceability-service;
-            proxy_cookie_domain localhost dev-authoring.ihtsdotools.org;
-		}
-		
-		location /template-service {
-                proxy_pass https://dev-authoring.ihtsdotools.org/template-service;
-                proxy_cookie_domain localhost dev-authoring.ihtsdotools.org;
-            }
-	}
+            proxy_pass https://dev-authoring.ihtsdotools.org/traceability-service;
+        }
+    }
 }
 ```
 In order to access these location after running nginx you should use the URL 'local.ihtsdotools.org:8080' (for a local approximation of the site at it will be deployed, updates rely on running 'grunt'), or 'local.ihtsdotools.org:8081' (for local development, all requests except those needing specific handling will be proxied to the livereload server). 
