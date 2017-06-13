@@ -51,7 +51,6 @@ angular
   .factory('httpRequestInterceptor', function () {
     return {
       request: function (config) {
-        config.headers['Authorization'] = 'Basic c25vd293bDpzbm93b3ds ';
         return config;
       }
     };
