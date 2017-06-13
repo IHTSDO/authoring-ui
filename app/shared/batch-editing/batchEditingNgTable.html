@@ -20,7 +20,7 @@
       
     
   <div class="card m-10">
-  <div class="m-t-10 sca-batch-table" style="width:99%;" ng-show="batchHasData">
+  <div class="m-t-10 sca-batch-table" ng-show="batchHasData">
 
     <table ng-table="batchTableParams"
            template-pagination="utilities/data-table-pager.html"
@@ -67,10 +67,6 @@
           </div>
           <div ng-show="!concept.tableAction" class="pull-right">
             <a class="glyphicon glyphicon-edit" title="Edit Full Concept" ng-click="editConcept(concept)"></a>
-<!--
-            <a class="md md-save m-l-10" title="Save Concept" ng-click="saveConcept(concept)"></a>
-            <a class="md md-school m-l-10 " title="Validate Concept" ng-click="validateConcept(concept)"></a>
--->
           </div>
         </td>
       </tr>
