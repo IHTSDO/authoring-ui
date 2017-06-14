@@ -46,8 +46,7 @@
     </div>
     <div class="row saved-list no-padding  " ng-repeat="item in getCrsEmptyRequests()">
       <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs"> </div>
-      <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
-           style="word-wrap: break-word" ui-draggable="true"
+      <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding word-break"ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> <a ng-href="{{item.requestUrl}}" target="_blank"> Content Request #{{item.conceptJson.issueKey}} </a> </div>
       <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs"> <a ng-href="{{item.requestUrl}}" target="_blank">
         <button
