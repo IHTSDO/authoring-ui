@@ -1604,6 +1604,10 @@ select {
 .form-group {
     position: relative;
 }
+
+button.btn.btn-default.transparent{
+    background:transparent;
+}
 @media (min-width: 992px) and (max-width: 1199px) {
     .visible-md {
         display: block;

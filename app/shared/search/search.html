@@ -23,23 +23,20 @@
              ng-model="searchStr" ng-change="search()" ui-on-drop="" ng-model-options="{ debounce: 500 }"/>
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button ng-show="searchStr" class="btn btn-default md md-close light-button" ng-click="clearSearch()"
-              style="background: transparent"></button>
+      <button ng-show="searchStr" class="btn btn-default md md-close light-button transparent" ng-click="clearSearch()"></button>
     </div>
     <!--  Removed pending design and reuqirements discussion
       <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 no-padding">
           <select ng-options="id as name for (id, name) in dialects" ng-model="selectedDialect"></select>
       </div>-->
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 no-padding">
-      <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right light-button "
-              ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0"
-              style="background: transparent">
+      <button class="btn btn-default md md-check-box tooltips-bottom medium-size-tooltip offset-tooltip-right light-button transparent"
+              ng-click="toggleGroupByConcept()" ng-if="userOptions.groupByConcept && results.length > 0">
         <span>View Matching Terms</span>
       </button>
       <button
-        class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right light-button"
-        ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0"
-        style="background: transparent">
+        class="btn btn-default md md-check-box-outline-blank tooltips-bottom medium-size-tooltip offset-tooltip-right light-button transparent"
+        ng-click="toggleGroupByConcept()" ng-if="!userOptions.groupByConcept && results.length > 0">
         <span>Group by Concept</span>
       </button>
     </div>
