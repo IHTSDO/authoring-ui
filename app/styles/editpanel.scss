@@ -1233,11 +1233,11 @@ button-link .bluehl .grey.darken-3 {
 .morebuttons.drag-button-width{background-color:transparent}
 
 .ng-table textarea, .ng-table input, .ng-table select {
-    resize: none !important;
-    min-height: 40px !important;
+    resize: none;
+    min-height: 40px;
   
-    line-height: 1.0!important;
-    font-weight: 400 !important;
+    line-height: 1.0;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     letter-spacing: .1px;
     text-rendering: optimizeLegibility;
