@@ -319,7 +319,7 @@
                         ng-readonly="isStatic || description.released || isLockedModule(description.moduleId)"
                         maxlength="255"
                         ng-model="description.term"
-                        class="form-control msd-elastic: \n;"
+                        class="form-control msd-elastic"
                         ng-class="[{'template-editable' : description.template}]"
                         type="text"
                         placeholder="Description">
@@ -331,7 +331,7 @@
                       maxlength="255"
                       ng-model="description.term"
                       ng-class="[{'template-editable' : description.template}]"
-                      class="form-control  msd-elastic: \n;" type="text"
+                      class="form-control  msd-elastic" type="text"
                       placeholder="Description">
                         </textarea>
             <textarea ng-if="description.type === 'TEXT_DEFINITION'"
@@ -341,7 +341,7 @@
                       ng-model-options="{updateOn: 'blur'}"
                       ng-model="description.term" type="text" placeholder="Description"
                       ng-class="[{'template-editable' : description.template}]"
-                      class="form-control msd-elastic: \n;" autofocus>
+                      class="form-control msd-elastic" autofocus>
                         </textarea>
           </div>
 
@@ -388,7 +388,7 @@
           </div>
 
           <div ng-if="description.additionalFields" ng-repeat="field in description.additionalFields">
-                        <textarea class="resizable-text msd-elastic: \n;" ng-model-options="{updateOn: 'blur'}"
+                        <textarea class="resizable-text msd-elastic" ng-model-options="{updateOn: 'blur'}"
                                   ng-model="field.value" type="text" placeholder="{{field}}">
                         </textarea>
           </div>
@@ -513,7 +513,7 @@
 
                                     <textarea type="text" ng-model="relationship.type.fsn"
                                               ng-readonly="relationship.effectiveTime || isStatic || isLockedModule(relationship.moduleId) || template"
-                                              class="resizable-text form-control msd-elastic: \n;"
+                                              class="resizable-text form-control msd-elastic"
 
                                               typeahead="suggestion as suggestion.fsn.term for suggestion in allowedAttributes | filter:$viewValue:emptyOrMatch"
                                               typeahead-focus-first="false"
@@ -546,7 +546,7 @@
 
                   <textarea type="text" ng-model="relationship.target.fsn"
                             ng-readonly="relationship.effectiveTime || isStatic  || isLockedModule(relationship.moduleId) || (template && !relationship.targetSlot.slotName)"
-                            class="resizable-text relationship msd-elastic: \n;"
+                            class="resizable-text relationship msd-elastic"
                             typeahead="suggestion as suggestion.tempFsn for suggestion in getConceptsForValueTypeahead(relationship.type.conceptId, $viewValue, branch, relationship.template.targetSlot.allowableRangeECL)"
                             typeahead-loading="targetTypeaheadLoading" typeahead-focus-first="false"
                             typeahead-wait-ms="700"
@@ -593,7 +593,7 @@
 
               </div>
               <div ng-if="relationship.additionalFields" ng-repeat="field in relationship.additionalFields">
-                                <textarea class="resizable-text msd-elastic: \n;" ng-model-options="{updateOn: 'blur'}"
+                                <textarea class="resizable-text msd-elastic" ng-model-options="{updateOn: 'blur'}"
                                           ng-model="field.value" type="text" placeholder="{{field}}">
                                 </textarea>
               </div>
