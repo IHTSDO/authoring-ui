@@ -130,6 +130,11 @@ button.widget-toolbar {
     width: 10px; 
     color: red
 }
+.fixed-height {
+  position: fixed;
+  padding-left: 0px;
+  margin-left: -1px;
+}
 .tooltip {
     top: 0px ;
 }
