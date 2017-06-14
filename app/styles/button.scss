@@ -858,14 +858,26 @@ button.tooltips-right.normal-case span {
 }
 /*left nav */
 
-.snodragon-templates {
+.create-template {
     padding: 4px 0px;
     font-size: 13px;
     background-color: #009cd7;
     color: #fff;
 }
-.snodragon-templates:hover,
-.snodragon-templates:active {
+.create-template:hover,
+.create-template:active {
+    background: #0082b3;
+    color: #fff
+}
+
+.new-concept-button {
+    padding: 4px 0px;
+    font-size: 13px;
+    background-color: #00adee;
+    color: #fff;
+}
+.new-concept-button:hover,
+.new-concept-button:active {
     background: #0082b3;
     color: #fff
 }
