@@ -10,8 +10,8 @@
   </div>
   <div class="modal-body">
     <div class="row classification-report">
-      <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist">
-        <li role="presentation" ng-class="{active : actionTab === 1}" class=""> <a style="margin: 0px"
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" ng-class="{active : actionTab === 1}" class=""> <a
                                                                                 ng-click="actionTab=1"
                                                                                 aria-controls="home" role="tab"
                                                                                 data-toggle="tab"> Inactivation
@@ -104,8 +104,8 @@
               <label> Concept</label>
             </div>
           </div>
-          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-repeat="association in associations">
-          <div class="row" style="border-top:grey solid 1px; padding-bottom:10px;" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
+          <div class="row" ng-repeat="association in associations">
+          <div class="row" ng-show="!inboundRelationshipsLoading && inboundRelationshipsTotal !== 0">
             <div class="col-md-6">
               <textarea type="text" class="form-control"
                         ng-model="association.concept"
