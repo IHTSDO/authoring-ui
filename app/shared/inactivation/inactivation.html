@@ -9,24 +9,22 @@
 
       <button ng-if="!deletion"
               class="col-md-2 btn btn-default complete-action-btn pull-right tooltips-bottom m-r-10 large-size-tooltip offset-tooltip-left"
-              style="text-transform: none"
               ng-disabled="!isComplete()"
               ng-click="completeInactivation()">
         Complete Inactivation
       </button>
       <button ng-if="deletion"
               class="col-md-2 btn btn-default complete-action-btn pull-right tooltips-bottom m-r-10 large-size-tooltip offset-tooltip-left"
-              style="text-transform: none"
               ng-disabled="!isComplete()"
               ng-click="completeInactivation()">
         Complete Deletion
       </button>
       <button ng-if="!deletion"
-              class="btn btn-default cancel-action-btn pull-right col-md-2 m-r-10" style="text-transform: none"
+              class="btn btn-default cancel-action-btn pull-right col-md-2 m-r-10"
               ng-click="cancelInactivation()">Cancel Inactivation
       </button>
       <button ng-if="deletion"
-              class="btn btn-default cancel-action-btn pull-right col-md-2 m-r-10" style="text-transform: none"
+              class="btn btn-default cancel-action-btn pull-right col-md-2 m-r-10"
               ng-click="cancelInactivation()">Cancel Deletion
       </button>
 
@@ -45,13 +43,13 @@
 
       <!-- Nav tabs -->
       <div class="row inactivation-report classification-report">
-        <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
+        <ul class="nav nav-tabs" role="tablist" ng-init="actionTab=1">
 
-          <li role="presentation" class="active classification"><a style="margin: 0px" ng-click="actionTab=1"
+          <li role="presentation" class="active classification"><a ng-click="actionTab=1"
                                                                    aria-controls="home" role="tab"
                                                                    data-toggle="tab"> Children
             Affected ({{isaRelsTableParams.total()}})</a></li>
-          <li role="presentation" class="classification"><a style="margin: 0px" ng-click="actionTab=2"
+          <li role="presentation" class="classification"><a ng-click="actionTab=2"
                                                             aria-controls="home" role="tab"
                                                             data-toggle="tab"> Attributes Affected
             ({{attrRelsTableParams.total()}})
@@ -70,7 +68,6 @@
           <li>
                <div class="p-5">
             <button class="btn btn-default complete-action-btn pull-right tooltips-bottom large-size-tooltip offset-tooltip-left"
-                    style="text-transform: none"
                     ng-click="acceptAll()">
               <i class="md md-thumb-up"></i>Accept All
               </button>
@@ -82,7 +79,7 @@
       </div>
 
 
-      <div ng-show="actionTab==1" class="table-responsive white" style="margin-right:0px;">
+      <div ng-show="actionTab==1" class="table-responsive white">
         <table
           ng-table="isaRelsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
@@ -136,7 +133,7 @@
         </table>
 
       </div>
-      <div ng-show="actionTab==2" class="table-responsive white" style="margin-right:0px;">
+      <div ng-show="actionTab==2" class="table-responsive white">
         <table
           ng-table="attrRelsTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
@@ -192,7 +189,7 @@
         </table>
 
       </div>
-      <div ng-show="actionTab==3" class="table-responsive white" style="margin-right:0px;">
+      <div ng-show="actionTab==3" class="table-responsive white">
         <div ng-show="affectedConceptAssocs.length > 0">
         
           <table
