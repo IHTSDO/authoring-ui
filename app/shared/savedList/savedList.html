@@ -6,9 +6,8 @@
         <label class="control-label">Task Saved List</label>
       </div>
     </div>
-    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items" style="margin-bottom: 15px;"> 
-      <!--  <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">{{$index +1}}</div>-->
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
+    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in savedList.items"> 
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs">
         <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
               class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
@@ -24,10 +23,6 @@
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> 
         <!-- Use the preferred synonym if present, otherwise use fsn --> 
         {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}} </div>
-      <!--   <div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
-                  class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
-                  ng-show="!item.concept.active"
-            ><div class="fa-sca fa-power-off"></div><span>Inactive Concept</span></button></div>-->
       <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
         <button type="button"
                   ng-click="viewConceptInTaxonomy(item)"
@@ -57,10 +52,8 @@
         <label class="control-label">Project Favorites</label>
       </div>
     </div>
-    <!--
-        <div class="col-md-12 no-padding saved-list" style="margin-top: 10px;margin-bottom: 10px;"><div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div><div class="no-padding col-lg-9 col-md-7 col-sm-8 col-xs-8"><strong>FSN</strong></div><div class="no-padding col-lg-2 col-md-4 col-sm-4 col-xs-4"></div></div>-->
-    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in favorites.items" style="margin-bottom: 15px;">
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
+    <div class="col-md-12 saved-list no-padding  " ng-repeat="item in favorites.items">
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs">
         <button ng-if="item.concept.definitionStatus === 'PRIMITIVE'"
               ng-disabled="isStatic"
               class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left ">
@@ -73,13 +66,8 @@
         <span>Fully Defined</span> </button>
       </div>
       <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
-           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> 
-        <!-- Use the preferred synonym if present, otherwise use fsn --> 
+           drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
         {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}} </div>
-      <!--<div class="no-padding col-lg-1 col-md-1 col-sm-1 col-xs-1"><button type="button"
-                class="addButton btn btn-round btn-default widget-button red tooltips-right tooltips-light normal-case lighten-1"
-                ng-show="!item.concept.active"
-          ><div class="fa-sca fa-power-off"></div><span>Inactive Concept</span></button></div>-->
       <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
         <button type="button"
                   ng-click="viewConceptInTaxonomy(item)"
