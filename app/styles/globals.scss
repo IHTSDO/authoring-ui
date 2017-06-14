@@ -401,7 +401,8 @@ h4.timeline-title::-webkit-scrollbar-corner{
 }
 
 .scroll-if-height{
-    padding-left:10px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .scroll-if-height::-webkit-scrollbar
