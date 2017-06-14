@@ -23,21 +23,21 @@
   
   <!-- Report, feedback editor, and concept feedback -->
   <div class="col-md-9 no-padding pull-right white no-gutter">
-    <div class="col-md-12 feedback-header-main" style="vertical-align: middle"> 
+    <div class="col-md-12 feedback-header-main"> 
       
       <!-- Title section -->
       
       <div class="p-l-20 col-md-8">
         <div class="pull-left "><strong>Task Author:</strong> {{task.assignee.displayName}}</div>
         <div ng-if="role === 'AUTHOR'" class="pull-left p-l-15">
-          <button class="btn btn-default pink darken-2 review-button-list  " style="text-transform: none"
+          <button class="btn btn-default pink darken-2 review-button-list  "
                   ng-if="task.status === 'In Review'"
                   ng-disabled="task.status !== 'In Review' && task.status !== 'Review Completed'"
                   ng-click="cancelReview()">Cancel Review </button>
         </div>
         <div class="pull-left p-l-15 "><strong>Task Reviewer:</strong> {{task.reviewer.displayName}}</div>
         <div ng-if="role === 'REVIEWER'" class="pull-left p-l-15 ">
-          <button class="btn btn-default primary-action-btn" style="text-transform: none"
+          <button class="btn btn-default primary-action-btn"
                   ng-click="unclaimReview()">Unclaim Review </button>
         </div>
         <div class="switch pull-right p-l-10"> </div>
@@ -72,7 +72,7 @@
           <div concept-edit concept="concept" branch="branch" static="role !== 'AUTHOR'" component-styles="styles[concept.conceptId]"
                autosave="role !== 'AUTHOR'"></div>
         </div>
-        <div class="col-md-12 row-fluid no-padding no-gutter" style="display: flex;" ng-show="!isCollapsed">
+        <div class="col-md-12 row-fluid no-padding no-gutter" ng-show="!isCollapsed">
           <div class="col-md-6 no-padding no-gutter"> 
             <!-- Loading placeholder --> 
             
@@ -97,7 +97,6 @@
           <div class="no-feedback-yet" ng-show="viewedFeedback.length === 0"> No Feedback added yet... </div>
           <div ng-repeat="feedback in viewedFeedback | orderBy: getDateFromFeedback : true">
             <p compile-html="feedback.messageHtml" class="reviewer-feedback-chat col-md-12 "
-               style="word-break: break-all; margin: 0px"
                ng-class="[{
                           author_feedback_chat : task.assignee.username  === feedback.fromUsername
                           }]"
@@ -138,8 +137,7 @@
                 </span> </div>
               <div class="pull-right follow-up-right ">
                 <button class="pull-right btn btn-default  m-r-5"
-                        ng-click="submitFeedback(requestFollowup)"
-                        style="text-transform: none"><span class="md md-forum send-feedback-icon "></span>Send Feedback </button>
+                        ng-click="submitFeedback(requestFollowup)"><span class="md md-forum send-feedback-icon "></span>Send Feedback </button>
               </div>
             </div>
           </div>

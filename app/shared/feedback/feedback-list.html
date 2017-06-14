@@ -40,23 +40,23 @@
     <div class="row m-l-10 no-gutter" ng-if="!feedbackContainer.review">
       <div class="m-10">Loading review...</div>
     </div>
-    <ul style="display: inline; border-bottom: 0px;" class="nav nav-tabs " role="tablist"
+    <ul class="nav nav-tabs " role="tablist"
         ng-init="actionTab=1">
-      <li role="presentation" class="active border-right"> <a style="margin: 0"
+      <li role="presentation" class="active border-right"> <a
            ng-click="actionTab=1"
            aria-controls="home"
            role="tab"
            data-toggle="tab">To Review
         <div class="badge pull-right pink darken-1 numbers">{{feedbackContainer.review.conceptsToReview.length }} </div>
         </a> </li>
-      <li role="presentation" class="border-right"> <a style="margin: 0"
+      <li role="presentation" class="border-right"> <a
            ng-click="actionTab=2"
            aria-controls="home"
            role="tab"
            data-toggle="tab">Approved
         <div class="badge pull-right pink darken-1 numbers ">{{feedbackContainer.review.conceptsReviewed.length}} </div>
         </a> </li>
-      <li role="presentation border-right"> <a style="margin: 0"
+      <li role="presentation border-right"> <a
            ng-click="actionTab=3"
            aria-controls="home"
            role="tab"
