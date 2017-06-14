@@ -804,6 +804,10 @@ button.fsn-title-button {
     outline-offset: 0px;
     box-shadow: none;
 }
+.theme-blue[type=text].form-control.blue-underline:focus {
+    box-shadow: inset 0 -2px 0 #009cd7;
+}
+
 .btn-default.blue:hover,
 .btn-default.blue:active {
     background-color: #097fda;
