@@ -19,7 +19,7 @@
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
         <span>Fully Defined</span> </button>
       </div>
-      <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
+      <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding word-break" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> 
         <!-- Use the preferred synonym if present, otherwise use fsn --> 
         {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}} </div>
@@ -65,7 +65,7 @@
         <div class="badge alert-warning ng-binding" ng-click="openConceptInformationModal(item)">≡&nbsp; </div>
         <span>Fully Defined</span> </button>
       </div>
-      <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding" style="word-wrap: break-word" ui-draggable="true"
+      <div  ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding word-break" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel="">
         {{item.concept.preferredSynonym ? item.concept.preferredSynonym : item.concept.fsn}} </div>
       <div class="no-padding col-lg-3 col-md-5 col-sm-4 col-xs-4">
