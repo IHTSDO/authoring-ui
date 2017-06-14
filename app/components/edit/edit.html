@@ -10,7 +10,7 @@
       ui-on-drop="dropConcept($data)" drop-channel="conceptPropertiesObj" drag-enter-class="sca-drag-target"
       type="button" ng-click="createConcept(true)"
       ng-disabled="task.status === 'Promoted' || !canCreateConcept"
-      class="btn btn-default create-new-concept widget-toolbar tooltips-right tooltips-light normal-case">
+      class="btn btn-default new-concept-button widget-toolbar tooltips-right tooltips-light normal-case">
       <div class="md fa-sca fa-edit"></div>
 
       <span>Create New Concept</span></button>
@@ -26,7 +26,7 @@
             id="templateCreateBtn"
             ng-disabled="task.status === 'Promoted' || !canCreateConcept"
             ng-if="templates.length > 0"
-            class="btn btn-default snodragon-templates widget-toolbar tooltips-right tooltips-light normal-case">
+            class="btn btn-default create-template widget-toolbar tooltips-right tooltips-light normal-case">
       <i class="md fa fa-magic"></i>
 
       <span>Create New Concept From Template</span></button>
