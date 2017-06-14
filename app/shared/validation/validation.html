@@ -19,7 +19,7 @@
               class="md md-edit"></span>
     </button>
   </script>
-  <div class="row validation-header reports-header" style="vertical-align: middle">
+  <div class="row validation-header reports-header">
     <div class="col-md-4 ">
       <div class="p-t-10 p-l-5">Validation Report: {{getStatusText()}}</div>
     </div>
@@ -49,7 +49,7 @@
     <div role="tabpanel" class="">
       <div class="ng-table-no-results"
            ng-if="viewTop && validationContainer.report && topTableParams.total() === 0"> No validation results to display </div>
-      <div class="table-responsive white" style="margin-right:0px;" ng-show="viewTop && topTableParams.total() > 0">
+      <div class="table-responsive white" ng-show="viewTop && topTableParams.total() > 0">
         <table
           ng-table="topTableParams" template-pagination="utilities/data-table-pager.html"
           class="table table-full table-full-small">
@@ -71,7 +71,7 @@
           </tr>
         </table>
       </div>
-      <div class="table-responsive white" style="margin-right:0px;" ng-if="!viewTop">
+      <div class="table-responsive white" ng-if="!viewTop">
         <div class="row">
           <div class="col-md-10 p-10"> <strong>Assertion Failure</strong>: {{assertionFailureViewed.assertionText}} </div>
           <div class="col-md-2 p-10">
