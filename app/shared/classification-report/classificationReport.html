@@ -3,7 +3,7 @@
   <div class="ng-table-no-results dark-centured-text" ng-if="items && items.length === 0"> No results. </div>
   <div ng-if="type !== 'equivalence' && items.length > 0" class="table-responsive white">
     <div class="table-search">
-      <input type="text" ng-model="tableParams.filter()['search']" class="form-control"
+      <input type="text" ng-model="tableParams.filter()['search']" class="form-control blue-underline"
              placeholder="Search Results" autofocus/>
     </div>
     <table ng-table="tableParams" template-pagination="utilities/data-table-pager.html"
