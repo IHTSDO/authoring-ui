@@ -1580,8 +1580,8 @@ button.close {
 .visible-xs-inline-block {
     display: none;
 }
-.invisible {
-    visibility: hidden;
+input[type=file].invisible {
+    display: none;
 }
 .text-hide {
     font: 0/0 a;
