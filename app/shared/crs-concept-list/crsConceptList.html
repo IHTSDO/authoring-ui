@@ -5,8 +5,8 @@
         <label class="control-label">CRS Concept List</label>
       </div>
     </div>
-    <div class="row saved-list no-padding  " ng-repeat="item in getCrsConcepts()" style="margin-bottom: 15px;">
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center">
+    <div class="row saved-list no-padding  " ng-repeat="item in getCrsConcepts()">
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs">
         <button ng-if="item.concept.conceptId && item.concept.definitionStatus === 'PRIMITIVE'"
                 ng-disabled="isStatic"
                 class="p-t-5 p-l-3 white-text primitive-buttons tooltips-bottom small-size-tooltip offset-tooltip-left">
@@ -19,7 +19,7 @@
         <span>Fully Defined</span> </button>
       </div>
       <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
-           style="word-wrap: break-word" ui-draggable="true"
+           ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> {{item.concept.fsn}} </div>
       <div class="no-padding  col-lg-2 col-md-2 hidden-sm hidden-xs"> <a ng-href="{{item.requestUrl}}" target="_blank">
         <button
@@ -44,8 +44,8 @@
         <label class="control-label">CRS Requests Without Proposed Concept</label>
       </div>
     </div>
-    <div class="row saved-list no-padding  " ng-repeat="item in getCrsEmptyRequests()" style="margin-bottom: 15px;">
-      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs " style="text-align:center"> </div>
+    <div class="row saved-list no-padding  " ng-repeat="item in getCrsEmptyRequests()">
+      <div class="no-padding  col-lg-1 col-md-1 hidden-sm hidden-xs"> </div>
       <div ng-click="selectItem(item)" class="col-lg-8 col-md-6 col-sm-12 col-xs-12 no-padding"
            style="word-wrap: break-word" ui-draggable="true"
            drag="getConceptPropertiesObj(item)" drag-channel="conceptPropertiesObj" drop-channel=""> <a ng-href="{{item.requestUrl}}" target="_blank"> Content Request #{{item.conceptJson.issueKey}} </a> </div>
