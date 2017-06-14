@@ -3,7 +3,7 @@
 
   <!-- begin validation error -->
   <div class="alert alert-dismissible alert-danger validation" ng-show="errors.length > 0">
-    <button class="btn btn-default md md-close pull-right white" ng-click="errors = []" style="background: transparent"
+    <button class="btn btn-default md md-close pull-right white transparent" ng-click="errors = []"
             tabindex="0"></button>
     <h4>Error!</h4>
 
@@ -12,8 +12,7 @@
     </div>
   </div>
   <div class="alert alert-dismissible alert-warning validation" ng-show="warnings.length > 0">
-    <button class="btn btn-default md md-close pull-right white" ng-click="warnings = []"
-            style="background: transparent" tabindex="0"></button>
+    <button class="btn btn-default md md-close pull-right white transparent" ng-click="warnings = []" tabindex="0"></button>
     <h4>Warning!</h4>
 
     <div ng-repeat="warning in warnings">
@@ -24,8 +23,7 @@
   <div class="alert alert-dismissible validation" ng-show="concept.templateMessages.length > 0"
        ng-repeat="message in concept.templateMessages"
        ng-class="[{ 'alert-warning' : message.type === 'Warning'}, { 'alert-danger' : message.type === 'Error' }, { 'alert-info' : message.type === 'Message'}]">
-    <button class="btn btn-default md md-close pull-right white" ng-click="concept.templateMessages = []"
-            style="background: transparent"
+    <button class="btn btn-default md md-close pull-right white transparent" ng-click="concept.templateMessages = []"
             tabindex="0"></button>
     <h4 ng-bind="message.message"></h4>
 
