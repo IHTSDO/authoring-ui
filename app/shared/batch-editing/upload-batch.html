@@ -36,7 +36,7 @@
    
     <div class="row column-md-12 p-15">
         <label class="btn btn-default btn-file column-md-4 btn-primary button-link" ng-disabled="!templateOptions.selectedTemplate || isBatchPopulated()"> Upload a File to create a Batch
-            <input id="batchFileUpload" ng-disabled="!templateOptions.selectedTemplate || isBatchPopulated()" type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this)" style="display: none;">
+            <input id="batchFileUpload" ng-disabled="!templateOptions.selectedTemplate || isBatchPopulated()" type="file" name="tsvFile" accept=".tsv" onchange="angular.element(this).scope().uploadFile(this)" class="invisible">
         </label>
     </div>
     
