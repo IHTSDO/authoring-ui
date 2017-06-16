@@ -49,7 +49,7 @@ html {
     font-size: 11px;
 }
 form-control hover-fix:hover{
-    background:transparent; 
+    background:transparent;
 }
 .classification-header .btn[disabled],
 .tab-content .btn[disabled] {
@@ -70,7 +70,7 @@ form-control hover-fix:hover{
 }
 .saved {
     padding: 8px 20px 8px 0px;
-	
+
 }
 .sca-default .theme-secondary-text,
 a {
@@ -81,13 +81,13 @@ a {
     line-height: 13px;
 }
 .view-height-100 {
-    height: 100vh 
+    height: 100vh
 }
 .hide-scroll::-webkit-scrollbar {
     display: none;
 }
 .modal-body .ta-scroll-window.form-control {
-    min-height: 150px 
+    min-height: 150px
 }
 html::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
@@ -228,7 +228,7 @@ td select {
 .top-modal {
     background: #fff;
     position: relative;
-    padding: 20px 0px 
+    padding: 20px 0px
 }
 .top-modal::before,
 .top-modal::after {
@@ -266,7 +266,7 @@ td select {
     background: inherit;
 }
 .rolegroup textarea {
-    height: 30px 
+    height: 30px
 }
 .md-playlist-add.btn-round[disabled] {
     color: #76747c ;
@@ -308,7 +308,7 @@ td select {
 .task-detail small {
     font-size: 12px ;
     color: #444 ;
-    background-color: transparent 
+    background-color: transparent
 }
 .header-alerts {
     position: absolute;
@@ -328,7 +328,7 @@ td select {
     min-height: 44px;
     width: 98%;
 	margin-left:-10px;
-	
+
     text-align: left;
 }
 .alert .fa-sca.fa-close {
@@ -336,13 +336,13 @@ td select {
     top: 0;
     right: 0;
     margin-top: 12px;
-	
+
     margin-right: -10px
 }
 .header-alerts button,
 .header-alerts button:hover,
 .header-alerts button:focus {
-    background-color: transparent 
+    background-color: transparent
 }
 section.tables-data > div.card div.table-responsive > table.table-full > tbody > tr > td {
     height: 45px;
@@ -442,3 +442,13 @@ h4.timeline-title::-webkit-scrollbar-corner{
 .scroll-if-height::-webkit-scrollbar-corner{
     background: transparent;
 }
+.disabled{
+  opacity: 0.5;
+  pointer-events: none;
+
+  > * {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
