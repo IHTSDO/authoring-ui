@@ -86,14 +86,14 @@
 
       </div>
 
-      <div class=" no-margin edits concept-title col-md-4 pull-right no-padding">
+      <div class="  no-margin edits concept-title col-md-4 pull-right no-padding" ng-disabled="saving"
+           ng-class="{'disabled': saving}">
         <div class=" p-t-3  ">
 
           <button type="button"
                   class="deep-purple lighten-2 btn-default md md-save tooltips-bottom editbuttons small-size-tooltip small-buttons"
                   ng-click="saveConcept()"
-                  ng-if="!isMerge && isModified && !isStatic"
-                  ng-disabled="saving">
+                  ng-if="!isMerge && isModified && !isStatic">
             <span> Save Concept </span>
           </button>
 
@@ -212,8 +212,7 @@
 
 
   <!-- Toggle-able collapsed concept elements -->
-  <div ng-show="!isCollapsed" class="editHeightSelector darken-3 grey ">
-
+  <div ng-show="!isCollapsed" class="editHeightSelector darken-3 grey " ng-disabled="saving" ng-class="{'disabled': saving}">
     <div ng-show="concept.definitionOfChanges" class="">
 
       <div class="row">
