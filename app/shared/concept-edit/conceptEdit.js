@@ -266,8 +266,8 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             });
         }
         else{scope.templates = null};
-        
-          
+
+
         scope.templateTableParams = new ngTableParams({
         page: 1,
         count: 200,
@@ -296,7 +296,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             }
           }
         });
-          
+
         var originalConceptId = null;
 
 
@@ -370,7 +370,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             templateService.applyTemplateToConcept(scope.concept, scope.template);
           }
         };
-          
+
         scope.applyTemplate = function (template) {
             templateService.applyTemplateToExistingConcept(scope.concept, template).then(function(concept){
                 $timeout(function () {
@@ -1090,6 +1090,12 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                 return;
               }
 
+              // Do not allow inactivation when Relationships or Descriptions have no effective time
+              if(conceptCopy.released === true && hasInactiveDescriptionOrRelationship(conceptCopy)) {
+                scope.errors = ['This concept has unpublished changes, and therefore cannot be inactivated. Please revert these changes and try again.'];
+                return;
+              }
+
               // validate the concept
               snowowlService.validateConcept($routeParams.projectKey, $routeParams.taskKey, conceptCopy).then(function (validationResults) {
                 // check for errors -- NOTE: Currently unused, but errors are
@@ -1119,6 +1125,30 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
           }
 
         };
+
+        var hasInactiveDescriptionOrRelationship = function(concept) {
+          var hasInactiveDesc = false;
+          var hasInactiveRelationship = false;
+
+          //checking description has no effective time
+          for(var i = 0; i < concept.descriptions.length; i++) {
+            var desc =  concept.descriptions[i];
+            if(typeof desc.effectiveTime === 'undefined') {
+              hasInactiveDesc = true;
+              break;
+            }
+          }
+
+          // checking relationships has no effective time and not INFERRED_RELATIONSHIP characteristicType
+          for(var i = 0; i < concept.relationships.length; i++) {
+            var rel =  concept.relationships[i];
+            if(typeof rel.effectiveTime === 'undefined' && rel.characteristicType !== 'INFERRED_RELATIONSHIP') {
+              hasInactiveRelationship = true;
+              break;
+            }
+          }
+          return hasInactiveDesc || hasInactiveRelationship;
+        }
 
         /**
          * Function to toggle the definition status of the displayed concept,
@@ -1425,7 +1455,7 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
                       })
                   }
               });
-              
+
             } else {
               return a.groupId - b.groupId;
             }
