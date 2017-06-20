@@ -2075,6 +2075,10 @@ angular.module('singleConceptAuthoringApp').directive('conceptEdit', function ($
             return;
           }
 
+          if(scope.template && relationship.target && relationship.target.conceptId) {
+            return;
+          }
+
           var tempFsn = relationship.target.fsn;
 
           relationship.target.fsn = 'Validating...';
