@@ -90,7 +90,7 @@ angular.module('singleConceptAuthoringApp')
             for (var i = list.length - 1; i >= 0; i--) {
 
               console.debug('parsing component', list[i].referencedComponent);
-                
+
               if(list[i].active === false){}
 
               // check if referenced concept
@@ -716,6 +716,13 @@ angular.module('singleConceptAuthoringApp')
                     scope.inactivationConcept.inactivationIndicator = scope.reasonId;
                     scope.inactivationConcept.associationTargets = scope.assocs;
                     scope.inactivationConcept.active = false;
+
+                    // remove attribute ""display" prior to performing to back end
+                    angular.forEach(scope.inactivationConcept.relationships, function (rel){
+                      if(typeof rel.display !== 'undefined') {
+                        delete rel.display;
+                      }
+                    });
                     conceptArray.push(scope.inactivationConcept);
                     console.log(conceptArray);
                     snowowlService.bulkUpdateConcept(scope.branch, conceptArray).then(function (response) {
@@ -1004,7 +1011,7 @@ angular.module('singleConceptAuthoringApp')
             rel.newTargetId = concept.concept.conceptId;
             rel.newTargetFsn = concept.concept.fsn;
           }
-          
+
           scope.setRelTargetConcept = function (rel, concept) {
             rel.target.conceptId = concept.concept.conceptId;
             rel.target.fsn = concept.concept.fsn;
@@ -1012,7 +1019,7 @@ angular.module('singleConceptAuthoringApp')
             rel.target.active = concept.concept.active;
             rel.target.definitionStatus = concept.concept.definitionStatus;
           }
-          
+
           scope.updateRefTarget = function (rel) {
             console.log('updating');
             for (var j = 0; j < scope.associationTargets.length; j++) {
