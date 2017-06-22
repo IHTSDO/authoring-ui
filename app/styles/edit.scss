@@ -269,6 +269,9 @@ h1 {
     line-height: 16px;
     font-weight: 400;
 }
+.purple-darken-1 .btn-default[disabled] .btn-default{
+    background-color: #8e24aa;
+}
 .green-save {
     font-weight: 400;
 }
