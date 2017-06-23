@@ -2,8 +2,8 @@
 
 angular.module('singleConceptAuthoringApp')
 
-  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval',
-    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, snowowlService, scaService, notificationService, $timeout, $interval) {
+  .directive('classification', ['$rootScope', '$filter', 'ngTableParams', '$routeParams', 'accountService', 'snowowlService', 'scaService', 'notificationService', '$timeout', '$interval','$q',
+    function ($rootScope, $filter, NgTableParams, $routeParams, accountService, snowowlService, scaService, notificationService, $timeout, $interval, $q) {
       return {
         restrict: 'A',
         transclude: false,
@@ -385,6 +385,7 @@ angular.module('singleConceptAuthoringApp')
 
               scope.relationshipChanges = relationshipChanges ? relationshipChanges : [];
 
+              var sourceIds = [];
               // apply sourceName, typeName, and destinationName to allow for
               // ng-table sorting (ng-table cannot sort by item.property
               angular.forEach(scope.relationshipChanges.items, function (rel) {
@@ -396,6 +397,9 @@ angular.module('singleConceptAuthoringApp')
                 }
                 if (rel.type) {
                   rel.typeName = rel.type.fsn;
+                }
+                if(sourceIds.indexOf(rel.sourceId) === -1) {
+                  sourceIds.push(rel.sourceId);
                 }
               });
 
@@ -409,10 +413,48 @@ angular.module('singleConceptAuthoringApp')
                 });
               }
 
+              // get Inferred not previously stated
+              scope.getInferredNotPreviouslyStated(scope.relationshipChanges,sourceIds);
+
               scope.setStatusText();
             }, function (error) {
               notificationService.sendError('Unexpected error: ' + error);
               scope.errorState = true;
+            });
+          };
+
+          scope.getInferredNotPreviouslyStated = function (relationshipChanges,sourceIds) {
+            scope.inferredNotPreviouslyStated = [];
+            var requestPromise = [];
+            angular.forEach(sourceIds, function (sourceId) {
+              var httpPromise = snowowlService.getFullConcept(sourceId, scope.branch);
+              requestPromise.push(httpPromise);
+            });
+            $q.all(requestPromise).then(function(data) {
+              if(data.length && data.length > 0) {
+                var relationships = [];
+                angular.forEach(data, function (concept) {
+                  angular.forEach(concept.relationships, function (rel) {
+                    if(rel.characteristicType === "STATED_RELATIONSHIP") {
+                      relationships.push(rel);
+                    }
+                  });
+                });
+                angular.forEach(relationshipChanges.items, function (relationshipChange) {
+                  var itemFound = false;
+                  for(var i = 0; i < relationships.length; i++){
+                    var rel = relationships[i];
+                    if(relationshipChange.type.id === rel.type.conceptId
+                      && relationshipChange.destination.id === rel.target.conceptId) {
+                      itemFound = true;
+                      break;
+                    }
+                  }
+                  if(!itemFound) {
+                    scope.inferredNotPreviouslyStated.push(relationshipChange);
+                  }
+                });
+              }
             });
           };
 
@@ -454,10 +496,6 @@ angular.module('singleConceptAuthoringApp')
 
             // on initial load, limit relationship changes to 1000
             scope.loadRelationshipChanges(1000);
-
-            // get inferred previously not stated relationships
-            // TODO Not yet implemented, provide empty array
-            scope.inferredNotPreviouslyStated = [];
 
             // get equivalent concepts
 
