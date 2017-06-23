@@ -569,7 +569,7 @@ select {
         width: 80%;
     }
     /* form widths */
-    
+
     .editing-form .rolegroup {
         width: 3.0%;
         padding-left: 0px;
@@ -1164,7 +1164,9 @@ button-link .bluehl .grey.darken-3 {
 .FULLY_DEFINED .color_ input,
 .FULLY_DEFINED .color_ textarea,
 .FULLY_DEFINED .color_ select,
-.FULLY_DEFINED .color_ .custom-button .FULLY_DEFINED .sourcename {
+.FULLY_DEFINED .color_ .custom-button .FULLY_DEFINED .sourcename,
+.FULLY_DEFINED textarea.rg,
+.NONE_SPECIFIED textarea.rg{
     background-color: #dbdbff;
     color: #474747;
 }
@@ -1235,7 +1237,7 @@ button-link .bluehl .grey.darken-3 {
 .ng-table textarea, .ng-table input, .ng-table select {
     resize: none;
     min-height: 40px;
-  
+
     line-height: 1.0;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
