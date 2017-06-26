@@ -1,21 +1,21 @@
 'use strict';
 angular.module('singleConceptAuthoringApp.uploadBatch', [])
 
-  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout', 'ngTableParams', '$filter', '$route',
-    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout, ngTableParams, $filter, $route) {
-         
+  .controller('uploadBatchCtrl', ['$scope', '$rootScope', '$location', '$routeParams', 'metadataService', 'templateService', 'snowowlService', 'batchEditingService', '$q', 'notificationService', '$timeout', 'ngTableParams', '$filter', '$route','componentAuthoringUtil',
+    function uploadBatchCtrl($scope, $rootScope, $location, $routeParams, metadataService, templateService, snowowlService, batchEditingService, $q, notificationService, $timeout, ngTableParams, $filter, $route, componentAuthoringUtil) {
+
          $scope.templateOptions = {
             availableTemplates : [],
             selectedTemplate: null
           };
          $scope.templatesLoading = true;
-        
+
          var conceptPromises = [];
-    
+
          $scope.isBatchPopulated = (function(){
              return(batchEditingService.getBatchConcepts() && batchEditingService.getBatchConcepts().length !== 0);
          });
-        
+
          $scope.selectFocusForTemplate = function(concept){
             var initialTemplates = $scope.templateOptions.availableTemplates;
             templateService.getTemplates(true, [concept.concept.conceptId], $scope.branch).then(function (templates) {
@@ -24,7 +24,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                   $scope.templateOptions.availableTemplates = initialTemplates;
                 });
         }
-        
+
          $scope.templateTableParams = new ngTableParams({
             page: 1,
             count: 200,
@@ -53,7 +53,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 }
               }
             });
-        
+
          $scope.dlcDialog = (function (data, fileName) {
             var a = document.createElement('a');
             document.body.appendChild(a);
@@ -80,7 +80,7 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
             });
         }
         else{$scope.templates = null;}
-        
+
         $scope.selectBatchTemplate = function(template){
             $scope.templateOptions.selectedTemplate = template;
             $scope.errorMessage = [];
@@ -100,21 +100,25 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                     $("#batchFileUpload").val("");
                     angular.forEach(data, function (conceptObj) { conceptPromises.push(templateService.createTemplateConcept($scope.templateOptions.selectedTemplate, null, conceptObj));
                     });
-
                     $q.all(conceptPromises).then(function (concepts) {
-                      batchEditingService.addBatchConcepts(concepts).then(function(){
+                      var internationalDialectAutomationPromies = [];
+                      angular.forEach(concepts, function(concept){
+                        internationalDialectAutomationPromies.push(componentAuthoringUtil.runInternationalDialectAutomationForConcept(concept, false));
+                      });
+                      $q.all(internationalDialectAutomationPromies).then(function (concepts) {
+                        batchEditingService.addBatchConcepts(concepts).then(function(){
                           notificationService.sendMessage('Successfully added batch concepts', 3000);
                           $rootScope.$broadcast('batchConcept.change');
                           fd = new FormData();
                           files = [];
-                            if(window.location.href.indexOf('batch') > -1){
-                                $route.reload();
-                            }
-                            else{
-                                $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
-                            }
+                          if(window.location.href.indexOf('batch') > -1){
+                            $route.reload();
+                          }
+                          else{
+                            $location.url('tasks/task/' + $scope.projectKey + '/' + $scope.taskKey + '/batch');
+                          }
+                        });
                       });
-                      
                     }, function (error) {
                       notificationService.sendError('Unexpected error: ' + error);
                     })
@@ -127,16 +131,16 @@ angular.module('singleConceptAuthoringApp.uploadBatch', [])
                 });
 
             };
-        
+
         $scope.$on('batchEditing.refresh', function (event, data) {
             initialize();
           });
-        
+
         function initialize() {
             $scope.templatesLoading = true;
             conceptPromises = [];
             $scope.templateOptions.availableTemplates = [];
-            
+
             batchEditingService.initializeFromScope($scope).then(function () {
                 if($scope.templateOptions.selectedTemplate === null){
                     $scope.templateOptions.selectedTemplate = batchEditingService.getCurrentTemplate();
