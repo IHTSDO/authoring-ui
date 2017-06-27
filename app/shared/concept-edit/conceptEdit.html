@@ -427,7 +427,7 @@
         <div class="role_group_divider_top_{{groupId}} "></div>
         <div ng-repeat="relationship in relationshipGroup | filter:filterRelationships"
              ng-class="getComponentStyle(relationship.relationshipId, null, '', relationship)"
-             class="{{(relationship.target.definitionStatus !== undefined ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">
+             class="{{((relationship.target.definitionStatus != undefined) ? relationship.target.definitionStatus : 'NONE_SPECIFIED')}}">
 
           <div ng-show="relationship.definitionOfChanges" class="">
 
