@@ -975,10 +975,11 @@ button.tooltips-right.normal-case span {
     }
 
 	.home-link.pointer.btn-round-sm {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-}
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        margin-left: 10px;
+    }
 
 .validation.red{
     background-color:#c13244;
@@ -1009,4 +1010,8 @@ button.tooltips-right.normal-case span {
 
 .btn-blue{
     background-color: #00a6e5 !important;
+}
+
+.hamberger:hover {
+    background-color: rgba(2, 2, 2, 0.1);
 }
