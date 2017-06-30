@@ -276,7 +276,7 @@
             <span>More details</span>
           </button>
           <button
-            class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom "
+            class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
             ui-draggable="true" drag="description" drag-channel="descriptionObj"
             drag-image="getDragImageForDescription(description)">
             <span>Drag this row</span>
@@ -288,7 +288,7 @@
                   ng-disabled="isStatic || !description.released || isLockedModule(description.moduleId)"
                   ng-click="toggleDescriptionActive(description)"
                   ng-class="[btn-default, md, 'fa-sca fa-power-off button-width', {green : description.active}, {red: !description.active}]"
-                  class="tooltips-bottom small-size-tooltip">
+                  class="tooltips-bottom small-size-tooltip concept-edit-button">
             <span ng-if="isStatic">Active/Inactive</span>
             <span ng-if="!isStatic && description.released">Toggle Active/Inactive</span>
             <span ng-if="!isStatic && !description.released">Cannot inactivate unreleased description</span>
@@ -375,7 +375,7 @@
 
             <button type="button" ng-click="removeDescription(description)"
                     ng-if="!description.effectiveTime && !description.released"
-                    class="btn-default add-buttons md fa-sca fa-minus plus-button-width pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
+                    class="btn-default add-buttons md fa-sca fa-minus plus-button-width pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right concept-edit-button">
               <span>Remove Description</span>
             </button>
 
@@ -469,7 +469,7 @@
                 </button>
 
                 <button
-                  class="btn-default md morebuttons pull-left md-open-with drag-button-width small-size-tooltip tooltips-bottom"
+                  class="btn-default md morebuttons md-open-with drag-button-width small-size-tooltip tooltips-bottom concept-edit-button"
                   ui-draggable="true" drag="relationship" drag-channel="relationshipObj"
                   drag-image="getDragImageForRelationship(relationship)">
                   <span>Drag This Row</span>
@@ -477,7 +477,7 @@
 
                 <!-- TODO Fix this   Note: due to weird behavior with ng-class, need to manually add bottom alignment -->
                 <button type="button"
-                        class="tooltips-bottom small-size-tooltip"
+                        class="tooltips-bottom small-size-tooltip concept-edit-button"
                         ng-disabled="isStatic || !relationship.released || isLockedModule(relationship.moduleId) || template"
                         ng-click="toggleRelationshipActive(relationship)"
                         ng-class="[btn, btn-default, editbuttons, md, 'fa-sca fa-power-off button-width', {green : relationship.active}, {red: !relationship.active}]">
@@ -572,13 +572,13 @@
                 <div ng-if="!isStatic && !isLockedModule(relationship.moduleId) && !concept.template">
 
                   <button ng-if="!template" type="button" ng-click="addRelationship(groupId, relationship)"
-                          class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
+                          class="btn-default add-buttons md fa-sca fa-plus button-width-plus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Add New Relationship</span>
                   </button>
 
                   <button type="button" ng-click="removeRelationship(relationship)"
                           ng-if="!relationship.released && (!template || !relationshipInLogicalModel(relationship, template))"
-                          class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right ">
+                          class="btn-default add-buttons md fa-sca fa-minus button-width-minus pull-right tooltips-bottom medium-size-tooltip offset-tooltip-right">
                     <span>Remove Relationship</span>
                   </button>
 
