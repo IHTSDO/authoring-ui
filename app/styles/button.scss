@@ -433,9 +433,9 @@ fieldset[disabled] .btn-primary {
     position: relative;
 }
 .btn-round-sm {
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
 }
 .btn.disabled,
 .btn[disabled] {
@@ -619,6 +619,10 @@ button.fsn-title-button {
 .promote.btn-default:hover {
     background-color: #1976D2;
     color: #fff;
+}
+.auto-promote.btn-default:hover {
+  background-color: #8506A9;
+  color: #fff;
 }
 .editingtask.btn-default:hover {
     background-color: #0097a7;
@@ -955,7 +959,7 @@ button.tooltips-right.normal-case span {
       background-color: #388457;
 
     }
-	
+
 	   .btn-default.primary-action-btn {
       background-color: #00a6e5;
       color: #fff;
@@ -967,7 +971,7 @@ button.tooltips-right.normal-case span {
       background-color: #0090c6;
 
     }
-	
+
 	.home-link.pointer.btn-round-sm {
     width: 30px;
     height: 30px;
