@@ -3,17 +3,17 @@
 }
 ul.dashboard-link-list {
     text-align: left;
-    float: left;
+    //float: left;
     display: inline;
-    margin: 0;
-    padding: 19px 0 0 0;
+    margin: 12px 0;
+    padding: 0;
     list-style: none;
 }
 ul.dashboard-link-list li {
     display: inline-block;
     margin-right: -4px;
     position: relative;
-    padding: 0px 0px 0px 10px;
+    padding: 3px 0px 0px 0px;
     background: transparent;
     cursor: pointer;
     -webkit-transition: all 0.2s;
@@ -46,8 +46,9 @@ ul.dashboard-link-list li ul li a {
 ul.dashboard-link-list li ul {
     padding: 0;
     position: absolute;
-    top: 29px;
-    left: -35px;
+    top: 60px;
+    left: -42px;
+    
     width: 120px;
     font-size: 13px;
     -webkit-box-shadow: none;

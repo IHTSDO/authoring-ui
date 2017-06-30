@@ -433,8 +433,10 @@ fieldset[disabled] .btn-primary {
     position: relative;
 }
 .btn-round-sm {
-    width: 35px;
-    height: 35px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 35px !important;
+    height: 35px !important;
     line-height: 35px;
 }
 .btn.disabled,
