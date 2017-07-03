@@ -22,10 +22,13 @@
 	padding-left: .25%;
 }
 .classification-report {
-	border-bottom: #ddd solid 2px;
 	background-color: #fafafa;
 	border-top: 1px solid #F0F0F0;
 }
+.classification-report .nav-tabs {
+  border-bottom: 0;
+}
+
 .classification-report .nav-tabs li a {
 	padding: 10px 15px;
 }
