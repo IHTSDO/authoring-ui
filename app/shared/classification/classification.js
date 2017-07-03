@@ -418,9 +418,11 @@ angular.module('singleConceptAuthoringApp')
 
           scope.role = null;
           scope.$watch('task', function() {
-            accountService.getRoleForTask(scope.task).then(function(role) {
-              scope.role = role;
-            })
+            if( scope.task) {
+              accountService.getRoleForTask(scope.task).then(function (role) {
+                scope.role = role;
+              })
+            }
           })
 
           // process the classification object on any changes
