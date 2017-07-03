@@ -200,10 +200,14 @@
           </tr>
         </table>
         <script type="text/ng-template" id="ng-table/headers/checkboxToReview.html">
-          <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)"
+              <div class="checkbox">
+                <label class="filled">
+                  <input type="checkbox" ng-model="checkedToReview" ng-change="selectAll(actionTab, checkedToReview)"
                  ng-show="role === 'REVIEWER' && task.status === 'In Review'"
                  id="select_all_to_review"
                  name="filter-checkbox" value=""/>
+                </label>
+              </div>
         </script>
         <div class="no-padding m-b-10 paging col-md-12 ">
           <ul class="pager">
