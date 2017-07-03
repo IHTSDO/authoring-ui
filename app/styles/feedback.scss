@@ -178,6 +178,9 @@ input.feedback-search {
 .feedback .ta-scroll-window {
     margin-left: 0px;
 }
+.feedback .ta-scroll-window p{
+    margin: 0px;
+}
 .feedback-tabs {
     background-color: #fafafa;
 }
@@ -554,7 +557,7 @@ strong {
 .reviewer-feedback-chat {
     padding-left: 10px;
     padding-right: 10px;
-    margin: 1em 0 3em;
+    margin: 1em 0 0;
     color: #000;
     background-color: #ececec;
     height: auto;
@@ -563,7 +566,7 @@ strong {
 .author_feedback_chat {
     padding-left: 10px;
     padding-right: 10px;
-    margin: 1em 0 3em;
+    margin: 1em 0 0;
     color: #000;
     background-color: #ffe7f0;
     height: auto;
